@@ -1,14 +1,14 @@
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Cookie Notice',
-  description: 'Cookie notice foundations for the Ritora web experience.',
+  title: "Cookie Notice",
+  description: "Cookie notice foundations for the Ritora web experience.",
 };
 
 export default function CookiesPage() {
   return (
     <main className="mx-auto w-full max-w-4xl px-5 py-16 sm:px-6 lg:px-8">
-      <div className="rounded-[2rem] border border-border bg-surface/92 p-8 shadow-soft sm:p-10">
+      <div className="rounded-4xl border border-border bg-surface/92 p-8 shadow-soft sm:p-10">
         <p className="text-sm font-semibold tracking-[0.2em] text-accent uppercase">
           Cookie Notice
         </p>

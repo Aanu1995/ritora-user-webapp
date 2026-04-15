@@ -250,6 +250,7 @@ body {
   .animate-soft-float {
     animation: soft-float 7s ease-in-out infinite;
   }
+
 }
 
 @media (prefers-reduced-motion: reduce) {

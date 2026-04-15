@@ -29,44 +29,60 @@
   },
   "landing": {
     "hero": {
-      "badge": "A calmer way to do skincare",
-      "headline": "Your calmer skincare routine starts with the shelf you already own.",
-      "subheadline": "Ritora reads every product on your shelf, catches ingredient clashes before they reach your face, and turns the chaos into a clear morning and night plan shaped by your skin.",
-      "ctaPrimary": "Log in",
+      "badge": "Skincare without the second guessing",
+      "headline": "Your calmer routine starts with the shelf you already own.",
+      "subheadline": "Ritora reads your shelf, catches ingredient clashes, and turns the chaos into a calm morning and night plan shaped by your skin.",
+      "ctaPrimary": "Create an account",
       "ctaSecondary": "See how it works",
+      "imageAlt": "An open medicine cabinet in warm light, shelves filled with real everyday skincare bottles from different brands.",
       "pills": {
         "a": "Built around your shelf",
         "b": "Ingredient guardrails",
         "c": "Private by design"
       }
     },
-    "trust": {
-      "eyebrow": "Calm by design",
-      "items": [
-        { "value": "0", "label": "new products needed to start" },
-        { "value": "2×", "label": "daily moments, morning and night" },
-        { "value": "EU", "label": "private by design from day one" }
-      ]
-    },
     "problem": {
       "eyebrow": "Why routines break",
-      "headline": "Most skincare routines don't fail from carelessness. They fail from missing decisions.",
-      "body": "You buy good products, try to stack them in the right order, and still wake up unsure what you just did to your face. Ritora gives you the layer that was missing: clearer sequencing, safer pairings, and calmer daily choices."
+      "headline": "Good products, still guessing.",
+      "body": "You own the right bottles and still wake up unsure what to layer or skip. Ritora gives you the decision layer that was missing."
     },
     "problems": [
       {
         "title": "Shelf confusion",
-        "body": "You own great products and still stand in front of the mirror guessing what to apply and what to skip."
+        "body": "You own great products and still guess each morning what to apply and what to skip."
       },
       {
         "title": "Silent ingredient stacking",
-        "body": "Strong actives pile up across cleansers, toners, and serums. The irritation shows up long before you spot the cause."
+        "body": "Strong actives pile up between cleansers, toners, and serums. Irritation shows up long before you spot the cause."
       },
       {
         "title": "Buying over building",
-        "body": "Most routines don't need another serum. They need structure, sequencing, and safer choices with the products already on your shelf."
+        "body": "Most routines don't need another serum. They need structure, sequencing, and safer choices with what you already own."
       }
     ],
+    "privacy": {
+      "eyebrow": "Private by design",
+      "headline": "Your shelf stays yours.",
+      "body": "Ritora is built in the EU with explicit consent and essential cookies only. The points below reflect safeguards already present in the product today.",
+      "points": [
+        {
+          "title": "GDPR from day one",
+          "body": "Your data is stored and processed under European privacy law. No exceptions, no loopholes."
+        },
+        {
+          "title": "Essential cookies only",
+          "body": "Authentication and preference cookies only. No ad tech, no social pixels, and no hidden trackers."
+        },
+        {
+          "title": "Sensitive context is opt-in",
+          "body": "Location and profile context only help your guidance when you choose to provide them."
+        },
+        {
+          "title": "Verified account access",
+          "body": "Email verification and secure sign-in flows help protect access to your routine and profile data."
+        }
+      ]
+    },
     "howItWorks": {
       "eyebrow": "How it works",
       "headline": "Three calm steps from shelf clutter to daily clarity.",
@@ -76,7 +92,7 @@
     "steps": [
       {
         "title": "Tell Ritora about your skin",
-        "body": "Share your skin type, concerns, sensitivities, goals, and how involved you want your routine to be. Every answer shapes the guidance you get, so nothing feels generic."
+        "body": "Share your skin type, concerns, sensitivities, goals, and how involved you want your routine to be. Every answer shapes the guidance you get."
       },
       {
         "title": "Map what's already on your shelf",
@@ -84,7 +100,7 @@
       },
       {
         "title": "Follow a calmer daily plan",
-        "body": "Wake up to clear morning and evening guidance. Safety rules come first, and everything else is tuned to your goals and the products you already own."
+        "body": "Wake up to clear morning and evening guidance. Safety rules come first, and everything else is tuned to your goals and your shelf."
       }
     ],
     "features": {
@@ -101,7 +117,7 @@
       },
       {
         "title": "Ingredient safety guardrails",
-        "body": "Conflict checks, overlap detection, and active frequency awareness protect sensitive skin and take the guesswork out of stacking actives.",
+        "body": "Conflict checks and overlap detection protect sensitive skin and take the guesswork out of stacking actives.",
         "icon": "shield-check"
       },
       {
@@ -111,20 +127,42 @@
       },
       {
         "title": "Private by default",
-        "body": "GDPR friendly handling, explicit consent, and careful data boundaries. Built in from day one, never bolted on later.",
+        "body": "Explicit consent, careful data boundaries, and EU friendly handling. Built in from day one, never bolted on later.",
         "icon": "lock"
       },
       {
         "title": "Learn in the open",
-        "body": "Open, searchable pages for learning the basics. Private, personal routines once you sign in.",
+        "body": "Open, searchable pages for the basics. Private, personal routines once you sign in.",
         "icon": "globe"
       },
       {
         "title": "Calmer daily rituals",
-        "body": "A morning and night view that lifts the guesswork and keeps your routine steady, even on the busiest days.",
+        "body": "A morning and night view that keeps your routine steady even on the busiest days.",
         "icon": "sunrise"
       }
     ],
+    "differentiators": {
+      "eyebrow": "What makes Ritora different",
+      "headline": "Built for your whole routine, not one brand.",
+      "items": [
+        {
+          "title": "Every brand, not one ecosystem",
+          "body": "Ritora works with anything you already own. No brand loyalty required, no upsells, no sponsored picks."
+        },
+        {
+          "title": "Your whole routine, not one product",
+          "body": "Ingredient checks run across every bottle at once, so conflicts cannot hide between steps."
+        },
+        {
+          "title": "Your skin, your climate, your season",
+          "body": "Guidance adapts to your ethnicity, the climate you live in, and the season you are in today."
+        },
+        {
+          "title": "Full body, not just your face",
+          "body": "Body wash, shampoo, lip care, and hand cream are part of the plan, the same way your face is."
+        }
+      ]
+    },
     "faq": {
       "eyebrow": "FAQ",
       "headline": "Built to earn your trust before it asks for it."
@@ -132,7 +170,7 @@
     "faqItems": [
       {
         "question": "Is Ritora a medical product?",
-        "answer": "No. Ritora is a skincare decision support tool that helps you make safer daily routine choices. It does not diagnose, treat, or replace a dermatologist."
+        "answer": "No. Ritora helps you make safer daily routine choices with the products you already own. It does not diagnose, treat, or replace a dermatologist."
       },
       {
         "question": "Do I need to buy new products to use it well?",
@@ -154,9 +192,9 @@
     "finalCta": {
       "eyebrow": "Ready when you are",
       "headline": "Turn your shelf into a calmer daily routine.",
-      "body": "Log in to pick up where you left off, or create a new account in under a minute. No spam, no pressure, and you can cancel whenever you like.",
-      "ctaPrimary": "Log in",
-      "ctaSecondary": "Create an account"
+      "body": "Create an account in under a minute, or log in to pick up where you left off. Your skin profile, preferences, and routine setup stay in one place.",
+      "ctaPrimary": "Create an account",
+      "ctaSecondary": "Log in"
     }
   },
   "footer": {

@@ -112,9 +112,15 @@ export function SiteHeaderClient({
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href={AppRoute.Login}
-            className="hidden items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition hover:-translate-y-0.5 hover:opacity-95 sm:inline-flex"
+            className="hidden items-center justify-center rounded-full border border-border-strong bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-accent lg:inline-flex"
           >
             {loginLabel}
+          </Link>
+          <Link
+            href={AppRoute.Register}
+            className="hidden items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition hover:-translate-y-0.5 hover:opacity-95 lg:inline-flex"
+          >
+            {signUpLabel}
           </Link>
           <button
             ref={triggerRef}
@@ -164,18 +170,18 @@ export function SiteHeaderClient({
           </nav>
           <div className="mt-6 flex flex-col gap-3">
             <Link
-              href={AppRoute.Login}
+              href={AppRoute.Register}
               onClick={() => setOpen(false)}
               className="inline-flex w-full items-center justify-center rounded-full bg-foreground px-6 py-3.5 text-base font-semibold text-background transition hover:opacity-95"
             >
-              {loginLabel}
+              {signUpLabel}
             </Link>
             <Link
-              href={AppRoute.Register}
+              href={AppRoute.Login}
               onClick={() => setOpen(false)}
               className="inline-flex w-full items-center justify-center rounded-full border border-border-strong bg-surface px-6 py-3.5 text-base font-semibold text-foreground transition hover:border-accent"
             >
-              {signUpLabel}
+              {loginLabel}
             </Link>
           </div>
         </div>

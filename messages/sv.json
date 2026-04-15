@@ -29,34 +29,27 @@
   },
   "landing": {
     "hero": {
-      "badge": "Ett lugnare sätt att sköta din hud",
-      "headline": "Din lugnare hudvårdsrutin börjar med hyllan du redan äger.",
-      "subheadline": "Ritora läser varje produkt på din hylla, fångar ingredienskrockar innan de når ditt ansikte och förvandlar kaoset till en tydlig morgon och kväll formad av just din hud.",
-      "ctaPrimary": "Logga in",
+      "badge": "Hudvård utan tvekan",
+      "headline": "Din lugnare rutin börjar med hyllan du redan äger.",
+      "subheadline": "Ritora läser din hylla, fångar ingredienskrockar och förvandlar kaoset till en lugn morgon och kväll formad av just din hud.",
+      "ctaPrimary": "Skapa ett konto",
       "ctaSecondary": "Så fungerar det",
+      "imageAlt": "Ett öppet badrumsskåp i varmt ljus, hyllorna fyllda med riktiga vardagsflaskor från olika märken.",
       "pills": {
         "a": "Byggd runt din hylla",
         "b": "Trygga ingredienser",
         "c": "Privat som standard"
       }
     },
-    "trust": {
-      "eyebrow": "Lugn av design",
-      "items": [
-        { "value": "0", "label": "nya produkter krävs för att komma igång" },
-        { "value": "2×", "label": "dagliga stunder, morgon och kväll" },
-        { "value": "EU", "label": "privat som standard från dag ett" }
-      ]
-    },
     "problem": {
       "eyebrow": "Varför rutiner spricker",
-      "headline": "De flesta hudvårdsrutiner spricker inte av slarv. De spricker för att beslut saknas.",
-      "body": "Du köper bra produkter, försöker lägga dem i rätt ordning och vaknar ändå osäker på vad du precis gjort mot ditt ansikte. Ritora ger dig lagret som saknades: tydligare ordning, tryggare kombinationer och lugnare dagliga val."
+      "headline": "Bra produkter, ändå en gissningslek.",
+      "body": "Du äger rätt flaskor och vaknar ändå osäker på vad du ska lägga på lager och vad du ska hoppa över. Ritora ger dig beslutsagret som saknades."
     },
     "problems": [
       {
         "title": "Hyllförvirring",
-        "body": "Du äger riktigt bra produkter och står ändå framför spegeln och gissar vad du ska ta och vad du ska hoppa över."
+        "body": "Du äger riktigt bra produkter och gissar ändå varje morgon vad du ska ta och vad du ska hoppa över."
       },
       {
         "title": "Tyst ingredienskrock",
@@ -64,9 +57,32 @@
       },
       {
         "title": "Köp före struktur",
-        "body": "De flesta rutiner behöver inte ännu ett serum. De behöver struktur, ordning och tryggare beslut med produkterna som redan står på hyllan."
+        "body": "De flesta rutiner behöver inte ännu ett serum. De behöver struktur, ordning och tryggare beslut med produkterna du redan äger."
       }
     ],
+    "privacy": {
+      "eyebrow": "Privat som standard",
+      "headline": "Din hylla förblir din.",
+      "body": "Ritora byggs i EU med uttryckligt samtycke och endast nödvändiga cookies. Punkterna nedan speglar skydd som redan finns i produkten i dag.",
+      "points": [
+        {
+          "title": "GDPR från dag ett",
+          "body": "Dina uppgifter lagras och behandlas under europeisk dataskyddslag. Inga undantag, inga kryphål."
+        },
+        {
+          "title": "Bara nödvändiga cookies",
+          "body": "Endast cookies för autentisering och inställningar. Ingen ad tech, inga sociala pixlar och inga dolda spårare."
+        },
+        {
+          "title": "Känslig kontext är frivillig",
+          "body": "Plats och profilkontext används bara för vägledning när du själv väljer att lämna den."
+        },
+        {
+          "title": "Verifierad kontoåtkomst",
+          "body": "E-postverifiering och säkra inloggningsflöden hjälper till att skydda åtkomsten till din rutin- och profildata."
+        }
+      ]
+    },
     "howItWorks": {
       "eyebrow": "Så fungerar det",
       "headline": "Tre lugna steg från hyllkaos till daglig klarhet.",
@@ -76,7 +92,7 @@
     "steps": [
       {
         "title": "Berätta om din hud för Ritora",
-        "body": "Dela din hudtyp, dina besvär, dina känsligheter, dina mål och hur mycket tid du vill lägga. Varje svar formar vägledningen, så inget känns generiskt."
+        "body": "Dela din hudtyp, dina besvär, dina känsligheter, dina mål och hur mycket tid du vill lägga. Varje svar formar vägledningen du får."
       },
       {
         "title": "Kartlägg din hylla",
@@ -84,7 +100,7 @@
       },
       {
         "title": "Följ en lugnare daglig plan",
-        "body": "Vakna till tydlig morgon och kvällsvägledning. Säkerhet kommer först, och resten är anpassat efter dina mål och produkterna du redan äger."
+        "body": "Vakna till tydlig morgon och kvällsvägledning. Säkerhet kommer först, och resten är anpassat efter dina mål och din hylla."
       }
     ],
     "features": {
@@ -101,7 +117,7 @@
       },
       {
         "title": "Trygga ingredienser",
-        "body": "Konfliktkontroller, överlappsdetektion och medvetenhet om aktiv frekvens skyddar känslig hud och tar bort gissningarna när du staplar aktiva ingredienser.",
+        "body": "Konfliktkontroller och överlappsdetektion skyddar känslig hud och tar bort gissningarna när du staplar aktiva ingredienser.",
         "icon": "shield-check"
       },
       {
@@ -111,20 +127,42 @@
       },
       {
         "title": "Privat som standard",
-        "body": "GDPR vänlig hantering, uttryckligt samtycke och tydliga dataramar. Inbyggt från dag ett, aldrig påklistrat efteråt.",
+        "body": "Uttryckligt samtycke, tydliga dataramar och EU vänlig hantering. Inbyggt från dag ett, aldrig påklistrat efteråt.",
         "icon": "lock"
       },
       {
         "title": "Lär dig öppet",
-        "body": "Öppna och sökbara sidor för att lära dig grunderna. Privata och personliga rutiner när du är inloggad.",
+        "body": "Öppna och sökbara sidor för grunderna. Privata och personliga rutiner när du är inloggad.",
         "icon": "globe"
       },
       {
         "title": "Lugnare dagliga ritualer",
-        "body": "En morgon och kvällsvy som lyfter gissningarna och håller din rutin stadig även under de mest stressiga dagarna.",
+        "body": "En morgon och kvällsvy som håller din rutin stadig även under de mest stressiga dagarna.",
         "icon": "sunrise"
       }
     ],
+    "differentiators": {
+      "eyebrow": "Det här skiljer Ritora",
+      "headline": "Byggd för hela din rutin, inte ett enda märke.",
+      "items": [
+        {
+          "title": "Varje märke, inte ett ekosystem",
+          "body": "Ritora fungerar med allt du redan äger. Ingen märkeslojalitet krävs, inga merförsäljningar, inga sponsrade val."
+        },
+        {
+          "title": "Hela din rutin, inte en produkt",
+          "body": "Ingredienskontroller körs över varje flaska samtidigt, så konflikter kan inte gömma sig mellan stegen."
+        },
+        {
+          "title": "Din hud, ditt klimat, din säsong",
+          "body": "Vägledningen anpassar sig efter din etnicitet, klimatet du lever i och säsongen du är i idag."
+        },
+        {
+          "title": "Hela kroppen, inte bara ansiktet",
+          "body": "Duschkräm, schampo, läppvård och handkräm är en del av planen, precis som ansiktet är det."
+        }
+      ]
+    },
     "faq": {
       "eyebrow": "Vanliga frågor",
       "headline": "Byggt för att förtjäna ditt förtroende innan det ber om det."
@@ -132,7 +170,7 @@
     "faqItems": [
       {
         "question": "Är Ritora en medicinsk produkt?",
-        "answer": "Nej. Ritora är ett beslutsstöd för hudvård som hjälper dig att göra tryggare dagliga rutinval. Det diagnostiserar, behandlar eller ersätter inte en hudläkare."
+        "answer": "Nej. Ritora hjälper dig att göra tryggare dagliga rutinval med produkterna du redan äger. Den diagnostiserar, behandlar eller ersätter inte en hudläkare."
       },
       {
         "question": "Måste jag köpa nya produkter för att använda den?",
@@ -154,9 +192,9 @@
     "finalCta": {
       "eyebrow": "När du är redo",
       "headline": "Förvandla din hylla till en lugnare daglig rutin.",
-      "body": "Logga in för att fortsätta där du slutade, eller skapa ett konto på under en minut. Ingen spam, ingen press, och du kan avsluta när du vill.",
-      "ctaPrimary": "Logga in",
-      "ctaSecondary": "Skapa ett konto"
+      "body": "Skapa ett konto på under en minut, eller logga in för att fortsätta där du slutade. Din hudprofil, dina inställningar och din rutinuppsättning hålls samlade på ett ställe.",
+      "ctaPrimary": "Skapa ett konto",
+      "ctaSecondary": "Logga in"
     }
   },
   "footer": {
