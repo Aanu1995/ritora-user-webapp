@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, renderHook } from '@testing-library/react';
 import { NextIntlClientProvider } from 'next-intl';
 import type { ReactNode } from 'react';
+import { AppPreferencesProvider } from '@/components/preferences/app-preferences-provider';
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -18,9 +19,11 @@ export function renderWithProviders(ui: React.ReactElement) {
   return render(ui, {
     wrapper: ({ children }: { children: ReactNode }) => (
       <NextIntlClientProvider locale="en" messages={messages}>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <AppPreferencesProvider>
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </AppPreferencesProvider>
       </NextIntlClientProvider>
     ),
   });
@@ -31,9 +34,11 @@ export function renderHookWithProviders<T>(hook: () => T) {
   return renderHook(hook, {
     wrapper: ({ children }: { children: ReactNode }) => (
       <NextIntlClientProvider locale="en" messages={messages}>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <AppPreferencesProvider>
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </AppPreferencesProvider>
       </NextIntlClientProvider>
     ),
   });

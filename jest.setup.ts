@@ -44,3 +44,48 @@ jest.mock('next-intl/server', () => ({
   getTranslations: async (namespace?: string) => (key: string, values?: Record<string, string | number>) =>
     formatMessage(resolveMessage(namespace ? `${namespace}.${key}` : key), values),
 }));
+
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+if (!global.ResizeObserver) {
+  Object.defineProperty(global, 'ResizeObserver', {
+    writable: true,
+    configurable: true,
+    value: ResizeObserverMock,
+  });
+}
+
+if (!global.PointerEvent) {
+  class PointerEventMock extends MouseEvent {}
+
+  Object.defineProperty(global, 'PointerEvent', {
+    writable: true,
+    configurable: true,
+    value: PointerEventMock,
+  });
+}
+
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = jest.fn();
+}
+
+if (!window.matchMedia) {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    configurable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    }),
+  });
+}

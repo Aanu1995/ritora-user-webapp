@@ -6,10 +6,12 @@
     "cancel": "Avbryt",
     "back": "Tillbaka",
     "next": "Nästa",
+    "retry": "Försök igen",
     "skip": "Hoppa över",
     "submit": "Skicka",
     "or": "eller",
-    "selectPlaceholder": "Välj..."
+    "selectPlaceholder": "Välj...",
+    "recommended": "Rekommenderat"
   },
   "nav": {
     "whyRitora": "Varför Ritora",
@@ -20,144 +22,146 @@
     "signUp": "Skapa konto",
     "dashboard": "Översikt",
     "skinProfile": "Hudprofil",
+    "settings": "Inställningar",
     "logout": "Logga ut",
     "openMenu": "Öppna meny",
     "closeMenu": "Stäng meny"
   },
   "landing": {
     "hero": {
-      "badge": "Lugn, inventariebaserad hudvård",
-      "headline": "Lugnare hudvårdsrutiner, byggda från det du redan har i hyllan.",
-      "subheadline": "Ritora går igenom produkterna du redan äger, flaggar ingredienskonflikter och förvandlar din hylla till en tydlig morgon- och kvällsplan — formad av din hud, inte av en varukorg.",
+      "badge": "Ett lugnare sätt att sköta din hud",
+      "headline": "Din lugnare hudvårdsrutin börjar med hyllan du redan äger.",
+      "subheadline": "Ritora läser varje produkt på din hylla, fångar ingredienskrockar innan de når ditt ansikte och förvandlar kaoset till en tydlig morgon och kväll formad av just din hud.",
       "ctaPrimary": "Logga in",
       "ctaSecondary": "Så fungerar det",
       "pills": {
-        "a": "Hyllan först",
-        "b": "Säkra ingredienser",
-        "c": "EU-medveten integritet"
+        "a": "Byggd runt din hylla",
+        "b": "Trygga ingredienser",
+        "c": "Privat som standard"
       }
     },
     "trust": {
-      "eyebrow": "Lugnt av design",
+      "eyebrow": "Lugn av design",
       "items": [
-        { "value": "0", "label": "nya produkter krävs för att börja" },
-        { "value": "2×", "label": "dagliga incheckningar, morgon och kväll" },
-        { "value": "EU", "label": "integritet från dag ett" }
+        { "value": "0", "label": "nya produkter krävs för att komma igång" },
+        { "value": "2×", "label": "dagliga stunder, morgon och kväll" },
+        { "value": "EU", "label": "privat som standard från dag ett" }
       ]
     },
     "problem": {
-      "eyebrow": "Varför rutiner går snett",
-      "headline": "De flesta hudvårdsrutiner misslyckas inte av slarv — de misslyckas av uteblivna beslut.",
-      "body": "Du köper bra produkter, försöker kombinera dem och vaknar ändå osäker. Ritora levererar det saknade lagret: tydligare ordningsföljd, säkrare kombinationer och lugnare dagliga val."
+      "eyebrow": "Varför rutiner spricker",
+      "headline": "De flesta hudvårdsrutiner spricker inte av slarv. De spricker för att beslut saknas.",
+      "body": "Du köper bra produkter, försöker lägga dem i rätt ordning och vaknar ändå osäker på vad du precis gjort mot ditt ansikte. Ritora ger dig lagret som saknades: tydligare ordning, tryggare kombinationer och lugnare dagliga val."
     },
     "problems": [
       {
         "title": "Hyllförvirring",
-        "body": "Du äger bra produkter och vaknar ändå varje morgon och gissar vad du ska använda eller skippa."
+        "body": "Du äger riktigt bra produkter och står ändå framför spegeln och gissar vad du ska ta och vad du ska hoppa över."
       },
       {
-        "title": "Tyst ingredienskonflikt",
-        "body": "Starka aktiva ingredienser staplas mellan rengöringar, toners och serum — irritationen kommer innan orsaken."
+        "title": "Tyst ingredienskrock",
+        "body": "Starka aktiva ingredienser staplas mellan rengöringar, toners och serum. Irritationen dyker upp långt innan du hinner se orsaken."
       },
       {
-        "title": "Köp framför struktur",
-        "body": "De flesta rutiner behöver inte ett nytt serum. De behöver struktur, ordningsföljd och säkrare beslut."
+        "title": "Köp före struktur",
+        "body": "De flesta rutiner behöver inte ännu ett serum. De behöver struktur, ordning och tryggare beslut med produkterna som redan står på hyllan."
       }
     ],
     "howItWorks": {
       "eyebrow": "Så fungerar det",
       "headline": "Tre lugna steg från hyllkaos till daglig klarhet.",
-      "illustrationTitle": "Från morgon till kväll, på repeat",
-      "illustrationBody": "Ritora behandlar din rutin som en levande cykel. Varje steg bär med sig vad gårdagens aktiva ingredienser betyder för morgonen — så planen förblir säker utan att du behöver tänka på det."
+      "illustrationTitle": "Från morgon till kväll, om och om igen",
+      "illustrationBody": "Ritora behandlar din rutin som en levande cykel. Varje steg för med sig vad gårdagens aktiva ingredienser betyder för den här morgonen, så planen förblir trygg utan att du behöver tänka på det."
     },
     "steps": [
       {
-        "title": "Berätta om din hud",
-        "body": "Dela hudtyp, problemområden, känsligheter, mål och rutinpreferenser så att vägledningen utgår från din verklighet — inte en generisk mall."
+        "title": "Berätta om din hud för Ritora",
+        "body": "Dela din hudtyp, dina besvär, dina känsligheter, dina mål och hur mycket tid du vill lägga. Varje svar formar vägledningen, så inget känns generiskt."
       },
       {
         "title": "Kartlägg din hylla",
-        "body": "Lägg till dina nuvarande produkter så att Ritora kan resonera kring ingrediensöverlapp, säkerhetsgränser och verkliga luckor."
+        "body": "Lägg till produkterna du använder idag så kan Ritora upptäcka ingrediensöverlapp, flagga riskfyllda kombinationer och berätta vad som faktiskt saknas."
       },
       {
         "title": "Följ en lugnare daglig plan",
-        "body": "Få tydlig morgon- och kvällsvägledning — säkerhet först, sedan anpassad till dina mål och ditt sortiment."
+        "body": "Vakna till tydlig morgon och kvällsvägledning. Säkerhet kommer först, och resten är anpassat efter dina mål och produkterna du redan äger."
       }
     ],
     "features": {
-      "eyebrow": "Vad du får",
+      "eyebrow": "Det här får du",
       "headline": "Allt du behöver för lugnare hudvårdsbeslut.",
       "illustrationTitle": "Säkerhet först, anpassning sedan",
-      "illustrationBody": "Varje rekommendation går genom ett deterministiskt säkerhetslager innan den formas efter dina mål. Inga överraskningar, inga konfliktande aktiva ingredienser, inga ångerköp."
+      "illustrationBody": "Varje rekommendation går genom ett deterministiskt säkerhetslager innan den möter dina mål. Inga överraskningar, inga krockande aktiva ingredienser, inga ångerköp."
     },
     "featureItems": [
       {
-        "title": "Hyllan först-vägledning",
-        "body": "Rekommendationer börjar med produkterna i din hylla, inte en varukorg.",
+        "title": "Din hylla kommer först",
+        "body": "Vägledningen börjar alltid med produkterna du redan äger, aldrig med en varukorg.",
         "icon": "package"
       },
       {
-        "title": "Ingredienssäkerhet",
-        "body": "Konfliktkontroller, överlappsdetektion och medvetenhet om aktiv frekvens skyddar känslig hud.",
+        "title": "Trygga ingredienser",
+        "body": "Konfliktkontroller, överlappsdetektion och medvetenhet om aktiv frekvens skyddar känslig hud och tar bort gissningarna när du staplar aktiva ingredienser.",
         "icon": "shield-check"
       },
       {
-        "title": "Hudprofilmedvetenhet",
-        "body": "Mål, känsligheter, hudton, ålder och etnicitet formar varje rekommendation.",
+        "title": "Anpassad efter din hud",
+        "body": "Dina mål, dina känsligheter, din hudton, din ålder och din etnicitet formar varje rekommendation du ser.",
         "icon": "user"
       },
       {
-        "title": "Integritet från start",
-        "body": "GDPR-medveten hantering, uttryckligt samtycke och tydliga dataramar — från början.",
+        "title": "Privat som standard",
+        "body": "GDPR vänlig hantering, uttryckligt samtycke och tydliga dataramar. Inbyggt från dag ett, aldrig påklistrat efteråt.",
         "icon": "lock"
       },
       {
-        "title": "Öppet och utbildande",
-        "body": "Öppna sidor för lärande. Privata, personliga rutiner när du är inloggad.",
+        "title": "Lär dig öppet",
+        "body": "Öppna och sökbara sidor för att lära dig grunderna. Privata och personliga rutiner när du är inloggad.",
         "icon": "globe"
       },
       {
         "title": "Lugnare dagliga ritualer",
-        "body": "En morgon- och kvällsvy som tar bort gissningar och håller din rutin konsekvent — även på stressiga dagar.",
+        "body": "En morgon och kvällsvy som lyfter gissningarna och håller din rutin stadig även under de mest stressiga dagarna.",
         "icon": "sunrise"
       }
     ],
     "faq": {
       "eyebrow": "Vanliga frågor",
-      "headline": "Byggt för att förtjäna förtroende innan det ber om det."
+      "headline": "Byggt för att förtjäna ditt förtroende innan det ber om det."
     },
     "faqItems": [
       {
         "question": "Är Ritora en medicinsk produkt?",
-        "answer": "Nej. Ritora är ett beslutsstöd för hudvård som hjälper dig att göra säkrare dagliga rutinval. Det diagnostiserar, behandlar eller ersätter inte en hudläkare."
+        "answer": "Nej. Ritora är ett beslutsstöd för hudvård som hjälper dig att göra tryggare dagliga rutinval. Det diagnostiserar, behandlar eller ersätter inte en hudläkare."
       },
       {
         "question": "Måste jag köpa nya produkter för att använda den?",
-        "answer": "Nej. Ritora utgår från din hylla. Den hjälper dig att få ut mer av det du redan äger innan den föreslår något nytt."
+        "answer": "Inte alls. Ritora utgår från din hylla. Den hjälper dig att få ut mer av det du redan äger innan den föreslår något nytt."
       },
       {
         "question": "Fungerar det för nybörjare?",
-        "answer": "Ja. Nybörjare och samlare är precis vilka Ritora är byggt för — en enklare väg till en säkrare rutin."
+        "answer": "Ja. Nybörjare och samlare som blivit överväldigade av sin egen hylla är precis vilka Ritora är byggt för. En enklare väg till en rutin som faktiskt fungerar."
       },
       {
-        "question": "Hur hanteras integritet?",
-        "answer": "Ritora använder uttryckligt samtycke, tydliga dataramar och säker inloggning. EU-medveten hantering är inbyggd från dag ett."
+        "question": "Hur hanteras mina uppgifter?",
+        "answer": "Med omsorg. Ritora bygger på uttryckligt samtycke, tydliga dataramar och säker inloggning. EU vänlig hantering är inbyggd från dag ett."
       },
       {
         "question": "Vilka språk stöds?",
-        "answer": "Engelska och svenska är tillgängliga vid lansering. Du kan ändra ditt föredragna språk när som helst från inställningar."
+        "answer": "Engelska och svenska är tillgängliga från lansering. Du kan byta föredraget språk när som helst från inställningssidan."
       }
     ],
     "finalCta": {
       "eyebrow": "När du är redo",
       "headline": "Förvandla din hylla till en lugnare daglig rutin.",
-      "body": "Logga in för att fortsätta där du slutade, eller skapa ett konto på under en minut. Ingen spam, ingen press — avsluta när du vill.",
+      "body": "Logga in för att fortsätta där du slutade, eller skapa ett konto på under en minut. Ingen spam, ingen press, och du kan avsluta när du vill.",
       "ctaPrimary": "Logga in",
       "ctaSecondary": "Skapa ett konto"
     }
   },
   "footer": {
     "brandBlurb": "Ritora hjälper dig att förvandla produkterna du redan äger till en lugnare, säkrare daglig rutin.",
+    "cookieNotice": "Cookiepolicy",
     "columns": {
       "explore": "Utforska",
       "legal": "Juridik",
@@ -202,6 +206,7 @@
     "sendVerificationEmail": "Skicka verifieringsmejl",
     "verifyEmail": "Verifiera e-post",
     "verifyEmailSent": "Ett verifieringsmejl har skickats till din inkorg",
+    "verifyEmailAfterRegistrationDescription": "Vi har skickat en verifieringslänk till {email}. Du kan logga in efter att du har verifierat din e-post.",
     "resendVerification": "Skicka verifieringsmejl igen",
     "resendVerificationTitle": "Skicka igen",
     "resendVerificationDescription": "Ange din e-post för att få en ny verifieringslänk.",
@@ -225,27 +230,345 @@
     "resetting": "Återställer...",
     "signingIn": "Loggar in...",
     "creatingAccount": "Skapar konto...",
-    "loading": "Laddar..."
+    "loading": "Laddar...",
+    "errors": {
+      "invalidCredentials": "Fel e-post eller lösenord. Försök igen.",
+      "emailInUse": "Ett konto med denna e-post finns redan. Försök logga in istället.",
+      "userNotFound": "Vi hittade inget konto med den e-postadressen.",
+      "rateLimit": "För många försök. Vänta en stund och försök igen.",
+      "networkError": "Vi kunde inte nå våra servrar. Kontrollera din anslutning och försök igen.",
+      "serverError": "Något gick fel hos oss. Försök igen om en liten stund.",
+      "validationFailed": "Kontrollera dina uppgifter och försök igen.",
+      "tokenExpired": "Länken har gått ut. Begär en ny.",
+      "tokenInvalid": "Länken är inte längre giltig. Begär en ny.",
+      "emailNotVerified": "Verifiera din e-post innan du loggar in.",
+      "accountLocked": "Kontot är tillfälligt låst. Försök igen senare.",
+      "forbidden": "Du har inte behörighet att göra det.",
+      "unknown": "Något gick fel. Försök igen."
+    },
+    "validation": {
+      "emailRequired": "E-post krävs.",
+      "emailInvalid": "Ange en giltig e-postadress.",
+      "passwordRequired": "Lösenord krävs.",
+      "passwordTooShort": "Lösenordet måste vara minst 8 tecken.",
+      "passwordPattern": "Använd minst 8 tecken med stor bokstav, liten bokstav och en siffra.",
+      "passwordMismatch": "Lösenorden matchar inte.",
+      "firstNameRequired": "Förnamn krävs.",
+      "lastNameRequired": "Efternamn krävs.",
+      "termsRequired": "Acceptera användarvillkoren för att fortsätta.",
+      "privacyRequired": "Acceptera integritetspolicyn för att fortsätta.",
+      "fieldRequired": "Detta fält krävs.",
+      "tokenRequired": "Återställningstoken saknas."
+    }
   },
   "dashboard": {
     "title": "Översikt",
-    "welcome": "Välkommen, {firstName}!",
-    "subtitle": "Din Ritora-översikt",
-    "completeProfile": "Slutför din hudprofil för personliga rekommendationer",
-    "verifyEmail": "Verifiera din e-post för att få tillgång till alla funktioner",
-    "startProfile": "Slutför hudprofil",
-    "resendVerification": "Skicka verifieringsmejl igen",
-    "profileMissingTitle": "Slutför din hudprofil",
-    "profileMissingDescription": "Sätt upp din hudprofil för personliga rekommendationer.",
-    "profileTitle": "Din hudprofil",
-    "editProfile": "Redigera profil",
-    "skinType": "Hudtyp",
-    "concerns": "Problemområden",
-    "routine": "Rutin"
+    "eyebrow": "Arbetsyta",
+    "heroTitle": "Välkommen tillbaka, {firstName}",
+    "heroDescription": "Autentisering och hudprofil är den aktiva MVP-grunden just nu. Instrumentpanelen speglar nu den privata Ritora-arbetsytan från produktplanen, så setupen är tydlig och kommande moduler har redan en naturlig plats.",
+    "authReady": "Autentisering klar",
+    "profileSectionsReady": "profilsektioner klara",
+    "setupTitle": "Hudprofilsetup",
+    "setupDescription": "Slutför de viktigaste profiluppgifterna först. De är den tryggaste grunden för lageranalys, dagliga rutiner och framtida uppföljning.",
+    "setupReadyDescription": "Din kärnprofil är klar. Du kan fortfarande lägga till mer kontext för att göra framtida rekommendationer mer klimatmedvetna och mer personliga.",
+    "profileProgressLabel": "Framsteg",
+    "progressValue": "{completed} av {total} sektioner",
+    "recommendedBadge": "Rekommenderat",
+    "startProfile": "Starta hudprofil",
+    "continueProfile": "Fortsätt setup",
+    "reviewProfile": "Granska profil",
+    "openSettings": "Öppna inställningar",
+    "unlocksTitle": "Det här låser setupen upp härnäst",
+    "unlocksDescription": "Profilarbetet du gör nu matar de kommande delarna av Ritora, så instrumentpanelen ska guida dig in i setupen innan den ber dig göra något mer avancerat.",
+    "unlocks": {
+      "inventory": {
+        "title": "En smartare lagergrund",
+        "description": "Hudtyp, mål och kontext formar hur Ritora tolkar produkterna du lägger till senare."
+      },
+      "routines": {
+        "title": "Tryggare dagliga rutiner",
+        "description": "Rutinnivå, hudproblem och känsligheter hjälper Ritora att avgöra vad som ska användas, hoppas över eller roteras."
+      },
+      "progress": {
+        "title": "Mer användbar uppföljning",
+        "description": "En stark profil gör framtida check-ins, fototidslinjer och produktinsikter mycket mer relevanta."
+      }
+    },
+    "profileLoadErrorTitle": "Vi kunde inte ladda din hudprofil",
+    "profileLoadErrorDescription": "Du kan fortfarande öppna profilsidan och fortsätta setupen medan resten av arbetsytans struktur ligger på plats.",
+    "profileSummaryTitle": "Nuvarande profilöversikt",
+    "profileSummaryDescription": "Din kärnprofil är redo för nästa produktmoduler. Granska den när som helst innan lager- och rutinfunktionerna landar.",
+    "profileSummaryRecommendedDescription": "Din kärnprofil är redo, men mer kontext som etnicitet och plats kommer att stärka framtida rekommendationer.",
+    "profileInProgressTitle": "Profilen behöver fortfarande några detaljer",
+    "profileInProgressDescription": "Du har påbörjat din profil, men kärnsetupen är inte klar ännu. Fortsätt där du slutade.",
+    "summary": {
+      "skinType": "Hudtyp",
+      "goals": "Mål",
+      "concerns": "Hudproblem",
+      "routine": "Rutinpreferens",
+      "context": "Personlig kontext"
+    },
+    "blueprintTitle": "Planerade arbetsytor",
+    "blueprintDescription": "De här sektionerna kommer direkt från planen: lager, rutiner, uppföljning och gapanalys. De syns redan nu så att den privata produkten får rätt informationsarkitektur från början.",
+    "sections": {
+      "basics": {
+        "title": "Hudgrunder",
+        "description": "Lägg till hudtyp, hudton och åldersintervall så att appen får en tydlig baslinje."
+      },
+      "priorities": {
+        "title": "Hudproblem och mål",
+        "description": "Berätta vad du vill förbättra och vad som behöver extra omsorg just nu."
+      },
+      "routine": {
+        "title": "Rutinpreferens",
+        "description": "Välj hur enkel eller omfattande du vill att rutinen ska kännas i vardagen."
+      },
+      "context": {
+        "title": "Personlig kontext",
+        "description": "Lägg till etnicitet plus land eller stad för mer klimatmedveten och hudmedveten vägledning senare."
+      }
+    }
+  },
+  "workspace": {
+    "sidebarSubtitle": "Privat arbetsyta",
+    "openNavigation": "Öppna arbetsytans navigering",
+    "closeNavigation": "Stäng arbetsytans navigering",
+    "liveSection": "Live nu",
+    "plannedSection": "Planerat härnäst",
+    "soonBadge": "Snart",
+    "setupTitle": "Färdigställ grunden",
+    "setupStartDescription": "Hudprofilen är nästa viktiga steg innan lager, rutiner och uppföljning.",
+    "setupContinueDescription": "Du har redan börjat på din hudprofil. Färdigställ kärndetaljerna så att resten av arbetsytan får rätt kontext.",
+    "startSkinProfile": "Starta hudprofil",
+    "continueSkinProfile": "Fortsätt hudprofil",
+    "accountReady": "Autentiseringen är klar och arbetsytan är öppen.",
+    "accountNeedsSetup": "Hudprofilen behöver fortfarande uppmärksamhet innan resten av produkten känns personlig.",
+    "manageSettings": "Inställningar",
+    "logout": "Logga ut",
+    "loggingOut": "Loggar ut...",
+    "badges": {
+      "start": "Start",
+      "continue": "Fortsätt",
+      "ready": "Redo"
+    },
+    "items": {
+      "dashboard": {
+        "label": "Översikt",
+        "description": "Se setupstatus, profilberedskap och vad produkten bygger mot härnäst."
+      },
+      "skinProfile": {
+        "label": "Hudprofil",
+        "description": "Samla hudkontexten som driver allt annat i Ritora."
+      },
+      "settings": {
+        "label": "Inställningar",
+        "description": "Ändra språk, tema och preferenser utan att lämna arbetsytan."
+      }
+    },
+    "planned": {
+      "inventory": {
+        "label": "Lager",
+        "description": "Katalogisera produkterna du redan äger innan Ritora föreslår något nytt.",
+        "children": {
+          "catalogue": "Produktkatalog och aktivt lager",
+          "history": "Produkthistorik, återköp och livscykelspårning"
+        }
+      },
+      "routines": {
+        "label": "Dagliga rutiner",
+        "description": "Morgon-, kvälls- och situationsanpassade rutiner byggda från din riktiga hylla.",
+        "children": {
+          "daily": "Vy för morgon- och kvällsrutin",
+          "onDemand": "Rutinförfrågningar och förklaringar vid behov"
+        }
+      },
+      "progress": {
+        "label": "Uppföljning",
+        "description": "Följ hur huden förändras över tid och hur den reagerar på rutinändringar.",
+        "children": {
+          "checkIns": "Check-ins, reaktioner och välmåendesignaler",
+          "timeline": "Fototidslinje och framstegsinsikter"
+        }
+      },
+      "analysis": {
+        "label": "Gapanalys",
+        "description": "Upptäck vad som saknas, minska redundans och förbered smartare köp senare.",
+        "children": {
+          "gaps": "Rutinhål och redundanskontroller",
+          "suggestions": "Startkit och produktförslag"
+        }
+      }
+    }
+  },
+  "settings": {
+    "eyebrow": "Inställningar",
+    "title": "Inställningar för arbetsytan",
+    "subtitle": "Språk och tema hör hemma nära kärnarbetsytan. Den här sidan ger dessa kontroller ett tydligt hem, medan utloggning ligger kvar i sidopanelens fot där den är lätt att hitta men inte stör vardagliga uppgifter.",
+    "languageTitle": "Språk",
+    "languageDescription": "Byt språk direkt och behåll resten av arbetsytans struktur exakt där du förväntar dig den.",
+    "languageCurrent": "Aktuellt språk: {locale}",
+    "themeTitle": "Tema",
+    "themeDescription": "Välj om arbetsytan ska följa systemet eller vara fast i ljust eller mörkt läge.",
+    "themeCurrent": "Aktuellt tema: {theme}",
+    "themeOptions": {
+      "system": {
+        "label": "System",
+        "description": "Följ enhetens tema automatiskt."
+      },
+      "light": {
+        "label": "Ljust",
+        "description": "Använd den ljusare Ritora-paletten hela tiden."
+      },
+      "dark": {
+        "label": "Mörkt",
+        "description": "Använd den mörkare arbetsytans palett hela tiden."
+      }
+    },
+    "resolvedThemes": {
+      "light": "Ljust",
+      "dark": "Mörkt"
+    },
+    "guidanceTitle": "Stil för vägledning",
+    "guidanceDescription": "Spara en preferens för hur framtida rutinförklaringar ska skrivas när mer AI-vägledning landar.",
+    "plainLanguageTitle": "Klarspråksläge",
+    "plainLanguageDescription": "Håll ingrediens- och rutinförklaringar enklare när framtida rekommendationsvyer går live.",
+    "accountTitle": "Kontoöversikt",
+    "accountDescription": "Inställningar ska förklara arbetsytan, inte överbelasta den. Kontoinformationen bor här, medan utloggning ligger kvar i sidopanelens fot intill navigeringen.",
+    "accountName": "Namn",
+    "accountEmail": "E-post",
+    "logoutPlacementTitle": "Varför utloggning ligger i sidopanelens fot",
+    "logoutPlacementDescription": "Att logga ut är viktigt, men det ska inte konkurrera med vardagliga åtgärder som att växla mellan Översikt, Hudprofil och Inställningar. Sidopanelens fot gör den ständig, förutsägbar och tydligt separerad från huvudflödet.",
+    "notificationsTitle": "Plan för notifieringar",
+    "notificationsDescription": "De här påminnelsekontrollerna kommer att bo här när rutingenerering och uppföljning är implementerade.",
+    "notifications": {
+      "morning": {
+        "title": "Rutinförfrågningar",
+        "description": "Påminnelser på morgon och kväll för rutinerna som Ritora förbereder åt dig."
+      },
+      "progress": {
+        "title": "Påminnelser om uppföljning",
+        "description": "Check-ins och framtida fotopåminnelser för att följa förändringar över tid."
+      },
+      "inventory": {
+        "title": "Lagerlarm",
+        "description": "Varningar om låg nivå, utgångsdatum och påfyllning när produktspårning är live."
+      }
+    },
+    "privacyTitle": "Integritet och juridik",
+    "privacyDescription": "Snabblänkar till policys som ligger bakom autentisering, huddata och framtida rutinhistorik.",
+    "privacyLinks": {
+      "privacy": "Integritetspolicy",
+      "terms": "Användarvillkor",
+      "cookies": "Cookieinformation"
+    },
+    "privacyFootnote": "Dataexport, radering och notifieringskontroller kommer att växa här när kontoytan utökas."
+  },
+  "onboarding": {
+    "eyebrow": "Guidad setup",
+    "title": "Välkommen, {firstName}",
+    "subtitle": "Ritora fungerar bäst när konto, preferenser och hudprofil sätts upp tillsammans. Det här onboardingflödet introducerar först arbetsytan och lämnar sedan över till profilformuläret utan att kopiera det.",
+    "loading": "Förbereder din onboarding-arbetsyta...",
+    "goToDashboard": "Hoppa till översikten",
+    "back": "Tillbaka",
+    "next": "Nästa",
+    "steps": {
+      "welcome": {
+        "title": "Välkommen",
+        "kicker": "Varför Ritora börjar här",
+        "headline": "Börja med tydlighet, inte mer hudvårdsbrus",
+        "description": "Ritora är byggt för att hjälpa dig använda det du redan äger med större trygghet. Innan lager och rutinintelligens landar förklarar den här setupen den privata arbetsytan och vilken roll din hudprofil spelar i resten av produkten.",
+        "items": {
+          "shelf": {
+            "title": "Lager-först-vägledning",
+            "description": "Ritora är utformat kring produkterna du redan äger innan det någonsin föreslår nya."
+          },
+          "conflicts": {
+            "title": "Tryggare ingrediensbeslut",
+            "description": "Framtida vägledning hjälper dig att upptäcka konflikter, överlagering och rutiner som gör för mycket."
+          },
+          "routine": {
+            "title": "Daglig rutinintelligens",
+            "description": "Arbetsytan formas kring kontextmedvetna AM- och PM-rekommendationer, inte generiska produktips."
+          }
+        }
+      },
+      "foundation": {
+        "title": "Grund",
+        "kicker": "Det som redan är live",
+        "headline": "Din kontogrund är redan på plats",
+        "description": "Autentiseringen är klar, din e-post är verifierad och produkten kan nu tryggt gå vidare till personlig setup. Nästa steg är att ge Ritora tillräcklig hudkontext för att arbetsytan ska kännas relevant.",
+        "items": {
+          "account": {
+            "title": "Säker kontoåtkomst",
+            "description": "Du har en skyddad arbetsyta med verifieringsstyrd inloggning innan någon personlig vägledning visas."
+          },
+          "verification": {
+            "title": "Verifierad före inloggning",
+            "description": "E-postverifiering sker före inloggning så att arbetsytan alltid är knuten till ett bekräftat konto."
+          },
+          "privacy": {
+            "title": "Integritetsmedveten setup",
+            "description": "Hudkontext, platssamtycke och framtida historik behandlas som produktdata som ska vara uttrycklig och avsiktlig."
+          }
+        }
+      },
+      "preferences": {
+        "title": "Preferenser",
+        "kicker": "Personalisera arbetsytan",
+        "headline": "Ställ in språk och läsbarhet innan de tyngre arbetsflödena kommer",
+        "description": "Inställningarna ska vara lätta under onboarding. Språk, tema och klarspråkspreferenser bor här först så att framtida lager-, rutin- och uppföljningsvyer ärver rätt standardval.",
+        "titleFallback": "Preferenser"
+      },
+      "profile": {
+        "title": "Hudprofil",
+        "kicker": "Lämna över till profilsetup",
+        "headline": "Slutför hudkontexten som låser upp arbetsytan",
+        "description": "Du har inte startat din hudprofil ännu. Använd profilflödet för att lägga till grunder, prioriteringar och rutinpreferens innan lager och rutiner går live.",
+        "inProgressDescription": "Du har redan börjat på din hudprofil. Fortsätt där du slutade så att Ritora kan behandla resten av arbetsytan som personlig, inte generell.",
+        "startCta": "Starta hudprofil",
+        "continueCta": "Fortsätt hudprofil",
+        "dashboardCta": "Öppna översikten"
+      }
+    },
+    "sidecards": {
+      "nowTitle": "Live idag",
+      "foundationTitle": "Nuvarande grund",
+      "preferencesTitle": "Förhandsvisning av preferenser",
+      "handoffTitle": "Vad som händer härnäst",
+      "account": "Inloggat konto",
+      "profileProgress": "Profilframsteg",
+      "personalizeLanguage": "Språk och ton",
+      "preferencesDescription": "De här inställningarna följer med in i arbetsytan så att du inte behöver konfigurera om dem senare.",
+      "now": {
+        "items": {
+          "auth": {
+            "title": "Verifieringsstyrd autentisering",
+            "description": "Endast verifierade användare kan gå in i den privata arbetsytan."
+          },
+          "profile": {
+            "title": "Strukturerad hudprofilsetup",
+            "description": "Profilformuläret är redan organiserat i grunder, prioriteringar, rutin och kontext som framtida funktioner bygger på."
+          }
+        }
+      },
+      "handoff": {
+        "items": {
+          "profile": {
+            "title": "Slutför kärnprofilen",
+            "description": "Hudtyp, hudton, åldersintervall, hudproblem, mål och rutinpreferens är den minsta användbara setupen."
+          },
+          "dashboard": {
+            "title": "Gå tillbaka till arbetsytan",
+            "description": "När kärnprofilen är klar blir översikten hemmet för allt annat Ritora bygger härnäst."
+          }
+        }
+      }
+    }
   },
   "skinProfile": {
     "title": "Hudprofil",
     "createTitle": "Slutför hudprofil",
+    "continueTitle": "Fortsätt hudprofilsetup",
     "editTitle": "Redigera hudprofil",
     "skinType": "Hudtyp",
     "skinTone": "Hudton",
@@ -269,7 +592,13 @@
     "cityPlaceholder": "t.ex. Stockholm",
     "saveProfile": "Spara profil",
     "savingProfile": "Sparar...",
-    "failedToSave": "Kunde inte spara profilen",
+    "failedToLoad": "Vi kunde inte ladda din profil just nu. Försök igen.",
+    "failedToSave": "Vi kunde inte spara din profil. Försök igen.",
+    "validation": {
+      "invalidCountryCode": "Landskoden måste vara 2 bokstäver (t.ex. SE).",
+      "locationConsentRequired": "Platssamtycke krävs när land eller stad anges.",
+      "cityTooLong": "Stadens namn är för långt."
+    },
     "options": {
       "oily": "Fet",
       "dry": "Torr",

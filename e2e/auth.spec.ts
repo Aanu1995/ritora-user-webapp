@@ -30,7 +30,10 @@ function mockAuthApi(page: import('@playwright/test').Page) {
         await route.fulfill({
           status: 401,
           contentType: 'application/json',
-          body: JSON.stringify({ message: 'Invalid credentials' }),
+          body: JSON.stringify({
+            code: 'INVALID_CREDENTIALS',
+            message: 'Invalid credentials',
+          }),
         });
       }
     }),
@@ -40,7 +43,7 @@ function mockAuthApi(page: import('@playwright/test').Page) {
         status: 201,
         contentType: 'application/json',
         body: JSON.stringify({
-          accessToken: 'mock-token',
+          message: 'Verification email sent',
           user: { ...mockUser, emailVerified: false },
         }),
       });
@@ -64,6 +67,13 @@ function mockAuthApi(page: import('@playwright/test').Page) {
   ]);
 }
 
+async function dismissCookieBanner(page: import('@playwright/test').Page) {
+  const reject = page.getByRole('button', { name: /reject/i });
+  if (await reject.isVisible()) {
+    await reject.click();
+  }
+}
+
 test.describe('Login Flow', () => {
   test('shows login form', async ({ page }) => {
     await mockAuthApi(page);
@@ -84,17 +94,15 @@ test.describe('Login Flow', () => {
     await page.getByLabel(/^password$/i).fill('WrongPass1');
     await page.getByRole('button', { name: /^log in$/i }).click();
 
-    await expect(page.getByText(/invalid credentials/i)).toBeVisible();
+    await expect(
+      page.getByText(/email or password is incorrect/i),
+    ).toBeVisible();
   });
 
   test('navigates to register from login', async ({ page }) => {
     await mockAuthApi(page);
     await page.goto('/login');
-    // Dismiss cookie consent banner so it does not intercept clicks on mobile
-    const reject = page.getByRole('button', { name: /reject/i });
-    if (await reject.isVisible()) {
-      await reject.click();
-    }
+    await dismissCookieBanner(page);
     await page.getByRole('link', { name: /create an account/i }).click();
 
     await expect(page).toHaveURL(/register/);
@@ -117,6 +125,35 @@ test.describe('Register Flow', () => {
 
     const submitBtn = page.getByRole('button', { name: /create account/i });
     await expect(submitBtn).toBeDisabled();
+  });
+
+  test('shows verification instructions after successful registration', async ({
+    page,
+  }) => {
+    await mockAuthApi(page);
+    await page.goto('/register');
+    await dismissCookieBanner(page);
+
+    await page.getByLabel(/first name/i).fill('Test');
+    await page.getByLabel(/last name/i).fill('User');
+    await page.getByLabel(/email/i).fill('test@example.com');
+    await page.getByLabel(/^password$/i).fill('TestPass1');
+    await page.getByLabel(/confirm password/i).fill('TestPass1');
+
+    const checkboxes = page.getByRole('checkbox');
+    await checkboxes.nth(0).click();
+    await checkboxes.nth(1).click();
+    await page.getByRole('button', { name: /create account/i }).click();
+
+    await expect(
+      page.getByText(/you'll be able to log in after verifying your email/i),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /resend verification email/i }),
+    ).toHaveAttribute(
+      'href',
+      '/resend-verification?email=test%40example.com',
+    );
   });
 });
 

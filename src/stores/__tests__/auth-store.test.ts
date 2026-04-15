@@ -4,14 +4,18 @@ import * as api from '@/lib/api';
 jest.mock('@/lib/api', () => ({
   setAccessToken: jest.fn(),
   setUnauthorizedHandler: jest.fn(),
+  isDevSelfReferentialApiBase: jest.fn(() => false),
+  warnIfDevApiTargetsFrontend: jest.fn(),
 }));
 
 jest.mock('@/services/auth.service', () => ({
   refreshTokens: jest.fn(),
   getCurrentUser: jest.fn(),
+  logout: jest.fn(),
 }));
 
 import * as authService from '@/services/auth.service';
+import { isDevSelfReferentialApiBase, warnIfDevApiTargetsFrontend } from '@/lib/api';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -86,6 +90,35 @@ describe('useAuthStore', () => {
       expect(state.isAuthenticated).toBe(false);
       expect(state.isLoading).toBe(false);
       expect(api.setAccessToken).toHaveBeenLastCalledWith(null);
+    });
+
+    it('clears state when the refreshed user has not verified email', async () => {
+      (authService.refreshTokens as jest.Mock).mockResolvedValue({
+        accessToken: 'new-token',
+      });
+      (authService.getCurrentUser as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        emailVerified: false,
+      });
+      (authService.logout as jest.Mock).mockResolvedValue(undefined);
+
+      await useAuthStore.getState().hydrate();
+
+      expect(authService.logout).toHaveBeenCalled();
+      expect(useAuthStore.getState().isAuthenticated).toBe(false);
+      expect(useAuthStore.getState().user).toBeNull();
+      expect(api.setAccessToken).toHaveBeenLastCalledWith(null);
+    });
+
+    it('fails safe when the API base points to the frontend dev origin', async () => {
+      (isDevSelfReferentialApiBase as jest.Mock).mockReturnValue(true);
+
+      await useAuthStore.getState().hydrate();
+
+      expect(warnIfDevApiTargetsFrontend).toHaveBeenCalled();
+      expect(authService.refreshTokens).not.toHaveBeenCalled();
+      expect(useAuthStore.getState().isAuthenticated).toBe(false);
+      expect(useAuthStore.getState().isLoading).toBe(false);
     });
   });
 });

@@ -1,10 +1,13 @@
 import { render, screen } from '@testing-library/react';
+import { AppRoute } from '@/constants/app-routes';
 import { useAuthStore } from '@/stores/auth-store';
 
 const mockReplace = jest.fn();
 
-jest.mock('@/i18n/navigation', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: () => ({ replace: mockReplace, push: jest.fn() }),
+  usePathname: () => '/',
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 import { AuthGuard } from '@/components/auth/auth-guard';
@@ -42,7 +45,7 @@ describe('AuthGuard', () => {
       </AuthGuard>,
     );
 
-    expect(mockReplace).toHaveBeenCalledWith('/login');
+    expect(mockReplace).toHaveBeenCalledWith(AppRoute.Login);
     expect(screen.queryByText('Protected')).not.toBeInTheDocument();
   });
 
@@ -83,7 +86,7 @@ describe('GuestGuard', () => {
       </GuestGuard>,
     );
 
-    expect(mockReplace).toHaveBeenCalledWith('/dashboard');
+    expect(mockReplace).toHaveBeenCalledWith(AppRoute.Dashboard);
     expect(screen.queryByText('Guest Content')).not.toBeInTheDocument();
   });
 

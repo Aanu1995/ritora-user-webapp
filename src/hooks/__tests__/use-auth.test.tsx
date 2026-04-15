@@ -1,4 +1,5 @@
 import { act, waitFor } from '@testing-library/react';
+import { ApiError } from '@/lib/api-error';
 import { renderHookWithProviders } from '@/test/utils';
 import { useAuthStore } from '@/stores/auth-store';
 import {
@@ -92,10 +93,10 @@ describe('useLogin', () => {
 });
 
 describe('useRegister', () => {
-  it('registers and sets auth store', async () => {
+  it('registers without authenticating the user or forcing logout', async () => {
     (authService.register as jest.Mock).mockResolvedValue({
-      accessToken: 'mock-token',
-      user: mockUser,
+      message: 'Verification email sent',
+      user: { ...mockUser, emailVerified: false },
     });
 
     const { result } = renderHookWithProviders(() => useRegister());
@@ -113,8 +114,63 @@ describe('useRegister', () => {
     });
 
     const state = useAuthStore.getState();
-    expect(state.isAuthenticated).toBe(true);
-    expect(state.user?.email).toBe(mockUser.email);
+    expect(authService.logout).not.toHaveBeenCalled();
+    expect(state.isAuthenticated).toBe(false);
+    expect(state.user).toBeNull();
+  });
+
+  it('clears a legacy session if registration still returns an access token', async () => {
+    (authService.register as jest.Mock).mockResolvedValue({
+      accessToken: 'mock-token',
+      user: { ...mockUser, emailVerified: false },
+    });
+    (authService.logout as jest.Mock).mockResolvedValue(undefined);
+
+    const { result } = renderHookWithProviders(() => useRegister());
+
+    await act(async () => {
+      await result.current.mutateAsync({
+        email: 'test@example.com',
+        password: 'TestPass1',
+        firstName: 'Test',
+        lastName: 'User',
+        preferredLanguage: 'en',
+        termsAccepted: true,
+        privacyPolicyAccepted: true,
+      });
+    });
+
+    expect(authService.logout).toHaveBeenCalled();
+  });
+});
+
+describe('useLogin', () => {
+  it('rejects unverified users and clears any pending session', async () => {
+    (authService.login as jest.Mock).mockResolvedValue({
+      accessToken: 'mock-token',
+      user: { ...mockUser, emailVerified: false },
+    });
+    (authService.logout as jest.Mock).mockResolvedValue(undefined);
+
+    const { result } = renderHookWithProviders(() => useLogin());
+
+    let error: unknown;
+
+    await act(async () => {
+      try {
+        await result.current.mutateAsync({
+          email: 'test@example.com',
+          password: 'TestPass1',
+        });
+      } catch (caughtError) {
+        error = caughtError;
+      }
+    });
+
+    expect(error).toBeInstanceOf(ApiError);
+    expect((error as ApiError).body?.code).toBe('EMAIL_NOT_VERIFIED');
+    expect(authService.logout).toHaveBeenCalled();
+    expect(useAuthStore.getState().isAuthenticated).toBe(false);
   });
 });
 

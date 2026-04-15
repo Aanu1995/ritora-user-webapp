@@ -6,6 +6,7 @@ jest.mock('@/lib/api', () => ({
   setAccessToken: jest.fn(),
 }));
 
+import { ApiPath } from '@/constants/api-paths';
 import * as api from '@/lib/api';
 import * as skinProfileService from '@/services/skin-profile.service';
 
@@ -18,7 +19,7 @@ describe('skin-profile.service', () => {
 
     const result = await skinProfileService.getSkinProfile();
 
-    expect(api.getRequest).toHaveBeenCalledWith('/skin-profile');
+    expect(api.getRequest).toHaveBeenCalledWith(ApiPath.SkinProfile);
     expect(result).toEqual(profile);
   });
 
@@ -28,7 +29,7 @@ describe('skin-profile.service', () => {
 
     const result = await skinProfileService.getSkinProfileOptions();
 
-    expect(api.getRequest).toHaveBeenCalledWith('/skin-profile/options');
+    expect(api.getRequest).toHaveBeenCalledWith(ApiPath.SkinProfileOptions);
     expect(result).toEqual(options);
   });
 
@@ -38,7 +39,7 @@ describe('skin-profile.service', () => {
 
     await skinProfileService.createSkinProfile(input);
 
-    expect(api.postRequest).toHaveBeenCalledWith('/skin-profile', input);
+    expect(api.postRequest).toHaveBeenCalledWith(ApiPath.SkinProfile, input);
   });
 
   it('updateSkinProfile calls patchRequest with data', async () => {
@@ -47,7 +48,7 @@ describe('skin-profile.service', () => {
 
     await skinProfileService.updateSkinProfile(input);
 
-    expect(api.patchRequest).toHaveBeenCalledWith('/skin-profile', input);
+    expect(api.patchRequest).toHaveBeenCalledWith(ApiPath.SkinProfile, input);
   });
 
   it('deleteSkinProfile calls deleteRequest', async () => {
@@ -55,6 +56,6 @@ describe('skin-profile.service', () => {
 
     await skinProfileService.deleteSkinProfile();
 
-    expect(api.deleteRequest).toHaveBeenCalledWith('/skin-profile');
+    expect(api.deleteRequest).toHaveBeenCalledWith(ApiPath.SkinProfile);
   });
 });

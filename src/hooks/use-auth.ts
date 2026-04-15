@@ -1,17 +1,61 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { setAccessToken } from '@/lib/api';
-import { useAuthStore } from '@/stores/auth-store';
 import { QueryKey } from '@/constants/query-keys';
+import { ApiError } from '@/lib/api-error';
 import * as authService from '@/services/auth.service';
-import type { LoginInput, RegisterInput, ResetPasswordInput } from '@/types/auth';
+import { useAuthStore } from '@/stores/auth-store';
+import type {
+  LoginInput,
+  RegisterInput,
+  RegisterResponse,
+  ResetPasswordInput,
+} from '@/types/auth';
+
+const EMAIL_NOT_VERIFIED_CODE = 'EMAIL_NOT_VERIFIED';
+
+async function clearPendingAuthSession(): Promise<void> {
+  try {
+    await authService.logout();
+  } catch {
+    // Registration/login should still surface the original verification state.
+  }
+}
+
+async function clearPendingRegistrationSession(
+  response: RegisterResponse,
+): Promise<void> {
+  if (!response.accessToken) {
+    return;
+  }
+
+  await clearPendingAuthSession();
+}
+
+function createEmailNotVerifiedError(): ApiError {
+  return new ApiError('Email not verified', {
+    status: 403,
+    body: {
+      code: EMAIL_NOT_VERIFIED_CODE,
+      message: 'Email not verified',
+    },
+  });
+}
 
 export function useLogin() {
   const setAuth = useAuthStore((s) => s.setAuth);
 
   return useMutation({
-    mutationFn: (data: LoginInput) => authService.login(data),
+    mutationFn: async (data: LoginInput) => {
+      const response = await authService.login(data);
+
+      if (!response.user.emailVerified) {
+        await clearPendingAuthSession();
+        throw createEmailNotVerifiedError();
+      }
+
+      return response;
+    },
     onSuccess: (data) => {
       setAuth(data.user, data.accessToken);
     },
@@ -19,12 +63,11 @@ export function useLogin() {
 }
 
 export function useRegister() {
-  const setAuth = useAuthStore((s) => s.setAuth);
-
   return useMutation({
-    mutationFn: (data: RegisterInput) => authService.register(data),
-    onSuccess: (data) => {
-      setAuth(data.user, data.accessToken);
+    mutationFn: async (data: RegisterInput) => {
+      const response = await authService.register(data);
+      await clearPendingRegistrationSession(response);
+      return response;
     },
   });
 }

@@ -1,8 +1,8 @@
 export const siteConfig = {
   name: 'Ritora',
-  title: 'Ritora — A calmer skincare routine from the shelf you already own',
+  title: 'Ritora · A calmer skincare routine from the shelf you already own',
   description:
-    'Ritora turns your existing skincare shelf into a calmer AM and PM routine, with ingredient safety guardrails and skin-profile-aware guidance.',
+    'Ritora turns the skincare products you already own into a calmer morning and evening routine, with ingredient safety checks and guidance shaped by your skin.',
   url: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
   nav: [
     { href: '#problem', labelKey: 'whyRitora' },

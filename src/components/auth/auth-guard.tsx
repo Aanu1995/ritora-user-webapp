@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from '@/i18n/navigation';
+import { useRouter } from 'next/navigation';
+import { LoadingIndicator } from '@/components/ui/loading-indicator';
+import { AppRoute } from '@/constants/app-routes';
 import { useAuthStore } from '@/stores/auth-store';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -10,14 +12,14 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.replace('/login');
+      router.replace(AppRoute.Login);
     }
   }, [isAuthenticated, isLoading, router]);
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-[color:var(--color-accent)] border-t-transparent" />
+        <LoadingIndicator />
       </div>
     );
   }

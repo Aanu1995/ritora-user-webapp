@@ -1,32 +1,32 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import {
+  COOKIE_CONSENT_MAX_AGE,
+  COOKIE_CONSENT_NAME,
+} from '@/constants/cookies';
+import { setClientCookie } from '@/lib/client-cookie';
 
-const COOKIE_CONSENT_KEY = 'ritora_cookie_consent';
-const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
+interface CookieConsentProps {
+  hasStoredPreference: boolean;
+}
 
-export function CookieConsent() {
+export function CookieConsent({ hasStoredPreference }: CookieConsentProps) {
   const t = useTranslations('cookies');
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const consent = document.cookie
-      .split('; ')
-      .find((item) => item.startsWith(`${COOKIE_CONSENT_KEY}=`))
-      ?.split('=')[1];
-    if (!consent) {
-      setVisible(true);
-    }
-  }, []);
+  const [visible, setVisible] = useState(!hasStoredPreference);
 
   const handleAccept = () => {
-    document.cookie = `${COOKIE_CONSENT_KEY}=accepted; Max-Age=${ONE_YEAR_IN_SECONDS}; Path=/; SameSite=Lax`;
+    setClientCookie(COOKIE_CONSENT_NAME, 'accepted', {
+      maxAge: COOKIE_CONSENT_MAX_AGE,
+    });
     setVisible(false);
   };
 
   const handleReject = () => {
-    document.cookie = `${COOKIE_CONSENT_KEY}=rejected; Max-Age=${ONE_YEAR_IN_SECONDS}; Path=/; SameSite=Lax`;
+    setClientCookie(COOKIE_CONSENT_NAME, 'rejected', {
+      maxAge: COOKIE_CONSENT_MAX_AGE,
+    });
     setVisible(false);
   };
 
@@ -34,20 +34,20 @@ export function CookieConsent() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 p-4">
-      <div className="mx-auto flex max-w-xl flex-col items-center gap-4 rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-5 shadow-[var(--shadow-hero)] sm:flex-row">
-        <p className="flex-1 text-sm text-[color:var(--color-muted)]">
+      <div className="animate-slide-up mx-auto flex max-w-xl flex-col items-center gap-4 rounded-2xl border border-border bg-surface p-5 shadow-hero sm:flex-row">
+        <p className="flex-1 text-sm text-muted">
           {t('message')}
         </p>
         <div className="flex gap-2">
           <button
             onClick={handleReject}
-            className="rounded-xl border border-[color:var(--color-border)] px-4 py-2 text-sm font-medium transition hover:border-[color:var(--color-accent)]"
+            className="rounded-xl border border-border px-4 py-2 text-sm font-medium transition hover:border-accent"
           >
             {t('reject')}
           </button>
           <button
             onClick={handleAccept}
-            className="rounded-xl bg-[color:var(--color-foreground)] px-4 py-2 text-sm font-semibold text-[color:var(--color-background)] transition hover:opacity-90"
+            className="rounded-xl bg-foreground px-4 py-2 text-sm font-semibold text-background transition hover:opacity-90"
           >
             {t('accept')}
           </button>

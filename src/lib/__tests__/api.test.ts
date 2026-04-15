@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ApiError, getApiErrorBody, getApiErrorStatus } from '@/lib/api-error';
 import {
   deleteRequest,
   getAccessToken,
@@ -10,17 +11,31 @@ import {
   setUnauthorizedHandler,
 } from '@/lib/api';
 
+type MockAxiosInstance = {
+  get: jest.Mock;
+  post: jest.Mock;
+  patch: jest.Mock;
+  put: jest.Mock;
+  delete: jest.Mock;
+  request: jest.Mock;
+  interceptors: {
+    request: { use: jest.Mock };
+    response: { use: jest.Mock };
+  };
+};
+
+type MockAxiosModule = {
+  create: jest.Mock<MockAxiosInstance, []>;
+  isAxiosError: jest.Mock<boolean, [unknown]>;
+  _requestUse: jest.Mock;
+  _responseUse: jest.Mock;
+  _instance: MockAxiosInstance;
+};
+
 jest.mock('axios', () => {
   const requestUse = jest.fn();
   const responseUse = jest.fn();
-  const mockAxios: any = {
-    create: jest.fn(),
-    isAxiosError: jest.fn(),
-    _requestUse: requestUse,
-    _responseUse: responseUse,
-  };
-
-  const instance = {
+  const instance: MockAxiosInstance = {
     get: jest.fn(),
     post: jest.fn(),
     patch: jest.fn(),
@@ -33,14 +48,24 @@ jest.mock('axios', () => {
     },
   };
 
+  const mockAxios: MockAxiosModule = {
+    create: jest.fn(),
+    isAxiosError: jest.fn(),
+    _requestUse: requestUse,
+    _responseUse: responseUse,
+    _instance: instance,
+  };
+
   mockAxios.create.mockReturnValue(instance);
-  mockAxios._instance = instance;
 
   return { __esModule: true, default: mockAxios };
 });
 
-const mockInstance = (axios as any)._instance;
-const responseErrorHandler = (axios as any)._responseUse.mock.calls[0][1];
+const mockedAxios = axios as unknown as MockAxiosModule;
+const mockInstance = mockedAxios._instance;
+const responseErrorHandler = mockedAxios._responseUse.mock.calls[0]?.[1] as (
+  error: unknown,
+) => Promise<unknown>;
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -115,10 +140,11 @@ describe('api client', () => {
 
       try {
         await postRequest('/test');
-      } catch (err: any) {
-        expect(err.message).toBe('Unauthorized');
-        expect(err.status).toBe(401);
-        expect(err.body).toEqual({ message: 'Unauthorized' });
+      } catch (err: unknown) {
+        expect(err).toBeInstanceOf(ApiError);
+        expect((err as Error).message).toBe('Unauthorized');
+        expect(getApiErrorStatus(err)).toBe(401);
+        expect(getApiErrorBody(err)).toEqual({ message: 'Unauthorized' });
       }
     });
   });

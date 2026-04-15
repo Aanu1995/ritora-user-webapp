@@ -13,6 +13,12 @@ export type AuthResponse = {
   user: User;
 };
 
+export type RegisterResponse = {
+  accessToken?: string;
+  user?: User;
+  message?: string;
+};
+
 export type RefreshResponse = {
   accessToken: string;
 };

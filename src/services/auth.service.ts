@@ -6,6 +6,7 @@ import type {
   MessageResponse,
   RefreshResponse,
   RegisterInput,
+  RegisterResponse,
   ResetPasswordInput,
   Session,
   User,
@@ -15,8 +16,8 @@ export async function login(data: LoginInput): Promise<AuthResponse> {
   return postRequest<AuthResponse>(ApiPath.AuthLogin, data);
 }
 
-export async function register(data: RegisterInput): Promise<AuthResponse> {
-  return postRequest<AuthResponse>(ApiPath.AuthRegister, data);
+export async function register(data: RegisterInput): Promise<RegisterResponse> {
+  return postRequest<RegisterResponse>(ApiPath.AuthRegister, data);
 }
 
 export async function refreshTokens(): Promise<RefreshResponse> {

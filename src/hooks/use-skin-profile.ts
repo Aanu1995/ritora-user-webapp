@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/stores/auth-store';
 import { QueryKey } from '@/constants/query-keys';
+import { getApiErrorStatus } from '@/lib/api-error';
 import * as skinProfileService from '@/services/skin-profile.service';
 import type { SkinProfileInput } from '@/types/skin-profile';
 
@@ -13,7 +14,13 @@ export function useSkinProfile() {
     queryKey: [QueryKey.SkinProfile],
     queryFn: () => skinProfileService.getSkinProfile(),
     enabled: isAuthenticated,
-    retry: false,
+    retry: (failureCount, error) => {
+      if (getApiErrorStatus(error) === 404) {
+        return false;
+      }
+
+      return failureCount < 1;
+    },
   });
 }
 

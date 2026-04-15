@@ -11,7 +11,7 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
       {...props}
     >
       <title id="routine-cycle-title">
-        A morning-to-evening routine cycle showing sun, cleanser, and moon steps
+        A daily routine cycle that runs from morning sun to evening moon with the shelf at the centre
       </title>
       <defs>
         <linearGradient id="routine-bg" x1="0" y1="0" x2="480" y2="320" gradientUnits="userSpaceOnUse">

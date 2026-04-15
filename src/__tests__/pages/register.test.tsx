@@ -1,35 +1,54 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { AppRoute } from '@/constants/app-routes';
+import { ApiError } from '@/lib/api-error';
 import { renderWithProviders } from '@/test/utils';
 
 const mockPush = jest.fn();
-const mockMutateAsync = jest.fn();
+const mockMutate = jest.fn();
+
+type MutationCallbacks = {
+  onSuccess?: (...args: unknown[]) => void;
+  onError?: (...args: unknown[]) => void;
+};
+
+let mockRegisterReturn: {
+  mutate: jest.Mock;
+  isPending: boolean;
+  isError: boolean;
+  error: Error | null;
+};
 
 jest.mock('@/hooks/use-auth', () => ({
-  useRegister: () => ({
-    mutateAsync: mockMutateAsync,
-    isPending: false,
-    isError: false,
-    error: null,
+  useRegister: () => mockRegisterReturn,
+}));
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockPush,
+    replace: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    refresh: jest.fn(),
+    prefetch: jest.fn(),
   }),
+  usePathname: () => AppRoute.Register,
+  useSearchParams: () => new URLSearchParams(),
 }));
 
-jest.mock('@/i18n/navigation', () => ({
-  Link: ({ href, children, ...props }: any) => (
-    <a href={href} {...props}>
-      {children}
-    </a>
-  ),
-  useRouter: () => ({ push: mockPush, replace: jest.fn() }),
-}));
-
-import RegisterPage from '@/app/[locale]/(auth)/register/page';
+import RegisterPage from '@/app/(auth)/register/page';
 
 describe('RegisterPage', () => {
   const user = userEvent.setup();
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockRegisterReturn = {
+      mutate: mockMutate,
+      isPending: false,
+      isError: false,
+      error: null,
+    };
   });
 
   it('renders registration form', () => {
@@ -50,9 +69,11 @@ describe('RegisterPage', () => {
 
     await user.type(screen.getByLabelText(/^password$/i), 'weak');
 
-    expect(
-      screen.getByText(/at least 8 characters/i),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText(/at least 8 characters/i),
+      ).toBeInTheDocument();
+    });
   });
 
   it('shows mismatch error when passwords differ', async () => {
@@ -60,13 +81,6 @@ describe('RegisterPage', () => {
 
     await user.type(screen.getByLabelText(/^password$/i), 'TestPass1');
     await user.type(screen.getByLabelText(/confirm password/i), 'Different1');
-
-    // Check consent so the submit button becomes clickable
-    const checkboxes = screen.getAllByRole('checkbox');
-    await user.click(checkboxes[0]);
-    await user.click(checkboxes[1]);
-
-    await user.click(screen.getByRole('button', { name: /create account/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
@@ -81,8 +95,6 @@ describe('RegisterPage', () => {
   });
 
   it('submits with all fields filled and consent given', async () => {
-    mockMutateAsync.mockResolvedValueOnce({});
-
     renderWithProviders(<RegisterPage />);
 
     await user.type(screen.getByLabelText(/first name/i), 'Test');
@@ -101,20 +113,27 @@ describe('RegisterPage', () => {
     );
 
     await waitFor(() => {
-      expect(mockMutateAsync).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: 'TestPass1',
-        firstName: 'Test',
-        lastName: 'User',
-        preferredLanguage: 'en',
-        termsAccepted: true,
-        privacyPolicyAccepted: true,
-      });
+      expect(mockMutate).toHaveBeenCalledWith(
+        {
+          email: 'test@example.com',
+          password: 'TestPass1',
+          firstName: 'Test',
+          lastName: 'User',
+          preferredLanguage: 'en',
+          termsAccepted: true,
+          privacyPolicyAccepted: true,
+        },
+        expect.objectContaining({ onSuccess: expect.any(Function) }),
+      );
     });
   });
 
-  it('navigates to dashboard on success', async () => {
-    mockMutateAsync.mockResolvedValueOnce({});
+  it('shows email verification instructions on success', async () => {
+    mockMutate.mockImplementation(
+      (_input: unknown, options?: MutationCallbacks) => {
+        options?.onSuccess?.();
+      },
+    );
 
     renderWithProviders(<RegisterPage />);
 
@@ -133,8 +152,18 @@ describe('RegisterPage', () => {
     );
 
     await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith('/dashboard');
+      expect(screen.getByText(/verify email/i)).toBeInTheDocument();
     });
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(
+      screen.getByText(/you'll be able to log in after verifying your email/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /resend verification email/i }),
+    ).toHaveAttribute(
+      'href',
+      '/resend-verification?email=test%40example.com',
+    );
   });
 
   it('has link to login', () => {
@@ -148,5 +177,44 @@ describe('RegisterPage', () => {
     renderWithProviders(<RegisterPage />);
     expect(screen.getByText(/terms of service/i)).toBeInTheDocument();
     expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
+  });
+
+  it('does not navigate when registration fails', async () => {
+    mockMutate.mockImplementation(
+      (_input: unknown, options?: MutationCallbacks) => {
+        options?.onError?.(
+          new ApiError('Email already in use', {
+            status: 409,
+            body: {
+              code: 'EMAIL_IN_USE',
+              message: 'Email already in use',
+            },
+          }),
+        );
+      },
+    );
+
+    renderWithProviders(<RegisterPage />);
+
+    await user.type(screen.getByLabelText(/first name/i), 'Test');
+    await user.type(screen.getByLabelText(/last name/i), 'User');
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.type(screen.getByLabelText(/^password$/i), 'TestPass1');
+    await user.type(screen.getByLabelText(/confirm password/i), 'TestPass1');
+
+    const checkboxes = screen.getAllByRole('checkbox');
+    await user.click(checkboxes[0]);
+    await user.click(checkboxes[1]);
+
+    await user.click(
+      screen.getByRole('button', { name: /create account/i }),
+    );
+
+    await waitFor(() => {
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+    expect(
+      screen.getByText(/account with this email already exists/i),
+    ).toBeInTheDocument();
   });
 });

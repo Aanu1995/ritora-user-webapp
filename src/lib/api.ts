@@ -3,10 +3,13 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from 'axios';
 import { ApiPath } from '@/constants/api-paths';
+import { ApiError, toApiErrorBody } from '@/lib/api-error';
 import type { RefreshResponse } from '@/types/auth';
 
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
+
+const ABSOLUTE_HTTP_URL_PATTERN = /^https?:\/\//i;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -20,6 +23,27 @@ const apiClient = axios.create({
 let accessToken: string | null = null;
 let unauthorizedHandler: (() => void) | null = null;
 let refreshPromise: Promise<string> | null = null;
+let hasWarnedAboutDevApiTarget = false;
+
+type AuthRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+  _skipAuthRefresh?: boolean;
+};
+
+function normalizeRequestPath(url: string | undefined): string | undefined {
+  if (!url) {
+    return undefined;
+  }
+
+  try {
+    const pathname = new URL(url, API_BASE_URL).pathname;
+    return pathname.startsWith('/api/v1')
+      ? pathname.slice('/api/v1'.length)
+      : pathname;
+  } catch {
+    return url;
+  }
+}
 
 export function setAccessToken(token: string | null) {
   accessToken = token;
@@ -31,6 +55,45 @@ export function getAccessToken(): string | null {
 
 export function setUnauthorizedHandler(handler: (() => void) | null) {
   unauthorizedHandler = handler;
+}
+
+export function isDevSelfReferentialApiBase(
+  currentOrigin?: string,
+): boolean {
+  if (process.env.NODE_ENV !== 'development') {
+    return false;
+  }
+
+  if (!ABSOLUTE_HTTP_URL_PATTERN.test(API_BASE_URL)) {
+    return false;
+  }
+
+  const browserOrigin =
+    currentOrigin ?? (typeof window !== 'undefined' ? window.location.origin : undefined);
+
+  if (!browserOrigin) {
+    return false;
+  }
+
+  try {
+    return new URL(API_BASE_URL).origin === browserOrigin;
+  } catch {
+    return false;
+  }
+}
+
+export function warnIfDevApiTargetsFrontend(): void {
+  if (hasWarnedAboutDevApiTarget || !isDevSelfReferentialApiBase()) {
+    return;
+  }
+
+  hasWarnedAboutDevApiTarget = true;
+
+  console.warn(
+    `[Ritora] NEXT_PUBLIC_API_URL (${API_BASE_URL}) matches the frontend dev origin. ` +
+      'This usually means the Next dev server switched onto the backend port and is calling itself. ' +
+      'Free port 3000 or update NEXT_PUBLIC_API_URL to the backend origin before retrying auth requests.',
+  );
 }
 
 apiClient.interceptors.request.use((config) => {
@@ -47,14 +110,9 @@ apiClient.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const originalRequest = error.config as
-      | (InternalAxiosRequestConfig & {
-          _retry?: boolean;
-          _skipAuthRefresh?: boolean;
-        })
-      | undefined;
+    const originalRequest = error.config as AuthRequestConfig | undefined;
 
-    const unauthenticatedPaths: string[] = [
+    const unauthenticatedPaths = new Set<string>([
       ApiPath.AuthLogin,
       ApiPath.AuthRegister,
       ApiPath.AuthRefresh,
@@ -62,15 +120,15 @@ apiClient.interceptors.response.use(
       ApiPath.AuthResetPassword,
       ApiPath.AuthVerifyEmail,
       ApiPath.AuthResendVerification,
-    ];
+    ]);
+    const requestPath = normalizeRequestPath(originalRequest?.url);
 
     if (
       !originalRequest ||
       error.response?.status !== 401 ||
       originalRequest._retry ||
       originalRequest._skipAuthRefresh ||
-      (originalRequest.url !== undefined &&
-        unauthenticatedPaths.includes(originalRequest.url))
+      (requestPath !== undefined && unauthenticatedPaths.has(requestPath))
     ) {
       return Promise.reject(error);
     }
@@ -79,10 +137,12 @@ apiClient.interceptors.response.use(
 
     try {
       if (!refreshPromise) {
+        const refreshConfig: AxiosRequestConfig & { _skipAuthRefresh: true } = {
+          _skipAuthRefresh: true,
+        };
+
         refreshPromise = apiClient
-          .post<RefreshResponse>(ApiPath.AuthRefresh, undefined, {
-            _skipAuthRefresh: true,
-          } as AxiosRequestConfig)
+          .post<RefreshResponse>(ApiPath.AuthRefresh, undefined, refreshConfig)
           .then((response) => {
             setAccessToken(response.data.accessToken);
             return response.data.accessToken;
@@ -108,11 +168,15 @@ apiClient.interceptors.response.use(
 
 function throwServerError(error: unknown, fallbackMessage: string): never {
   if (axios.isAxiosError(error)) {
-    const serverMessage = error.response?.data?.message;
-    const err = new Error(serverMessage ?? fallbackMessage);
-    (err as any).status = error.response?.status;
-    (err as any).body = error.response?.data;
-    throw err;
+    const body = toApiErrorBody(error.response?.data);
+    const message = Array.isArray(body?.message)
+      ? body.message[0]
+      : body?.message;
+
+    throw new ApiError(message ?? fallbackMessage, {
+      status: error.response?.status,
+      body,
+    });
   }
   throw new Error(fallbackMessage);
 }

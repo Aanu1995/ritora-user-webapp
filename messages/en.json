@@ -6,10 +6,12 @@
     "cancel": "Cancel",
     "back": "Back",
     "next": "Next",
+    "retry": "Try again",
     "skip": "Skip for Now",
     "submit": "Submit",
     "or": "or",
-    "selectPlaceholder": "Select..."
+    "selectPlaceholder": "Select...",
+    "recommended": "Recommended"
   },
   "nav": {
     "whyRitora": "Why Ritora",
@@ -20,144 +22,146 @@
     "signUp": "Sign up",
     "dashboard": "Dashboard",
     "skinProfile": "Skin Profile",
+    "settings": "Settings",
     "logout": "Log out",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
   "landing": {
     "hero": {
-      "badge": "Calm, inventory-first skincare",
-      "headline": "Calmer skincare routines, built from what's already on your shelf.",
-      "subheadline": "Ritora reviews the products you already own, flags ingredient conflicts, and turns your shelf into a clear morning and night plan — shaped by your skin, not a shopping cart.",
+      "badge": "A calmer way to do skincare",
+      "headline": "Your calmer skincare routine starts with the shelf you already own.",
+      "subheadline": "Ritora reads every product on your shelf, catches ingredient clashes before they reach your face, and turns the chaos into a clear morning and night plan shaped by your skin.",
       "ctaPrimary": "Log in",
       "ctaSecondary": "See how it works",
       "pills": {
-        "a": "Shelf-first recommendations",
+        "a": "Built around your shelf",
         "b": "Ingredient guardrails",
-        "c": "EU-aware privacy"
+        "c": "Private by design"
       }
     },
     "trust": {
       "eyebrow": "Calm by design",
       "items": [
-        { "value": "0", "label": "new products required to start" },
-        { "value": "2×", "label": "daily check-ins, morning and night" },
-        { "value": "EU", "label": "privacy posture from day one" }
+        { "value": "0", "label": "new products needed to start" },
+        { "value": "2×", "label": "daily moments, morning and night" },
+        { "value": "EU", "label": "private by design from day one" }
       ]
     },
     "problem": {
       "eyebrow": "Why routines break",
-      "headline": "Most skincare routines don't fail from carelessness — they fail from missing decisions.",
-      "body": "You pick up good products, try to sequence them, and still wake up unsure. Ritora supplies the missing layer: clearer sequencing, safer pairings, and calmer daily choices."
+      "headline": "Most skincare routines don't fail from carelessness. They fail from missing decisions.",
+      "body": "You buy good products, try to stack them in the right order, and still wake up unsure what you just did to your face. Ritora gives you the layer that was missing: clearer sequencing, safer pairings, and calmer daily choices."
     },
     "problems": [
       {
         "title": "Shelf confusion",
-        "body": "You own good products and still wake up guessing what to use and what to skip."
+        "body": "You own great products and still stand in front of the mirror guessing what to apply and what to skip."
       },
       {
         "title": "Silent ingredient stacking",
-        "body": "Strong actives stack across cleansers, toners, and serums — irritation shows up before the cause does."
+        "body": "Strong actives pile up across cleansers, toners, and serums. The irritation shows up long before you spot the cause."
       },
       {
         "title": "Buying over building",
-        "body": "Most routines don't need another serum. They need structure, sequencing, and safer decisions."
+        "body": "Most routines don't need another serum. They need structure, sequencing, and safer choices with the products already on your shelf."
       }
     ],
     "howItWorks": {
       "eyebrow": "How it works",
       "headline": "Three calm steps from shelf clutter to daily clarity.",
       "illustrationTitle": "From morning to night, on repeat",
-      "illustrationBody": "Ritora treats your routine as a living cycle. Each step carries forward what last night's actives mean for this morning — so the plan stays safe without you having to think about it."
+      "illustrationBody": "Ritora treats your routine as a living cycle. Every step carries last night's actives forward into this morning, so your plan stays safe without you having to think about it."
     },
     "steps": [
       {
         "title": "Tell Ritora about your skin",
-        "body": "Share skin type, concerns, sensitivities, goals, and routine preference so guidance starts from your real context — not a generic template."
+        "body": "Share your skin type, concerns, sensitivities, goals, and how involved you want your routine to be. Every answer shapes the guidance you get, so nothing feels generic."
       },
       {
         "title": "Map what's already on your shelf",
-        "body": "Add your current products so Ritora can reason through ingredient overlap, safety limits, and genuine gaps."
+        "body": "Add the products you use today so Ritora can spot ingredient overlap, flag risky pairings, and tell you what's genuinely missing."
       },
       {
         "title": "Follow a calmer daily plan",
-        "body": "Get clear morning and evening guidance — safety rules first, then personalised to your goals and inventory."
+        "body": "Wake up to clear morning and evening guidance. Safety rules come first, and everything else is tuned to your goals and the products you already own."
       }
     ],
     "features": {
       "eyebrow": "What you get",
       "headline": "Everything you need to make calmer skincare decisions.",
       "illustrationTitle": "Safety rules first, personalisation second",
-      "illustrationBody": "Every recommendation passes through a deterministic safety layer before it is shaped to your goals. No surprises, no conflicting actives, no regret purchases."
+      "illustrationBody": "Every recommendation passes through a deterministic safety layer before it meets your goals. No surprises, no clashing actives, no regret purchases."
     },
     "featureItems": [
       {
-        "title": "Inventory-first guidance",
-        "body": "Recommendations begin with the products on your shelf, not a shopping cart.",
+        "title": "Your shelf comes first",
+        "body": "Guidance always begins with the products you already own, never with a shopping cart.",
         "icon": "package"
       },
       {
         "title": "Ingredient safety guardrails",
-        "body": "Conflict checks, overlap detection, and active-frequency awareness protect sensitive skin and cut guesswork.",
+        "body": "Conflict checks, overlap detection, and active frequency awareness protect sensitive skin and take the guesswork out of stacking actives.",
         "icon": "shield-check"
       },
       {
-        "title": "Skin-profile awareness",
-        "body": "Goals, sensitivities, skin tone, age, and ethnicity-aware considerations shape every recommendation.",
+        "title": "Tuned to your skin",
+        "body": "Your goals, sensitivities, skin tone, age, and ethnicity all shape every recommendation you see.",
         "icon": "user"
       },
       {
-        "title": "Privacy-first by default",
-        "body": "GDPR-aware handling, explicit consent, and careful data boundaries — built in, not bolted on.",
+        "title": "Private by default",
+        "body": "GDPR friendly handling, explicit consent, and careful data boundaries. Built in from day one, never bolted on later.",
         "icon": "lock"
       },
       {
-        "title": "Public content that educates",
-        "body": "Open, searchable pages for learning. Private, personal routines for logged-in use.",
+        "title": "Learn in the open",
+        "body": "Open, searchable pages for learning the basics. Private, personal routines once you sign in.",
         "icon": "globe"
       },
       {
         "title": "Calmer daily rituals",
-        "body": "A morning and night view that removes guesswork and keeps your routine consistent — even on busy days.",
+        "body": "A morning and night view that lifts the guesswork and keeps your routine steady, even on the busiest days.",
         "icon": "sunrise"
       }
     ],
     "faq": {
       "eyebrow": "FAQ",
-      "headline": "Built to earn trust before it asks for it."
+      "headline": "Built to earn your trust before it asks for it."
     },
     "faqItems": [
       {
         "question": "Is Ritora a medical product?",
-        "answer": "No. Ritora is a skincare decision-support product that helps you make safer day-to-day routine choices. It does not diagnose, treat, or replace a dermatologist."
+        "answer": "No. Ritora is a skincare decision support tool that helps you make safer daily routine choices. It does not diagnose, treat, or replace a dermatologist."
       },
       {
         "question": "Do I need to buy new products to use it well?",
-        "answer": "No. Ritora is inventory-first. It helps you get more out of what you already own before suggesting anything new."
+        "answer": "Not at all. Ritora starts with your shelf. It helps you get more out of the products you already own before it suggests anything new."
       },
       {
         "question": "Will it work for beginners?",
-        "answer": "Yes. Beginners and overwhelmed collectors are exactly who Ritora is built for — a simpler path to a safer routine."
+        "answer": "Yes. Beginners and collectors overwhelmed by their own shelf are exactly who Ritora is built for. It's a simpler path to a routine that actually works."
       },
       {
-        "question": "How is privacy handled?",
-        "answer": "Ritora uses explicit consent, careful data boundaries, and secure authentication. EU-aware handling is built in from day one."
+        "question": "How is my data handled?",
+        "answer": "With care. Ritora runs on explicit consent, careful data boundaries, and secure authentication. EU friendly handling is built in from day one."
       },
       {
         "question": "Which languages are supported?",
-        "answer": "English and Swedish are available from launch. Your preferred language can be changed any time from the settings page."
+        "answer": "English and Swedish are available at launch. You can change your preferred language any time from the settings page."
       }
     ],
     "finalCta": {
       "eyebrow": "Ready when you are",
       "headline": "Turn your shelf into a calmer daily routine.",
-      "body": "Log in to pick up where you left off, or create a new account in under a minute. No spam, no pressure — cancel whenever.",
+      "body": "Log in to pick up where you left off, or create a new account in under a minute. No spam, no pressure, and you can cancel whenever you like.",
       "ctaPrimary": "Log in",
       "ctaSecondary": "Create an account"
     }
   },
   "footer": {
     "brandBlurb": "Ritora helps you turn the products you already own into a calmer, safer daily routine.",
+    "cookieNotice": "Cookie Notice",
     "columns": {
       "explore": "Explore",
       "legal": "Legal",
@@ -202,6 +206,7 @@
     "sendVerificationEmail": "Send verification email",
     "verifyEmail": "Verify email",
     "verifyEmailSent": "A verification email has been sent to your inbox",
+    "verifyEmailAfterRegistrationDescription": "We've sent a verification link to {email}. You'll be able to log in after verifying your email.",
     "resendVerification": "Resend verification email",
     "resendVerificationTitle": "Resend verification",
     "resendVerificationDescription": "Enter your email to receive a new verification link.",
@@ -225,27 +230,345 @@
     "resetting": "Resetting...",
     "signingIn": "Signing in...",
     "creatingAccount": "Creating account...",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "errors": {
+      "invalidCredentials": "The email or password is incorrect. Please try again.",
+      "emailInUse": "An account with this email already exists. Try logging in instead.",
+      "userNotFound": "We couldn't find an account with that email.",
+      "rateLimit": "Too many attempts. Please wait a moment and try again.",
+      "networkError": "We couldn't reach our servers. Check your connection and try again.",
+      "serverError": "Something went wrong on our end. Please try again shortly.",
+      "validationFailed": "Please check your details and try again.",
+      "tokenExpired": "This link has expired. Please request a new one.",
+      "tokenInvalid": "This link is no longer valid. Please request a new one.",
+      "emailNotVerified": "Please verify your email before logging in.",
+      "accountLocked": "This account is temporarily locked. Please try again later.",
+      "forbidden": "You don't have permission to do that.",
+      "unknown": "Something went wrong. Please try again."
+    },
+    "validation": {
+      "emailRequired": "Email is required.",
+      "emailInvalid": "Please enter a valid email address.",
+      "passwordRequired": "Password is required.",
+      "passwordTooShort": "Password must be at least 8 characters.",
+      "passwordPattern": "Use at least 8 characters with an uppercase letter, a lowercase letter, and a number.",
+      "passwordMismatch": "Passwords do not match.",
+      "firstNameRequired": "First name is required.",
+      "lastNameRequired": "Last name is required.",
+      "termsRequired": "Please accept the Terms of Service to continue.",
+      "privacyRequired": "Please accept the Privacy Policy to continue.",
+      "fieldRequired": "This field is required.",
+      "tokenRequired": "Reset token is missing."
+    }
   },
   "dashboard": {
     "title": "Dashboard",
-    "welcome": "Welcome, {firstName}!",
-    "subtitle": "Your Ritora dashboard",
-    "completeProfile": "Complete your skin profile to get personalized recommendations",
-    "verifyEmail": "Please verify your email to access all features",
-    "startProfile": "Complete skin profile",
-    "resendVerification": "Resend verification email",
-    "profileMissingTitle": "Complete your skin profile",
-    "profileMissingDescription": "Set up your skin profile to get personalized recommendations.",
-    "profileTitle": "Your skin profile",
-    "editProfile": "Edit profile",
-    "skinType": "Skin type",
-    "concerns": "Concerns",
-    "routine": "Routine"
+    "eyebrow": "Workspace overview",
+    "heroTitle": "Welcome back, {firstName}",
+    "heroDescription": "Authentication and skin profile are the active MVP foundation right now. The dashboard now mirrors the private Ritora workspace from the product blueprint, so setup is clear and the next modules already have a home.",
+    "authReady": "Authentication ready",
+    "profileSectionsReady": "profile sections ready",
+    "setupTitle": "Skin profile setup",
+    "setupDescription": "Complete the core profile details first. They are the safest foundation for inventory analysis, daily routines, and future progress tracking.",
+    "setupReadyDescription": "Your core profile is ready. You can still add more context to make future recommendations more climate-aware and more personal.",
+    "profileProgressLabel": "Setup progress",
+    "progressValue": "{completed} of {total} sections",
+    "recommendedBadge": "Recommended",
+    "startProfile": "Start skin profile",
+    "continueProfile": "Continue setup",
+    "reviewProfile": "Review profile",
+    "openSettings": "Open settings",
+    "unlocksTitle": "What this setup unlocks next",
+    "unlocksDescription": "The profile work you do now feeds the upcoming parts of Ritora, so the dashboard should guide you into setup before it asks you to do anything more advanced.",
+    "unlocks": {
+      "inventory": {
+        "title": "A smarter inventory foundation",
+        "description": "Skin type, goals, and context will shape how Ritora interprets the products you add later."
+      },
+      "routines": {
+        "title": "Safer daily routines",
+        "description": "Routine complexity, concerns, and sensitivities help Ritora decide what to use, what to skip, and what to rotate."
+      },
+      "progress": {
+        "title": "Useful progress tracking",
+        "description": "A strong profile makes future check-ins, photo timelines, and product insights far more relevant."
+      }
+    },
+    "profileLoadErrorTitle": "We couldn't load your skin profile",
+    "profileLoadErrorDescription": "You can still open the profile page and continue setup while we keep the rest of the workspace structure in place.",
+    "profileSummaryTitle": "Current profile snapshot",
+    "profileSummaryDescription": "Your core profile is ready for the next product modules. Review it any time before inventory and routine features land.",
+    "profileSummaryRecommendedDescription": "Your core profile is ready, but adding context like ethnicity and location will strengthen future recommendations.",
+    "profileInProgressTitle": "Profile still needs a few details",
+    "profileInProgressDescription": "You have started your profile, but the core setup is not complete yet. Continue from where you left off.",
+    "summary": {
+      "skinType": "Skin type",
+      "goals": "Goals",
+      "concerns": "Concerns",
+      "routine": "Routine preference",
+      "context": "Personal context"
+    },
+    "blueprintTitle": "Planned dashboard workspaces",
+    "blueprintDescription": "These sections come directly from the blueprint: inventory, routines, progress tracking, and gap analysis. They are visible now so the private product already has the right information architecture.",
+    "sections": {
+      "basics": {
+        "title": "Skin basics",
+        "description": "Add skin type, skin tone, and age range so the app has a clear baseline."
+      },
+      "priorities": {
+        "title": "Concerns and goals",
+        "description": "Tell Ritora what you want to improve and what needs extra care right now."
+      },
+      "routine": {
+        "title": "Routine preference",
+        "description": "Set how simple or comprehensive you want the routine to feel day to day."
+      },
+      "context": {
+        "title": "Personal context",
+        "description": "Add ethnicity plus country or city to support more climate-aware and skin-aware guidance later."
+      }
+    }
+  },
+  "workspace": {
+    "sidebarSubtitle": "Private workspace",
+    "openNavigation": "Open workspace navigation",
+    "closeNavigation": "Close workspace navigation",
+    "liveSection": "Live now",
+    "plannedSection": "Planned next",
+    "soonBadge": "Soon",
+    "setupTitle": "Finish the foundation",
+    "setupStartDescription": "Skin profile is the next important step before inventory, routines, and progress tracking.",
+    "setupContinueDescription": "You already started your skin profile. Finish the core details so the rest of the workspace has the right context.",
+    "startSkinProfile": "Start skin profile",
+    "continueSkinProfile": "Continue skin profile",
+    "accountReady": "Authentication is ready and the workspace is open.",
+    "accountNeedsSetup": "Skin profile still needs attention before the rest of the product can feel personal.",
+    "manageSettings": "Settings",
+    "logout": "Log out",
+    "loggingOut": "Logging out...",
+    "badges": {
+      "start": "Start",
+      "continue": "Continue",
+      "ready": "Ready"
+    },
+    "items": {
+      "dashboard": {
+        "label": "Dashboard",
+        "description": "See setup progress, profile readiness, and what the product is building toward next."
+      },
+      "skinProfile": {
+        "label": "Skin profile",
+        "description": "Capture the skin context that powers everything else in Ritora."
+      },
+      "settings": {
+        "label": "Settings",
+        "description": "Change language, theme, and preference controls without leaving the workspace."
+      }
+    },
+    "planned": {
+      "inventory": {
+        "label": "Inventory",
+        "description": "Catalogue the products you already own before Ritora suggests anything new.",
+        "children": {
+          "catalogue": "Product catalogue and active inventory",
+          "history": "Product history, repurchases, and lifecycle tracking"
+        }
+      },
+      "routines": {
+        "label": "Daily routines",
+        "description": "Morning, evening, and situational routines built from your real shelf.",
+        "children": {
+          "daily": "AM and PM routine views",
+          "onDemand": "On-demand routine requests and explanations"
+        }
+      },
+      "progress": {
+        "label": "Progress tracking",
+        "description": "Track how your skin changes over time and how it reacts to routine changes.",
+        "children": {
+          "checkIns": "Check-ins, reactions, and wellbeing signals",
+          "timeline": "Photo timeline and progress insights"
+        }
+      },
+      "analysis": {
+        "label": "Gap analysis",
+        "description": "Spot missing essentials, reduce redundancy, and prepare smarter future purchases.",
+        "children": {
+          "gaps": "Routine gaps and redundancy checks",
+          "suggestions": "Starter kits and product suggestions"
+        }
+      }
+    }
+  },
+  "settings": {
+    "eyebrow": "Settings",
+    "title": "Workspace settings",
+    "subtitle": "Language and theme belong close to the core workspace. This page gives those controls a clear home while leaving logout in the sidebar footer, where it stays easy to find but out of the way of everyday tasks.",
+    "languageTitle": "Language",
+    "languageDescription": "Switch languages instantly and keep the rest of the workspace structure exactly where you expect it.",
+    "languageCurrent": "Current locale: {locale}",
+    "themeTitle": "Theme",
+    "themeDescription": "Choose whether the workspace follows your system or stays fixed in light or dark mode.",
+    "themeCurrent": "Current theme: {theme}",
+    "themeOptions": {
+      "system": {
+        "label": "System",
+        "description": "Match the device theme automatically."
+      },
+      "light": {
+        "label": "Light",
+        "description": "Use the brighter Ritora palette all the time."
+      },
+      "dark": {
+        "label": "Dark",
+        "description": "Use the darker workspace palette all the time."
+      }
+    },
+    "resolvedThemes": {
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "guidanceTitle": "Guidance style",
+    "guidanceDescription": "Save a preference for how future routine explanations should read as more AI guidance arrives.",
+    "plainLanguageTitle": "Plain language mode",
+    "plainLanguageDescription": "Keep ingredient and routine explanations simpler when future recommendation views go live.",
+    "accountTitle": "Account overview",
+    "accountDescription": "Settings should explain the workspace, not overload it. Account identity lives here, while sign out stays in the sidebar footer next to navigation controls.",
+    "accountName": "Name",
+    "accountEmail": "Email",
+    "logoutPlacementTitle": "Why logout lives in the sidebar footer",
+    "logoutPlacementDescription": "Signing out is important, but it should not compete with everyday actions like navigating between Dashboard, Skin Profile, and Settings. The sidebar footer keeps it persistent, predictable, and safely separated from the main task flow.",
+    "notificationsTitle": "Notification roadmap",
+    "notificationsDescription": "These reminder controls will live here as routine generation and progress tracking are implemented.",
+    "notifications": {
+      "morning": {
+        "title": "Routine prompts",
+        "description": "Morning and evening reminders for the routines Ritora prepares for you."
+      },
+      "progress": {
+        "title": "Progress reminders",
+        "description": "Check-ins and future photo reminders to help track changes over time."
+      },
+      "inventory": {
+        "title": "Inventory alerts",
+        "description": "Low-stock, expiry, and refill nudges once product tracking is live."
+      }
+    },
+    "privacyTitle": "Privacy and legal",
+    "privacyDescription": "Quick links to the product policies that sit behind authentication, skin data, and future routine history.",
+    "privacyLinks": {
+      "privacy": "Privacy policy",
+      "terms": "Terms of service",
+      "cookies": "Cookie notice"
+    },
+    "privacyFootnote": "Data export, deletion, and notification controls will grow here as the account surface expands."
+  },
+  "onboarding": {
+    "eyebrow": "Guided setup",
+    "title": "Welcome, {firstName}",
+    "subtitle": "Ritora works best when your account, preferences, and skin profile are set up together. This onboarding flow introduces the workspace first, then hands you into the profile form without copying it.",
+    "loading": "Preparing your onboarding workspace...",
+    "goToDashboard": "Skip to dashboard",
+    "back": "Back",
+    "next": "Next",
+    "steps": {
+      "welcome": {
+        "title": "Welcome",
+        "kicker": "Why Ritora starts here",
+        "headline": "Start with clarity, not more skincare noise",
+        "description": "Ritora is built to help you use what you already own with more confidence. Before inventory and routine intelligence arrive, this setup explains the private workspace and the role your skin profile plays in everything else.",
+        "items": {
+          "shelf": {
+            "title": "Inventory-first guidance",
+            "description": "Ritora is designed around the products you already own before it ever suggests new ones."
+          },
+          "conflicts": {
+            "title": "Safer ingredient decisions",
+            "description": "Future guidance will help you spot conflicts, over-layering, and routines that are doing too much."
+          },
+          "routine": {
+            "title": "Daily routine intelligence",
+            "description": "The workspace is being shaped around context-aware AM and PM recommendations, not generic product advice."
+          }
+        }
+      },
+      "foundation": {
+        "title": "Foundation",
+        "kicker": "What is already live",
+        "headline": "Your account foundation is already in place",
+        "description": "Authentication is complete, your email is verified, and the product can now safely move into personal setup. The next step is giving Ritora enough skin context to make the workspace feel relevant.",
+        "items": {
+          "account": {
+            "title": "Secure account access",
+            "description": "You have a protected workspace with verification-first authentication before any personalized guidance is shown."
+          },
+          "verification": {
+            "title": "Verified before sign-in",
+            "description": "Email verification happens before login so the workspace stays tied to a confirmed account."
+          },
+          "privacy": {
+            "title": "Privacy-aware setup",
+            "description": "Skin context, location consent, and future progress history are treated as product data that should be explicit and intentional."
+          }
+        }
+      },
+      "preferences": {
+        "title": "Preferences",
+        "kicker": "Personalize the workspace",
+        "headline": "Set language and reading style before the heavier workflows arrive",
+        "description": "Settings should stay light during onboarding. Language, theme, and plain-language preferences live here first so future inventory, routine, and progress views inherit the right defaults.",
+        "titleFallback": "Preferences"
+      },
+      "profile": {
+        "title": "Skin profile",
+        "kicker": "Hand off into profile setup",
+        "headline": "Finish the skin context that unlocks the workspace",
+        "description": "You have not started your skin profile yet. Use the profile flow to add your basics, priorities, and routine preference before inventory and routines go live.",
+        "inProgressDescription": "You already started your skin profile. Continue from where you left off so Ritora can treat the rest of the workspace as personal, not generic.",
+        "startCta": "Start skin profile",
+        "continueCta": "Continue skin profile",
+        "dashboardCta": "Open dashboard"
+      }
+    },
+    "sidecards": {
+      "nowTitle": "Live today",
+      "foundationTitle": "Current foundation",
+      "preferencesTitle": "Preference preview",
+      "handoffTitle": "What happens next",
+      "account": "Signed-in account",
+      "profileProgress": "Profile progress",
+      "personalizeLanguage": "Language and tone",
+      "preferencesDescription": "These settings carry forward into the workspace so you do not have to reconfigure them later.",
+      "now": {
+        "items": {
+          "auth": {
+            "title": "Verification-first authentication",
+            "description": "Only verified users can enter the private workspace."
+          },
+          "profile": {
+            "title": "Structured skin profile setup",
+            "description": "The profile form is already organized into the basics, priorities, routine, and context that future features depend on."
+          }
+        }
+      },
+      "handoff": {
+        "items": {
+          "profile": {
+            "title": "Complete the core profile",
+            "description": "Skin type, tone, age range, concerns, goals, and routine preference are the minimum useful setup."
+          },
+          "dashboard": {
+            "title": "Return to the workspace",
+            "description": "Once the core profile is complete, the dashboard becomes the home for everything else Ritora adds next."
+          }
+        }
+      }
+    }
   },
   "skinProfile": {
     "title": "Skin Profile",
     "createTitle": "Complete skin profile",
+    "continueTitle": "Continue skin profile setup",
     "editTitle": "Edit skin profile",
     "skinType": "Skin type",
     "skinTone": "Skin tone",
@@ -269,7 +592,13 @@
     "cityPlaceholder": "e.g. Stockholm",
     "saveProfile": "Save profile",
     "savingProfile": "Saving...",
-    "failedToSave": "Failed to save profile",
+    "failedToLoad": "We couldn't load your profile right now. Please try again.",
+    "failedToSave": "We couldn't save your profile. Please try again.",
+    "validation": {
+      "invalidCountryCode": "Country code must be 2 letters (e.g. SE).",
+      "locationConsentRequired": "Location consent is required when country or city is provided.",
+      "cityTooLong": "City name is too long."
+    },
     "options": {
       "oily": "Oily",
       "dry": "Dry",
