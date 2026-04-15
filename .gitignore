@@ -43,3 +43,4 @@ yarn-error.log*
 .claude
 claude.md
 agents.md
+test-results
