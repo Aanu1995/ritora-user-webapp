@@ -333,7 +333,7 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="min-h-screen">
-      <div className="mx-auto flex w-full max-w-[96rem] gap-6 px-4 py-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-384 gap-6 px-4 py-4 sm:px-6 lg:px-8">
         <aside className="hidden w-80 shrink-0 lg:sticky lg:top-4 lg:flex lg:h-[calc(100vh-2rem)]">
           {sidebar}
         </aside>
