@@ -1,0 +1,328 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next",
+    "skip": "Skip for Now",
+    "submit": "Submit",
+    "or": "or",
+    "selectPlaceholder": "Select..."
+  },
+  "nav": {
+    "whyRitora": "Why Ritora",
+    "howItWorks": "How it works",
+    "features": "Features",
+    "faq": "FAQ",
+    "login": "Log in",
+    "signUp": "Sign up",
+    "dashboard": "Dashboard",
+    "skinProfile": "Skin Profile",
+    "logout": "Log out",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "landing": {
+    "hero": {
+      "badge": "Calm, inventory-first skincare",
+      "headline": "Calmer skincare routines, built from what's already on your shelf.",
+      "subheadline": "Ritora reviews the products you already own, flags ingredient conflicts, and turns your shelf into a clear morning and night plan — shaped by your skin, not a shopping cart.",
+      "ctaPrimary": "Log in",
+      "ctaSecondary": "See how it works",
+      "pills": {
+        "a": "Shelf-first recommendations",
+        "b": "Ingredient guardrails",
+        "c": "EU-aware privacy"
+      }
+    },
+    "trust": {
+      "eyebrow": "Calm by design",
+      "items": [
+        { "value": "0", "label": "new products required to start" },
+        { "value": "2×", "label": "daily check-ins, morning and night" },
+        { "value": "EU", "label": "privacy posture from day one" }
+      ]
+    },
+    "problem": {
+      "eyebrow": "Why routines break",
+      "headline": "Most skincare routines don't fail from carelessness — they fail from missing decisions.",
+      "body": "You pick up good products, try to sequence them, and still wake up unsure. Ritora supplies the missing layer: clearer sequencing, safer pairings, and calmer daily choices."
+    },
+    "problems": [
+      {
+        "title": "Shelf confusion",
+        "body": "You own good products and still wake up guessing what to use and what to skip."
+      },
+      {
+        "title": "Silent ingredient stacking",
+        "body": "Strong actives stack across cleansers, toners, and serums — irritation shows up before the cause does."
+      },
+      {
+        "title": "Buying over building",
+        "body": "Most routines don't need another serum. They need structure, sequencing, and safer decisions."
+      }
+    ],
+    "howItWorks": {
+      "eyebrow": "How it works",
+      "headline": "Three calm steps from shelf clutter to daily clarity.",
+      "illustrationTitle": "From morning to night, on repeat",
+      "illustrationBody": "Ritora treats your routine as a living cycle. Each step carries forward what last night's actives mean for this morning — so the plan stays safe without you having to think about it."
+    },
+    "steps": [
+      {
+        "title": "Tell Ritora about your skin",
+        "body": "Share skin type, concerns, sensitivities, goals, and routine preference so guidance starts from your real context — not a generic template."
+      },
+      {
+        "title": "Map what's already on your shelf",
+        "body": "Add your current products so Ritora can reason through ingredient overlap, safety limits, and genuine gaps."
+      },
+      {
+        "title": "Follow a calmer daily plan",
+        "body": "Get clear morning and evening guidance — safety rules first, then personalised to your goals and inventory."
+      }
+    ],
+    "features": {
+      "eyebrow": "What you get",
+      "headline": "Everything you need to make calmer skincare decisions.",
+      "illustrationTitle": "Safety rules first, personalisation second",
+      "illustrationBody": "Every recommendation passes through a deterministic safety layer before it is shaped to your goals. No surprises, no conflicting actives, no regret purchases."
+    },
+    "featureItems": [
+      {
+        "title": "Inventory-first guidance",
+        "body": "Recommendations begin with the products on your shelf, not a shopping cart.",
+        "icon": "package"
+      },
+      {
+        "title": "Ingredient safety guardrails",
+        "body": "Conflict checks, overlap detection, and active-frequency awareness protect sensitive skin and cut guesswork.",
+        "icon": "shield-check"
+      },
+      {
+        "title": "Skin-profile awareness",
+        "body": "Goals, sensitivities, skin tone, age, and ethnicity-aware considerations shape every recommendation.",
+        "icon": "user"
+      },
+      {
+        "title": "Privacy-first by default",
+        "body": "GDPR-aware handling, explicit consent, and careful data boundaries — built in, not bolted on.",
+        "icon": "lock"
+      },
+      {
+        "title": "Public content that educates",
+        "body": "Open, searchable pages for learning. Private, personal routines for logged-in use.",
+        "icon": "globe"
+      },
+      {
+        "title": "Calmer daily rituals",
+        "body": "A morning and night view that removes guesswork and keeps your routine consistent — even on busy days.",
+        "icon": "sunrise"
+      }
+    ],
+    "faq": {
+      "eyebrow": "FAQ",
+      "headline": "Built to earn trust before it asks for it."
+    },
+    "faqItems": [
+      {
+        "question": "Is Ritora a medical product?",
+        "answer": "No. Ritora is a skincare decision-support product that helps you make safer day-to-day routine choices. It does not diagnose, treat, or replace a dermatologist."
+      },
+      {
+        "question": "Do I need to buy new products to use it well?",
+        "answer": "No. Ritora is inventory-first. It helps you get more out of what you already own before suggesting anything new."
+      },
+      {
+        "question": "Will it work for beginners?",
+        "answer": "Yes. Beginners and overwhelmed collectors are exactly who Ritora is built for — a simpler path to a safer routine."
+      },
+      {
+        "question": "How is privacy handled?",
+        "answer": "Ritora uses explicit consent, careful data boundaries, and secure authentication. EU-aware handling is built in from day one."
+      },
+      {
+        "question": "Which languages are supported?",
+        "answer": "English and Swedish are available from launch. Your preferred language can be changed any time from the settings page."
+      }
+    ],
+    "finalCta": {
+      "eyebrow": "Ready when you are",
+      "headline": "Turn your shelf into a calmer daily routine.",
+      "body": "Log in to pick up where you left off, or create a new account in under a minute. No spam, no pressure — cancel whenever.",
+      "ctaPrimary": "Log in",
+      "ctaSecondary": "Create an account"
+    }
+  },
+  "footer": {
+    "brandBlurb": "Ritora helps you turn the products you already own into a calmer, safer daily routine.",
+    "columns": {
+      "explore": "Explore",
+      "legal": "Legal",
+      "language": "Language"
+    }
+  },
+  "auth": {
+    "login": "Log in",
+    "register": "Create account",
+    "createAccount": "Create account",
+    "signInTitle": "Welcome back",
+    "signInSubtitle": "Log in to continue your calmer skincare routine.",
+    "signUpTitle": "Create your account",
+    "signUpSubtitle": "One minute to set up. No new products required.",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "showPassword": "Show",
+    "hidePassword": "Hide",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordTitle": "Forgot password",
+    "forgotPasswordDescription": "Enter your email and we'll send you a reset link.",
+    "noAccount": "New to Ritora?",
+    "hasAccount": "Already have an account?",
+    "signUp": "Create an account",
+    "signIn": "Log in",
+    "acceptTerms": "I accept the {terms}",
+    "acceptPrivacy": "I accept the {privacy}",
+    "acceptTermsPrefix": "I accept the",
+    "acceptPrivacyPrefix": "I accept the",
+    "termsOfService": "Terms of Service",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy",
+    "preferredLanguage": "Preferred language",
+    "resetPassword": "Reset password",
+    "resetPasswordDescription": "Choose a new password for your Ritora account.",
+    "newPassword": "New password",
+    "sendResetLink": "Send reset link",
+    "resetSent": "If the email is registered, a reset link has been sent",
+    "sendVerificationEmail": "Send verification email",
+    "verifyEmail": "Verify email",
+    "verifyEmailSent": "A verification email has been sent to your inbox",
+    "resendVerification": "Resend verification email",
+    "resendVerificationTitle": "Resend verification",
+    "resendVerificationDescription": "Enter your email to receive a new verification link.",
+    "invalidCredentials": "Invalid email or password",
+    "emailInUse": "Email already in use",
+    "passwordRequirements": "At least 8 characters with uppercase, lowercase, and a number",
+    "passwordMismatch": "Passwords do not match",
+    "backToHome": "Back to home",
+    "backToLogin": "Back to log in",
+    "continueToLogin": "Continue to log in",
+    "requestNewLink": "Request a new link",
+    "invalidResetToken": "Invalid or missing reset token.",
+    "invalidVerificationToken": "Invalid or missing verification token.",
+    "verificationFailed": "Verification failed. The link may have expired.",
+    "verifyingEmail": "Verifying your email...",
+    "emailVerifiedSuccess": "Email verified successfully!",
+    "passwordResetSuccess": "Password reset successfully.",
+    "registrationFailed": "Registration failed",
+    "resetFailed": "Reset failed",
+    "sending": "Sending...",
+    "resetting": "Resetting...",
+    "signingIn": "Signing in...",
+    "creatingAccount": "Creating account...",
+    "loading": "Loading..."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome, {firstName}!",
+    "subtitle": "Your Ritora dashboard",
+    "completeProfile": "Complete your skin profile to get personalized recommendations",
+    "verifyEmail": "Please verify your email to access all features",
+    "startProfile": "Complete skin profile",
+    "resendVerification": "Resend verification email",
+    "profileMissingTitle": "Complete your skin profile",
+    "profileMissingDescription": "Set up your skin profile to get personalized recommendations.",
+    "profileTitle": "Your skin profile",
+    "editProfile": "Edit profile",
+    "skinType": "Skin type",
+    "concerns": "Concerns",
+    "routine": "Routine"
+  },
+  "skinProfile": {
+    "title": "Skin Profile",
+    "createTitle": "Complete skin profile",
+    "editTitle": "Edit skin profile",
+    "skinType": "Skin type",
+    "skinTone": "Skin tone",
+    "ageRange": "Age range",
+    "ethnicity": "Ethnicity",
+    "concerns": "Skin concerns",
+    "goals": "Skin goals",
+    "sensitivities": "Known sensitivities",
+    "routineComplexity": "Routine preference",
+    "country": "Country",
+    "city": "City",
+    "countryHelp": "Country code (ISO 2-letter)",
+    "locationConsent": "I consent to location data processing for personalized recommendations",
+    "locationConsentRequired": "Location consent is required when country or city is provided",
+    "step": "Step {current} of {total}",
+    "addSensitivity": "Add sensitivity",
+    "sensitivityPlaceholder": "Add a sensitivity or past reaction",
+    "noSensitivities": "No sensitivities added yet",
+    "removeSensitivityLabel": "Remove {value}",
+    "countryPlaceholder": "e.g. SE",
+    "cityPlaceholder": "e.g. Stockholm",
+    "saveProfile": "Save profile",
+    "savingProfile": "Saving...",
+    "failedToSave": "Failed to save profile",
+    "options": {
+      "oily": "Oily",
+      "dry": "Dry",
+      "combination": "Combination",
+      "normal": "Normal",
+      "sensitive": "Sensitive",
+      "very_light": "Very light",
+      "light": "Light",
+      "light_medium": "Light medium",
+      "medium": "Medium",
+      "medium_dark": "Medium dark",
+      "dark": "Dark",
+      "very_dark": "Very dark",
+      "under_18": "Under 18",
+      "18_24": "18-24",
+      "25_34": "25-34",
+      "35_44": "35-44",
+      "45_54": "45-54",
+      "55_plus": "55+",
+      "black": "Black",
+      "white_caucasian": "White / Caucasian",
+      "asian": "Asian",
+      "hispanic_latino": "Hispanic / Latino",
+      "middle_eastern": "Middle Eastern",
+      "mixed": "Mixed",
+      "other": "Other",
+      "acne": "Acne",
+      "dark_marks": "Dark marks",
+      "dryness": "Dryness",
+      "oiliness": "Oiliness",
+      "texture": "Texture",
+      "redness": "Redness",
+      "large_pores": "Large pores",
+      "fine_lines": "Fine lines",
+      "barrier_damage": "Barrier damage",
+      "eczema": "Eczema",
+      "uneven_tone": "Uneven tone",
+      "clear_acne": "Clear acne",
+      "fade_dark_marks": "Fade dark marks",
+      "improve_texture": "Improve texture",
+      "anti_aging": "Anti-aging",
+      "strengthen_barrier": "Strengthen barrier",
+      "minimize_pores": "Minimize pores",
+      "even_tone": "Even tone",
+      "general_maintenance": "General maintenance",
+      "minimal": "Minimal (2-3 steps)",
+      "moderate": "Moderate (4-5 steps)",
+      "comprehensive": "Comprehensive (6+ steps)"
+    }
+  },
+  "cookies": {
+    "message": "We use essential cookies for authentication. No tracking cookies are used.",
+    "accept": "Accept",
+    "reject": "Reject"
+  }
+}

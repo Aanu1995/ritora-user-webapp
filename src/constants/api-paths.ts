@@ -1,0 +1,17 @@
+export enum ApiPath {
+  AuthLogin = '/auth/login',
+  AuthRegister = '/auth/register',
+  AuthRefresh = '/auth/refresh',
+  AuthLogout = '/auth/logout',
+  AuthLogoutAll = '/auth/logout-all',
+  AuthMe = '/auth/me',
+  AuthSessions = '/auth/sessions',
+  AuthVerifyEmail = '/auth/verify-email',
+  AuthResendVerification = '/auth/resend-verification',
+  AuthForgotPassword = '/auth/forgot-password',
+  AuthResetPassword = '/auth/reset-password',
+  AuthExport = '/auth/export',
+  AuthAccount = '/auth/account',
+  SkinProfile = '/skin-profile',
+  SkinProfileOptions = '/skin-profile/options',
+}
