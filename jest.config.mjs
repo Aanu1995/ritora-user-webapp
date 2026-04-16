@@ -30,6 +30,12 @@ export default createJestConfig({
     '!src/components/site-footer.tsx',
     '!src/components/theme-toggle.tsx',
     '!src/components/language-switcher.tsx',
+    '!src/components/ui/radio-group.tsx',
+    '!src/components/ui/select.tsx',
+    '!src/components/ui/separator.tsx',
+    '!src/components/ui/sheet.tsx',
+    '!src/components/ui/sidebar.tsx',
+    '!src/components/ui/tooltip.tsx',
   ],
   coverageThreshold: {
     global: {

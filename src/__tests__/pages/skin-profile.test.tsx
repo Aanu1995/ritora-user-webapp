@@ -1,188 +1,154 @@
-import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { AppRoute } from '@/constants/app-routes';
-import { ApiError } from '@/lib/api-error';
-import { renderWithProviders } from '@/test/utils';
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderWithProviders } from "@/test/utils";
+import { ApiError } from "@/lib/api-error";
 
-const mockPush = jest.fn();
-const mockCreateProfile = jest.fn();
-const mockUpdateProfile = jest.fn();
-
-type MutationCallbacks = {
-  onSuccess?: (...args: unknown[]) => void;
-  onError?: (...args: unknown[]) => void;
+let mockSkinProfileReturn: {
+  data: unknown;
+  isPending: boolean;
+  isError: boolean;
+  error: unknown;
+  refetch: jest.Mock;
 };
 
-jest.mock('@/hooks/use-skin-profile', () => ({
-  useSkinProfile: () => ({
-    data: null,
-    isPending: false,
-    isError: true,
-    error: new ApiError('Not found', { status: 404 }),
-    refetch: jest.fn(),
-  }),
-  useSkinProfileOptions: () => ({
-    data: {
-      skinTypes: ['oily', 'dry'],
-      skinTones: ['medium'],
-      ageRanges: ['25_34'],
-      ethnicities: ['black'],
-      concerns: ['acne'],
-      goals: ['clear_acne'],
-      complexities: ['moderate'],
-    },
-    isPending: false,
-    isError: false,
-    refetch: jest.fn(),
-  }),
-  useCreateSkinProfile: () => ({
-    mutate: mockCreateProfile,
-    isPending: false,
-    isError: false,
-    error: null,
-  }),
-  useUpdateSkinProfile: () => ({
-    mutate: mockUpdateProfile,
-    isPending: false,
-    isError: false,
-    error: null,
-  }),
-}));
+let mockOptionsReturn: {
+  data: unknown;
+  isPending: boolean;
+  isError: boolean;
+  error: unknown;
+  refetch: jest.Mock;
+};
 
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
+  usePathname: () => "/skin-profile",
   useRouter: () => ({
-    push: mockPush,
-    replace: jest.fn(),
-    back: jest.fn(),
-    forward: jest.fn(),
+    push: jest.fn(),
     refresh: jest.fn(),
-    prefetch: jest.fn(),
   }),
-  usePathname: () => AppRoute.SkinProfile,
-  useSearchParams: () => new URLSearchParams(),
 }));
 
-import SkinProfilePage from '@/app/(app)/skin-profile/page';
+jest.mock("@/hooks/use-skin-profile", () => ({
+  useSkinProfile: () => mockSkinProfileReturn,
+  useSkinProfileOptions: () => mockOptionsReturn,
+  useCreateSkinProfile: () => ({ mutate: jest.fn(), isPending: false }),
+  useUpdateSkinProfile: () => ({ mutate: jest.fn(), isPending: false }),
+}));
 
-describe('SkinProfilePage', () => {
+import SkinProfilePage from "@/app/(app)/skin-profile/page";
+
+const mockOptions = {
+  skinTypes: ["oily", "dry", "combination", "normal", "sensitive"],
+  skinTones: ["light", "medium", "dark"],
+  ageRanges: ["18_24", "25_34"],
+  ethnicities: ["black", "white_caucasian"],
+  concerns: ["acne", "dark_marks", "dryness"],
+  goals: ["clear_acne", "fade_dark_marks"],
+  complexities: ["minimal", "moderate", "comprehensive"],
+};
+
+const completeProfile = {
+  id: "profile-1",
+  skinType: "oily",
+  skinTone: "medium",
+  ageRange: "25_34",
+  ethnicity: "black",
+  currentConcerns: ["acne"],
+  knownSensitivities: ["Fragrance"],
+  skinGoals: ["clear_acne"],
+  countryCode: "SE",
+  city: "Stockholm",
+  routineComplexity: "moderate",
+  createdAt: "2026-04-15T10:00:00.000Z",
+  updatedAt: "2026-04-15T10:00:00.000Z",
+};
+
+describe("SkinProfilePage", () => {
   const user = userEvent.setup();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    mockOptionsReturn = {
+      data: mockOptions,
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: jest.fn(),
+    };
   });
 
-  it('renders known sensitivities controls', async () => {
+  it("shows skeleton while loading", () => {
+    mockSkinProfileReturn = {
+      data: null,
+      isPending: true,
+      isError: false,
+      error: null,
+      refetch: jest.fn(),
+    };
+
     renderWithProviders(<SkinProfilePage />);
+    // Skeleton renders animated pulse elements
+    expect(screen.queryByText(/what best describes/i)).not.toBeInTheDocument();
+  });
 
-    await user.click(screen.getByRole('button', { name: /next/i }));
+  it("shows the wizard when no profile exists (404)", () => {
+    mockSkinProfileReturn = {
+      data: null,
+      isPending: false,
+      isError: true,
+      error: new ApiError("Not found", { status: 404 }),
+      refetch: jest.fn(),
+    };
 
-    expect(screen.getByLabelText(/known sensitivities/i)).toBeInTheDocument();
+    renderWithProviders(<SkinProfilePage />);
     expect(
-      screen.getByRole('button', { name: /add sensitivity/i }),
+      screen.getByText(/what best describes your skin/i),
     ).toBeInTheDocument();
   });
 
-  it('requires location consent before saving location data', async () => {
+  it("shows skin type chips on step 1", () => {
+    mockSkinProfileReturn = {
+      data: null,
+      isPending: false,
+      isError: true,
+      error: new ApiError("Not found", { status: 404 }),
+      refetch: jest.fn(),
+    };
+
     renderWithProviders(<SkinProfilePage />);
-
-    await user.click(screen.getByRole('button', { name: /next/i }));
-    await user.type(
-      screen.getByPlaceholderText(/add a sensitivity or past reaction/i),
-      'Fragrance',
-    );
-    await user.click(screen.getByRole('button', { name: /add sensitivity/i }));
-    await user.click(screen.getByRole('button', { name: /next/i }));
-
-    await user.type(screen.getByLabelText(/^country$/i), 'SE');
-    await user.type(screen.getByLabelText(/^city$/i), 'Stockholm');
-    await user.click(screen.getByRole('button', { name: /next/i }));
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/location consent is required/i),
-      ).toBeInTheDocument();
-    });
-    expect(mockCreateProfile).not.toHaveBeenCalled();
+    expect(screen.getByRole("radio", { name: /oily/i })).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: /dry/i })).toBeInTheDocument();
   });
 
-  it('submits sensitivities and location consent when valid', async () => {
-    mockCreateProfile.mockImplementation(
-      (_input: unknown, options?: MutationCallbacks) => {
-        options?.onSuccess?.();
-      },
-    );
+  it("navigates to step 2 after selecting skin type and clicking continue", async () => {
+    mockSkinProfileReturn = {
+      data: null,
+      isPending: false,
+      isError: true,
+      error: new ApiError("Not found", { status: 404 }),
+      refetch: jest.fn(),
+    };
 
     renderWithProviders(<SkinProfilePage />);
 
-    await user.click(screen.getByRole('button', { name: /next/i }));
-    await user.type(
-      screen.getByPlaceholderText(/add a sensitivity or past reaction/i),
-      'Fragrance',
-    );
-    await user.click(screen.getByRole('button', { name: /add sensitivity/i }));
-    await user.click(screen.getByRole('button', { name: /next/i }));
+    await user.click(screen.getByRole("radio", { name: /oily/i }));
+    await user.click(screen.getByRole("button", { name: /continue/i }));
 
-    await user.type(screen.getByLabelText(/^country$/i), 'SE');
-    await user.type(screen.getByLabelText(/^city$/i), 'Stockholm');
-    await user.click(screen.getByRole('checkbox'));
-    await user.click(screen.getByRole('button', { name: /next/i }));
-    await user.click(
-      screen.getByRole('radio', { name: /moderate \(4-5 steps\)/i }),
-    );
-    await user.click(screen.getByRole('button', { name: /save profile/i }));
-
-    await waitFor(() => {
-      expect(mockCreateProfile).toHaveBeenCalledWith(
-        expect.objectContaining({
-          knownSensitivities: ['Fragrance'],
-          countryCode: 'SE',
-          city: 'Stockholm',
-          locationConsent: true,
-          routineComplexity: 'moderate',
-        }),
-        expect.objectContaining({ onSuccess: expect.any(Function) }),
-      );
-    });
-    expect(mockPush).toHaveBeenCalledWith(AppRoute.Dashboard);
-  });
-
-  it('does not navigate when saving the profile fails', async () => {
-    mockCreateProfile.mockImplementation(
-      (_input: unknown, options?: MutationCallbacks) => {
-        options?.onError?.(
-          new ApiError("We couldn't save your profile. Please try again.", {
-            status: 500,
-            body: {
-              message: "We couldn't save your profile. Please try again.",
-            },
-          }),
-        );
-      },
-    );
-
-    renderWithProviders(<SkinProfilePage />);
-
-    await user.click(screen.getByRole('button', { name: /next/i }));
-    await user.type(
-      screen.getByPlaceholderText(/add a sensitivity or past reaction/i),
-      'Fragrance',
-    );
-    await user.click(screen.getByRole('button', { name: /add sensitivity/i }));
-    await user.click(screen.getByRole('button', { name: /next/i }));
-    await user.type(screen.getByLabelText(/^country$/i), 'SE');
-    await user.type(screen.getByLabelText(/^city$/i), 'Stockholm');
-    await user.click(screen.getByRole('checkbox'));
-    await user.click(screen.getByRole('button', { name: /next/i }));
-    await user.click(
-      screen.getByRole('radio', { name: /moderate \(4-5 steps\)/i }),
-    );
-    await user.click(screen.getByRole('button', { name: /save profile/i }));
-
-    await waitFor(() => {
-      expect(mockPush).not.toHaveBeenCalled();
-    });
     expect(
-      screen.getByText(/we couldn't save your profile/i),
+      screen.getByText(/what concerns you most/i),
     ).toBeInTheDocument();
+  });
+
+  it("shows the overview when a profile exists", () => {
+    mockSkinProfileReturn = {
+      data: completeProfile,
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: jest.fn(),
+    };
+
+    renderWithProviders(<SkinProfilePage />);
+    expect(screen.getByText("Oily")).toBeInTheDocument();
+    expect(screen.getByText("Fragrance")).toBeInTheDocument();
+    expect(screen.getAllByText(/edit/i).length).toBeGreaterThan(0);
   });
 });

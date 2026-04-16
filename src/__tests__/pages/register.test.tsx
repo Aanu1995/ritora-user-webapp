@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AppRoute } from '@/constants/app-routes';
 import { ApiError } from '@/lib/api-error';
@@ -40,6 +40,24 @@ import RegisterPage from '@/app/(auth)/register/page';
 
 describe('RegisterPage', () => {
   const user = userEvent.setup();
+
+  function fillRegistrationForm() {
+    fireEvent.change(screen.getByLabelText(/first name/i), {
+      target: { value: 'Test' },
+    });
+    fireEvent.change(screen.getByLabelText(/last name/i), {
+      target: { value: 'User' },
+    });
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: 'test@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText(/^password$/i), {
+      target: { value: 'TestPass1' },
+    });
+    fireEvent.change(screen.getByLabelText(/confirm password/i), {
+      target: { value: 'TestPass1' },
+    });
+  }
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -97,11 +115,7 @@ describe('RegisterPage', () => {
   it('submits with all fields filled and consent given', async () => {
     renderWithProviders(<RegisterPage />);
 
-    await user.type(screen.getByLabelText(/first name/i), 'Test');
-    await user.type(screen.getByLabelText(/last name/i), 'User');
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
-    await user.type(screen.getByLabelText(/^password$/i), 'TestPass1');
-    await user.type(screen.getByLabelText(/confirm password/i), 'TestPass1');
+    fillRegistrationForm();
 
     // Check consent boxes
     const checkboxes = screen.getAllByRole('checkbox');
@@ -137,11 +151,7 @@ describe('RegisterPage', () => {
 
     renderWithProviders(<RegisterPage />);
 
-    await user.type(screen.getByLabelText(/first name/i), 'Test');
-    await user.type(screen.getByLabelText(/last name/i), 'User');
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
-    await user.type(screen.getByLabelText(/^password$/i), 'TestPass1');
-    await user.type(screen.getByLabelText(/confirm password/i), 'TestPass1');
+    fillRegistrationForm();
 
     const checkboxes = screen.getAllByRole('checkbox');
     await user.click(checkboxes[0]);
@@ -196,11 +206,7 @@ describe('RegisterPage', () => {
 
     renderWithProviders(<RegisterPage />);
 
-    await user.type(screen.getByLabelText(/first name/i), 'Test');
-    await user.type(screen.getByLabelText(/last name/i), 'User');
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
-    await user.type(screen.getByLabelText(/^password$/i), 'TestPass1');
-    await user.type(screen.getByLabelText(/confirm password/i), 'TestPass1');
+    fillRegistrationForm();
 
     const checkboxes = screen.getAllByRole('checkbox');
     await user.click(checkboxes[0]);

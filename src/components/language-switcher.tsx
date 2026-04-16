@@ -52,8 +52,8 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
             disabled={isPending}
             className={
               isActive
-                ? 'text-left font-semibold text-foreground'
-                : 'text-left transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-60'
+                ? 'cursor-pointer text-left font-semibold text-foreground'
+                : 'cursor-pointer text-left transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-60'
             }
           >
             {LOCALE_LABELS[locale]}

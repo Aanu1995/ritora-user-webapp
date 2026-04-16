@@ -54,3 +54,8 @@ export type ResetPasswordInput = {
   token: string;
   newPassword: string;
 };
+
+export type UpdateProfileInput = {
+  firstName: string;
+  lastName: string;
+};

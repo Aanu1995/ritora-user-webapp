@@ -1,62 +1,88 @@
-'use client';
+"use client";
 
-import { useForm } from '@tanstack/react-form';
-import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { LocationStepFields } from '@/components/skin-profile/location-step-fields';
-import { RoutineComplexityStep } from '@/components/skin-profile/routine-complexity-step';
-import { StepActions } from '@/components/skin-profile/step-actions';
-import { StepIndicator } from '@/components/skin-profile/step-indicator';
-import { KnownSensitivitiesField } from '@/components/skin-profile/known-sensitivities-field';
-import { OptionChipGroup } from '@/components/skin-profile/option-chip-group';
-import { ProfileSelectField } from '@/components/skin-profile/profile-select-field';
-import { AppRoute } from '@/constants/app-routes';
+import { useForm } from "@tanstack/react-form";
+import { useCallback, useState } from "react";
+import { useTranslations } from "next-intl";
+import { ContextStepFields } from "@/components/skin-profile/context-step-fields";
+import { KnownSensitivitiesField } from "@/components/skin-profile/known-sensitivities-field";
+import { OptionChipGroup } from "@/components/skin-profile/option-chip-group";
+import { RoutineComplexityStep } from "@/components/skin-profile/routine-complexity-step";
+import { StepActions } from "@/components/skin-profile/step-actions";
+import { StepProgressBar } from "@/components/skin-profile/step-progress-bar";
 import {
   useCreateSkinProfile,
   useUpdateSkinProfile,
-} from '@/hooks/use-skin-profile';
-import { firstFieldError } from '@/lib/form-errors';
+} from "@/hooks/use-skin-profile";
+import { firstFieldError, type FieldIssue } from "@/lib/form-errors";
 import {
   clearSubmitErrors,
   executeMutation,
   readSubmissionErrorMessage,
-} from '@/lib/form-submission';
-import { getSkinProfileSubmitError } from '@/lib/skin-profile-submit-errors';
-import { getSkinProfileSetupStatus } from '@/lib/skin-profile-setup';
-import type { SkinProfile, SkinProfileOptions } from '@/types/skin-profile';
+} from "@/lib/form-submission";
+import { getSkinProfileSubmitError } from "@/lib/skin-profile-submit-errors";
 import {
   buildSkinProfilePayload,
   getSkinProfileFormValues,
   hasLocationData,
   skinProfileSchema,
   TOTAL_SKIN_PROFILE_STEPS,
-  type Step3ErrorKind,
-  validateLocationStep,
-} from './skin-profile-form.constants';
+  type SkinProfileFormValues,
+} from "./skin-profile-form.constants";
+import type { SkinProfile, SkinProfileOptions } from "@/types/skin-profile";
 
 interface SkinProfileFormProps {
   existingProfile?: SkinProfile | null;
   options: SkinProfileOptions;
+  initialStep?: number;
+  onCancel?: () => void;
+  onSaved?: () => void;
+}
+
+type SingleSelectField =
+  | "skinType"
+  | "skinTone"
+  | "ageRange"
+  | "ethnicity"
+  | "routineComplexity";
+
+type MultiSelectField = "currentConcerns" | "skinGoals";
+type StringField =
+  | "skinType"
+  | "skinTone"
+  | "ageRange"
+  | "ethnicity"
+  | "countryCode"
+  | "city"
+  | "routineComplexity";
+
+type SkinProfileFieldMeta = Partial<
+  Record<keyof SkinProfileFormValues, { errors?: ReadonlyArray<FieldIssue> }>
+>;
+
+function getFieldError(
+  fieldMeta: SkinProfileFieldMeta,
+  field: keyof SkinProfileFormValues,
+  translate: (key: string) => string,
+): string | undefined {
+  return firstFieldError(fieldMeta[field]?.errors, translate);
 }
 
 export function SkinProfileForm({
   existingProfile = null,
   options,
+  initialStep = 1,
+  onCancel,
+  onSaved,
 }: SkinProfileFormProps) {
-  const tCommon = useTranslations('common');
-  const tProfile = useTranslations('skinProfile');
-  const router = useRouter();
+  const t = useTranslations("skinProfile");
   const createProfile = useCreateSkinProfile();
   const updateProfile = useUpdateSkinProfile();
-  const [step, setStep] = useState(1);
-  const [sensitivityInput, setSensitivityInput] = useState('');
-  const [step3Error, setStep3Error] = useState<Step3ErrorKind>(null);
 
   const isEdit = Boolean(existingProfile);
-  const setupStatus = getSkinProfileSetupStatus(existingProfile);
   const mutation = isEdit ? updateProfile : createProfile;
-  const translateOption = (value: string) => tProfile(`options.${value}`);
+
+  const [step, setStep] = useState(() => clampStep(initialStep));
+  const [sensitivityInput, setSensitivityInput] = useState("");
 
   const form = useForm({
     defaultValues: getSkinProfileFormValues(existingProfile),
@@ -69,20 +95,60 @@ export function SkinProfileForm({
       onChange: skinProfileSchema,
       onSubmit: skinProfileSchema,
       onSubmitAsync: async ({ value }) => {
-        const payload = buildSkinProfilePayload(value, existingProfile, isEdit);
-        const result = await executeMutation(mutation.mutate, payload);
+        const result = await executeMutation(
+          mutation.mutate,
+          buildSkinProfilePayload(value, existingProfile, isEdit),
+        );
 
         if (result.error !== null) {
-          return getSkinProfileSubmitError(result.error, tProfile);
+          return getSkinProfileSubmitError(result.error, t);
         }
 
         return undefined;
       },
     },
     onSubmit: () => {
-      router.push(AppRoute.Dashboard);
+      onSaved?.();
     },
   });
+
+  const translateOption = useCallback(
+    (value: string) => t(`options.${value}`),
+    [t],
+  );
+
+  const updateStringField = (field: StringField, value: string) => {
+    form.setFieldValue(field, value);
+
+    if (
+      (field === "countryCode" || field === "city") &&
+      !hasLocationData(
+        field === "countryCode" ? String(value) : form.getFieldValue("countryCode"),
+        field === "city" ? String(value) : form.getFieldValue("city"),
+      )
+    ) {
+      form.setFieldValue("locationConsent", false);
+    }
+  };
+
+  const updateBooleanField = (
+    field: "locationConsent",
+    value: boolean,
+  ) => {
+    form.setFieldValue(field, value);
+  };
+
+  const toggleSingleSelect = (field: SingleSelectField, value: string) => {
+    form.setFieldValue(field, (previous) => (previous === value ? "" : value));
+  };
+
+  const toggleMultiSelect = (field: MultiSelectField, value: string) => {
+    form.setFieldValue(field, (previous) =>
+      previous.includes(value)
+        ? previous.filter((entry) => entry !== value)
+        : [...previous, value],
+    );
+  };
 
   const addSensitivity = () => {
     const trimmed = sensitivityInput.trim();
@@ -90,301 +156,231 @@ export function SkinProfileForm({
       return;
     }
 
-    const current = form.state.values.knownSensitivities;
-    if (current.includes(trimmed)) {
-      setSensitivityInput('');
-      return;
-    }
+    let wasAdded = false;
 
-    form.setFieldValue('knownSensitivities', [...current, trimmed]);
-    setSensitivityInput('');
+    form.setFieldValue("knownSensitivities", (previous) => {
+      const alreadyExists = previous.some(
+        (entry) => entry.toLocaleLowerCase() === trimmed.toLocaleLowerCase(),
+      );
+
+      if (alreadyExists) {
+        return previous;
+      }
+
+      wasAdded = true;
+      return [...previous, trimmed];
+    });
+
+    if (wasAdded) {
+      setSensitivityInput("");
+    }
   };
 
   const removeSensitivity = (value: string) => {
-    form.setFieldValue(
-      'knownSensitivities',
-      form.state.values.knownSensitivities.filter((item) => item !== value),
+    form.setFieldValue("knownSensitivities", (previous) =>
+      previous.filter((entry) => entry !== value),
     );
   };
 
-  const handleOptionToggle = (
-    fieldName: 'currentConcerns' | 'skinGoals',
-    value: string,
-  ) => {
-    const current = form.state.values[fieldName];
-    form.setFieldValue(
-      fieldName,
-      current.includes(value)
-        ? current.filter((item) => item !== value)
-        : [...current, value],
-    );
+  const canContinue = (): boolean => {
+    switch (step) {
+      case 1:
+        return Boolean(form.getFieldValue("skinType"));
+      case 4:
+        return Boolean(form.getFieldValue("routineComplexity"));
+      default:
+        return true;
+    }
   };
 
-  const handleNext = () => {
-    if (step === 3) {
-      const result = validateLocationStep(form.state.values);
-      if (result) {
-        setStep3Error(result);
-        return;
-      }
-      setStep3Error(null);
+  const isEditMode = Boolean(onCancel);
+
+  const handleBack = () => setStep((currentStep) => Math.max(1, currentStep - 1));
+
+  const handleContinue = () => {
+    if (mutation.isPending || !canContinue()) {
+      return;
     }
 
-    setStep((current) => current + 1);
+    if (isEditMode || step === TOTAL_SKIN_PROFILE_STEPS) {
+      void form.handleSubmit();
+      return;
+    }
+
+    setStep((currentStep) =>
+      Math.min(TOTAL_SKIN_PROFILE_STEPS, currentStep + 1),
+    );
   };
 
-  const handleBack = () => {
-    setStep3Error(null);
-    setStep((current) => current - 1);
+  const handleSkip = () => {
+    if (mutation.isPending) {
+      return;
+    }
+
+    void form.handleSubmit();
   };
 
   return (
-    <div className="animate-fade-up mx-auto max-w-2xl">
-      <h1 className="font-display text-4xl tracking-tight">
-        {isEdit
-          ? setupStatus.isCoreComplete
-            ? tProfile('editTitle')
-            : tProfile('continueTitle')
-          : tProfile('createTitle')}
-      </h1>
-      <p className="mt-2 text-sm text-muted">
-        {tProfile('step', { current: step, total: TOTAL_SKIN_PROFILE_STEPS })}
-      </p>
+    <form.Subscribe
+      selector={(state) => ({
+        values: state.values,
+        fieldMeta: state.fieldMeta as SkinProfileFieldMeta,
+        submitError: state.errorMap.onSubmit,
+        isSubmitting: state.isSubmitting,
+      })}
+    >
+      {({ values, fieldMeta, submitError, isSubmitting }) => {
+        const formError = readSubmissionErrorMessage(submitError);
+        const showLocationConsent = hasLocationData(
+          values.countryCode,
+          values.city,
+        );
 
-      <StepIndicator
-        currentStep={step}
-        totalSteps={TOTAL_SKIN_PROFILE_STEPS}
-      />
-
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          void form.handleSubmit();
-        }}
-        className="mt-8 space-y-6"
-        noValidate
-      >
-        {step === 1 ? (
-          <>
-            <form.Field name="skinType">
-              {(field) => (
-                <ProfileSelectField
-                  id={field.name}
-                  label={tProfile('skinType')}
-                  value={field.state.value}
-                  options={options.skinTypes}
-                  placeholder={tCommon('selectPlaceholder')}
-                  onBlur={field.handleBlur}
-                  onChange={field.handleChange}
-                  translateOption={translateOption}
-                />
-              )}
-            </form.Field>
-
-            <form.Field name="skinTone">
-              {(field) => (
-                <ProfileSelectField
-                  id={field.name}
-                  label={tProfile('skinTone')}
-                  value={field.state.value}
-                  options={options.skinTones}
-                  placeholder={tCommon('selectPlaceholder')}
-                  onBlur={field.handleBlur}
-                  onChange={field.handleChange}
-                  translateOption={translateOption}
-                />
-              )}
-            </form.Field>
-
-            <form.Field name="ageRange">
-              {(field) => (
-                <ProfileSelectField
-                  id={field.name}
-                  label={tProfile('ageRange')}
-                  value={field.state.value}
-                  options={options.ageRanges}
-                  placeholder={tCommon('selectPlaceholder')}
-                  onBlur={field.handleBlur}
-                  onChange={field.handleChange}
-                  translateOption={translateOption}
-                />
-              )}
-            </form.Field>
-          </>
-        ) : null}
-
-        {step === 2 ? (
-          <>
-            <OptionChipGroup
-              label={tProfile('concerns')}
-              options={options.concerns}
-              values={form.state.values.currentConcerns}
-              onToggle={(value) => handleOptionToggle('currentConcerns', value)}
-              translateOption={translateOption}
+        return (
+          <div className="mx-auto max-w-xl">
+            <StepProgressBar
+              currentStep={step}
+              totalSteps={TOTAL_SKIN_PROFILE_STEPS}
             />
 
-            <OptionChipGroup
-              label={tProfile('goals')}
-              options={options.goals}
-              values={form.state.values.skinGoals}
-              onToggle={(value) => handleOptionToggle('skinGoals', value)}
-              translateOption={translateOption}
-            />
+            <div className="mt-8">
+              <h1 className="text-xl font-semibold tracking-tight text-foreground">
+                {t(`steps.${stepKey(step)}.heading`)}
+              </h1>
+              <p className="mt-1 text-sm text-muted">
+                {t(`steps.${stepKey(step)}.description`)}
+              </p>
+            </div>
 
-            <KnownSensitivitiesField
-              label={tProfile('sensitivities')}
-              placeholder={tProfile('sensitivityPlaceholder')}
-              addLabel={tProfile('addSensitivity')}
-              emptyLabel={tProfile('noSensitivities')}
-              removeLabel={(value) =>
-                tProfile('removeSensitivityLabel', { value })
-              }
-              inputValue={sensitivityInput}
-              values={form.state.values.knownSensitivities}
-              onInputChange={setSensitivityInput}
-              onInputKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.preventDefault();
-                  addSensitivity();
-                }
-              }}
-              onAdd={addSensitivity}
-              onRemove={removeSensitivity}
-            />
-          </>
-        ) : null}
+            <div className="mt-8">
+              {step === 1 ? (
+                <>
+                  <OptionChipGroup
+                    options={options.skinTypes}
+                    values={values.skinType ? [values.skinType] : []}
+                    onToggle={(value) => toggleSingleSelect("skinType", value)}
+                    translateOption={translateOption}
+                    multiSelect={false}
+                  />
+                  {getFieldError(fieldMeta, "skinType", t) ? (
+                    <p className="mt-4 text-sm text-danger" role="alert">
+                      {getFieldError(fieldMeta, "skinType", t)}
+                    </p>
+                  ) : null}
+                </>
+              ) : null}
 
-        {step === 3 ? (
-          <>
-            <form.Subscribe
-              selector={(state) => ({
-                countryCode: state.values.countryCode,
-                city: state.values.city,
-                locationConsent: state.values.locationConsent,
-              })}
-            >
-              {({ countryCode, city, locationConsent }) => (
-                <form.Field name="ethnicity">
-                  {(ethnicityField) => (
-                    <form.Field name="countryCode">
-                      {(countryField) => (
-                        <form.Field name="city">
-                          {(cityField) => (
-                            <form.Field name="locationConsent">
-                              {(locationConsentField) => (
-                                <LocationStepFields
-                                  ethnicityLabel={tProfile('ethnicity')}
-                                  ethnicityValue={ethnicityField.state.value}
-                                  ethnicityOptions={options.ethnicities}
-                                  countryLabel={tProfile('country')}
-                                  countryHelp={tProfile('countryHelp')}
-                                  countryPlaceholder={tProfile(
-                                    'countryPlaceholder',
-                                  )}
-                                  countryValue={countryCode}
-                                  countryError={
-                                    countryField.state.meta.isTouched ||
-                                    countryField.state.meta.isDirty ||
-                                    step3Error === 'country'
-                                      ? firstFieldError(
-                                          countryField.state.meta.errors,
-                                          tProfile,
-                                        )
-                                      : undefined
-                                  }
-                                  cityLabel={tProfile('city')}
-                                  cityPlaceholder={tProfile('cityPlaceholder')}
-                                  cityValue={city}
-                                  locationConsentLabel={tProfile(
-                                    'locationConsent',
-                                  )}
-                                  locationConsentValue={locationConsent}
-                                  showLocationConsent={hasLocationData(
-                                    countryCode,
-                                    city,
-                                  )}
-                                  onEthnicityBlur={ethnicityField.handleBlur}
-                                  onEthnicityChange={ethnicityField.handleChange}
-                                  onCountryBlur={countryField.handleBlur}
-                                  onCountryChange={(value) =>
-                                    countryField.handleChange(
-                                      value.toUpperCase().slice(0, 2),
-                                    )
-                                  }
-                                  onCityBlur={cityField.handleBlur}
-                                  onCityChange={cityField.handleChange}
-                                  onLocationConsentChange={
-                                    locationConsentField.handleChange
-                                  }
-                                  translateOption={translateOption}
-                                  selectPlaceholder={tCommon(
-                                    'selectPlaceholder',
-                                  )}
-                                />
-                              )}
-                            </form.Field>
-                          )}
-                        </form.Field>
-                      )}
-                    </form.Field>
+              {step === 2 ? (
+                <>
+                  <OptionChipGroup
+                    options={options.concerns}
+                    values={values.currentConcerns}
+                    onToggle={(value) =>
+                      toggleMultiSelect("currentConcerns", value)
+                    }
+                    translateOption={translateOption}
+                  />
+                  {getFieldError(fieldMeta, "currentConcerns", t) ? (
+                    <p className="mt-4 text-sm text-danger" role="alert">
+                      {getFieldError(fieldMeta, "currentConcerns", t)}
+                    </p>
+                  ) : null}
+                  <KnownSensitivitiesField
+                    inputValue={sensitivityInput}
+                    values={values.knownSensitivities}
+                    errorText={getFieldError(fieldMeta, "knownSensitivities", t)}
+                    onInputChange={setSensitivityInput}
+                    onAdd={addSensitivity}
+                    onRemove={removeSensitivity}
+                  />
+                </>
+              ) : null}
+
+              {step === 3 ? (
+                <>
+                  <OptionChipGroup
+                    options={options.goals}
+                    values={values.skinGoals}
+                    onToggle={(value) => toggleMultiSelect("skinGoals", value)}
+                    translateOption={translateOption}
+                  />
+                  {getFieldError(fieldMeta, "skinGoals", t) ? (
+                    <p className="mt-4 text-sm text-danger" role="alert">
+                      {getFieldError(fieldMeta, "skinGoals", t)}
+                    </p>
+                  ) : null}
+                </>
+              ) : null}
+
+              {step === 4 ? (
+                <RoutineComplexityStep
+                  options={options.complexities}
+                  selectedValue={values.routineComplexity}
+                  errorText={getFieldError(fieldMeta, "routineComplexity", t)}
+                  onChange={(value) => updateStringField("routineComplexity", value)}
+                />
+              ) : null}
+
+              {step === 5 ? (
+                <ContextStepFields
+                  options={options}
+                  skinTone={values.skinTone}
+                  ageRange={values.ageRange}
+                  ethnicity={values.ethnicity}
+                  countryCode={values.countryCode}
+                  city={values.city}
+                  locationConsent={values.locationConsent}
+                  showConsent={showLocationConsent}
+                  countryCodeError={getFieldError(fieldMeta, "countryCode", t)}
+                  cityError={getFieldError(fieldMeta, "city", t)}
+                  locationConsentError={getFieldError(
+                    fieldMeta,
+                    "locationConsent",
+                    t,
                   )}
-                </form.Field>
-              )}
-            </form.Subscribe>
-            {step3Error === 'consent' ? (
-              <p className="text-sm text-danger" role="alert">
-                {tProfile('validation.locationConsentRequired')}
-              </p>
-            ) : null}
-          </>
-        ) : null}
+                  onSkinToneChange={(value) => updateStringField("skinTone", value)}
+                  onAgeRangeChange={(value) => updateStringField("ageRange", value)}
+                  onEthnicityChange={(value) => updateStringField("ethnicity", value)}
+                  onCountryCodeChange={(value) =>
+                    updateStringField("countryCode", value)
+                  }
+                  onCityChange={(value) => updateStringField("city", value)}
+                  onLocationConsentChange={(value) =>
+                    updateBooleanField("locationConsent", value)
+                  }
+                />
+              ) : null}
 
-        {step === 4 ? (
-          <RoutineComplexityStep
-            label={tProfile('routineComplexity')}
-            values={options.complexities}
-            selectedValue={form.state.values.routineComplexity}
-            onChange={(value) => form.setFieldValue('routineComplexity', value)}
-            translateOption={translateOption}
-          />
-        ) : null}
+              {formError ? (
+                <p className="mt-4 text-sm text-danger" role="alert">
+                  {formError}
+                </p>
+              ) : null}
+            </div>
 
-        <form.Subscribe selector={(state) => state.errorMap.onSubmit}>
-          {(submitError) => {
-            const message = readSubmissionErrorMessage(submitError);
-
-            return message ? (
-              <p className="text-sm text-danger" role="alert">
-                {message}
-              </p>
-            ) : null;
-          }}
-        </form.Subscribe>
-
-        <form.Subscribe
-          selector={(state) => ({
-            canSubmit: state.canSubmit,
-            isSubmitting: state.isSubmitting,
-          })}
-        >
-          {({ canSubmit, isSubmitting }) => (
             <StepActions
               step={step}
               totalSteps={TOTAL_SKIN_PROFILE_STEPS}
-              canSubmit={canSubmit}
-              isSubmitting={isSubmitting}
-              isPending={mutation.isPending}
-              backLabel={tCommon('back')}
-              nextLabel={tCommon('next')}
-              saveLabel={tProfile('saveProfile')}
-              savingLabel={tProfile('savingProfile')}
+              canContinue={canContinue()}
+              isSubmitting={isSubmitting || mutation.isPending}
+              isOptionalStep={step === TOTAL_SKIN_PROFILE_STEPS}
               onBack={handleBack}
-              onNext={handleNext}
+              onContinue={handleContinue}
+              onSkip={handleSkip}
+              onCancel={onCancel}
             />
-          )}
-        </form.Subscribe>
-      </form>
-    </div>
+          </div>
+        );
+      }}
+    </form.Subscribe>
   );
+}
+
+function stepKey(step: number): string {
+  const keys = ["skinType", "concerns", "goals", "routine", "context"];
+  return keys[step - 1] ?? "skinType";
+}
+
+function clampStep(step: number): number {
+  return Math.min(Math.max(step, 1), TOTAL_SKIN_PROFILE_STEPS);
 }

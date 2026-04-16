@@ -12,6 +12,7 @@ export enum ApiPath {
   AuthResetPassword = '/auth/reset-password',
   AuthExport = '/auth/export',
   AuthAccount = '/auth/account',
+  UsersMe = '/users/me',
   SkinProfile = '/skin-profile',
   SkinProfileOptions = '/skin-profile/options',
 }

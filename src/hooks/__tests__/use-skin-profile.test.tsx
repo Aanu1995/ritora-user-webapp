@@ -1,5 +1,10 @@
-import { act, waitFor } from '@testing-library/react';
-import { renderHookWithProviders } from '@/test/utils';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { NextIntlClientProvider } from 'next-intl';
+import type { ReactNode } from 'react';
+import messages from '../../../messages/en.json';
+import { AppPreferencesProvider } from '@/components/preferences/app-preferences-provider';
+import { QueryKey } from '@/constants/query-keys';
 import { useAuthStore } from '@/stores/auth-store';
 import {
   useSkinProfile,
@@ -44,6 +49,32 @@ jest.mock('@/services/skin-profile.service', () => ({
 
 import * as skinProfileService from '@/services/skin-profile.service';
 
+function createTestQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+}
+
+function renderSkinProfileHook<T>(hook: () => T, queryClient?: QueryClient) {
+  const client = queryClient ?? createTestQueryClient();
+
+  return {
+    queryClient: client,
+    ...renderHook(hook, {
+      wrapper: ({ children }: { children: ReactNode }) => (
+        <NextIntlClientProvider locale="en" messages={messages}>
+          <AppPreferencesProvider>
+            <QueryClientProvider client={client}>{children}</QueryClientProvider>
+          </AppPreferencesProvider>
+        </NextIntlClientProvider>
+      ),
+    }),
+  };
+}
+
 afterEach(() => {
   jest.clearAllMocks();
   useAuthStore.setState({
@@ -60,7 +91,7 @@ describe('useSkinProfile', () => {
       mockProfile,
     );
 
-    const { result } = renderHookWithProviders(() => useSkinProfile());
+    const { result } = renderSkinProfileHook(() => useSkinProfile());
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -73,7 +104,7 @@ describe('useSkinProfile', () => {
   it('does not fetch when unauthenticated', () => {
     useAuthStore.setState({ isAuthenticated: false });
 
-    const { result } = renderHookWithProviders(() => useSkinProfile());
+    const { result } = renderSkinProfileHook(() => useSkinProfile());
 
     expect(result.current.fetchStatus).toBe('idle');
   });
@@ -85,7 +116,7 @@ describe('useSkinProfileOptions', () => {
       mockOptions,
     );
 
-    const { result } = renderHookWithProviders(() => useSkinProfileOptions());
+    const { result } = renderSkinProfileHook(() => useSkinProfileOptions());
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -101,7 +132,11 @@ describe('useCreateSkinProfile', () => {
       mockProfile,
     );
 
-    const { result } = renderHookWithProviders(() => useCreateSkinProfile());
+    const queryClient = createTestQueryClient();
+    const { result } = renderSkinProfileHook(
+      () => useCreateSkinProfile(),
+      queryClient,
+    );
 
     await act(async () => {
       await result.current.mutateAsync({
@@ -114,6 +149,7 @@ describe('useCreateSkinProfile', () => {
       skinType: 'oily',
       currentConcerns: ['acne'],
     });
+    expect(queryClient.getQueryData([QueryKey.SkinProfile])).toEqual(mockProfile);
   });
 });
 
@@ -124,13 +160,21 @@ describe('useUpdateSkinProfile', () => {
       skinType: 'combination',
     });
 
-    const { result } = renderHookWithProviders(() => useUpdateSkinProfile());
+    const queryClient = createTestQueryClient();
+    const { result } = renderSkinProfileHook(
+      () => useUpdateSkinProfile(),
+      queryClient,
+    );
 
     await act(async () => {
       await result.current.mutateAsync({ skinType: 'combination' });
     });
 
     expect(skinProfileService.updateSkinProfile).toHaveBeenCalledWith({
+      skinType: 'combination',
+    });
+    expect(queryClient.getQueryData([QueryKey.SkinProfile])).toEqual({
+      ...mockProfile,
       skinType: 'combination',
     });
   });

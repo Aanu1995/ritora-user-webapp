@@ -1,12 +1,13 @@
 interface LoadingIndicatorProps {
   label?: string;
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
 const SIZE_CLASS: Record<NonNullable<LoadingIndicatorProps['size']>, string> = {
   sm: 'h-3.5 w-3.5 border-2',
   md: 'h-4 w-4 border-2',
+  lg: 'h-8 w-8 border-[3px]',
 };
 
 export function LoadingIndicator({

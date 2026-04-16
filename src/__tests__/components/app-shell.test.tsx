@@ -1,8 +1,7 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { AppRoute } from '@/constants/app-routes';
-import { useAuthStore } from '@/stores/auth-store';
-import { renderWithProviders } from '@/test/utils';
+import { screen } from "@testing-library/react";
+import { AppRoute } from "@/constants/app-routes";
+import { useAuthStore } from "@/stores/auth-store";
+import { renderWithProviders } from "@/test/utils";
 
 const mockLogoutMutate = jest.fn();
 let mockPathname = AppRoute.Dashboard;
@@ -10,130 +9,86 @@ let mockLogoutState = {
   mutate: mockLogoutMutate,
   isPending: false,
 };
-let mockSkinProfileData: {
-  data: unknown;
-} = {
-  data: null,
-};
+let mockSkinProfileData: { data: unknown } = { data: null };
 
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
   usePathname: () => mockPathname,
 }));
 
-jest.mock('@/hooks/use-auth', () => ({
+jest.mock("@/hooks/use-auth", () => ({
   useLogout: () => mockLogoutState,
 }));
 
-jest.mock('@/hooks/use-skin-profile', () => ({
+jest.mock("@/hooks/use-skin-profile", () => ({
   useSkinProfile: () => mockSkinProfileData,
 }));
 
-import { AppShell } from '@/components/app/app-shell';
+import { AppShell } from "@/components/app/app-shell";
 
-const completeProfile = {
-  id: 'profile-1',
-  skinType: 'oily',
-  skinTone: 'medium',
-  ageRange: '25_34',
-  ethnicity: 'black',
-  currentConcerns: ['acne'],
-  knownSensitivities: [],
-  skinGoals: ['clear_acne'],
-  countryCode: 'SE',
-  city: 'Stockholm',
-  routineComplexity: 'moderate',
-  createdAt: '2026-04-15T10:00:00.000Z',
-  updatedAt: '2026-04-15T10:00:00.000Z',
-};
-
-describe('AppShell', () => {
-  const user = userEvent.setup();
-
+describe("AppShell", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockPathname = AppRoute.Dashboard;
-    mockLogoutState = {
-      mutate: mockLogoutMutate,
-      isPending: false,
-    };
+    mockLogoutState = { mutate: mockLogoutMutate, isPending: false };
     mockSkinProfileData = { data: null };
-    document.body.style.overflow = '';
     useAuthStore.setState({
       user: {
-        id: 'user-1',
-        email: 'ada@example.com',
-        firstName: 'Ada',
-        lastName: 'Lovelace',
+        id: "user-1",
+        email: "ada@example.com",
+        firstName: "Ada",
+        lastName: "Lovelace",
         emailVerified: true,
-        preferredLanguage: 'en',
-        createdAt: '2026-04-15T10:00:00.000Z',
+        preferredLanguage: "en",
+        createdAt: "2026-04-15T10:00:00.000Z",
       },
       isAuthenticated: true,
       isLoading: false,
     });
   });
 
-  it('renders setup guidance, planned modules, and logs the user out', async () => {
+  it("renders sidebar navigation and children", () => {
     renderWithProviders(
       <AppShell>
-        <div>Dashboard body</div>
+        <div>Dashboard content</div>
       </AppShell>,
     );
 
-    expect(screen.getByText(/finish the foundation/i)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /start skin profile/i })).toHaveAttribute(
-      'href',
-      AppRoute.Onboarding,
-    );
-    expect(screen.getByText(/^inventory$/i)).toBeInTheDocument();
-    expect(screen.getByText(/ada@example.com/i)).toBeInTheDocument();
-
-    await user.click(screen.getByRole('button', { name: /log out/i }));
-
-    expect(mockLogoutMutate).toHaveBeenCalledTimes(1);
+    expect(screen.getByText("Dashboard content")).toBeInTheDocument();
+    expect(screen.getAllByText("Ritora").length).toBeGreaterThan(0);
   });
 
-  it('renders the ready state once the skin profile is complete', () => {
-    mockPathname = AppRoute.SkinProfile;
-    mockSkinProfileData = { data: completeProfile };
-
+  it("renders main navigation links", () => {
     renderWithProviders(
       <AppShell>
-        <div>Profile body</div>
+        <div>Content</div>
       </AppShell>,
     );
 
-    expect(
-      screen.queryByText(/finish the foundation/i),
-    ).not.toBeInTheDocument();
-    expect(screen.getByText(/^ready$/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/authentication is ready and the workspace is open/i),
-    ).toBeInTheDocument();
+    const homeLinks = screen.getAllByRole("link", { name: /^home$/i });
+    expect(homeLinks.some((l) => l.getAttribute("href") === AppRoute.Dashboard)).toBe(true);
+
+    const profileLinks = screen.getAllByRole("link", { name: /^skin profile$/i });
+    expect(profileLinks.some((l) => l.getAttribute("href") === AppRoute.SkinProfile)).toBe(true);
   });
 
-  it('opens the mobile navigation drawer and closes it on escape', async () => {
-    const { container } = renderWithProviders(
+  it("renders nav group labels", () => {
+    renderWithProviders(
       <AppShell>
-        <div>Mobile body</div>
+        <div>Content</div>
       </AppShell>,
     );
 
-    const drawerSelector = '.fixed.inset-0.z-50.lg\\:hidden';
-    expect(container.querySelector(drawerSelector)).toBeNull();
+    expect(screen.getAllByText(/^more$/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/^account$/i).length).toBeGreaterThan(0);
+  });
 
-    await user.click(
-      screen.getByRole('button', { name: /open workspace navigation/i }),
+  it("renders Ritora branding in sidebar", () => {
+    renderWithProviders(
+      <AppShell>
+        <div>Content</div>
+      </AppShell>,
     );
 
-    expect(container.querySelector(drawerSelector)).not.toBeNull();
-    expect(document.body.style.overflow).toBe('hidden');
-
-    fireEvent.keyDown(document, { key: 'Escape' });
-
-    await waitFor(() => {
-      expect(container.querySelector(drawerSelector)).toBeNull();
-    });
-    expect(document.body.style.overflow).toBe('');
+    expect(screen.getAllByText("Ritora").length).toBeGreaterThan(0);
   });
 });

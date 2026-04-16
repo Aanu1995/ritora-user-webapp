@@ -27,14 +27,14 @@ describe('AuthGuard', () => {
   it('shows spinner while loading', () => {
     useAuthStore.setState({ isLoading: true });
 
-    const { container } = render(
+    render(
       <AuthGuard>
         <div>Protected</div>
       </AuthGuard>,
     );
 
     expect(screen.queryByText('Protected')).not.toBeInTheDocument();
-    expect(container.querySelector('.animate-spin')).toBeInTheDocument();
+    expect(document.querySelector('.animate-spin')).toBeInTheDocument();
   });
 
   it('redirects to login when unauthenticated', () => {
@@ -68,14 +68,14 @@ describe('GuestGuard', () => {
   it('shows spinner while loading', () => {
     useAuthStore.setState({ isLoading: true });
 
-    const { container } = render(
+    render(
       <GuestGuard>
         <div>Guest Content</div>
       </GuestGuard>,
     );
 
     expect(screen.queryByText('Guest Content')).not.toBeInTheDocument();
-    expect(container.querySelector('.animate-spin')).toBeInTheDocument();
+    expect(document.querySelector('.animate-spin')).toBeInTheDocument();
   });
 
   it('redirects to dashboard when authenticated', () => {
@@ -109,14 +109,14 @@ describe('HomeRouteGuard', () => {
   it('shows spinner while loading', () => {
     useAuthStore.setState({ isLoading: true });
 
-    const { container } = render(
+    render(
       <HomeRouteGuard>
         <div>Landing Content</div>
       </HomeRouteGuard>,
     );
 
     expect(screen.queryByText('Landing Content')).not.toBeInTheDocument();
-    expect(container.querySelector('.animate-spin')).toBeInTheDocument();
+    expect(document.querySelector('.animate-spin')).toBeInTheDocument();
   });
 
   it('redirects to dashboard when authenticated', () => {

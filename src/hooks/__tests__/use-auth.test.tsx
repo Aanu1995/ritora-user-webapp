@@ -12,6 +12,7 @@ import {
   useForgotPassword,
   useResetPassword,
   useActiveSessions,
+  useUpdateProfile,
 } from '@/hooks/use-auth';
 
 const mockUser = {
@@ -35,6 +36,7 @@ jest.mock('@/services/auth.service', () => ({
   resendVerification: jest.fn(),
   forgotPassword: jest.fn(),
   resetPassword: jest.fn(),
+  updateProfile: jest.fn(),
 }));
 
 import * as authService from '@/services/auth.service';
@@ -322,5 +324,32 @@ describe('useResetPassword', () => {
       token: 'token',
       newPassword: 'NewPass1!',
     });
+  });
+});
+
+describe('useUpdateProfile', () => {
+  it('updates the current user in the auth store', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    (authService.updateProfile as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+    });
+
+    const { result } = renderHookWithProviders(() => useUpdateProfile());
+
+    await act(async () => {
+      await result.current.mutateAsync({
+        firstName: 'Ada',
+        lastName: 'Lovelace',
+      });
+    });
+
+    expect(authService.updateProfile).toHaveBeenCalledWith({
+      firstName: 'Ada',
+      lastName: 'Lovelace',
+    });
+    expect(useAuthStore.getState().user?.firstName).toBe('Ada');
+    expect(useAuthStore.getState().user?.lastName).toBe('Lovelace');
   });
 });

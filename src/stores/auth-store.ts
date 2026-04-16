@@ -17,6 +17,7 @@ type AuthState = {
   isAuthenticated: boolean;
   isLoading: boolean;
   setAuth: (user: User, accessToken: string) => void;
+  setUser: (user: User) => void;
   logout: () => void;
   hydrate: () => Promise<void>;
 };
@@ -37,6 +38,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     setAccessToken(accessToken);
     persistLocalePreference(user.preferredLanguage);
     set({ user, isAuthenticated: true, isLoading: false });
+  },
+
+  setUser: (user) => {
+    set({ user });
   },
 
   logout: () => {

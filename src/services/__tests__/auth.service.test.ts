@@ -1,5 +1,6 @@
 jest.mock('@/lib/api', () => ({
   getRequest: jest.fn(),
+  patchRequest: jest.fn(),
   postRequest: jest.fn(),
   setAccessToken: jest.fn(),
 }));
@@ -120,5 +121,16 @@ describe('auth.service', () => {
       token: 't',
       newPassword: 'p',
     });
+  });
+
+  it('updateProfile calls patchRequest with profile data', async () => {
+    const payload = { firstName: 'Ada', lastName: 'Lovelace' };
+    const mockResponse = { id: '1', ...payload };
+    (api.patchRequest as jest.Mock).mockResolvedValue(mockResponse);
+
+    const result = await authService.updateProfile(payload);
+
+    expect(api.patchRequest).toHaveBeenCalledWith('/users/me', payload);
+    expect(result).toEqual(mockResponse);
   });
 });

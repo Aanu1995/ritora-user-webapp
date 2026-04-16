@@ -300,71 +300,33 @@
     }
   },
   "dashboard": {
-    "title": "Översikt",
-    "eyebrow": "Arbetsyta",
-    "heroTitle": "Välkommen tillbaka, {firstName}",
-    "heroDescription": "Autentisering och hudprofil är den aktiva MVP-grunden just nu. Instrumentpanelen speglar nu den privata Ritora-arbetsytan från produktplanen, så setupen är tydlig och kommande moduler har redan en naturlig plats.",
-    "authReady": "Autentisering klar",
-    "profileSectionsReady": "profilsektioner klara",
-    "setupTitle": "Hudprofilsetup",
-    "setupDescription": "Slutför de viktigaste profiluppgifterna först. De är den tryggaste grunden för lageranalys, dagliga rutiner och framtida uppföljning.",
-    "setupReadyDescription": "Din kärnprofil är klar. Du kan fortfarande lägga till mer kontext för att göra framtida rekommendationer mer klimatmedvetna och mer personliga.",
-    "profileProgressLabel": "Framsteg",
-    "progressValue": "{completed} av {total} sektioner",
-    "recommendedBadge": "Rekommenderat",
-    "startProfile": "Starta hudprofil",
-    "continueProfile": "Fortsätt setup",
-    "reviewProfile": "Granska profil",
-    "openSettings": "Öppna inställningar",
-    "unlocksTitle": "Det här låser setupen upp härnäst",
-    "unlocksDescription": "Profilarbetet du gör nu matar de kommande delarna av Ritora, så instrumentpanelen ska guida dig in i setupen innan den ber dig göra något mer avancerat.",
-    "unlocks": {
-      "inventory": {
-        "title": "En smartare lagergrund",
-        "description": "Hudtyp, mål och kontext formar hur Ritora tolkar produkterna du lägger till senare."
-      },
-      "routines": {
-        "title": "Tryggare dagliga rutiner",
-        "description": "Rutinnivå, hudproblem och känsligheter hjälper Ritora att avgöra vad som ska användas, hoppas över eller roteras."
-      },
-      "progress": {
-        "title": "Mer användbar uppföljning",
-        "description": "En stark profil gör framtida check-ins, fototidslinjer och produktinsikter mycket mer relevanta."
-      }
+    "welcome": "Välkommen tillbaka, {firstName}",
+    "subtitle": "Här är vad som händer med din hudvård",
+    "profileCard": {
+      "title": "Hudprofil",
+      "complete": "Din hudprofil är redo. AI-rekommendationer kommer att använda detta.",
+      "incomplete": "Din hudprofil behöver några fler detaljer för att låsa upp alla rekommendationer.",
+      "notStarted": "Ställ in din hudprofil så att Ritora kan anpassa din upplevelse.",
+      "progress": "{completed} av {total} sektioner klara",
+      "start": "Starta hudprofil",
+      "continue": "Fortsätt setup",
+      "review": "Granska profil"
     },
-    "profileLoadErrorTitle": "Vi kunde inte ladda din hudprofil",
-    "profileLoadErrorDescription": "Du kan fortfarande öppna profilsidan och fortsätta setupen medan resten av arbetsytans struktur ligger på plats.",
-    "profileSummaryTitle": "Nuvarande profilöversikt",
-    "profileSummaryDescription": "Din kärnprofil är redo för nästa produktmoduler. Granska den när som helst innan lager- och rutinfunktionerna landar.",
-    "profileSummaryRecommendedDescription": "Din kärnprofil är redo, men mer kontext som etnicitet och plats kommer att stärka framtida rekommendationer.",
-    "profileInProgressTitle": "Profilen behöver fortfarande några detaljer",
-    "profileInProgressDescription": "Du har påbörjat din profil, men kärnsetupen är inte klar ännu. Fortsätt där du slutade.",
-    "summary": {
-      "skinType": "Hudtyp",
-      "goals": "Mål",
-      "concerns": "Hudproblem",
-      "routine": "Rutinpreferens",
-      "context": "Personlig kontext"
+    "suggestionCard": {
+      "title": "Dagens förslag",
+      "description": "Få AI-kurerade produktpar för din morgon- och kvällsvård.",
+      "cta": "Hämta förslag"
     },
-    "blueprintTitle": "Planerade arbetsytor",
-    "blueprintDescription": "De här sektionerna kommer direkt från planen: lager, rutiner, uppföljning och gapanalys. De syns redan nu så att den privata produkten får rätt informationsarkitektur från början.",
-    "sections": {
-      "basics": {
-        "title": "Hudgrunder",
-        "description": "Lägg till hudtyp, hudton och åldersintervall så att appen får en tydlig baslinje."
-      },
-      "priorities": {
-        "title": "Hudproblem och mål",
-        "description": "Berätta vad du vill förbättra och vad som behöver extra omsorg just nu."
-      },
-      "routine": {
-        "title": "Rutinpreferens",
-        "description": "Välj hur enkel eller omfattande du vill att rutinen ska kännas i vardagen."
-      },
-      "context": {
-        "title": "Personlig kontext",
-        "description": "Lägg till etnicitet plus land eller stad för mer klimatmedveten och hudmedveten vägledning senare."
-      }
+    "quickActions": {
+      "title": "Snabbåtgärder",
+      "addProduct": "Lägg till en produkt på hyllan",
+      "logCheckIn": "Logga en hudincheckning",
+      "smartPicks": "Se vad som saknas"
+    },
+    "recentActivity": {
+      "title": "Senaste aktivitet",
+      "empty": "Ingen senaste aktivitet ännu. Börja med att lägga till produkter på din hylla.",
+      "viewHistory": "Visa historik"
     }
   },
   "workspace": {
@@ -439,67 +401,64 @@
     }
   },
   "settings": {
-    "eyebrow": "Inställningar",
-    "title": "Inställningar för arbetsytan",
-    "subtitle": "Språk och tema hör hemma nära kärnarbetsytan. Den här sidan ger dessa kontroller ett tydligt hem, medan utloggning ligger kvar i sidopanelens fot där den är lätt att hitta men inte stör vardagliga uppgifter.",
-    "languageTitle": "Språk",
-    "languageDescription": "Byt språk direkt och behåll resten av arbetsytans struktur exakt där du förväntar dig den.",
-    "languageCurrent": "Aktuellt språk: {locale}",
-    "themeTitle": "Tema",
-    "themeDescription": "Välj om arbetsytan ska följa systemet eller vara fast i ljust eller mörkt läge.",
-    "themeCurrent": "Aktuellt tema: {theme}",
-    "themeOptions": {
-      "system": {
-        "label": "System",
-        "description": "Följ enhetens tema automatiskt."
-      },
-      "light": {
-        "label": "Ljust",
-        "description": "Använd den ljusare Ritora-paletten hela tiden."
-      },
-      "dark": {
-        "label": "Mörkt",
-        "description": "Använd den mörkare arbetsytans palett hela tiden."
-      }
+    "title": "Inställningar",
+    "subtitle": "Hantera ditt konto, utseende och preferenser.",
+    "tabs": {
+      "account": "Konto",
+      "appearance": "Utseende",
+      "language": "Språk",
+      "privacy": "Integritet"
     },
-    "resolvedThemes": {
-      "light": "Ljust",
-      "dark": "Mörkt"
+    "account": {
+      "profileTitle": "Profil",
+      "profileDescription": "Din kontoidentitet.",
+      "name": "Namn",
+      "firstName": "Förnamn",
+      "lastName": "Efternamn",
+      "email": "E-post",
+      "editName": "Redigera",
+      "save": "Spara",
+      "saving": "Sparar...",
+      "cancel": "Avbryt",
+      "nameRequired": "För- och efternamn krävs.",
+      "nameTooLong": "Namn får vara högst 100 tecken.",
+      "nameUpdated": "Namnet har uppdaterats.",
+      "nameUpdateFailed": "Vi kunde inte uppdatera ditt namn. Försök igen.",
+      "sessionsTitle": "Session",
+      "sessionsDescription": "Hantera din nuvarande inloggning.",
+      "signOut": "Logga ut",
+      "signOutDescription": "Avsluta din nuvarande session på denna enhet.",
+      "signOutButton": "Logga ut",
+      "signingOut": "Loggar ut..."
     },
-    "guidanceTitle": "Stil för vägledning",
-    "guidanceDescription": "Spara en preferens för hur framtida rutinförklaringar ska skrivas när mer AI-vägledning landar.",
-    "plainLanguageTitle": "Klarspråksläge",
-    "plainLanguageDescription": "Håll ingrediens- och rutinförklaringar enklare när framtida rekommendationsvyer går live.",
-    "accountTitle": "Kontoöversikt",
-    "accountDescription": "Inställningar ska förklara arbetsytan, inte överbelasta den. Kontoinformationen bor här, medan utloggning ligger kvar i sidopanelens fot intill navigeringen.",
-    "accountName": "Namn",
-    "accountEmail": "E-post",
-    "logoutPlacementTitle": "Varför utloggning ligger i sidopanelens fot",
-    "logoutPlacementDescription": "Att logga ut är viktigt, men det ska inte konkurrera med vardagliga åtgärder som att växla mellan Översikt, Hudprofil och Inställningar. Sidopanelens fot gör den ständig, förutsägbar och tydligt separerad från huvudflödet.",
-    "notificationsTitle": "Plan för notifieringar",
-    "notificationsDescription": "De här påminnelsekontrollerna kommer att bo här när rutingenerering och uppföljning är implementerade.",
-    "notifications": {
-      "morning": {
-        "title": "Rutinförfrågningar",
-        "description": "Påminnelser på morgon och kväll för rutinerna som Ritora förbereder åt dig."
-      },
-      "progress": {
-        "title": "Påminnelser om uppföljning",
-        "description": "Check-ins och framtida fotopåminnelser för att följa förändringar över tid."
-      },
-      "inventory": {
-        "title": "Lagerlarm",
-        "description": "Varningar om låg nivå, utgångsdatum och påfyllning när produktspårning är live."
-      }
+    "appearance": {
+      "themeTitle": "Tema",
+      "themeDescription": "Välj hur Ritora ser ut på din enhet.",
+      "themeSystem": "System",
+      "themeLight": "Ljust",
+      "themeDark": "Mörkt",
+      "accessibilityTitle": "Tillgänglighet",
+      "accessibilityDescription": "Justera hur innehåll visas.",
+      "plainLanguage": "Klarspråksläge",
+      "plainLanguageDescription": "Använd enklare namn för ingredienser och hudvårdstermer."
     },
-    "privacyTitle": "Integritet och juridik",
-    "privacyDescription": "Snabblänkar till policys som ligger bakom autentisering, huddata och framtida rutinhistorik.",
-    "privacyLinks": {
-      "privacy": "Integritetspolicy",
-      "terms": "Användarvillkor",
-      "cookies": "Cookieinformation"
+    "language": {
+      "title": "Visningsspråk",
+      "description": "Ändra språket som används i gränssnittet.",
+      "displayLanguage": "Språk",
+      "current": "Aktuellt: {locale}"
     },
-    "privacyFootnote": "Dataexport, radering och notifieringskontroller kommer att växa här när kontoytan utökas."
+    "privacy": {
+      "legalTitle": "Juridik",
+      "legalDescription": "Granska policyerna bakom dina data och ditt konto.",
+      "privacyPolicy": "Integritetspolicy",
+      "termsOfService": "Användarvillkor",
+      "cookieNotice": "Cookieinformation",
+      "view": "Visa",
+      "dataTitle": "Dina data",
+      "dataDescription": "Export- och raderingskontroller.",
+      "dataExportNote": "Dataexport och kontoborttagning kommer att finnas här när produkten växer."
+    }
   },
   "onboarding": {
     "eyebrow": "Guidad setup",
@@ -605,33 +564,68 @@
   },
   "skinProfile": {
     "title": "Hudprofil",
-    "createTitle": "Slutför hudprofil",
-    "continueTitle": "Fortsätt hudprofilsetup",
-    "editTitle": "Redigera hudprofil",
-    "skinType": "Hudtyp",
-    "skinTone": "Hudton",
-    "ageRange": "Åldersintervall",
-    "ethnicity": "Etnicitet",
-    "concerns": "Hudproblem",
-    "goals": "Hudvårdsmål",
-    "sensitivities": "Kända känsligheter",
-    "routineComplexity": "Rutinpreferens",
-    "country": "Land",
-    "city": "Stad",
-    "countryHelp": "Landskod (ISO 2-bokstav)",
-    "locationConsent": "Jag samtycker till platsbehandling för personliga rekommendationer",
-    "locationConsentRequired": "Platssamtycke krävs när land eller stad anges",
-    "step": "Steg {current} av {total}",
-    "addSensitivity": "Lägg till känslighet",
-    "sensitivityPlaceholder": "Lägg till en känslighet eller tidigare reaktion",
-    "noSensitivities": "Inga känsligheter tillagda ännu",
-    "removeSensitivityLabel": "Ta bort {value}",
-    "countryPlaceholder": "t.ex. SE",
-    "cityPlaceholder": "t.ex. Stockholm",
-    "saveProfile": "Spara profil",
-    "savingProfile": "Sparar...",
     "failedToLoad": "Vi kunde inte ladda din profil just nu. Försök igen.",
-    "failedToSave": "Vi kunde inte spara din profil. Försök igen.",
+    "submitError": "Vi kunde inte spara din profil. Försök igen.",
+    "selectPlaceholder": "Välj...",
+    "locationConsent": "Jag samtycker till att Ritora behandlar mina platsdata för personlig vägledning.",
+    "steps": {
+      "back": "Tillbaka",
+      "cancel": "Avbryt",
+      "continue": "Fortsätt",
+      "skip": "Hoppa över",
+      "save": "Spara profil",
+      "saving": "Sparar...",
+      "stepOf": "Steg {current} av {total}",
+      "skinType": {
+        "heading": "Vad beskriver din hud bäst?",
+        "description": "Det här hjälper Ritora att förstå din baslinje och undvika ingredienskonflikter."
+      },
+      "concerns": {
+        "heading": "Vad oroar dig mest?",
+        "description": "Välj allt som gäller. Det här påverkar vilka ingredienser Ritora prioriterar."
+      },
+      "goals": {
+        "heading": "Vilka är dina hudvårdsmål?",
+        "description": "Välj det som betyder mest. Ritora använder det för att föreslå rätt produkter."
+      },
+      "routine": {
+        "heading": "När brukar du göra din hudvård?",
+        "description": "Ritora föreslår rätt produkter från din hylla vid dessa tider. AI:n väljer vad du ska använda baserat på dina mål."
+      },
+      "context": {
+        "heading": "Lite mer om dig",
+        "description": "Valfria detaljer som hjälper Ritora ge mer klimat- och hudmedveten vägledning."
+      }
+    },
+    "overview": {
+      "title": "Hudprofil",
+      "description": "Berätta för Ritora om din hud så att varje förslag passar dig.",
+      "edit": "Redigera",
+      "notSet": "Inte angiven"
+    },
+    "fieldLabels": {
+      "skinType": "Hudtyp",
+      "skinTone": "Hudton",
+      "ageRange": "Åldersintervall",
+      "ethnicity": "Etnicitet",
+      "concerns": "Hudproblem",
+      "sensitivities": "Känsligheter",
+      "goals": "Mål",
+      "routine": "Rutin",
+      "aboutYou": "Om dig",
+      "countryCode": "Landskod",
+      "city": "Stad"
+    },
+    "sensitivitiesLabel": "Kända känsligheter",
+    "sensitivitiesHint": "Ingredienser eller produkter som orsakat reaktioner tidigare.",
+    "sensitivitiesPlaceholder": "t.ex. Doft, Niacinamid",
+    "sensitivitiesAdd": "Lägg till",
+    "sensitivitiesRemove": "Ta bort {value}",
+    "routineDescriptions": {
+      "minimal": "Det viktigaste. Morgonrutin för skydd, kvällsrutin för reparation.",
+      "moderate": "Lägger till en uppfräschning mitt på dagen mellan dina huvudrutiner.",
+      "comprehensive": "Full flexibilitet. Morgon, mitt på dagen, kväll, plus situationsförslag."
+    },
     "validation": {
       "invalidCountryCode": "Landskoden måste vara 2 bokstäver (t.ex. SE).",
       "locationConsentRequired": "Platssamtycke krävs när land eller stad anges.",
@@ -682,14 +676,96 @@
       "minimize_pores": "Minimera porer",
       "even_tone": "Jämn ton",
       "general_maintenance": "Allmänt underhåll",
-      "minimal": "Minimal (2-3 steg)",
-      "moderate": "Måttlig (4-5 steg)",
-      "comprehensive": "Omfattande (6+ steg)"
+      "minimal": "Morgon och kväll",
+      "moderate": "Morgon, mitt på dagen och kväll",
+      "comprehensive": "När Ritora föreslår"
     }
   },
   "cookies": {
     "message": "Vi använder nödvändiga cookies för autentisering. Inga spårningscookies används.",
     "accept": "Acceptera",
     "reject": "Avvisa"
+  },
+  "sidebar": {
+    "toggleSidebar": "Växla sidofält",
+    "navigation": "Navigation",
+    "groups": {
+      "main": "Huvud",
+      "more": "Mer",
+      "account": "Konto"
+    },
+    "soonBadge": "Snart",
+    "items": {
+      "home": "Hem",
+      "skinProfile": "Hudprofil",
+      "shelf": "Hylla",
+      "todaysSuggestion": "Dagens förslag",
+      "skinJournal": "Huddagbok",
+      "smartPicks": "Smarta val",
+      "history": "Historik",
+      "insights": "Insikter",
+      "notifications": "Aviseringar",
+      "settings": "Inställningar"
+    },
+    "descriptions": {
+      "homeDescription": "Daglig översikt med installationsframsteg och vad som behöver uppmärksamhet.",
+      "skinProfileDescription": "Din hudtyp, bekymmer, mål och platskontext.",
+      "shelfDescription": "Lägg till och hantera de hudvårdsprodukter du äger.",
+      "todaysSuggestionDescription": "AI-kurerade produktpar för din morgon- och kvällsvård.",
+      "skinJournalDescription": "Spåra hudframsteg, ladda upp foton och logga reaktioner.",
+      "smartPicksDescription": "AI-driven gapanalys och produktförslag.",
+      "historyDescription": "Tidigare förslag, applicerade produkter och användningstidslinje.",
+      "insightsDescription": "Utgiftsanalys, ingrediensrapporter och konsistenspoäng.",
+      "notificationsDescription": "Rutinpåminnelser, utgångsdatumsvarningar och incheckningsprompts.",
+      "settingsDescription": "Språk, tema och preferenskontroller."
+    },
+    "badges": {
+      "start": "Starta",
+      "continue": "Fortsätt",
+      "ready": "Redo"
+    },
+    "setupTitle": "Slutför grunden",
+    "setupStartDescription": "Ställ in din hudprofil så att Ritora kan anpassa din upplevelse.",
+    "setupContinueDescription": "Fortsätt din hudprofil för att låsa upp hela arbetsytan.",
+    "startSkinProfile": "Starta hudprofil",
+    "continueSkinProfile": "Fortsätt hudprofil",
+    "userFooter": {
+      "accountReady": "Arbetsytan är redo.",
+      "accountNeedsSetup": "Hudprofilen behöver uppmärksamhet.",
+      "logout": "Logga ut",
+      "loggingOut": "Loggar ut..."
+    }
+  },
+  "comingSoon": {
+    "eyebrow": "Kommer snart",
+    "backToDashboard": "Tillbaka till Hem",
+    "shelf": {
+      "title": "Hylla",
+      "description": "Lägg till och hantera de hudvårdsprodukter du äger. Skanna streckkoder, sök efter namn, klistra in produktlänkar eller ange detaljer manuellt. Detta är ditt digitala badrumsskåp."
+    },
+    "todaysSuggestion": {
+      "title": "Dagens förslag",
+      "description": "AI-kurerade produktpar från din hylla för hela dagen. Morgon- och kvällsförslag anländer vid dina föredragna tider. Begär förslag när som helst. Markera vad du faktiskt applicerade."
+    },
+    "skinJournal": {
+      "title": "Huddagbok",
+      "description": "Spåra din hudframsteg över tid. Ladda upp foton, logga reaktioner, registrera dagliga inceckningar och låt AI upptäcka förändringar innan de eskalerar."
+    },
+    "smartPicks": {
+      "title": "Smarta val",
+      "description": "AI-drivna produktförslag, gapanalys, startkit för nybörjare och vad som verkligen saknas från din hylla. Budget- och platsmedveten."
+    },
+    "history": {
+      "title": "Historik",
+      "description": "Tidigare förslag jämfört med vad du faktiskt applicerade, produktanvändningstidslinje, återköpsspårning och en post av varje begäran."
+    },
+    "insights": {
+      "title": "Insikter",
+      "description": "Utgiftsanalys, ingrediensexponeringsrapporter, rutinkonsistenspoäng, produkt-ROI och AI-genererade framstegsinsikter över tid."
+    },
+    "notifications": {
+      "title": "Aviseringar",
+      "description": "Rutinpåminnelser, produktutgångsvarningar, låg lagernivåvarningar, framstegsincheckningar och vilopåminnelser. Allt konfigurerbart efter ditt schema."
+    }
   }
 }

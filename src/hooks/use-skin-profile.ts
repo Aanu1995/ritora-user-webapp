@@ -38,8 +38,8 @@ export function useCreateSkinProfile() {
   return useMutation({
     mutationFn: (data: SkinProfileInput) =>
       skinProfileService.createSkinProfile(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKey.SkinProfile] });
+    onSuccess: (profile) => {
+      queryClient.setQueryData([QueryKey.SkinProfile], profile);
     },
   });
 }
@@ -50,8 +50,8 @@ export function useUpdateSkinProfile() {
   return useMutation({
     mutationFn: (data: SkinProfileInput) =>
       skinProfileService.updateSkinProfile(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QueryKey.SkinProfile] });
+    onSuccess: (profile) => {
+      queryClient.setQueryData([QueryKey.SkinProfile], profile);
     },
   });
 }

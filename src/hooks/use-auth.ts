@@ -10,6 +10,8 @@ import type {
   RegisterInput,
   RegisterResponse,
   ResetPasswordInput,
+  UpdateProfileInput,
+  User,
 } from '@/types/auth';
 
 const EMAIL_NOT_VERIFIED_CODE = 'EMAIL_NOT_VERIFIED';
@@ -130,5 +132,18 @@ export function useActiveSessions() {
     queryKey: [QueryKey.AuthSessions],
     queryFn: () => authService.getActiveSessions(),
     enabled: isAuthenticated,
+  });
+}
+
+export function useUpdateProfile() {
+  const setUser = useAuthStore((s) => s.setUser);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdateProfileInput) => authService.updateProfile(data),
+    onSuccess: (user) => {
+      setUser(user);
+      queryClient.setQueryData<User>([QueryKey.AuthMe], user);
+    },
   });
 }

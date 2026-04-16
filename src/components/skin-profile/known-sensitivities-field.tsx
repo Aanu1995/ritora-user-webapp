@@ -1,80 +1,92 @@
-import type { KeyboardEvent } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+"use client";
+
+import type { KeyboardEvent } from "react";
+import { useTranslations } from "next-intl";
+import { Plus, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface KnownSensitivitiesFieldProps {
-  label: string;
-  placeholder: string;
-  addLabel: string;
-  emptyLabel: string;
-  removeLabel: (value: string) => string;
   inputValue: string;
   values: string[];
+  errorText?: string;
   onInputChange: (value: string) => void;
-  onInputKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
   onAdd: () => void;
   onRemove: (value: string) => void;
 }
 
 export function KnownSensitivitiesField({
-  label,
-  placeholder,
-  addLabel,
-  emptyLabel,
-  removeLabel,
   inputValue,
   values,
+  errorText,
   onInputChange,
-  onInputKeyDown,
   onAdd,
   onRemove,
 }: KnownSensitivitiesFieldProps) {
+  const t = useTranslations("skinProfile");
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onAdd();
+    }
+  };
+
   return (
-    <div>
-      <Label className="block text-sm font-medium" htmlFor="sensitivityInput">
-        {label}
-      </Label>
-      <div className="mt-2 flex gap-2">
+    <div className="mt-8">
+      <p className="text-sm font-medium text-foreground">
+        {t("sensitivitiesLabel")}
+      </p>
+      <p className="mt-1 text-sm text-muted">{t("sensitivitiesHint")}</p>
+
+      <div className="mt-3 flex gap-2">
         <Input
-          id="sensitivityInput"
           type="text"
           value={inputValue}
-          onChange={(event) => onInputChange(event.target.value)}
-          onKeyDown={onInputKeyDown}
-          placeholder={placeholder}
+          onChange={(e) => onInputChange(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={t("sensitivitiesPlaceholder")}
           className="flex-1"
         />
         <Button
           type="button"
           variant="outline"
+          size="sm"
           onClick={onAdd}
-          className="rounded-xl"
+          disabled={!inputValue.trim()}
+          className="gap-1.5 rounded-full px-4"
         >
-          {addLabel}
+          <Plus className="h-3.5 w-3.5" />
+          {t("sensitivitiesAdd")}
         </Button>
       </div>
+
+      {errorText ? (
+        <p className="mt-3 text-sm text-danger" role="alert">
+          {errorText}
+        </p>
+      ) : null}
 
       {values.length > 0 ? (
         <div className="mt-3 flex flex-wrap gap-2">
           {values.map((value) => (
-            <Button
+            <span
               key={value}
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => onRemove(value)}
-              className="rounded-full bg-surface"
-              aria-label={removeLabel(value)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-muted px-3 py-1.5 text-sm text-foreground"
             >
-              <span>{value}</span>
-              <span aria-hidden="true">×</span>
-            </Button>
+              {value}
+              <button
+                type="button"
+                onClick={() => onRemove(value)}
+                className="cursor-pointer rounded-full text-muted transition-colors hover:text-foreground"
+                aria-label={t("sensitivitiesRemove", { value })}
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </span>
           ))}
         </div>
-      ) : (
-        <p className="mt-3 text-sm text-muted">{emptyLabel}</p>
-      )}
+      ) : null}
     </div>
   );
 }

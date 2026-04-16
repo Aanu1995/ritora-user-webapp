@@ -1,4 +1,4 @@
-import { getRequest, postRequest } from '@/lib/api';
+import { getRequest, patchRequest, postRequest } from '@/lib/api';
 import { ApiPath } from '@/constants/api-paths';
 import type {
   AuthResponse,
@@ -9,6 +9,7 @@ import type {
   RegisterResponse,
   ResetPasswordInput,
   Session,
+  UpdateProfileInput,
   User,
 } from '@/types/auth';
 
@@ -58,4 +59,8 @@ export async function resetPassword(
   data: ResetPasswordInput,
 ): Promise<MessageResponse> {
   return postRequest<MessageResponse>(ApiPath.AuthResetPassword, data);
+}
+
+export async function updateProfile(data: UpdateProfileInput): Promise<User> {
+  return patchRequest<User>(ApiPath.UsersMe, data);
 }

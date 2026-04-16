@@ -1,74 +1,97 @@
-import { Button } from '@/components/ui/button';
-import { LoadingIndicator } from '@/components/ui/loading-indicator';
+"use client";
+
+import { useTranslations } from "next-intl";
+import { ArrowLeft, ArrowRight, Loader2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface StepActionsProps {
   step: number;
   totalSteps: number;
-  canSubmit: boolean;
+  canContinue: boolean;
   isSubmitting: boolean;
-  isPending: boolean;
-  backLabel: string;
-  nextLabel: string;
-  saveLabel: string;
-  savingLabel: string;
+  isOptionalStep?: boolean;
   onBack: () => void;
-  onNext: () => void;
+  onContinue: () => void;
+  onSkip?: () => void;
+  onCancel?: () => void;
 }
 
 export function StepActions({
   step,
   totalSteps,
-  canSubmit,
+  canContinue,
   isSubmitting,
-  isPending,
-  backLabel,
-  nextLabel,
-  saveLabel,
-  savingLabel,
+  isOptionalStep = false,
   onBack,
-  onNext,
+  onContinue,
+  onSkip,
+  onCancel,
 }: StepActionsProps) {
-  const showSubmit = step === totalSteps;
+  const t = useTranslations("skinProfile");
+  const isFirstStep = step === 1;
+  const isLastStep = step === totalSteps;
+  const isEditMode = Boolean(onCancel);
+  const showSaveLabel = isEditMode || isLastStep;
 
   return (
-    <div className="flex justify-between">
-      {step > 1 ? (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onBack}
-          className="rounded-xl"
-        >
-          {backLabel}
-        </Button>
-      ) : (
-        <div />
-      )}
+    <div className="flex items-center justify-between pt-8">
+      <div className="flex items-center gap-2">
+        {isEditMode ? (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onCancel}
+            disabled={isSubmitting}
+            className="gap-2"
+          >
+            <X className="h-4 w-4" />
+            {t("steps.cancel")}
+          </Button>
+        ) : !isFirstStep ? (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onBack}
+            disabled={isSubmitting}
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {t("steps.back")}
+          </Button>
+        ) : null}
+      </div>
 
-      {showSubmit ? (
-        <Button
-          type="submit"
-          disabled={!canSubmit || isSubmitting || isPending}
-          className="rounded-xl"
-        >
-          {isPending || isSubmitting ? (
-            <LoadingIndicator
-              label={savingLabel}
-              className="inline-flex items-center gap-2"
-            />
-          ) : (
-            saveLabel
-          )}
-        </Button>
-      ) : (
+      <div className="flex items-center gap-3">
+        {isOptionalStep && onSkip && !isEditMode ? (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={onSkip}
+            disabled={isSubmitting}
+          >
+            {t("steps.skip")}
+          </Button>
+        ) : null}
+
         <Button
           type="button"
-          onClick={onNext}
-          className="rounded-xl"
+          onClick={onContinue}
+          disabled={!canContinue || isSubmitting}
+          className="gap-2"
         >
-          {nextLabel}
+          {isSubmitting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : null}
+          {showSaveLabel
+            ? isSubmitting
+              ? t("steps.saving")
+              : t("steps.save")
+            : t("steps.continue")}
+          {!showSaveLabel && !isSubmitting ? (
+            <ArrowRight className="h-4 w-4" />
+          ) : null}
         </Button>
-      )}
+      </div>
     </div>
   );
 }

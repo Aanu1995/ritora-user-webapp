@@ -4,7 +4,7 @@ import type {
   SkinProfileInput,
 } from '@/types/skin-profile';
 
-export const TOTAL_SKIN_PROFILE_STEPS = 4;
+export const TOTAL_SKIN_PROFILE_STEPS = 5;
 export const countryCodePattern = /^[A-Za-z]{2}$/;
 
 export const skinProfileSchema = z

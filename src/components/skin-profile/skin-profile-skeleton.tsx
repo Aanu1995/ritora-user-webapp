@@ -2,25 +2,29 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function SkinProfileSkeleton() {
   return (
-    <div className="mx-auto max-w-2xl animate-fade-up">
-      <div className="space-y-3">
-        <Skeleton className="h-12 w-72" />
-        <Skeleton className="h-4 w-28" />
-        <div className="flex gap-1">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <Skeleton key={index} className="h-1.5 flex-1 rounded-full" />
+    <div className="mx-auto max-w-xl">
+      <div className="flex items-center gap-4">
+        <div className="flex flex-1 gap-1.5">
+          {Array.from({ length: 5 }, (_, i) => (
+            <Skeleton key={i} className="h-1 flex-1 rounded-full" />
           ))}
         </div>
+        <Skeleton className="h-3 w-16" />
       </div>
 
-      <div className="mt-8 space-y-6 rounded-4xl border border-border bg-surface/90 p-8 shadow-soft">
-        <Skeleton className="h-14 w-full" />
-        <Skeleton className="h-14 w-full" />
-        <Skeleton className="h-14 w-full" />
-        <div className="flex justify-between pt-2">
-          <Skeleton className="h-11 w-28" />
-          <Skeleton className="h-11 w-36" />
-        </div>
+      <div className="mt-8 space-y-2">
+        <Skeleton className="h-6 w-64" />
+        <Skeleton className="h-4 w-96" />
+      </div>
+
+      <div className="mt-8 flex flex-wrap gap-2.5">
+        {Array.from({ length: 5 }, (_, i) => (
+          <Skeleton key={i} className="h-10 w-24 rounded-full" />
+        ))}
+      </div>
+
+      <div className="mt-8 flex justify-end">
+        <Skeleton className="h-12 w-32 rounded-full" />
       </div>
     </div>
   );
