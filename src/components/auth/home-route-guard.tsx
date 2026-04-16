@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { LoadingIndicator } from '@/components/ui/loading-indicator';
+import { RouteTransitionScreen } from '@/components/auth/route-transition-screen';
 import { AppRoute } from '@/constants/app-routes';
 import { useAuthStore } from '@/stores/auth-store';
 
@@ -16,16 +16,8 @@ export function HomeRouteGuard({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated, isLoading, router]);
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <LoadingIndicator size="lg" />
-      </div>
-    );
-  }
-
-  if (isAuthenticated) {
-    return null;
+  if (isLoading || isAuthenticated) {
+    return <RouteTransitionScreen />;
   }
 
   return <>{children}</>;

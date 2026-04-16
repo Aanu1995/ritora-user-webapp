@@ -23,7 +23,8 @@ const READY_EMPTY_ACTION_TOKEN_SNAPSHOT: ActionTokenSnapshot = {
   pathname: '',
 };
 
-let cachedActionToken: { pathname: string; token: string } | null = null;
+const ACTION_TOKEN_STATE_KEY = '__ritoraActionToken';
+const ACTION_TOKEN_PATHNAME_STATE_KEY = '__ritoraActionTokenPathname';
 let cachedSnapshot = EMPTY_ACTION_TOKEN_SNAPSHOT;
 
 function subscribeToLocation(callback: () => void): () => void {
@@ -52,25 +53,28 @@ function readActionTokenSnapshot(): ActionTokenSnapshot {
   const url = new URL(window.location.href);
   const hash = url.hash.startsWith('#') ? url.hash.slice(1) : url.hash;
   const hashParams = new URLSearchParams(hash);
-  const token =
-    url.searchParams.get('token') ?? hashParams.get('token') ?? '';
   const pathname = url.pathname;
-
-  if (token) {
-    cachedActionToken = { pathname, token };
-  }
-
-  const nextSnapshot: ActionTokenSnapshot =
-    token || cachedActionToken?.pathname === pathname
-      ? {
-          token: token || cachedActionToken?.token || '',
-          isReady: true,
-          pathname,
-        }
-      : {
-          ...READY_EMPTY_ACTION_TOKEN_SNAPSHOT,
-          pathname,
-        };
+  const historyState =
+    typeof window.history.state === 'object' && window.history.state !== null
+      ? (window.history.state as Record<string, unknown>)
+      : null;
+  const stateToken =
+    historyState?.[ACTION_TOKEN_PATHNAME_STATE_KEY] === pathname
+      ? historyState?.[ACTION_TOKEN_STATE_KEY]
+      : '';
+  const tokenFromState = typeof stateToken === 'string' ? stateToken : '';
+  const token =
+    url.searchParams.get('token') ?? hashParams.get('token') ?? tokenFromState;
+  const nextSnapshot: ActionTokenSnapshot = token
+    ? {
+        token,
+        isReady: true,
+        pathname,
+      }
+    : {
+        ...READY_EMPTY_ACTION_TOKEN_SNAPSHOT,
+        pathname,
+      };
 
   if (
     cachedSnapshot.token === nextSnapshot.token &&
@@ -112,33 +116,21 @@ export function useActionToken(): UseActionTokenResult {
       url.hash = nextHash ? `#${nextHash}` : '';
     }
 
+    const currentState =
+      typeof window.history.state === 'object' && window.history.state !== null
+        ? (window.history.state as Record<string, unknown>)
+        : {};
+
     window.history.replaceState(
-      null,
+      {
+        ...currentState,
+        [ACTION_TOKEN_STATE_KEY]: snapshot.token,
+        [ACTION_TOKEN_PATHNAME_STATE_KEY]: url.pathname,
+      },
       '',
       `${url.pathname}${url.search}${url.hash}`,
     );
   }, [snapshot.token]);
-
-  useEffect(() => {
-    const pathname = snapshot.pathname;
-
-    return () => {
-      if (!pathname) {
-        return;
-      }
-
-      if (cachedActionToken?.pathname === pathname) {
-        cachedActionToken = null;
-      }
-
-      if (cachedSnapshot.pathname === pathname) {
-        cachedSnapshot = {
-          ...READY_EMPTY_ACTION_TOKEN_SNAPSHOT,
-          pathname,
-        };
-      }
-    };
-  }, [snapshot.pathname]);
 
   return {
     token: snapshot.token,
