@@ -12,6 +12,7 @@ jest.mock('next/navigation', () => ({
 
 import { AuthGuard } from '@/components/auth/auth-guard';
 import { GuestGuard } from '@/components/auth/guest-guard';
+import { HomeRouteGuard } from '@/components/auth/home-route-guard';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -100,6 +101,47 @@ describe('GuestGuard', () => {
     );
 
     expect(screen.getByText('Guest Content')).toBeInTheDocument();
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+});
+
+describe('HomeRouteGuard', () => {
+  it('shows spinner while loading', () => {
+    useAuthStore.setState({ isLoading: true });
+
+    const { container } = render(
+      <HomeRouteGuard>
+        <div>Landing Content</div>
+      </HomeRouteGuard>,
+    );
+
+    expect(screen.queryByText('Landing Content')).not.toBeInTheDocument();
+    expect(container.querySelector('.animate-spin')).toBeInTheDocument();
+  });
+
+  it('redirects to dashboard when authenticated', () => {
+    useAuthStore.setState({ isAuthenticated: true, isLoading: false });
+
+    render(
+      <HomeRouteGuard>
+        <div>Landing Content</div>
+      </HomeRouteGuard>,
+    );
+
+    expect(mockReplace).toHaveBeenCalledWith(AppRoute.Dashboard);
+    expect(screen.queryByText('Landing Content')).not.toBeInTheDocument();
+  });
+
+  it('renders landing content when unauthenticated', () => {
+    useAuthStore.setState({ isAuthenticated: false, isLoading: false });
+
+    render(
+      <HomeRouteGuard>
+        <div>Landing Content</div>
+      </HomeRouteGuard>,
+    );
+
+    expect(screen.getByText('Landing Content')).toBeInTheDocument();
     expect(mockReplace).not.toHaveBeenCalled();
   });
 });

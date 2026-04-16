@@ -13,7 +13,7 @@ describe('useActionToken', () => {
       '/reset-password?token=query-token#section-2',
     );
 
-    const { result } = renderHook(() => useActionToken());
+    const { result, rerender } = renderHook(() => useActionToken());
 
     await waitFor(() => {
       expect(result.current.isReady).toBe(true);
@@ -22,6 +22,10 @@ describe('useActionToken', () => {
     expect(result.current.token).toBe('query-token');
     expect(window.location.search).toBe('');
     expect(window.location.hash).toBe('#section-2');
+
+    rerender();
+
+    expect(result.current.token).toBe('query-token');
   });
 
   it('reads a hash token and keeps other hash params intact', async () => {
@@ -31,7 +35,7 @@ describe('useActionToken', () => {
       '/verify-email#token=hash-token&step=confirm',
     );
 
-    const { result } = renderHook(() => useActionToken());
+    const { result, rerender } = renderHook(() => useActionToken());
 
     await waitFor(() => {
       expect(result.current.isReady).toBe(true);
@@ -40,5 +44,9 @@ describe('useActionToken', () => {
     expect(result.current.token).toBe('hash-token');
     expect(window.location.search).toBe('');
     expect(window.location.hash).toBe('#step=confirm');
+
+    rerender();
+
+    expect(result.current.token).toBe('hash-token');
   });
 });

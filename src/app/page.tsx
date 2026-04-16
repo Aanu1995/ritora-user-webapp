@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { HomeRouteGuard } from "@/components/auth/home-route-guard";
 import { LandingImage } from "@/components/landing/landing-image";
 import { IngredientCheckIllustration } from "@/components/illustrations/ingredient-check";
 import { RoutineCycleIllustration } from "@/components/illustrations/routine-cycle";
@@ -97,9 +98,10 @@ export default async function Home() {
   const differentiators = t.raw("differentiators.items") as LabelledBody[];
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <SiteHeader />
-      <main>
+    <HomeRouteGuard>
+      <div className="relative min-h-screen overflow-hidden">
+        <SiteHeader />
+        <main>
         {/* HERO — text + real landscape shelfie photo, photo stretches to text column height */}
         <section className="mx-auto w-full max-w-7xl px-5 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-24 lg:px-8 lg:pt-32 lg:pb-32">
           <div className="grid items-stretch gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
@@ -473,12 +475,13 @@ export default async function Home() {
             </div>
           </div>
         </section>
-      </main>
-      <SiteFooter />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-    </div>
+        </main>
+        <SiteFooter />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </div>
+    </HomeRouteGuard>
   );
 }
