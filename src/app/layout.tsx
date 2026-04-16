@@ -33,6 +33,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  applicationName: siteConfig.name,
   alternates: {
     canonical: '/',
   },
@@ -49,6 +50,14 @@ export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
   },
+};
+
+export const viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f7f5f0' },
+    { media: '(prefers-color-scheme: dark)', color: '#0f1712' },
+  ],
+  colorScheme: 'light dark' as const,
 };
 
 export default async function RootLayout({

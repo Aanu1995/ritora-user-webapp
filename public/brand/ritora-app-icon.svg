@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Ritora">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2f7a52"/>
+      <stop offset="100%" stop-color="#1a3b2a"/>
+    </linearGradient>
+    <linearGradient id="drop" x1="280" y1="160" x2="760" y2="880" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fbf7ef" stop-opacity="0.98"/>
+      <stop offset="100%" stop-color="#fbf7ef" stop-opacity="0.82"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="224" fill="url(#bg)"/>
+  <g transform="translate(112 112) scale(20)">
+    <path d="M20 3.5c-1.1 0-2 .9-2 2 0 2.2-3 5.9-5.5 9.2C10 18 7.5 21.8 7.5 25.2 7.5 32.1 13.1 37 20 37s12.5-4.9 12.5-11.8c0-3.4-2.5-7.2-5-10.5C25 11.4 22 7.7 22 5.5c0-1.1-.9-2-2-2Z" fill="url(#drop)"/>
+    <path d="M13.2 25.6c0 4 3.1 7.1 6.8 7.1" stroke="#2f7a52" stroke-width="1.75" stroke-linecap="round" stroke-opacity="0.7" fill="none"/>
+    <circle cx="15.5" cy="21.5" r="1.4" fill="#2f7a52" fill-opacity="0.75"/>
+  </g>
+</svg>
