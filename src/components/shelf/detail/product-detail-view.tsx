@@ -6,9 +6,9 @@ import {
   Calendar,
   Check,
   Clock,
+  Droplet,
   Package,
   Pencil,
-  Ruler,
   Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -251,7 +251,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
             ) : null}
             {product.identity.sizeMl ? (
               <KvCell
-                icon={<Ruler className="h-4 w-4" />}
+                icon={<Droplet className="h-4 w-4" />}
                 label={t('meta.size')}
                 value={`${product.identity.sizeMl} ${tCard('sizeSuffix')}`}
               />

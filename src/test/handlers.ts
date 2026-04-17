@@ -72,6 +72,10 @@ export const handlers = [
     return HttpResponse.json({ message: 'Logged out' });
   }),
 
+  http.post(`${API}/auth/logout-all`, () => {
+    return HttpResponse.json({ message: 'All sessions revoked' });
+  }),
+
   http.get(`${API}/auth/me`, () => {
     return HttpResponse.json(mockUser);
   }),

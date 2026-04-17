@@ -61,6 +61,14 @@ describe('auth.service', () => {
     expect(api.postRequest).toHaveBeenCalledWith('/auth/logout');
   });
 
+  it('logoutAll calls postRequest with logout-all path', async () => {
+    (api.postRequest as jest.Mock).mockResolvedValue(undefined);
+
+    await authService.logoutAll();
+
+    expect(api.postRequest).toHaveBeenCalledWith('/auth/logout-all');
+  });
+
   it('getCurrentUser calls getRequest with me path', async () => {
     const user = { id: '1', email: 'a@b.com' };
     (api.getRequest as jest.Mock).mockResolvedValue(user);

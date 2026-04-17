@@ -6,6 +6,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { renderWithProviders } from "@/test/utils";
 
 const mockLogoutMutate = jest.fn();
+const mockLogoutAllMutate = jest.fn();
 const mockUpdateProfileMutate = jest.fn();
 
 jest.mock("next/navigation", () => ({
@@ -15,6 +16,10 @@ jest.mock("next/navigation", () => ({
 jest.mock("@/hooks/use-auth", () => ({
   useLogout: () => ({
     mutate: mockLogoutMutate,
+    isPending: false,
+  }),
+  useLogoutAll: () => ({
+    mutate: mockLogoutAllMutate,
     isPending: false,
   }),
   useUpdateProfile: () => ({
@@ -136,8 +141,48 @@ describe("SettingsPage", () => {
   it("calls logout when sign out button is clicked", async () => {
     renderWithProviders(<SettingsPage />);
 
-    await user.click(screen.getByRole("button", { name: /sign out/i }));
+    await user.click(
+      screen.getByRole("button", { name: /^sign out$/i }),
+    );
     expect(mockLogoutMutate).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens confirmation before signing out from all devices", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /sign out all devices/i }),
+    );
+
+    expect(
+      screen.getByRole("heading", { name: /sign out on all devices/i }),
+    ).toBeInTheDocument();
+    expect(mockLogoutAllMutate).not.toHaveBeenCalled();
+  });
+
+  it("calls logoutAll after confirmation", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /sign out all devices/i }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: /^sign out all devices$/i }),
+    );
+
+    expect(mockLogoutAllMutate).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps the user signed in when all-devices sign out is cancelled", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /sign out all devices/i }),
+    );
+    await user.click(screen.getByRole("button", { name: /keep sessions/i }));
+
+    expect(mockLogoutAllMutate).not.toHaveBeenCalled();
+    expect(screen.getByText("ada@example.com")).toBeInTheDocument();
   });
 
   it("switches to Appearance tab and shows theme controls", async () => {

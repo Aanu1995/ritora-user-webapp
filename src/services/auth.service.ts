@@ -29,6 +29,10 @@ export async function logout(): Promise<void> {
   return postRequest(ApiPath.AuthLogout);
 }
 
+export async function logoutAll(): Promise<void> {
+  return postRequest(ApiPath.AuthLogoutAll);
+}
+
 export async function getCurrentUser(): Promise<User> {
   return getRequest<User>(ApiPath.AuthMe);
 }

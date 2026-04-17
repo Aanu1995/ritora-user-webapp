@@ -7,6 +7,7 @@ import {
   useLogin,
   useRegister,
   useLogout,
+  useLogoutAll,
   useVerifyEmail,
   useResendVerification,
   useForgotPassword,
@@ -30,6 +31,7 @@ jest.mock('@/services/auth.service', () => ({
   register: jest.fn(),
   refreshTokens: jest.fn(),
   logout: jest.fn(),
+  logoutAll: jest.fn(),
   getCurrentUser: jest.fn(),
   getActiveSessions: jest.fn(),
   verifyEmail: jest.fn(),
@@ -210,6 +212,45 @@ describe('useLogout', () => {
 
     const state = useAuthStore.getState();
     expect(state.isAuthenticated).toBe(false);
+  });
+});
+
+describe('useLogoutAll', () => {
+  it('logs out all devices and clears auth store', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    (authService.logoutAll as jest.Mock).mockResolvedValue(undefined);
+
+    const { result } = renderHookWithProviders(() => useLogoutAll());
+
+    await act(async () => {
+      await result.current.mutateAsync();
+    });
+
+    const state = useAuthStore.getState();
+    expect(authService.logoutAll).toHaveBeenCalled();
+    expect(state.isAuthenticated).toBe(false);
+    expect(state.user).toBeNull();
+  });
+
+  it('keeps auth state when logoutAll fails', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    (authService.logoutAll as jest.Mock).mockRejectedValue(
+      new Error('Network error'),
+    );
+
+    const { result } = renderHookWithProviders(() => useLogoutAll());
+
+    await act(async () => {
+      try {
+        await result.current.mutateAsync();
+      } catch {
+        // expected
+      }
+    });
+
+    const state = useAuthStore.getState();
+    expect(state.isAuthenticated).toBe(true);
+    expect(state.user).toEqual(mockUser);
   });
 });
 

@@ -32,27 +32,29 @@ export function AppearanceTab() {
         title={t("appearance.themeTitle")}
         description={t("appearance.themeDescription")}
       >
-        <div className="flex items-center gap-1 rounded-lg bg-surface-muted p-1">
-          {THEME_OPTIONS.map((option) => {
-            const Icon = option.icon;
-            const isActive = themePreference === option.value;
-            return (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setThemePreference(option.value)}
-                className={cn(
-                  "flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all",
-                  isActive
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted hover:text-foreground",
-                )}
-              >
-                <Icon className="h-4 w-4" />
-                {t(`appearance.${option.labelKey}`)}
-              </button>
-            );
-          })}
+        <div className="px-5 py-5">
+          <div className="inline-flex items-center gap-1 rounded-lg bg-surface-muted p-1">
+            {THEME_OPTIONS.map((option) => {
+              const Icon = option.icon;
+              const isActive = themePreference === option.value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setThemePreference(option.value)}
+                  className={cn(
+                    "flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium transition-all",
+                    isActive
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted hover:text-foreground",
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  {t(`appearance.${option.labelKey}`)}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </SettingsSection>
 

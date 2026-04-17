@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QueryKey } from '@/constants/query-keys';
-import { ApiError } from '@/lib/api-error';
-import * as authService from '@/services/auth.service';
-import { useAuthStore } from '@/stores/auth-store';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryKey } from "@/constants/query-keys";
+import { ApiError } from "@/lib/api-error";
+import * as authService from "@/services/auth.service";
+import { useAuthStore } from "@/stores/auth-store";
 import type {
   LoginInput,
   RegisterInput,
@@ -12,9 +12,9 @@ import type {
   ResetPasswordInput,
   UpdateProfileInput,
   User,
-} from '@/types/auth';
+} from "@/types/auth";
 
-const EMAIL_NOT_VERIFIED_CODE = 'EMAIL_NOT_VERIFIED';
+const EMAIL_NOT_VERIFIED_CODE = "EMAIL_NOT_VERIFIED";
 
 async function clearPendingAuthSession(): Promise<void> {
   try {
@@ -35,11 +35,11 @@ async function clearPendingRegistrationSession(
 }
 
 function createEmailNotVerifiedError(): ApiError {
-  return new ApiError('Email not verified', {
+  return new ApiError("Email not verified", {
     status: 403,
     body: {
       code: EMAIL_NOT_VERIFIED_CODE,
-      message: 'Email not verified',
+      message: "Email not verified",
     },
   });
 }
@@ -78,15 +78,34 @@ export function useLogout() {
   const logoutStore = useAuthStore((s) => s.logout);
   const queryClient = useQueryClient();
 
+  const clearClientSession = () => {
+    logoutStore();
+    queryClient.clear();
+  };
+
   return useMutation({
     mutationFn: () => authService.logout(),
     onSuccess: () => {
-      logoutStore();
-      queryClient.clear();
+      clearClientSession();
     },
     onError: () => {
-      logoutStore();
-      queryClient.clear();
+      clearClientSession();
+    },
+  });
+}
+
+export function useLogoutAll() {
+  const logoutStore = useAuthStore((s) => s.logout);
+  const queryClient = useQueryClient();
+  const clearClientSession = () => {
+    logoutStore();
+    queryClient.clear();
+  };
+
+  return useMutation({
+    mutationFn: () => authService.logoutAll(),
+    onSuccess: () => {
+      clearClientSession();
     },
   });
 }

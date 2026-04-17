@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar, Check, Clock } from 'lucide-react';
+import { Calendar, Check, Clock, Droplet } from 'lucide-react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import type { MouseEvent } from 'react';
@@ -191,7 +191,8 @@ export function ProductCard({
           ) : null}
 
           {product.identity.sizeMl ? (
-            <span className="opacity-80">
+            <span className="inline-flex items-center gap-1 opacity-80">
+              <Droplet className="h-3 w-3 opacity-70" aria-hidden />
               {product.identity.sizeMl}
               {tCard('sizeSuffix')}
             </span>
