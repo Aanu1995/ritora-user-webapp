@@ -3,4 +3,9 @@ export enum QueryKey {
   AuthSessions = 'auth-sessions',
   SkinProfile = 'skin-profile',
   SkinProfileOptions = 'skin-profile-options',
+  Shelf = 'shelf',
+  ShelfProduct = 'shelf-product',
+  CatalogueSearch = 'catalogue-search',
+  BarcodeResolve = 'barcode-resolve',
+  UrlResolve = 'url-resolve',
 }

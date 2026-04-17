@@ -56,7 +56,7 @@ export const NAV_ITEMS: NavItem[] = [
     labelKey: "shelf",
     descriptionKey: "shelfDescription",
     group: NavGroup.Main,
-    status: NavItemStatus.Planned,
+    status: NavItemStatus.Live,
   },
   {
     route: AppRoute.TodaysSuggestion,

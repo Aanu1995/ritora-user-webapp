@@ -683,6 +683,442 @@
       "comprehensive": "När Ritora föreslår"
     }
   },
+  "shelf": {
+    "title": "Din hylla",
+    "pageSubtitle": "Allt du redan äger, samlat på en lugn plats.",
+    "searchPlaceholder": "Sök märke, produkt, ingrediens",
+    "sort": {
+      "label": "Sortera",
+      "recentlyAdded": "Senast tillagda",
+      "expiringSoon": "Snart utgångsdatum",
+      "alphabetical": "Alfabetiskt",
+      "categoryGrouped": "Grupperat efter kategori"
+    },
+    "view": {
+      "grid": "Rutnätsvy",
+      "list": "Listvy"
+    },
+    "stat": {
+      "all": "Alla",
+      "inUse": "Används",
+      "unopened": "Oöppnade",
+      "nearingExpiry": "Snart utgångsdatum",
+      "expired": "Utgångna",
+      "archived": "Arkiverade"
+    },
+    "category": {
+      "all": "Alla",
+      "cleanser": "Rengöring",
+      "toner": "Toner",
+      "essence": "Essens",
+      "serum": "Serum",
+      "moisturizer": "Fuktkräm",
+      "sun-protection": "Solskydd",
+      "mask": "Mask",
+      "exfoliant": "Peeling",
+      "eye-care": "Ögonvård",
+      "lip-care": "Läppvård",
+      "treatment": "Behandling",
+      "other": "Övrigt"
+    },
+    "empty": {
+      "title": "Din hylla är tom",
+      "description": "Lägg till produkterna du redan äger. Ritora hjälper dig att hålla koll på utgångsdatum, visar hur varje produkt ska användas och bygger sedan din morgon- och kvällsrutin utifrån det du har.",
+      "cta": "Lägg till din första produkt",
+      "filtered": "Inga produkter matchar ditt nuvarande filter."
+    },
+    "card": {
+      "unopened": "Oöppnad",
+      "finished": "Förbrukad",
+      "expired": "Utgången",
+      "archived": "Arkiverad",
+      "sizeSuffix": "ml",
+      "lowStock": "Lite kvar"
+    },
+    "actions": {
+      "add": "Lägg till produkt",
+      "edit": "Redigera",
+      "archive": "Arkivera",
+      "markFinished": "Markera som förbrukad",
+      "delete": "Ta bort",
+      "cancel": "Avbryt",
+      "back": "Tillbaka",
+      "clearSelection": "Avmarkera alla",
+      "save": "Spara ändringar",
+      "saving": "Sparar..."
+    },
+    "bulk": {
+      "selected": "{count} valda",
+      "archiveTooltip": "Arkivering döljer produkter från den aktiva vyn men behåller historiken.",
+      "finishedTooltip": "Markerar en produkt som förbrukad och sparar historiken.",
+      "deleteTooltip": "Ta bort permanent från din hylla.",
+      "deleteConfirmTitle": "Ta bort {count} produkter?",
+      "deleteConfirmTitleSingle": "Ta bort den här produkten?",
+      "deleteConfirmBody": "Detta kan inte ångras. Anteckningar och historik tas bort.",
+      "deleteConfirmCancel": "Behåll"
+    },
+    "dialog": {
+      "title": "Lägg till på din hylla",
+      "subtitle": "Skanna en streckkod, sök i katalogen, klistra in en produktlänk eller fyll i manuellt.",
+      "close": "Stäng",
+      "step": "Steg {current} av 2",
+      "tabs": {
+        "scan": "Skanna",
+        "search": "Sök",
+        "url": "Länk",
+        "manual": "Manuellt",
+        "confirm": "Bekräfta"
+      },
+      "scan": {
+        "heading": "Skanna streckkoden på baksidan",
+        "description": "Vi slår upp den i den öppna kosmetikadatabasen.",
+        "comingSoon": "Kameraskanning kommer i nästa version. Prova Sök eller Manuellt så länge.",
+        "fallback": "Fyll i manuellt istället"
+      },
+      "search": {
+        "heading": "Hitta din produkt",
+        "placeholder": "Sök efter märke eller produktnamn",
+        "empty": "Skriv minst två tecken för att söka i katalogen.",
+        "noResults": "Inga träffar. Prova ett annat namn eller fyll i produkten manuellt.",
+        "addAction": "Lägg till"
+      },
+      "url": {
+        "heading": "Klistra in en produktlänk",
+        "placeholder": "Klistra in produkt-URL från varumärkets webbplats",
+        "fetch": "Använd länken",
+        "fetching": "Läser…",
+        "invalid": "Använd en fullständig länk som börjar med http:// eller https://.",
+        "error": "Vi kunde inte läsa sidan. Prova att fylla i uppgifterna manuellt.",
+        "success": "Produkt hittad. Gå vidare för att granska."
+      },
+      "lookup": {
+        "heading": "Hitta din produkt",
+        "description": "Skanna en streckkod, sök i katalogen eller klistra in en produktlänk. Ritora fyller i det den kan och du kan justera resten nedan.",
+        "tablistLabel": "Metoder för snabb uppslagning"
+      },
+      "manual": {
+        "heading": "Lägg till manuellt",
+        "description": "Fyll i det du vet. Du kan lägga till mer senare."
+      },
+      "confirm": {
+        "heading": "Granska och lägg till på din hylla",
+        "subheading": "Du kan ändra detta senare.",
+        "fromSource": "Från streckkod",
+        "fromUrl": "Från länk",
+        "autoFromPao": "Beräknat från PAO",
+        "pleaseFill": "Fyll i",
+        "sections": {
+          "identity": "Identitet",
+          "about": "Om produkten",
+          "lookup": "Från uppslagningen",
+          "yours": "Bara du vet dessa",
+          "guidance": "Så använder du produkten"
+        },
+        "hints": {
+          "identityDescription": "Grunderna om produkten. Märke, namn, kategori och storlek.",
+          "photoUploadComingSoon": "Fotouppladdning kommer snart.",
+          "sizeHint": "Volym i milliliter från förpackningen.",
+          "aboutDescription": "Kopiera från förpackningen eller lämna tomt. Ritora fyller i detta när en streckkod eller katalogträff lyckas.",
+          "descriptionHint": "En kort överblick över vad produkten gör.",
+          "benefitsHint": "Kommaseparerat, till exempel återfuktande, lugnande, utjämnande.",
+          "suitedForHint": "Kommaseparerade hudtyper, till exempel torr, kombinerad, känslig.",
+          "ingredientsHint": "Klistra in hela listan från förpackningen, kommaseparerad. Ritora använder den för säkerhetskontroller senare.",
+          "yoursDescription": "Ritora använder detta för att följa hållbarhet och dina personliga preferenser.",
+          "openedAtHint": "Lämna tomt om produkten fortfarande är förseglad.",
+          "paoHint": "Brukar stå på burksymbolen som 12M, 24M och liknande.",
+          "expiresAtHint": "Ritora fyller i detta från öppningsdatum och PAO. Du kan ändra det.",
+          "preferredTimeHint": "Valfri hint för funktionen Dagens förslag. Används inte här.",
+          "priceHint": "För framtida insikter om kostnader. Valfritt.",
+          "purchasedFromHint": "Var du köpte den.",
+          "personalNotesHint": "Hur den känns på huden. Det ser bara du.",
+          "guidanceDescription": "Hur du applicerar produkten och vad du ska tänka på. Börja från en mall eller skriv själv.",
+          "manufacturerDescription": "Valfritt. Ritora använder produktlänken för att snabbt öppna den officiella sidan.",
+          "parentCompanyHint": "Moderbolag eller paraplyvarumärke.",
+          "countryManufactureHint": "Välj landet som står på förpackningen.",
+          "supportEmailHint": "Varumärkets supportadress.",
+          "productUrlHint": "Länk till produkten på varumärkets egen webbplats."
+        },
+        "fields": {
+          "brand": "Märke",
+          "name": "Produktnamn",
+          "category": "Kategori",
+          "size": "Storlek",
+          "description": "Beskrivning",
+          "descriptionPlaceholder": "t.ex. Ett milt kvällsserum som hjälper huden att kännas jämnare över tid.",
+          "benefits": "Fördelar",
+          "benefitsPlaceholder": "återfuktande, lugnande",
+          "suitedFor": "Passar för",
+          "suitedForPlaceholder": "torr, känslig",
+          "inciIngredients": "Ingredienser (INCI)",
+          "ingredientsPlaceholder": "Aqua, Glycerin, Niacinamide, Retinol, Ceramide NP, …",
+          "openedAt": "Öppnad den",
+          "periodAfterOpening": "Hållbar efter öppning",
+          "expiresAt": "Utgångsdatum",
+          "preferredTimeOfDay": "Föredragen tid (valfritt)",
+          "pricePaid": "Pris (valfritt)",
+          "purchasedFrom": "Köpt hos (valfritt)",
+          "personalNotes": "Dina anteckningar (valfritt)",
+          "datePlaceholder": "Välj datum",
+          "productUrl": "Produkt-URL",
+          "productUrlPlaceholder": "https://example.com/produkt",
+          "notesPlaceholder": "Hur känns den på huden?",
+          "sizePlaceholder": "t.ex. 30",
+          "pricePlaceholder": "t.ex. 249",
+          "purchasedFromPlaceholder": "t.ex. Kicks"
+        },
+        "paoOptions": {
+          "6": "6 månader",
+          "12": "12 månader",
+          "18": "18 månader",
+          "24": "24 månader",
+          "36": "36 månader",
+          "unknown": "Vet inte"
+        },
+        "preferredTimeOptions": {
+          "none": "Ingen preferens",
+          "morning": "Morgon",
+          "evening": "Kväll",
+          "either": "Antingen"
+        },
+        "submit": "Lägg till på hyllan",
+        "submitting": "Lägger till...",
+        "successToast": "Tillagd på din hylla"
+      },
+      "validation": {
+        "brandRequired": "Märke är obligatoriskt.",
+        "nameRequired": "Produktnamn är obligatoriskt.",
+        "categoryRequired": "Kategori är obligatorisk.",
+        "sizeInvalid": "Storlek måste vara ett giltigt nummer.",
+        "priceInvalid": "Pris måste vara ett giltigt nummer.",
+        "supportEmailInvalid": "Supportadress måste vara en giltig e-postadress.",
+        "productUrlInvalid": "Produkt-URL måste börja med http:// eller https://.",
+        "stepsMax": "Håll varje steg kort. Under 280 tecken.",
+        "cautionsMax": "Håll varje varning kort. Under 200 tecken."
+      },
+      "genericError": "Vi kunde inte spara produkten just nu. Försök igen."
+    },
+    "detail": {
+      "backLink": "Tillbaka till hyllan",
+      "meta": {
+        "opened": "Öppnad",
+        "unopened": "Oöppnad",
+        "expires": "Utgår",
+        "size": "Storlek",
+        "pao": "PAO",
+        "paoValue": "{count} månader"
+      },
+      "shelfLife": {
+        "label": "Hållbarhet",
+        "remainingDay": "{count} dag kvar",
+        "remainingDays": "{count} dagar kvar",
+        "remainingMonth": "{count} månad kvar",
+        "remainingMonths": "{count} månader kvar",
+        "expired": "Utgången",
+        "unopened": "Inte öppnad än",
+        "noData": "Ange ett öppningsdatum för att följa hållbarheten."
+      },
+      "tabs": {
+        "about": "Om",
+        "ingredients": "Ingredienser",
+        "howToUse": "Användning",
+        "manufacturer": "Tillverkare"
+      },
+      "about": {
+        "benefits": "Fördelar",
+        "suitedFor": "Passar för",
+        "origin": "Tillverkad i",
+        "empty": "Ingen beskrivning än. Öppna Redigera för att lägga till en."
+      },
+      "ingredients": {
+        "heading": "Ingredienser",
+        "lastConfirmed": "Senast bekräftad {date}.",
+        "empty": "Ingen ingredienslista finns. Klistra in från förpackningen för att låsa upp säkerhetskontroller senare.",
+        "intelligenceStub": "Ingrediensintelligens kommer snart.",
+        "intelligenceBody": "Ritora kommer att flagga ingredienser som inte matchar din hudprofil när nästa funktion släpps."
+      },
+      "howToUse": {
+        "heading": "Så använder du",
+        "method": "Metod",
+        "quantity": "Mängd",
+        "steps": "Steg",
+        "cautions": "Varningar",
+        "waitMinute": "Låt verka i {minutes} minut.",
+        "waitMinutes": "Låt verka i {minutes} minuter.",
+        "empty": "Inga instruktioner än. Öppna Redigera för att lägga till steg och varningar.",
+        "routineNote": "När produkten ska användas i din morgon- eller kvällsrutin bestäms av Dagens förslag, inte hyllan.",
+        "preferredNote": "Du har sagt till Ritora att du föredrar att använda den på {time}."
+      },
+      "manufacturer": {
+        "heading": "Tillverkare",
+        "brand": "Märke",
+        "parent": "Moderbolag",
+        "madeIn": "Tillverkad i",
+        "support": "Support",
+        "productLink": "Öppna produktsidan på {domain}",
+        "empty": "Inga tillverkaruppgifter än.",
+        "source": "Data från {source}, bekräftad av dig {date}."
+      },
+      "actions": {
+        "edit": "Redigera",
+        "archive": "Arkivera",
+        "markFinished": "Markera som förbrukad",
+        "delete": "Ta bort",
+        "unarchive": "Återställ"
+      }
+    },
+    "edit": {
+      "title": "Redigera produkt",
+      "cancel": "Avbryt",
+      "save": "Spara ändringar",
+      "saveShort": "Spara",
+      "saving": "Sparar...",
+      "genericError": "Vi kunde inte spara dina ändringar just nu. Försök igen.",
+      "successToast": "Ändringar sparade"
+    },
+    "method": {
+      "fingertips": "Fingertoppar",
+      "cotton-pad": "Bomullspad",
+      "brush": "Borste",
+      "spray": "Spray",
+      "dropper": "Pipett",
+      "spatula": "Spatel",
+      "other": "Annat"
+    },
+    "quantity": {
+      "one-drop": "En droppe",
+      "two-to-three-drops": "Två till tre droppar",
+      "pea-size": "Ärtstor mängd",
+      "pump-one": "En pump",
+      "pump-two": "Två pumpar",
+      "coin-size": "Myntstor mängd",
+      "generous": "Generöst",
+      "as-needed": "Efter behov",
+      "other": "Annat"
+    },
+    "preferredTime": {
+      "morning": "morgon",
+      "evening": "kväll",
+      "either": "morgon eller kväll"
+    },
+    "provenance": {
+      "barcode-lookup": "streckkodsuppslag",
+      "url-fetch": "tillverkarens länk",
+      "catalogue": "Ritoras katalog",
+      "user-entered": "egna uppgifter"
+    },
+    "templates": {
+      "pickOne": "Välj en mall",
+      "applyTemplate": "Använd mall för {category}",
+      "cleanser": {
+        "steps": [
+          "Tryck ut en liten mängd på fuktiga fingertoppar.",
+          "Massera mjukt i cirklar på fuktig hud.",
+          "Skölj noga med ljummet vatten."
+        ],
+        "cautions": [
+          "Undvik ögonpartiet."
+        ]
+      },
+      "toner": {
+        "steps": [
+          "Efter rengöring, fördela på en bomullspad eller rena handflator.",
+          "Sveja mjukt över ansikte och hals.",
+          "Låt sjunka in innan nästa steg."
+        ],
+        "cautions": []
+      },
+      "essence": {
+        "steps": [
+          "Tryck två pumpar på rena fingertoppar.",
+          "Klappa in mjukt över ansiktet.",
+          "Följ med serum eller fuktkräm."
+        ],
+        "cautions": []
+      },
+      "serum": {
+        "steps": [
+          "Rengör och tona. Klappa huden tills den är nästan torr.",
+          "Tryck ut två till tre droppar på rena fingertoppar.",
+          "Tryck varsamt över ansiktet. Undvik ögonpartiet och läpparna.",
+          "Vänta 60 sekunder och följ med fuktkräm."
+        ],
+        "cautions": [
+          "Undvik ögonpartiet och läpparna.",
+          "Testa på en liten yta innan första användning."
+        ]
+      },
+      "moisturizer": {
+        "steps": [
+          "Värm en ärtstor mängd mellan fingertopparna.",
+          "Tryck mjukt över ansikte och hals.",
+          "Låt sjunka in innan du applicerar SPF eller fortsätter."
+        ],
+        "cautions": []
+      },
+      "sun-protection": {
+        "steps": [
+          "Använd som sista steg i morgonrutinen.",
+          "Tryck ut en myntstor mängd och värm mellan fingertopparna.",
+          "Tryck jämnt över ansikte och hals."
+        ],
+        "cautions": [
+          "Applicera om varannan timme i direkt sol.",
+          "Undvik kontakt med ögonen."
+        ]
+      },
+      "mask": {
+        "steps": [
+          "Applicera ett jämnt lager på ren, torr hud.",
+          "Låt verka enligt förpackningens instruktioner.",
+          "Skölj noga med ljummet vatten."
+        ],
+        "cautions": [
+          "Testa på en liten yta innan första användning.",
+          "Undvik ögonpartiet."
+        ]
+      },
+      "exfoliant": {
+        "steps": [
+          "Använd på ren, torr hud efter rengöring.",
+          "Applicera ett tunt lager med bomullspad eller fingertoppar.",
+          "Följ med fuktgivande steg."
+        ],
+        "cautions": [
+          "Börja med två till tre gånger i veckan.",
+          "Ökar solkänslighet. Använd SPF på dagen.",
+          "Använd inte tillsammans med retinol samma kväll."
+        ]
+      },
+      "eye-care": {
+        "steps": [
+          "Knacka mjukt med ringfingret runt ögonbenet.",
+          "Dra eller sträck inte ut den tunna huden kring ögonen."
+        ],
+        "cautions": [
+          "Undvik att få produkten i ögat."
+        ]
+      },
+      "lip-care": {
+        "steps": [
+          "Applicera ett tunt lager efter behov under dagen."
+        ],
+        "cautions": []
+      },
+      "treatment": {
+        "steps": [
+          "Följ förpackningens instruktioner.",
+          "Applicera endast på det berörda området."
+        ],
+        "cautions": [
+          "Testa på en liten yta innan första användning."
+        ]
+      },
+      "other": {
+        "steps": [],
+        "cautions": []
+      }
+    }
+  },
   "cookies": {
     "message": "Vi använder nödvändiga cookies för autentisering. Inga spårningscookies används.",
     "accept": "Acceptera",

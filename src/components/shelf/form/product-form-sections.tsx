@@ -1,0 +1,260 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+import { ProductIllustration } from '../product-illustration';
+import { HowToUseEditor } from '../how-to-use-editor';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  type ApplicationGuidance,
+  type CatalogueIdentity,
+  ProductCategory,
+} from '@/types/shelf';
+import {
+  Field,
+  SectionLabel,
+  TextAreaInput,
+  TextInput,
+} from './product-form-fields';
+
+const CATEGORY_OPTIONS = Object.values(ProductCategory);
+
+type BaseSectionProps = {
+  identityReadOnly: boolean;
+  identitySourceLabel?: string;
+};
+
+function createSourceBadge(identitySourceLabel?: string) {
+  return identitySourceLabel ? (
+    <span className="rounded-full bg-success-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-success-soft-foreground">
+      {identitySourceLabel}
+    </span>
+  ) : null;
+}
+
+type IdentitySectionProps = BaseSectionProps & {
+  identity: CatalogueIdentity;
+  onChange: (patch: Partial<CatalogueIdentity>) => void;
+};
+
+export function ProductIdentitySection({
+  identity,
+  onChange,
+  identityReadOnly,
+  identitySourceLabel,
+}: IdentitySectionProps) {
+  const t = useTranslations('shelf.dialog.confirm');
+  const tField = useTranslations('shelf.dialog.confirm.fields');
+  const tCategory = useTranslations('shelf.category');
+  const sourceBadge = createSourceBadge(identitySourceLabel);
+
+  return (
+    <section className="flex flex-col gap-3">
+      <SectionLabel>{t('sections.identity')}</SectionLabel>
+      <p className="-mt-2 text-xs text-muted">{t('hints.identityDescription')}</p>
+
+      <div className="flex flex-col gap-5 sm:grid sm:grid-cols-[180px_1fr] sm:items-start sm:gap-6">
+        <div className="mx-auto w-full max-w-[160px] sm:mx-0 sm:max-w-none">
+          <div className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-surface-muted">
+            <ProductIllustration
+              brand={identity.brand}
+              category={identity.category}
+              className="h-[60%] w-auto"
+            />
+          </div>
+          <p className="mt-2 text-center text-[11px] text-muted sm:text-left">
+            {t('hints.photoUploadComingSoon')}
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field label={tField('brand')} badge={identityReadOnly ? sourceBadge : null}>
+            <TextInput
+              value={identity.brand}
+              readOnly={identityReadOnly}
+              onChange={(brand) => onChange({ brand })}
+              aria-label={tField('brand')}
+            />
+          </Field>
+          <Field label={tField('name')} badge={identityReadOnly ? sourceBadge : null}>
+            <TextInput
+              value={identity.name}
+              readOnly={identityReadOnly}
+              onChange={(name) => onChange({ name })}
+              aria-label={tField('name')}
+            />
+          </Field>
+          <Field
+            label={tField('category')}
+            badge={identityReadOnly ? sourceBadge : null}
+          >
+            <Select
+              value={identity.category}
+              onValueChange={(next) => onChange({ category: next as ProductCategory })}
+              disabled={identityReadOnly}
+            >
+              <SelectTrigger aria-label={tField('category')} className="h-11">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORY_OPTIONS.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {tCategory(option)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field
+            label={tField('size')}
+            hint={t('hints.sizeHint')}
+            badge={identityReadOnly ? sourceBadge : null}
+          >
+            <TextInput
+              type="number"
+              value={identity.sizeMl != null ? String(identity.sizeMl) : ''}
+              onChange={(raw) =>
+                onChange({ sizeMl: raw === '' ? null : Number(raw) })
+              }
+              placeholder={tField('sizePlaceholder')}
+              readOnly={identityReadOnly}
+              aria-label={tField('size')}
+            />
+          </Field>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+type AboutSectionProps = BaseSectionProps & {
+  identity: CatalogueIdentity;
+  onChange: (patch: Partial<CatalogueIdentity>) => void;
+};
+
+export function ProductAboutSection({
+  identity,
+  onChange,
+  identityReadOnly,
+  identitySourceLabel,
+}: AboutSectionProps) {
+  const t = useTranslations('shelf.dialog.confirm');
+  const tField = useTranslations('shelf.dialog.confirm.fields');
+  const sourceBadge = createSourceBadge(identitySourceLabel);
+
+  return (
+    <section className="flex flex-col gap-3">
+      <SectionLabel>{t('sections.about')}</SectionLabel>
+      <p className="-mt-2 text-xs text-muted">{t('hints.aboutDescription')}</p>
+
+      <div className="flex flex-col gap-3">
+        <Field
+          label={tField('description')}
+          hint={t('hints.descriptionHint')}
+          badge={identityReadOnly && identity.description ? sourceBadge : null}
+        >
+          <TextAreaInput
+            rows={3}
+            value={identity.description ?? ''}
+            onChange={(description) =>
+              onChange({ description: description || null })
+            }
+            readOnly={identityReadOnly}
+            placeholder={tField('descriptionPlaceholder')}
+            aria-label={tField('description')}
+            className="min-h-[88px]"
+          />
+        </Field>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field label={tField('benefits')} hint={t('hints.benefitsHint')}>
+            <TextInput
+              value={identity.benefits.join(', ')}
+              onChange={(raw) =>
+                onChange({
+                  benefits: raw
+                    .split(',')
+                    .map((value) => value.trim())
+                    .filter(Boolean),
+                })
+              }
+              placeholder={tField('benefitsPlaceholder')}
+              aria-label={tField('benefits')}
+              disabled={identityReadOnly}
+            />
+          </Field>
+          <Field label={tField('suitedFor')} hint={t('hints.suitedForHint')}>
+            <TextInput
+              value={identity.suitedFor.join(', ')}
+              onChange={(raw) =>
+                onChange({
+                  suitedFor: raw
+                    .split(',')
+                    .map((value) => value.trim())
+                    .filter(Boolean),
+                })
+              }
+              placeholder={tField('suitedForPlaceholder')}
+              aria-label={tField('suitedFor')}
+              disabled={identityReadOnly}
+            />
+          </Field>
+        </div>
+
+        <Field
+          label={tField('inciIngredients')}
+          hint={t('hints.ingredientsHint')}
+          badge={
+            identityReadOnly && identity.inciIngredients.length > 0
+              ? sourceBadge
+              : null
+          }
+        >
+          <TextAreaInput
+            rows={4}
+            value={identity.inciIngredients.join(', ')}
+            onChange={(raw) =>
+              onChange({
+                inciIngredients: raw
+                  .split(',')
+                  .map((value) => value.trim())
+                  .filter(Boolean),
+              })
+            }
+            readOnly={identityReadOnly}
+            placeholder={tField('ingredientsPlaceholder')}
+            aria-label={tField('inciIngredients')}
+            className="min-h-[110px]"
+          />
+        </Field>
+      </div>
+    </section>
+  );
+}
+
+type HowToUseSectionProps = {
+  guidance: ApplicationGuidance;
+  onChange: (next: ApplicationGuidance) => void;
+};
+
+export function ProductHowToUseSection({
+  guidance,
+  onChange,
+}: HowToUseSectionProps) {
+  const t = useTranslations('shelf.dialog.confirm');
+
+  return (
+    <section className="flex flex-col gap-3">
+      <SectionLabel>{t('sections.guidance')}</SectionLabel>
+      <p className="-mt-2 text-xs text-muted">{t('hints.guidanceDescription')}</p>
+      <div className="rounded-2xl border border-border bg-surface p-4">
+        <HowToUseEditor value={guidance} onChange={onChange} />
+      </div>
+    </section>
+  );
+}
