@@ -29,7 +29,32 @@ jest.mock('@/hooks/use-shelf', () => ({
   }),
 }));
 
+jest.mock('@/components/ui/date-picker', () => ({
+  DatePicker: ({
+    value,
+    onChange,
+    ariaLabel,
+  }: {
+    value: string;
+    onChange: (next: string) => void;
+    ariaLabel?: string;
+  }) => (
+    <input
+      type="date"
+      aria-label={ariaLabel}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+    />
+  ),
+}));
+
 import { ProductEditForm } from '@/components/shelf/edit/product-edit-form';
+
+function getStepInput(index: number) {
+  return screen
+    .getAllByLabelText(new RegExp(`step ${index}`, 'i'))
+    .find((element) => element.tagName === 'INPUT') as HTMLInputElement;
+}
 
 const PRODUCT: ShelfProduct = {
   id: 'product-1',
@@ -40,10 +65,10 @@ const PRODUCT: ShelfProduct = {
     barcode: null,
     imageUrls: [],
     sizeMl: 30,
-    description: null,
-    benefits: [],
-    suitedFor: [],
-    inciIngredients: [],
+    description: 'A calm nightly serum that smooths texture over time.',
+    benefits: ['smoothing'],
+    suitedFor: ['dry'],
+    inciIngredients: ['Aqua', 'Niacinamide'],
     inciLastConfirmedAt: null,
   },
   guidance: {
@@ -91,9 +116,59 @@ describe('ProductEditForm', () => {
     await user.clear(screen.getByLabelText(/product name/i));
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
-    expect(screen.getByRole('alert')).toHaveTextContent(
-      /product name is required/i,
-    );
+    expect(screen.getByText(/product name is required/i)).toBeInTheDocument();
+    expect(screen.getByText(/add either an opened date or an expiry date/i)).toBeInTheDocument();
+    expect(screen.getByText(/add at least one step so ritora can explain how to use this product/i)).toBeInTheDocument();
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('shows inline validation for invalid product links', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+
+    await user.clear(screen.getByLabelText(/product url/i));
+    await user.type(screen.getByLabelText(/product url/i), 'ftp://example.com/product');
+    await user.click(screen.getByRole('button', { name: /save changes/i }));
+
+    expect(
+      screen.getByText(/product url must start with http:\/\/ or https:\/\//i),
+    ).toBeInTheDocument();
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('requires shelf-critical data before saving', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+
+    await user.click(screen.getByRole('button', { name: /save changes/i }));
+
+    expect(screen.getByText(/add either an opened date or an expiry date/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/add at least one step so ritora can explain how to use this product/i),
+    ).toBeInTheDocument();
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('requires the about fields before saving', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+
+    await user.clear(screen.getByLabelText(/^description$/i));
+    await user.clear(screen.getByLabelText(/^benefits$/i));
+    await user.clear(screen.getByLabelText(/^suited for$/i));
+    await user.clear(screen.getByLabelText(/^ingredients \(inci\)$/i));
+    await user.click(screen.getByRole('button', { name: /save changes/i }));
+
+    expect(screen.getByText(/description is required/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/add at least one product benefit/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/add at least one skin type this product suits/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/paste the inci ingredients list/i),
+    ).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
   });
 
@@ -107,6 +182,9 @@ describe('ProductEditForm', () => {
 
     await user.clear(screen.getByLabelText(/product name/i));
     await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+    await user.click(screen.getByRole('button', { name: /add step/i }));
+    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    await user.type(screen.getByLabelText(/^opened on$/i), '2026-04-15');
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {

@@ -18,12 +18,16 @@ import {
 type Props = {
   value: ApplicationGuidance;
   onChange: (next: ApplicationGuidance) => void;
+  errors?: {
+    steps?: string;
+    cautions?: string;
+  };
 };
 
 const METHOD_OPTIONS = Object.values(ApplicationMethod);
 const QUANTITY_OPTIONS = Object.values(Quantity);
 
-export function HowToUseEditor({ value, onChange }: Props) {
+export function HowToUseEditor({ value, onChange, errors }: Props) {
   const t = useTranslations('shelf.detail.howToUse');
   const tMethod = useTranslations('shelf.method');
   const tQty = useTranslations('shelf.quantity');
@@ -94,9 +98,14 @@ export function HowToUseEditor({ value, onChange }: Props) {
             className="inline-flex items-center gap-1 rounded-full bg-accent-strong px-3 py-1.5 text-xs font-semibold text-surface shadow-soft transition hover:-translate-y-0.5 hover:opacity-95"
           >
             <Plus className="h-3 w-3" />
-            Add step
+            {t('addStep')}
           </button>
         </div>
+        {errors?.steps ? (
+          <p className="mb-2 text-sm text-danger" role="alert">
+            {errors.steps}
+          </p>
+        ) : null}
         <ol className="flex flex-col gap-2">
           {value.steps.map((step, index) => (
             <li
@@ -108,7 +117,7 @@ export function HowToUseEditor({ value, onChange }: Props) {
               </span>
               <input
                 value={step}
-                aria-label={`Step ${index + 1}`}
+                aria-label={t('stepInput', { index: index + 1 })}
                 onChange={(e) => {
                   const next = [...value.steps];
                   next[index] = e.target.value;
@@ -118,7 +127,7 @@ export function HowToUseEditor({ value, onChange }: Props) {
               />
               <button
                 type="button"
-                aria-label={`Remove step ${index + 1}`}
+                aria-label={t('removeStep', { index: index + 1 })}
                 onClick={() =>
                   update({
                     steps: value.steps.filter((_, i) => i !== index),
@@ -144,9 +153,14 @@ export function HowToUseEditor({ value, onChange }: Props) {
             className="inline-flex items-center gap-1 rounded-full bg-accent-strong px-3 py-1.5 text-xs font-semibold text-surface shadow-soft transition hover:-translate-y-0.5 hover:opacity-95"
           >
             <Plus className="h-3 w-3" />
-            Add caution
+            {t('addCaution')}
           </button>
         </div>
+        {errors?.cautions ? (
+          <p className="mb-2 text-sm text-danger" role="alert">
+            {errors.cautions}
+          </p>
+        ) : null}
         <ul className="flex flex-col gap-2">
           {value.cautions.map((caution, index) => (
             <li
@@ -156,7 +170,7 @@ export function HowToUseEditor({ value, onChange }: Props) {
               <AlertTriangle className="mt-1.5 h-3.5 w-3.5 flex-none" />
               <input
                 value={caution}
-                aria-label={`Caution ${index + 1}`}
+                aria-label={t('cautionInput', { index: index + 1 })}
                 onChange={(e) => {
                   const next = [...value.cautions];
                   next[index] = e.target.value;
@@ -166,7 +180,7 @@ export function HowToUseEditor({ value, onChange }: Props) {
               />
               <button
                 type="button"
-                aria-label={`Remove caution ${index + 1}`}
+                aria-label={t('removeCaution', { index: index + 1 })}
                 onClick={() =>
                   update({
                     cautions: value.cautions.filter((_, i) => i !== index),
@@ -183,8 +197,9 @@ export function HowToUseEditor({ value, onChange }: Props) {
 
       <label className="flex flex-col">
         <span className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
-          Wait timer (optional, minutes)
+          {t('waitTimerLabel')}
         </span>
+        <span className="mb-2 text-xs text-muted">{t('waitTimerHint')}</span>
         <input
           type="number"
           min={0}
@@ -198,7 +213,7 @@ export function HowToUseEditor({ value, onChange }: Props) {
             })
           }
           className="w-40 rounded-xl border border-border bg-surface px-3 py-2 text-[14px]"
-          placeholder="e.g. 10"
+          placeholder={t('waitTimerPlaceholder')}
         />
       </label>
 

@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 import { ProductIllustration } from '@/components/shelf/product-illustration';
 import { cn } from '@/lib/utils';
@@ -20,6 +21,7 @@ export function ProductImageCarousel({
   productName,
   category,
 }: Props) {
+  const t = useTranslations('shelf.detail.carousel');
   const [index, setIndex] = useState(0);
   const total = imageUrls.length;
   const hasImages = total > 0;
@@ -80,7 +82,7 @@ export function ProductImageCarousel({
         <>
           <button
             type="button"
-            aria-label="Previous image"
+            aria-label={t('previousImage')}
             onClick={prev}
             className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-surface/90 p-2 text-foreground shadow-[var(--shadow-soft)] hover:bg-surface"
           >
@@ -88,7 +90,7 @@ export function ProductImageCarousel({
           </button>
           <button
             type="button"
-            aria-label="Next image"
+            aria-label={t('nextImage')}
             onClick={next}
             className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-surface/90 p-2 text-foreground shadow-[var(--shadow-soft)] hover:bg-surface"
           >

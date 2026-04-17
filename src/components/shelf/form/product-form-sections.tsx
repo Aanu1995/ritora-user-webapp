@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import type { ProductFormGuidanceErrors } from '../product-form-body';
 import { ProductIllustration } from '../product-illustration';
 import { HowToUseEditor } from '../how-to-use-editor';
 import {
@@ -15,6 +16,7 @@ import {
   type CatalogueIdentity,
   ProductCategory,
 } from '@/types/shelf';
+import type { ShelfFormFieldErrors } from '@/lib/shelf-form';
 import {
   Field,
   SectionLabel,
@@ -27,6 +29,7 @@ const CATEGORY_OPTIONS = Object.values(ProductCategory);
 type BaseSectionProps = {
   identityReadOnly: boolean;
   identitySourceLabel?: string;
+  fieldErrors?: ShelfFormFieldErrors;
 };
 
 function createSourceBadge(identitySourceLabel?: string) {
@@ -47,6 +50,7 @@ export function ProductIdentitySection({
   onChange,
   identityReadOnly,
   identitySourceLabel,
+  fieldErrors,
 }: IdentitySectionProps) {
   const t = useTranslations('shelf.dialog.confirm');
   const tField = useTranslations('shelf.dialog.confirm.fields');
@@ -73,20 +77,30 @@ export function ProductIdentitySection({
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label={tField('brand')} badge={identityReadOnly ? sourceBadge : null}>
+          <Field
+            label={tField('brand')}
+            badge={identityReadOnly ? sourceBadge : null}
+            error={fieldErrors?.['identity.brand']}
+          >
             <TextInput
               value={identity.brand}
               readOnly={identityReadOnly}
               onChange={(brand) => onChange({ brand })}
               aria-label={tField('brand')}
+              invalid={Boolean(fieldErrors?.['identity.brand'])}
             />
           </Field>
-          <Field label={tField('name')} badge={identityReadOnly ? sourceBadge : null}>
+          <Field
+            label={tField('name')}
+            badge={identityReadOnly ? sourceBadge : null}
+            error={fieldErrors?.['identity.name']}
+          >
             <TextInput
               value={identity.name}
               readOnly={identityReadOnly}
               onChange={(name) => onChange({ name })}
               aria-label={tField('name')}
+              invalid={Boolean(fieldErrors?.['identity.name'])}
             />
           </Field>
           <Field
@@ -98,7 +112,10 @@ export function ProductIdentitySection({
               onValueChange={(next) => onChange({ category: next as ProductCategory })}
               disabled={identityReadOnly}
             >
-              <SelectTrigger aria-label={tField('category')} className="h-11">
+              <SelectTrigger
+                aria-label={tField('category')}
+                className="h-11"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -114,6 +131,7 @@ export function ProductIdentitySection({
             label={tField('size')}
             hint={t('hints.sizeHint')}
             badge={identityReadOnly ? sourceBadge : null}
+            error={fieldErrors?.['identity.sizeMl']}
           >
             <TextInput
               type="number"
@@ -124,6 +142,7 @@ export function ProductIdentitySection({
               placeholder={tField('sizePlaceholder')}
               readOnly={identityReadOnly}
               aria-label={tField('size')}
+              invalid={Boolean(fieldErrors?.['identity.sizeMl'])}
             />
           </Field>
         </div>
@@ -142,6 +161,7 @@ export function ProductAboutSection({
   onChange,
   identityReadOnly,
   identitySourceLabel,
+  fieldErrors,
 }: AboutSectionProps) {
   const t = useTranslations('shelf.dialog.confirm');
   const tField = useTranslations('shelf.dialog.confirm.fields');
@@ -157,6 +177,7 @@ export function ProductAboutSection({
           label={tField('description')}
           hint={t('hints.descriptionHint')}
           badge={identityReadOnly && identity.description ? sourceBadge : null}
+          error={fieldErrors?.['identity.description']}
         >
           <TextAreaInput
             rows={3}
@@ -168,11 +189,16 @@ export function ProductAboutSection({
             placeholder={tField('descriptionPlaceholder')}
             aria-label={tField('description')}
             className="min-h-[88px]"
+            invalid={Boolean(fieldErrors?.['identity.description'])}
           />
         </Field>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label={tField('benefits')} hint={t('hints.benefitsHint')}>
+          <Field
+            label={tField('benefits')}
+            hint={t('hints.benefitsHint')}
+            error={fieldErrors?.['identity.benefits']}
+          >
             <TextInput
               value={identity.benefits.join(', ')}
               onChange={(raw) =>
@@ -186,9 +212,14 @@ export function ProductAboutSection({
               placeholder={tField('benefitsPlaceholder')}
               aria-label={tField('benefits')}
               disabled={identityReadOnly}
+              invalid={Boolean(fieldErrors?.['identity.benefits'])}
             />
           </Field>
-          <Field label={tField('suitedFor')} hint={t('hints.suitedForHint')}>
+          <Field
+            label={tField('suitedFor')}
+            hint={t('hints.suitedForHint')}
+            error={fieldErrors?.['identity.suitedFor']}
+          >
             <TextInput
               value={identity.suitedFor.join(', ')}
               onChange={(raw) =>
@@ -202,6 +233,7 @@ export function ProductAboutSection({
               placeholder={tField('suitedForPlaceholder')}
               aria-label={tField('suitedFor')}
               disabled={identityReadOnly}
+              invalid={Boolean(fieldErrors?.['identity.suitedFor'])}
             />
           </Field>
         </div>
@@ -214,6 +246,7 @@ export function ProductAboutSection({
               ? sourceBadge
               : null
           }
+          error={fieldErrors?.['identity.inciIngredients']}
         >
           <TextAreaInput
             rows={4}
@@ -230,6 +263,7 @@ export function ProductAboutSection({
             placeholder={tField('ingredientsPlaceholder')}
             aria-label={tField('inciIngredients')}
             className="min-h-[110px]"
+            invalid={Boolean(fieldErrors?.['identity.inciIngredients'])}
           />
         </Field>
       </div>
@@ -240,11 +274,13 @@ export function ProductAboutSection({
 type HowToUseSectionProps = {
   guidance: ApplicationGuidance;
   onChange: (next: ApplicationGuidance) => void;
+  errors?: ProductFormGuidanceErrors;
 };
 
 export function ProductHowToUseSection({
   guidance,
   onChange,
+  errors,
 }: HowToUseSectionProps) {
   const t = useTranslations('shelf.dialog.confirm');
 
@@ -253,7 +289,7 @@ export function ProductHowToUseSection({
       <SectionLabel>{t('sections.guidance')}</SectionLabel>
       <p className="-mt-2 text-xs text-muted">{t('hints.guidanceDescription')}</p>
       <div className="rounded-2xl border border-border bg-surface p-4">
-        <HowToUseEditor value={guidance} onChange={onChange} />
+        <HowToUseEditor value={guidance} onChange={onChange} errors={errors} />
       </div>
     </section>
   );

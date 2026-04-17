@@ -1,6 +1,7 @@
 'use client';
 
 import type { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
+import { cn } from '@/lib/utils';
 
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
@@ -16,6 +17,7 @@ type FieldProps = {
   hint?: string;
   badge?: ReactNode;
   fullWidth?: boolean;
+  error?: string;
 };
 
 export function Field({
@@ -24,6 +26,7 @@ export function Field({
   hint,
   badge,
   fullWidth,
+  error,
 }: FieldProps) {
   return (
     <label className={`flex flex-col ${fullWidth ? 'sm:col-span-2' : ''}`}>
@@ -32,6 +35,11 @@ export function Field({
         {badge}
       </span>
       {children}
+      {error ? (
+        <span className="mt-1 text-[11px] text-danger" role="alert">
+          {error}
+        </span>
+      ) : null}
       {hint ? <span className="mt-1 text-[11px] text-muted">{hint}</span> : null}
     </label>
   );
@@ -43,19 +51,26 @@ type TextInputProps = Omit<
 > & {
   value: string;
   onChange: (next: string) => void;
+  invalid?: boolean;
 };
 
 export function TextInput({
   value,
   onChange,
   className,
+  invalid = false,
   ...rest
 }: TextInputProps) {
   return (
     <input
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className={`h-11 rounded-xl border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted focus:border-accent-strong focus:outline-none disabled:opacity-60 ${className ?? ''}`}
+      className={cn(
+        'h-11 rounded-xl border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted focus:border-accent-strong focus:outline-none disabled:opacity-60',
+        invalid && 'border-danger focus:border-danger',
+        className,
+      )}
+      aria-invalid={invalid}
       {...rest}
     />
   );
@@ -67,19 +82,26 @@ type TextAreaInputProps = Omit<
 > & {
   value: string;
   onChange: (next: string) => void;
+  invalid?: boolean;
 };
 
 export function TextAreaInput({
   value,
   onChange,
   className,
+  invalid = false,
   ...rest
 }: TextAreaInputProps) {
   return (
     <textarea
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      className={`rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-accent-strong focus:outline-none disabled:opacity-60 ${className ?? ''}`}
+      className={cn(
+        'rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-accent-strong focus:outline-none disabled:opacity-60',
+        invalid && 'border-danger focus:border-danger',
+        className,
+      )}
+      aria-invalid={invalid}
       {...rest}
     />
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import { Calendar as CalendarIcon, X } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Calendar } from './calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
@@ -44,14 +45,16 @@ function toIsoDateString(date: Date): string {
 export function DatePicker({
   value,
   onChange,
-  placeholder = 'Pick a date',
+  placeholder,
   disabled,
   ariaLabel,
   allowClear = true,
   className,
 }: Props) {
+  const t = useTranslations('common.datePicker');
   const [open, setOpen] = useState(false);
   const selected = parseValue(value);
+  const resolvedPlaceholder = placeholder ?? t('placeholder');
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -59,7 +62,7 @@ export function DatePicker({
         <button
           type="button"
           disabled={disabled}
-          aria-label={ariaLabel ?? placeholder}
+          aria-label={ariaLabel ?? resolvedPlaceholder}
           className={cn(
             'inline-flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-surface px-3 text-left text-sm transition hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong disabled:opacity-60',
             !selected && 'text-muted',
@@ -68,13 +71,13 @@ export function DatePicker({
         >
           <span className="inline-flex items-center gap-2">
             <CalendarIcon className="h-4 w-4 text-muted" />
-            <span>{selected ? formatDisplay(selected) : placeholder}</span>
+            <span>{selected ? formatDisplay(selected) : resolvedPlaceholder}</span>
           </span>
           {allowClear && selected ? (
             <span
               role="button"
               tabIndex={-1}
-              aria-label="Clear date"
+              aria-label={t('clear')}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();

@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { PreferredTimeOfDay, type ManufacturerInfo, type UserFields } from '@/types/shelf';
+import type { ShelfFormFieldErrors } from '@/lib/shelf-form';
+import { cn } from '@/lib/utils';
 import { Field, SectionLabel, TextAreaInput, TextInput } from './product-form-fields';
 
 const PAO_OPTIONS = [6, 12, 18, 24, 36] as const;
@@ -18,6 +20,7 @@ const PAO_OPTIONS = [6, 12, 18, 24, 36] as const;
 type UserFieldsSectionProps = {
   userFields: UserFields;
   onChange: (patch: Partial<UserFields>) => void;
+  fieldErrors?: ShelfFormFieldErrors;
 };
 
 function addMonths(isoDate: string, months: number): string {
@@ -29,6 +32,7 @@ function addMonths(isoDate: string, months: number): string {
 export function ProductUserFieldsSection({
   userFields,
   onChange,
+  fieldErrors,
 }: UserFieldsSectionProps) {
   const t = useTranslations('shelf.dialog.confirm');
   const tField = useTranslations('shelf.dialog.confirm.fields');
@@ -45,7 +49,11 @@ export function ProductUserFieldsSection({
       <p className="-mt-2 text-xs text-muted">{t('hints.yoursDescription')}</p>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label={tField('openedAt')} hint={t('hints.openedAtHint')}>
+        <Field
+          label={tField('openedAt')}
+          hint={t('hints.openedAtHint')}
+          error={fieldErrors?.['userFields.openedAt']}
+        >
           <DatePicker
             value={openedIso}
             onChange={(next) =>
@@ -56,6 +64,9 @@ export function ProductUserFieldsSection({
             }
             ariaLabel={tField('openedAt')}
             placeholder={tField('datePlaceholder')}
+            className={cn(
+              fieldErrors?.['userFields.openedAt'] && 'border-danger',
+            )}
           />
         </Field>
         <Field label={tField('periodAfterOpening')} hint={t('hints.paoHint')}>
@@ -83,7 +94,11 @@ export function ProductUserFieldsSection({
             </SelectContent>
           </Select>
         </Field>
-        <Field label={tField('expiresAt')} hint={t('hints.expiresAtHint')}>
+        <Field
+          label={tField('expiresAt')}
+          hint={t('hints.expiresAtHint')}
+          error={fieldErrors?.['userFields.expiresAt']}
+        >
           <DatePicker
             value={derivedExpiresIso}
             onChange={(next) =>
@@ -93,6 +108,9 @@ export function ProductUserFieldsSection({
             }
             ariaLabel={tField('expiresAt')}
             placeholder={tField('datePlaceholder')}
+            className={cn(
+              fieldErrors?.['userFields.expiresAt'] && 'border-danger',
+            )}
           />
         </Field>
         <Field
@@ -126,7 +144,11 @@ export function ProductUserFieldsSection({
             </SelectContent>
           </Select>
         </Field>
-        <Field label={tField('pricePaid')} hint={t('hints.priceHint')}>
+        <Field
+          label={tField('pricePaid')}
+          hint={t('hints.priceHint')}
+          error={fieldErrors?.['userFields.pricePaid']}
+        >
           <TextInput
             type="text"
             value={
@@ -137,6 +159,7 @@ export function ProductUserFieldsSection({
             }
             placeholder={tField('pricePlaceholder')}
             aria-label={tField('pricePaid')}
+            invalid={Boolean(fieldErrors?.['userFields.pricePaid'])}
           />
         </Field>
         <Field
@@ -176,11 +199,13 @@ export function ProductUserFieldsSection({
 type ManufacturerSectionProps = {
   manufacturer: ManufacturerInfo;
   onChange: (patch: Partial<ManufacturerInfo>) => void;
+  fieldErrors?: ShelfFormFieldErrors;
 };
 
 export function ProductManufacturerSection({
   manufacturer,
   onChange,
+  fieldErrors,
 }: ManufacturerSectionProps) {
   const t = useTranslations('shelf.dialog.confirm');
   const tField = useTranslations('shelf.dialog.confirm.fields');
@@ -211,7 +236,11 @@ export function ProductManufacturerSection({
             ariaLabel={tManufacturer('madeIn')}
           />
         </Field>
-        <Field label={tManufacturer('support')} hint={t('hints.supportEmailHint')}>
+        <Field
+          label={tManufacturer('support')}
+          hint={t('hints.supportEmailHint')}
+          error={fieldErrors?.['manufacturer.supportEmail']}
+        >
           <TextInput
             type="email"
             value={manufacturer.supportEmail ?? ''}
@@ -219,14 +248,20 @@ export function ProductManufacturerSection({
               onChange({ supportEmail: supportEmail || null })
             }
             aria-label={tManufacturer('support')}
+            invalid={Boolean(fieldErrors?.['manufacturer.supportEmail'])}
           />
         </Field>
-        <Field label={tField('productUrl')} hint={t('hints.productUrlHint')}>
+        <Field
+          label={tField('productUrl')}
+          hint={t('hints.productUrlHint')}
+          error={fieldErrors?.['manufacturer.productUrl']}
+        >
           <TextInput
             value={manufacturer.productUrl ?? ''}
             onChange={(productUrl) => onChange({ productUrl: productUrl || null })}
             placeholder={tField('productUrlPlaceholder')}
             aria-label={tField('productUrl')}
+            invalid={Boolean(fieldErrors?.['manufacturer.productUrl'])}
           />
         </Field>
       </div>

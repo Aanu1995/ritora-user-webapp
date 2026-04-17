@@ -1,5 +1,7 @@
-import { screen } from '@testing-library/react';
+import svMessages from '../../../../messages/sv.json';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { NextIntlClientProvider } from 'next-intl';
 import { renderWithProviders } from '@/test/utils';
 import { ProductImageCarousel } from '@/components/shelf/detail/product-image-carousel';
 import { ProductCategory } from '@/types/shelf';
@@ -72,5 +74,25 @@ describe('ProductImageCarousel', () => {
     // No assertion on the underlying image src due to next/image mocking;
     // we just confirm the buttons are operable without crashing.
     expect(nextBtn).toBeInTheDocument();
+  });
+
+  it('renders translated carousel controls when the locale changes', () => {
+    render(
+      <NextIntlClientProvider locale="sv" messages={svMessages}>
+        <ProductImageCarousel
+          imageUrls={['/a.jpg', '/b.jpg']}
+          brand="CeraVe"
+          productName="Retinol"
+          category={ProductCategory.Serum}
+        />
+      </NextIntlClientProvider>,
+    );
+
+    expect(
+      screen.getByRole('button', { name: /föregående bild/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /nästa bild/i }),
+    ).toBeInTheDocument();
   });
 });

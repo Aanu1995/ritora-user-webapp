@@ -148,10 +148,18 @@ export type ShelfProductFormValue = Pick<
 export enum ShelfFormValidationCode {
   BrandRequired = 'brand-required',
   NameRequired = 'name-required',
+  DescriptionRequired = 'description-required',
+  BenefitsRequired = 'benefits-required',
+  SuitedForRequired = 'suited-for-required',
+  IngredientsRequired = 'ingredients-required',
+  SizeRequired = 'size-required',
   SizeInvalid = 'size-invalid',
+  ShelfLifeDateRequired = 'shelf-life-date-required',
+  GuidanceStepsRequired = 'guidance-steps-required',
   PriceInvalid = 'price-invalid',
   SupportEmailInvalid = 'support-email-invalid',
   ProductUrlInvalid = 'product-url-invalid',
+  ExpiresAtInvalid = 'expires-at-invalid',
 }
 
 /**

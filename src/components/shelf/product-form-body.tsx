@@ -16,65 +16,79 @@ import type {
   ShelfProductFormValue,
   UserFields,
 } from '@/types/shelf';
+import type { ShelfFormFieldErrors } from '@/lib/shelf-form';
 
 export type ProductFormValue = ShelfProductFormValue;
+export type ProductFormGuidanceErrors = {
+  steps?: string;
+  cautions?: string;
+};
 
 type ProductFormBodyProps = {
   value: ProductFormValue;
-  onChange: (next: ProductFormValue) => void;
+  onIdentityChange: (next: CatalogueIdentity) => void;
+  onManufacturerChange: (next: ManufacturerInfo) => void;
+  onUserFieldsChange: (next: UserFields) => void;
+  onGuidanceChange: (next: ApplicationGuidance) => void;
+  fieldErrors?: ShelfFormFieldErrors;
+  guidanceErrors?: ProductFormGuidanceErrors;
   identityReadOnly?: boolean;
   identitySourceLabel?: string;
 };
 
 export function ProductFormBody({
   value,
-  onChange,
+  onIdentityChange,
+  onManufacturerChange,
+  onUserFieldsChange,
+  onGuidanceChange,
+  fieldErrors,
+  guidanceErrors,
   identityReadOnly = false,
   identitySourceLabel,
 }: ProductFormBodyProps) {
   const patchIdentity = (patch: Partial<CatalogueIdentity>) =>
-    onChange({ ...value, identity: { ...value.identity, ...patch } });
+    onIdentityChange({ ...value.identity, ...patch });
 
   const patchManufacturer = (patch: Partial<ManufacturerInfo>) =>
-    onChange({
-      ...value,
-      manufacturer: { ...value.manufacturer, ...patch },
-    });
+    onManufacturerChange({ ...value.manufacturer, ...patch });
 
   const patchUserFields = (patch: Partial<UserFields>) =>
-    onChange({
-      ...value,
-      userFields: { ...value.userFields, ...patch },
-    });
+    onUserFieldsChange({ ...value.userFields, ...patch });
 
   const patchGuidance = (guidance: ApplicationGuidance) =>
-    onChange({ ...value, guidance });
+    onGuidanceChange(guidance);
 
   return (
     <div className="flex flex-col gap-8">
       <ProductIdentitySection
         identity={value.identity}
         onChange={patchIdentity}
+        fieldErrors={fieldErrors}
         identityReadOnly={identityReadOnly}
         identitySourceLabel={identitySourceLabel}
       />
       <ProductAboutSection
         identity={value.identity}
         onChange={patchIdentity}
+        fieldErrors={fieldErrors}
         identityReadOnly={identityReadOnly}
         identitySourceLabel={identitySourceLabel}
       />
       <ProductUserFieldsSection
         userFields={value.userFields}
         onChange={patchUserFields}
+        fieldErrors={fieldErrors}
       />
       <ProductHowToUseSection
         guidance={value.guidance}
         onChange={patchGuidance}
+        errors={guidanceErrors}
       />
       <ProductManufacturerSection
         manufacturer={value.manufacturer}
         onChange={patchManufacturer}
+        fieldErrors={fieldErrors}
       />
     </div>
   );

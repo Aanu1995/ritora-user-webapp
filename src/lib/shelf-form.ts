@@ -1,16 +1,76 @@
 import {
+  ApplicationMethod,
   DataProvenance,
   type ManufacturerInfo,
   type CatalogueIdentity,
+  PreferredTimeOfDay,
   ProductCategory,
+  Quantity,
   type ShelfProductDraft,
   type ShelfProductFormValue,
   ShelfFormValidationCode,
   ShelfStatus,
   type UserFields,
 } from '@/types/shelf';
+import { z } from 'zod';
 
 const HTTP_PROTOCOLS = new Set(['http:', 'https:']);
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const VALIDATION_MESSAGE = {
+  brandRequired: 'dialog.validation.brandRequired',
+  nameRequired: 'dialog.validation.nameRequired',
+  descriptionRequired: 'dialog.validation.descriptionRequired',
+  benefitsRequired: 'dialog.validation.benefitsRequired',
+  suitedForRequired: 'dialog.validation.suitedForRequired',
+  ingredientsRequired: 'dialog.validation.ingredientsRequired',
+  sizeRequired: 'dialog.validation.sizeRequired',
+  sizeInvalid: 'dialog.validation.sizeInvalid',
+  shelfLifeDateRequired: 'dialog.validation.shelfLifeDateRequired',
+  stepsRequired: 'dialog.validation.stepsRequired',
+  priceInvalid: 'dialog.validation.priceInvalid',
+  periodAfterOpeningInvalid: 'dialog.validation.periodAfterOpeningInvalid',
+  supportEmailInvalid: 'dialog.validation.supportEmailInvalid',
+  productUrlInvalid: 'dialog.validation.productUrlInvalid',
+  expiresAtInvalid: 'dialog.validation.expiresAtInvalid',
+  waitMinutesInvalid: 'dialog.validation.waitMinutesInvalid',
+  stepsMax: 'dialog.validation.stepsMax',
+  cautionsMax: 'dialog.validation.cautionsMax',
+} as const;
+
+const VALIDATION_CODE_BY_FIELD = {
+  'identity.brand': ShelfFormValidationCode.BrandRequired,
+  'identity.name': ShelfFormValidationCode.NameRequired,
+  'identity.description': ShelfFormValidationCode.DescriptionRequired,
+  'identity.benefits': ShelfFormValidationCode.BenefitsRequired,
+  'identity.suitedFor': ShelfFormValidationCode.SuitedForRequired,
+  'identity.inciIngredients': ShelfFormValidationCode.IngredientsRequired,
+  'identity.sizeMl': ShelfFormValidationCode.SizeInvalid,
+  'userFields.openedAt': ShelfFormValidationCode.ShelfLifeDateRequired,
+  'guidance.steps': ShelfFormValidationCode.GuidanceStepsRequired,
+  'userFields.pricePaid': ShelfFormValidationCode.PriceInvalid,
+  'manufacturer.supportEmail': ShelfFormValidationCode.SupportEmailInvalid,
+  'manufacturer.productUrl': ShelfFormValidationCode.ProductUrlInvalid,
+  'userFields.expiresAt': ShelfFormValidationCode.ExpiresAtInvalid,
+} as const;
+
+const STEP_MAX_LENGTH = 280;
+const CAUTION_MAX_LENGTH = 200;
+
+type ValidationFieldPath = keyof typeof VALIDATION_CODE_BY_FIELD;
+
+export type ShelfFormFieldName = ValidationFieldPath;
+export type ShelfFormFieldErrors = Partial<Record<ShelfFormFieldName, string>>;
+export type ShelfGuidanceValidationErrors = {
+  steps?: string;
+  cautions?: string;
+};
+
+function addMonthsToIsoDate(isoDate: string, months: number): string {
+  const nextDate = new Date(isoDate);
+  nextDate.setMonth(nextDate.getMonth() + months);
+  return nextDate.toISOString();
+}
 
 export function createEmptyIdentity(): CatalogueIdentity {
   return {
@@ -66,6 +126,45 @@ function normalizeStringList(values: string[]): string[] {
   return values.map((value) => value.trim()).filter(Boolean);
 }
 
+function isValidDateString(value: string | null): boolean {
+  if (!value) {
+    return false;
+  }
+
+  return !Number.isNaN(Date.parse(value));
+}
+
+function createOptionalNumberSchema(
+  message: string,
+  minimum?: number,
+  inclusive = true,
+) {
+  return z.custom<number | null>(
+    (value) => {
+      if (value === null) {
+        return true;
+      }
+
+      if (typeof value !== 'number' || !Number.isFinite(value)) {
+        return false;
+      }
+
+      if (minimum == null) {
+        return true;
+      }
+
+      return inclusive ? value >= minimum : value > minimum;
+    },
+    { message },
+  );
+}
+
+function createNullableStringSchema() {
+  return z.custom<string | null>(
+    (value) => value === null || typeof value === 'string',
+  );
+}
+
 export function isSafeExternalUrl(value: string): boolean {
   try {
     const parsed = new URL(value);
@@ -75,41 +174,255 @@ export function isSafeExternalUrl(value: string): boolean {
   }
 }
 
+export const shelfProductFormSchema = z
+  .object({
+    identity: z.object({
+      brand: z
+        .string()
+        .trim()
+        .min(1, VALIDATION_MESSAGE.brandRequired),
+      name: z
+        .string()
+        .trim()
+        .min(1, VALIDATION_MESSAGE.nameRequired),
+      category: z.nativeEnum(ProductCategory),
+      barcode: createNullableStringSchema(),
+      imageUrls: z.array(z.string()),
+      sizeMl: createOptionalNumberSchema(VALIDATION_MESSAGE.sizeInvalid, 0, false),
+      description: createNullableStringSchema(),
+      benefits: z.array(z.string()),
+      suitedFor: z.array(z.string()),
+      inciIngredients: z.array(z.string()),
+      inciLastConfirmedAt: createNullableStringSchema(),
+    }),
+    guidance: z.object({
+      applicationMethod: z.nativeEnum(ApplicationMethod).nullable(),
+      quantity: z.nativeEnum(Quantity).nullable(),
+      steps: z.array(z.string().max(STEP_MAX_LENGTH, VALIDATION_MESSAGE.stepsMax)),
+      cautions: z.array(
+        z.string().max(CAUTION_MAX_LENGTH, VALIDATION_MESSAGE.cautionsMax),
+      ),
+      waitMinutes: createOptionalNumberSchema(
+        VALIDATION_MESSAGE.waitMinutesInvalid,
+        0,
+        true,
+      ),
+    }),
+    manufacturer: z.object({
+      brand: z.string(),
+      parentCompany: createNullableStringSchema(),
+      countryOfOrigin: createNullableStringSchema(),
+      countryOfManufacture: createNullableStringSchema(),
+      supportEmail: z
+        .string()
+        .nullable()
+        .superRefine((value, ctx) => {
+          const email = trimOrNull(value);
+
+          if (email && !EMAIL_PATTERN.test(email)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: VALIDATION_MESSAGE.supportEmailInvalid,
+            });
+          }
+        }),
+      productUrl: z
+        .string()
+        .nullable()
+        .superRefine((value, ctx) => {
+          const productUrl = trimOrNull(value);
+
+          if (productUrl && !isSafeExternalUrl(productUrl)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: VALIDATION_MESSAGE.productUrlInvalid,
+            });
+          }
+        }),
+      websiteUrl: createNullableStringSchema(),
+    }),
+    userFields: z.object({
+      openedAt: createNullableStringSchema(),
+      expiresAt: createNullableStringSchema(),
+      periodAfterOpeningMonths: createOptionalNumberSchema(
+        VALIDATION_MESSAGE.periodAfterOpeningInvalid,
+        0,
+        false,
+      ),
+      pricePaid: createOptionalNumberSchema(VALIDATION_MESSAGE.priceInvalid, 0, true),
+      pricePaidCurrency: createNullableStringSchema(),
+      purchasedFrom: createNullableStringSchema(),
+      personalNotes: createNullableStringSchema(),
+      preferredTimeOfDay: z.nativeEnum(PreferredTimeOfDay).nullable(),
+    }),
+  })
+  .superRefine((value, ctx) => {
+    const {
+      sizeMl,
+      description,
+      benefits,
+      suitedFor,
+      inciIngredients,
+    } = value.identity;
+    const { openedAt, expiresAt } = value.userFields;
+    const trimmedDescription = trimOrNull(description);
+    const normalizedBenefits = normalizeStringList(benefits);
+    const normalizedSuitedFor = normalizeStringList(suitedFor);
+    const normalizedIngredients = normalizeStringList(inciIngredients);
+    const trimmedSteps = normalizeStringList(value.guidance.steps);
+
+    if (trimmedDescription === null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['identity', 'description'],
+        message: VALIDATION_MESSAGE.descriptionRequired,
+      });
+    }
+
+    if (normalizedBenefits.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['identity', 'benefits'],
+        message: VALIDATION_MESSAGE.benefitsRequired,
+      });
+    }
+
+    if (normalizedSuitedFor.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['identity', 'suitedFor'],
+        message: VALIDATION_MESSAGE.suitedForRequired,
+      });
+    }
+
+    if (normalizedIngredients.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['identity', 'inciIngredients'],
+        message: VALIDATION_MESSAGE.ingredientsRequired,
+      });
+    }
+
+    if (sizeMl === null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['identity', 'sizeMl'],
+        message: VALIDATION_MESSAGE.sizeRequired,
+      });
+    }
+
+    if (trimmedSteps.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['guidance', 'steps'],
+        message: VALIDATION_MESSAGE.stepsRequired,
+      });
+    }
+
+    const hasOpenedAt = isValidDateString(openedAt);
+    const hasExpiresAt = isValidDateString(expiresAt);
+
+    if (!hasOpenedAt && !hasExpiresAt) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['userFields', 'openedAt'],
+        message: VALIDATION_MESSAGE.shelfLifeDateRequired,
+      });
+      return;
+    }
+
+    if (
+      typeof openedAt !== 'string' ||
+      typeof expiresAt !== 'string' ||
+      !hasOpenedAt ||
+      !hasExpiresAt
+    ) {
+      return;
+    }
+
+    if (Date.parse(expiresAt) < Date.parse(openedAt)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['userFields', 'expiresAt'],
+        message: VALIDATION_MESSAGE.expiresAtInvalid,
+      });
+    }
+  });
+
 export function validateShelfProductForm(
   value: ShelfProductFormValue,
 ): ShelfFormValidationCode | null {
-  if (!value.identity.brand.trim()) {
-    return ShelfFormValidationCode.BrandRequired;
+  const result = shelfProductFormSchema.safeParse(value);
+
+  if (result.success) {
+    return null;
   }
 
-  if (!value.identity.name.trim()) {
-    return ShelfFormValidationCode.NameRequired;
+  const firstMatchingCode = result.error.issues
+    .map((issue) => {
+      const path = issue.path.join('.') as ValidationFieldPath;
+      if (path === 'identity.sizeMl') {
+        return issue.message === VALIDATION_MESSAGE.sizeRequired
+          ? ShelfFormValidationCode.SizeRequired
+          : ShelfFormValidationCode.SizeInvalid;
+      }
+
+      if (path === 'userFields.openedAt') {
+        return ShelfFormValidationCode.ShelfLifeDateRequired;
+      }
+
+      if (path === 'guidance.steps') {
+        return ShelfFormValidationCode.GuidanceStepsRequired;
+      }
+
+      return VALIDATION_CODE_BY_FIELD[path];
+    })
+    .find((code) => code != null);
+
+  return firstMatchingCode ?? null;
+}
+
+export function getShelfGuidanceValidationErrors(
+  value: ShelfProductFormValue,
+): ShelfGuidanceValidationErrors {
+  const result = shelfProductFormSchema.safeParse(value);
+
+  if (result.success) {
+    return {};
   }
 
-  if (value.identity.sizeMl != null && !Number.isFinite(value.identity.sizeMl)) {
-    return ShelfFormValidationCode.SizeInvalid;
-  }
+  const stepIssue = result.error.issues.find(
+    (issue) => issue.path[0] === 'guidance' && issue.path[1] === 'steps',
+  );
+  const cautionIssue = result.error.issues.find(
+    (issue) => issue.path[0] === 'guidance' && issue.path[1] === 'cautions',
+  );
 
-  if (value.userFields.pricePaid != null && !Number.isFinite(value.userFields.pricePaid)) {
-    return ShelfFormValidationCode.PriceInvalid;
-  }
-
-  const supportEmail = trimOrNull(value.manufacturer.supportEmail);
-  if (supportEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(supportEmail)) {
-    return ShelfFormValidationCode.SupportEmailInvalid;
-  }
-
-  const productUrl = trimOrNull(value.manufacturer.productUrl);
-  if (productUrl && !isSafeExternalUrl(productUrl)) {
-    return ShelfFormValidationCode.ProductUrlInvalid;
-  }
-
-  return null;
+  return {
+    steps: stepIssue?.message,
+    cautions: cautionIssue?.message,
+  };
 }
 
 export function normalizeShelfProductForm(
   value: ShelfProductFormValue,
 ): ShelfProductFormValue {
+  const normalizedOpenedAt = trimOrNull(value.userFields.openedAt);
+  const normalizedExpiresAt = trimOrNull(value.userFields.expiresAt);
+  const normalizedPao =
+    value.userFields.periodAfterOpeningMonths == null ||
+    Number.isNaN(value.userFields.periodAfterOpeningMonths)
+      ? null
+      : value.userFields.periodAfterOpeningMonths;
+  const derivedExpiresAt =
+    normalizedExpiresAt ??
+    (normalizedOpenedAt &&
+    normalizedPao != null &&
+    normalizedPao > 0 &&
+    isValidDateString(normalizedOpenedAt)
+      ? addMonthsToIsoDate(normalizedOpenedAt, normalizedPao)
+      : null);
+
   return {
     identity: {
       ...value.identity,
@@ -146,6 +459,9 @@ export function normalizeShelfProductForm(
     },
     userFields: {
       ...value.userFields,
+      openedAt: normalizedOpenedAt,
+      expiresAt: derivedExpiresAt,
+      periodAfterOpeningMonths: normalizedPao,
       pricePaid:
         value.userFields.pricePaid == null || Number.isNaN(value.userFields.pricePaid)
           ? null

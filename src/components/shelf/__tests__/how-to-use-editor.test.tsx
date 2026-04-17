@@ -1,5 +1,7 @@
-import { screen } from '@testing-library/react';
+import svMessages from '../../../../messages/sv.json';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { NextIntlClientProvider } from 'next-intl';
 import { renderWithProviders } from '@/test/utils';
 import { HowToUseEditor } from '@/components/shelf/how-to-use-editor';
 import {
@@ -96,5 +98,24 @@ describe('HowToUseEditor', () => {
     await user.type(input, 'new');
     // last call should reflect final state
     expect(onChange).toHaveBeenCalled();
+  });
+
+  it('renders translated controls when the locale changes', () => {
+    render(
+      <NextIntlClientProvider locale="sv" messages={svMessages}>
+        <HowToUseEditor value={EMPTY_GUIDANCE} onChange={jest.fn()} />
+      </NextIntlClientProvider>,
+    );
+
+    expect(
+      screen.getByRole('button', { name: /lägg till steg/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /lägg till varning/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/väntetid/i)).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/till exempel 10/i),
+    ).toBeInTheDocument();
   });
 });

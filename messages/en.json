@@ -1,6 +1,7 @@
 {
   "common": {
     "loading": "Loading...",
+    "processing": "Working...",
     "error": "Something went wrong",
     "save": "Save",
     "cancel": "Cancel",
@@ -11,7 +12,20 @@
     "submit": "Submit",
     "or": "or",
     "selectPlaceholder": "Select...",
-    "recommended": "Recommended"
+    "recommended": "Recommended",
+    "datePicker": {
+      "placeholder": "Pick a date",
+      "clear": "Clear date"
+    },
+    "countrySelect": {
+      "placeholder": "Select a country",
+      "searchPlaceholder": "Search countries",
+      "noMatch": "No countries match “{query}”."
+    },
+    "confirmDialog": {
+      "cancel": "Cancel",
+      "working": "Working..."
+    }
   },
   "nav": {
     "whyRitora": "Why Ritora",
@@ -887,11 +901,21 @@
       "validation": {
         "brandRequired": "Brand is required.",
         "nameRequired": "Product name is required.",
+        "descriptionRequired": "Description is required.",
+        "benefitsRequired": "Add at least one product benefit.",
+        "suitedForRequired": "Add at least one skin type this product suits.",
+        "ingredientsRequired": "Paste the INCI ingredients list.",
         "categoryRequired": "Category is required.",
+        "sizeRequired": "Size is required.",
         "sizeInvalid": "Size must be a valid number.",
+        "shelfLifeDateRequired": "Add either an opened date or an expiry date.",
         "priceInvalid": "Price must be a valid number.",
+        "periodAfterOpeningInvalid": "Period after opening must be a valid number of months.",
         "supportEmailInvalid": "Support email must be a valid email address.",
         "productUrlInvalid": "Product URL must start with http:// or https://.",
+        "expiresAtInvalid": "Expiry date must be on or after the opened date.",
+        "waitMinutesInvalid": "Wait timer must be zero minutes or more.",
+        "stepsRequired": "Add at least one step so Ritora can explain how to use this product.",
         "stepsMax": "Keep each step short — under 280 characters.",
         "cautionsMax": "Keep each caution short — under 200 characters."
       },
@@ -923,6 +947,10 @@
         "howToUse": "How to use",
         "manufacturer": "Manufacturer"
       },
+      "carousel": {
+        "previousImage": "Previous image",
+        "nextImage": "Next image"
+      },
       "about": {
         "benefits": "Benefits",
         "suitedFor": "Suited for",
@@ -942,6 +970,15 @@
         "quantity": "Quantity",
         "steps": "Steps",
         "cautions": "Cautions",
+        "addStep": "Add step",
+        "removeStep": "Remove step {index}",
+        "stepInput": "Step {index}",
+        "addCaution": "Add caution",
+        "removeCaution": "Remove caution {index}",
+        "cautionInput": "Caution {index}",
+        "waitTimerLabel": "Wait timer",
+        "waitTimerHint": "Optional, in minutes",
+        "waitTimerPlaceholder": "For example, 10",
         "waitMinute": "Leave on for {minutes} minute.",
         "waitMinutes": "Leave on for {minutes} minutes.",
         "empty": "No instructions yet. Open Edit to add steps and cautions.",
@@ -958,12 +995,15 @@
         "empty": "No manufacturer details on file yet.",
         "source": "Data resolved from {source}, confirmed by you on {date}."
       },
-    "actions": {
+      "actions": {
         "edit": "Edit",
         "archive": "Archive",
         "markFinished": "Mark finished",
         "delete": "Delete",
-        "unarchive": "Restore"
+        "unarchive": "Restore",
+        "deleteConfirmTitle": "Delete {name}?",
+        "deleteConfirmBody": "This cannot be undone. All history and personal notes for this product will be removed.",
+        "deleteConfirmCancel": "Keep"
       }
     },
     "edit": {

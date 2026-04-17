@@ -1,6 +1,7 @@
 'use client';
 
 import { Check, ChevronDown, Search } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useMemo, useRef, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { cn } from '@/lib/utils';
@@ -24,14 +25,16 @@ export function CountrySelect({
   value,
   onChange,
   ariaLabel,
-  placeholder = 'Select a country',
+  placeholder,
   className,
   disabled,
 }: Props) {
+  const t = useTranslations('common.countrySelect');
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const listRef = useRef<HTMLDivElement>(null);
   const selected = getCountry(value);
+  const resolvedPlaceholder = placeholder ?? t('placeholder');
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -65,7 +68,7 @@ export function CountrySelect({
         <button
           type="button"
           disabled={disabled}
-          aria-label={ariaLabel ?? placeholder}
+          aria-label={ariaLabel ?? resolvedPlaceholder}
           aria-haspopup="listbox"
           aria-expanded={open}
           className={cn(
@@ -80,7 +83,7 @@ export function CountrySelect({
               <span className="text-foreground">{selected.name}</span>
             </span>
           ) : (
-            <span>{placeholder}</span>
+            <span>{resolvedPlaceholder}</span>
           )}
           <ChevronDown className="h-4 w-4 shrink-0 text-muted" />
         </button>
@@ -98,7 +101,7 @@ export function CountrySelect({
           <input
             autoFocus
             type="text"
-            placeholder="Search countries"
+            placeholder={t('searchPlaceholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="h-8 flex-1 bg-transparent text-sm outline-none placeholder:text-muted"
@@ -111,7 +114,7 @@ export function CountrySelect({
         >
           {filtered.length === 0 ? (
             <p className="px-3 py-6 text-center text-xs text-muted">
-              No countries match “{query}”.
+              {t('noMatch', { query })}
             </p>
           ) : (
             filtered.map((country) => {

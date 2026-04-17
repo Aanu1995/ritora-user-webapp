@@ -1,6 +1,7 @@
 'use client';
 
 import { AlertTriangle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,11 +41,13 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
-  cancelLabel = 'Cancel',
+  cancelLabel,
   onConfirm,
   tone = 'neutral',
   isPending,
 }: Props) {
+  const t = useTranslations('common.confirmDialog');
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -72,7 +75,7 @@ export function ConfirmDialog({
         <AlertDialogFooter>
           <AlertDialogCancel asChild>
             <Button variant="outline" size="sm" disabled={isPending}>
-              {cancelLabel}
+              {cancelLabel ?? t('cancel')}
             </Button>
           </AlertDialogCancel>
           <AlertDialogAction asChild>
@@ -85,7 +88,7 @@ export function ConfirmDialog({
                   'bg-danger text-surface hover:bg-danger/90',
               )}
             >
-              {isPending ? 'Working…' : confirmLabel}
+              {isPending ? t('working') : confirmLabel}
             </Button>
           </AlertDialogAction>
         </AlertDialogFooter>

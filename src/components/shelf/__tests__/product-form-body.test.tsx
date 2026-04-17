@@ -54,12 +54,18 @@ const VALUE: ProductFormValue = {
 describe('ProductFormBody', () => {
   it('renders source badges and lets the user edit writable sections', async () => {
     const user = userEvent.setup();
-    const onChange = jest.fn();
+    const onIdentityChange = jest.fn();
+    const onManufacturerChange = jest.fn();
+    const onUserFieldsChange = jest.fn();
+    const onGuidanceChange = jest.fn();
 
     renderWithProviders(
       <ProductFormBody
         value={VALUE}
-        onChange={onChange}
+        onIdentityChange={onIdentityChange}
+        onManufacturerChange={onManufacturerChange}
+        onUserFieldsChange={onUserFieldsChange}
+        onGuidanceChange={onGuidanceChange}
         identityReadOnly
         identitySourceLabel="From barcode"
       />,
@@ -68,6 +74,6 @@ describe('ProductFormBody', () => {
     expect(screen.getAllByText(/from barcode/i).length).toBeGreaterThan(0);
 
     await user.type(screen.getByLabelText(/your notes/i), ' now');
-    expect(onChange).toHaveBeenCalled();
+    expect(onUserFieldsChange).toHaveBeenCalled();
   });
 });

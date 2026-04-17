@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Archive, Check, Trash2, X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { cn } from '@/lib/utils';
+import { Archive, Check, Trash2, X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 
 type Props = {
   selectedCount: number;
@@ -19,7 +19,7 @@ export function BulkActionToolbar({
   onDelete,
   onClear,
 }: Props) {
-  const t = useTranslations('shelf');
+  const t = useTranslations("shelf");
 
   if (selectedCount === 0) {
     return null;
@@ -27,27 +27,27 @@ export function BulkActionToolbar({
 
   return (
     <div className="pointer-events-none sticky bottom-4 mt-8 flex justify-center">
-      <div className="pointer-events-auto flex items-center gap-1.5 rounded-full bg-foreground px-3 py-2 pl-4 text-background shadow-[var(--shadow-hero)]">
+      <div className="pointer-events-auto flex items-center gap-1.5 rounded-full bg-foreground px-3 py-2 pl-4 text-background shadow-(--shadow-hero)">
         <span className="text-sm font-semibold">
-          {t('bulk.selected', { count: selectedCount })}
+          {t("bulk.selected", { count: selectedCount })}
         </span>
         <ActionButton
-          label={t('actions.archive')}
-          tooltip={t('bulk.archiveTooltip')}
+          label={t("actions.archive")}
+          tooltip={t("bulk.archiveTooltip")}
           onClick={onArchive}
         >
           <Archive className="h-3.5 w-3.5" />
         </ActionButton>
         <ActionButton
-          label={t('actions.markFinished')}
-          tooltip={t('bulk.finishedTooltip')}
+          label={t("actions.markFinished")}
+          tooltip={t("bulk.finishedTooltip")}
           onClick={onMarkFinished}
         >
           <Check className="h-3.5 w-3.5" />
         </ActionButton>
         <ActionButton
-          label={t('actions.delete')}
-          tooltip={t('bulk.deleteTooltip')}
+          label={t("actions.delete")}
+          tooltip={t("bulk.deleteTooltip")}
           onClick={onDelete}
           variant="danger"
         >
@@ -55,7 +55,7 @@ export function BulkActionToolbar({
         </ActionButton>
         <button
           type="button"
-          aria-label={t('actions.clearSelection')}
+          aria-label={t("actions.clearSelection")}
           onClick={onClear}
           className="rounded-full p-1.5 text-background/70 hover:bg-background/10 hover:text-background"
         >
@@ -71,7 +71,7 @@ type ActionProps = {
   tooltip: string;
   onClick: () => void;
   children: React.ReactNode;
-  variant?: 'default' | 'danger';
+  variant?: "default" | "danger";
 };
 
 function ActionButton({
@@ -79,7 +79,7 @@ function ActionButton({
   tooltip,
   onClick,
   children,
-  variant = 'default',
+  variant = "default",
 }: ActionProps) {
   return (
     <button
@@ -87,9 +87,9 @@ function ActionButton({
       title={tooltip}
       onClick={onClick}
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border border-background/20 px-3 py-1.5 text-[13px] transition',
-        'hover:bg-background/10',
-        variant === 'danger' && 'text-danger',
+        "inline-flex items-center gap-1.5 rounded-full border border-background/20 px-3 py-1.5 text-[13px] transition",
+        "hover:bg-background/10",
+        variant === "danger" && "text-danger",
       )}
     >
       {children}

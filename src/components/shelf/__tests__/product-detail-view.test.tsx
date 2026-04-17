@@ -1,5 +1,7 @@
-import { screen, waitFor } from '@testing-library/react';
+import svMessages from '../../../../messages/sv.json';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { NextIntlClientProvider } from 'next-intl';
 import { renderWithProviders } from '@/test/utils';
 
 const mockArchive = jest.fn();
@@ -190,5 +192,22 @@ describe('ProductDetailView', () => {
     await user.click(screen.getByRole('button', { name: /restore/i }));
 
     expect(mockRestore).toHaveBeenCalledWith([PRODUCT.id], expect.any(Object));
+  });
+
+  it('renders translated delete confirmation copy when the locale changes', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <NextIntlClientProvider locale="sv" messages={svMessages}>
+        <ProductDetailView product={PRODUCT} />
+      </NextIntlClientProvider>,
+    );
+
+    await user.click(screen.getByRole('button', { name: /^ta bort$/i }));
+
+    expect(screen.getByText(/detta kan inte ångras/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /behåll/i }),
+    ).toBeInTheDocument();
   });
 });

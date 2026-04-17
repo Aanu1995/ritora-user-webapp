@@ -337,10 +337,12 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
       <ConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        title={`Delete ${product.identity.name}?`}
-        description="This cannot be undone. All history and personal notes for this product will be removed."
-        confirmLabel="Delete"
-        cancelLabel="Keep"
+        title={t('actions.deleteConfirmTitle', {
+          name: product.identity.name,
+        })}
+        description={t('actions.deleteConfirmBody')}
+        confirmLabel={t('actions.delete')}
+        cancelLabel={t('actions.deleteConfirmCancel')}
         onConfirm={handleDeleteConfirm}
         tone="danger"
         isPending={isMutating}

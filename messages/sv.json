@@ -1,6 +1,7 @@
 {
   "common": {
     "loading": "Laddar...",
+    "processing": "Bearbetar...",
     "error": "Något gick fel",
     "save": "Spara",
     "cancel": "Avbryt",
@@ -11,7 +12,20 @@
     "submit": "Skicka",
     "or": "eller",
     "selectPlaceholder": "Välj...",
-    "recommended": "Rekommenderat"
+    "recommended": "Rekommenderat",
+    "datePicker": {
+      "placeholder": "Välj datum",
+      "clear": "Rensa datum"
+    },
+    "countrySelect": {
+      "placeholder": "Välj land",
+      "searchPlaceholder": "Sök land",
+      "noMatch": "Inga länder matchar “{query}”."
+    },
+    "confirmDialog": {
+      "cancel": "Avbryt",
+      "working": "Bearbetar..."
+    }
   },
   "nav": {
     "whyRitora": "Varför Ritora",
@@ -887,11 +901,21 @@
       "validation": {
         "brandRequired": "Märke är obligatoriskt.",
         "nameRequired": "Produktnamn är obligatoriskt.",
+        "descriptionRequired": "Beskrivning är obligatorisk.",
+        "benefitsRequired": "Lägg till minst en produktfördel.",
+        "suitedForRequired": "Lägg till minst en hudtyp som produkten passar för.",
+        "ingredientsRequired": "Klistra in INCI-ingredienserna.",
         "categoryRequired": "Kategori är obligatorisk.",
+        "sizeRequired": "Storlek är obligatorisk.",
         "sizeInvalid": "Storlek måste vara ett giltigt nummer.",
+        "shelfLifeDateRequired": "Lägg till antingen öppningsdatum eller utgångsdatum.",
         "priceInvalid": "Pris måste vara ett giltigt nummer.",
+        "periodAfterOpeningInvalid": "Hållbarhet efter öppning måste vara ett giltigt antal månader.",
         "supportEmailInvalid": "Supportadress måste vara en giltig e-postadress.",
         "productUrlInvalid": "Produkt-URL måste börja med http:// eller https://.",
+        "expiresAtInvalid": "Utgångsdatum måste vara samma dag som eller senare än öppningsdatumet.",
+        "waitMinutesInvalid": "Väntetiden måste vara noll minuter eller mer.",
+        "stepsRequired": "Lägg till minst ett steg så att Ritora kan förklara hur produkten ska användas.",
         "stepsMax": "Håll varje steg kort. Under 280 tecken.",
         "cautionsMax": "Håll varje varning kort. Under 200 tecken."
       },
@@ -923,6 +947,10 @@
         "howToUse": "Användning",
         "manufacturer": "Tillverkare"
       },
+      "carousel": {
+        "previousImage": "Föregående bild",
+        "nextImage": "Nästa bild"
+      },
       "about": {
         "benefits": "Fördelar",
         "suitedFor": "Passar för",
@@ -942,6 +970,15 @@
         "quantity": "Mängd",
         "steps": "Steg",
         "cautions": "Varningar",
+        "addStep": "Lägg till steg",
+        "removeStep": "Ta bort steg {index}",
+        "stepInput": "Steg {index}",
+        "addCaution": "Lägg till varning",
+        "removeCaution": "Ta bort varning {index}",
+        "cautionInput": "Varning {index}",
+        "waitTimerLabel": "Väntetid",
+        "waitTimerHint": "Valfritt, i minuter",
+        "waitTimerPlaceholder": "Till exempel 10",
         "waitMinute": "Låt verka i {minutes} minut.",
         "waitMinutes": "Låt verka i {minutes} minuter.",
         "empty": "Inga instruktioner än. Öppna Redigera för att lägga till steg och varningar.",
@@ -963,7 +1000,10 @@
         "archive": "Arkivera",
         "markFinished": "Markera som förbrukad",
         "delete": "Ta bort",
-        "unarchive": "Återställ"
+        "unarchive": "Återställ",
+        "deleteConfirmTitle": "Ta bort {name}?",
+        "deleteConfirmBody": "Detta kan inte ångras. All historik och alla personliga anteckningar för den här produkten tas bort.",
+        "deleteConfirmCancel": "Behåll"
       }
     },
     "edit": {

@@ -4,6 +4,7 @@ import {
   createEmptyUserFields,
   isSafeExternalUrl,
   normalizeShelfProductForm,
+  shelfProductFormSchema,
   toShelfProductDraft,
   validateShelfProductForm,
 } from '@/lib/shelf-form';
@@ -46,6 +47,7 @@ function createValue(overrides?: Partial<ShelfProductFormValue>): ShelfProductFo
     },
     userFields: {
       ...createEmptyUserFields(),
+      openedAt: '2026-04-01T00:00:00.000Z',
       pricePaid: 24,
       purchasedFrom: '  Apotek  ',
       personalNotes: '  Feels calming.  ',
@@ -85,6 +87,70 @@ describe('shelf-form', () => {
     ).toBe(ShelfFormValidationCode.NameRequired);
   });
 
+  it('requires the about fields used for product understanding', () => {
+    expect(
+      validateShelfProductForm(
+        createValue({
+          identity: { ...createValue().identity, description: '   ' },
+        }),
+      ),
+    ).toBe(ShelfFormValidationCode.DescriptionRequired);
+
+    expect(
+      validateShelfProductForm(
+        createValue({
+          identity: { ...createValue().identity, benefits: [] },
+        }),
+      ),
+    ).toBe(ShelfFormValidationCode.BenefitsRequired);
+
+    expect(
+      validateShelfProductForm(
+        createValue({
+          identity: { ...createValue().identity, suitedFor: [] },
+        }),
+      ),
+    ).toBe(ShelfFormValidationCode.SuitedForRequired);
+
+    expect(
+      validateShelfProductForm(
+        createValue({
+          identity: { ...createValue().identity, inciIngredients: [] },
+        }),
+      ),
+    ).toBe(ShelfFormValidationCode.IngredientsRequired);
+  });
+
+  it('requires size, at least one guidance step, and a shelf-life anchor date', () => {
+    expect(
+      validateShelfProductForm(
+        createValue({
+          identity: { ...createValue().identity, sizeMl: null },
+        }),
+      ),
+    ).toBe(ShelfFormValidationCode.SizeRequired);
+
+    expect(
+      validateShelfProductForm(
+        createValue({
+          guidance: { ...createValue().guidance, steps: [] },
+        }),
+      ),
+    ).toBe(ShelfFormValidationCode.GuidanceStepsRequired);
+
+    expect(
+      validateShelfProductForm(
+        createValue({
+          userFields: {
+            ...createValue().userFields,
+            openedAt: null,
+            expiresAt: null,
+          },
+        }),
+      ),
+    ).toBe(ShelfFormValidationCode.ShelfLifeDateRequired);
+  });
+
   it('validates numeric and structured fields', () => {
     expect(
       validateShelfProductForm(
@@ -122,6 +188,68 @@ describe('shelf-form', () => {
     ).toBe(ShelfFormValidationCode.ProductUrlInvalid);
   });
 
+  it('rejects negative inventory values and expiry dates before the opened date', () => {
+    expect(
+      validateShelfProductForm(
+        createValue({ identity: { ...createValue().identity, sizeMl: -10 } }),
+      ),
+    ).toBe(ShelfFormValidationCode.SizeInvalid);
+
+    expect(
+      validateShelfProductForm(
+        createValue({
+          userFields: { ...createValue().userFields, pricePaid: -4 },
+        }),
+      ),
+    ).toBe(ShelfFormValidationCode.PriceInvalid);
+
+    expect(
+      validateShelfProductForm(
+        createValue({
+          userFields: {
+            ...createValue().userFields,
+            openedAt: '2026-04-10T00:00:00.000Z',
+            expiresAt: '2026-04-01T00:00:00.000Z',
+          },
+        }),
+      ),
+    ).toBe(ShelfFormValidationCode.ExpiresAtInvalid);
+  });
+
+  it('enforces short guidance steps and cautions in the schema', () => {
+    const tooLongStep = 'a'.repeat(281);
+    const tooLongCaution = 'b'.repeat(201);
+
+    const result = shelfProductFormSchema.safeParse(
+      createValue({
+        guidance: {
+          ...createValue().guidance,
+          steps: [tooLongStep],
+          cautions: [tooLongCaution],
+        },
+      }),
+    );
+
+    expect(result.success).toBe(false);
+
+    if (result.success) {
+      return;
+    }
+
+    expect(result.error.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          path: ['guidance', 'steps', 0],
+          message: 'dialog.validation.stepsMax',
+        }),
+        expect.objectContaining({
+          path: ['guidance', 'cautions', 0],
+          message: 'dialog.validation.cautionsMax',
+        }),
+      ]),
+    );
+  });
+
   it('normalizes trimmed strings and list values', () => {
     const normalized = normalizeShelfProductForm(createValue());
 
@@ -136,6 +264,7 @@ describe('shelf-form', () => {
     expect(normalized.manufacturer.supportEmail).toBe('support@cerave.com');
     expect(normalized.userFields.purchasedFrom).toBe('Apotek');
     expect(normalized.userFields.personalNotes).toBe('Feels calming.');
+    expect(normalized.userFields.expiresAt).toBe('2027-04-01T00:00:00.000Z');
   });
 
   it('builds a normalized draft with active status and provenance', () => {
