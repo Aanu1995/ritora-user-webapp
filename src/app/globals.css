@@ -152,6 +152,18 @@ body {
   letter-spacing: -0.005em;
 }
 
+/*
+ * Placeholders inherit from the muted content token, which on its own is
+ * readable enough to be mistaken for real input. Mix it with the surface
+ * colour so it clearly reads as hint rather than value. Tailwind utilities
+ * using `placeholder:text-muted` are overridden by the more-specific
+ * `::placeholder` selector here.
+ */
+::placeholder {
+  color: color-mix(in srgb, var(--muted) 78%, var(--surface));
+  opacity: 1;
+}
+
 @keyframes fade-up {
   from {
     opacity: 0;

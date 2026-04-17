@@ -1,5 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { UnsavedChangesDialog } from '@/components/app/unsaved-changes-dialog';
+import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 import { renderWithProviders } from '@/test/utils';
 import {
   DataProvenance,
@@ -106,6 +108,11 @@ const PRODUCT: ShelfProduct = {
 beforeEach(() => {
   mockPush.mockReset();
   mockMutate.mockReset();
+  useUnsavedChangesStore.setState({
+    hasUnsavedChanges: false,
+    isDialogOpen: false,
+    pendingProceed: null,
+  });
 });
 
 describe('ProductEditForm', () => {
@@ -117,7 +124,6 @@ describe('ProductEditForm', () => {
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     expect(screen.getByText(/product name is required/i)).toBeInTheDocument();
-    expect(screen.getByText(/add either an opened date or an expiry date/i)).toBeInTheDocument();
     expect(screen.getByText(/add at least one step so ritora can explain how to use this product/i)).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
   });
@@ -142,11 +148,22 @@ describe('ProductEditForm', () => {
 
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
-    expect(screen.getByText(/add either an opened date or an expiry date/i)).toBeInTheDocument();
     expect(
       screen.getByText(/add at least one step so ritora can explain how to use this product/i),
     ).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('does not show unrelated validation errors while the user is still typing', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+
+    await user.clear(screen.getByLabelText(/product name/i));
+    await user.type(screen.getByLabelText(/product name/i), 'U');
+
+    expect(
+      screen.queryByText(/add at least one step so ritora can explain how to use this product/i),
+    ).not.toBeInTheDocument();
   });
 
   it('requires the about fields before saving', async () => {
@@ -190,6 +207,107 @@ describe('ProductEditForm', () => {
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalled();
       expect(mockPush).toHaveBeenCalledWith('/shelf/product-1');
+    });
+  });
+
+  it('saves an unopened product without requiring an opened date', async () => {
+    const user = userEvent.setup();
+    mockMutate.mockImplementation((_input, options) => {
+      options?.onSuccess?.();
+    });
+
+    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+
+    await user.clear(screen.getByLabelText(/product name/i));
+    await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+    await user.click(screen.getByRole('button', { name: /add step/i }));
+    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    await user.click(screen.getByRole('button', { name: /save changes/i }));
+
+    await waitFor(() => {
+      expect(mockMutate).toHaveBeenCalled();
+      expect(mockPush).toHaveBeenCalledWith('/shelf/product-1');
+    });
+
+    expect(mockMutate.mock.calls[0]?.[0].patch.userFields.openedAt).toBeNull();
+  });
+
+  describe('unsaved changes guard', () => {
+    it('opens the discard dialog when the back arrow is clicked with dirty state', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <>
+          <ProductEditForm product={PRODUCT} />
+          <UnsavedChangesDialog />
+        </>,
+      );
+
+      await user.clear(screen.getByLabelText(/product name/i));
+      await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+
+      await user.click(screen.getByLabelText(/back to shelf/i));
+
+      expect(screen.getByText(/unsaved changes/i)).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /keep editing/i }),
+      ).toBeInTheDocument();
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+
+    it('keeps the user on the form when "Keep editing" is clicked', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <>
+          <ProductEditForm product={PRODUCT} />
+          <UnsavedChangesDialog />
+        </>,
+      );
+
+      await user.clear(screen.getByLabelText(/product name/i));
+      await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+      await user.click(screen.getByLabelText(/back to shelf/i));
+      await user.click(screen.getByRole('button', { name: /keep editing/i }));
+
+      await waitFor(() => {
+        expect(screen.queryByText(/unsaved changes/i)).not.toBeInTheDocument();
+      });
+      expect(mockPush).not.toHaveBeenCalled();
+      expect(
+        (screen.getByLabelText(/product name/i) as HTMLInputElement).value,
+      ).toBe('Updated Serum');
+    });
+
+    it('navigates to the detail page when "Discard changes" is clicked', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <>
+          <ProductEditForm product={PRODUCT} />
+          <UnsavedChangesDialog />
+        </>,
+      );
+
+      await user.clear(screen.getByLabelText(/product name/i));
+      await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+      await user.click(screen.getByLabelText(/back to shelf/i));
+      await user.click(screen.getByRole('button', { name: /discard changes/i }));
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith('/shelf/product-1');
+      });
+    });
+
+    it('does not open the dialog when the back arrow is clicked with a clean form', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <>
+          <ProductEditForm product={PRODUCT} />
+          <UnsavedChangesDialog />
+        </>,
+      );
+
+      await user.click(screen.getByLabelText(/back to shelf/i));
+
+      expect(screen.queryByText(/unsaved changes/i)).not.toBeInTheDocument();
     });
   });
 });

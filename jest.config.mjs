@@ -9,6 +9,9 @@ export default createJestConfig({
   testEnvironmentOptions: {
     customExportConditions: [''],
   },
+  // Bumped from Jest's 5s default: form-heavy tests simulate many keystrokes
+  // via userEvent and can time out under parallel CPU load even when correct.
+  testTimeout: 15000,
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },

@@ -19,6 +19,8 @@ import {
 import type { ShelfFormFieldErrors } from '@/lib/shelf-form';
 import {
   Field,
+  ListTextAreaInput,
+  ListTextInput,
   SectionLabel,
   TextAreaInput,
   TextInput,
@@ -201,16 +203,9 @@ export function ProductAboutSection({
             hint={t('hints.benefitsHint')}
             error={fieldErrors?.['identity.benefits']}
           >
-            <TextInput
-              value={identity.benefits.join(', ')}
-              onChange={(raw) =>
-                onChange({
-                  benefits: raw
-                    .split(',')
-                    .map((value) => value.trim())
-                    .filter(Boolean),
-                })
-              }
+            <ListTextInput
+              value={identity.benefits}
+              onChange={(benefits) => onChange({ benefits })}
               placeholder={tField('benefitsPlaceholder')}
               aria-label={tField('benefits')}
               disabled={identityReadOnly}
@@ -222,16 +217,9 @@ export function ProductAboutSection({
             hint={t('hints.suitedForHint')}
             error={fieldErrors?.['identity.suitedFor']}
           >
-            <TextInput
-              value={identity.suitedFor.join(', ')}
-              onChange={(raw) =>
-                onChange({
-                  suitedFor: raw
-                    .split(',')
-                    .map((value) => value.trim())
-                    .filter(Boolean),
-                })
-              }
+            <ListTextInput
+              value={identity.suitedFor}
+              onChange={(suitedFor) => onChange({ suitedFor })}
               placeholder={tField('suitedForPlaceholder')}
               aria-label={tField('suitedFor')}
               disabled={identityReadOnly}
@@ -250,17 +238,10 @@ export function ProductAboutSection({
           }
           error={fieldErrors?.['identity.inciIngredients']}
         >
-          <TextAreaInput
+          <ListTextAreaInput
             rows={4}
-            value={identity.inciIngredients.join(', ')}
-            onChange={(raw) =>
-              onChange({
-                inciIngredients: raw
-                  .split(',')
-                  .map((value) => value.trim())
-                  .filter(Boolean),
-              })
-            }
+            value={identity.inciIngredients}
+            onChange={(inciIngredients) => onChange({ inciIngredients })}
             readOnly={identityReadOnly}
             placeholder={tField('ingredientsPlaceholder')}
             aria-label={tField('inciIngredients')}

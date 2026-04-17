@@ -118,4 +118,18 @@ describe('HowToUseEditor', () => {
       screen.getByPlaceholderText(/till exempel 10/i),
     ).toBeInTheDocument();
   });
+
+  it('does not focus the wait timer input when the hint text is clicked', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <HowToUseEditor value={EMPTY_GUIDANCE} onChange={jest.fn()} />,
+    );
+
+    const waitTimerInput = screen.getByPlaceholderText(/for example, 10/i);
+    await user.click(
+      screen.getByText(/for products that need to sit on the skin/i),
+    );
+
+    expect(waitTimerInput).not.toHaveFocus();
+  });
 });

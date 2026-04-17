@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Menu } from "lucide-react";
+import { GuardedLink } from "@/components/app/guarded-link";
 import { RitoraMark } from "@/components/icons/ritora-mark";
 import { AppRoute } from "@/constants/app-routes";
 
@@ -24,7 +24,7 @@ export function SidebarMobileTopBar({ onMenuClick }: SidebarMobileTopBarProps) {
         <Menu className="h-5 w-5" aria-hidden="true" />
       </button>
       <div className="h-5 w-px bg-border" aria-hidden="true" />
-      <Link
+      <GuardedLink
         href={AppRoute.Dashboard}
         className="flex items-center gap-2 text-base font-semibold tracking-tight text-foreground"
       >
@@ -32,7 +32,7 @@ export function SidebarMobileTopBar({ onMenuClick }: SidebarMobileTopBarProps) {
           <RitoraMark className="h-5 w-5" />
         </span>
         Ritora
-      </Link>
+      </GuardedLink>
     </div>
   );
 }

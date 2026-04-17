@@ -1,5 +1,6 @@
 'use client';
 
+import { useId } from 'react';
 import { AlertTriangle, Plus, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
@@ -31,6 +32,7 @@ export function HowToUseEditor({ value, onChange, errors }: Props) {
   const t = useTranslations('shelf.detail.howToUse');
   const tMethod = useTranslations('shelf.method');
   const tQty = useTranslations('shelf.quantity');
+  const waitTimerInputId = useId();
 
   const update = (patch: Partial<ApplicationGuidance>) => {
     onChange({ ...value, ...patch });
@@ -195,12 +197,16 @@ export function HowToUseEditor({ value, onChange, errors }: Props) {
         </ul>
       </div>
 
-      <label className="flex flex-col">
-        <span className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+      <div className="flex flex-col">
+        <label
+          htmlFor={waitTimerInputId}
+          className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted"
+        >
           {t('waitTimerLabel')}
-        </span>
+        </label>
         <span className="mb-2 text-xs text-muted">{t('waitTimerHint')}</span>
         <input
+          id={waitTimerInputId}
           type="number"
           min={0}
           value={value.waitMinutes ?? ''}
@@ -215,7 +221,7 @@ export function HowToUseEditor({ value, onChange, errors }: Props) {
           className="w-40 rounded-xl border border-border bg-surface px-3 py-2 text-[14px]"
           placeholder={t('waitTimerPlaceholder')}
         />
-      </label>
+      </div>
 
       <p className="text-xs text-muted">{t('routineNote')}</p>
     </div>

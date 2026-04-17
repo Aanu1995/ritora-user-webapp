@@ -13,6 +13,14 @@ let mockSkinProfileData: { data: unknown } = { data: null };
 
 jest.mock("next/navigation", () => ({
   usePathname: () => mockPathname,
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    prefetch: jest.fn(),
+    refresh: jest.fn(),
+  }),
 }));
 
 jest.mock("@/hooks/use-auth", () => ({

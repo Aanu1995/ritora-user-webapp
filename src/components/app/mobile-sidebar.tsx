@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
+import { GuardedLink } from "@/components/app/guarded-link";
 import { RitoraMark } from "@/components/icons/ritora-mark";
 import { cn } from "@/lib/utils";
 import { AppRoute } from "@/constants/app-routes";
@@ -32,7 +32,7 @@ function MobileNavList({
 
         return (
           <li key={item.route}>
-            <Link
+            <GuardedLink
               href={item.route}
               onClick={onClose}
               className={cn(
@@ -44,7 +44,7 @@ function MobileNavList({
             >
               <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
               {t(`items.${item.labelKey}`)}
-            </Link>
+            </GuardedLink>
           </li>
         );
       })}
@@ -106,7 +106,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
 
         <div className="flex h-full flex-col gap-y-5 overflow-y-auto px-6 pb-4">
           <div className="flex h-16 shrink-0 items-center">
-            <Link
+            <GuardedLink
               href={AppRoute.Dashboard}
               className="flex items-center gap-3"
               onClick={onClose}
@@ -117,7 +117,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
               <span className="text-xl font-semibold tracking-tight text-foreground">
                 Ritora
               </span>
-            </Link>
+            </GuardedLink>
           </div>
 
           <nav className="flex flex-1 flex-col">

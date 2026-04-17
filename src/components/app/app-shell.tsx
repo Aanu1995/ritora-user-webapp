@@ -5,6 +5,7 @@ import { Sidebar } from "@/components/app/sidebar";
 import { MobileSidebar } from "@/components/app/mobile-sidebar";
 import { MobileNav } from "@/components/app/mobile-nav";
 import { SidebarMobileTopBar } from "@/components/app/sidebar-mobile-top-bar";
+import { UnsavedChangesDialog } from "@/components/app/unsaved-changes-dialog";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -24,6 +25,7 @@ export function AppShell({ children }: AppShellProps) {
         </main>
       </div>
       <MobileNav />
+      <UnsavedChangesDialog />
     </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -10,6 +9,7 @@ import {
   ShoppingBag,
   Sparkles,
 } from "lucide-react";
+import { GuardedLink } from "@/components/app/guarded-link";
 import { cn } from "@/lib/utils";
 import { AppRoute } from "@/constants/app-routes";
 
@@ -36,7 +36,7 @@ export function MobileNav() {
           const Icon = item.icon;
 
           return (
-            <Link
+            <GuardedLink
               key={item.href}
               href={item.href}
               className={cn(
@@ -48,7 +48,7 @@ export function MobileNav() {
             >
               <Icon className="h-5 w-5" aria-hidden="true" />
               <span>{t(`items.${item.labelKey}`)}</span>
-            </Link>
+            </GuardedLink>
           );
         })}
       </div>

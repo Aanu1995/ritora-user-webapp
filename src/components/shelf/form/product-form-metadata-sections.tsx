@@ -52,7 +52,6 @@ export function ProductUserFieldsSection({
         <Field
           label={tField('openedAt')}
           hint={t('hints.openedAtHint')}
-          error={fieldErrors?.['userFields.openedAt']}
         >
           <DatePicker
             value={openedIso}
@@ -64,9 +63,6 @@ export function ProductUserFieldsSection({
             }
             ariaLabel={tField('openedAt')}
             placeholder={tField('datePlaceholder')}
-            className={cn(
-              fieldErrors?.['userFields.openedAt'] && 'border-danger',
-            )}
           />
         </Field>
         <Field label={tField('periodAfterOpening')} hint={t('hints.paoHint')}>

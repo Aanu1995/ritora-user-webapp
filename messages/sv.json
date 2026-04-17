@@ -709,6 +709,12 @@
   "shelf": {
     "title": "Din hylla",
     "pageSubtitle": "Allt du redan äger, samlat på en lugn plats.",
+    "unsavedChanges": {
+      "title": "Osparade ändringar",
+      "description": "Dina ändringar försvinner om du lämnar sidan nu.",
+      "discard": "Kasta ändringar",
+      "keepEditing": "Fortsätt redigera"
+    },
     "searchPlaceholder": "Sök märke, produkt, ingrediens",
     "sort": {
       "label": "Sortera",

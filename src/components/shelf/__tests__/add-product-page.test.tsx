@@ -1,5 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { UnsavedChangesDialog } from '@/components/app/unsaved-changes-dialog';
+import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 import { renderWithProviders } from '@/test/utils';
 
 const mockPush = jest.fn();
@@ -55,6 +57,11 @@ function getStepInput(index: number) {
 beforeEach(() => {
   mockPush.mockReset();
   mockMutate.mockReset();
+  useUnsavedChangesStore.setState({
+    hasUnsavedChanges: false,
+    isDialogOpen: false,
+    pendingProceed: null,
+  });
 });
 
 describe('AddProductPage', () => {
@@ -79,12 +86,23 @@ describe('AddProductPage', () => {
 
     expect(screen.getByText(/size is required/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/add either an opened date or an expiry date/i),
-    ).toBeInTheDocument();
-    expect(
       screen.getByText(/add at least one step so ritora can explain how to use this product/i),
     ).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('does not show unrelated validation errors while the user is still typing', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<AddProductPage />);
+
+    await user.type(screen.getByLabelText(/^brand$/i), 'C');
+
+    expect(screen.queryByText(/size is required/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        /add at least one step so ritora can explain how to use this product/i,
+      ),
+    ).not.toBeInTheDocument();
   });
 
   it('requires the about fields before adding a product', async () => {
@@ -185,6 +203,40 @@ describe('AddProductPage', () => {
     });
   });
 
+  it('creates an unopened product without an opened date', async () => {
+    const user = userEvent.setup();
+    mockMutate.mockImplementation((_draft, options) => {
+      options?.onSuccess?.({ id: 'product-123' });
+    });
+
+    renderWithProviders(<AddProductPage />);
+
+    await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
+    await user.type(screen.getByLabelText(/^product name$/i), 'Barrier Serum');
+    await user.type(
+      screen.getByLabelText(/^description$/i),
+      'A calming serum that supports smoother texture overnight.',
+    );
+    await user.type(screen.getByLabelText(/^benefits$/i), 'calming, smoothing');
+    await user.type(screen.getByLabelText(/^suited for$/i), 'dry, sensitive');
+    await user.type(
+      screen.getByLabelText(/^ingredients \(inci\)$/i),
+      'Aqua, Glycerin, Niacinamide',
+    );
+    await user.type(screen.getByLabelText(/^size$/i), '30');
+    await user.click(screen.getByRole('button', { name: /add step/i }));
+    await user.type(getStepInput(1), 'Pat onto clean skin.');
+
+    await user.click(screen.getByRole('button', { name: /add to shelf/i }));
+
+    await waitFor(() => {
+      expect(mockMutate).toHaveBeenCalled();
+      expect(mockPush).toHaveBeenCalledWith('/shelf/product-123');
+    });
+
+    expect(mockMutate.mock.calls[0]?.[0].userFields.openedAt).toBeNull();
+  });
+
   it('shows a server error when create fails', async () => {
     const user = userEvent.setup();
     mockMutate.mockImplementation((_draft, options) => {
@@ -227,5 +279,81 @@ describe('AddProductPage', () => {
     await user.click(screen.getByRole('tab', { name: /^url$/i }));
 
     expect(document.querySelectorAll('form')).toHaveLength(1);
+  });
+
+  describe('unsaved changes guard', () => {
+    it('opens the discard dialog when the back arrow is clicked with dirty state', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <>
+          <AddProductPage />
+          <UnsavedChangesDialog />
+        </>,
+      );
+
+      await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
+
+      const backLink = screen.getByLabelText(/back to shelf/i);
+      await user.click(backLink);
+
+      expect(screen.getByText(/unsaved changes/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /keep editing/i })).toBeInTheDocument();
+      expect(mockPush).not.toHaveBeenCalled();
+    });
+
+    it('keeps the user on the form when "Keep editing" is clicked', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <>
+          <AddProductPage />
+          <UnsavedChangesDialog />
+        </>,
+      );
+
+      await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
+      await user.click(screen.getByLabelText(/back to shelf/i));
+      await user.click(screen.getByRole('button', { name: /keep editing/i }));
+
+      await waitFor(() => {
+        expect(screen.queryByText(/unsaved changes/i)).not.toBeInTheDocument();
+      });
+      expect(mockPush).not.toHaveBeenCalled();
+      expect(
+        (screen.getByLabelText(/^brand$/i) as HTMLInputElement).value,
+      ).toBe('CeraVe');
+    });
+
+    it('navigates to the shelf when "Discard changes" is clicked', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <>
+          <AddProductPage />
+          <UnsavedChangesDialog />
+        </>,
+      );
+
+      await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
+      await user.click(screen.getByLabelText(/back to shelf/i));
+      await user.click(screen.getByRole('button', { name: /discard changes/i }));
+
+      await waitFor(() => {
+        expect(mockPush).toHaveBeenCalledWith('/shelf');
+      });
+    });
+
+    it('does not open the dialog when the back arrow is clicked with a clean form', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(
+        <>
+          <AddProductPage />
+          <UnsavedChangesDialog />
+        </>,
+      );
+
+      await user.click(screen.getByLabelText(/back to shelf/i));
+
+      // Dialog stays closed so next/link handles the navigation normally
+      expect(screen.queryByText(/unsaved changes/i)).not.toBeInTheDocument();
+    });
   });
 });

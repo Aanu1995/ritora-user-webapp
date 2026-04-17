@@ -709,6 +709,12 @@
   "shelf": {
     "title": "Your shelf",
     "pageSubtitle": "Everything you already own, in one calm place.",
+    "unsavedChanges": {
+      "title": "Unsaved changes",
+      "description": "Your edits will be lost if you leave now.",
+      "discard": "Discard changes",
+      "keepEditing": "Keep editing"
+    },
     "searchPlaceholder": "Search brand, product, ingredient",
     "sort": {
       "label": "Sort",

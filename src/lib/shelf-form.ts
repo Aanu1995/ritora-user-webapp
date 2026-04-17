@@ -26,7 +26,6 @@ const VALIDATION_MESSAGE = {
   ingredientsRequired: 'dialog.validation.ingredientsRequired',
   sizeRequired: 'dialog.validation.sizeRequired',
   sizeInvalid: 'dialog.validation.sizeInvalid',
-  shelfLifeDateRequired: 'dialog.validation.shelfLifeDateRequired',
   stepsRequired: 'dialog.validation.stepsRequired',
   priceInvalid: 'dialog.validation.priceInvalid',
   periodAfterOpeningInvalid: 'dialog.validation.periodAfterOpeningInvalid',
@@ -46,7 +45,6 @@ const VALIDATION_CODE_BY_FIELD = {
   'identity.suitedFor': ShelfFormValidationCode.SuitedForRequired,
   'identity.inciIngredients': ShelfFormValidationCode.IngredientsRequired,
   'identity.sizeMl': ShelfFormValidationCode.SizeInvalid,
-  'userFields.openedAt': ShelfFormValidationCode.ShelfLifeDateRequired,
   'guidance.steps': ShelfFormValidationCode.GuidanceStepsRequired,
   'userFields.pricePaid': ShelfFormValidationCode.PriceInvalid,
   'manufacturer.supportEmail': ShelfFormValidationCode.SupportEmailInvalid,
@@ -319,22 +317,11 @@ export const shelfProductFormSchema = z
       });
     }
 
-    const hasOpenedAt = isValidDateString(openedAt);
     const hasExpiresAt = isValidDateString(expiresAt);
-
-    if (!hasOpenedAt && !hasExpiresAt) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['userFields', 'openedAt'],
-        message: VALIDATION_MESSAGE.shelfLifeDateRequired,
-      });
-      return;
-    }
 
     if (
       typeof openedAt !== 'string' ||
       typeof expiresAt !== 'string' ||
-      !hasOpenedAt ||
       !hasExpiresAt
     ) {
       return;
@@ -365,10 +352,6 @@ export function validateShelfProductForm(
         return issue.message === VALIDATION_MESSAGE.sizeRequired
           ? ShelfFormValidationCode.SizeRequired
           : ShelfFormValidationCode.SizeInvalid;
-      }
-
-      if (path === 'userFields.openedAt') {
-        return ShelfFormValidationCode.ShelfLifeDateRequired;
       }
 
       if (path === 'guidance.steps') {

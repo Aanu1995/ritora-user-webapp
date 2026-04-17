@@ -121,7 +121,7 @@ describe('shelf-form', () => {
     ).toBe(ShelfFormValidationCode.IngredientsRequired);
   });
 
-  it('requires size, at least one guidance step, and a shelf-life anchor date', () => {
+  it('requires size and at least one guidance step', () => {
     expect(
       validateShelfProductForm(
         createValue({
@@ -137,7 +137,9 @@ describe('shelf-form', () => {
         }),
       ),
     ).toBe(ShelfFormValidationCode.GuidanceStepsRequired);
+  });
 
+  it('allows shelf products to stay unopened without an opened date', () => {
     expect(
       validateShelfProductForm(
         createValue({
@@ -148,7 +150,7 @@ describe('shelf-form', () => {
           },
         }),
       ),
-    ).toBe(ShelfFormValidationCode.ShelfLifeDateRequired);
+    ).toBeNull();
   });
 
   it('validates numeric and structured fields', () => {

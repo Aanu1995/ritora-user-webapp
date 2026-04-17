@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { GuardedLink } from "@/components/app/guarded-link";
 import { RitoraMark } from "@/components/icons/ritora-mark";
 import { cn } from "@/lib/utils";
 import { AppRoute } from "@/constants/app-routes";
@@ -28,7 +28,7 @@ function NavList({
 
         return (
           <li key={item.route}>
-            <Link
+            <GuardedLink
               href={item.route}
               className={cn(
                 "group flex gap-x-3 rounded-lg p-2.5 text-sm font-medium leading-6 transition-colors",
@@ -39,7 +39,7 @@ function NavList({
             >
               <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
               {t(`items.${item.labelKey}`)}
-            </Link>
+            </GuardedLink>
           </li>
         );
       })}
@@ -58,14 +58,14 @@ export function Sidebar() {
     <aside className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col border-r border-border bg-surface">
       {/* Logo — fixed, never scrolls */}
       <div className="flex h-16 shrink-0 items-center px-6">
-        <Link href={AppRoute.Dashboard} className="flex items-center gap-3">
+        <GuardedLink href={AppRoute.Dashboard} className="flex items-center gap-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
             <RitoraMark className="h-5 w-5" />
           </span>
           <span className="text-xl font-semibold tracking-tight text-foreground">
             Ritora
           </span>
-        </Link>
+        </GuardedLink>
       </div>
 
       {/* Nav — scrollable independently */}

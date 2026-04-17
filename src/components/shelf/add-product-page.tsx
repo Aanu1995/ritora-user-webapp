@@ -1,8 +1,7 @@
 'use client';
 
-import { useForm } from '@tanstack/react-form';
+import { useForm, useStore } from '@tanstack/react-form';
 import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
@@ -10,9 +9,11 @@ import { toast } from 'sonner';
 import { QuickLookupCard } from './add-product/quick-lookup-card';
 import { buildTemplateGuidance } from './add-product/category-templates';
 import { ProductFormBody, type ProductFormValue } from './product-form-body';
+import { GuardedLink } from '@/components/app/guarded-link';
 import { Button } from '@/components/ui/button';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { AppRoute } from '@/constants/app-routes';
+import { useUnsavedChangesGuard } from '@/hooks/use-unsaved-changes-guard';
 import { useCreateProduct } from '@/hooks/use-shelf';
 import { type FieldIssue, firstFieldError } from '@/lib/form-errors';
 import {
@@ -39,14 +40,37 @@ import {
 } from '@/types/shelf';
 
 type ShelfFieldMeta = Partial<
-  Record<string, { errors?: ReadonlyArray<FieldIssue> }>
+  Record<
+    string,
+    {
+      errors?: ReadonlyArray<FieldIssue>;
+      isTouched?: boolean;
+      isDirty?: boolean;
+    }
+  >
 >;
+
+function shouldShowFieldError(
+  meta: ShelfFieldMeta[string] | undefined,
+  showAllErrors: boolean,
+): boolean {
+  if (showAllErrors) {
+    return true;
+  }
+
+  return Boolean(meta?.isTouched || meta?.isDirty);
+}
 
 function getFieldError(
   fieldMeta: ShelfFieldMeta,
   field: string,
   translate: (key: string) => string,
+  showAllErrors: boolean,
 ): string | undefined {
+  if (!shouldShowFieldError(fieldMeta[field], showAllErrors)) {
+    return undefined;
+  }
+
   return firstFieldError(fieldMeta[field]?.errors, translate);
 }
 
@@ -82,6 +106,7 @@ export function AddProductPage() {
     DataProvenance.UserEntered,
   );
   const [identitySource, setIdentitySource] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
 
   const form = useForm({
     defaultValues: buildDefaultValues(),
@@ -91,7 +116,7 @@ export function AddProductPage() {
       },
     },
     validators: {
-      onChange: shelfProductFormSchema,
+      onBlur: shelfProductFormSchema,
       onSubmit: shelfProductFormSchema,
       onSubmitAsync: async ({ value }) => {
         createdProductIdRef.current = null;
@@ -115,9 +140,16 @@ export function AddProductPage() {
       }
 
       toast.success(tDialog('confirm.successToast'));
+      setIsSaved(true);
+      releaseGuard();
       router.push(`${AppRoute.Shelf}/${createdProductIdRef.current}`);
     },
   });
+
+  const isFormDirty = useStore(form.store, (state) => state.isDirty);
+  const hasUnsavedChanges = isFormDirty && !isSaved;
+
+  const { releaseGuard } = useUnsavedChangesGuard({ hasUnsavedChanges });
 
   const handleLookupResult = (
     partial: ShelfProductPartial,
@@ -148,34 +180,68 @@ export function AddProductPage() {
 
   const buildFieldErrors = (
     fieldMeta: ShelfFieldMeta,
+    showAllErrors: boolean,
   ): ShelfFormFieldErrors => ({
-    'identity.brand': getFieldError(fieldMeta, 'identity.brand', t),
-    'identity.name': getFieldError(fieldMeta, 'identity.name', t),
+    'identity.brand': getFieldError(
+      fieldMeta,
+      'identity.brand',
+      t,
+      showAllErrors,
+    ),
+    'identity.name': getFieldError(fieldMeta, 'identity.name', t, showAllErrors),
     'identity.description': getFieldError(
       fieldMeta,
       'identity.description',
       t,
+      showAllErrors,
     ),
-    'identity.benefits': getFieldError(fieldMeta, 'identity.benefits', t),
-    'identity.suitedFor': getFieldError(fieldMeta, 'identity.suitedFor', t),
+    'identity.benefits': getFieldError(
+      fieldMeta,
+      'identity.benefits',
+      t,
+      showAllErrors,
+    ),
+    'identity.suitedFor': getFieldError(
+      fieldMeta,
+      'identity.suitedFor',
+      t,
+      showAllErrors,
+    ),
     'identity.inciIngredients': getFieldError(
       fieldMeta,
       'identity.inciIngredients',
       t,
+      showAllErrors,
     ),
-    'identity.sizeMl': getFieldError(fieldMeta, 'identity.sizeMl', t),
-    'userFields.openedAt': getFieldError(fieldMeta, 'userFields.openedAt', t),
-    'userFields.pricePaid': getFieldError(fieldMeta, 'userFields.pricePaid', t),
-    'userFields.expiresAt': getFieldError(fieldMeta, 'userFields.expiresAt', t),
+    'identity.sizeMl': getFieldError(
+      fieldMeta,
+      'identity.sizeMl',
+      t,
+      showAllErrors,
+    ),
+    'userFields.pricePaid': getFieldError(
+      fieldMeta,
+      'userFields.pricePaid',
+      t,
+      showAllErrors,
+    ),
+    'userFields.expiresAt': getFieldError(
+      fieldMeta,
+      'userFields.expiresAt',
+      t,
+      showAllErrors,
+    ),
     'manufacturer.supportEmail': getFieldError(
       fieldMeta,
       'manufacturer.supportEmail',
       t,
+      showAllErrors,
     ),
     'manufacturer.productUrl': getFieldError(
       fieldMeta,
       'manufacturer.productUrl',
       t,
+      showAllErrors,
     ),
   });
 
@@ -195,18 +261,30 @@ export function AddProductPage() {
           fieldMeta: state.fieldMeta as ShelfFieldMeta,
           submitError: state.errorMap.onSubmit,
           isSubmitting: state.isSubmitting,
+          submissionAttempts: state.submissionAttempts,
         })}
       >
-        {({ values, fieldMeta, submitError, isSubmitting }) => {
-          const fieldErrors = buildFieldErrors(fieldMeta);
+        {({
+          values,
+          fieldMeta,
+          submitError,
+          isSubmitting,
+          submissionAttempts,
+        }) => {
+          const showAllErrors = submissionAttempts > 0;
+          const fieldErrors = buildFieldErrors(fieldMeta, showAllErrors);
           const rawGuidanceErrors = getShelfGuidanceValidationErrors(values);
           const guidanceErrors = {
             steps: firstFieldError(
-              rawGuidanceErrors.steps ? [rawGuidanceErrors.steps] : [],
+              showAllErrors && rawGuidanceErrors.steps
+                ? [rawGuidanceErrors.steps]
+                : [],
               t,
             ),
             cautions: firstFieldError(
-              rawGuidanceErrors.cautions ? [rawGuidanceErrors.cautions] : [],
+              showAllErrors && rawGuidanceErrors.cautions
+                ? [rawGuidanceErrors.cautions]
+                : [],
               t,
             ),
           };
@@ -216,13 +294,13 @@ export function AddProductPage() {
             <>
               <div className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
                 <div className="mx-auto flex max-w-5xl items-center gap-3">
-                  <Link
+                  <GuardedLink
                     href={AppRoute.Shelf}
                     aria-label={t('detail.backLink')}
                     className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-surface-muted"
                   >
                     <ArrowLeft className="h-4 w-4" />
-                  </Link>
+                  </GuardedLink>
                   <div className="min-w-0 flex-1">
                     <h1 className="truncate text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                       {tDialog('title')}
