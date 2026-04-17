@@ -794,6 +794,8 @@
         "placeholder": "Search by brand and product name",
         "empty": "Type at least two letters to search the catalogue.",
         "noResults": "Nothing matched. Try another name, or enter the product manually.",
+        "searchAction": "Search",
+        "searching": "Searching…",
         "addAction": "Add"
       },
       "url": {
@@ -841,7 +843,7 @@
           "openedAtHint": "Leave blank if still sealed.",
           "paoHint": "Usually printed on the jar icon as 12M, 24M, etc.",
           "expiresAtHint": "Ritora fills this from opened date and PAO. You can override it.",
-          "preferredTimeHint": "Optional hint for the Suggestion feature. Not used here.",
+          "preferredTimeHint": "If you typically reach for this in the morning or evening, Ritora's AI suggestions will respect that when building your routine.",
           "priceHint": "For later spend insights. Optional.",
           "purchasedFromHint": "Where you bought it.",
           "personalNotesHint": "How it feels on your skin. Only you see this.",
@@ -854,7 +856,9 @@
         },
         "fields": {
           "brand": "Brand",
+          "brandPlaceholder": "e.g. CeraVe",
           "name": "Product name",
+          "namePlaceholder": "e.g. Resurfacing Retinol Serum",
           "category": "Category",
           "size": "Size",
           "description": "Description",
@@ -878,7 +882,9 @@
           "notesPlaceholder": "How does it feel on your skin?",
           "sizePlaceholder": "e.g. 30",
           "pricePlaceholder": "e.g. 24",
-          "purchasedFromPlaceholder": "e.g. Boots"
+          "purchasedFromPlaceholder": "e.g. Boots",
+          "parentPlaceholder": "e.g. L'Oréal",
+          "supportPlaceholder": "support@brand.com"
         },
         "paoOptions": {
           "6": "6 months",
@@ -977,7 +983,7 @@
         "removeCaution": "Remove caution {index}",
         "cautionInput": "Caution {index}",
         "waitTimerLabel": "Wait timer",
-        "waitTimerHint": "Optional, in minutes",
+        "waitTimerHint": "For products that need to sit on the skin before the next step, like peels or masks. Ritora's routine suggestions will pace around this wait.",
         "waitTimerPlaceholder": "For example, 10",
         "waitMinute": "Leave on for {minutes} minute.",
         "waitMinutes": "Leave on for {minutes} minutes.",

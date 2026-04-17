@@ -86,6 +86,7 @@ export function ProductIdentitySection({
               value={identity.brand}
               readOnly={identityReadOnly}
               onChange={(brand) => onChange({ brand })}
+              placeholder={tField('brandPlaceholder')}
               aria-label={tField('brand')}
               invalid={Boolean(fieldErrors?.['identity.brand'])}
             />
@@ -99,6 +100,7 @@ export function ProductIdentitySection({
               value={identity.name}
               readOnly={identityReadOnly}
               onChange={(name) => onChange({ name })}
+              placeholder={tField('namePlaceholder')}
               aria-label={tField('name')}
               invalid={Boolean(fieldErrors?.['identity.name'])}
             />

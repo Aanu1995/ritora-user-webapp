@@ -219,4 +219,13 @@ describe('AddProductPage', () => {
       screen.getByRole('alert'),
     ).toHaveTextContent(/could not save this product/i);
   });
+
+  it('keeps the add-product page at a single form when switching to the URL tab', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<AddProductPage />);
+
+    await user.click(screen.getByRole('tab', { name: /^url$/i }));
+
+    expect(document.querySelectorAll('form')).toHaveLength(1);
+  });
 });

@@ -6,7 +6,6 @@ import { useTranslations } from 'next-intl';
 import { ProductIllustration } from '../product-illustration';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useSearchCatalogue } from '@/hooks/use-shelf';
 import {
   type CatalogueIdentity,
@@ -40,24 +39,51 @@ export function SearchTab({ onPick }: Props) {
   const tCat = useTranslations('shelf.category');
   const tCard = useTranslations('shelf.card');
   const [query, setQuery] = useState('');
-  const debounced = useDebouncedValue(query, 220);
-  const { data: results = [], isFetching } = useSearchCatalogue(debounced);
+  const [submittedQuery, setSubmittedQuery] = useState('');
+  const { data: results = [], isFetching } = useSearchCatalogue(submittedQuery);
+  const trimmedQuery = query.trim();
+  const hasSubmittedQuery = submittedQuery.trim().length >= 2;
+
+  const handleSearch = () => {
+    if (trimmedQuery.length < 2) {
+      return;
+    }
+
+    setSubmittedQuery(trimmedQuery);
+  };
 
   return (
     <div className="flex flex-col gap-4">
-      <label className="flex items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-2.5 text-sm focus-within:border-accent-strong">
-        <Search className="h-4 w-4 text-muted" />
-        <input
-          autoFocus
-          aria-label={t('placeholder')}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t('placeholder')}
-          className="flex-1 bg-transparent outline-none placeholder:text-muted"
-        />
-      </label>
+      <div className="flex items-stretch gap-2">
+        <label className="flex flex-1 items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-2.5 text-sm focus-within:border-accent-strong">
+          <Search className="h-4 w-4 text-muted" />
+          <input
+            autoFocus
+            aria-label={t('placeholder')}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                handleSearch();
+              }
+            }}
+            placeholder={t('placeholder')}
+            className="flex-1 bg-transparent outline-none placeholder:text-muted"
+          />
+        </label>
+        <Button
+          type="button"
+          size="sm"
+          onClick={handleSearch}
+          disabled={isFetching || trimmedQuery.length < 2}
+          className="shrink-0"
+        >
+          {isFetching ? t('searching') : t('searchAction')}
+        </Button>
+      </div>
 
-      {debounced.trim().length < 2 ? (
+      {!hasSubmittedQuery ? (
         <p className="text-sm text-muted">{t('empty')}</p>
       ) : isFetching ? (
         <SearchResultsSkeleton />
@@ -92,6 +118,7 @@ export function SearchTab({ onPick }: Props) {
                 </div>
               </div>
               <Button
+                type="button"
                 size="sm"
                 onClick={() =>
                   onPick({

@@ -794,6 +794,8 @@
         "placeholder": "Sök efter märke eller produktnamn",
         "empty": "Skriv minst två tecken för att söka i katalogen.",
         "noResults": "Inga träffar. Prova ett annat namn eller fyll i produkten manuellt.",
+        "searchAction": "Sök",
+        "searching": "Söker…",
         "addAction": "Lägg till"
       },
       "url": {
@@ -841,7 +843,7 @@
           "openedAtHint": "Lämna tomt om produkten fortfarande är förseglad.",
           "paoHint": "Brukar stå på burksymbolen som 12M, 24M och liknande.",
           "expiresAtHint": "Ritora fyller i detta från öppningsdatum och PAO. Du kan ändra det.",
-          "preferredTimeHint": "Valfri hint för funktionen Dagens förslag. Används inte här.",
+          "preferredTimeHint": "Om du brukar använda den här på morgonen eller kvällen tar Ritoras AI-förslag hänsyn till det när din rutin byggs.",
           "priceHint": "För framtida insikter om kostnader. Valfritt.",
           "purchasedFromHint": "Var du köpte den.",
           "personalNotesHint": "Hur den känns på huden. Det ser bara du.",
@@ -854,7 +856,9 @@
         },
         "fields": {
           "brand": "Märke",
+          "brandPlaceholder": "t.ex. CeraVe",
           "name": "Produktnamn",
+          "namePlaceholder": "t.ex. Resurfacing Retinol Serum",
           "category": "Kategori",
           "size": "Storlek",
           "description": "Beskrivning",
@@ -878,7 +882,9 @@
           "notesPlaceholder": "Hur känns den på huden?",
           "sizePlaceholder": "t.ex. 30",
           "pricePlaceholder": "t.ex. 249",
-          "purchasedFromPlaceholder": "t.ex. Kicks"
+          "purchasedFromPlaceholder": "t.ex. Kicks",
+          "parentPlaceholder": "t.ex. L'Oréal",
+          "supportPlaceholder": "support@varumarke.com"
         },
         "paoOptions": {
           "6": "6 månader",
@@ -977,7 +983,7 @@
         "removeCaution": "Ta bort varning {index}",
         "cautionInput": "Varning {index}",
         "waitTimerLabel": "Väntetid",
-        "waitTimerHint": "Valfritt, i minuter",
+        "waitTimerHint": "För produkter som behöver ligga kvar på huden innan nästa steg, till exempel peelings eller masker. Ritoras rutinförslag planerar kring väntan.",
         "waitTimerPlaceholder": "Till exempel 10",
         "waitMinute": "Låt verka i {minutes} minut.",
         "waitMinutes": "Låt verka i {minutes} minuter.",

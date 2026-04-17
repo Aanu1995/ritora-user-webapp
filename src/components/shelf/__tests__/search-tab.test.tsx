@@ -8,10 +8,6 @@ import {
 
 const mockUseSearchCatalogue = jest.fn();
 
-jest.mock('@/hooks/use-debounced-value', () => ({
-  useDebouncedValue: <T,>(value: T) => value,
-}));
-
 jest.mock('@/hooks/use-shelf', () => ({
   useSearchCatalogue: (query: string) => mockUseSearchCatalogue(query),
 }));
@@ -42,13 +38,17 @@ describe('SearchTab', () => {
     renderWithProviders(<SearchTab onPick={jest.fn()} />);
 
     expect(screen.getByText(/type at least two letters/i)).toBeInTheDocument();
+    expect(mockUseSearchCatalogue).toHaveBeenCalledWith('');
 
     await user.type(
       screen.getByRole('textbox', { name: /search by brand and product name/i }),
       're',
     );
+    expect(mockUseSearchCatalogue).toHaveBeenLastCalledWith('');
 
-    expect(mockUseSearchCatalogue).toHaveBeenCalled();
+    await user.click(screen.getByRole('button', { name: /search/i }));
+
+    expect(mockUseSearchCatalogue).toHaveBeenLastCalledWith('re');
   });
 
   it('lets the user pick a search result', async () => {
@@ -65,6 +65,7 @@ describe('SearchTab', () => {
       screen.getByRole('textbox', { name: /search by brand and product name/i }),
       're',
     );
+    await user.click(screen.getByRole('button', { name: /search/i }));
     await user.click(screen.getByRole('button', { name: /add/i }));
 
     expect(onPick).toHaveBeenCalledWith(
@@ -75,5 +76,22 @@ describe('SearchTab', () => {
         }),
       }),
     );
+  });
+
+  it('submits the search when enter is pressed', async () => {
+    const user = userEvent.setup();
+    mockUseSearchCatalogue.mockReturnValue({
+      data: [],
+      isFetching: false,
+    });
+
+    renderWithProviders(<SearchTab onPick={jest.fn()} />);
+
+    await user.type(
+      screen.getByRole('textbox', { name: /search by brand and product name/i }),
+      'ret{enter}',
+    );
+
+    expect(mockUseSearchCatalogue).toHaveBeenLastCalledWith('ret');
   });
 });

@@ -224,6 +224,7 @@ export function ProductManufacturerSection({
             onChange={(parentCompany) =>
               onChange({ parentCompany: parentCompany || null })
             }
+            placeholder={tField('parentPlaceholder')}
             aria-label={tManufacturer('parent')}
           />
         </Field>
@@ -247,6 +248,7 @@ export function ProductManufacturerSection({
             onChange={(supportEmail) =>
               onChange({ supportEmail: supportEmail || null })
             }
+            placeholder={tField('supportPlaceholder')}
             aria-label={tManufacturer('support')}
             invalid={Boolean(fieldErrors?.['manufacturer.supportEmail'])}
           />

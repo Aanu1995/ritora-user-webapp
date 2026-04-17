@@ -62,4 +62,35 @@ describe('UrlTab', () => {
       );
     });
   });
+
+  it('resolves the product when enter is pressed in the input', async () => {
+    const user = userEvent.setup();
+    const onResolved = jest.fn();
+    mockMutate.mockImplementation((_url, options) => {
+      options?.onSuccess?.({
+        identity: { brand: 'Byoma', name: 'Milky Toner' },
+        manufacturer: { productUrl: 'https://example.com/product' },
+      });
+    });
+
+    renderWithProviders(<UrlTab onResolved={onResolved} />);
+
+    const input = screen.getByRole('textbox', {
+      name: /paste the product url from the brand's website/i,
+    });
+
+    await user.type(input, 'https://example.com/product{enter}');
+
+    await waitFor(() => {
+      expect(mockMutate).toHaveBeenCalledWith(
+        'https://example.com/product',
+        expect.any(Object),
+      );
+      expect(onResolved).toHaveBeenCalledWith(
+        expect.objectContaining({
+          identity: expect.objectContaining({ brand: 'Byoma' }),
+        }),
+      );
+    });
+  });
 });

@@ -22,8 +22,7 @@ export function UrlTab({ onResolved }: Props) {
   const [url, setUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleResolve = () => {
     if (!url.trim()) {
       return;
     }
@@ -52,7 +51,7 @@ export function UrlTab({ onResolved }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <div className="flex items-stretch gap-2">
         <label className="flex flex-1 items-center gap-2 rounded-full border border-border bg-surface px-3.5 text-sm focus-within:border-accent-strong">
           <LinkIcon className="h-4 w-4 text-muted" />
@@ -60,15 +59,22 @@ export function UrlTab({ onResolved }: Props) {
             aria-label={t('placeholder')}
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                handleResolve();
+              }
+            }}
             placeholder={t('placeholder')}
             className="h-10 flex-1 bg-transparent outline-none placeholder:text-muted"
             autoFocus
           />
         </label>
         <Button
-          type="submit"
+          type="button"
           size="sm"
           disabled={resolve.isPending || !url.trim()}
+          onClick={handleResolve}
           className="shrink-0"
         >
           {resolve.isPending ? (
@@ -79,6 +85,6 @@ export function UrlTab({ onResolved }: Props) {
         </Button>
       </div>
       {error ? <p className="text-sm text-danger">{error}</p> : null}
-    </form>
+    </div>
   );
 }

@@ -22,7 +22,7 @@ export function ScanTab({ onSwitchToManual }: Props) {
         </div>
       </div>
       <div className="flex justify-start">
-        <Button variant="outline" onClick={onSwitchToManual}>
+        <Button type="button" variant="outline" onClick={onSwitchToManual}>
           {t('fallback')}
         </Button>
       </div>
