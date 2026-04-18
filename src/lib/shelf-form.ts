@@ -20,6 +20,7 @@ import {
 
 const HTTP_PROTOCOLS = new Set(['http:', 'https:']);
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PRIVATE_HOSTNAME_SUFFIXES = ['.local', '.internal', '.localhost'] as const;
 
 const VALIDATION_MESSAGE = {
   brandRequired: 'dialog.validation.brandRequired',
@@ -160,7 +161,52 @@ function createNullableStringSchema() {
 export function isSafeExternalUrl(value: string): boolean {
   try {
     const parsed = new URL(value);
-    return HTTP_PROTOCOLS.has(parsed.protocol);
+    const hostname = parsed.hostname.toLowerCase();
+
+    if (!HTTP_PROTOCOLS.has(parsed.protocol)) {
+      return false;
+    }
+
+    if (!hostname || parsed.username || parsed.password) {
+      return false;
+    }
+
+    if (
+      hostname === 'localhost' ||
+      hostname === '::1' ||
+      hostname === '[::1]' ||
+      hostname === '0:0:0:0:0:0:0:1'
+    ) {
+      return false;
+    }
+
+    if (PRIVATE_HOSTNAME_SUFFIXES.some((suffix) => hostname.endsWith(suffix))) {
+      return false;
+    }
+
+    const ipv4Parts = hostname.split('.');
+
+    if (ipv4Parts.length === 4 && ipv4Parts.every((part) => /^\d+$/.test(part))) {
+      const octets = ipv4Parts.map((part) => Number(part));
+      const [first, second] = octets;
+
+      if (octets.some((octet) => octet < 0 || octet > 255)) {
+        return false;
+      }
+
+      if (
+        first === 0 ||
+        first === 10 ||
+        first === 127 ||
+        (first === 169 && second === 254) ||
+        (first === 172 && second >= 16 && second <= 31) ||
+        (first === 192 && second === 168)
+      ) {
+        return false;
+      }
+    }
+
+    return true;
   } catch {
     return false;
   }
@@ -412,6 +458,7 @@ export function normalizeShelfProductForm(
       ...value.identity,
       brand: value.identity.brand.trim(),
       name: value.identity.name.trim(),
+      imageUrls: value.identity.imageUrls.filter(isSafeExternalUrl),
       sizeMl:
         value.identity.sizeMl == null || Number.isNaN(value.identity.sizeMl)
           ? null
@@ -439,7 +486,12 @@ export function normalizeShelfProductForm(
       countryOfManufacture: trimOrNull(value.manufacturer.countryOfManufacture),
       supportEmail: trimOrNull(value.manufacturer.supportEmail),
       productUrl: trimOrNull(value.manufacturer.productUrl),
-      websiteUrl: trimOrNull(value.manufacturer.websiteUrl),
+      websiteUrl: (() => {
+        const websiteUrl = trimOrNull(value.manufacturer.websiteUrl);
+        return websiteUrl && isSafeExternalUrl(websiteUrl)
+          ? websiteUrl
+          : null;
+      })(),
     },
     userFields: {
       ...value.userFields,

@@ -10,6 +10,13 @@ export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
 
 const ABSOLUTE_HTTP_URL_PATTERN = /^https?:\/\//i;
+const CREDENTIALLED_AUTH_PATHS = new Set<string>([
+  ApiPath.AuthLogin,
+  ApiPath.AuthRegister,
+  ApiPath.AuthRefresh,
+  ApiPath.AuthLogout,
+  ApiPath.AuthLogoutAll,
+]);
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -29,6 +36,49 @@ type AuthRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
   _skipAuthRefresh?: boolean;
 };
+
+function getAllowedApiOrigin(baseURL?: string): string | null {
+  const effectiveBaseURL = baseURL ?? API_BASE_URL;
+
+  if (ABSOLUTE_HTTP_URL_PATTERN.test(effectiveBaseURL)) {
+    try {
+      return new URL(effectiveBaseURL).origin;
+    } catch {
+      return null;
+    }
+  }
+
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+
+  return null;
+}
+
+function resolveConfiguredRequestUrl(
+  url: string | undefined,
+  baseURL?: string,
+): string | undefined {
+  if (!url) {
+    return undefined;
+  }
+
+  try {
+    const effectiveBaseURL = baseURL ?? API_BASE_URL;
+
+    if (ABSOLUTE_HTTP_URL_PATTERN.test(effectiveBaseURL)) {
+      return new URL(url, effectiveBaseURL).toString();
+    }
+
+    if (typeof window !== 'undefined') {
+      return new URL(url, window.location.origin).toString();
+    }
+
+    return url;
+  } catch {
+    return url;
+  }
+}
 
 function normalizeRequestPath(url: string | undefined): string | undefined {
   if (!url) {
@@ -96,7 +146,50 @@ export function warnIfDevApiTargetsFrontend(): void {
   );
 }
 
+export function isAllowedApiRequestUrl(
+  url: string | undefined,
+  baseURL?: string,
+): boolean {
+  const resolvedUrl = resolveConfiguredRequestUrl(url, baseURL);
+
+  if (!resolvedUrl || !ABSOLUTE_HTTP_URL_PATTERN.test(resolvedUrl)) {
+    return true;
+  }
+
+  const allowedOrigin = getAllowedApiOrigin(baseURL);
+
+  if (!allowedOrigin) {
+    return false;
+  }
+
+  try {
+    return new URL(resolvedUrl).origin === allowedOrigin;
+  } catch {
+    return false;
+  }
+}
+
+export function shouldSendCredentialCookies(
+  url: string | undefined,
+  baseURL?: string,
+): boolean {
+  const requestPath = normalizeRequestPath(
+    resolveConfiguredRequestUrl(url, baseURL),
+  );
+
+  return requestPath ? CREDENTIALLED_AUTH_PATHS.has(requestPath) : false;
+}
+
 apiClient.interceptors.request.use((config) => {
+  if (!isAllowedApiRequestUrl(config.url, config.baseURL)) {
+    throw new ApiError('Blocked request to unexpected API origin');
+  }
+
+  config.withCredentials = shouldSendCredentialCookies(
+    config.url,
+    config.baseURL,
+  );
+
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }

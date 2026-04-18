@@ -4,11 +4,13 @@ import {
   deleteRequest,
   getAccessToken,
   getRequest,
+  isAllowedApiRequestUrl,
   postRequest,
   patchRequest,
   putRequest,
   setAccessToken,
   setUnauthorizedHandler,
+  shouldSendCredentialCookies,
 } from '@/lib/api';
 
 type MockAxiosInstance = {
@@ -63,6 +65,9 @@ jest.mock('axios', () => {
 
 const mockedAxios = axios as unknown as MockAxiosModule;
 const mockInstance = mockedAxios._instance;
+const requestInterceptor = mockedAxios._requestUse.mock.calls[0]?.[0] as (
+  config: Record<string, unknown>,
+) => Record<string, unknown>;
 const responseErrorHandler = mockedAxios._responseUse.mock.calls[0]?.[1] as (
   error: unknown,
 ) => Promise<unknown>;
@@ -84,6 +89,49 @@ describe('api client', () => {
       setAccessToken('tok-123');
       setAccessToken(null);
       expect(getAccessToken()).toBeNull();
+    });
+  });
+
+  describe('request target security', () => {
+    it('allows only same-origin API request URLs', () => {
+      expect(isAllowedApiRequestUrl('/inventory/products')).toBe(true);
+      expect(
+        isAllowedApiRequestUrl(
+          'http://localhost:3001/api/v1/inventory/products',
+        ),
+      ).toBe(true);
+      expect(isAllowedApiRequestUrl('https://evil.example/collect')).toBe(false);
+    });
+
+    it('sends credential cookies only to session-establishing auth endpoints', () => {
+      expect(shouldSendCredentialCookies('/auth/login')).toBe(true);
+      expect(shouldSendCredentialCookies('/auth/refresh')).toBe(true);
+      expect(shouldSendCredentialCookies('/inventory/products')).toBe(false);
+    });
+
+    it('blocks unexpected API origins before the request is sent', () => {
+      expect(() =>
+        requestInterceptor({
+          url: 'https://evil.example/collect',
+          headers: {},
+        }),
+      ).toThrow(ApiError);
+    });
+
+    it('attaches bearer auth only to allowed API requests', () => {
+      setAccessToken('tok-123');
+
+      const config = requestInterceptor({
+        url: '/inventory/products',
+        headers: {},
+      });
+
+      expect(config.withCredentials).toBe(false);
+      expect(config.headers).toEqual(
+        expect.objectContaining({
+          Authorization: 'Bearer tok-123',
+        }),
+      );
     });
   });
 

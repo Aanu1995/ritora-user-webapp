@@ -253,10 +253,27 @@ describe('shelf-form', () => {
   });
 
   it('normalizes trimmed strings and list values', () => {
-    const normalized = normalizeShelfProductForm(createValue());
+    const normalized = normalizeShelfProductForm(
+      createValue({
+        identity: {
+          ...createValue().identity,
+          imageUrls: [
+            'https://cdn.ritora.com/product.jpg',
+            'http://127.0.0.1/private.jpg',
+          ],
+        },
+        manufacturer: {
+          ...createValue().manufacturer,
+          websiteUrl: 'http://localhost:3000/internal',
+        },
+      }),
+    );
 
     expect(normalized.identity.brand).toBe('CeraVe');
     expect(normalized.identity.name).toBe('Retinol Serum');
+    expect(normalized.identity.imageUrls).toEqual([
+      'https://cdn.ritora.com/product.jpg',
+    ]);
     expect(normalized.identity.description).toBe('Smooth overnight serum.');
     expect(normalized.identity.benefits).toEqual(['calming', 'hydrating']);
     expect(normalized.identity.inciIngredients).toEqual(['Aqua', 'Niacinamide']);
@@ -264,6 +281,7 @@ describe('shelf-form', () => {
     expect(normalized.guidance.cautions).toEqual(['Avoid eyes.']);
     expect(normalized.manufacturer.parentCompany).toBe('L’Oreal');
     expect(normalized.manufacturer.supportEmail).toBe('support@cerave.com');
+    expect(normalized.manufacturer.websiteUrl).toBeNull();
     expect(normalized.userFields.purchasedFrom).toBe('Apotek');
     expect(normalized.userFields.personalNotes).toBe('Feels calming.');
     expect(normalized.userFields.expiresAt).toBe('2027-04-01T00:00:00.000Z');
@@ -285,5 +303,9 @@ describe('shelf-form', () => {
     expect(isSafeExternalUrl('http://ritora.com/product')).toBe(true);
     expect(isSafeExternalUrl('javascript:alert(1)')).toBe(false);
     expect(isSafeExternalUrl('notaurl')).toBe(false);
+    expect(isSafeExternalUrl('https://127.0.0.1/product')).toBe(false);
+    expect(isSafeExternalUrl('http://10.0.0.5/product')).toBe(false);
+    expect(isSafeExternalUrl('https://localhost:3000/product')).toBe(false);
+    expect(isSafeExternalUrl('https://user:pass@ritora.com/product')).toBe(false);
   });
 });
