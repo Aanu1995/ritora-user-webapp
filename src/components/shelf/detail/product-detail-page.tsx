@@ -8,6 +8,7 @@ import { RetryPanel } from '@/components/ui/retry-panel';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AppRoute } from '@/constants/app-routes';
 import { useShelfProduct } from '@/hooks/use-shelf';
+import { getApiErrorStatus } from '@/lib/api-error';
 
 type Props = {
   productId: string;
@@ -15,16 +16,19 @@ type Props = {
 
 export function ProductDetailPage({ productId }: Props) {
   const t = useTranslations('common');
-  const tShelf = useTranslations('shelf.empty');
+  const tShelf = useTranslations('shelf.errors');
   const router = useRouter();
   const product = useShelfProduct(productId);
+  const shouldRedirectToShelf =
+    product.isError &&
+    !product.data &&
+    getApiErrorStatus(product.error) === 404;
 
   useEffect(() => {
-    if (product.isError) {
-      // 404 → bounce back to the shelf
+    if (shouldRedirectToShelf) {
       router.replace(AppRoute.Shelf);
     }
-  }, [product.isError, router]);
+  }, [shouldRedirectToShelf, router]);
 
   if (product.isPending) {
     return (
@@ -45,25 +49,28 @@ export function ProductDetailPage({ productId }: Props) {
     );
   }
 
-  if (product.isError || !product.data) {
+  if (shouldRedirectToShelf) {
+    return null;
+  }
+
+  if (product.data) {
     return (
-      <RetryPanel
-        title={t('error')}
-        description={tShelf('description')}
-        actionLabel={t('retry')}
-        onAction={() => {
-          void product.refetch();
+      <ProductDetailView
+        product={product.data}
+        onAfterMutation={() => {
+          // Optimistic state already cleared via TanStack Query.
         }}
       />
     );
   }
 
   return (
-    <ProductDetailView
-      product={product.data}
-      onAfterMutation={() => {
-        // Optimistic state already cleared via TanStack Query;
-        // for delete the user will be bounced via the useEffect above.
+    <RetryPanel
+      title={tShelf('loadProductTitle')}
+      description={tShelf('loadProductDescription')}
+      actionLabel={t('retry')}
+      onAction={() => {
+        void product.refetch();
       }}
     />
   );

@@ -13,9 +13,7 @@ describe('ShelfEmptyState', () => {
       screen.getByRole('heading', { name: /your shelf is empty/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /add the products you already own/i,
-      ),
+      screen.getByText(/ritora builds a calmer routine/i),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /add your first product/i }),

@@ -8,38 +8,48 @@ import { RetryPanel } from '@/components/ui/retry-panel';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AppRoute } from '@/constants/app-routes';
 import { useShelfProduct } from '@/hooks/use-shelf';
+import { getApiErrorStatus } from '@/lib/api-error';
 
 type Props = {
   productId: string;
 };
 
 export function ProductEditPage({ productId }: Props) {
-  const t = useTranslations('common');
+  const t = useTranslations('shelf.errors');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const product = useShelfProduct(productId);
+  const shouldRedirectToShelf =
+    product.isError &&
+    !product.data &&
+    getApiErrorStatus(product.error) === 404;
 
   useEffect(() => {
-    if (product.isError) {
+    if (shouldRedirectToShelf) {
       router.replace(AppRoute.Shelf);
     }
-  }, [product.isError, router]);
+  }, [shouldRedirectToShelf, router]);
 
   if (product.isPending) {
     return <Skeleton className="h-96 w-full" />;
   }
 
-  if (product.isError || !product.data) {
-    return (
-      <RetryPanel
-        title={t('error')}
-        description={t('error')}
-        actionLabel={t('retry')}
-        onAction={() => {
-          void product.refetch();
-        }}
-      />
-    );
+  if (shouldRedirectToShelf) {
+    return null;
   }
 
-  return <ProductEditForm product={product.data} />;
+  if (product.data) {
+    return <ProductEditForm product={product.data} />;
+  }
+
+  return (
+    <RetryPanel
+      title={t('loadProductTitle')}
+      description={t('loadProductDescription')}
+      actionLabel={tCommon('retry')}
+      onAction={() => {
+        void product.refetch();
+      }}
+    />
+  );
 }

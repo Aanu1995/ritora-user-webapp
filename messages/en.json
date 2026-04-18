@@ -752,9 +752,16 @@
     },
     "empty": {
       "title": "Your shelf is empty",
-      "description": "Add the products you already own. Ritora will help you keep track of expiry, show you exactly how to use each one, and later build your morning and evening routine around what you have.",
+      "description": "Add products you own and Ritora builds a calmer routine around them.",
       "cta": "Add your first product",
       "filtered": "No products match your current filter."
+    },
+    "errors": {
+      "retry": "Try again",
+      "loadShelfTitle": "We couldn't load your shelf",
+      "loadShelfDescription": "The shelf did not load this time. Try again in a moment.",
+      "loadProductTitle": "We couldn't load this product",
+      "loadProductDescription": "The product details did not load this time. Try again in a moment."
     },
     "card": {
       "unopened": "Unopened",
@@ -769,6 +776,8 @@
       "edit": "Edit",
       "archive": "Archive",
       "markFinished": "Mark finished",
+      "loadMore": "Load more",
+      "loadingMore": "Loading more…",
       "delete": "Delete",
       "cancel": "Cancel",
       "back": "Back",
@@ -809,8 +818,13 @@
         "placeholder": "Search by brand and product name",
         "empty": "Type at least two letters to search the catalogue.",
         "noResults": "Nothing matched. Try another name, or enter the product manually.",
+        "errorTitle": "We couldn't search right now",
+        "error": "The catalogue search did not load this time. Try again in a moment.",
+        "retry": "Try again",
         "searchAction": "Search",
         "searching": "Searching…",
+        "loadMore": "Load more",
+        "loadingMore": "Loading more…",
         "addAction": "Add"
       },
       "url": {

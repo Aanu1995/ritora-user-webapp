@@ -1,5 +1,7 @@
 import { screen } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import { renderWithProviders } from '@/test/utils';
+import { ApiError } from '@/lib/api-error';
 import {
   DataProvenance,
   ProductCategory,
@@ -23,9 +25,9 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('@/hooks/use-shelf', () => ({
   useShelfProduct: (...args: unknown[]) => mockUseShelfProduct(...args),
-  useArchiveProducts: () => ({ archive: jest.fn(), isPending: false }),
-  useRestoreProducts: () => ({ restore: jest.fn(), isPending: false }),
-  useMarkFinished: () => ({ markFinished: jest.fn(), isPending: false }),
+  useArchiveProduct: () => ({ mutate: jest.fn(), isPending: false }),
+  useRestoreProduct: () => ({ mutate: jest.fn(), isPending: false }),
+  useMarkProductFinished: () => ({ mutate: jest.fn(), isPending: false }),
   useDeleteProduct: () => ({ mutate: jest.fn(), isPending: false }),
 }));
 
@@ -103,12 +105,31 @@ describe('ProductDetailPage', () => {
       isPending: false,
       isError: true,
       data: undefined,
+      error: new ApiError('Server error', { status: 500 }),
       refetch: jest.fn(),
     });
 
     renderWithProviders(<ProductDetailPage productId="product-1" />);
 
-    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /we couldn't load this product/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('redirects back to the shelf when the product is missing', async () => {
+    mockUseShelfProduct.mockReturnValue({
+      isPending: false,
+      isError: true,
+      data: undefined,
+      error: new ApiError('Not found', { status: 404 }),
+      refetch: jest.fn(),
+    });
+
+    renderWithProviders(<ProductDetailPage productId="product-1" />);
+
+    await waitFor(() => {
+      expect(mockReplace).toHaveBeenCalledWith('/shelf');
+    });
   });
 
   it('renders the detail view when the product is available', () => {

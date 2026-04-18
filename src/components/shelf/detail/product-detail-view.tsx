@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { DetailAboutTab } from './detail-about-tab';
@@ -31,11 +31,12 @@ import {
 } from '@/components/ui/tabs';
 import { AppRoute } from '@/constants/app-routes';
 import {
-  useArchiveProducts,
+  useArchiveProduct,
   useDeleteProduct,
-  useMarkFinished,
-  useRestoreProducts,
+  useMarkProductFinished,
+  useRestoreProduct,
 } from '@/hooks/use-shelf';
+import { formatLocalizedDate } from '@/lib/dayjs';
 import { cn } from '@/lib/utils';
 import {
   computeExpiresAt,
@@ -69,10 +70,11 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
   const tQty = useTranslations('shelf.quantity');
   const tCard = useTranslations('shelf.card');
   const tEdit = useTranslations('shelf.edit');
+  const locale = useLocale();
   const router = useRouter();
-  const archive = useArchiveProducts();
-  const restore = useRestoreProducts();
-  const finish = useMarkFinished();
+  const archive = useArchiveProduct();
+  const restore = useRestoreProduct();
+  const finish = useMarkProductFinished();
   const remove = useDeleteProduct();
   const [activeTab, setActiveTab] = useState<
     'about' | 'ingredients' | 'how-to-use' | 'manufacturer'
@@ -82,13 +84,14 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
   const life = deriveShelfLife(product);
   const expires = computeExpiresAt(product);
   const openedToken = formatOpenedToken(product);
+  const expiresLabel = formatLocalizedDate(expires, locale);
   const fillPercent =
     life.remainingFraction !== null
       ? Math.max(4, Math.round(life.remainingFraction * 100))
       : 100;
 
   const handleFinish = () => {
-    finish.markFinished([product.id], {
+    finish.mutate(product.id, {
       onSuccess: () => {
         toast.success(t('actions.markFinished'));
         onAfterMutation?.();
@@ -129,12 +132,12 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
     archive.isPending || restore.isPending || finish.isPending || remove.isPending;
 
   const handleArchiveToggle = () => {
-    const mutation = isArchived ? restore.restore : archive.archive;
+    const mutate = isArchived ? restore.mutate : archive.mutate;
     const successMessage = isArchived
       ? t('actions.unarchive')
       : t('actions.archive');
 
-    mutation([product.id], {
+    mutate(product.id, {
       onSuccess: () => {
         toast.success(successMessage);
         onAfterMutation?.();
@@ -242,11 +245,11 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
               label={t('meta.opened')}
               value={openedToken ?? t('meta.unopened')}
             />
-            {expires ? (
+            {expiresLabel ? (
               <KvCell
                 icon={<Clock className="h-4 w-4" />}
                 label={t('meta.expires')}
-                value={expires.toLocaleDateString()}
+                value={expiresLabel}
               />
             ) : null}
             {product.identity.sizeMl ? (

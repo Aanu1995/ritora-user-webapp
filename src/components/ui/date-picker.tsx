@@ -1,10 +1,15 @@
 'use client';
 
 import { Calendar as CalendarIcon, X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Calendar } from './calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import {
+  formatLocalizedDate,
+  parseUtcDate,
+  toDateInputValue,
+} from '@/lib/dayjs';
 import { cn } from '@/lib/utils';
 
 type Props = {
@@ -20,26 +25,7 @@ type Props = {
 };
 
 function parseValue(value: string): Date | undefined {
-  if (!value) {
-    return undefined;
-  }
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? undefined : date;
-}
-
-function formatDisplay(date: Date): string {
-  return date.toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
-function toIsoDateString(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
+  return parseUtcDate(value)?.toDate();
 }
 
 export function DatePicker({
@@ -52,9 +38,11 @@ export function DatePicker({
   className,
 }: Props) {
   const t = useTranslations('common.datePicker');
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const selected = parseValue(value);
   const resolvedPlaceholder = placeholder ?? t('placeholder');
+  const displayValue = formatLocalizedDate(value, locale);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -71,7 +59,7 @@ export function DatePicker({
         >
           <span className="inline-flex items-center gap-2">
             <CalendarIcon className="h-4 w-4 text-muted" />
-            <span>{selected ? formatDisplay(selected) : resolvedPlaceholder}</span>
+            <span>{displayValue ?? resolvedPlaceholder}</span>
           </span>
           {allowClear && selected ? (
             <span
@@ -98,7 +86,7 @@ export function DatePicker({
             if (!date) {
               return;
             }
-            onChange(toIsoDateString(date));
+            onChange(toDateInputValue(date));
             setOpen(false);
           }}
           autoFocus

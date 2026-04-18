@@ -13,6 +13,10 @@ import {
   type UserFields,
 } from '@/types/shelf';
 import { z } from 'zod';
+import {
+  addMonthsToIsoString,
+  parseUtcDate,
+} from '@/lib/dayjs';
 
 const HTTP_PROTOCOLS = new Set(['http:', 'https:']);
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,12 +67,6 @@ export type ShelfGuidanceValidationErrors = {
   steps?: string;
   cautions?: string;
 };
-
-function addMonthsToIsoDate(isoDate: string, months: number): string {
-  const nextDate = new Date(isoDate);
-  nextDate.setMonth(nextDate.getMonth() + months);
-  return nextDate.toISOString();
-}
 
 export function createEmptyIdentity(): CatalogueIdentity {
   return {
@@ -125,11 +123,7 @@ function normalizeStringList(values: string[]): string[] {
 }
 
 function isValidDateString(value: string | null): boolean {
-  if (!value) {
-    return false;
-  }
-
-  return !Number.isNaN(Date.parse(value));
+  return Boolean(parseUtcDate(value));
 }
 
 function createOptionalNumberSchema(
@@ -327,7 +321,14 @@ export const shelfProductFormSchema = z
       return;
     }
 
-    if (Date.parse(expiresAt) < Date.parse(openedAt)) {
+    const parsedOpenedAt = parseUtcDate(openedAt);
+    const parsedExpiresAt = parseUtcDate(expiresAt);
+
+    if (
+      parsedOpenedAt &&
+      parsedExpiresAt &&
+      parsedExpiresAt.isBefore(parsedOpenedAt)
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['userFields', 'expiresAt'],
@@ -403,7 +404,7 @@ export function normalizeShelfProductForm(
     normalizedPao != null &&
     normalizedPao > 0 &&
     isValidDateString(normalizedOpenedAt)
-      ? addMonthsToIsoDate(normalizedOpenedAt, normalizedPao)
+      ? addMonthsToIsoString(normalizedOpenedAt, normalizedPao)
       : null);
 
   return {

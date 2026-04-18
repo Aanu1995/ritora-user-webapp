@@ -752,9 +752,16 @@
     },
     "empty": {
       "title": "Din hylla är tom",
-      "description": "Lägg till produkterna du redan äger. Ritora hjälper dig att hålla koll på utgångsdatum, visar hur varje produkt ska användas och bygger sedan din morgon- och kvällsrutin utifrån det du har.",
+      "description": "Lägg till produkter du äger så bygger Ritora en lugnare rutin runt dem.",
       "cta": "Lägg till din första produkt",
       "filtered": "Inga produkter matchar ditt nuvarande filter."
+    },
+    "errors": {
+      "retry": "Försök igen",
+      "loadShelfTitle": "Vi kunde inte läsa din hylla",
+      "loadShelfDescription": "Hylla kunde inte läsas in just nu. Försök igen om en liten stund.",
+      "loadProductTitle": "Vi kunde inte läsa den här produkten",
+      "loadProductDescription": "Produktdetaljerna kunde inte läsas in just nu. Försök igen om en liten stund."
     },
     "card": {
       "unopened": "Oöppnad",
@@ -769,6 +776,8 @@
       "edit": "Redigera",
       "archive": "Arkivera",
       "markFinished": "Markera som förbrukad",
+      "loadMore": "Ladda fler",
+      "loadingMore": "Laddar fler…",
       "delete": "Ta bort",
       "cancel": "Avbryt",
       "back": "Tillbaka",
@@ -809,8 +818,13 @@
         "placeholder": "Sök efter märke eller produktnamn",
         "empty": "Skriv minst två tecken för att söka i katalogen.",
         "noResults": "Inga träffar. Prova ett annat namn eller fyll i produkten manuellt.",
+        "errorTitle": "Vi kunde inte söka just nu",
+        "error": "Katalogsökningen kunde inte läsas in just nu. Försök igen om en liten stund.",
+        "retry": "Försök igen",
         "searchAction": "Sök",
         "searching": "Söker…",
+        "loadMore": "Ladda fler",
+        "loadingMore": "Laddar fler…",
         "addAction": "Lägg till"
       },
       "url": {

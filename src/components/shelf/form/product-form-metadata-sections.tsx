@@ -12,6 +12,11 @@ import {
 } from '@/components/ui/select';
 import { PreferredTimeOfDay, type ManufacturerInfo, type UserFields } from '@/types/shelf';
 import type { ShelfFormFieldErrors } from '@/lib/shelf-form';
+import {
+  addMonthsToIsoString,
+  toDateInputValue,
+  toUtcIsoStringFromDateInput,
+} from '@/lib/dayjs';
 import { cn } from '@/lib/utils';
 import { Field, SectionLabel, TextAreaInput, TextInput } from './product-form-fields';
 
@@ -23,12 +28,6 @@ type UserFieldsSectionProps = {
   fieldErrors?: ShelfFormFieldErrors;
 };
 
-function addMonths(isoDate: string, months: number): string {
-  const nextDate = new Date(isoDate);
-  nextDate.setMonth(nextDate.getMonth() + months);
-  return nextDate.toISOString().slice(0, 10);
-}
-
 export function ProductUserFieldsSection({
   userFields,
   onChange,
@@ -37,11 +36,13 @@ export function ProductUserFieldsSection({
   const t = useTranslations('shelf.dialog.confirm');
   const tField = useTranslations('shelf.dialog.confirm.fields');
 
-  const openedIso = (userFields.openedAt ?? '').slice(0, 10);
-  const expiresIso = (userFields.expiresAt ?? '').slice(0, 10);
+  const openedIso = toDateInputValue(userFields.openedAt);
+  const expiresIso = toDateInputValue(userFields.expiresAt);
   const pao = userFields.periodAfterOpeningMonths;
   const derivedExpiresIso =
-    !expiresIso && openedIso && pao ? addMonths(openedIso, pao) : expiresIso;
+    !expiresIso && openedIso && pao
+      ? toDateInputValue(addMonthsToIsoString(openedIso, pao))
+      : expiresIso;
 
   return (
     <section className="flex flex-col gap-3">
@@ -57,7 +58,7 @@ export function ProductUserFieldsSection({
             value={openedIso}
             onChange={(next) =>
               onChange({
-                openedAt: next ? new Date(next).toISOString() : null,
+                openedAt: toUtcIsoStringFromDateInput(next),
                 expiresAt: null,
               })
             }
@@ -99,7 +100,7 @@ export function ProductUserFieldsSection({
             value={derivedExpiresIso}
             onChange={(next) =>
               onChange({
-                expiresAt: next ? new Date(next).toISOString() : null,
+                expiresAt: toUtcIsoStringFromDateInput(next),
               })
             }
             ariaLabel={tField('expiresAt')}

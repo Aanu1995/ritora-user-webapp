@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" role="img" aria-label="A dimmed outlined bottle with a warning indicator above it, signalling a loading error">
+  <title>Unable to load</title>
+  <!-- faint shelf plank -->
+  <rect x="36" y="132" width="168" height="4" rx="2" fill="#2f7a52" opacity="0.18"/>
+
+  <!-- ghost bottle, dashed outline -->
+  <g stroke="#2f7a52" stroke-width="1.8" fill="none" opacity="0.55">
+    <rect x="94" y="58" width="52" height="74" rx="8" stroke-dasharray="5 4"/>
+    <rect x="110" y="46" width="20" height="14" rx="2.5"/>
+  </g>
+
+  <!-- bottle label sketch -->
+  <rect x="100" y="82" width="40" height="3" rx="1.5" fill="#2f7a52" opacity="0.28"/>
+  <rect x="100" y="90" width="28" height="2" rx="1" fill="#2f7a52" opacity="0.22"/>
+
+  <!-- warning circle with exclamation above -->
+  <g transform="translate(120 28)">
+    <circle r="17" fill="#b8540a" opacity="0.14"/>
+    <circle r="17" fill="none" stroke="#b8540a" stroke-width="1.6" opacity="0.75"/>
+    <rect x="-1.6" y="-8" width="3.2" height="10" rx="1.6" fill="#b8540a"/>
+    <circle cx="0" cy="7" r="1.9" fill="#b8540a"/>
+  </g>
+
+  <!-- sparkles -->
+  <g fill="#2f7a52">
+    <circle cx="52" cy="72" r="1.8" opacity="0.3"/>
+    <circle cx="188" cy="66" r="1.5" opacity="0.28"/>
+    <circle cx="46" cy="108" r="1.2" opacity="0.24"/>
+    <circle cx="196" cy="104" r="1.4" opacity="0.24"/>
+  </g>
+</svg>

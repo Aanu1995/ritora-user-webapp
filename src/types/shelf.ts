@@ -216,3 +216,8 @@ export type ShelfListFilters = {
   search: string;
   sort: ShelfSort;
 };
+
+export type PaginatedResult<T> = {
+  items: T[];
+  nextCursor: string | null;
+};

@@ -1,8 +1,9 @@
 'use client';
 
 import { ArrowUpRight } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { flagEmoji, getCountry } from '@/constants/countries';
+import { formatLocalizedDate } from '@/lib/dayjs';
 import { isSafeExternalUrl } from '@/lib/shelf-form';
 import {
   DataProvenance,
@@ -30,6 +31,7 @@ export function DetailManufacturerTab({
 }: Props) {
   const t = useTranslations('shelf.detail.manufacturer');
   const tProvenance = useTranslations('shelf.provenance');
+  const locale = useLocale();
 
   const hasAnyField =
     manufacturer.brand ||
@@ -49,9 +51,7 @@ export function DetailManufacturerTab({
     manufacturer.productUrl && isSafeExternalUrl(manufacturer.productUrl)
       ? manufacturer.productUrl
       : null;
-  const confirmedDate = confirmedAt
-    ? new Date(confirmedAt).toLocaleDateString()
-    : null;
+  const confirmedDate = formatLocalizedDate(confirmedAt, locale);
 
   return (
     <div className="flex flex-col gap-4">

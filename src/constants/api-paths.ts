@@ -15,4 +15,13 @@ export enum ApiPath {
   UsersMe = '/users/me',
   SkinProfile = '/skin-profile',
   SkinProfileOptions = '/skin-profile/options',
+  CatalogueProductsSearch = '/catalogue/products/search',
+  CatalogueProductsBarcode = '/catalogue/products/barcode',
+  CatalogueProductsResolveUrl = '/catalogue/products/resolve-url',
+  InventoryProducts = '/inventory/products',
+  InventoryProductsStats = '/inventory/products/stats',
+  InventoryProductsBulkArchive = '/inventory/products/bulk/archive',
+  InventoryProductsBulkRestore = '/inventory/products/bulk/restore',
+  InventoryProductsBulkMarkFinished = '/inventory/products/bulk/mark-finished',
+  InventoryProductsBulkDelete = '/inventory/products/bulk-delete',
 }

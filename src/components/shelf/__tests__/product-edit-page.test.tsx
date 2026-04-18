@@ -1,5 +1,7 @@
 import { screen } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import { renderWithProviders } from '@/test/utils';
+import { ApiError } from '@/lib/api-error';
 import {
   DataProvenance,
   ProductCategory,
@@ -102,13 +104,30 @@ describe('ProductEditPage', () => {
       isPending: false,
       isError: true,
       data: undefined,
+      error: new ApiError('Server error', { status: 500 }),
       refetch: jest.fn(),
     });
 
     renderWithProviders(<ProductEditPage productId="product-1" />);
     expect(
-      screen.getByRole('heading', { name: /something went wrong/i }),
+      screen.getByRole('heading', { name: /we couldn't load this product/i }),
     ).toBeInTheDocument();
+  });
+
+  it('redirects back to the shelf when the product is missing', async () => {
+    mockUseShelfProduct.mockReturnValue({
+      isPending: false,
+      isError: true,
+      data: undefined,
+      error: new ApiError('Not found', { status: 404 }),
+      refetch: jest.fn(),
+    });
+
+    renderWithProviders(<ProductEditPage productId="product-1" />);
+
+    await waitFor(() => {
+      expect(mockReplace).toHaveBeenCalledWith('/shelf');
+    });
   });
 
   it('renders the edit form when the product is available', () => {

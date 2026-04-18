@@ -3,7 +3,7 @@
 import { Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { BulkActionToolbar } from "./bulk-action-toolbar";
 import { ProductGrid } from "./product-grid";
@@ -13,6 +13,7 @@ import { ShelfEmptyState } from "./shelf-empty-state";
 import { ShelfFilterBar } from "./shelf-filter-bar";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { RetryPanel } from "@/components/ui/retry-panel";
 import { AppRoute } from "@/constants/app-routes";
 import {
   useArchiveProducts,
@@ -96,15 +97,78 @@ export function ShelfPage() {
 
   const isLoading = products.isPending;
   const productList = products.data ?? [];
+  const hasLoadError = products.isError && productList.length === 0;
+  const canLoadMore = Boolean(products.hasNextPage);
   const isEmpty =
     !isLoading &&
+    !hasLoadError &&
     productList.length === 0 &&
     stat === ShelfStatFilter.All &&
     activeCategory === "all" &&
     !debouncedSearch.trim();
 
+  let content: ReactNode;
+
+  if (isLoading) {
+    content = <ProductGridSkeleton />;
+  } else if (hasLoadError) {
+    content = (
+      <div className="flex flex-1 items-center justify-center">
+        <RetryPanel
+          title={t("errors.loadShelfTitle")}
+          description={t("errors.loadShelfDescription")}
+          actionLabel={t("errors.retry")}
+          onAction={() => {
+            void products.refetch();
+          }}
+        />
+      </div>
+    );
+  } else if (isEmpty) {
+    content = (
+      <div className="flex flex-1 items-center justify-center">
+        <ShelfEmptyState
+          onAddFirst={() => router.push(`${AppRoute.Shelf}/new`)}
+        />
+      </div>
+    );
+  } else if (productList.length === 0) {
+    content = (
+      <p className="rounded-2xl border border-dashed border-border-strong p-8 text-center text-sm text-muted">
+        {tEmpty("filtered")}
+      </p>
+    );
+  } else if (view === "list") {
+    content = (
+      <ProductList
+        products={productList}
+        selectedIds={selectedIds}
+        onOpen={(id) => router.push(`${AppRoute.Shelf}/${id}`)}
+        onToggleSelect={toggleSelected}
+      />
+    );
+  } else {
+    content = (
+      <ProductGrid
+        products={productList}
+        selectedIds={selectedIds}
+        onOpen={(id) => router.push(`${AppRoute.Shelf}/${id}`)}
+        onToggleSelect={toggleSelected}
+      />
+    );
+  }
+
+  const loadMoreLabel = products.isFetchingNextPage
+    ? t("actions.loadingMore")
+    : t("actions.loadMore");
+
+  const centerEmptyStates = isEmpty || hasLoadError;
+  const wrapperPadding = centerEmptyStates ? 'pb-2' : 'pb-24';
+  const wrapperLayout = centerEmptyStates ? 'flex min-h-full flex-col' : '';
+  const contentLayout = centerEmptyStates ? 'flex-1' : '';
+
   return (
-    <div className="mx-auto max-w-360 pb-24">
+    <div className={`mx-auto max-w-360 ${wrapperPadding} ${wrapperLayout}`}>
       {/* Sticky composite header — title + subtitle + action, then filter bar */}
       <div className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 pb-3 pt-4 backdrop-blur sm:-mx-6 sm:px-6 sm:pt-6 lg:-mx-8 lg:px-8">
         <div className="flex items-center justify-between gap-3">
@@ -145,32 +209,23 @@ export function ShelfPage() {
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col gap-5">
-        {isLoading ? (
-          <ProductGridSkeleton />
-        ) : isEmpty ? (
-          <ShelfEmptyState
-            onAddFirst={() => router.push(`${AppRoute.Shelf}/new`)}
-          />
-        ) : productList.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-border-strong p-8 text-center text-sm text-muted">
-            {tEmpty("filtered")}
-          </p>
-        ) : view === "list" ? (
-          <ProductList
-            products={productList}
-            selectedIds={selectedIds}
-            onOpen={(id) => router.push(`${AppRoute.Shelf}/${id}`)}
-            onToggleSelect={toggleSelected}
-          />
-        ) : (
-          <ProductGrid
-            products={productList}
-            selectedIds={selectedIds}
-            onOpen={(id) => router.push(`${AppRoute.Shelf}/${id}`)}
-            onToggleSelect={toggleSelected}
-          />
-        )}
+      <div className={`mt-6 flex flex-col gap-5 ${contentLayout}`}>
+        {content}
+
+        {canLoadMore ? (
+          <div className="flex justify-center pt-2">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                void products.fetchNextPage();
+              }}
+              disabled={products.isFetchingNextPage}
+            >
+              {loadMoreLabel}
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       <BulkActionToolbar

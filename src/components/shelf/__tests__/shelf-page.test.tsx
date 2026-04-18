@@ -71,6 +71,7 @@ jest.mock('next/navigation', () => ({
 
 const mockUseShelfProducts = jest.fn();
 const mockUseShelfStats = jest.fn();
+const mockFetchNextPage = jest.fn();
 
 jest.mock('@/hooks/use-shelf', () => ({
   useShelfProducts: () => mockUseShelfProducts(),
@@ -88,6 +89,7 @@ import { ShelfPage } from '@/components/shelf/shelf-page';
 beforeEach(() => {
   mockUseShelfProducts.mockReset();
   mockUseShelfStats.mockReset();
+  mockFetchNextPage.mockReset();
 });
 
 describe('ShelfPage', () => {
@@ -96,6 +98,9 @@ describe('ShelfPage', () => {
       data: [],
       isPending: false,
       isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
     });
     mockUseShelfStats.mockReturnValue({
       data: {},
@@ -118,6 +123,9 @@ describe('ShelfPage', () => {
       data: undefined,
       isPending: true,
       isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
     });
     mockUseShelfStats.mockReturnValue({
       data: undefined,
@@ -135,6 +143,9 @@ describe('ShelfPage', () => {
       data: mockProducts,
       isPending: false,
       isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
     });
     mockUseShelfStats.mockReturnValue({
       data: { all: 1, 'in-use': 1 },
@@ -154,6 +165,9 @@ describe('ShelfPage', () => {
       data: mockProducts,
       isPending: false,
       isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
     });
     mockUseShelfStats.mockReturnValue({
       data: { all: 1 },
@@ -165,5 +179,51 @@ describe('ShelfPage', () => {
 
     expect(screen.queryByText(/morning routine/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/evening routine/i)).not.toBeInTheDocument();
+  });
+
+  it('shows load more when another inventory page exists', async () => {
+    mockUseShelfProducts.mockReturnValue({
+      data: mockProducts,
+      isPending: false,
+      isError: false,
+      hasNextPage: true,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+    mockUseShelfStats.mockReturnValue({
+      data: { all: 1 },
+      isPending: false,
+      isError: false,
+    });
+
+    renderWithProviders(<ShelfPage />);
+
+    screen.getByRole('button', { name: /load more/i }).click();
+
+    expect(mockFetchNextPage).toHaveBeenCalled();
+  });
+
+  it('renders a retry state when the shelf request fails without cached data', () => {
+    mockUseShelfProducts.mockReturnValue({
+      data: [],
+      isPending: false,
+      isError: true,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+      refetch: jest.fn(),
+    });
+    mockUseShelfStats.mockReturnValue({
+      data: undefined,
+      isPending: false,
+      isError: false,
+    });
+
+    renderWithProviders(<ShelfPage />);
+
+    expect(
+      screen.getByRole('heading', { name: /we couldn't load your shelf/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
   });
 });

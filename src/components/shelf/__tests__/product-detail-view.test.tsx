@@ -22,16 +22,16 @@ jest.mock('next/navigation', () => ({
 }));
 
 jest.mock('@/hooks/use-shelf', () => ({
-  useArchiveProducts: () => ({
-    archive: mockArchive,
+  useArchiveProduct: () => ({
+    mutate: mockArchive,
     isPending: false,
   }),
-  useRestoreProducts: () => ({
-    restore: mockRestore,
+  useRestoreProduct: () => ({
+    mutate: mockRestore,
     isPending: false,
   }),
-  useMarkFinished: () => ({
-    markFinished: mockFinish,
+  useMarkProductFinished: () => ({
+    mutate: mockFinish,
     isPending: false,
   }),
   useDeleteProduct: () => ({
@@ -191,7 +191,7 @@ describe('ProductDetailView', () => {
 
     await user.click(screen.getByRole('button', { name: /restore/i }));
 
-    expect(mockRestore).toHaveBeenCalledWith([PRODUCT.id], expect.any(Object));
+    expect(mockRestore).toHaveBeenCalledWith(PRODUCT.id, expect.any(Object));
   });
 
   it('renders translated delete confirmation copy when the locale changes', async () => {

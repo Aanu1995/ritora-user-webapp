@@ -33,6 +33,9 @@ describe('SearchTab', () => {
     mockUseSearchCatalogue.mockReturnValue({
       data: [],
       isFetching: false,
+      isFetchingNextPage: false,
+      hasNextPage: false,
+      fetchNextPage: jest.fn(),
     });
 
     renderWithProviders(<SearchTab onPick={jest.fn()} />);
@@ -57,6 +60,9 @@ describe('SearchTab', () => {
     mockUseSearchCatalogue.mockReturnValue({
       data: [RESULT],
       isFetching: false,
+      isFetchingNextPage: false,
+      hasNextPage: false,
+      fetchNextPage: jest.fn(),
     });
 
     renderWithProviders(<SearchTab onPick={onPick} />);
@@ -83,6 +89,9 @@ describe('SearchTab', () => {
     mockUseSearchCatalogue.mockReturnValue({
       data: [],
       isFetching: false,
+      isFetchingNextPage: false,
+      hasNextPage: false,
+      fetchNextPage: jest.fn(),
     });
 
     renderWithProviders(<SearchTab onPick={jest.fn()} />);
@@ -93,5 +102,54 @@ describe('SearchTab', () => {
     );
 
     expect(mockUseSearchCatalogue).toHaveBeenLastCalledWith('ret');
+  });
+
+  it('offers a load more action when another search page exists', async () => {
+    const user = userEvent.setup();
+    const fetchNextPage = jest.fn();
+    mockUseSearchCatalogue.mockReturnValue({
+      data: [RESULT],
+      isFetching: false,
+      isFetchingNextPage: false,
+      hasNextPage: true,
+      fetchNextPage,
+    });
+
+    renderWithProviders(<SearchTab onPick={jest.fn()} />);
+
+    await user.type(
+      screen.getByRole('textbox', { name: /search by brand and product name/i }),
+      'ret',
+    );
+    await user.click(screen.getByRole('button', { name: /search/i }));
+    await user.click(screen.getByRole('button', { name: /load more/i }));
+
+    expect(fetchNextPage).toHaveBeenCalled();
+  });
+
+  it('renders a retry state when the catalogue search fails', async () => {
+    const user = userEvent.setup();
+    mockUseSearchCatalogue.mockReturnValue({
+      data: [],
+      isError: true,
+      isFetching: false,
+      isFetchingNextPage: false,
+      hasNextPage: false,
+      fetchNextPage: jest.fn(),
+      refetch: jest.fn(),
+    });
+
+    renderWithProviders(<SearchTab onPick={jest.fn()} />);
+
+    await user.type(
+      screen.getByRole('textbox', { name: /search by brand and product name/i }),
+      'ret',
+    );
+    await user.click(screen.getByRole('button', { name: /search/i }));
+
+    expect(
+      screen.getByRole('heading', { name: /we couldn't search right now/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
   });
 });

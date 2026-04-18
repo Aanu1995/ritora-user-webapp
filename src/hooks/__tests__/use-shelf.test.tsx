@@ -2,12 +2,16 @@ import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProviders } from '@/test/utils';
 import { useAuthStore } from '@/stores/auth-store';
 import {
+  useArchiveProduct,
   useArchiveProducts,
   useCreateProduct,
   useDeleteProducts,
   useMarkFinished,
+  useMarkProductFinished,
   useResolveUrl,
+  useRestoreProduct,
   useRestoreProducts,
+  useSearchCatalogue,
   useShelfProducts,
   useShelfStats,
   useUpdateProduct,
@@ -23,14 +27,19 @@ import {
 } from '@/types/shelf';
 
 jest.mock('@/services/shelf.service', () => ({
-  listProducts: jest.fn(),
+  archiveProduct: jest.fn(),
+  archiveProducts: jest.fn(),
   countProductsByStat: jest.fn(),
   createProduct: jest.fn(),
-  updateProduct: jest.fn(),
+  listProducts: jest.fn(),
+  markProductFinished: jest.fn(),
+  markProductsFinished: jest.fn(),
   removeProducts: jest.fn(),
-  removeProduct: jest.fn(),
-  setProductsStatus: jest.fn(),
   resolveUrl: jest.fn(),
+  restoreProduct: jest.fn(),
+  restoreProducts: jest.fn(),
+  searchCatalogue: jest.fn(),
+  updateProduct: jest.fn(),
 }));
 
 import * as shelfService from '@/services/shelf.service';
@@ -114,11 +123,19 @@ describe('useShelfProducts', () => {
     expect(result.current.fetchStatus).toBe('idle');
   });
 
-  it('fetches products and stats when authenticated', async () => {
+  it('fetches and flattens paginated shelf products and stats when authenticated', async () => {
     useAuthStore.setState({ isAuthenticated: true });
-    (shelfService.listProducts as jest.Mock).mockResolvedValue([PRODUCT]);
+    (shelfService.listProducts as jest.Mock)
+      .mockResolvedValueOnce({
+        items: [PRODUCT],
+        nextCursor: 'next-cursor',
+      })
+      .mockResolvedValueOnce({
+        items: [{ ...PRODUCT, id: 'product-2' }],
+        nextCursor: null,
+      });
     (shelfService.countProductsByStat as jest.Mock).mockResolvedValue({
-      [ShelfStatFilter.All]: 1,
+      [ShelfStatFilter.All]: 2,
     });
 
     const { result: products } = renderHookWithProviders(() =>
@@ -137,7 +154,16 @@ describe('useShelfProducts', () => {
     });
 
     expect(products.current.data).toEqual([PRODUCT]);
-    expect(stats.current.data?.[ShelfStatFilter.All]).toBe(1);
+    expect(products.current.hasNextPage).toBe(true);
+
+    await act(async () => {
+      await products.current.fetchNextPage();
+    });
+
+    await waitFor(() => {
+      expect(products.current.data).toHaveLength(2);
+    });
+    expect(stats.current.data?.[ShelfStatFilter.All]).toBe(2);
   });
 });
 
@@ -166,8 +192,10 @@ describe('shelf mutations', () => {
     });
   });
 
-  it('archives, restores, marks finished, and batch deletes products', async () => {
-    (shelfService.setProductsStatus as jest.Mock).mockResolvedValue(undefined);
+  it('archives, restores, finishes, and batch deletes products', async () => {
+    (shelfService.archiveProducts as jest.Mock).mockResolvedValue(undefined);
+    (shelfService.restoreProducts as jest.Mock).mockResolvedValue(undefined);
+    (shelfService.markProductsFinished as jest.Mock).mockResolvedValue(undefined);
     (shelfService.removeProducts as jest.Mock).mockResolvedValue(undefined);
 
     const { result: archiveResult } = renderHookWithProviders(() =>
@@ -184,43 +212,112 @@ describe('shelf mutations', () => {
     );
 
     await act(async () => {
-      archiveResult.current.archive(['product-1']);
-      restoreResult.current.restore(['product-1']);
-      finishResult.current.markFinished(['product-1']);
+      await archiveResult.current.mutateAsync(['product-1']);
+      await restoreResult.current.mutateAsync(['product-1']);
+      await finishResult.current.mutateAsync(['product-1']);
       await deleteResult.current.mutateAsync(['product-1', 'product-2']);
     });
 
-    expect(shelfService.setProductsStatus).toHaveBeenCalledWith(
-      ['product-1'],
-      ShelfStatus.Archived,
-    );
-    expect(shelfService.setProductsStatus).toHaveBeenCalledWith(
-      ['product-1'],
-      ShelfStatus.Active,
-    );
-    expect(shelfService.setProductsStatus).toHaveBeenCalledWith(
-      ['product-1'],
-      ShelfStatus.FinishedUp,
-    );
+    expect(shelfService.archiveProducts).toHaveBeenCalledWith(['product-1']);
+    expect(shelfService.restoreProducts).toHaveBeenCalledWith(['product-1']);
+    expect(shelfService.markProductsFinished).toHaveBeenCalledWith(['product-1']);
     expect(shelfService.removeProducts).toHaveBeenCalledWith([
       'product-1',
       'product-2',
     ]);
   });
 
-  it('resolves URL lookups', async () => {
+  it('uses explicit single-product archive, restore, and finish endpoints', async () => {
+    (shelfService.archiveProduct as jest.Mock).mockResolvedValue({
+      ...PRODUCT,
+      status: ShelfStatus.Archived,
+    });
+    (shelfService.restoreProduct as jest.Mock).mockResolvedValue(PRODUCT);
+    (shelfService.markProductFinished as jest.Mock).mockResolvedValue({
+      ...PRODUCT,
+      status: ShelfStatus.FinishedUp,
+    });
+
+    const { result: archiveResult } = renderHookWithProviders(() =>
+      useArchiveProduct(),
+    );
+    const { result: restoreResult } = renderHookWithProviders(() =>
+      useRestoreProduct(),
+    );
+    const { result: finishResult } = renderHookWithProviders(() =>
+      useMarkProductFinished(),
+    );
+
+    await act(async () => {
+      await archiveResult.current.mutateAsync('product-1');
+      await restoreResult.current.mutateAsync('product-1');
+      await finishResult.current.mutateAsync('product-1');
+    });
+
+    expect(shelfService.archiveProduct).toHaveBeenCalledWith('product-1');
+    expect(shelfService.restoreProduct).toHaveBeenCalledWith('product-1');
+    expect(shelfService.markProductFinished).toHaveBeenCalledWith('product-1');
+  });
+
+  it('searches catalogue pages and resolves URL lookups', async () => {
+    (shelfService.searchCatalogue as jest.Mock)
+      .mockResolvedValueOnce({
+        items: [
+          {
+            brand: 'CeraVe',
+            name: 'Retinol Serum',
+            category: ProductCategory.Serum,
+            barcode: '123',
+            imageUrls: [],
+            sizeMl: 30,
+          },
+        ],
+        nextCursor: 'search-next',
+      })
+      .mockResolvedValueOnce({
+        items: [
+          {
+            brand: 'CeraVe',
+            name: 'Retinol Serum Mini',
+            category: ProductCategory.Serum,
+            barcode: null,
+            imageUrls: [],
+            sizeMl: 15,
+          },
+        ],
+        nextCursor: null,
+      });
     (shelfService.resolveUrl as jest.Mock).mockResolvedValue({
       identity: { brand: 'CeraVe', name: 'Retinol Serum' },
     });
 
-    const { result } = renderHookWithProviders(() => useResolveUrl());
+    const { result: searchResult } = renderHookWithProviders(() =>
+      useSearchCatalogue('ret'),
+    );
+    const { result: resolveResult } = renderHookWithProviders(() => useResolveUrl());
+
+    await waitFor(() => {
+      expect(searchResult.current.isSuccess).toBe(true);
+    });
+
+    expect(searchResult.current.data).toHaveLength(1);
 
     await act(async () => {
-      await result.current.mutateAsync(
+      await searchResult.current.fetchNextPage();
+      await resolveResult.current.mutateAsync(
         'https://www.cerave.com/skincare/serums/resurfacing-retinol-serum',
       );
     });
 
+    await waitFor(() => {
+      expect(searchResult.current.data).toHaveLength(2);
+    });
+    expect(shelfService.searchCatalogue).toHaveBeenNthCalledWith(1, 'ret', null);
+    expect(shelfService.searchCatalogue).toHaveBeenNthCalledWith(
+      2,
+      'ret',
+      'search-next',
+    );
     expect(shelfService.resolveUrl).toHaveBeenCalledWith(
       'https://www.cerave.com/skincare/serums/resurfacing-retinol-serum',
     );

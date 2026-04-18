@@ -1,7 +1,8 @@
 'use client';
 
 import { Sparkles } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { formatLocalizedDate } from '@/lib/dayjs';
 
 type Props = {
   ingredients: string[];
@@ -10,6 +11,8 @@ type Props = {
 
 export function DetailIngredientsTab({ ingredients, lastConfirmedAt }: Props) {
   const t = useTranslations('shelf.detail.ingredients');
+  const locale = useLocale();
+  const confirmedDate = formatLocalizedDate(lastConfirmedAt, locale);
 
   if (ingredients.length === 0) {
     return (
@@ -27,10 +30,10 @@ export function DetailIngredientsTab({ ingredients, lastConfirmedAt }: Props) {
         {ingredients.join(', ')}
       </div>
       <IntelligenceStub />
-      {lastConfirmedAt ? (
+      {confirmedDate ? (
         <p className="text-xs text-muted">
           {t('lastConfirmed', {
-            date: new Date(lastConfirmedAt).toLocaleDateString(),
+            date: confirmedDate,
           })}
         </p>
       ) : null}

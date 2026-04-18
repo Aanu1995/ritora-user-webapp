@@ -16,41 +16,26 @@
 
 import type { ShelfLifeSnapshot, ShelfProduct } from '@/types/shelf';
 import { ShelfLifeState, ShelfStatus } from '@/types/shelf';
-
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
-
-function parseDate(iso: string | null): Date | null {
-  if (!iso) {
-    return null;
-  }
-  const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? null : d;
-}
-
-function daysBetween(from: Date, to: Date): number {
-  return Math.round((to.getTime() - from.getTime()) / MS_PER_DAY);
-}
-
-function addMonths(date: Date, months: number): Date {
-  const copy = new Date(date);
-  copy.setMonth(copy.getMonth() + months);
-  return copy;
-}
+import {
+  diffInDaysRounded,
+  parseUtcDate,
+  utcNow,
+} from '@/lib/dayjs';
 
 /**
  * Compute the "effective" expiry date: prefer the explicit expiresAt, else
  * openedAt + PAO months, else null.
  */
 export function computeExpiresAt(product: ShelfProduct): Date | null {
-  const explicit = parseDate(product.userFields.expiresAt);
+  const explicit = parseUtcDate(product.userFields.expiresAt);
   if (explicit) {
-    return explicit;
+    return explicit.toDate();
   }
 
-  const opened = parseDate(product.userFields.openedAt);
+  const opened = parseUtcDate(product.userFields.openedAt);
   const pao = product.userFields.periodAfterOpeningMonths;
   if (opened && pao && pao > 0) {
-    return addMonths(opened, pao);
+    return opened.add(pao, 'month').toDate();
   }
 
   return null;
@@ -58,7 +43,7 @@ export function computeExpiresAt(product: ShelfProduct): Date | null {
 
 export function deriveShelfLife(
   product: ShelfProduct,
-  now: Date = new Date(),
+  now: Date = utcNow().toDate(),
 ): ShelfLifeSnapshot {
   if (product.status === ShelfStatus.Archived) {
     return {
@@ -76,7 +61,7 @@ export function deriveShelfLife(
     };
   }
 
-  const opened = parseDate(product.userFields.openedAt);
+  const opened = parseUtcDate(product.userFields.openedAt);
   if (!opened) {
     return {
       state: ShelfLifeState.Unopened,
@@ -95,8 +80,8 @@ export function deriveShelfLife(
     };
   }
 
-  const totalDays = daysBetween(opened, expires);
-  const elapsedDays = daysBetween(opened, now);
+  const totalDays = diffInDaysRounded(opened.toDate(), expires);
+  const elapsedDays = diffInDaysRounded(opened.toDate(), now);
   const remainingDays = totalDays - elapsedDays;
 
   if (remainingDays <= 0) {
@@ -152,13 +137,13 @@ export function formatRemainingToken(snapshot: ShelfLifeSnapshot): string {
  */
 export function formatOpenedToken(
   product: ShelfProduct,
-  now: Date = new Date(),
+  now: Date = utcNow().toDate(),
 ): string | null {
-  const opened = parseDate(product.userFields.openedAt);
+  const opened = parseUtcDate(product.userFields.openedAt);
   if (!opened) {
     return null;
   }
-  const days = Math.max(0, daysBetween(opened, now));
+  const days = Math.max(0, diffInDaysRounded(opened.toDate(), now));
   if (days < 1) {
     return 'today';
   }

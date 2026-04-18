@@ -1,144 +1,186 @@
+jest.mock('@/lib/api', () => ({
+  deleteRequest: jest.fn(),
+  getRequest: jest.fn(),
+  patchRequest: jest.fn(),
+  postRequest: jest.fn(),
+}));
+
+import * as api from '@/lib/api';
+import * as shelfService from '@/services/shelf.service';
 import {
-  __resetShelfStorage,
-  countProductsByStat,
-  createProduct,
-  getProduct,
-  listProducts,
-  removeProduct,
-  removeProducts,
-  resolveBarcode,
-  resolveUrl,
-  searchCatalogue,
-  setProductsStatus,
-  updateProduct,
-} from '@/services/shelf.service';
-import {
-  DataProvenance,
   ProductCategory,
   ShelfSort,
   ShelfStatFilter,
-  ShelfStatus,
-  type ShelfProductDraft,
 } from '@/types/shelf';
 
-function createDraft(overrides?: Partial<ShelfProductDraft>): ShelfProductDraft {
-  return {
-    identity: {
-      brand: 'Ritora',
-      name: 'Barrier Serum',
-      category: ProductCategory.Serum,
-      barcode: '1234567890123',
-      imageUrls: [],
-      sizeMl: 30,
-      description: 'A calming serum.',
-      benefits: ['calming'],
-      suitedFor: ['sensitive'],
-      inciIngredients: ['Aqua', 'Glycerin'],
-      inciLastConfirmedAt: null,
-    },
-    guidance: {
-      applicationMethod: null,
-      quantity: null,
-      steps: ['Apply gently.'],
-      cautions: ['Avoid eyes.'],
-      waitMinutes: null,
-    },
-    manufacturer: {
-      brand: 'Ritora',
-      parentCompany: null,
-      countryOfOrigin: null,
-      countryOfManufacture: null,
-      supportEmail: null,
-      productUrl: null,
-      websiteUrl: null,
-    },
-    userFields: {
-      openedAt: '2026-04-01T00:00:00.000Z',
-      expiresAt: '2026-12-01T00:00:00.000Z',
-      periodAfterOpeningMonths: 12,
-      pricePaid: 24,
-      pricePaidCurrency: 'SEK',
-      purchasedFrom: 'Kicks',
-      personalNotes: null,
-      preferredTimeOfDay: null,
-    },
-    status: ShelfStatus.Active,
-    provenance: DataProvenance.UserEntered,
-    ...overrides,
-  };
-}
-
-beforeEach(() => {
-  __resetShelfStorage();
-});
+afterEach(() => jest.clearAllMocks());
 
 describe('shelf.service', () => {
-  it('lists seeded products with filters applied', async () => {
-    const products = await listProducts({
-      stat: ShelfStatFilter.All,
-      category: 'all',
-      search: 'retinol',
-      sort: ShelfSort.Alphabetical,
+  it('lists inventory products with pagination params', async () => {
+    (api.getRequest as jest.Mock).mockResolvedValue({
+      items: [],
+      nextCursor: 'next-cursor',
     });
 
-    expect(products.length).toBeGreaterThan(0);
-    expect(products.every((product) => product.identity.name.toLowerCase().includes('retinol') || product.identity.inciIngredients.join(' ').toLowerCase().includes('retinol'))).toBe(true);
-  });
+    const result = await shelfService.listProducts(
+      {
+        stat: ShelfStatFilter.All,
+        category: 'all',
+        search: 'retinol',
+        sort: ShelfSort.RecentlyAdded,
+      },
+      'cursor-1',
+    );
 
-  it('counts products by stat buckets', async () => {
-    const counts = await countProductsByStat();
-
-    expect(counts[ShelfStatFilter.All]).toBeGreaterThan(0);
-    expect(counts[ShelfStatFilter.Archived]).toBeGreaterThanOrEqual(0);
-    expect(counts[ShelfStatFilter.InUse]).toBeGreaterThanOrEqual(0);
-  });
-
-  it('creates, reads, updates, and deletes a product', async () => {
-    const created = await createProduct(createDraft());
-    expect(created.id).toBeTruthy();
-
-    const fetched = await getProduct(created.id);
-    expect(fetched.identity.name).toBe('Barrier Serum');
-
-    const updated = await updateProduct(created.id, {
-      identity: { name: 'Barrier Serum Plus' },
-      manufacturer: { supportEmail: 'hello@ritora.com' },
+    expect(api.getRequest).toHaveBeenCalledWith('/inventory/products', {
+      params: {
+        stat: 'all',
+        category: 'all',
+        search: 'retinol',
+        sort: 'recently-added',
+        limit: 30,
+        cursor: 'cursor-1',
+      },
     });
-    expect(updated.identity.name).toBe('Barrier Serum Plus');
-    expect(updated.manufacturer.supportEmail).toBe('hello@ritora.com');
-
-    await removeProduct(created.id);
-    await expect(getProduct(created.id)).rejects.toThrow(/not found/i);
+    expect(result.nextCursor).toBe('next-cursor');
   });
 
-  it('removes multiple products in one call', async () => {
-    const first = await createProduct(createDraft({ identity: { ...createDraft().identity, name: 'First Serum' } }));
-    const second = await createProduct(createDraft({ identity: { ...createDraft().identity, name: 'Second Serum' } }));
+  it('fetches inventory stats', async () => {
+    (api.getRequest as jest.Mock).mockResolvedValue({ all: 2 });
 
-    await removeProducts([first.id, second.id]);
+    const result = await shelfService.countProductsByStat();
 
-    await expect(getProduct(first.id)).rejects.toThrow(/not found/i);
-    await expect(getProduct(second.id)).rejects.toThrow(/not found/i);
+    expect(api.getRequest).toHaveBeenCalledWith('/inventory/products/stats');
+    expect(result.all).toBe(2);
   });
 
-  it('updates status for multiple products', async () => {
-    const first = await createProduct(createDraft({ identity: { ...createDraft().identity, name: 'Archive Me' } }));
-    const second = await createProduct(createDraft({ identity: { ...createDraft().identity, name: 'Archive Me Too' } }));
+  it('creates, updates, and deletes products through inventory endpoints', async () => {
+    (api.postRequest as jest.Mock).mockResolvedValue({ id: 'product-1' });
+    (api.patchRequest as jest.Mock).mockResolvedValue({ id: 'product-1' });
+    (api.deleteRequest as jest.Mock).mockResolvedValue(undefined);
 
-    await setProductsStatus([first.id, second.id], ShelfStatus.Archived);
+    await shelfService.createProduct({
+      identity: {
+        brand: 'CeraVe',
+        name: 'Serum',
+        category: ProductCategory.Serum,
+        barcode: null,
+        imageUrls: [],
+        sizeMl: 30,
+        description: 'Desc',
+        benefits: ['smooth'],
+        suitedFor: ['dry'],
+        inciIngredients: ['Aqua'],
+        inciLastConfirmedAt: null,
+      },
+      guidance: {
+        applicationMethod: null,
+        quantity: null,
+        steps: ['Apply'],
+        cautions: [],
+        waitMinutes: null,
+      },
+      manufacturer: {
+        brand: 'CeraVe',
+        parentCompany: null,
+        countryOfOrigin: null,
+        countryOfManufacture: null,
+        supportEmail: null,
+        productUrl: null,
+        websiteUrl: null,
+      },
+      userFields: {
+        openedAt: null,
+        expiresAt: null,
+        periodAfterOpeningMonths: 12,
+        pricePaid: null,
+        pricePaidCurrency: null,
+        purchasedFrom: null,
+        personalNotes: null,
+        preferredTimeOfDay: null,
+      },
+      status: 'active',
+      provenance: 'user-entered',
+    });
+    await shelfService.updateProduct('product-1', {
+      identity: { name: 'Updated' },
+    });
+    await shelfService.removeProduct('product-1');
 
-    const archivedCounts = await countProductsByStat();
-    expect(archivedCounts[ShelfStatFilter.Archived]).toBeGreaterThanOrEqual(2);
+    expect(api.postRequest).toHaveBeenCalledWith(
+      '/inventory/products',
+      expect.any(Object),
+    );
+    expect(api.patchRequest).toHaveBeenCalledWith('/inventory/products/product-1', {
+      identity: { name: 'Updated' },
+    });
+    expect(api.deleteRequest).toHaveBeenCalledWith('/inventory/products/product-1');
   });
 
-  it('searches the catalogue and resolves barcode/url lookups', async () => {
-    const searchResults = await searchCatalogue('cera');
-    expect(searchResults.length).toBeGreaterThan(0);
+  it('uses explicit archive, restore, finish, and bulk delete endpoints', async () => {
+    (api.postRequest as jest.Mock).mockResolvedValue(undefined);
 
-    const barcodeResult = await resolveBarcode('3337875597227');
-    expect(barcodeResult?.identity?.brand).toBeTruthy();
+    await shelfService.archiveProduct('product-1');
+    await shelfService.restoreProduct('product-1');
+    await shelfService.markProductFinished('product-1');
+    await shelfService.archiveProducts(['product-1']);
+    await shelfService.restoreProducts(['product-1']);
+    await shelfService.markProductsFinished(['product-1']);
+    await shelfService.removeProducts(['product-1', 'product-2']);
 
-    const urlResult = await resolveUrl('https://www.cerave.com/skincare/serums/resurfacing-retinol-serum');
-    expect(urlResult?.identity?.name).toBeTruthy();
+    expect(api.postRequest).toHaveBeenCalledWith(
+      '/inventory/products/product-1/archive',
+    );
+    expect(api.postRequest).toHaveBeenCalledWith(
+      '/inventory/products/product-1/restore',
+    );
+    expect(api.postRequest).toHaveBeenCalledWith(
+      '/inventory/products/product-1/mark-finished',
+    );
+    expect(api.postRequest).toHaveBeenCalledWith(
+      '/inventory/products/bulk/archive',
+      { ids: ['product-1'] },
+    );
+    expect(api.postRequest).toHaveBeenCalledWith(
+      '/inventory/products/bulk/restore',
+      { ids: ['product-1'] },
+    );
+    expect(api.postRequest).toHaveBeenCalledWith(
+      '/inventory/products/bulk/mark-finished',
+      { ids: ['product-1'] },
+    );
+    expect(api.postRequest).toHaveBeenCalledWith(
+      '/inventory/products/bulk-delete',
+      { ids: ['product-1', 'product-2'] },
+    );
+  });
+
+  it('searches catalogue and resolves barcode/url lookups through HTTP', async () => {
+    (api.getRequest as jest.Mock).mockResolvedValue({
+      items: [],
+      nextCursor: null,
+    });
+    (api.postRequest as jest.Mock).mockResolvedValue(null);
+
+    await shelfService.searchCatalogue('cera', 'cursor-2');
+    await shelfService.resolveBarcode('3337875597227');
+    await shelfService.resolveUrl('https://www.cerave.com/skincare/serums/resurfacing-retinol-serum');
+
+    expect(api.getRequest).toHaveBeenCalledWith('/catalogue/products/search', {
+      params: {
+        q: 'cera',
+        limit: 30,
+        cursor: 'cursor-2',
+      },
+    });
+    expect(api.getRequest).toHaveBeenCalledWith(
+      '/catalogue/products/barcode/3337875597227',
+    );
+    expect(api.postRequest).toHaveBeenCalledWith(
+      '/catalogue/products/resolve-url',
+      {
+        url: 'https://www.cerave.com/skincare/serums/resurfacing-retinol-serum',
+      },
+    );
   });
 });
