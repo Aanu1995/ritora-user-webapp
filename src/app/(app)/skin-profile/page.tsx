@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/app/page-header";
 import { SkinProfileForm } from "@/components/skin-profile/skin-profile-form";
@@ -9,16 +9,39 @@ import { SkinProfileSkeleton } from "@/components/skin-profile/skin-profile-skel
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { useSkinProfile, useSkinProfileOptions } from "@/hooks/use-skin-profile";
 import { getApiErrorStatus } from "@/lib/api-error";
+import {
+  consumeMissingSkinProfileHandoff,
+  hasMissingSkinProfileHandoff,
+} from "@/lib/post-login-route";
 
 export default function SkinProfilePage() {
   const tCommon = useTranslations("common");
   const t = useTranslations("skinProfile");
-  const profile = useSkinProfile();
+  const [hasMissingProfileHandoff] = useState(() =>
+    hasMissingSkinProfileHandoff(),
+  );
+  const profile = useSkinProfile({ enabled: !hasMissingProfileHandoff });
   const options = useSkinProfileOptions();
   const [editStep, setEditStep] = useState<number | null>(null);
 
+  useEffect(() => {
+    if (!hasMissingProfileHandoff) {
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      consumeMissingSkinProfileHandoff();
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timerId);
+    };
+  }, [hasMissingProfileHandoff]);
+
   const profileStatus = getApiErrorStatus(profile.error);
-  const hasNoProfile = profile.isError && profileStatus === 404;
+  const hasNoProfile =
+    (!profile.data && hasMissingProfileHandoff) ||
+    (profile.isError && profileStatus === 404);
   const hasProfileError = profile.isError && profileStatus !== 404;
   const hasOptionsError = options.isError;
   const isLoadingOverview = Boolean(profile.data) && editStep === null;

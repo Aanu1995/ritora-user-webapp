@@ -141,4 +141,18 @@ describe('auth.service', () => {
     expect(api.patchRequest).toHaveBeenCalledWith('/users/me', payload);
     expect(result).toEqual(mockResponse);
   });
+
+  it('updatePreferredLanguage calls patchRequest with language data', async () => {
+    const payload = { preferredLanguage: 'sv' };
+    const mockResponse = { id: '1', preferredLanguage: 'sv' };
+    (api.patchRequest as jest.Mock).mockResolvedValue(mockResponse);
+
+    const result = await authService.updatePreferredLanguage(payload);
+
+    expect(api.patchRequest).toHaveBeenCalledWith(
+      '/users/me/language',
+      payload,
+    );
+    expect(result).toEqual(mockResponse);
+  });
 });

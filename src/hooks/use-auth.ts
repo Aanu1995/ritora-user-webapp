@@ -10,6 +10,7 @@ import type {
   RegisterInput,
   RegisterResponse,
   ResetPasswordInput,
+  UpdatePreferredLanguageInput,
   UpdateProfileInput,
   User,
 } from "@/types/auth";
@@ -162,6 +163,20 @@ export function useUpdateProfile() {
     mutationFn: (data: UpdateProfileInput) => authService.updateProfile(data),
     onSuccess: (user) => {
       setUser(user);
+      queryClient.setQueryData<User>([QueryKey.AuthMe], user);
+    },
+  });
+}
+
+export function useUpdatePreferredLanguage() {
+  const setUser = useAuthStore((s) => s.setUser);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdatePreferredLanguageInput) =>
+      authService.updatePreferredLanguage(data),
+    onSuccess: (user) => {
+      setUser(user, { syncLocale: true });
       queryClient.setQueryData<User>([QueryKey.AuthMe], user);
     },
   });

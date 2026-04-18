@@ -1,6 +1,6 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { locales, type Locale, persistLocalePreference } from '@/i18n/config';
@@ -12,6 +12,11 @@ const LOCALE_LABELS: Record<Locale, string> = {
 
 interface LanguageSwitcherProps {
   className?: string;
+  isSaving?: boolean;
+  persistLocallyAfterExternalChange?: boolean;
+  onLocaleChange?: (
+    locale: Locale,
+  ) => boolean | void | Promise<boolean | void>;
 }
 
 /**
@@ -20,26 +25,68 @@ interface LanguageSwitcherProps {
  * React Server Components pick up the new `getRequestConfig` result. No URL
  * path segment, no page reload, preserved query params and scroll position.
  */
-export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
+export function LanguageSwitcher({
+  className,
+  isSaving = false,
+  persistLocallyAfterExternalChange = true,
+  onLocaleChange,
+}: LanguageSwitcherProps) {
   const router = useRouter();
   const tFooter = useTranslations('footer');
   const activeLocale = useLocale() as Locale;
   const [isPending, startTransition] = useTransition();
+  const [isApplyingExternalChange, setIsApplyingExternalChange] =
+    useState(false);
 
-  const handleSelect = (locale: Locale) => {
-    if (locale === activeLocale) return;
-    persistLocalePreference(locale);
+  const refreshLocaleShell = () => {
     startTransition(() => {
       router.refresh();
     });
   };
+
+  const applyLocaleChange = (locale: Locale) => {
+    persistLocalePreference(locale);
+    refreshLocaleShell();
+  };
+
+  const handleSelect = async (locale: Locale) => {
+    if (locale === activeLocale) {
+      return;
+    }
+
+    if (!onLocaleChange) {
+      applyLocaleChange(locale);
+      return;
+    }
+
+    setIsApplyingExternalChange(true);
+
+    try {
+      const result = await onLocaleChange(locale);
+
+      if (result === false) {
+        return;
+      }
+
+      if (persistLocallyAfterExternalChange) {
+        applyLocaleChange(locale);
+        return;
+      }
+
+      refreshLocaleShell();
+    } finally {
+      setIsApplyingExternalChange(false);
+    }
+  };
+
+  const isDisabled = isPending || isSaving || isApplyingExternalChange;
 
   return (
     <div
       role="group"
       aria-label={tFooter('columns.language')}
       className={className ?? 'flex flex-col gap-3 text-sm text-muted'}
-      data-pending={isPending ? 'true' : undefined}
+      data-pending={isDisabled ? 'true' : undefined}
     >
       {locales.map((locale) => {
         const isActive = locale === activeLocale;
@@ -47,9 +94,11 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
           <button
             key={locale}
             type="button"
-            onClick={() => handleSelect(locale)}
+            onClick={() => {
+              void handleSelect(locale);
+            }}
             aria-current={isActive ? 'true' : undefined}
-            disabled={isPending}
+            disabled={isDisabled}
             className={
               isActive
                 ? 'cursor-pointer text-left font-semibold text-foreground'

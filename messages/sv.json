@@ -471,7 +471,8 @@
       "title": "Visningsspråk",
       "description": "Ändra språket som används i gränssnittet.",
       "displayLanguage": "Språk",
-      "current": "Aktuellt: {locale}"
+      "current": "Aktuellt: {locale}",
+      "updateFailed": "Det gick inte att spara din språkinställning."
     },
     "privacy": {
       "legalTitle": "Juridik",

@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { defaultLocale, isLocale, type Locale } from '@/i18n/config';
 
 export const passwordPattern = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}/;
 
@@ -50,7 +49,3 @@ export const registerSchema = z
   });
 
 export type RegisterValues = z.infer<typeof registerSchema>;
-
-export function normalizeLocale(value: string): Locale {
-  return isLocale(value) ? value : defaultLocale;
-}

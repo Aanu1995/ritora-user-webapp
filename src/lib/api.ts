@@ -3,6 +3,7 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from 'axios';
 import { ApiPath } from '@/constants/api-paths';
+import { getPreferredLocale } from '@/i18n/config';
 import { ApiError, toApiErrorBody } from '@/lib/api-error';
 import type { RefreshResponse } from '@/types/auth';
 
@@ -16,6 +17,7 @@ const CREDENTIALLED_AUTH_PATHS = new Set<string>([
   ApiPath.AuthRefresh,
   ApiPath.AuthLogout,
   ApiPath.AuthLogoutAll,
+  `${ApiPath.UsersMe}/language`,
 ]);
 
 const apiClient = axios.create({
@@ -185,6 +187,7 @@ apiClient.interceptors.request.use((config) => {
     throw new ApiError('Blocked request to unexpected API origin');
   }
 
+  config.headers['Accept-Language'] = getPreferredLocale();
   config.withCredentials = shouldSendCredentialCookies(
     config.url,
     config.baseURL,

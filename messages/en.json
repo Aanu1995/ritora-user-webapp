@@ -471,7 +471,8 @@
       "title": "Display language",
       "description": "Change the language used across the interface.",
       "displayLanguage": "Language",
-      "current": "Current: {locale}"
+      "current": "Current: {locale}",
+      "updateFailed": "Could not save your language preference."
     },
     "privacy": {
       "legalTitle": "Legal",

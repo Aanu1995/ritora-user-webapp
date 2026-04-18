@@ -14,6 +14,7 @@ import {
   useResetPassword,
   useActiveSessions,
   useUpdateProfile,
+  useUpdatePreferredLanguage,
 } from '@/hooks/use-auth';
 
 const mockUser = {
@@ -39,6 +40,7 @@ jest.mock('@/services/auth.service', () => ({
   forgotPassword: jest.fn(),
   resetPassword: jest.fn(),
   updateProfile: jest.fn(),
+  updatePreferredLanguage: jest.fn(),
 }));
 
 import * as authService from '@/services/auth.service';
@@ -371,6 +373,7 @@ describe('useResetPassword', () => {
 describe('useUpdateProfile', () => {
   it('updates the current user in the auth store', async () => {
     useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    document.documentElement.lang = 'sv';
     (authService.updateProfile as jest.Mock).mockResolvedValue({
       ...mockUser,
       firstName: 'Ada',
@@ -392,5 +395,33 @@ describe('useUpdateProfile', () => {
     });
     expect(useAuthStore.getState().user?.firstName).toBe('Ada');
     expect(useAuthStore.getState().user?.lastName).toBe('Lovelace');
+    expect(document.documentElement.lang).toBe('sv');
+  });
+});
+
+describe('useUpdatePreferredLanguage', () => {
+  it('updates the current user language in the auth store', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    document.documentElement.lang = 'en';
+    (authService.updatePreferredLanguage as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      preferredLanguage: 'sv',
+    });
+
+    const { result } = renderHookWithProviders(() =>
+      useUpdatePreferredLanguage(),
+    );
+
+    await act(async () => {
+      await result.current.mutateAsync({
+        preferredLanguage: 'sv',
+      });
+    });
+
+    expect(authService.updatePreferredLanguage).toHaveBeenCalledWith({
+      preferredLanguage: 'sv',
+    });
+    expect(useAuthStore.getState().user?.preferredLanguage).toBe('sv');
+    expect(document.documentElement.lang).toBe('sv');
   });
 });

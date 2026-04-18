@@ -9,6 +9,7 @@ import type {
   RegisterResponse,
   ResetPasswordInput,
   Session,
+  UpdatePreferredLanguageInput,
   UpdateProfileInput,
   User,
 } from '@/types/auth';
@@ -67,4 +68,10 @@ export async function resetPassword(
 
 export async function updateProfile(data: UpdateProfileInput): Promise<User> {
   return patchRequest<User>(ApiPath.UsersMe, data);
+}
+
+export async function updatePreferredLanguage(
+  data: UpdatePreferredLanguageInput,
+): Promise<User> {
+  return patchRequest<User>(`${ApiPath.UsersMe}/language`, data);
 }

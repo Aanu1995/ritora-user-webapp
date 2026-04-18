@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ApiError, getApiErrorBody, getApiErrorStatus } from '@/lib/api-error';
+import { LOCALE_COOKIE } from '@/i18n/config';
 import {
   deleteRequest,
   getAccessToken,
@@ -76,6 +77,8 @@ afterEach(() => {
   jest.clearAllMocks();
   setAccessToken(null);
   setUnauthorizedHandler(null);
+  document.documentElement.lang = 'en';
+  document.cookie = `${LOCALE_COOKIE}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
 });
 
 describe('api client', () => {
@@ -103,9 +106,10 @@ describe('api client', () => {
       expect(isAllowedApiRequestUrl('https://evil.example/collect')).toBe(false);
     });
 
-    it('sends credential cookies only to session-establishing auth endpoints', () => {
+    it('sends credential cookies to session and locale-sync endpoints', () => {
       expect(shouldSendCredentialCookies('/auth/login')).toBe(true);
       expect(shouldSendCredentialCookies('/auth/refresh')).toBe(true);
+      expect(shouldSendCredentialCookies('/users/me/language')).toBe(true);
       expect(shouldSendCredentialCookies('/inventory/products')).toBe(false);
     });
 
@@ -130,6 +134,37 @@ describe('api client', () => {
       expect(config.headers).toEqual(
         expect.objectContaining({
           Authorization: 'Bearer tok-123',
+        }),
+      );
+    });
+
+    it('attaches the active locale to every API request', () => {
+      document.documentElement.lang = 'sv';
+
+      const config = requestInterceptor({
+        url: '/inventory/products',
+        headers: {},
+      });
+
+      expect(config.headers).toEqual(
+        expect.objectContaining({
+          'Accept-Language': 'sv',
+        }),
+      );
+    });
+
+    it('falls back to the persisted locale cookie when document lang is absent', () => {
+      document.documentElement.lang = '';
+      document.cookie = `${LOCALE_COOKIE}=sv; path=/`;
+
+      const config = requestInterceptor({
+        url: '/catalogue/products/search',
+        headers: {},
+      });
+
+      expect(config.headers).toEqual(
+        expect.objectContaining({
+          'Accept-Language': 'sv',
         }),
       );
     });

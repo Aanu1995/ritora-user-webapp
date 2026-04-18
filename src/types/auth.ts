@@ -59,3 +59,7 @@ export type UpdateProfileInput = {
   firstName: string;
   lastName: string;
 };
+
+export type UpdatePreferredLanguageInput = {
+  preferredLanguage: string;
+};

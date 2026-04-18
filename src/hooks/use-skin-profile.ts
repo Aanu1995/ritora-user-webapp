@@ -7,13 +7,18 @@ import { getApiErrorStatus } from '@/lib/api-error';
 import * as skinProfileService from '@/services/skin-profile.service';
 import type { SkinProfileInput } from '@/types/skin-profile';
 
-export function useSkinProfile() {
+type UseSkinProfileOptions = {
+  enabled?: boolean;
+};
+
+export function useSkinProfile(options?: UseSkinProfileOptions) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isEnabled = options?.enabled ?? true;
 
   return useQuery({
     queryKey: [QueryKey.SkinProfile],
     queryFn: () => skinProfileService.getSkinProfile(),
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && isEnabled,
     retry: (failureCount, error) => {
       if (getApiErrorStatus(error) === 404) {
         return false;

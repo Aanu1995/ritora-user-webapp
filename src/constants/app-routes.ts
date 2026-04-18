@@ -6,7 +6,7 @@ export enum AppRoute {
   ResetPassword = '/reset-password',
   VerifyEmail = '/verify-email',
   ResendVerification = '/resend-verification',
-  Onboarding = '/onboarding',
+  PostLogin = '/post-login',
   Dashboard = '/dashboard',
   SkinProfile = '/skin-profile',
   Shelf = '/shelf',
@@ -23,7 +23,7 @@ export enum AppRoute {
 }
 
 export const PROTECTED_APP_ROUTES = [
-  AppRoute.Onboarding,
+  AppRoute.PostLogin,
   AppRoute.Dashboard,
   AppRoute.SkinProfile,
   AppRoute.Shelf,

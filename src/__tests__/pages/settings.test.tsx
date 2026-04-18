@@ -8,9 +8,14 @@ import { renderWithProviders } from "@/test/utils";
 const mockLogoutMutate = jest.fn();
 const mockLogoutAllMutate = jest.fn();
 const mockUpdateProfileMutate = jest.fn();
+const mockUpdatePreferredLanguageMutateAsync = jest.fn();
+const mockRouterRefresh = jest.fn();
 
 jest.mock("next/navigation", () => ({
   usePathname: () => AppRoute.Settings,
+  useRouter: () => ({
+    refresh: mockRouterRefresh,
+  }),
 }));
 
 jest.mock("@/hooks/use-auth", () => ({
@@ -26,6 +31,10 @@ jest.mock("@/hooks/use-auth", () => ({
     mutate: mockUpdateProfileMutate,
     isPending: false,
   }),
+  useUpdatePreferredLanguage: () => ({
+    mutateAsync: mockUpdatePreferredLanguageMutateAsync,
+    isPending: false,
+  }),
 }));
 
 import SettingsPage from "@/app/(app)/settings/page";
@@ -35,6 +44,7 @@ describe("SettingsPage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUpdatePreferredLanguageMutateAsync.mockResolvedValue(undefined);
     useAuthStore.setState({
       user: {
         id: "user-1",
@@ -192,5 +202,33 @@ describe("SettingsPage", () => {
     expect(screen.getByText("System")).toBeInTheDocument();
     expect(screen.getByText("Light")).toBeInTheDocument();
     expect(screen.getByText("Dark")).toBeInTheDocument();
+  });
+
+  it("updates the preferred language when the user changes it in settings", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(screen.getByRole("tab", { name: /language/i }));
+    await user.click(screen.getByRole("button", { name: /svenska/i }));
+
+    expect(mockUpdatePreferredLanguageMutateAsync).toHaveBeenCalledWith({
+      preferredLanguage: "sv",
+    });
+    expect(mockRouterRefresh).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not refresh the route when the server rejects the language change", async () => {
+    mockUpdatePreferredLanguageMutateAsync.mockRejectedValue(
+      new Error("Could not update language"),
+    );
+
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(screen.getByRole("tab", { name: /language/i }));
+    await user.click(screen.getByRole("button", { name: /svenska/i }));
+
+    expect(mockUpdatePreferredLanguageMutateAsync).toHaveBeenCalledWith({
+      preferredLanguage: "sv",
+    });
+    expect(mockRouterRefresh).not.toHaveBeenCalled();
   });
 });

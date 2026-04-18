@@ -34,7 +34,15 @@ jest.mock("@/hooks/use-skin-profile", () => ({
   useUpdateSkinProfile: () => ({ mutate: jest.fn(), isPending: false }),
 }));
 
+jest.mock("@/lib/post-login-route", () => ({
+  hasMissingSkinProfileHandoff: jest.fn(() => false),
+  consumeMissingSkinProfileHandoff: jest.fn(() => false),
+}));
+
 import SkinProfilePage from "@/app/(app)/skin-profile/page";
+import {
+  hasMissingSkinProfileHandoff,
+} from "@/lib/post-login-route";
 
 const mockOptions = {
   skinTypes: ["oily", "dry", "combination", "normal", "sensitive"],
@@ -102,6 +110,39 @@ describe("SkinProfilePage", () => {
     expect(
       screen.getByText(/what best describes your skin/i),
     ).toBeInTheDocument();
+  });
+
+  it("shows the wizard without fetching profile again when login already confirmed no profile", () => {
+    (hasMissingSkinProfileHandoff as jest.Mock).mockReturnValueOnce(true);
+    mockSkinProfileReturn = {
+      data: null,
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: jest.fn(),
+    };
+
+    renderWithProviders(<SkinProfilePage />);
+    expect(
+      screen.getByText(/what best describes your skin/i),
+    ).toBeInTheDocument();
+  });
+
+  it("shows the overview if cached profile data exists even after a missing-profile handoff", () => {
+    (hasMissingSkinProfileHandoff as jest.Mock).mockReturnValueOnce(true);
+    mockSkinProfileReturn = {
+      data: completeProfile,
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: jest.fn(),
+    };
+
+    renderWithProviders(<SkinProfilePage />);
+    expect(screen.getByText("Oily")).toBeInTheDocument();
+    expect(
+      screen.queryByText(/what best describes your skin/i),
+    ).not.toBeInTheDocument();
   });
 
   it("shows skin type chips on step 1", () => {

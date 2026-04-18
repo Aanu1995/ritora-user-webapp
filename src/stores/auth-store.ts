@@ -8,7 +8,12 @@ import {
   warnIfDevApiTargetsFrontend,
 } from '@/lib/api';
 import { appQueryClient } from '@/lib/query-client';
-import { persistLocalePreference } from '@/i18n/config';
+import {
+  getPreferredLocale,
+  normalizeLocale,
+  persistLocalePreference,
+} from '@/i18n/config';
+import { resetPostLoginState } from '@/lib/post-login-route';
 import * as authService from '@/services/auth.service';
 import type { User } from '@/types/auth';
 
@@ -17,9 +22,9 @@ type AuthState = {
   isAuthenticated: boolean;
   isLoading: boolean;
   setAuth: (user: User, accessToken: string) => void;
-  setUser: (user: User) => void;
+  setUser: (user: User, options?: { syncLocale?: boolean }) => void;
   logout: () => void;
-  hydrate: () => Promise<void>;
+  hydrate: () => Promise<boolean>;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -28,6 +33,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoading: true,
 
   setAuth: (user, accessToken) => {
+    resetPostLoginState();
+
     if (!user.emailVerified) {
       setAccessToken(null);
       appQueryClient.clear();
@@ -40,11 +47,16 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user, isAuthenticated: true, isLoading: false });
   },
 
-  setUser: (user) => {
+  setUser: (user, options) => {
+    if (options?.syncLocale) {
+      persistLocalePreference(user.preferredLanguage);
+    }
+
     set({ user });
   },
 
   logout: () => {
+    resetPostLoginState();
     setAccessToken(null);
     appQueryClient.clear();
     set({ user: null, isAuthenticated: false, isLoading: false });
@@ -56,10 +68,12 @@ export const useAuthStore = create<AuthState>((set) => ({
       setAccessToken(null);
       appQueryClient.clear();
       set({ user: null, isAuthenticated: false, isLoading: false });
-      return;
+      return false;
     }
 
     try {
+      resetPostLoginState();
+      const initialLocale = getPreferredLocale();
       const { accessToken } = await authService.refreshTokens();
       setAccessToken(accessToken);
 
@@ -70,15 +84,19 @@ export const useAuthStore = create<AuthState>((set) => ({
         setAccessToken(null);
         appQueryClient.clear();
         set({ user: null, isAuthenticated: false, isLoading: false });
-        return;
+        return false;
       }
 
-      persistLocalePreference(user.preferredLanguage);
+      const preferredLocale = normalizeLocale(user.preferredLanguage);
+      persistLocalePreference(preferredLocale);
       set({ user, isAuthenticated: true, isLoading: false });
+      return preferredLocale !== initialLocale;
     } catch {
+      resetPostLoginState();
       setAccessToken(null);
       appQueryClient.clear();
       set({ user: null, isAuthenticated: false, isLoading: false });
+      return false;
     }
   },
 }));
