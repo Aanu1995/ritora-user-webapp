@@ -7,6 +7,7 @@ import { ProductIllustration } from '../product-illustration';
 import { Button } from '@/components/ui/button';
 import { RetryPanel } from '@/components/ui/retry-panel';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAutoLoadMore } from '@/hooks/use-auto-load-more';
 import { useSearchCatalogue } from '@/hooks/use-shelf';
 import {
   type CatalogueIdentity,
@@ -45,6 +46,7 @@ export function SearchTab({ onPick }: Props) {
     data: results = [],
     isError,
     isFetching,
+    isFetchNextPageError,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
@@ -54,6 +56,18 @@ export function SearchTab({ onPick }: Props) {
   const hasSubmittedQuery = submittedQuery.trim().length >= 2;
   const isInitialLoading = isFetching && results.length === 0;
   const hasSearchError = isError && results.length === 0;
+  const loadMoreSentinelRef = useAutoLoadMore({
+    enabled:
+      hasSubmittedQuery &&
+      results.length > 0 &&
+      !hasSearchError &&
+      !isFetchNextPageError,
+    hasNextPage: Boolean(hasNextPage),
+    isFetchingNextPage,
+    onLoadMore: () => {
+      void fetchNextPage();
+    },
+  });
 
   const handleSearch = () => {
     if (trimmedQuery.length < 2) {
@@ -83,6 +97,9 @@ export function SearchTab({ onPick }: Props) {
   } else if (results.length === 0) {
     content = <p className="text-sm text-muted">{t('noResults')}</p>;
   } else {
+    const showAutoLoadState =
+      Boolean(hasNextPage) || isFetchingNextPage || isFetchNextPageError;
+
     content = (
       <div className="flex flex-col gap-3">
         <ul className="flex flex-col gap-2">
@@ -131,18 +148,32 @@ export function SearchTab({ onPick }: Props) {
             );
           })}
         </ul>
-        {hasNextPage ? (
-          <div className="flex justify-center">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => {
-                void fetchNextPage();
-              }}
-              disabled={isFetchingNextPage}
-            >
-              {isFetchingNextPage ? t('loadingMore') : t('loadMore')}
-            </Button>
+        {showAutoLoadState ? (
+          <div className="flex flex-col items-center gap-2 pt-1">
+            {isFetchNextPageError ? (
+              <>
+                <p className="text-sm text-danger" role="alert">
+                  {t('error')}
+                </p>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    void fetchNextPage();
+                  }}
+                >
+                  {t('retry')}
+                </Button>
+              </>
+            ) : isFetchingNextPage ? (
+              <p className="text-sm text-muted">{t('loadingMore')}</p>
+            ) : null}
+            <div
+              ref={loadMoreSentinelRef}
+              data-testid="catalogue-auto-load-sentinel"
+              aria-hidden="true"
+              className="h-px w-full"
+            />
           </div>
         ) : null}
       </div>

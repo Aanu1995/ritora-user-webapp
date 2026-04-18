@@ -41,7 +41,6 @@ describe('shelf.service', () => {
         category: 'all',
         search: 'retinol',
         sort: 'recently-added',
-        limit: 30,
         cursor: 'cursor-1',
       },
     });
@@ -172,7 +171,6 @@ describe('shelf.service', () => {
     expect(api.getRequest).toHaveBeenCalledWith('/catalogue/products/search', {
       params: {
         q: 'cera',
-        limit: 30,
         cursor: 'cursor-2',
       },
     });

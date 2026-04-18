@@ -24,7 +24,6 @@ export async function listProducts(
     category: filters.category,
     search: filters.search,
     sort: filters.sort,
-    limit: 30,
     ...(cursor ? { cursor } : {}),
   };
 
@@ -94,7 +93,6 @@ export async function searchCatalogue(
 ): Promise<PaginatedResult<CatalogueSuggestion>> {
   const params = {
     q: query,
-    limit: 30,
     ...(cursor ? { cursor } : {}),
   };
 

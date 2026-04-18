@@ -20,6 +20,7 @@ import {
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { AppRoute } from "@/constants/app-routes";
+import { useAutoLoadMore } from "@/hooks/use-auto-load-more";
 import {
   useArchiveProducts,
   useDeleteProducts,
@@ -109,6 +110,7 @@ export function ShelfPage() {
   const productList = products.data ?? [];
   const hasLoadError = products.isError && productList.length === 0;
   const canLoadMore = Boolean(products.hasNextPage);
+  const hasLoadMoreError = Boolean(products.isFetchNextPageError);
   const isEmpty =
     !isLoading &&
     !hasLoadError &&
@@ -116,6 +118,19 @@ export function ShelfPage() {
     stat === ShelfStatFilter.All &&
     activeCategory === ShelfCategoryFilter.All &&
     !debouncedSearch.trim();
+  const loadMoreSentinelRef = useAutoLoadMore({
+    enabled:
+      !isLoading &&
+      !hasLoadError &&
+      !isEmpty &&
+      productList.length > 0 &&
+      !hasLoadMoreError,
+    hasNextPage: canLoadMore,
+    isFetchingNextPage: products.isFetchingNextPage,
+    onLoadMore: () => {
+      void products.fetchNextPage();
+    },
+  });
 
   let content: ReactNode;
 
@@ -173,11 +188,12 @@ export function ShelfPage() {
     );
   }
 
-  const hasLoadMoreError = Boolean(products.isFetchNextPageError);
   const centerEmptyStates = isEmpty || hasLoadError;
   const wrapperPadding = centerEmptyStates ? "pb-2" : "pb-24";
   const wrapperLayout = centerEmptyStates ? "flex min-h-full flex-col" : "";
   const contentLayout = centerEmptyStates ? "flex-1" : "";
+  const showAutoLoadState =
+    canLoadMore || products.isFetchingNextPage || hasLoadMoreError;
 
   return (
     <div className={`mx-auto max-w-360 ${wrapperPadding} ${wrapperLayout}`}>
@@ -224,29 +240,32 @@ export function ShelfPage() {
       <div className={`mt-6 flex flex-col gap-5 ${contentLayout}`}>
         {content}
 
-        {canLoadMore ? (
+        {showAutoLoadState ? (
           <div className="flex flex-col items-center gap-2 pt-2">
             {hasLoadMoreError ? (
-              <p className="text-sm text-danger" role="alert">
-                {t("errors.loadMore")}
-              </p>
+              <>
+                <p className="text-sm text-danger" role="alert">
+                  {t("errors.loadMore")}
+                </p>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    void products.fetchNextPage();
+                  }}
+                >
+                  {t("errors.retry")}
+                </Button>
+              </>
+            ) : products.isFetchingNextPage ? (
+              <LoadingIndicator label={t("actions.loadingMore")} size="sm" />
             ) : null}
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => {
-                void products.fetchNextPage();
-              }}
-              disabled={products.isFetchingNextPage}
-            >
-              {products.isFetchingNextPage ? (
-                <LoadingIndicator label={t("actions.loadingMore")} size="sm" />
-              ) : hasLoadMoreError ? (
-                t("errors.retry")
-              ) : (
-                t("actions.loadMore")
-              )}
-            </Button>
+            <div
+              ref={loadMoreSentinelRef}
+              data-testid="shelf-auto-load-sentinel"
+              aria-hidden="true"
+              className="h-px w-full"
+            />
           </div>
         ) : null}
       </div>

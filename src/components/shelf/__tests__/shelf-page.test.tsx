@@ -77,6 +77,78 @@ jest.mock('next/navigation', () => ({
 const mockUseShelfProducts = jest.fn();
 const mockUseShelfStats = jest.fn();
 const mockFetchNextPage = jest.fn();
+const intersectionObservers: MockIntersectionObserverInstance[] = [];
+
+type MockIntersectionObserverInstance = {
+  callback: IntersectionObserverCallback;
+  elements: Set<Element>;
+  observe: jest.Mock<void, [Element]>;
+  unobserve: jest.Mock<void, [Element]>;
+  disconnect: jest.Mock<void, []>;
+};
+
+function installIntersectionObserverMock() {
+  intersectionObservers.length = 0;
+
+  class MockIntersectionObserver {
+    readonly root: Element | Document | null = null;
+    readonly rootMargin = '0px';
+    readonly thresholds = [0];
+    private readonly instance: MockIntersectionObserverInstance;
+
+    constructor(callback: IntersectionObserverCallback) {
+      this.instance = {
+        callback,
+        elements: new Set<Element>(),
+        observe: jest.fn((element: Element) => {
+          this.instance.elements.add(element);
+        }),
+        unobserve: jest.fn((element: Element) => {
+          this.instance.elements.delete(element);
+        }),
+        disconnect: jest.fn(() => {
+          this.instance.elements.clear();
+        }),
+      };
+      intersectionObservers.push(this.instance);
+    }
+
+    observe = (element: Element) => this.instance.observe(element);
+    unobserve = (element: Element) => this.instance.unobserve(element);
+    disconnect = () => this.instance.disconnect();
+    takeRecords = () => [];
+  }
+
+  Object.defineProperty(window, 'IntersectionObserver', {
+    writable: true,
+    configurable: true,
+    value: MockIntersectionObserver,
+  });
+}
+
+function triggerIntersection(testId: string) {
+  const target = screen.getByTestId(testId);
+  const observer = intersectionObservers.at(-1);
+
+  if (!observer) {
+    throw new Error('No IntersectionObserver instance was registered.');
+  }
+
+  observer.callback(
+    [
+      {
+        isIntersecting: true,
+        target,
+        time: 0,
+        intersectionRatio: 1,
+        boundingClientRect: target.getBoundingClientRect(),
+        intersectionRect: target.getBoundingClientRect(),
+        rootBounds: null,
+      } as IntersectionObserverEntry,
+    ],
+    {} as IntersectionObserver,
+  );
+}
 
 jest.mock('@/hooks/use-shelf', () => ({
   useShelfProducts: () => mockUseShelfProducts(),
@@ -92,6 +164,7 @@ jest.mock('@/hooks/use-shelf', () => ({
 import { ShelfPage } from '@/components/shelf/shelf-page';
 
 beforeEach(() => {
+  installIntersectionObserverMock();
   mockUseShelfProducts.mockReset();
   mockUseShelfStats.mockReset();
   mockFetchNextPage.mockReset();
@@ -217,7 +290,7 @@ describe('ShelfPage', () => {
     expect(screen.queryByText(/evening routine/i)).not.toBeInTheDocument();
   });
 
-  it('shows load more when another inventory page exists', async () => {
+  it('loads the next inventory page automatically when the sentinel enters view', async () => {
     mockUseShelfProducts.mockReturnValue({
       data: mockProducts,
       isPending: false,
@@ -234,7 +307,7 @@ describe('ShelfPage', () => {
 
     renderWithProviders(<ShelfPage />);
 
-    screen.getByRole('button', { name: /load more/i }).click();
+    triggerIntersection('shelf-auto-load-sentinel');
 
     expect(mockFetchNextPage).toHaveBeenCalled();
   });
