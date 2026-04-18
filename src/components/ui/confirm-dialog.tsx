@@ -15,7 +15,11 @@ import {
 import { Button } from './button';
 import { cn } from '@/lib/utils';
 
-type Tone = 'danger' | 'warning' | 'neutral';
+export enum ConfirmDialogTone {
+  Danger = 'danger',
+  Warning = 'warning',
+  Neutral = 'neutral',
+}
 
 type Props = {
   open: boolean;
@@ -25,14 +29,14 @@ type Props = {
   confirmLabel: string;
   cancelLabel?: string;
   onConfirm: () => void;
-  tone?: Tone;
+  tone?: ConfirmDialogTone;
   isPending?: boolean;
 };
 
-const TONE_ICON_CLASS: Record<Tone, string> = {
-  danger: 'bg-danger/10 text-danger',
-  warning: 'bg-warning/10 text-warning',
-  neutral: 'bg-accent-soft text-accent-strong',
+const TONE_ICON_CLASS: Record<ConfirmDialogTone, string> = {
+  [ConfirmDialogTone.Danger]: 'bg-danger/10 text-danger',
+  [ConfirmDialogTone.Warning]: 'bg-warning/10 text-warning',
+  [ConfirmDialogTone.Neutral]: 'bg-accent-soft text-accent-strong',
 };
 
 export function ConfirmDialog({
@@ -43,7 +47,7 @@ export function ConfirmDialog({
   confirmLabel,
   cancelLabel,
   onConfirm,
-  tone = 'neutral',
+  tone = ConfirmDialogTone.Neutral,
   isPending,
 }: Props) {
   const t = useTranslations('common.confirmDialog');
@@ -84,7 +88,7 @@ export function ConfirmDialog({
               onClick={onConfirm}
               disabled={isPending}
               className={cn(
-                tone === 'danger' &&
+                tone === ConfirmDialogTone.Danger &&
                   'bg-danger text-surface hover:bg-danger/90',
               )}
             >

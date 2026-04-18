@@ -85,7 +85,7 @@ describe("SkinProfilePage", () => {
     };
 
     renderWithProviders(<SkinProfilePage />);
-    // Skeleton renders animated pulse elements
+    expect(screen.getByTestId("skin-profile-skeleton")).toBeInTheDocument();
     expect(screen.queryByText(/what best describes/i)).not.toBeInTheDocument();
   });
 

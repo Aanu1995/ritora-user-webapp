@@ -12,17 +12,17 @@ import {
 import {
   APP_PREFERENCE_MAX_AGE,
   PLAIN_LANGUAGE_STORAGE_KEY,
+  ResolvedTheme,
   THEME_PREFERENCE_COOKIE_NAME,
   THEME_PREFERENCE_STORAGE_KEY,
+  ThemePreference,
   parseResolvedTheme,
   parseThemePreference,
   resolveThemePreference,
-  type ResolvedTheme,
-  type ThemePreference,
 } from '@/lib/theme-preferences';
 import { setClientCookie } from '@/lib/client-cookie';
 
-export type { ResolvedTheme, ThemePreference } from '@/lib/theme-preferences';
+export { ResolvedTheme, ThemePreference } from '@/lib/theme-preferences';
 
 type AppPreferencesContextValue = {
   themePreference: ThemePreference;
@@ -41,10 +41,10 @@ function getSystemTheme(): ResolvedTheme {
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-color-scheme: dark)').matches
   ) {
-    return 'dark';
+    return ResolvedTheme.Dark;
   }
 
-  return 'light';
+  return ResolvedTheme.Light;
 }
 
 function applyThemeToDocument(theme: ResolvedTheme): void {
@@ -72,13 +72,13 @@ export function AppPreferencesProvider({
       }
 
       if (typeof window === 'undefined') {
-        return 'system';
+        return ThemePreference.System;
       }
 
       return (
         parseThemePreference(
           window.localStorage.getItem(THEME_PREFERENCE_STORAGE_KEY),
-        ) ?? 'system'
+        ) ?? ThemePreference.System
       );
     },
   );
@@ -97,7 +97,7 @@ export function AppPreferencesProvider({
       );
     }
 
-    return 'light';
+    return ResolvedTheme.Light;
   });
 
   const resolvedTheme = useMemo(
@@ -131,13 +131,16 @@ export function AppPreferencesProvider({
   }, [plainLanguageMode]);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || themePreference !== 'system') {
+    if (
+      typeof window === 'undefined' ||
+      themePreference !== ThemePreference.System
+    ) {
       return;
     }
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (event: MediaQueryListEvent) => {
-      setSystemTheme(event.matches ? 'dark' : 'light');
+      setSystemTheme(event.matches ? ResolvedTheme.Dark : ResolvedTheme.Light);
     };
 
     mediaQuery.addEventListener('change', handleChange);

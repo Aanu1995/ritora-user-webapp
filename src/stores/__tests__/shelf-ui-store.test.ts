@@ -1,13 +1,19 @@
 import { useShelfUiStore } from '@/stores/shelf-ui-store';
-import { ProductCategory, ShelfSort, ShelfStatFilter } from '@/types/shelf';
+import {
+  ProductCategory,
+  ShelfCategoryFilter,
+  ShelfSort,
+  ShelfStatFilter,
+  ShelfViewMode,
+} from '@/types/shelf';
 
 afterEach(() => {
   useShelfUiStore.setState({
     selectedIds: new Set<string>(),
     sort: ShelfSort.RecentlyAdded,
-    view: 'grid',
+    view: ShelfViewMode.Grid,
     stat: ShelfStatFilter.All,
-    activeCategory: 'all',
+    activeCategory: ShelfCategoryFilter.All,
     search: '',
   });
 });
@@ -48,10 +54,10 @@ describe('useShelfUiStore', () => {
 
   it('updates non-filter preferences without resetting unrelated values', () => {
     useShelfUiStore.getState().setSort(ShelfSort.ExpiringSoon);
-    useShelfUiStore.getState().setView('list');
+    useShelfUiStore.getState().setView(ShelfViewMode.List);
 
     expect(useShelfUiStore.getState().sort).toBe(ShelfSort.ExpiringSoon);
-    expect(useShelfUiStore.getState().view).toBe('list');
+    expect(useShelfUiStore.getState().view).toBe(ShelfViewMode.List);
     expect(useShelfUiStore.getState().stat).toBe(ShelfStatFilter.All);
   });
 });

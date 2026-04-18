@@ -12,10 +12,11 @@ import {
 import { cn } from '@/lib/utils';
 import {
   ProductCategory,
+  ShelfCategoryFilter,
   ShelfSort,
   ShelfStatFilter,
+  ShelfViewMode,
 } from '@/types/shelf';
-import type { ShelfViewMode } from '@/stores/shelf-ui-store';
 
 type Counts = Partial<Record<ShelfStatFilter, number>>;
 
@@ -27,8 +28,8 @@ type Props = {
   onStatusChange: (next: ShelfStatFilter) => void;
   counts: Counts;
 
-  category: ProductCategory | 'all';
-  onCategoryChange: (next: ProductCategory | 'all') => void;
+  category: ProductCategory | ShelfCategoryFilter.All;
+  onCategoryChange: (next: ProductCategory | ShelfCategoryFilter.All) => void;
 
   sort: ShelfSort;
   onSortChange: (next: ShelfSort) => void;
@@ -124,16 +125,16 @@ export function ShelfFilterBar({
 
         <div className="inline-flex shrink-0 overflow-hidden rounded-full border border-border-strong bg-surface sm:order-last">
           <ViewButton
-            active={view === 'grid'}
+            active={view === ShelfViewMode.Grid}
             label={t('view.grid')}
-            onClick={() => onViewChange('grid')}
+            onClick={() => onViewChange(ShelfViewMode.Grid)}
           >
             <Grid className="h-4 w-4" />
           </ViewButton>
           <ViewButton
-            active={view === 'list'}
+            active={view === ShelfViewMode.List}
             label={t('view.list')}
-            onClick={() => onViewChange('list')}
+            onClick={() => onViewChange(ShelfViewMode.List)}
           >
             <List className="h-4 w-4" />
           </ViewButton>
@@ -179,7 +180,7 @@ export function ShelfFilterBar({
       <Select
         value={category}
         onValueChange={(value) =>
-          onCategoryChange(value as ProductCategory | 'all')
+          onCategoryChange(value as ProductCategory | ShelfCategoryFilter.All)
         }
       >
         <SelectTrigger
@@ -188,12 +189,14 @@ export function ShelfFilterBar({
         >
           <SelectValue>
             <span className="font-medium">
-              {tCategory(category === 'all' ? 'all' : category)}
+              {tCategory(
+                category === ShelfCategoryFilter.All ? 'all' : category,
+              )}
             </span>
           </SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">{tCategory('all')}</SelectItem>
+          <SelectItem value={ShelfCategoryFilter.All}>{tCategory('all')}</SelectItem>
           {CATEGORY_ORDER.map((option) => (
             <SelectItem key={option} value={option}>
               {tCategory(option)}

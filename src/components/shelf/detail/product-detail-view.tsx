@@ -22,7 +22,10 @@ import { DetailIngredientsTab } from './detail-ingredients-tab';
 import { DetailManufacturerTab } from './detail-manufacturer-tab';
 import { ProductImageCarousel } from './product-image-carousel';
 import { Button } from '@/components/ui/button';
-import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogTone,
+} from '@/components/ui/confirm-dialog';
 import {
   Tabs,
   TabsContent,
@@ -347,7 +350,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
         confirmLabel={t('actions.delete')}
         cancelLabel={t('actions.deleteConfirmCancel')}
         onConfirm={handleDeleteConfirm}
-        tone="danger"
+        tone={ConfirmDialogTone.Danger}
         isPending={isMutating}
       />
     </div>

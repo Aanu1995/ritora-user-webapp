@@ -9,10 +9,15 @@ import { BulkActionToolbar } from "./bulk-action-toolbar";
 import { ProductGrid } from "./product-grid";
 import { ProductGridSkeleton } from "./product-grid-skeleton";
 import { ProductList } from "./product-list";
+import { ProductListSkeleton } from "./product-list-skeleton";
 import { ShelfEmptyState } from "./shelf-empty-state";
 import { ShelfFilterBar } from "./shelf-filter-bar";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import {
+  ConfirmDialog,
+  ConfirmDialogTone,
+} from "@/components/ui/confirm-dialog";
+import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { AppRoute } from "@/constants/app-routes";
 import {
@@ -24,7 +29,12 @@ import {
 } from "@/hooks/use-shelf";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useShelfUiStore } from "@/stores/shelf-ui-store";
-import { ShelfStatFilter, type ShelfListFilters } from "@/types/shelf";
+import {
+  ShelfCategoryFilter,
+  ShelfStatFilter,
+  ShelfViewMode,
+  type ShelfListFilters,
+} from "@/types/shelf";
 
 export function ShelfPage() {
   const t = useTranslations("shelf");
@@ -104,13 +114,18 @@ export function ShelfPage() {
     !hasLoadError &&
     productList.length === 0 &&
     stat === ShelfStatFilter.All &&
-    activeCategory === "all" &&
+    activeCategory === ShelfCategoryFilter.All &&
     !debouncedSearch.trim();
 
   let content: ReactNode;
 
   if (isLoading) {
-    content = <ProductGridSkeleton />;
+    content =
+      view === ShelfViewMode.List ? (
+        <ProductListSkeleton />
+      ) : (
+        <ProductGridSkeleton />
+      );
   } else if (hasLoadError) {
     content = (
       <div className="flex flex-1 items-center justify-center">
@@ -138,7 +153,7 @@ export function ShelfPage() {
         {tEmpty("filtered")}
       </p>
     );
-  } else if (view === "list") {
+  } else if (view === ShelfViewMode.List) {
     content = (
       <ProductList
         products={productList}
@@ -158,14 +173,11 @@ export function ShelfPage() {
     );
   }
 
-  const loadMoreLabel = products.isFetchingNextPage
-    ? t("actions.loadingMore")
-    : t("actions.loadMore");
-
+  const hasLoadMoreError = Boolean(products.isFetchNextPageError);
   const centerEmptyStates = isEmpty || hasLoadError;
-  const wrapperPadding = centerEmptyStates ? 'pb-2' : 'pb-24';
-  const wrapperLayout = centerEmptyStates ? 'flex min-h-full flex-col' : '';
-  const contentLayout = centerEmptyStates ? 'flex-1' : '';
+  const wrapperPadding = centerEmptyStates ? "pb-2" : "pb-24";
+  const wrapperLayout = centerEmptyStates ? "flex min-h-full flex-col" : "";
+  const contentLayout = centerEmptyStates ? "flex-1" : "";
 
   return (
     <div className={`mx-auto max-w-360 ${wrapperPadding} ${wrapperLayout}`}>
@@ -213,7 +225,12 @@ export function ShelfPage() {
         {content}
 
         {canLoadMore ? (
-          <div className="flex justify-center pt-2">
+          <div className="flex flex-col items-center gap-2 pt-2">
+            {hasLoadMoreError ? (
+              <p className="text-sm text-danger" role="alert">
+                {t("errors.loadMore")}
+              </p>
+            ) : null}
             <Button
               type="button"
               variant="secondary"
@@ -222,7 +239,13 @@ export function ShelfPage() {
               }}
               disabled={products.isFetchingNextPage}
             >
-              {loadMoreLabel}
+              {products.isFetchingNextPage ? (
+                <LoadingIndicator label={t("actions.loadingMore")} size="sm" />
+              ) : hasLoadMoreError ? (
+                t("errors.retry")
+              ) : (
+                t("actions.loadMore")
+              )}
             </Button>
           </div>
         ) : null}
@@ -248,7 +271,7 @@ export function ShelfPage() {
         confirmLabel={t("actions.delete")}
         cancelLabel={tBulk("deleteConfirmCancel")}
         onConfirm={handleDeleteConfirm}
-        tone="danger"
+        tone={ConfirmDialogTone.Danger}
         isPending={archive.isPending || finish.isPending || remove.isPending}
       />
     </div>

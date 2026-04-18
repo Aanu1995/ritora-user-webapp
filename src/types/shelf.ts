@@ -64,6 +64,15 @@ export enum ShelfSort {
   CategoryGrouped = 'category-grouped',
 }
 
+export enum ShelfViewMode {
+  Grid = 'grid',
+  List = 'list',
+}
+
+export enum ShelfCategoryFilter {
+  All = 'all',
+}
+
 export enum ShelfStatFilter {
   All = 'all',
   InUse = 'in-use',
@@ -140,6 +149,14 @@ export type ShelfProductDraft = Omit<
   'id' | 'createdAt' | 'updatedAt'
 >;
 
+export type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends Array<infer TItem>
+    ? Array<DeepPartial<TItem>>
+    : T[K] extends object
+      ? DeepPartial<T[K]>
+      : T[K];
+};
+
 export type ShelfProductFormValue = Pick<
   ShelfProductDraft,
   'identity' | 'guidance' | 'manufacturer' | 'userFields'
@@ -212,7 +229,7 @@ export type ShelfLifeSnapshot = {
 
 export type ShelfListFilters = {
   stat: ShelfStatFilter;
-  category: ProductCategory | 'all';
+  category: ProductCategory | ShelfCategoryFilter.All;
   search: string;
   sort: ShelfSort;
 };

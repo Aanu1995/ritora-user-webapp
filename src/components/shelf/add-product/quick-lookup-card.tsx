@@ -19,22 +19,26 @@ type Props = {
   ) => void;
 };
 
-type Mode = 'scan' | 'search' | 'url';
+enum QuickLookupMode {
+  Scan = 'scan',
+  Search = 'search',
+  Url = 'url',
+}
 
 const MODES: Array<{
-  value: Mode;
+  value: QuickLookupMode;
   labelKey: string;
   icon: React.ComponentType<{ className?: string }>;
 }> = [
-  { value: 'scan', labelKey: 'tabs.scan', icon: Camera },
-  { value: 'search', labelKey: 'tabs.search', icon: SearchIcon },
-  { value: 'url', labelKey: 'tabs.url', icon: LinkIcon },
+  { value: QuickLookupMode.Scan, labelKey: 'tabs.scan', icon: Camera },
+  { value: QuickLookupMode.Search, labelKey: 'tabs.search', icon: SearchIcon },
+  { value: QuickLookupMode.Url, labelKey: 'tabs.url', icon: LinkIcon },
 ];
 
 export function QuickLookupCard({ onResult }: Props) {
   const t = useTranslations('shelf.dialog');
   const tLookup = useTranslations('shelf.dialog.lookup');
-  const [mode, setMode] = useState<Mode>('search');
+  const [mode, setMode] = useState<QuickLookupMode>(QuickLookupMode.Search);
 
   const handleResult = (
     partial: ShelfProductPartial,
@@ -83,9 +87,9 @@ export function QuickLookupCard({ onResult }: Props) {
       </div>
 
       <div className="mt-5">
-        {mode === 'scan' ? (
-          <ScanTab onSwitchToManual={() => setMode('search')} />
-        ) : mode === 'search' ? (
+        {mode === QuickLookupMode.Scan ? (
+          <ScanTab onSwitchToManual={() => setMode(QuickLookupMode.Search)} />
+        ) : mode === QuickLookupMode.Search ? (
           <SearchTab
             onPick={(partial) =>
               handleResult(partial, DataProvenance.Catalogue)

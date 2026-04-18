@@ -761,7 +761,8 @@
       "loadShelfTitle": "Vi kunde inte läsa din hylla",
       "loadShelfDescription": "Hylla kunde inte läsas in just nu. Försök igen om en liten stund.",
       "loadProductTitle": "Vi kunde inte läsa den här produkten",
-      "loadProductDescription": "Produktdetaljerna kunde inte läsas in just nu. Försök igen om en liten stund."
+      "loadProductDescription": "Produktdetaljerna kunde inte läsas in just nu. Försök igen om en liten stund.",
+      "loadMore": "Kunde inte hämta fler produkter."
     },
     "card": {
       "unopened": "Oöppnad",

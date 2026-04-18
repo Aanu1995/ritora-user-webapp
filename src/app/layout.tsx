@@ -8,6 +8,7 @@ import { CookieConsent } from '@/components/cookie-consent';
 import { COOKIE_CONSENT_NAME } from '@/constants/cookies';
 import {
   THEME_PREFERENCE_COOKIE_NAME,
+  ThemePreference,
   getThemeInitializationScript,
   parseThemePreference,
 } from '@/lib/theme-preferences';
@@ -75,7 +76,8 @@ export default async function RootLayout({
     cookieStore.get(THEME_PREFERENCE_COOKIE_NAME)?.value,
   );
   const initialTheme =
-    storedThemePreference && storedThemePreference !== 'system'
+    storedThemePreference &&
+    storedThemePreference !== ThemePreference.System
       ? storedThemePreference
       : undefined;
 

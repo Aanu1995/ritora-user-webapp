@@ -8,9 +8,12 @@ jest.mock('@/lib/api', () => ({
 import * as api from '@/lib/api';
 import * as shelfService from '@/services/shelf.service';
 import {
+  DataProvenance,
   ProductCategory,
+  ShelfCategoryFilter,
   ShelfSort,
   ShelfStatFilter,
+  ShelfStatus,
 } from '@/types/shelf';
 
 afterEach(() => jest.clearAllMocks());
@@ -25,7 +28,7 @@ describe('shelf.service', () => {
     const result = await shelfService.listProducts(
       {
         stat: ShelfStatFilter.All,
-        category: 'all',
+        category: ShelfCategoryFilter.All,
         search: 'retinol',
         sort: ShelfSort.RecentlyAdded,
       },
@@ -99,8 +102,8 @@ describe('shelf.service', () => {
         personalNotes: null,
         preferredTimeOfDay: null,
       },
-      status: 'active',
-      provenance: 'user-entered',
+      status: ShelfStatus.Active,
+      provenance: DataProvenance.UserEntered,
     });
     await shelfService.updateProduct('product-1', {
       identity: { name: 'Updated' },

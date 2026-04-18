@@ -6,15 +6,15 @@ import { Switch } from "@/components/ui/switch";
 import { SettingsRow } from "@/components/settings/settings-row";
 import { SettingsSection } from "@/components/settings/settings-section";
 import {
-  type ThemePreference,
+  ThemePreference,
   useAppPreferences,
 } from "@/components/preferences/app-preferences-provider";
 import { cn } from "@/lib/utils";
 
 const THEME_OPTIONS: { value: ThemePreference; icon: typeof Sun; labelKey: string }[] = [
-  { value: "system", icon: Monitor, labelKey: "themeSystem" },
-  { value: "light", icon: Sun, labelKey: "themeLight" },
-  { value: "dark", icon: Moon, labelKey: "themeDark" },
+  { value: ThemePreference.System, icon: Monitor, labelKey: "themeSystem" },
+  { value: ThemePreference.Light, icon: Sun, labelKey: "themeLight" },
+  { value: ThemePreference.Dark, icon: Moon, labelKey: "themeDark" },
 ];
 
 export function AppearanceTab() {

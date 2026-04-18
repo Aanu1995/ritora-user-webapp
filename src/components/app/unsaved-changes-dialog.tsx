@@ -1,7 +1,10 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ConfirmDialog } from '@/components/ui/confirm-dialog';
+import {
+  ConfirmDialog,
+  ConfirmDialogTone,
+} from '@/components/ui/confirm-dialog';
 import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 
 /**
@@ -27,7 +30,7 @@ export function UnsavedChangesDialog() {
       confirmLabel={t('discard')}
       cancelLabel={t('keepEditing')}
       onConfirm={confirmLeave}
-      tone="danger"
+      tone={ConfirmDialogTone.Danger}
     />
   );
 }

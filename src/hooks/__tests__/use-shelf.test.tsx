@@ -19,6 +19,7 @@ import {
 import {
   DataProvenance,
   ProductCategory,
+  ShelfCategoryFilter,
   ShelfSort,
   ShelfStatFilter,
   ShelfStatus,
@@ -114,7 +115,7 @@ describe('useShelfProducts', () => {
     const { result } = renderHookWithProviders(() =>
       useShelfProducts({
         stat: ShelfStatFilter.All,
-        category: 'all',
+        category: ShelfCategoryFilter.All,
         search: '',
         sort: ShelfSort.RecentlyAdded,
       }),
@@ -141,7 +142,7 @@ describe('useShelfProducts', () => {
     const { result: products } = renderHookWithProviders(() =>
       useShelfProducts({
         stat: ShelfStatFilter.All,
-        category: 'all',
+        category: ShelfCategoryFilter.All,
         search: '',
         sort: ShelfSort.RecentlyAdded,
       }),

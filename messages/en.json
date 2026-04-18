@@ -761,7 +761,8 @@
       "loadShelfTitle": "We couldn't load your shelf",
       "loadShelfDescription": "The shelf did not load this time. Try again in a moment.",
       "loadProductTitle": "We couldn't load this product",
-      "loadProductDescription": "The product details did not load this time. Try again in a moment."
+      "loadProductDescription": "The product details did not load this time. Try again in a moment.",
+      "loadMore": "Couldn't load more products."
     },
     "card": {
       "unopened": "Unopened",

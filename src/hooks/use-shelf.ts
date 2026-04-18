@@ -10,6 +10,7 @@ import { QueryKey } from '@/constants/query-keys';
 import { useAuthStore } from '@/stores/auth-store';
 import * as shelfService from '@/services/shelf.service';
 import {
+  type DeepPartial,
   type ShelfListFilters,
   type ShelfProduct,
   type ShelfProductDraft,
@@ -119,7 +120,7 @@ export function useCreateProduct() {
 
 type UpdateProductArgs = {
   id: string;
-  patch: Partial<ShelfProductDraft>;
+  patch: DeepPartial<ShelfProductDraft>;
 };
 
 export function useUpdateProduct() {

@@ -1,9 +1,14 @@
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/utils';
+import { useShelfUiStore } from '@/stores/shelf-ui-store';
 import {
   DataProvenance,
   ProductCategory,
+  ShelfCategoryFilter,
+  ShelfSort,
+  ShelfStatFilter,
   ShelfStatus,
+  ShelfViewMode,
   type ShelfProduct,
 } from '@/types/shelf';
 
@@ -90,6 +95,15 @@ beforeEach(() => {
   mockUseShelfProducts.mockReset();
   mockUseShelfStats.mockReset();
   mockFetchNextPage.mockReset();
+
+  useShelfUiStore.setState({
+    selectedIds: new Set<string>(),
+    sort: ShelfSort.RecentlyAdded,
+    view: ShelfViewMode.Grid,
+    stat: ShelfStatFilter.All,
+    activeCategory: ShelfCategoryFilter.All,
+    search: '',
+  });
 });
 
 describe('ShelfPage', () => {
@@ -136,6 +150,28 @@ describe('ShelfPage', () => {
     renderWithProviders(<ShelfPage />);
 
     expect(screen.getByTestId('product-grid-skeleton')).toBeInTheDocument();
+  });
+
+  it('renders the list loading skeleton when list view is active', () => {
+    useShelfUiStore.setState({ view: ShelfViewMode.List });
+
+    mockUseShelfProducts.mockReturnValue({
+      data: undefined,
+      isPending: true,
+      isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+    mockUseShelfStats.mockReturnValue({
+      data: undefined,
+      isPending: true,
+      isError: false,
+    });
+
+    renderWithProviders(<ShelfPage />);
+
+    expect(screen.getByTestId('product-list-skeleton')).toBeInTheDocument();
   });
 
   it('renders the product grid when products are present', () => {

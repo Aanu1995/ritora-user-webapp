@@ -16,7 +16,7 @@ import {
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import {
-  type ThemePreference,
+  ThemePreference,
   useAppPreferences,
 } from "@/components/preferences/app-preferences-provider";
 import { RitoraMark } from "@/components/icons/ritora-mark";
@@ -31,7 +31,11 @@ import { getSkinProfileSetupStatus } from "@/lib/skin-profile-setup";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/stores/auth-store";
 
-const THEME_OPTIONS: ThemePreference[] = ["system", "light", "dark"];
+const THEME_OPTIONS: ThemePreference[] = [
+  ThemePreference.System,
+  ThemePreference.Light,
+  ThemePreference.Dark,
+];
 
 function StepStateIcon({ complete }: { complete: boolean }) {
   return complete ? (

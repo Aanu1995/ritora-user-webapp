@@ -7,6 +7,7 @@ import {
 import { ApiPath } from '@/constants/api-paths';
 import {
   type CatalogueSuggestion,
+  type DeepPartial,
   type PaginatedResult,
   type ResolvedLookup,
   type ShelfListFilters,
@@ -48,7 +49,7 @@ export async function createProduct(
 
 export async function updateProduct(
   id: string,
-  patch: Partial<ShelfProductDraft>,
+  patch: DeepPartial<ShelfProductDraft>,
 ): Promise<ShelfProduct> {
   return patchRequest<ShelfProduct>(`${ApiPath.InventoryProducts}/${id}`, patch);
 }

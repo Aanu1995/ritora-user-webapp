@@ -21,10 +21,15 @@ export default function SkinProfilePage() {
   const hasNoProfile = profile.isError && profileStatus === 404;
   const hasProfileError = profile.isError && profileStatus !== 404;
   const hasOptionsError = options.isError;
+  const isLoadingOverview = Boolean(profile.data) && editStep === null;
 
   const renderContent = () => {
     if (options.isPending || (profile.isPending && !profile.isError)) {
-      return <SkinProfileSkeleton />;
+      return (
+        <SkinProfileSkeleton
+          mode={isLoadingOverview ? "overview" : "generic"}
+        />
+      );
     }
 
     if (hasProfileError || hasOptionsError || !options.data) {

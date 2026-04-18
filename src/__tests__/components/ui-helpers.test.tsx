@@ -20,6 +20,13 @@ describe('UI helper components', () => {
     expect(container.querySelectorAll('.animate-pulse').length).toBeGreaterThan(5);
   });
 
+  it('renders the skin profile overview skeleton placeholders', () => {
+    const { container } = render(<SkinProfileSkeleton mode="overview" />);
+
+    expect(container.querySelectorAll('[aria-hidden="true"]').length).toBeGreaterThan(0);
+    expect(container.querySelectorAll('.animate-pulse').length).toBeGreaterThan(5);
+  });
+
   it('renders the base skeleton primitive with the provided class name', () => {
     const { container } = render(<Skeleton className="h-4 w-10" />);
     const element = container.firstChild as HTMLElement;

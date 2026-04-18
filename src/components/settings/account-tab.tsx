@@ -9,7 +9,10 @@ import { z } from "zod";
 import { SettingsRow } from "@/components/settings/settings-row";
 import { SettingsSection } from "@/components/settings/settings-section";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import {
+  ConfirmDialog,
+  ConfirmDialogTone,
+} from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLogout, useLogoutAll, useUpdateProfile } from "@/hooks/use-auth";
@@ -113,7 +116,7 @@ function AccountSessionsSection({
         confirmLabel={t("account.signOutAllConfirmAction")}
         cancelLabel={t("account.signOutAllConfirmCancel")}
         onConfirm={onLogoutAll}
-        tone="danger"
+        tone={ConfirmDialogTone.Danger}
         isPending={isLogoutAllPending}
       />
     </>

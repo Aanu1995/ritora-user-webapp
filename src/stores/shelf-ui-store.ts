@@ -3,11 +3,11 @@
 import { create } from 'zustand';
 import {
   type ProductCategory,
+  ShelfCategoryFilter,
   ShelfSort,
   ShelfStatFilter,
+  ShelfViewMode,
 } from '@/types/shelf';
-
-export type ShelfViewMode = 'grid' | 'list';
 
 type ShelfUiState = {
   selectedIds: ReadonlySet<string>;
@@ -23,8 +23,8 @@ type ShelfUiState = {
   stat: ShelfStatFilter;
   setStat: (stat: ShelfStatFilter) => void;
 
-  activeCategory: ProductCategory | 'all';
-  setActiveCategory: (category: ProductCategory | 'all') => void;
+  activeCategory: ProductCategory | ShelfCategoryFilter.All;
+  setActiveCategory: (category: ProductCategory | ShelfCategoryFilter.All) => void;
 
   search: string;
   setSearch: (search: string) => void;
@@ -46,13 +46,13 @@ export const useShelfUiStore = create<ShelfUiState>((set, get) => ({
   sort: ShelfSort.RecentlyAdded,
   setSort: (sort) => set({ sort }),
 
-  view: 'grid',
+  view: ShelfViewMode.Grid,
   setView: (view) => set({ view }),
 
   stat: ShelfStatFilter.All,
   setStat: (stat) => set({ stat, selectedIds: new Set<string>() }),
 
-  activeCategory: 'all',
+  activeCategory: ShelfCategoryFilter.All,
   setActiveCategory: (activeCategory) =>
     set({ activeCategory, selectedIds: new Set<string>() }),
 
