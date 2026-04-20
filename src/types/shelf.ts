@@ -218,9 +218,9 @@ export enum ShelfFormValidationCode {
 
 /**
  * Used while collecting fields across the add-product flow. Sub-objects can
- * be partial because Search / URL / barcode lookups rarely supply every
- * field. The Confirm step composes a complete ShelfProductDraft from these
- * fragments before calling the create mutation.
+ * be partial because photo extraction may only return the fields it can
+ * verify cleanly. The Confirm step composes a complete ShelfProductDraft from
+ * these fragments before calling the create mutation.
  */
 export type ShelfProductPartial = {
   identity?: Partial<CatalogueIdentity>;
@@ -229,16 +229,6 @@ export type ShelfProductPartial = {
   userFields?: Partial<UserFields>;
   status?: ShelfStatus;
   provenance?: DataProvenance;
-};
-
-export type CatalogueSuggestion = Pick<
-  CatalogueIdentity,
-  'brand' | 'name' | 'category' | 'imageUrls' | 'sizeMl' | 'barcode'
-> & {
-  id: string;
-  source: CatalogueSource;
-  confidence: LookupConfidence;
-  reviewRequired: boolean;
 };
 
 export type LookupEvidence = {

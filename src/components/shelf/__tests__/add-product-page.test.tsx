@@ -14,7 +14,6 @@ import {
 const mockPush = jest.fn();
 const mockMutate = jest.fn();
 const mockExtractFromImagesMutate = jest.fn();
-const mockResolveUrlMutate = jest.fn();
 const mockToastSuccess = jest.fn();
 const mockToastError = jest.fn();
 let mockLookupResolve:
@@ -48,7 +47,6 @@ jest.mock('@/hooks/use-shelf', () => ({
     mutate: mockExtractFromImagesMutate,
     isPending: false,
   }),
-  useResolveUrl: () => ({ mutate: mockResolveUrlMutate, isPending: false }),
 }));
 
 jest.mock('@/components/shelf/add-product/quick-lookup-card', () => ({
@@ -97,7 +95,6 @@ beforeEach(() => {
   mockPush.mockReset();
   mockMutate.mockReset();
   mockExtractFromImagesMutate.mockReset();
-  mockResolveUrlMutate.mockReset();
   mockToastSuccess.mockReset();
   mockToastError.mockReset();
   mockLookupResolve = null;

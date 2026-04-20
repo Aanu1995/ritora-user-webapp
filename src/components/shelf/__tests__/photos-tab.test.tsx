@@ -1,6 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/utils';
+import { ApiError } from '@/lib/api-error';
 import {
   CatalogueSource,
   DataProvenance,
@@ -46,8 +47,18 @@ const RESOLVED_RESULT: ResolvedLookup = {
   evidence: [],
 };
 
-function getFileInput(container: HTMLElement): HTMLInputElement {
-  const input = container.querySelector('input[type="file"]');
+function getProductInput(container: HTMLElement): HTMLInputElement {
+  const input = container.querySelector(
+    'input[type="file"][aria-label="Add product photo"]',
+  );
+  expect(input).toBeInstanceOf(HTMLInputElement);
+  return input as HTMLInputElement;
+}
+
+function getLabelInput(container: HTMLElement): HTMLInputElement {
+  const input = container.querySelector(
+    'input[type="file"][aria-label="Add label photo"]',
+  );
   expect(input).toBeInstanceOf(HTMLInputElement);
   return input as HTMLInputElement;
 }
@@ -75,24 +86,21 @@ beforeAll(() => {
 });
 
 describe('PhotosTab', () => {
-  it('requires at least two photos before extraction starts', async () => {
+  it('keeps extract disabled until a product photo and at least one label photo are present', async () => {
     const user = userEvent.setup();
     const { container } = renderWithProviders(
       <PhotosTab onResolved={jest.fn()} />,
     );
-    const input = getFileInput(container);
 
     expect(
-      screen.getByText(
-        /add at least 2 photos and choose which one should be saved with the product/i,
-      ),
+      screen.getByText(/add a product photo and at least one label photo/i),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /extract from photos/i }),
     ).toBeDisabled();
 
     await user.upload(
-      input,
+      getProductInput(container),
       new File(['product'], 'product.jpg', { type: 'image/jpeg' }),
     );
 
@@ -101,16 +109,17 @@ describe('PhotosTab', () => {
     ).toBeDisabled();
 
     await user.upload(
-      input,
+      getLabelInput(container),
       new File(['label'], 'label.jpg', { type: 'image/jpeg' }),
     );
 
     expect(
       screen.getByRole('button', { name: /extract from photos/i }),
     ).toBeEnabled();
+    expect(getLabelInput(container)).toHaveProperty('multiple', true);
   });
 
-  it('uploads ordered images with a selected hero image and forwards the extracted result', async () => {
+  it('supports uploading multiple label photos at once and sends the product photo first', async () => {
     const user = userEvent.setup();
     const onResolved = jest.fn();
     const productImage = new File(['product'], 'product.jpg', {
@@ -132,7 +141,7 @@ describe('PhotosTab', () => {
           ingredientImage,
           directionsImage,
         ]);
-        expect(input.heroImageIndex).toBe(2);
+        expect(input.heroImageIndex).toBe(0);
         options?.onSuccess?.(RESOLVED_RESULT);
       },
     );
@@ -145,20 +154,18 @@ describe('PhotosTab', () => {
     const { container } = renderWithProviders(
       <PhotosTab onResolved={onResolved} />,
     );
-    const input = getFileInput(container);
 
-    await user.upload(input, productImage);
-    await user.upload(input, ingredientImage);
-    await user.upload(input, directionsImage);
-    await user.click(
-      screen.getAllByRole('button', { name: /use as product image/i })[1],
-    );
+    await user.upload(getProductInput(container), productImage);
+    await user.upload(getLabelInput(container), [
+      ingredientImage,
+      directionsImage,
+    ]);
     await user.click(screen.getByRole('button', { name: /extract from photos/i }));
 
     expect(mutate).toHaveBeenCalledWith(
       {
         images: [productImage, ingredientImage, directionsImage],
-        heroImageIndex: 2,
+        heroImageIndex: 0,
       },
       expect.objectContaining({
         onSuccess: expect.any(Function),
@@ -171,42 +178,69 @@ describe('PhotosTab', () => {
     ).toBeInTheDocument();
   });
 
-  it('prevents adding more than six photos', async () => {
+  it('caps batch label uploads at five label photos', async () => {
     const user = userEvent.setup();
     const { container } = renderWithProviders(
       <PhotosTab onResolved={jest.fn()} />,
     );
-    const input = getFileInput(container);
+    const productImage = new File(['product'], 'product.jpg', {
+      type: 'image/jpeg',
+    });
+    const labelImages = Array.from({ length: 6 }, (_, index) =>
+      new File([`label-${index}`], `label-${index}.jpg`, {
+        type: 'image/jpeg',
+      }),
+    );
 
-    for (let index = 0; index < 6; index += 1) {
+    await user.upload(getProductInput(container), productImage);
+    await user.upload(getLabelInput(container), labelImages);
+
+    expect(container.querySelectorAll('img')).toHaveLength(6);
+    expect(
+      screen.queryByRole('button', { name: /add label photo/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/you're at the 6-photo limit/i),
+    ).toBeInTheDocument();
+  });
+
+  it('prevents adding more than six photos total', async () => {
+    const user = userEvent.setup();
+    const { container } = renderWithProviders(
+      <PhotosTab onResolved={jest.fn()} />,
+    );
+
+    await user.upload(
+      getProductInput(container),
+      new File(['product'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+
+    for (let index = 0; index < 5; index += 1) {
       await user.upload(
-        input,
-        new File([`photo-${index}`], `photo-${index}.jpg`, {
+        getLabelInput(container),
+        new File([`label-${index}`], `label-${index}.jpg`, {
           type: 'image/jpeg',
         }),
       );
     }
 
-    expect(
-      screen.getByRole('button', { name: /max 6 photos/i }),
-    ).toBeDisabled();
-
-    await user.upload(
-      input,
-      new File(['overflow'], 'overflow.jpg', { type: 'image/jpeg' }),
-    );
-
     expect(container.querySelectorAll('img')).toHaveLength(6);
+    expect(
+      screen.queryByRole('button', { name: /add label photo/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/you're at the 6-photo limit/i),
+    ).toBeInTheDocument();
   });
 
-  it('shows a toast when extraction fails', async () => {
+  it('shows a toast when extraction fails on content', async () => {
     const user = userEvent.setup();
     const mutate = jest.fn(
       (
         _input: { images: File[]; heroImageIndex: number },
         options?: { onError?: (error: unknown) => void },
       ) => {
-        options?.onError?.(new Error('timeout'));
+        options?.onError?.(new ApiError('Unprocessable', { status: 422 }));
       },
     );
 
@@ -218,14 +252,13 @@ describe('PhotosTab', () => {
     const { container } = renderWithProviders(
       <PhotosTab onResolved={jest.fn()} />,
     );
-    const input = getFileInput(container);
 
     await user.upload(
-      input,
+      getProductInput(container),
       new File(['product'], 'product.jpg', { type: 'image/jpeg' }),
     );
     await user.upload(
-      input,
+      getLabelInput(container),
       new File(['label'], 'label.jpg', { type: 'image/jpeg' }),
     );
     await user.click(screen.getByRole('button', { name: /extract from photos/i }));
@@ -237,6 +270,46 @@ describe('PhotosTab', () => {
           description: expect.stringMatching(
             /add clearer or more complete label photos/i,
           ),
+        }),
+      );
+    });
+  });
+
+  it('shows a service-unavailable toast when extraction fails on network', async () => {
+    const user = userEvent.setup();
+    const mutate = jest.fn(
+      (
+        _input: { images: File[]; heroImageIndex: number },
+        options?: { onError?: (error: unknown) => void },
+      ) => {
+        options?.onError?.(new Error('network timeout'));
+      },
+    );
+
+    mockUseExtractProductFromImages.mockReturnValue({
+      mutate,
+      isPending: false,
+    });
+
+    const { container } = renderWithProviders(
+      <PhotosTab onResolved={jest.fn()} />,
+    );
+
+    await user.upload(
+      getProductInput(container),
+      new File(['product'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+    await user.upload(
+      getLabelInput(container),
+      new File(['label'], 'label.jpg', { type: 'image/jpeg' }),
+    );
+    await user.click(screen.getByRole('button', { name: /extract from photos/i }));
+
+    await waitFor(() => {
+      expect(mockToastError).toHaveBeenCalledWith(
+        expect.stringMatching(/couldn't reach the photo reader/i),
+        expect.objectContaining({
+          description: expect.stringMatching(/check your connection/i),
         }),
       );
     });

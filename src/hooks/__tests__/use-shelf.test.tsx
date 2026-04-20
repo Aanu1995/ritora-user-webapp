@@ -6,10 +6,9 @@ import {
   useArchiveProducts,
   useCreateProduct,
   useDeleteProducts,
+  useExtractProductFromImages,
   useMarkFinished,
   useMarkProductFinished,
-  useResolveBarcodeMutation,
-  useResolveUrl,
   useRestoreProduct,
   useRestoreProducts,
   useShelfProducts,
@@ -32,12 +31,11 @@ jest.mock('@/services/shelf.service', () => ({
   archiveProducts: jest.fn(),
   countProductsByStat: jest.fn(),
   createProduct: jest.fn(),
+  extractProductFromImages: jest.fn(),
   listProducts: jest.fn(),
   markProductFinished: jest.fn(),
   markProductsFinished: jest.fn(),
   removeProducts: jest.fn(),
-  resolveBarcode: jest.fn(),
-  resolveUrl: jest.fn(),
   restoreProduct: jest.fn(),
   restoreProducts: jest.fn(),
   updateProduct: jest.fn(),
@@ -260,25 +258,8 @@ describe('shelf mutations', () => {
     expect(shelfService.markProductFinished).toHaveBeenCalledWith('product-1');
   });
 
-  it('resolves URL lookups', async () => {
-    (shelfService.resolveUrl as jest.Mock).mockResolvedValue({
-      identity: { brand: 'CeraVe', name: 'Retinol Serum' },
-    });
-
-    const { result: resolveResult } = renderHookWithProviders(() => useResolveUrl());
-
-    await act(async () => {
-      await resolveResult.current.mutateAsync(
-        'https://www.cerave.com/skincare/serums/resurfacing-retinol-serum',
-      );
-    });
-    expect(shelfService.resolveUrl).toHaveBeenCalledWith(
-      'https://www.cerave.com/skincare/serums/resurfacing-retinol-serum',
-    );
-  });
-
-  it('resolves barcode lookups through the mutation hook', async () => {
-    (shelfService.resolveBarcode as jest.Mock).mockResolvedValue({
+  it('extracts product details from uploaded photos', async () => {
+    (shelfService.extractProductFromImages as jest.Mock).mockResolvedValue({
       identity: {
         brand: 'CeraVe',
         name: 'Retinol Serum',
@@ -286,15 +267,29 @@ describe('shelf mutations', () => {
       manufacturer: {
         brand: 'CeraVe',
       },
-      provenance: DataProvenance.BarcodeLookup,
+      provenance: DataProvenance.PhotoLookup,
     });
 
-    const { result } = renderHookWithProviders(() => useResolveBarcodeMutation());
+    const { result } = renderHookWithProviders(() =>
+      useExtractProductFromImages(),
+    );
+    const productImage = new File(['product'], 'product.jpg', {
+      type: 'image/jpeg',
+    });
+    const labelImage = new File(['label'], 'label.jpg', {
+      type: 'image/jpeg',
+    });
 
     await act(async () => {
-      await result.current.mutateAsync('3337875597227');
+      await result.current.mutateAsync({
+        images: [productImage, labelImage],
+        heroImageIndex: 0,
+      });
     });
 
-    expect(shelfService.resolveBarcode).toHaveBeenCalledWith('3337875597227');
+    expect(shelfService.extractProductFromImages).toHaveBeenCalledWith({
+      images: [productImage, labelImage],
+      heroImageIndex: 0,
+    });
   });
 });

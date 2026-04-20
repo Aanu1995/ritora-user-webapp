@@ -158,29 +158,6 @@ describe('shelf.service', () => {
     );
   });
 
-  it('resolves barcode and url lookups through HTTP', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue(null);
-
-    await shelfService.resolveBarcode('3337875597227');
-    await shelfService.resolveUrl('https://www.cerave.com/skincare/serums/resurfacing-retinol-serum');
-
-    expect(api.getRequest).toHaveBeenCalledWith(
-      '/catalogue/products/barcode/3337875597227',
-      expect.objectContaining({
-        timeout: 25000,
-      }),
-    );
-    expect(api.postRequest).toHaveBeenCalledWith(
-      '/catalogue/products/resolve-url',
-      {
-        url: 'https://www.cerave.com/skincare/serums/resurfacing-retinol-serum',
-      },
-      expect.objectContaining({
-        timeout: 25000,
-      }),
-    );
-  });
-
   it('uploads ordered photos plus the selected hero image index', async () => {
     const productImage = new File(['product'], 'product.jpg', {
       type: 'image/jpeg',

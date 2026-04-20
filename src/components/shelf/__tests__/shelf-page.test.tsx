@@ -157,7 +157,6 @@ jest.mock('@/hooks/use-shelf', () => ({
   useMarkFinished: () => ({ markFinished: jest.fn(), isPending: false }),
   useDeleteProducts: () => ({ mutate: jest.fn(), isPending: false }),
   useCreateProduct: () => ({ mutate: jest.fn(), isPending: false }),
-  useResolveUrl: () => ({ mutate: jest.fn(), isPending: false }),
 }));
 
 import { ShelfPage } from '@/components/shelf/shelf-page';
