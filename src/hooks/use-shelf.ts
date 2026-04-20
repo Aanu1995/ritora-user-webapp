@@ -174,27 +174,11 @@ export function useArchiveProduct() {
   });
 }
 
-export function useSearchCatalogue(searchQuery: string) {
-  const trimmed = searchQuery.trim();
-  const query = useInfiniteQuery({
-    queryKey: [QueryKey.CatalogueSearch, trimmed],
-    queryFn: ({ pageParam }) => shelfService.searchCatalogue(trimmed, pageParam),
-    enabled: trimmed.length >= 2,
-    initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    staleTime: 30_000,
-  });
-  const results = query.data?.pages.flatMap((page) => page.items) ?? [];
-
-  return {
-    ...query,
-    data: results,
-  };
-}
-
-export function useSearchCatalogueBestMatch() {
+export function useExtractProductFromImages() {
   return useMutation({
-    mutationFn: (query: string) => shelfService.searchCatalogueBestMatch(query),
+    mutationKey: [QueryKey.PhotoExtract],
+    mutationFn: (input: { images: File[]; heroImageIndex: number }) =>
+      shelfService.extractProductFromImages(input),
   });
 }
 

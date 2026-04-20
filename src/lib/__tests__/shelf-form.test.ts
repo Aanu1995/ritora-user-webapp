@@ -3,6 +3,7 @@ import {
   createEmptyManufacturer,
   createEmptyUserFields,
   isSafeExternalUrl,
+  isSafeProductImageUrl,
   normalizeShelfProductForm,
   shelfProductFormSchema,
   toShelfProductDraft,
@@ -259,6 +260,7 @@ describe('shelf-form', () => {
           ...createValue().identity,
           imageUrls: [
             'https://cdn.ritora.com/product.jpg',
+            'http://localhost:3001/media/catalogue-front-photos/front-photo.jpg',
             'http://127.0.0.1/private.jpg',
           ],
         },
@@ -273,6 +275,7 @@ describe('shelf-form', () => {
     expect(normalized.identity.name).toBe('Retinol Serum');
     expect(normalized.identity.imageUrls).toEqual([
       'https://cdn.ritora.com/product.jpg',
+      'http://localhost:3001/media/catalogue-front-photos/front-photo.jpg',
     ]);
     expect(normalized.identity.description).toBe('Smooth overnight serum.');
     expect(normalized.identity.benefits).toEqual(['calming', 'hydrating']);
@@ -307,5 +310,22 @@ describe('shelf-form', () => {
     expect(isSafeExternalUrl('http://10.0.0.5/product')).toBe(false);
     expect(isSafeExternalUrl('https://localhost:3000/product')).toBe(false);
     expect(isSafeExternalUrl('https://user:pass@ritora.com/product')).toBe(false);
+  });
+
+  it('allows configured api media URLs only for stored product images', () => {
+    expect(
+      isSafeProductImageUrl(
+        'http://localhost:3001/media/catalogue-front-photos/front-photo.jpg',
+      ),
+    ).toBe(true);
+    expect(isSafeProductImageUrl('http://localhost:3001/private.jpg')).toBe(false);
+    expect(
+      isSafeProductImageUrl('https://cdn.ritora.com/product.jpg'),
+    ).toBe(true);
+    expect(
+      isSafeExternalUrl(
+        'http://localhost:3001/media/catalogue-front-photos/front-photo.jpg',
+      ),
+    ).toBe(false);
   });
 });

@@ -752,6 +752,7 @@
       "other": "Övrigt"
     },
     "lookupSource": {
+      "user-photos": "Dina produktfoton",
       "ritora-catalogue": "Ritoras katalog",
       "open-beauty-facts": "Open Beauty Facts",
       "official-page": "Officiell produktsida"
@@ -817,10 +818,11 @@
     },
     "dialog": {
       "title": "Lägg till på din hylla",
-      "subtitle": "Skanna en streckkod, sök i katalogen, klistra in en produktlänk eller fyll i manuellt.",
+      "subtitle": "Ladda upp en produktbild och etikettbilder, eller fyll i manuellt.",
       "close": "Stäng",
       "step": "Steg {current} av 2",
       "tabs": {
+        "photos": "Foton",
         "scan": "Skanna",
         "search": "Sök",
         "url": "Länk",
@@ -838,6 +840,7 @@
         "resolving": "Slår upp streckkod {barcode}…",
         "success": "Produkt hittad. Granska detaljerna nedan.",
         "notFound": "Vi kunde inte hitta den streckkoden i katalogen. Prova att skanna igen eller använd Sök.",
+        "lookupUnavailable": "Vi skannade en streckkod men kataloguppslagningen slutfördes inte. Försök igen om en stund. Om du kör lokalt, kontrollera att backend-API:t går att nå från den här webbläsaren.",
         "lookupError": "Vi hittade en streckkod men kunde inte slå upp den just nu.",
         "insecureContext": "Kameraskanning fungerar bara på https:// eller localhost.",
         "permissionDenied": "Kameraåtkomst är blockerad för den här webbplatsen. Tillåt kameran i webbläsarens inställningar och försök igen.",
@@ -850,6 +853,40 @@
         "scanAnother": "Skanna en annan streckkod",
         "fallback": "Prova Sök istället"
       },
+      "photos": {
+        "heading": "Få med produkten och varje läsbar etikettsektion",
+        "description": "Använd 2 till 6 stillbilder. Börja med en tydlig produktbild och lägg sedan till överlappande etikettbilder tills ingredienser, anvisningar och varningar går att läsa.",
+        "checklist": {
+          "brandVisible": "Produkt och varumärke syns",
+          "fullIngredients": "Hela ingredienslistan är med",
+          "directionsWarnings": "Anvisningar och varningar är med",
+          "extraCurvedSections": "Extra etikettsektioner har lagts till vid behov"
+        },
+        "uploaderHeading": "Produktbild och etikettbilder",
+        "uploaderDescription": "Använd bra ljus, undvik reflexer och fingrar, beskär tillräckligt nära för att texten ska gå att läsa och lägg till överlappande bilder för rundade eller omlindade etiketter.",
+        "productPhotoLabel": "Produktbild",
+        "labelPhotoLabel": "Etikettbild {index}",
+        "productPhotoHint": "Det här är bilden Ritora sparar med produkten.",
+        "labelPhotoHint": "Använd den här för ingredienser, anvisningar, varningar och text på rundade etiketter.",
+        "savedBadge": "Sparas med produkten",
+        "extractionOnlyBadge": "Bara för extraktion",
+        "selectHeroAction": "Använd som produktbild",
+        "moveEarlierAction": "Flytta tidigare",
+        "moveLaterAction": "Flytta senare",
+        "removeAction": "Ta bort",
+        "addAction": "Lägg till bild",
+        "maxReachedAction": "Max 6 bilder",
+        "emptyState": "Lägg först till en tydlig produktbild och fortsätt sedan med etikettbilder tills varje läsbar panel är täckt.",
+        "incomplete": "Lägg till minst 2 bilder och välj vilken som ska sparas med produkten innan Ritora fyller i formuläret automatiskt.",
+        "ready": "Dina bilder är redo. Ritora kombinerar etikettbilderna och sparar den valda produktbilden.",
+        "maxReached": "Du har nått gränsen på 6 bilder. Flytta om, ta bort eller byt ut en bild om du behöver annan täckning.",
+        "extracting": "Läser bilduppsättningen och kombinerar etiketttexten…",
+        "partial": "Vissa fält behöver fortfarande granskas. Lägg till tydligare eller mer kompletta etikettbilder om något viktigt saknas.",
+        "errorTitle": "Vi kunde inte läsa de här bilderna",
+        "error": "Fotoextraktionen slutfördes inte den här gången. Lägg till tydligare eller mer kompletta etikettbilder eller fyll i uppgifterna manuellt.",
+        "extractAction": "Extrahera från foton",
+        "extractingAction": "Extraherar…"
+      },
       "search": {
         "heading": "Hitta din produkt",
         "placeholder": "Sök efter märke eller produktnamn",
@@ -859,8 +896,8 @@
         "errorTitle": "Vi kunde inte söka just nu",
         "error": "Katalogsökningen kunde inte läsas in just nu. Försök igen om en liten stund.",
         "resolveErrorTitle": "Vi kunde inte lägga till den här produkten just nu",
-        "resolveError": "Vi hittade en möjlig träff, men kunde inte importera produktdetaljerna den här gången. Försök igen, skanna streckkoden eller klistra in den officiella produktlänken.",
-        "resolveNotFound": "Vi hittade en möjlig träff, men kunde inte importera tillräckligt med detaljer för den här produkten. Prova ett annat namn, skanna streckkoden eller klistra in den officiella produktlänken.",
+        "resolveError": "Vi hittade en möjlig träff, men kunde inte importera produktdetaljerna den här gången. Försök igen, använd foton eller fyll i produkten manuellt.",
+        "resolveNotFound": "Vi hittade en möjlig träff, men kunde inte importera tillräckligt med detaljer för den här produkten. Prova ett annat namn, använd foton eller fyll i uppgifterna manuellt.",
         "retry": "Försök igen",
         "searchAction": "Sök",
         "searching": "Söker…",
@@ -880,8 +917,7 @@
       },
       "lookup": {
         "heading": "Hitta din produkt",
-        "description": "Skanna en streckkod, sök i katalogen eller klistra in en produktlänk. Ritora fyller i det den kan och du kan justera resten nedan.",
-        "tablistLabel": "Metoder för snabb uppslagning"
+        "description": "Lägg till en produktbild och etikettbilder. Ritora fyller i det den kan och du kan justera resten nedan."
       },
       "lookupImport": {
         "title": "Produktdetaljer ifyllda",
@@ -895,7 +931,7 @@
         "confidenceLabel": "Tillförlitlighet",
         "warningsLabel": "Det här bör du granska",
         "evidenceLabel": "Underliggande källor",
-        "lowConfidenceError": "Vi kunde inte verifiera tillräckligt med produktdetaljer för att fylla i formuläret på ett säkert sätt. Klistra in den officiella produktlänken eller fyll i uppgifterna manuellt."
+        "lowConfidenceError": "Vi kunde inte verifiera tillräckligt med produktdetaljer för att fylla i formuläret på ett säkert sätt. Prova tydligare bilder eller fyll i uppgifterna manuellt."
       },
       "manual": {
         "heading": "Lägg till manuellt",
@@ -918,9 +954,10 @@
         },
         "hints": {
           "identityDescription": "Grunderna om produkten. Märke, namn, kategori och storlek.",
-          "photoUploadComingSoon": "Fotouppladdning kommer snart.",
+          "photoPreviewAvailable": "Den valda produktbilden är redo att sparas med den här produkten.",
+          "photoPreviewEmpty": "Ladda upp en produktbild och etikettbilder ovan för att fylla i det här avsnittet automatiskt.",
           "sizeHint": "Volym i milliliter från förpackningen.",
-          "aboutDescription": "Kopiera från förpackningen eller lämna tomt. Ritora fyller i detta när en streckkod eller katalogträff lyckas.",
+          "aboutDescription": "Kopiera från förpackningen eller lämna tomt. Ritora fyller i detta när fotoextraktion eller katalogträff lyckas.",
           "descriptionHint": "En kort överblick över vad produkten gör.",
           "benefitsHint": "Kommaseparerat, till exempel återfuktande, lugnande, utjämnande.",
           "suitedForHint": "Kommaseparerade hudtyper, till exempel torr, kombinerad, känslig.",
@@ -1133,6 +1170,7 @@
       "either": "morgon eller kväll"
     },
     "provenance": {
+      "photo-lookup": "fotoextraktion",
       "barcode-lookup": "streckkodsuppslag",
       "url-fetch": "tillverkarens länk",
       "catalogue": "Ritoras katalog",
@@ -1147,9 +1185,7 @@
           "Massera mjukt i cirklar på fuktig hud.",
           "Skölj noga med ljummet vatten."
         ],
-        "cautions": [
-          "Undvik ögonpartiet."
-        ]
+        "cautions": ["Undvik ögonpartiet."]
       },
       "toner": {
         "steps": [
@@ -1226,14 +1262,10 @@
           "Knacka mjukt med ringfingret runt ögonbenet.",
           "Dra eller sträck inte ut den tunna huden kring ögonen."
         ],
-        "cautions": [
-          "Undvik att få produkten i ögat."
-        ]
+        "cautions": ["Undvik att få produkten i ögat."]
       },
       "lip-care": {
-        "steps": [
-          "Applicera ett tunt lager efter behov under dagen."
-        ],
+        "steps": ["Applicera ett tunt lager efter behov under dagen."],
         "cautions": []
       },
       "treatment": {
@@ -1241,9 +1273,7 @@
           "Följ förpackningens instruktioner.",
           "Applicera endast på det berörda området."
         ],
-        "cautions": [
-          "Testa på en liten yta innan första användning."
-        ]
+        "cautions": ["Testa på en liten yta innan första användning."]
       },
       "other": {
         "steps": [],
@@ -1311,7 +1341,7 @@
     "backToDashboard": "Tillbaka till Hem",
     "shelf": {
       "title": "Hylla",
-      "description": "Lägg till och hantera de hudvårdsprodukter du äger. Skanna streckkoder, sök efter namn, klistra in produktlänkar eller ange detaljer manuellt. Detta är ditt digitala badrumsskåp."
+      "description": "Lägg till och hantera de hudvårdsprodukter du äger. Ladda upp en produktbild och etikettbilder eller ange detaljer manuellt. Detta är ditt digitala badrumsskåp."
     },
     "todaysSuggestion": {
       "title": "Dagens förslag",

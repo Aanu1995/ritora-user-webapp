@@ -21,6 +21,7 @@ import {
 const HTTP_PROTOCOLS = new Set(['http:', 'https:']);
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PRIVATE_HOSTNAME_SUFFIXES = ['.local', '.internal', '.localhost'] as const;
+const API_MEDIA_PATH_PREFIX = '/media/';
 
 const VALIDATION_MESSAGE = {
   brandRequired: 'dialog.validation.brandRequired',
@@ -159,6 +160,27 @@ function createNullableStringSchema() {
 }
 
 export function isSafeExternalUrl(value: string): boolean {
+  return isSafeHttpUrl(value, { allowConfiguredApiMedia: false });
+}
+
+export function isSafeProductImageUrl(value: string): boolean {
+  return isSafeHttpUrl(value, { allowConfiguredApiMedia: true });
+}
+
+function getConfiguredApiOrigin(): string | null {
+  try {
+    return new URL(
+      process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1',
+    ).origin;
+  } catch {
+    return null;
+  }
+}
+
+function isSafeHttpUrl(
+  value: string,
+  options: { allowConfiguredApiMedia: boolean },
+): boolean {
   try {
     const parsed = new URL(value);
     const hostname = parsed.hostname.toLowerCase();
@@ -169,6 +191,14 @@ export function isSafeExternalUrl(value: string): boolean {
 
     if (!hostname || parsed.username || parsed.password) {
       return false;
+    }
+
+    if (
+      options.allowConfiguredApiMedia &&
+      parsed.pathname.startsWith(API_MEDIA_PATH_PREFIX) &&
+      parsed.origin === getConfiguredApiOrigin()
+    ) {
+      return true;
     }
 
     if (
@@ -458,7 +488,7 @@ export function normalizeShelfProductForm(
       ...value.identity,
       brand: value.identity.brand.trim(),
       name: value.identity.name.trim(),
-      imageUrls: value.identity.imageUrls.filter(isSafeExternalUrl),
+      imageUrls: value.identity.imageUrls.filter(isSafeProductImageUrl),
       sizeMl:
         value.identity.sizeMl == null || Number.isNaN(value.identity.sizeMl)
           ? null

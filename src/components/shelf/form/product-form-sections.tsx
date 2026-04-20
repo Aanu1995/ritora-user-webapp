@@ -84,14 +84,24 @@ export function ProductIdentitySection({
       <div className="flex flex-col gap-5 sm:grid sm:grid-cols-[180px_1fr] sm:items-start sm:gap-6">
         <div className="mx-auto w-full max-w-[160px] sm:mx-0 sm:max-w-none">
           <div className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-surface-muted">
-            <ProductIllustration
-              brand={identity.brand}
-              category={identity.category}
-              className="h-[60%] w-auto"
-            />
+            {identity.imageUrls[0] ? (
+              <img
+                src={identity.imageUrls[0]}
+                alt={`${identity.brand} ${identity.name}`.trim() || tField('name')}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <ProductIllustration
+                brand={identity.brand}
+                category={identity.category}
+                className="h-[60%] w-auto"
+              />
+            )}
           </div>
           <p className="mt-2 text-center text-[11px] text-muted sm:text-left">
-            {t('hints.photoUploadComingSoon')}
+            {identity.imageUrls[0]
+              ? t('hints.photoPreviewAvailable')
+              : t('hints.photoPreviewEmpty')}
           </p>
         </div>
 

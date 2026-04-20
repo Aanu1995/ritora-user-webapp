@@ -12,8 +12,6 @@ import {
   useResolveUrl,
   useRestoreProduct,
   useRestoreProducts,
-  useSearchCatalogueBestMatch,
-  useSearchCatalogue,
   useShelfProducts,
   useShelfStats,
   useUpdateProduct,
@@ -42,8 +40,6 @@ jest.mock('@/services/shelf.service', () => ({
   resolveUrl: jest.fn(),
   restoreProduct: jest.fn(),
   restoreProducts: jest.fn(),
-  searchCatalogueBestMatch: jest.fn(),
-  searchCatalogue: jest.fn(),
   updateProduct: jest.fn(),
 }));
 
@@ -264,87 +260,20 @@ describe('shelf mutations', () => {
     expect(shelfService.markProductFinished).toHaveBeenCalledWith('product-1');
   });
 
-  it('searches catalogue pages and resolves URL lookups', async () => {
-    (shelfService.searchCatalogue as jest.Mock)
-      .mockResolvedValueOnce({
-        items: [
-          {
-            brand: 'CeraVe',
-            name: 'Retinol Serum',
-            category: ProductCategory.Serum,
-            barcode: '123',
-            imageUrls: [],
-            sizeMl: 30,
-          },
-        ],
-        nextCursor: 'search-next',
-      })
-      .mockResolvedValueOnce({
-        items: [
-          {
-            brand: 'CeraVe',
-            name: 'Retinol Serum Mini',
-            category: ProductCategory.Serum,
-            barcode: null,
-            imageUrls: [],
-            sizeMl: 15,
-          },
-        ],
-        nextCursor: null,
-      });
+  it('resolves URL lookups', async () => {
     (shelfService.resolveUrl as jest.Mock).mockResolvedValue({
       identity: { brand: 'CeraVe', name: 'Retinol Serum' },
     });
 
-    const { result: searchResult } = renderHookWithProviders(() =>
-      useSearchCatalogue('ret'),
-    );
     const { result: resolveResult } = renderHookWithProviders(() => useResolveUrl());
 
-    await waitFor(() => {
-      expect(searchResult.current.isSuccess).toBe(true);
-    });
-
-    expect(searchResult.current.data).toHaveLength(1);
-
     await act(async () => {
-      await searchResult.current.fetchNextPage();
       await resolveResult.current.mutateAsync(
         'https://www.cerave.com/skincare/serums/resurfacing-retinol-serum',
       );
     });
-
-    await waitFor(() => {
-      expect(searchResult.current.data).toHaveLength(2);
-    });
-    expect(shelfService.searchCatalogue).toHaveBeenNthCalledWith(1, 'ret', null);
-    expect(shelfService.searchCatalogue).toHaveBeenNthCalledWith(
-      2,
-      'ret',
-      'search-next',
-    );
     expect(shelfService.resolveUrl).toHaveBeenCalledWith(
       'https://www.cerave.com/skincare/serums/resurfacing-retinol-serum',
-    );
-  });
-
-  it('searches for a best-match lookup in one mutation call', async () => {
-    (shelfService.searchCatalogueBestMatch as jest.Mock).mockResolvedValue({
-      identity: { brand: 'CeraVe', name: 'Retinol Serum' },
-      manufacturer: { brand: 'CeraVe' },
-      provenance: DataProvenance.Catalogue,
-    });
-
-    const { result } = renderHookWithProviders(() =>
-      useSearchCatalogueBestMatch(),
-    );
-
-    await act(async () => {
-      await result.current.mutateAsync('cerave retinol serum');
-    });
-
-    expect(shelfService.searchCatalogueBestMatch).toHaveBeenCalledWith(
-      'cerave retinol serum',
     );
   });
 

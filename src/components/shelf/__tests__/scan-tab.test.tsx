@@ -1,34 +1,35 @@
-import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from '@/test/utils';
+import { screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderWithProviders } from "@/test/utils";
+import { ApiError } from "@/lib/api-error";
 import {
   BarcodeScannerStatus,
   CatalogueSource,
   DataProvenance,
   LookupConfidence,
   ProductCategory,
-} from '@/types/shelf';
+} from "@/types/shelf";
 
 const mockUseBarcodeScanner = jest.fn();
 const mockUseResolveBarcodeMutation = jest.fn();
 
-jest.mock('@/hooks/use-barcode-scanner', () => ({
+jest.mock("@/hooks/use-barcode-scanner", () => ({
   useBarcodeScanner: () => mockUseBarcodeScanner(),
 }));
 
-jest.mock('@/hooks/use-shelf', () => ({
+jest.mock("@/hooks/use-shelf", () => ({
   useResolveBarcodeMutation: () => mockUseResolveBarcodeMutation(),
 }));
 
-import { ScanTab } from '@/components/shelf/add-product/scan-tab';
+import { ScanTab } from "@/components/shelf/add-product/scan-tab";
 
 beforeEach(() => {
   mockUseBarcodeScanner.mockReset();
   mockUseResolveBarcodeMutation.mockReset();
 });
 
-describe('ScanTab', () => {
-  it('renders the explicit start state and fallback action', async () => {
+describe("ScanTab", () => {
+  it("renders the explicit start state and fallback action", async () => {
     const user = userEvent.setup();
     const onSwitchToManual = jest.fn();
     const start = jest.fn();
@@ -56,14 +57,16 @@ describe('ScanTab', () => {
       screen.getByText(/tap start to turn on the camera scanner/i),
     ).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: /start camera/i }));
+    await user.click(screen.getByRole("button", { name: /start camera/i }));
     expect(start).toHaveBeenCalled();
 
-    await user.click(screen.getByRole('button', { name: /try search instead/i }));
+    await user.click(
+      screen.getByRole("button", { name: /try search instead/i }),
+    );
     expect(onSwitchToManual).toHaveBeenCalled();
   });
 
-  it('resolves a detected barcode and forwards the lookup result', async () => {
+  it("resolves a detected barcode and forwards the lookup result", async () => {
     const onResolved = jest.fn();
     const mutate = jest.fn(
       (
@@ -84,13 +87,13 @@ describe('ScanTab', () => {
       ) => {
         options?.onSuccess?.({
           identity: {
-            brand: 'CeraVe',
-            name: 'Resurfacing Retinol Serum',
+            brand: "CeraVe",
+            name: "Resurfacing Retinol Serum",
             category: ProductCategory.Serum,
           },
           guidance: {},
           manufacturer: {
-            brand: 'CeraVe',
+            brand: "CeraVe",
           },
           provenance: DataProvenance.BarcodeLookup,
           source: CatalogueSource.OpenBeautyFacts,
@@ -103,7 +106,7 @@ describe('ScanTab', () => {
     );
 
     mockUseBarcodeScanner.mockReturnValue({
-      detectedBarcode: '3337875597227',
+      detectedBarcode: "3337875597227",
       error: null,
       isSupported: true,
       start: jest.fn(),
@@ -123,7 +126,7 @@ describe('ScanTab', () => {
 
     await waitFor(() => {
       expect(mutate).toHaveBeenCalledWith(
-        '3337875597227',
+        "3337875597227",
         expect.objectContaining({
           onSuccess: expect.any(Function),
         }),
@@ -131,13 +134,13 @@ describe('ScanTab', () => {
     });
 
     expect(screen.queryByText(/captured barcode/i)).not.toBeInTheDocument();
-    expect(screen.queryByText('3337875597227')).not.toBeInTheDocument();
+    expect(screen.queryByText("3337875597227")).not.toBeInTheDocument();
 
     expect(onResolved).toHaveBeenCalledWith(
       expect.objectContaining({
         identity: expect.objectContaining({
-          brand: 'CeraVe',
-          name: 'Resurfacing Retinol Serum',
+          brand: "CeraVe",
+          name: "Resurfacing Retinol Serum",
         }),
         provenance: DataProvenance.BarcodeLookup,
         source: CatalogueSource.OpenBeautyFacts,
@@ -145,7 +148,7 @@ describe('ScanTab', () => {
     );
   });
 
-  it('shows the broader blocked-camera guidance when the browser cannot start a granted camera', () => {
+  it("shows the broader blocked-camera guidance when the browser cannot start a granted camera", () => {
     mockUseBarcodeScanner.mockReturnValue({
       detectedBarcode: null,
       error: null,
@@ -170,5 +173,43 @@ describe('ScanTab', () => {
         /if site permission is already allowed, check your device privacy settings/i,
       ),
     ).toBeInTheDocument();
+  });
+
+  it("shows a catalogue lookup message when barcode lookup fails without an HTTP response", async () => {
+    const mutate = jest.fn(
+      (
+        _barcode: string,
+        options?: {
+          onError?: (error: unknown) => void;
+        },
+      ) => {
+        options?.onError?.(new ApiError("Failed to fetch barcode lookup"));
+      },
+    );
+
+    mockUseBarcodeScanner.mockReturnValue({
+      detectedBarcode: "3337875597227",
+      error: null,
+      isSupported: true,
+      start: jest.fn(),
+      status: BarcodeScannerStatus.Detected,
+      videoRef: { current: null },
+      retry: jest.fn(),
+    });
+    mockUseResolveBarcodeMutation.mockReturnValue({
+      mutate,
+      isPending: false,
+      reset: jest.fn(),
+    });
+
+    renderWithProviders(
+      <ScanTab onResolved={jest.fn()} onSwitchToManual={jest.fn()} />,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/catalogue lookup didn't complete/i),
+      ).toBeInTheDocument();
+    });
   });
 });

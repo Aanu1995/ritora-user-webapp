@@ -265,12 +265,6 @@ export function AddProductPage() {
 
   const { releaseGuard } = useUnsavedChangesGuard({ hasUnsavedChanges });
 
-  const clearLookupDraft = () => {
-    form.reset(buildDefaultValues());
-    setProvenance(DataProvenance.UserEntered);
-    setReviewFields({});
-  };
-
   const handleLookupResult = (resolved: ResolvedLookup) => {
     if (resolved.confidence === LookupConfidence.Low) {
       setReviewFields({});
@@ -466,10 +460,7 @@ export function AddProductPage() {
               </div>
 
               <div className="mx-auto mt-6 flex max-w-5xl flex-col gap-6">
-                <QuickLookupCard
-                  onResult={handleLookupResult}
-                  onSearchStart={clearLookupDraft}
-                />
+                <QuickLookupCard onResult={handleLookupResult} />
 
                 {formError ? (
                   <div

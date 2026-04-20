@@ -2,12 +2,12 @@ import {
   deleteRequest,
   getRequest,
   patchRequest,
+  postMultipartRequest,
   postRequest,
 } from '@/lib/api';
 import { ApiPath } from '@/constants/api-paths';
 import {
   type CatalogueSource,
-  type CatalogueSuggestion,
   type DeepPartial,
   type PaginatedResult,
   type ResolvedLookup,
@@ -88,28 +88,20 @@ export async function markProductsFinished(ids: string[]): Promise<void> {
   return postRequest<void>(ApiPath.InventoryProductsBulkMarkFinished, { ids });
 }
 
-export async function searchCatalogue(
-  query: string,
-  cursor?: string | null,
-): Promise<PaginatedResult<CatalogueSuggestion>> {
-  const params = {
-    q: query,
-    ...(cursor ? { cursor } : {}),
-  };
+export async function extractProductFromImages(input: {
+  images: File[];
+  heroImageIndex: number;
+}): Promise<ResolvedLookup | null> {
+  const body = new FormData();
+  input.images.forEach((image) => {
+    body.append('images', image);
+  });
+  body.append('heroImageIndex', String(input.heroImageIndex));
 
-  return getRequest<PaginatedResult<CatalogueSuggestion>>(
-    ApiPath.CatalogueProductsSearch,
-    { params },
-  );
-}
-
-export async function searchCatalogueBestMatch(
-  query: string,
-): Promise<ResolvedLookup | null> {
-  return postRequest<ResolvedLookup | null>(
-    ApiPath.CatalogueProductsSearchBestMatch,
-    { q: query },
-    { timeout: 25000 },
+  return postMultipartRequest<ResolvedLookup | null>(
+    ApiPath.CatalogueProductsExtractFromImages,
+    body,
+    { timeout: 75000 },
   );
 }
 

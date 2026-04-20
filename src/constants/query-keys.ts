@@ -6,7 +6,7 @@ export enum QueryKey {
   SkinProfileOptions = 'skin-profile-options',
   Shelf = 'shelf',
   ShelfProduct = 'shelf-product',
-  CatalogueSearch = 'catalogue-search',
+  PhotoExtract = 'photo-extract',
   BarcodeResolve = 'barcode-resolve',
   UrlResolve = 'url-resolve',
 }

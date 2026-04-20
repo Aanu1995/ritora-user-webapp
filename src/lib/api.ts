@@ -302,6 +302,25 @@ export async function postRequest<T>(
   }
 }
 
+export async function postMultipartRequest<T>(
+  url: string,
+  body: FormData,
+  config?: AxiosRequestConfig,
+): Promise<T> {
+  try {
+    const { data } = await apiClient.post<T>(url, body, {
+      ...config,
+      headers: {
+        ...(config?.headers ?? {}),
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data;
+  } catch (error) {
+    throwServerError(error, `Failed to post multipart data to ${url}`);
+  }
+}
+
 export async function patchRequest<T>(
   url: string,
   body?: unknown,

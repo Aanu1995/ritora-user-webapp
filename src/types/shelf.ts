@@ -83,6 +83,7 @@ export enum ShelfStatFilter {
 }
 
 export enum DataProvenance {
+  PhotoLookup = 'photo-lookup',
   BarcodeLookup = 'barcode-lookup',
   UrlFetch = 'url-fetch',
   Catalogue = 'catalogue',
@@ -90,6 +91,7 @@ export enum DataProvenance {
 }
 
 export enum CatalogueSource {
+  UserPhotos = 'user-photos',
   RitoraCatalogue = 'ritora-catalogue',
   OpenBeautyFacts = 'open-beauty-facts',
   OfficialPage = 'official-page',

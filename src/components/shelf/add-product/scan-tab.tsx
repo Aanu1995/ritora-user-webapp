@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { useBarcodeScanner } from "@/hooks/use-barcode-scanner";
+import { getApiErrorStatus } from "@/lib/api-error";
 import { useResolveBarcodeMutation } from "@/hooks/use-shelf";
 import { BarcodeScannerStatus, type ResolvedLookup } from "@/types/shelf";
 
@@ -28,7 +29,7 @@ export function ScanTab({ onResolved, onSwitchToManual }: Props) {
     reset: resetBarcodeLookup,
   } = useResolveBarcodeMutation();
   const [lookupState, setLookupState] = useState<
-    "idle" | "success" | "not-found" | "error"
+    "idle" | "success" | "not-found" | "error" | "service-unavailable"
   >("idle");
   const requestedBarcodeRef = useRef<string | null>(null);
 
@@ -52,8 +53,13 @@ export function ScanTab({ onResolved, onSwitchToManual }: Props) {
         onResolved(result);
         setLookupState("success");
       },
-      onError: () => {
-        setLookupState("error");
+      onError: (error) => {
+        const status = getApiErrorStatus(error);
+        setLookupState(
+          status === undefined || status === 0
+            ? "service-unavailable"
+            : "error",
+        );
       },
     });
   }, [detectedBarcode, isResolvingBarcode, onResolved, resolveBarcode]);
@@ -75,6 +81,7 @@ export function ScanTab({ onResolved, onSwitchToManual }: Props) {
   const showRetryButton =
     lookupState === "success" ||
     lookupState === "not-found" ||
+    lookupState === "service-unavailable" ||
     lookupState === "error" ||
     scannerStatus === BarcodeScannerStatus.PermissionDenied ||
     scannerStatus === BarcodeScannerStatus.PolicyBlocked ||
@@ -97,6 +104,10 @@ export function ScanTab({ onResolved, onSwitchToManual }: Props) {
 
     if (lookupState === "not-found") {
       return t("notFound");
+    }
+
+    if (lookupState === "service-unavailable") {
+      return t("lookupUnavailable");
     }
 
     if (lookupState === "error") {

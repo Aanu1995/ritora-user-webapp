@@ -2,6 +2,7 @@ jest.mock('@/lib/api', () => ({
   deleteRequest: jest.fn(),
   getRequest: jest.fn(),
   patchRequest: jest.fn(),
+  postMultipartRequest: jest.fn(),
   postRequest: jest.fn(),
 }));
 
@@ -157,38 +158,58 @@ describe('shelf.service', () => {
     );
   });
 
-  it('searches catalogue, resolves best-match lookups, and resolves barcode/url lookups through HTTP', async () => {
-    (api.getRequest as jest.Mock).mockResolvedValue({
-      items: [],
-      nextCursor: null,
-    });
+  it('resolves barcode and url lookups through HTTP', async () => {
     (api.postRequest as jest.Mock).mockResolvedValue(null);
 
-    await shelfService.searchCatalogue('cera', 'cursor-2');
-    await shelfService.searchCatalogueBestMatch('cerave retinol serum');
     await shelfService.resolveBarcode('3337875597227');
     await shelfService.resolveUrl('https://www.cerave.com/skincare/serums/resurfacing-retinol-serum');
 
-    expect(api.getRequest).toHaveBeenCalledWith('/catalogue/products/search', {
-      params: {
-        q: 'cera',
-        cursor: 'cursor-2',
-      },
-    });
-    expect(api.postRequest).toHaveBeenCalledWith(
-      '/catalogue/products/search-best-match',
-      {
-        q: 'cerave retinol serum',
-      },
-    );
     expect(api.getRequest).toHaveBeenCalledWith(
       '/catalogue/products/barcode/3337875597227',
+      expect.objectContaining({
+        timeout: 25000,
+      }),
     );
     expect(api.postRequest).toHaveBeenCalledWith(
       '/catalogue/products/resolve-url',
       {
         url: 'https://www.cerave.com/skincare/serums/resurfacing-retinol-serum',
       },
+      expect.objectContaining({
+        timeout: 25000,
+      }),
     );
+  });
+
+  it('uploads ordered photos plus the selected hero image index', async () => {
+    const productImage = new File(['product'], 'product.jpg', {
+      type: 'image/jpeg',
+    });
+    const ingredientImage = new File(['ingredients'], 'ingredients.jpg', {
+      type: 'image/jpeg',
+    });
+    const directionsImage = new File(['directions'], 'directions.jpg', {
+      type: 'image/jpeg',
+    });
+    (api.postMultipartRequest as jest.Mock).mockResolvedValue(null);
+
+    await shelfService.extractProductFromImages({
+      images: [productImage, ingredientImage, directionsImage],
+      heroImageIndex: 2,
+    });
+
+    expect(api.postMultipartRequest).toHaveBeenCalledWith(
+      '/catalogue/products/extract-from-images',
+      expect.any(FormData),
+      expect.objectContaining({ timeout: 75000 }),
+    );
+
+    const body = (api.postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
+    expect(body.getAll('images')).toEqual([
+      productImage,
+      ingredientImage,
+      directionsImage,
+    ]);
+    expect(body.get('heroImageIndex')).toBe('2');
   });
 });

@@ -752,6 +752,7 @@
       "other": "Other"
     },
     "lookupSource": {
+      "user-photos": "Your product photos",
       "ritora-catalogue": "Ritora catalogue",
       "open-beauty-facts": "Open Beauty Facts",
       "official-page": "Official brand page"
@@ -817,10 +818,11 @@
     },
     "dialog": {
       "title": "Add to your shelf",
-      "subtitle": "Scan a barcode, search the catalogue, paste a product URL, or enter the details yourself.",
+      "subtitle": "Upload a product photo plus label photos, or enter the details yourself.",
       "close": "Close",
       "step": "Step {current} of 2",
       "tabs": {
+        "photos": "Photos",
         "scan": "Scan",
         "search": "Search",
         "url": "URL",
@@ -838,6 +840,7 @@
         "resolving": "Looking up barcode {barcode}…",
         "success": "Product found. Review the details below.",
         "notFound": "We couldn't find that barcode in the catalogue. Try another scan or use Search.",
+        "lookupUnavailable": "We scanned a barcode, but the catalogue lookup didn't complete. Try again in a moment. If you're running locally, make sure the backend API is reachable from this browser.",
         "lookupError": "We found a barcode, but couldn't look it up this time.",
         "insecureContext": "Camera scanning only works on https:// or localhost.",
         "permissionDenied": "Camera access is blocked for this site. Allow camera access in your browser settings, then try again.",
@@ -850,6 +853,40 @@
         "scanAnother": "Scan another barcode",
         "fallback": "Try Search instead"
       },
+      "photos": {
+        "heading": "Capture the product and every readable label section",
+        "description": "Use 2 to 6 still photos. Start with one clear product photo, then add overlapping label photos until the ingredients, directions, and warnings are legible.",
+        "checklist": {
+          "brandVisible": "Product and brand visible",
+          "fullIngredients": "Full ingredients captured",
+          "directionsWarnings": "Directions and warnings captured",
+          "extraCurvedSections": "Extra curved-label sections added if needed"
+        },
+        "uploaderHeading": "Product photo plus label photos",
+        "uploaderDescription": "Use good light, avoid glare and fingers, crop close enough to read the text, and add overlapping shots for wrapped or curved labels.",
+        "productPhotoLabel": "Product photo",
+        "labelPhotoLabel": "Label photo {index}",
+        "productPhotoHint": "This is the photo Ritora will save with the product.",
+        "labelPhotoHint": "Use this for ingredients, directions, warnings, and any wrapped label text.",
+        "savedBadge": "Saved with product",
+        "extractionOnlyBadge": "Extraction only",
+        "selectHeroAction": "Use as product image",
+        "moveEarlierAction": "Move earlier",
+        "moveLaterAction": "Move later",
+        "removeAction": "Remove",
+        "addAction": "Add photo",
+        "maxReachedAction": "Max 6 photos",
+        "emptyState": "Add a clear product photo first, then keep adding label photos until every readable panel is covered.",
+        "incomplete": "Add at least 2 photos and choose which one should be saved with the product before Ritora autofills the form.",
+        "ready": "Your photos are ready. Ritora will combine the label shots and save the selected product photo.",
+        "maxReached": "You have reached the 6-photo limit. Reorder, remove, or replace a shot if you need different coverage.",
+        "extracting": "Reading the photo set and combining the label text…",
+        "partial": "Some fields still need review. Add clearer or more complete label photos if anything important is missing.",
+        "errorTitle": "We couldn't read these photos",
+        "error": "The photo extraction did not complete this time. Add clearer or more complete label photos, or enter the details manually.",
+        "extractAction": "Extract from photos",
+        "extractingAction": "Extracting…"
+      },
       "search": {
         "heading": "Find your product",
         "placeholder": "Search by brand and product name",
@@ -859,8 +896,8 @@
         "errorTitle": "We couldn't search right now",
         "error": "The catalogue search did not load this time. Try again in a moment.",
         "resolveErrorTitle": "We couldn't add this product right now",
-        "resolveError": "We found a possible match, but couldn't import its details this time. Try again, scan the barcode, or paste the official product link.",
-        "resolveNotFound": "We found a possible match, but couldn't import enough details for this product. Try another name, scan the barcode, or paste the official product link.",
+        "resolveError": "We found a possible match, but couldn't import its details this time. Try again, use photos, or enter the product manually.",
+        "resolveNotFound": "We found a possible match, but couldn't import enough details for this product. Try another name, use photos, or enter the details manually.",
         "retry": "Try again",
         "searchAction": "Search",
         "searching": "Searching…",
@@ -880,8 +917,7 @@
       },
       "lookup": {
         "heading": "Find your product",
-        "description": "Scan a barcode, search the catalogue, or paste a product link. Ritora pre-fills what it can and you can refine the rest below.",
-        "tablistLabel": "Quick lookup methods"
+        "description": "Add a product photo and label photos. Ritora pre-fills what it can and you can refine the rest below."
       },
       "lookupImport": {
         "title": "Product details filled in",
@@ -895,7 +931,7 @@
         "confidenceLabel": "Confidence",
         "warningsLabel": "What to review",
         "evidenceLabel": "Grounded sources",
-        "lowConfidenceError": "We couldn't verify enough product details to fill this form safely. Paste the official product link or enter the details manually."
+        "lowConfidenceError": "We couldn't verify enough product details to fill this form safely. Try clearer photos or enter the details manually."
       },
       "manual": {
         "heading": "Add manually",
@@ -918,9 +954,10 @@
         },
         "hints": {
           "identityDescription": "The basics about this product. Brand, name, category, and size.",
-          "photoUploadComingSoon": "Photo upload coming soon.",
+          "photoPreviewAvailable": "Selected product photo ready to save with this shelf item.",
+          "photoPreviewEmpty": "Upload a product photo and label photos above to autofill this section.",
           "sizeHint": "Volume in millilitres, from the packaging.",
-          "aboutDescription": "Copy from the packaging or leave blank. Ritora pre-fills this when a barcode or catalogue lookup succeeds.",
+          "aboutDescription": "Copy from the packaging or leave blank. Ritora pre-fills this when photo extraction or catalogue lookup succeeds.",
           "descriptionHint": "A short overview of what the product does.",
           "benefitsHint": "Comma-separated. e.g. hydrating, smoothing, brightening.",
           "suitedForHint": "Comma-separated skin types. e.g. dry, combination, sensitive.",
@@ -1133,6 +1170,7 @@
       "either": "morning or evening"
     },
     "provenance": {
+      "photo-lookup": "photo extraction",
       "barcode-lookup": "barcode lookup",
       "url-fetch": "manufacturer link",
       "catalogue": "Ritora catalogue",
@@ -1147,9 +1185,7 @@
           "Massage gently onto damp skin in circular motions.",
           "Rinse thoroughly with lukewarm water."
         ],
-        "cautions": [
-          "Avoid the eye area."
-        ]
+        "cautions": ["Avoid the eye area."]
       },
       "toner": {
         "steps": [
@@ -1204,10 +1240,7 @@
           "Leave on for the time printed on the packaging.",
           "Rinse thoroughly with lukewarm water."
         ],
-        "cautions": [
-          "Patch-test before first use.",
-          "Avoid the eye area."
-        ]
+        "cautions": ["Patch-test before first use.", "Avoid the eye area."]
       },
       "exfoliant": {
         "steps": [
@@ -1226,14 +1259,10 @@
           "Use the ring finger to tap gently around the orbital bone.",
           "Avoid pulling or dragging the thin eye-area skin."
         ],
-        "cautions": [
-          "Keep product out of the eye itself."
-        ]
+        "cautions": ["Keep product out of the eye itself."]
       },
       "lip-care": {
-        "steps": [
-          "Apply a thin layer as needed throughout the day."
-        ],
+        "steps": ["Apply a thin layer as needed throughout the day."],
         "cautions": []
       },
       "treatment": {
@@ -1241,9 +1270,7 @@
           "Follow the directions on the packaging.",
           "Apply to the target area only."
         ],
-        "cautions": [
-          "Patch-test before first use."
-        ]
+        "cautions": ["Patch-test before first use."]
       },
       "other": {
         "steps": [],
@@ -1311,7 +1338,7 @@
     "backToDashboard": "Back to Home",
     "shelf": {
       "title": "Shelf",
-      "description": "Add and manage the skincare products you own. Scan barcodes, search by name, paste product links, or enter details manually. This is your digital bathroom cabinet."
+      "description": "Add and manage the skincare products you own. Upload a product photo plus label photos or enter details manually. This is your digital bathroom cabinet."
     },
     "todaysSuggestion": {
       "title": "Today's Suggestion",
