@@ -1,228 +1,216 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/utils';
 import {
+  CatalogueSource,
+  LookupConfidence,
   ProductCategory,
-  type CatalogueSuggestion,
+  type ResolvedLookup,
 } from '@/types/shelf';
 
-const mockUseSearchCatalogue = jest.fn();
-const intersectionObservers: MockIntersectionObserverInstance[] = [];
-
-type MockIntersectionObserverInstance = {
-  callback: IntersectionObserverCallback;
-  elements: Set<Element>;
-  observe: jest.Mock<void, [Element]>;
-  unobserve: jest.Mock<void, [Element]>;
-  disconnect: jest.Mock<void, []>;
-};
-
-function installIntersectionObserverMock() {
-  intersectionObservers.length = 0;
-
-  class MockIntersectionObserver {
-    readonly root: Element | Document | null = null;
-    readonly rootMargin = '0px';
-    readonly thresholds = [0];
-    private readonly instance: MockIntersectionObserverInstance;
-
-    constructor(callback: IntersectionObserverCallback) {
-      this.instance = {
-        callback,
-        elements: new Set<Element>(),
-        observe: jest.fn((element: Element) => {
-          this.instance.elements.add(element);
-        }),
-        unobserve: jest.fn((element: Element) => {
-          this.instance.elements.delete(element);
-        }),
-        disconnect: jest.fn(() => {
-          this.instance.elements.clear();
-        }),
-      };
-      intersectionObservers.push(this.instance);
-    }
-
-    observe = (element: Element) => this.instance.observe(element);
-    unobserve = (element: Element) => this.instance.unobserve(element);
-    disconnect = () => this.instance.disconnect();
-    takeRecords = () => [];
-  }
-
-  Object.defineProperty(window, 'IntersectionObserver', {
-    writable: true,
-    configurable: true,
-    value: MockIntersectionObserver,
-  });
-}
-
-function triggerIntersection(testId: string) {
-  const target = screen.getByTestId(testId);
-  const observer = intersectionObservers.at(-1);
-
-  if (!observer) {
-    throw new Error('No IntersectionObserver instance was registered.');
-  }
-
-  observer.callback(
-    [
-      {
-        isIntersecting: true,
-        target,
-        time: 0,
-        intersectionRatio: 1,
-        boundingClientRect: target.getBoundingClientRect(),
-        intersectionRect: target.getBoundingClientRect(),
-        rootBounds: null,
-      } as IntersectionObserverEntry,
-    ],
-    {} as IntersectionObserver,
-  );
-}
+const mockUseSearchCatalogueBestMatch = jest.fn();
+const mockToastError = jest.fn();
 
 jest.mock('@/hooks/use-shelf', () => ({
-  useSearchCatalogue: (query: string) => mockUseSearchCatalogue(query),
+  useSearchCatalogueBestMatch: () => mockUseSearchCatalogueBestMatch(),
+}));
+
+jest.mock('sonner', () => ({
+  toast: {
+    error: (...args: unknown[]) => mockToastError(...args),
+  },
 }));
 
 import { SearchTab } from '@/components/shelf/add-product/search-tab';
 
-const RESULT: CatalogueSuggestion = {
-  brand: 'CeraVe',
-  name: 'Retinol Serum',
-  category: ProductCategory.Serum,
-  barcode: '123',
-  imageUrls: [],
-  sizeMl: 30,
+const RESOLVED_RESULT: ResolvedLookup = {
+  identity: {
+    brand: 'CeraVe',
+    name: 'Retinol Serum',
+    category: ProductCategory.Serum,
+  },
+  guidance: {},
+  manufacturer: {
+    brand: 'CeraVe',
+  },
+  provenance: 'catalogue' as const,
+  source: CatalogueSource.OpenBeautyFacts,
+  confidence: LookupConfidence.Medium,
+  reviewRequired: true,
+  warnings: [],
+  evidence: [],
 };
 
 beforeEach(() => {
-  installIntersectionObserverMock();
-  mockUseSearchCatalogue.mockReset();
+  mockUseSearchCatalogueBestMatch.mockReset();
+  mockToastError.mockReset();
+  mockUseSearchCatalogueBestMatch.mockReturnValue({
+    mutate: jest.fn(),
+    isPending: false,
+  });
 });
 
 describe('SearchTab', () => {
-  it('renders loading and empty states', async () => {
-    const user = userEvent.setup();
-    mockUseSearchCatalogue.mockReturnValue({
-      data: [],
-      isFetching: false,
-      isFetchingNextPage: false,
-      hasNextPage: false,
-      fetchNextPage: jest.fn(),
-    });
+  it('renders the initial empty state', () => {
+    renderWithProviders(<SearchTab onResolved={jest.fn()} />);
 
-    renderWithProviders(<SearchTab onPick={jest.fn()} />);
-
-    expect(screen.getByText(/type at least two letters/i)).toBeInTheDocument();
-    expect(mockUseSearchCatalogue).toHaveBeenCalledWith('');
-
-    await user.type(
-      screen.getByRole('textbox', { name: /search by brand and product name/i }),
-      're',
-    );
-    expect(mockUseSearchCatalogue).toHaveBeenLastCalledWith('');
-
-    await user.click(screen.getByRole('button', { name: /search/i }));
-
-    expect(mockUseSearchCatalogue).toHaveBeenLastCalledWith('re');
+    expect(
+      screen.getByText(/type at least two letters to search the catalogue/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /starting a new search clears the current draft fields before import/i,
+      ),
+    ).toBeInTheDocument();
   });
 
-  it('lets the user pick a search result', async () => {
+  it('searches in one backend call and forwards the resolved result', async () => {
     const user = userEvent.setup();
-    const onPick = jest.fn();
-    mockUseSearchCatalogue.mockReturnValue({
-      data: [RESULT],
-      isFetching: false,
-      isFetchingNextPage: false,
-      hasNextPage: false,
-      fetchNextPage: jest.fn(),
+    const onResolved = jest.fn();
+    const onSearchStart = jest.fn();
+    const mutate = jest.fn((query, options) => {
+      expect(query).toBe('retinol');
+      options?.onSuccess?.(RESOLVED_RESULT);
     });
 
-    renderWithProviders(<SearchTab onPick={onPick} />);
+    mockUseSearchCatalogueBestMatch.mockReturnValue({
+      mutate,
+      isPending: false,
+    });
+
+    renderWithProviders(
+      <SearchTab onResolved={onResolved} onSearchStart={onSearchStart} />,
+    );
 
     await user.type(
       screen.getByRole('textbox', { name: /search by brand and product name/i }),
-      're',
+      'retinol',
     );
-    await user.click(screen.getByRole('button', { name: /search/i }));
-    await user.click(screen.getByRole('button', { name: /add/i }));
+    await user.click(screen.getByRole('button', { name: /^search$/i }));
 
-    expect(onPick).toHaveBeenCalledWith(
+    expect(mutate).toHaveBeenCalledWith(
+      'retinol',
       expect.objectContaining({
-        identity: expect.objectContaining({
-          brand: 'CeraVe',
-          name: 'Retinol Serum',
-        }),
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
       }),
     );
+    expect(onSearchStart).toHaveBeenCalledTimes(1);
+    expect(onResolved).toHaveBeenCalledWith(RESOLVED_RESULT);
+    expect(
+      screen.getByText(/type at least two letters to search the catalogue/i),
+    ).toBeInTheDocument();
   });
 
   it('submits the search when enter is pressed', async () => {
     const user = userEvent.setup();
-    mockUseSearchCatalogue.mockReturnValue({
-      data: [],
-      isFetching: false,
-      isFetchingNextPage: false,
-      hasNextPage: false,
-      fetchNextPage: jest.fn(),
+    const mutate = jest.fn((_query, options) => {
+      options?.onSuccess?.(RESOLVED_RESULT);
     });
 
-    renderWithProviders(<SearchTab onPick={jest.fn()} />);
+    mockUseSearchCatalogueBestMatch.mockReturnValue({
+      mutate,
+      isPending: false,
+    });
+
+    renderWithProviders(<SearchTab onResolved={jest.fn()} />);
 
     await user.type(
       screen.getByRole('textbox', { name: /search by brand and product name/i }),
       'ret{enter}',
     );
 
-    expect(mockUseSearchCatalogue).toHaveBeenLastCalledWith('ret');
+    expect(mutate).toHaveBeenCalledWith(
+      'ret',
+      expect.objectContaining({
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      }),
+    );
   });
 
-  it('loads the next search page automatically when the sentinel enters view', async () => {
+  it('shows loading in the search button while the backend search is pending', async () => {
     const user = userEvent.setup();
-    const fetchNextPage = jest.fn();
-    mockUseSearchCatalogue.mockReturnValue({
-      data: [RESULT],
-      isFetching: false,
-      isFetchingNextPage: false,
-      hasNextPage: true,
-      fetchNextPage,
+
+    mockUseSearchCatalogueBestMatch.mockReturnValue({
+      mutate: jest.fn(),
+      isPending: true,
     });
 
-    renderWithProviders(<SearchTab onPick={jest.fn()} />);
+    renderWithProviders(<SearchTab onResolved={jest.fn()} />);
 
     await user.type(
       screen.getByRole('textbox', { name: /search by brand and product name/i }),
-      'ret',
+      'retinol',
     );
-    await user.click(screen.getByRole('button', { name: /search/i }));
-    triggerIntersection('catalogue-auto-load-sentinel');
-
-    expect(fetchNextPage).toHaveBeenCalled();
-  });
-
-  it('renders a retry state when the catalogue search fails', async () => {
-    const user = userEvent.setup();
-    mockUseSearchCatalogue.mockReturnValue({
-      data: [],
-      isError: true,
-      isFetching: false,
-      isFetchingNextPage: false,
-      hasNextPage: false,
-      fetchNextPage: jest.fn(),
-      refetch: jest.fn(),
-    });
-
-    renderWithProviders(<SearchTab onPick={jest.fn()} />);
-
-    await user.type(
-      screen.getByRole('textbox', { name: /search by brand and product name/i }),
-      'ret',
-    );
-    await user.click(screen.getByRole('button', { name: /search/i }));
 
     expect(
-      screen.getByRole('heading', { name: /we couldn't search right now/i }),
+      screen.getByRole('button', { name: /searching/i }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
+  });
+
+  it('shows a no-results message when the backend finds no acceptable match', async () => {
+    const user = userEvent.setup();
+    const mutate = jest.fn((_query, options) => {
+      options?.onSuccess?.(null);
+    });
+
+    mockUseSearchCatalogueBestMatch.mockReturnValue({
+      mutate,
+      isPending: false,
+    });
+
+    renderWithProviders(<SearchTab onResolved={jest.fn()} />);
+
+    await user.type(
+      screen.getByRole('textbox', { name: /search by brand and product name/i }),
+      'retinol',
+    );
+    await user.click(screen.getByRole('button', { name: /^search$/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          /nothing matched\. try another name, or enter the product manually\./i,
+        ),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('shows a toast when the backend search fails and keeps the search UI usable', async () => {
+    const user = userEvent.setup();
+    const mutate = jest.fn((_query, options) => {
+      options?.onError?.(new Error('timeout'));
+    });
+
+    mockUseSearchCatalogueBestMatch.mockReturnValue({
+      mutate,
+      isPending: false,
+    });
+
+    renderWithProviders(<SearchTab onResolved={jest.fn()} />);
+
+    await user.type(
+      screen.getByRole('textbox', { name: /search by brand and product name/i }),
+      'retinol',
+    );
+    await user.click(screen.getByRole('button', { name: /^search$/i }));
+
+    await waitFor(() => {
+      expect(mockToastError).toHaveBeenCalledWith(
+        expect.stringMatching(/we couldn't search right now/i),
+        expect.objectContaining({
+          description: expect.stringMatching(
+            /the catalogue search did not load this time/i,
+          ),
+        }),
+      );
+    });
+    expect(
+      screen.queryByRole('heading', { name: /we couldn't search right now/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /^search$/i }),
+    ).toBeInTheDocument();
   });
 });

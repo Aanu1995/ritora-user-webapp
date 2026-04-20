@@ -8,12 +8,11 @@ import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { useResolveUrl } from '@/hooks/use-shelf';
 import { isSafeExternalUrl } from '@/lib/shelf-form';
 import {
-  DataProvenance,
-  type ShelfProductPartial,
+  type ResolvedLookup,
 } from '@/types/shelf';
 
 type Props = {
-  onResolved: (partial: ShelfProductPartial) => void;
+  onResolved: (resolved: ResolvedLookup) => void;
 };
 
 export function UrlTab({ onResolved }: Props) {
@@ -38,11 +37,7 @@ export function UrlTab({ onResolved }: Props) {
           return;
         }
 
-        onResolved({
-          identity: result.identity,
-          manufacturer: result.manufacturer,
-          provenance: DataProvenance.UrlFetch,
-        });
+        onResolved(result);
       },
       onError: () => {
         setError(t('error'));

@@ -9,8 +9,10 @@
 
 import {
   ApplicationMethod,
+  CatalogueSource,
   type CatalogueSuggestion,
   DataProvenance,
+  LookupConfidence,
   ProductCategory,
   Quantity,
   type ResolvedLookup,
@@ -24,6 +26,44 @@ const twoMonthsAgo = '2026-02-15T09:00:00.000Z';
 const sixWeeksAgo = '2026-03-06T09:00:00.000Z';
 const tenMonthsAgo = '2025-06-17T09:00:00.000Z';
 const oneWeekAgo = '2026-04-10T09:00:00.000Z';
+
+function toCatalogueSuggestion(product: ShelfProduct): CatalogueSuggestion {
+  return {
+    id: product.id,
+    brand: product.identity.brand,
+    name: product.identity.name,
+    category: product.identity.category,
+    imageUrls: product.identity.imageUrls,
+    sizeMl: product.identity.sizeMl,
+    barcode: product.identity.barcode,
+    source: CatalogueSource.RitoraCatalogue,
+    confidence: LookupConfidence.High,
+    reviewRequired: false,
+  };
+}
+
+function withResolvedDefaults(
+  lookup: Omit<
+    ResolvedLookup,
+    'guidance' | 'source' | 'confidence' | 'reviewRequired' | 'warnings' | 'evidence'
+  > &
+    Partial<
+      Pick<
+        ResolvedLookup,
+        'guidance' | 'source' | 'confidence' | 'reviewRequired' | 'warnings' | 'evidence'
+      >
+    >,
+): ResolvedLookup {
+  return {
+    guidance: lookup.guidance ?? {},
+    source: lookup.source ?? CatalogueSource.RitoraCatalogue,
+    confidence: lookup.confidence ?? LookupConfidence.Medium,
+    reviewRequired: lookup.reviewRequired ?? false,
+    warnings: lookup.warnings ?? [],
+    evidence: lookup.evidence ?? [],
+    ...lookup,
+  };
+}
 
 export const SHELF_SEED: ShelfProduct[] = [
   {
@@ -387,45 +427,54 @@ export const SHELF_SEED: ShelfProduct[] = [
 ];
 
 export const CATALOGUE_SUGGESTIONS: CatalogueSuggestion[] = [
-  ...SHELF_SEED.map((p) => ({
-    brand: p.identity.brand,
-    name: p.identity.name,
-    category: p.identity.category,
-    imageUrls: p.identity.imageUrls,
-    sizeMl: p.identity.sizeMl,
-    barcode: p.identity.barcode,
-  })),
+  ...SHELF_SEED.map((product) => toCatalogueSuggestion(product)),
   {
+    id: 'external-niacinamide-zinc',
     brand: 'The Ordinary',
     name: 'Niacinamide 10% + Zinc 1%',
     category: ProductCategory.Serum,
     imageUrls: [],
     sizeMl: 30,
     barcode: '769915190533',
+    source: CatalogueSource.OpenBeautyFacts,
+    confidence: LookupConfidence.Low,
+    reviewRequired: true,
   },
   {
+    id: 'external-paulas-choice-bha',
     brand: 'Paula\u2019s Choice',
     name: 'Skin Perfecting 2% BHA Liquid Exfoliant',
     category: ProductCategory.Exfoliant,
     imageUrls: [],
     sizeMl: 118,
     barcode: '655439019011',
+    source: CatalogueSource.OpenBeautyFacts,
+    confidence: LookupConfidence.Low,
+    reviewRequired: true,
   },
   {
+    id: 'external-kiehls-ultra-facial-cream',
     brand: 'Kiehl\u2019s',
     name: 'Ultra Facial Cream',
     category: ProductCategory.Moisturizer,
     imageUrls: [],
     sizeMl: 50,
     barcode: '3605970359034',
+    source: CatalogueSource.OpenBeautyFacts,
+    confidence: LookupConfidence.Low,
+    reviewRequired: true,
   },
   {
+    id: 'external-glossier-milky-jelly-cleanser',
     brand: 'Glossier',
     name: 'Milky Jelly Cleanser',
     category: ProductCategory.Cleanser,
     imageUrls: [],
     sizeMl: 177,
     barcode: '810006130010',
+    source: CatalogueSource.OpenBeautyFacts,
+    confidence: LookupConfidence.Low,
+    reviewRequired: true,
   },
 ];
 
@@ -434,7 +483,7 @@ export const CATALOGUE_SUGGESTIONS: CatalogueSuggestion[] = [
  * fetch to `https://world.openbeautyfacts.org/api/v2/product/{barcode}.json`.
  */
 export const BARCODE_LOOKUP: Record<string, ResolvedLookup> = {
-  '3337875597227': {
+  '3337875597227': withResolvedDefaults({
     identity: {
       brand: 'CeraVe',
       name: 'Resurfacing Retinol Serum',
@@ -465,8 +514,8 @@ export const BARCODE_LOOKUP: Record<string, ResolvedLookup> = {
       supportEmail: 'support@cerave.com',
     },
     provenance: DataProvenance.BarcodeLookup,
-  },
-  '8809416470405': {
+  }),
+  '8809416470405': withResolvedDefaults({
     identity: {
       brand: 'COSRX',
       name: 'Advanced Snail 96 Mucin Power Essence',
@@ -486,7 +535,7 @@ export const BARCODE_LOOKUP: Record<string, ResolvedLookup> = {
       websiteUrl: 'https://www.cosrx.com',
     },
     provenance: DataProvenance.BarcodeLookup,
-  },
+  }),
 };
 
 /**

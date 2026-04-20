@@ -6,6 +6,7 @@ import {
 } from '@/lib/api';
 import { ApiPath } from '@/constants/api-paths';
 import {
+  type CatalogueSource,
   type CatalogueSuggestion,
   type DeepPartial,
   type PaginatedResult,
@@ -102,11 +103,40 @@ export async function searchCatalogue(
   );
 }
 
+export async function searchCatalogueBestMatch(
+  query: string,
+): Promise<ResolvedLookup | null> {
+  return postRequest<ResolvedLookup | null>(
+    ApiPath.CatalogueProductsSearchBestMatch,
+    { q: query },
+    { timeout: 25000 },
+  );
+}
+
 export async function resolveBarcode(
   barcode: string,
 ): Promise<ResolvedLookup | null> {
   return getRequest<ResolvedLookup | null>(
     `${ApiPath.CatalogueProductsBarcode}/${encodeURIComponent(barcode)}`,
+    { timeout: 25000 },
+  );
+}
+
+export async function resolveCatalogueCandidate(input: {
+  id: string;
+  source: CatalogueSource;
+  url?: string | null;
+}): Promise<ResolvedLookup | null> {
+  const payload = {
+    id: input.id,
+    source: input.source,
+    ...(input.url ? { url: input.url } : {}),
+  };
+
+  return postRequest<ResolvedLookup | null>(
+    ApiPath.CatalogueProductsResolveCandidate,
+    payload,
+    { timeout: 25000 },
   );
 }
 
@@ -114,5 +144,6 @@ export async function resolveUrl(url: string): Promise<ResolvedLookup | null> {
   return postRequest<ResolvedLookup | null>(
     ApiPath.CatalogueProductsResolveUrl,
     { url },
+    { timeout: 25000 },
   );
 }

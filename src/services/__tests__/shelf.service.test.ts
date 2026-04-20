@@ -157,7 +157,7 @@ describe('shelf.service', () => {
     );
   });
 
-  it('searches catalogue and resolves barcode/url lookups through HTTP', async () => {
+  it('searches catalogue, resolves best-match lookups, and resolves barcode/url lookups through HTTP', async () => {
     (api.getRequest as jest.Mock).mockResolvedValue({
       items: [],
       nextCursor: null,
@@ -165,6 +165,7 @@ describe('shelf.service', () => {
     (api.postRequest as jest.Mock).mockResolvedValue(null);
 
     await shelfService.searchCatalogue('cera', 'cursor-2');
+    await shelfService.searchCatalogueBestMatch('cerave retinol serum');
     await shelfService.resolveBarcode('3337875597227');
     await shelfService.resolveUrl('https://www.cerave.com/skincare/serums/resurfacing-retinol-serum');
 
@@ -174,6 +175,12 @@ describe('shelf.service', () => {
         cursor: 'cursor-2',
       },
     });
+    expect(api.postRequest).toHaveBeenCalledWith(
+      '/catalogue/products/search-best-match',
+      {
+        q: 'cerave retinol serum',
+      },
+    );
     expect(api.getRequest).toHaveBeenCalledWith(
       '/catalogue/products/barcode/3337875597227',
     );

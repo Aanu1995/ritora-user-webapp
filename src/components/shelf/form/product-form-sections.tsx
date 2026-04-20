@@ -1,7 +1,10 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import type { ProductFormGuidanceErrors } from '../product-form-body';
+import type {
+  ProductFormGuidanceErrors,
+  ProductFormReviewFields,
+} from '../product-form-body';
 import { ProductIllustration } from '../product-illustration';
 import { HowToUseEditor } from '../how-to-use-editor';
 import {
@@ -32,12 +35,24 @@ type BaseSectionProps = {
   identityReadOnly: boolean;
   identitySourceLabel?: string;
   fieldErrors?: ShelfFormFieldErrors;
+  reviewFields?: ProductFormReviewFields;
 };
 
 function createSourceBadge(identitySourceLabel?: string) {
   return identitySourceLabel ? (
     <span className="rounded-full bg-success-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-success-soft-foreground">
       {identitySourceLabel}
+    </span>
+  ) : null;
+}
+
+function createReviewBadge(
+  shouldReview: boolean | undefined,
+  label: string,
+) {
+  return shouldReview ? (
+    <span className="rounded-full bg-warning/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-warning">
+      {label}
     </span>
   ) : null;
 }
@@ -53,10 +68,12 @@ export function ProductIdentitySection({
   identityReadOnly,
   identitySourceLabel,
   fieldErrors,
+  reviewFields,
 }: IdentitySectionProps) {
   const t = useTranslations('shelf.dialog.confirm');
   const tField = useTranslations('shelf.dialog.confirm.fields');
   const tCategory = useTranslations('shelf.category');
+  const reviewBadgeLabel = t('needsReviewBadge');
   const sourceBadge = createSourceBadge(identitySourceLabel);
 
   return (
@@ -134,7 +151,10 @@ export function ProductIdentitySection({
           <Field
             label={tField('size')}
             hint={t('hints.sizeHint')}
-            badge={identityReadOnly ? sourceBadge : null}
+            badge={
+              createReviewBadge(reviewFields?.['identity.sizeMl'], reviewBadgeLabel) ??
+              (identityReadOnly ? sourceBadge : null)
+            }
             error={fieldErrors?.['identity.sizeMl']}
           >
             <TextInput
@@ -166,9 +186,11 @@ export function ProductAboutSection({
   identityReadOnly,
   identitySourceLabel,
   fieldErrors,
+  reviewFields,
 }: AboutSectionProps) {
   const t = useTranslations('shelf.dialog.confirm');
   const tField = useTranslations('shelf.dialog.confirm.fields');
+  const reviewBadgeLabel = t('needsReviewBadge');
   const sourceBadge = createSourceBadge(identitySourceLabel);
 
   return (
@@ -180,7 +202,13 @@ export function ProductAboutSection({
         <Field
           label={tField('description')}
           hint={t('hints.descriptionHint')}
-          badge={identityReadOnly && identity.description ? sourceBadge : null}
+          badge={
+            createReviewBadge(
+              reviewFields?.['identity.description'],
+              reviewBadgeLabel,
+            ) ??
+            (identityReadOnly && identity.description ? sourceBadge : null)
+          }
           error={fieldErrors?.['identity.description']}
         >
           <TextAreaInput
@@ -201,6 +229,10 @@ export function ProductAboutSection({
           <Field
             label={tField('benefits')}
             hint={t('hints.benefitsHint')}
+            badge={createReviewBadge(
+              reviewFields?.['identity.benefits'],
+              reviewBadgeLabel,
+            )}
             error={fieldErrors?.['identity.benefits']}
           >
             <ListTextInput
@@ -215,6 +247,10 @@ export function ProductAboutSection({
           <Field
             label={tField('suitedFor')}
             hint={t('hints.suitedForHint')}
+            badge={createReviewBadge(
+              reviewFields?.['identity.suitedFor'],
+              reviewBadgeLabel,
+            )}
             error={fieldErrors?.['identity.suitedFor']}
           >
             <ListTextInput
@@ -232,9 +268,13 @@ export function ProductAboutSection({
           label={tField('inciIngredients')}
           hint={t('hints.ingredientsHint')}
           badge={
-            identityReadOnly && identity.inciIngredients.length > 0
+            createReviewBadge(
+              reviewFields?.['identity.inciIngredients'],
+              reviewBadgeLabel,
+            ) ??
+            (identityReadOnly && identity.inciIngredients.length > 0
               ? sourceBadge
-              : null
+              : null)
           }
           error={fieldErrors?.['identity.inciIngredients']}
         >
@@ -258,18 +298,24 @@ type HowToUseSectionProps = {
   guidance: ApplicationGuidance;
   onChange: (next: ApplicationGuidance) => void;
   errors?: ProductFormGuidanceErrors;
+  reviewFields?: ProductFormReviewFields;
 };
 
 export function ProductHowToUseSection({
   guidance,
   onChange,
   errors,
+  reviewFields,
 }: HowToUseSectionProps) {
   const t = useTranslations('shelf.dialog.confirm');
+  const reviewBadgeLabel = t('needsReviewBadge');
 
   return (
     <section className="flex flex-col gap-3">
-      <SectionLabel>{t('sections.guidance')}</SectionLabel>
+      <div className="flex items-center gap-2">
+        <SectionLabel>{t('sections.guidance')}</SectionLabel>
+        {createReviewBadge(reviewFields?.guidance, reviewBadgeLabel)}
+      </div>
       <p className="-mt-2 text-xs text-muted">{t('hints.guidanceDescription')}</p>
       <div className="rounded-2xl border border-border bg-surface p-4">
         <HowToUseEditor value={guidance} onChange={onChange} errors={errors} />

@@ -751,6 +751,24 @@
       "treatment": "Behandling",
       "other": "Övrigt"
     },
+    "lookupSource": {
+      "ritora-catalogue": "Ritoras katalog",
+      "open-beauty-facts": "Open Beauty Facts",
+      "official-page": "Officiell produktsida"
+    },
+    "lookupConfidence": {
+      "high": "Hög tillförlitlighet",
+      "medium": "Medel tillförlitlighet",
+      "low": "Låg tillförlitlighet"
+    },
+    "lookupWarning": {
+      "review-required": "Granska innan du sparar",
+      "community-data": "Källan är community-baserad",
+      "ai-normalized": "Vissa fält normaliserades från verifierbart sidinnehåll",
+      "partial-data": "Bara delar av produktinformationen hittades",
+      "ingredients-unverified": "Verifiera ingredienserna mot förpackningen",
+      "guidance-unverified": "Granska användningsråden innan du sparar"
+    },
     "empty": {
       "title": "Din hylla är tom",
       "description": "Lägg till produkter du äger så bygger Ritora en lugnare rutin runt dem.",
@@ -812,22 +830,44 @@
       "scan": {
         "heading": "Skanna streckkoden på baksidan",
         "description": "Vi slår upp den i den öppna kosmetikadatabasen.",
-        "comingSoon": "Kameraskanning kommer i nästa version. Prova Sök eller Manuellt så länge.",
-        "fallback": "Fyll i manuellt istället"
+        "inactive": "Tryck på start för att slå på kameraskannern.",
+        "start": "Starta kamera",
+        "starting": "Startar kameran…",
+        "scanning": "Placera streckkoden innanför ramen.",
+        "detected": "Streckkod hittad: {barcode}",
+        "resolving": "Slår upp streckkod {barcode}…",
+        "success": "Produkt hittad. Granska detaljerna nedan.",
+        "notFound": "Vi kunde inte hitta den streckkoden i katalogen. Prova att skanna igen eller använd Sök.",
+        "lookupError": "Vi hittade en streckkod men kunde inte slå upp den just nu.",
+        "insecureContext": "Kameraskanning fungerar bara på https:// eller localhost.",
+        "permissionDenied": "Kameraåtkomst är blockerad för den här webbplatsen. Tillåt kameran i webbläsarens inställningar och försök igen.",
+        "policyBlocked": "Den här sidan körs i ett sammanhang som inte tillåter kameraåtkomst.",
+        "systemBlocked": "Webbläsaren kunde inte starta kameran. Om kameran redan är tillåten för webbplatsen, kontrollera enhetens integritetsinställningar eller stäng andra appar som använder kameran och försök igen.",
+        "unavailable": "Vi kunde inte starta en användbar kamera på den här enheten. Försök att stänga andra appar som kan använda kameran och försök igen.",
+        "unsupported": "Den här webbläsaren stöder inte live-skanning av streckkoder här.",
+        "cameraError": "Vi kunde inte starta kameraskannern just nu.",
+        "retry": "Skanna igen",
+        "scanAnother": "Skanna en annan streckkod",
+        "fallback": "Prova Sök istället"
       },
       "search": {
         "heading": "Hitta din produkt",
         "placeholder": "Sök efter märke eller produktnamn",
         "empty": "Skriv minst två tecken för att söka i katalogen.",
+        "clearNotice": "När du startar en ny sökning rensas det nuvarande utkastet innan importen fylls i.",
         "noResults": "Inga träffar. Prova ett annat namn eller fyll i produkten manuellt.",
         "errorTitle": "Vi kunde inte söka just nu",
         "error": "Katalogsökningen kunde inte läsas in just nu. Försök igen om en liten stund.",
+        "resolveErrorTitle": "Vi kunde inte lägga till den här produkten just nu",
+        "resolveError": "Vi hittade en möjlig träff, men kunde inte importera produktdetaljerna den här gången. Försök igen, skanna streckkoden eller klistra in den officiella produktlänken.",
+        "resolveNotFound": "Vi hittade en möjlig träff, men kunde inte importera tillräckligt med detaljer för den här produkten. Prova ett annat namn, skanna streckkoden eller klistra in den officiella produktlänken.",
         "retry": "Försök igen",
         "searchAction": "Sök",
         "searching": "Söker…",
-        "loadMore": "Ladda fler",
         "loadingMore": "Laddar fler…",
-        "addAction": "Lägg till"
+        "addAction": "Lägg till",
+        "reviewRequired": "Behöver granskas",
+        "resolvingResult": "Lägger till…"
       },
       "url": {
         "heading": "Klistra in en produktlänk",
@@ -843,6 +883,20 @@
         "description": "Skanna en streckkod, sök i katalogen eller klistra in en produktlänk. Ritora fyller i det den kan och du kan justera resten nedan.",
         "tablistLabel": "Metoder för snabb uppslagning"
       },
+      "lookupImport": {
+        "title": "Produktdetaljer ifyllda",
+        "description": "Vi hittade produktdetaljer och fyllde i formuläret åt dig. Du kan ändra allt innan du sparar.",
+        "reviewDescription": "Vi hittade produktdetaljer och fyllde i formuläret åt dig. Granska de markerade fälten innan du sparar."
+      },
+      "lookupReview": {
+        "title": "Importerade detaljer att granska",
+        "description": "Vi fyllde i det vi kunde från {source}. Granska detaljerna innan du sparar till din hylla.",
+        "reviewRequired": "Granskning rekommenderas",
+        "confidenceLabel": "Tillförlitlighet",
+        "warningsLabel": "Det här bör du granska",
+        "evidenceLabel": "Underliggande källor",
+        "lowConfidenceError": "Vi kunde inte verifiera tillräckligt med produktdetaljer för att fylla i formuläret på ett säkert sätt. Klistra in den officiella produktlänken eller fyll i uppgifterna manuellt."
+      },
       "manual": {
         "heading": "Lägg till manuellt",
         "description": "Fyll i det du vet. Du kan lägga till mer senare."
@@ -853,6 +907,7 @@
         "fromSource": "Från streckkod",
         "fromUrl": "Från länk",
         "autoFromPao": "Beräknat från PAO",
+        "needsReviewBadge": "Behöver granskas",
         "pleaseFill": "Fyll i",
         "sections": {
           "identity": "Identitet",

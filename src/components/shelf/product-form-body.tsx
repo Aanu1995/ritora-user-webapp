@@ -23,6 +23,21 @@ export type ProductFormGuidanceErrors = {
   steps?: string;
   cautions?: string;
 };
+export type ProductFormReviewFields = Partial<
+  Record<
+    | 'identity.sizeMl'
+    | 'identity.description'
+    | 'identity.benefits'
+    | 'identity.suitedFor'
+    | 'identity.inciIngredients'
+    | 'guidance'
+    | 'manufacturer.parentCompany'
+    | 'manufacturer.countryOfManufacture'
+    | 'manufacturer.supportEmail'
+    | 'manufacturer.productUrl',
+    boolean
+  >
+>;
 
 type ProductFormBodyProps = {
   value: ProductFormValue;
@@ -34,6 +49,7 @@ type ProductFormBodyProps = {
   guidanceErrors?: ProductFormGuidanceErrors;
   identityReadOnly?: boolean;
   identitySourceLabel?: string;
+  reviewFields?: ProductFormReviewFields;
 };
 
 export function ProductFormBody({
@@ -46,6 +62,7 @@ export function ProductFormBody({
   guidanceErrors,
   identityReadOnly = false,
   identitySourceLabel,
+  reviewFields,
 }: ProductFormBodyProps) {
   const patchIdentity = (patch: Partial<CatalogueIdentity>) =>
     onIdentityChange({ ...value.identity, ...patch });
@@ -67,6 +84,7 @@ export function ProductFormBody({
         fieldErrors={fieldErrors}
         identityReadOnly={identityReadOnly}
         identitySourceLabel={identitySourceLabel}
+        reviewFields={reviewFields}
       />
       <ProductAboutSection
         identity={value.identity}
@@ -74,6 +92,7 @@ export function ProductFormBody({
         fieldErrors={fieldErrors}
         identityReadOnly={identityReadOnly}
         identitySourceLabel={identitySourceLabel}
+        reviewFields={reviewFields}
       />
       <ProductUserFieldsSection
         userFields={value.userFields}
@@ -84,11 +103,13 @@ export function ProductFormBody({
         guidance={value.guidance}
         onChange={patchGuidance}
         errors={guidanceErrors}
+        reviewFields={reviewFields}
       />
       <ProductManufacturerSection
         manufacturer={value.manufacturer}
         onChange={patchManufacturer}
         fieldErrors={fieldErrors}
+        reviewFields={reviewFields}
       />
     </div>
   );

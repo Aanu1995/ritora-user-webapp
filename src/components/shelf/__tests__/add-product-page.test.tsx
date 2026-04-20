@@ -3,9 +3,20 @@ import userEvent from '@testing-library/user-event';
 import { UnsavedChangesDialog } from '@/components/app/unsaved-changes-dialog';
 import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 import { renderWithProviders } from '@/test/utils';
+import {
+  CatalogueSource,
+  DataProvenance,
+  LookupConfidence,
+  LookupWarningCode,
+  ProductCategory,
+} from '@/types/shelf';
 
 const mockPush = jest.fn();
 const mockMutate = jest.fn();
+const mockResolveUrlMutate = jest.fn();
+const mockSearchBestMatchMutate = jest.fn();
+const mockToastSuccess = jest.fn();
+const mockToastError = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -18,13 +29,23 @@ jest.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
+jest.mock('sonner', () => ({
+  toast: {
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
+  },
+}));
+
 jest.mock('@/hooks/use-shelf', () => ({
   useCreateProduct: () => ({
     mutate: mockMutate,
     isPending: false,
   }),
-  useResolveUrl: () => ({ mutate: jest.fn(), isPending: false }),
-  useSearchCatalogue: () => ({ data: [], isFetching: false }),
+  useResolveUrl: () => ({ mutate: mockResolveUrlMutate, isPending: false }),
+  useSearchCatalogueBestMatch: () => ({
+    mutate: mockSearchBestMatchMutate,
+    isPending: false,
+  }),
 }));
 
 jest.mock('@/components/ui/date-picker', () => ({
@@ -57,6 +78,10 @@ function getStepInput(index: number) {
 beforeEach(() => {
   mockPush.mockReset();
   mockMutate.mockReset();
+  mockResolveUrlMutate.mockReset();
+  mockSearchBestMatchMutate.mockReset();
+  mockToastSuccess.mockReset();
+  mockToastError.mockReset();
   useUnsavedChangesStore.setState({
     hasUnsavedChanges: false,
     isDialogOpen: false,
@@ -270,6 +295,265 @@ describe('AddProductPage', () => {
     expect(
       screen.getByRole('alert'),
     ).toHaveTextContent(/could not save this product/i);
+  });
+
+  it('shows a success toast after product details are imported from lookup', async () => {
+    const user = userEvent.setup();
+    mockSearchBestMatchMutate.mockImplementation(
+      (
+        _query,
+        options?: {
+          onSuccess?: (
+            value: {
+              identity: {
+                brand: string;
+                name: string;
+              category: ProductCategory;
+              barcode: string | null;
+              imageUrls: string[];
+              sizeMl: number | null;
+              description: string | null;
+              benefits: string[];
+              suitedFor: string[];
+              inciIngredients: string[];
+              inciLastConfirmedAt: string | null;
+            };
+            guidance: {
+              steps: string[];
+              cautions: string[];
+            };
+            manufacturer: {
+              brand: string;
+              parentCompany: string | null;
+              countryOfOrigin: string | null;
+              countryOfManufacture: string | null;
+              supportEmail: string | null;
+              productUrl: string | null;
+              websiteUrl: string | null;
+            };
+            provenance: DataProvenance;
+            source: CatalogueSource;
+            confidence: LookupConfidence;
+            reviewRequired: boolean;
+              warnings: LookupWarningCode[];
+              evidence: never[];
+            } | null,
+          ) => void;
+        },
+      ) => {
+        options?.onSuccess?.({
+          identity: {
+            brand: 'CeraVe',
+            name: 'Resurfacing Retinol Serum',
+            category: ProductCategory.Serum,
+            barcode: '3337875684118',
+            imageUrls: [],
+            sizeMl: 30,
+            description: 'A renewing serum for smoother-looking skin.',
+            benefits: ['smoother texture'],
+            suitedFor: ['combination'],
+            inciIngredients: ['Aqua', 'Glycerin'],
+            inciLastConfirmedAt: null,
+          },
+          guidance: {
+            steps: ['Apply at night after cleansing.'],
+            cautions: ['Use sunscreen during the day.'],
+          },
+          manufacturer: {
+            brand: 'CeraVe',
+            parentCompany: 'Loreal',
+            countryOfOrigin: 'France',
+            countryOfManufacture: 'France',
+            supportEmail: 'support@example.com',
+            productUrl: 'https://example.com/product',
+            websiteUrl: null,
+          },
+          provenance: DataProvenance.Catalogue,
+          source: CatalogueSource.OpenBeautyFacts,
+          confidence: LookupConfidence.Medium,
+          reviewRequired: true,
+          warnings: [LookupWarningCode.ReviewRequired],
+          evidence: [],
+        });
+      },
+    );
+
+    renderWithProviders(<AddProductPage />);
+
+    await user.type(
+      screen.getByLabelText(/search by brand and product name/i),
+      'retinol',
+    );
+    await user.click(screen.getByRole('button', { name: /^search$/i }));
+
+    await waitFor(() => {
+      expect(mockSearchBestMatchMutate).toHaveBeenCalledWith(
+        'retinol',
+        expect.objectContaining({
+          onSuccess: expect.any(Function),
+          onError: expect.any(Function),
+        }),
+      );
+    });
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      'Product details filled in',
+      expect.objectContaining({
+        description: expect.stringMatching(
+          /review the highlighted fields before saving/i,
+        ),
+      }),
+    );
+    expect(screen.getByLabelText(/^brand$/i)).toHaveValue('CeraVe');
+    expect(screen.getByLabelText(/^product name$/i)).toHaveValue(
+      'Resurfacing Retinol Serum',
+    );
+    expect(screen.getByLabelText(/^description$/i)).toHaveValue(
+      'A renewing serum for smoother-looking skin.',
+    );
+    expect(screen.getByLabelText(/^benefits$/i)).toHaveValue(
+      'smoother texture',
+    );
+    expect(screen.getByLabelText(/^suited for$/i)).toHaveValue(
+      'combination',
+    );
+    expect(screen.getByLabelText(/^support$/i)).toHaveValue(
+      'support@example.com',
+    );
+    expect(screen.getByLabelText(/^product url$/i)).toHaveValue(
+      'https://example.com/product',
+    );
+    expect(screen.getByRole('button', { name: /^made in$/i })).toHaveTextContent(
+      /france/i,
+    );
+  });
+
+  it('handles partial lookup payloads without crashing and fills available fields', async () => {
+    const user = userEvent.setup();
+    mockSearchBestMatchMutate.mockImplementation(
+      (
+        _query,
+        options?: {
+          onSuccess?: (value: unknown) => void;
+        },
+      ) => {
+        options?.onSuccess?.({
+          identity: {
+            brand: 'CeraVe',
+            name: 'Resurfacing Retinol Serum',
+            category: ProductCategory.Serum,
+            description: 'A resurfacing serum.',
+          },
+          provenance: DataProvenance.Catalogue,
+          source: CatalogueSource.RitoraCatalogue,
+          confidence: LookupConfidence.High,
+          reviewRequired: false,
+          warnings: [],
+          evidence: [],
+        });
+      },
+    );
+
+    renderWithProviders(<AddProductPage />);
+
+    await user.type(screen.getByLabelText(/^support$/i), 'stale@example.com');
+    fireEvent.change(screen.getByLabelText(/^product url$/i), {
+      target: { value: 'https://example.com/stale-product' },
+    });
+    await user.type(screen.getByLabelText(/^benefits$/i), 'stale benefit');
+    await user.type(screen.getByLabelText(/^suited for$/i), 'stale skin');
+
+    await user.type(
+      screen.getByLabelText(/search by brand and product name/i),
+      'retinol',
+    );
+    await user.click(screen.getByRole('button', { name: /^search$/i }));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/^brand$/i)).toHaveValue('CeraVe');
+    });
+
+    expect(screen.getByLabelText(/^product name$/i)).toHaveValue(
+      'Resurfacing Retinol Serum',
+    );
+    expect(screen.getByLabelText(/^description$/i)).toHaveValue(
+      'A resurfacing serum.',
+    );
+    expect(screen.getByLabelText(/^benefits$/i)).toHaveValue('');
+    expect(screen.getByLabelText(/^suited for$/i)).toHaveValue('');
+    expect(screen.getByLabelText(/^support$/i)).toHaveValue('');
+    expect(screen.getByLabelText(/^product url$/i)).toHaveValue('');
+  });
+
+  it('keeps review badges for high-confidence AI-backed fields and maps origin to made in', async () => {
+    const user = userEvent.setup();
+    mockSearchBestMatchMutate.mockImplementation(
+      (
+        _query,
+        options?: {
+          onSuccess?: (value: unknown) => void;
+        },
+      ) => {
+        options?.onSuccess?.({
+          identity: {
+            brand: 'CeraVe',
+            name: 'SA Smoothing Cleanser',
+            category: ProductCategory.Cleanser,
+            description: 'A cleanser that smooths rough texture.',
+            benefits: ['smooths texture'],
+            suitedFor: ['rough skin'],
+            barcode: '3337875795456',
+            imageUrls: [],
+            sizeMl: 236,
+            inciIngredients: ['Aqua'],
+            inciLastConfirmedAt: null,
+          },
+          guidance: {
+            cautions: ['Avoid contact with eyes.'],
+          },
+          manufacturer: {
+            brand: 'CeraVe',
+            parentCompany: "L'Oréal",
+            countryOfOrigin: 'France',
+            countryOfManufacture: null,
+            supportEmail: 'support@example.com',
+            productUrl: 'https://example.com/product',
+            websiteUrl: null,
+          },
+          provenance: DataProvenance.Catalogue,
+          source: CatalogueSource.OfficialPage,
+          confidence: LookupConfidence.High,
+          reviewRequired: true,
+          warnings: [LookupWarningCode.AiNormalized],
+          evidence: [],
+        });
+      },
+    );
+
+    renderWithProviders(<AddProductPage />);
+
+    await user.type(
+      screen.getByLabelText(/search by brand and product name/i),
+      'cerave cleanser',
+    );
+    await user.click(screen.getByRole('button', { name: /^search$/i }));
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/^brand$/i)).toHaveValue('CeraVe');
+    });
+
+    expect(screen.getByRole('button', { name: /^made in$/i })).toHaveTextContent(
+      /france/i,
+    );
+    expect(screen.getAllByText(/needs review/i).length).toBeGreaterThan(0);
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      'Product details filled in',
+      expect.objectContaining({
+        description: expect.stringMatching(
+          /review the highlighted fields before saving/i,
+        ),
+      }),
+    );
   });
 
   it('keeps the add-product page at a single form when switching to the URL tab', async () => {

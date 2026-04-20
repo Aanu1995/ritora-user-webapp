@@ -8,9 +8,11 @@ import {
   useDeleteProducts,
   useMarkFinished,
   useMarkProductFinished,
+  useResolveBarcodeMutation,
   useResolveUrl,
   useRestoreProduct,
   useRestoreProducts,
+  useSearchCatalogueBestMatch,
   useSearchCatalogue,
   useShelfProducts,
   useShelfStats,
@@ -36,9 +38,11 @@ jest.mock('@/services/shelf.service', () => ({
   markProductFinished: jest.fn(),
   markProductsFinished: jest.fn(),
   removeProducts: jest.fn(),
+  resolveBarcode: jest.fn(),
   resolveUrl: jest.fn(),
   restoreProduct: jest.fn(),
   restoreProducts: jest.fn(),
+  searchCatalogueBestMatch: jest.fn(),
   searchCatalogue: jest.fn(),
   updateProduct: jest.fn(),
 }));
@@ -322,5 +326,46 @@ describe('shelf mutations', () => {
     expect(shelfService.resolveUrl).toHaveBeenCalledWith(
       'https://www.cerave.com/skincare/serums/resurfacing-retinol-serum',
     );
+  });
+
+  it('searches for a best-match lookup in one mutation call', async () => {
+    (shelfService.searchCatalogueBestMatch as jest.Mock).mockResolvedValue({
+      identity: { brand: 'CeraVe', name: 'Retinol Serum' },
+      manufacturer: { brand: 'CeraVe' },
+      provenance: DataProvenance.Catalogue,
+    });
+
+    const { result } = renderHookWithProviders(() =>
+      useSearchCatalogueBestMatch(),
+    );
+
+    await act(async () => {
+      await result.current.mutateAsync('cerave retinol serum');
+    });
+
+    expect(shelfService.searchCatalogueBestMatch).toHaveBeenCalledWith(
+      'cerave retinol serum',
+    );
+  });
+
+  it('resolves barcode lookups through the mutation hook', async () => {
+    (shelfService.resolveBarcode as jest.Mock).mockResolvedValue({
+      identity: {
+        brand: 'CeraVe',
+        name: 'Retinol Serum',
+      },
+      manufacturer: {
+        brand: 'CeraVe',
+      },
+      provenance: DataProvenance.BarcodeLookup,
+    });
+
+    const { result } = renderHookWithProviders(() => useResolveBarcodeMutation());
+
+    await act(async () => {
+      await result.current.mutateAsync('3337875597227');
+    });
+
+    expect(shelfService.resolveBarcode).toHaveBeenCalledWith('3337875597227');
   });
 });

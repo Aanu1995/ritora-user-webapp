@@ -751,6 +751,24 @@
       "treatment": "Treatment",
       "other": "Other"
     },
+    "lookupSource": {
+      "ritora-catalogue": "Ritora catalogue",
+      "open-beauty-facts": "Open Beauty Facts",
+      "official-page": "Official brand page"
+    },
+    "lookupConfidence": {
+      "high": "High confidence",
+      "medium": "Medium confidence",
+      "low": "Low confidence"
+    },
+    "lookupWarning": {
+      "review-required": "Review before saving",
+      "community-data": "Community-provided source",
+      "ai-normalized": "Some fields were normalized from grounded page content",
+      "partial-data": "Only partial product details were found",
+      "ingredients-unverified": "Verify ingredients against the packaging",
+      "guidance-unverified": "Review usage guidance before saving"
+    },
     "empty": {
       "title": "Your shelf is empty",
       "description": "Add products you own and Ritora builds a calmer routine around them.",
@@ -812,22 +830,44 @@
       "scan": {
         "heading": "Scan the barcode on the back",
         "description": "We'll look it up in the open cosmetics database.",
-        "comingSoon": "Camera scanning arrives in the next release. For now try Search or Manual.",
-        "fallback": "Enter manually instead"
+        "inactive": "Tap start to turn on the camera scanner.",
+        "start": "Start camera",
+        "starting": "Starting the camera…",
+        "scanning": "Line up the barcode inside the frame.",
+        "detected": "Barcode detected: {barcode}",
+        "resolving": "Looking up barcode {barcode}…",
+        "success": "Product found. Review the details below.",
+        "notFound": "We couldn't find that barcode in the catalogue. Try another scan or use Search.",
+        "lookupError": "We found a barcode, but couldn't look it up this time.",
+        "insecureContext": "Camera scanning only works on https:// or localhost.",
+        "permissionDenied": "Camera access is blocked for this site. Allow camera access in your browser settings, then try again.",
+        "policyBlocked": "This page is running in a context that does not allow camera access.",
+        "systemBlocked": "The browser could not start the camera. If site permission is already allowed, check your device privacy settings or close other apps using the camera, then try again.",
+        "unavailable": "We couldn't start a usable camera on this device. Try closing other apps that may be using the camera, then try again.",
+        "unsupported": "This browser doesn't support live camera barcode scanning here.",
+        "cameraError": "We couldn't start the camera scanner right now.",
+        "retry": "Scan again",
+        "scanAnother": "Scan another barcode",
+        "fallback": "Try Search instead"
       },
       "search": {
         "heading": "Find your product",
         "placeholder": "Search by brand and product name",
         "empty": "Type at least two letters to search the catalogue.",
+        "clearNotice": "Starting a new search clears the current draft fields before import.",
         "noResults": "Nothing matched. Try another name, or enter the product manually.",
         "errorTitle": "We couldn't search right now",
         "error": "The catalogue search did not load this time. Try again in a moment.",
+        "resolveErrorTitle": "We couldn't add this product right now",
+        "resolveError": "We found a possible match, but couldn't import its details this time. Try again, scan the barcode, or paste the official product link.",
+        "resolveNotFound": "We found a possible match, but couldn't import enough details for this product. Try another name, scan the barcode, or paste the official product link.",
         "retry": "Try again",
         "searchAction": "Search",
         "searching": "Searching…",
-        "loadMore": "Load more",
         "loadingMore": "Loading more…",
-        "addAction": "Add"
+        "addAction": "Add",
+        "reviewRequired": "Review required",
+        "resolvingResult": "Adding…"
       },
       "url": {
         "heading": "Paste a product link",
@@ -843,6 +883,20 @@
         "description": "Scan a barcode, search the catalogue, or paste a product link. Ritora pre-fills what it can and you can refine the rest below.",
         "tablistLabel": "Quick lookup methods"
       },
+      "lookupImport": {
+        "title": "Product details filled in",
+        "description": "We found product details and filled the form for you. You can change anything before saving.",
+        "reviewDescription": "We found product details and filled the form for you. Review the highlighted fields before saving."
+      },
+      "lookupReview": {
+        "title": "Imported details to review",
+        "description": "We filled what we could from {source}. Review the details before saving to your shelf.",
+        "reviewRequired": "Review recommended",
+        "confidenceLabel": "Confidence",
+        "warningsLabel": "What to review",
+        "evidenceLabel": "Grounded sources",
+        "lowConfidenceError": "We couldn't verify enough product details to fill this form safely. Paste the official product link or enter the details manually."
+      },
       "manual": {
         "heading": "Add manually",
         "description": "Fill in what you know. You can come back later to add more."
@@ -853,6 +907,7 @@
         "fromSource": "From barcode",
         "fromUrl": "From link",
         "autoFromPao": "Auto from PAO",
+        "needsReviewBadge": "Needs review",
         "pleaseFill": "Please fill",
         "sections": {
           "identity": "Identity",

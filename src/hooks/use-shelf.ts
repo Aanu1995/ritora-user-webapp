@@ -10,6 +10,7 @@ import { QueryKey } from '@/constants/query-keys';
 import { useAuthStore } from '@/stores/auth-store';
 import * as shelfService from '@/services/shelf.service';
 import {
+  type CatalogueSource,
   type DeepPartial,
   type ShelfListFilters,
   type ShelfProduct,
@@ -191,6 +192,12 @@ export function useSearchCatalogue(searchQuery: string) {
   };
 }
 
+export function useSearchCatalogueBestMatch() {
+  return useMutation({
+    mutationFn: (query: string) => shelfService.searchCatalogueBestMatch(query),
+  });
+}
+
 export function useResolveBarcode(barcode: string | null) {
   return useQuery({
     queryKey: [QueryKey.BarcodeResolve, barcode],
@@ -201,6 +208,22 @@ export function useResolveBarcode(barcode: string | null) {
       return shelfService.resolveBarcode(barcode);
     },
     enabled: Boolean(barcode && barcode.length >= 6),
+  });
+}
+
+export function useResolveBarcodeMutation() {
+  return useMutation({
+    mutationFn: (barcode: string) => shelfService.resolveBarcode(barcode),
+  });
+}
+
+export function useResolveCatalogueCandidate() {
+  return useMutation({
+    mutationFn: (input: {
+      id: string;
+      source: CatalogueSource;
+      url?: string | null;
+    }) => shelfService.resolveCatalogueCandidate(input),
   });
 }
 

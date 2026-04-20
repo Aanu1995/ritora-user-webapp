@@ -1,183 +1,65 @@
 'use client';
 
-import { Plus, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
-import { ProductIllustration } from '../product-illustration';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { RetryPanel } from '@/components/ui/retry-panel';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useAutoLoadMore } from '@/hooks/use-auto-load-more';
-import { useSearchCatalogue } from '@/hooks/use-shelf';
-import {
-  type CatalogueIdentity,
-  type CatalogueSuggestion,
-  ProductCategory,
-  type ShelfProductPartial,
-} from '@/types/shelf';
+import { LoadingIndicator } from '@/components/ui/loading-indicator';
+import { useSearchCatalogueBestMatch } from '@/hooks/use-shelf';
+import { type ResolvedLookup } from '@/types/shelf';
 
 type Props = {
-  onPick: (partial: ShelfProductPartial) => void;
+  onResolved: (resolved: ResolvedLookup) => void;
+  onSearchStart?: () => void;
 };
 
-function suggestionToIdentity(s: CatalogueSuggestion): CatalogueIdentity {
-  return {
-    brand: s.brand,
-    name: s.name,
-    category: s.category,
-    barcode: s.barcode,
-    imageUrls: s.imageUrls,
-    sizeMl: s.sizeMl,
-    description: null,
-    benefits: [],
-    suitedFor: [],
-    inciIngredients: [],
-    inciLastConfirmedAt: null,
-  };
-}
-
-export function SearchTab({ onPick }: Props) {
+export function SearchTab({ onResolved, onSearchStart }: Props) {
   const t = useTranslations('shelf.dialog.search');
-  const tCat = useTranslations('shelf.category');
-  const tCard = useTranslations('shelf.card');
   const [query, setQuery] = useState('');
-  const [submittedQuery, setSubmittedQuery] = useState('');
-  const {
-    data: results = [],
-    isError,
-    isFetching,
-    isFetchNextPageError,
-    isFetchingNextPage,
-    fetchNextPage,
-    hasNextPage,
-    refetch,
-  } = useSearchCatalogue(submittedQuery);
+  const [attemptedQuery, setAttemptedQuery] = useState('');
+  const [searchState, setSearchState] = useState<'idle' | 'not-found'>('idle');
+  const searchBestMatch = useSearchCatalogueBestMatch();
   const trimmedQuery = query.trim();
-  const hasSubmittedQuery = submittedQuery.trim().length >= 2;
-  const isInitialLoading = isFetching && results.length === 0;
-  const hasSearchError = isError && results.length === 0;
-  const loadMoreSentinelRef = useAutoLoadMore({
-    enabled:
-      hasSubmittedQuery &&
-      results.length > 0 &&
-      !hasSearchError &&
-      !isFetchNextPageError,
-    hasNextPage: Boolean(hasNextPage),
-    isFetchingNextPage,
-    onLoadMore: () => {
-      void fetchNextPage();
-    },
-  });
+  const hasAttemptedSearch = attemptedQuery.trim().length >= 2;
 
   const handleSearch = () => {
     if (trimmedQuery.length < 2) {
       return;
     }
 
-    setSubmittedQuery(trimmedQuery);
+    setAttemptedQuery(trimmedQuery);
+    setSearchState('idle');
+    onSearchStart?.();
+    searchBestMatch.mutate(trimmedQuery, {
+      onSuccess: (result) => {
+        if (!result) {
+          setSearchState('not-found');
+          return;
+        }
+
+        setQuery('');
+        setAttemptedQuery('');
+        setSearchState('idle');
+        onResolved(result);
+      },
+      onError: () => {
+        setSearchState('idle');
+        toast.error(t('errorTitle'), {
+          description: t('error'),
+        });
+      },
+    });
   };
 
   let content: ReactNode;
 
-  if (!hasSubmittedQuery) {
+  if (!hasAttemptedSearch) {
     content = <p className="text-sm text-muted">{t('empty')}</p>;
-  } else if (isInitialLoading) {
-    content = <SearchResultsSkeleton />;
-  } else if (hasSearchError) {
-    content = (
-      <RetryPanel
-        title={t('errorTitle')}
-        description={t('error')}
-        actionLabel={t('retry')}
-        onAction={() => {
-          void refetch();
-        }}
-      />
-    );
-  } else if (results.length === 0) {
+  } else if (searchState === 'not-found') {
     content = <p className="text-sm text-muted">{t('noResults')}</p>;
   } else {
-    const showAutoLoadState =
-      Boolean(hasNextPage) || isFetchingNextPage || isFetchNextPageError;
-
-    content = (
-      <div className="flex flex-col gap-3">
-        <ul className="flex flex-col gap-2">
-          {results.map((suggestion) => {
-            const sizeLabel = suggestion.sizeMl
-              ? ` · ${suggestion.sizeMl} ${tCard('sizeSuffix')}`
-              : '';
-
-            return (
-              <li
-                key={`${suggestion.brand}-${suggestion.name}`}
-                className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-2.5"
-              >
-                <div className="flex h-14 w-14 flex-none items-center justify-center overflow-hidden rounded-xl bg-surface-muted">
-                  <ProductIllustration
-                    brand={suggestion.brand}
-                    category={suggestion.category as ProductCategory}
-                    className="h-9 w-auto"
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
-                    {suggestion.brand}
-                  </span>
-                  <div className="line-clamp-1 text-[14px] font-semibold">
-                    {suggestion.name}
-                  </div>
-                  <div className="text-xs text-muted">
-                    {tCat(suggestion.category)}
-                    {sizeLabel}
-                  </div>
-                </div>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() =>
-                    onPick({
-                      identity: suggestionToIdentity(suggestion),
-                    })
-                  }
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  {t('addAction')}
-                </Button>
-              </li>
-            );
-          })}
-        </ul>
-        {showAutoLoadState ? (
-          <div className="flex flex-col items-center gap-2 pt-1">
-            {isFetchNextPageError ? (
-              <>
-                <p className="text-sm text-danger" role="alert">
-                  {t('error')}
-                </p>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => {
-                    void fetchNextPage();
-                  }}
-                >
-                  {t('retry')}
-                </Button>
-              </>
-            ) : isFetchingNextPage ? (
-              <p className="text-sm text-muted">{t('loadingMore')}</p>
-            ) : null}
-            <div
-              ref={loadMoreSentinelRef}
-              data-testid="catalogue-auto-load-sentinel"
-              aria-hidden="true"
-              className="h-px w-full"
-            />
-          </div>
-        ) : null}
-      </div>
-    );
+    content = null;
   }
 
   return (
@@ -204,35 +86,20 @@ export function SearchTab({ onPick }: Props) {
           type="button"
           size="sm"
           onClick={handleSearch}
-          disabled={isFetching || trimmedQuery.length < 2}
+          disabled={trimmedQuery.length < 2 || searchBestMatch.isPending}
           className="shrink-0"
         >
-          {isFetching ? t('searching') : t('searchAction')}
+          {searchBestMatch.isPending ? (
+            <LoadingIndicator label={t('searching')} size="sm" />
+          ) : (
+            t('searchAction')
+          )}
         </Button>
       </div>
 
       {content}
-    </div>
-  );
-}
 
-function SearchResultsSkeleton() {
-  return (
-    <ul className="flex flex-col gap-2" aria-hidden="true">
-      {Array.from({ length: 3 }, (_, index) => (
-        <li
-          key={index}
-          className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-2.5"
-        >
-          <Skeleton className="h-14 w-14 rounded-xl" />
-          <div className="flex-1 space-y-2">
-            <Skeleton className="h-3 w-24" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-3 w-1/2" />
-          </div>
-          <Skeleton className="h-9 w-20 rounded-full" />
-        </li>
-      ))}
-    </ul>
+      <p className="text-sm text-muted">{t('clearNotice')}</p>
+    </div>
   );
 }

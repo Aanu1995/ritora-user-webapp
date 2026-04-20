@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import type { ProductFormReviewFields } from '../product-form-body';
 import { CountrySelect } from '@/components/ui/country-select';
 import { DatePicker } from '@/components/ui/date-picker';
 import {
@@ -197,16 +198,30 @@ type ManufacturerSectionProps = {
   manufacturer: ManufacturerInfo;
   onChange: (patch: Partial<ManufacturerInfo>) => void;
   fieldErrors?: ShelfFormFieldErrors;
+  reviewFields?: ProductFormReviewFields;
 };
+
+function createReviewBadge(
+  shouldReview: boolean | undefined,
+  label: string,
+) {
+  return shouldReview ? (
+    <span className="rounded-full bg-warning/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-warning">
+      {label}
+    </span>
+  ) : null;
+}
 
 export function ProductManufacturerSection({
   manufacturer,
   onChange,
   fieldErrors,
+  reviewFields,
 }: ManufacturerSectionProps) {
   const t = useTranslations('shelf.dialog.confirm');
   const tField = useTranslations('shelf.dialog.confirm.fields');
   const tManufacturer = useTranslations('shelf.detail.manufacturer');
+  const reviewBadgeLabel = t('needsReviewBadge');
 
   return (
     <section className="flex flex-col gap-3">
@@ -215,7 +230,14 @@ export function ProductManufacturerSection({
         {t('hints.manufacturerDescription')}
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
-        <Field label={tManufacturer('parent')} hint={t('hints.parentCompanyHint')}>
+        <Field
+          label={tManufacturer('parent')}
+          hint={t('hints.parentCompanyHint')}
+          badge={createReviewBadge(
+            reviewFields?.['manufacturer.parentCompany'],
+            reviewBadgeLabel,
+          )}
+        >
           <TextInput
             value={manufacturer.parentCompany ?? ''}
             onChange={(parentCompany) =>
@@ -225,7 +247,14 @@ export function ProductManufacturerSection({
             aria-label={tManufacturer('parent')}
           />
         </Field>
-        <Field label={tManufacturer('madeIn')} hint={t('hints.countryManufactureHint')}>
+        <Field
+          label={tManufacturer('madeIn')}
+          hint={t('hints.countryManufactureHint')}
+          badge={createReviewBadge(
+            reviewFields?.['manufacturer.countryOfManufacture'],
+            reviewBadgeLabel,
+          )}
+        >
           <CountrySelect
             value={manufacturer.countryOfManufacture}
             onChange={(countryOfManufacture) =>
@@ -237,6 +266,10 @@ export function ProductManufacturerSection({
         <Field
           label={tManufacturer('support')}
           hint={t('hints.supportEmailHint')}
+          badge={createReviewBadge(
+            reviewFields?.['manufacturer.supportEmail'],
+            reviewBadgeLabel,
+          )}
           error={fieldErrors?.['manufacturer.supportEmail']}
         >
           <TextInput
@@ -253,6 +286,10 @@ export function ProductManufacturerSection({
         <Field
           label={tField('productUrl')}
           hint={t('hints.productUrlHint')}
+          badge={createReviewBadge(
+            reviewFields?.['manufacturer.productUrl'],
+            reviewBadgeLabel,
+          )}
           error={fieldErrors?.['manufacturer.productUrl']}
         >
           <TextInput

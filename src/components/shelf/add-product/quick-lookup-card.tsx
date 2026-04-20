@@ -8,15 +8,12 @@ import { SearchTab } from './search-tab';
 import { UrlTab } from './url-tab';
 import { cn } from '@/lib/utils';
 import {
-  DataProvenance,
-  type ShelfProductPartial,
+  type ResolvedLookup,
 } from '@/types/shelf';
 
 type Props = {
-  onResult: (
-    partial: ShelfProductPartial,
-    provenance: DataProvenance,
-  ) => void;
+  onResult: (resolved: ResolvedLookup) => void;
+  onSearchStart?: () => void;
 };
 
 enum QuickLookupMode {
@@ -35,16 +32,13 @@ const MODES: Array<{
   { value: QuickLookupMode.Url, labelKey: 'tabs.url', icon: LinkIcon },
 ];
 
-export function QuickLookupCard({ onResult }: Props) {
+export function QuickLookupCard({ onResult, onSearchStart }: Props) {
   const t = useTranslations('shelf.dialog');
   const tLookup = useTranslations('shelf.dialog.lookup');
   const [mode, setMode] = useState<QuickLookupMode>(QuickLookupMode.Search);
 
-  const handleResult = (
-    partial: ShelfProductPartial,
-    provenance: DataProvenance,
-  ) => {
-    onResult(partial, provenance);
+  const handleResult = (resolved: ResolvedLookup) => {
+    onResult(resolved);
   };
 
   return (
@@ -88,19 +82,17 @@ export function QuickLookupCard({ onResult }: Props) {
 
       <div className="mt-5">
         {mode === QuickLookupMode.Scan ? (
-          <ScanTab onSwitchToManual={() => setMode(QuickLookupMode.Search)} />
+          <ScanTab
+            onResolved={handleResult}
+            onSwitchToManual={() => setMode(QuickLookupMode.Search)}
+          />
         ) : mode === QuickLookupMode.Search ? (
           <SearchTab
-            onPick={(partial) =>
-              handleResult(partial, DataProvenance.Catalogue)
-            }
+            onResolved={handleResult}
+            onSearchStart={onSearchStart}
           />
         ) : (
-          <UrlTab
-            onResolved={(partial) =>
-              handleResult(partial, DataProvenance.UrlFetch)
-            }
-          />
+          <UrlTab onResolved={handleResult} />
         )}
       </div>
     </section>

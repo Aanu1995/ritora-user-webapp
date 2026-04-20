@@ -89,6 +89,41 @@ export enum DataProvenance {
   UserEntered = 'user-entered',
 }
 
+export enum CatalogueSource {
+  RitoraCatalogue = 'ritora-catalogue',
+  OpenBeautyFacts = 'open-beauty-facts',
+  OfficialPage = 'official-page',
+}
+
+export enum LookupConfidence {
+  High = 'high',
+  Medium = 'medium',
+  Low = 'low',
+}
+
+export enum LookupWarningCode {
+  ReviewRequired = 'review-required',
+  CommunityData = 'community-data',
+  AiNormalized = 'ai-normalized',
+  PartialData = 'partial-data',
+  IngredientsUnverified = 'ingredients-unverified',
+  GuidanceUnverified = 'guidance-unverified',
+}
+
+export enum BarcodeScannerStatus {
+  Inactive = 'inactive',
+  Starting = 'starting',
+  Scanning = 'scanning',
+  Detected = 'detected',
+  InsecureContext = 'insecure-context',
+  PolicyBlocked = 'policy-blocked',
+  Unsupported = 'unsupported',
+  PermissionDenied = 'permission-denied',
+  SystemBlocked = 'system-blocked',
+  Unavailable = 'unavailable',
+  Error = 'error',
+}
+
 export type CatalogueIdentity = {
   brand: string;
   name: string;
@@ -197,12 +232,29 @@ export type ShelfProductPartial = {
 export type CatalogueSuggestion = Pick<
   CatalogueIdentity,
   'brand' | 'name' | 'category' | 'imageUrls' | 'sizeMl' | 'barcode'
->;
+> & {
+  id: string;
+  source: CatalogueSource;
+  confidence: LookupConfidence;
+  reviewRequired: boolean;
+};
+
+export type LookupEvidence = {
+  source: CatalogueSource;
+  url: string | null;
+  title: string | null;
+};
 
 export type ResolvedLookup = {
   identity: Partial<CatalogueIdentity>;
+  guidance: Partial<ApplicationGuidance>;
   manufacturer: Partial<ManufacturerInfo>;
   provenance: DataProvenance;
+  source: CatalogueSource;
+  confidence: LookupConfidence;
+  reviewRequired: boolean;
+  warnings: LookupWarningCode[];
+  evidence: LookupEvidence[];
 };
 
 /**
