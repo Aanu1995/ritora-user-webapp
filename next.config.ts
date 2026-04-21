@@ -7,6 +7,10 @@ const apiOrigin = new URL(
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1',
 ).origin;
 const apiOriginUrl = new URL(apiOrigin);
+const productMediaUrl = process.env.NEXT_PUBLIC_PRODUCT_MEDIA_URL?.trim() || '';
+const productMediaOriginUrl = productMediaUrl
+  ? new URL(productMediaUrl)
+  : null;
 const scriptSrc =
   process.env.NODE_ENV === 'development'
     ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
@@ -38,6 +42,18 @@ const nextConfig: NextConfig = {
         port: apiOriginUrl.port || undefined,
         pathname: '/media/**',
       },
+      ...(productMediaOriginUrl
+        ? [
+            {
+              protocol: productMediaOriginUrl.protocol.replace(':', '') as
+                | 'http'
+                | 'https',
+              hostname: productMediaOriginUrl.hostname,
+              port: productMediaOriginUrl.port || undefined,
+              pathname: '/product-images/**',
+            },
+          ]
+        : []),
     ],
   },
   async headers() {
