@@ -41,4 +41,16 @@ describe('applyRequestContext', () => {
       } as never),
     ).toThrow('Blocked insecure API transport in production');
   });
+
+  it('allows loopback HTTP API transport in production for local QA and e2e', () => {
+    process.env.NODE_ENV = 'production';
+
+    const config = applyRequestContext({
+      headers: {},
+      url: '/auth/me',
+      baseURL: 'http://localhost:3001/api/v1',
+    } as never);
+
+    expect(config.baseURL).toBe('http://localhost:3001/api/v1');
+  });
 });

@@ -150,12 +150,22 @@ describe('AddProductPage', () => {
     const user = userEvent.setup();
     renderWithProviders(<AddProductPage />);
 
-    await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
-    await user.type(screen.getByLabelText(/^product name$/i), 'Barrier Serum');
-    await user.type(screen.getByLabelText(/^size$/i), '30');
+    fireEvent.change(screen.getByLabelText(/^brand$/i), {
+      target: { value: 'CeraVe' },
+    });
+    fireEvent.change(screen.getByLabelText(/^product name$/i), {
+      target: { value: 'Barrier Serum' },
+    });
+    fireEvent.change(screen.getByLabelText(/^size$/i), {
+      target: { value: '30' },
+    });
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
-    await user.type(screen.getByLabelText(/^opened on$/i), '2026-04-15');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
+    fireEvent.change(screen.getByLabelText(/^opened on$/i), {
+      target: { value: '2026-04-15' },
+    });
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 

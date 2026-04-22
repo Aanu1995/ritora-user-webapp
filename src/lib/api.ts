@@ -40,6 +40,26 @@ type AuthRequestConfig = InternalAxiosRequestConfig & {
   _skipAuthRefresh?: boolean;
 };
 
+function isLoopbackHttpUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    const host = parsedUrl.hostname.toLowerCase();
+
+    if (parsedUrl.protocol !== 'http:') {
+      return false;
+    }
+
+    return (
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === '::1' ||
+      host === '[::1]'
+    );
+  } catch {
+    return false;
+  }
+}
+
 function getAllowedApiOrigin(baseURL?: string): string | null {
   const effectiveBaseURL = baseURL ?? API_BASE_URL;
 
@@ -183,6 +203,10 @@ export function isSecureApiRequestUrl(
   const resolvedUrl = resolveConfiguredRequestUrl(url, baseURL);
 
   if (!resolvedUrl || !ABSOLUTE_HTTP_URL_PATTERN.test(resolvedUrl)) {
+    return true;
+  }
+
+  if (isLoopbackHttpUrl(resolvedUrl)) {
     return true;
   }
 

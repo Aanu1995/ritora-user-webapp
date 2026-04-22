@@ -11,8 +11,9 @@ import { GuardedLink } from '@/components/app/guarded-link';
 import { Button } from '@/components/ui/button';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { AppRoute } from '@/constants/app-routes';
+import { useFilePreviewSelection } from '@/hooks/use-file-preview-selection';
 import { useUnsavedChangesGuard } from '@/hooks/use-unsaved-changes-guard';
-import { useUpdateProduct } from '@/hooks/use-shelf';
+import { useUpdateProduct, useUploadProductImage } from '@/hooks/use-shelf';
 import { type FieldIssue, firstFieldError } from '@/lib/form-errors';
 import {
   clearSubmitErrors,
@@ -76,13 +77,58 @@ function getDefaultValues(product: ShelfProduct): ProductFormValue {
   };
 }
 
+const FIELD_ERROR_KEYS: ReadonlyArray<keyof ShelfFormFieldErrors> = [
+  'identity.brand',
+  'identity.name',
+  'identity.description',
+  'identity.benefits',
+  'identity.suitedFor',
+  'identity.inciIngredients',
+  'identity.sizeMl',
+  'userFields.pricePaid',
+  'userFields.expiresAt',
+  'manufacturer.supportEmail',
+  'manufacturer.productUrl',
+];
+
+function withUploadedImageUrl<T extends { identity: { imageUrls: string[] } }>(
+  value: T,
+  imageUrl: string,
+): T {
+  return {
+    ...value,
+    identity: {
+      ...value.identity,
+      imageUrls: [imageUrl],
+    },
+  };
+}
+
+function withIdentityImageUrl<T extends { imageUrls: string[] }>(
+  value: T,
+  imageUrl: string,
+): T {
+  return {
+    ...value,
+    imageUrls: [imageUrl],
+  };
+}
+
 export function ProductEditForm({ product }: Props) {
   const t = useTranslations('shelf.edit');
   const tDetail = useTranslations('shelf.detail');
   const tShelf = useTranslations('shelf');
   const router = useRouter();
   const updateProduct = useUpdateProduct();
+  const uploadProductImage = useUploadProductImage();
   const [isSaved, setIsSaved] = useState(false);
+  const {
+    selectedFile: selectedPhotoFile,
+    previewUrl: selectedPhotoPreviewUrl,
+    hasSelection: hasSelectedPhoto,
+    selectFile: handlePhotoSelection,
+    clearSelection: clearSelectedPhoto,
+  } = useFilePreviewSelection();
 
   const form = useForm({
     defaultValues: getDefaultValues(product),
@@ -95,7 +141,17 @@ export function ProductEditForm({ product }: Props) {
       onBlur: shelfProductFormSchema,
       onSubmit: shelfProductFormSchema,
       onSubmitAsync: async ({ value }) => {
-        const normalized = normalizeShelfProductForm(value);
+        let normalized = normalizeShelfProductForm(value);
+
+        try {
+          const uploadedImageUrl = await uploadPendingPhoto();
+          if (uploadedImageUrl) {
+            normalized = withUploadedImageUrl(normalized, uploadedImageUrl);
+          }
+        } catch {
+          return t('photo.uploadFailed');
+        }
+
         const result = await executeMutation(updateProduct.mutate, {
           id: product.id,
           patch: {
@@ -121,82 +177,51 @@ export function ProductEditForm({ product }: Props) {
     },
   });
 
+  const setUploadedPhoto = (imageUrl: string) => {
+    form.setFieldValue('identity', (previous) =>
+      withIdentityImageUrl(previous, imageUrl),
+    );
+  };
+
+  const uploadPendingPhoto = async (): Promise<string | null> => {
+    if (!selectedPhotoFile) {
+      return null;
+    }
+
+    const uploaded = await uploadProductImage.mutateAsync(selectedPhotoFile);
+    setUploadedPhoto(uploaded.imageUrl);
+    clearSelectedPhoto();
+    return uploaded.imageUrl;
+  };
+
   const isFormDirty = useStore(form.store, (state) => state.isDirty);
-  const hasUnsavedChanges = isFormDirty && !isSaved;
+  const hasUnsavedChanges = (isFormDirty || hasSelectedPhoto) && !isSaved;
 
   const { releaseGuard } = useUnsavedChangesGuard({ hasUnsavedChanges });
+
+  const uploadSelectedPhoto = async () => {
+    if (!hasSelectedPhoto) {
+      return;
+    }
+
+    try {
+      await uploadPendingPhoto();
+      toast.success(t('photo.uploadSuccess'));
+    } catch {
+      toast.error(t('photo.uploadFailed'));
+    }
+  };
 
   const buildFieldErrors = (
     fieldMeta: ShelfFieldMeta,
     showAllErrors: boolean,
-  ): ShelfFormFieldErrors => ({
-    'identity.brand': getFieldError(
-      fieldMeta,
-      'identity.brand',
-      tShelf,
-      showAllErrors,
-    ),
-    'identity.name': getFieldError(
-      fieldMeta,
-      'identity.name',
-      tShelf,
-      showAllErrors,
-    ),
-    'identity.description': getFieldError(
-      fieldMeta,
-      'identity.description',
-      tShelf,
-      showAllErrors,
-    ),
-    'identity.benefits': getFieldError(
-      fieldMeta,
-      'identity.benefits',
-      tShelf,
-      showAllErrors,
-    ),
-    'identity.suitedFor': getFieldError(
-      fieldMeta,
-      'identity.suitedFor',
-      tShelf,
-      showAllErrors,
-    ),
-    'identity.inciIngredients': getFieldError(
-      fieldMeta,
-      'identity.inciIngredients',
-      tShelf,
-      showAllErrors,
-    ),
-    'identity.sizeMl': getFieldError(
-      fieldMeta,
-      'identity.sizeMl',
-      tShelf,
-      showAllErrors,
-    ),
-    'userFields.pricePaid': getFieldError(
-      fieldMeta,
-      'userFields.pricePaid',
-      tShelf,
-      showAllErrors,
-    ),
-    'userFields.expiresAt': getFieldError(
-      fieldMeta,
-      'userFields.expiresAt',
-      tShelf,
-      showAllErrors,
-    ),
-    'manufacturer.supportEmail': getFieldError(
-      fieldMeta,
-      'manufacturer.supportEmail',
-      tShelf,
-      showAllErrors,
-    ),
-    'manufacturer.productUrl': getFieldError(
-      fieldMeta,
-      'manufacturer.productUrl',
-      tShelf,
-      showAllErrors,
-    ),
-  });
+  ): ShelfFormFieldErrors =>
+    Object.fromEntries(
+      FIELD_ERROR_KEYS.map((field) => [
+        field,
+        getFieldError(fieldMeta, field, tShelf, showAllErrors),
+      ]),
+    ) as ShelfFormFieldErrors;
 
   return (
     <form
@@ -263,7 +288,11 @@ export function ProductEditForm({ product }: Props) {
                     </p>
                   </div>
                   <div className="shrink-0">
-                    <Button type="submit" size="sm" disabled={isSubmitting}>
+                    <Button
+                      type="submit"
+                      size="sm"
+                      disabled={isSubmitting || uploadProductImage.isPending}
+                    >
                       {isSubmitting ? (
                         <LoadingIndicator label={t('saving')} />
                       ) : (
@@ -303,6 +332,29 @@ export function ProductEditForm({ product }: Props) {
                   }
                   fieldErrors={fieldErrors}
                   guidanceErrors={guidanceErrors}
+                  photoUpload={{
+                    previewUrl: selectedPhotoPreviewUrl,
+                    isPendingSelection: Boolean(selectedPhotoFile),
+                    isUploading: uploadProductImage.isPending,
+                    onSelectFile: handlePhotoSelection,
+                    onUpload: () => {
+                      void uploadSelectedPhoto();
+                    },
+                    onClearSelection: clearSelectedPhoto,
+                    text: {
+                      chooseLabel: t('photo.choose'),
+                      replaceLabel: t('photo.replace'),
+                      chooseDifferentLabel: t('photo.chooseDifferent'),
+                      uploadLabel: t('photo.upload'),
+                      uploadingLabel: t('photo.uploading'),
+                      clearLabel: t('photo.clear'),
+                      inputLabel: t('photo.inputLabel'),
+                      helperText: t('photo.helper'),
+                      emptyHint: t('photo.emptyHint'),
+                      selectedHint: t('photo.selectedHint'),
+                      uploadedHint: t('photo.uploadedHint'),
+                    },
+                  }}
                 />
               </div>
             </>

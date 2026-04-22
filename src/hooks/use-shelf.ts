@@ -7,7 +7,12 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { QueryKey } from '@/constants/query-keys';
-import { useAuthStore } from '@/stores/auth-store';
+import { useAuthEnabled } from '@/hooks/use-auth-enabled';
+import type { ShelfDateContext } from '@/hooks/use-shelf-time-zone';
+import {
+  buildShelfProductsQueryKey,
+  buildShelfStatsQueryKey,
+} from '@/lib/shelf-query';
 import * as shelfService from '@/services/shelf.service';
 import {
   type DeepPartial,
@@ -16,33 +21,39 @@ import {
   type ShelfProductDraft,
 } from '@/types/shelf';
 
-function invalidateShelfQueries(queryClient: ReturnType<typeof useQueryClient>) {
+type ShelfQueryClient = ReturnType<typeof useQueryClient>;
+type ShelfProductMutationFn<TVariables> = (
+  variables: TVariables,
+) => Promise<ShelfProduct>;
+type ShelfIdsMutationFn = (ids: string[]) => Promise<void>;
+
+function invalidateShelfQueries(queryClient: ShelfQueryClient) {
   void queryClient.invalidateQueries({ queryKey: [QueryKey.Shelf] });
 }
 
 function setShelfProductCache(
-  queryClient: ReturnType<typeof useQueryClient>,
+  queryClient: ShelfQueryClient,
   product: ShelfProduct,
 ) {
   queryClient.setQueryData([QueryKey.ShelfProduct, product.id], product);
 }
 
 function removeShelfProductCache(
-  queryClient: ReturnType<typeof useQueryClient>,
+  queryClient: ShelfQueryClient,
   id: string,
 ) {
   queryClient.removeQueries({ queryKey: [QueryKey.ShelfProduct, id] });
 }
 
 function invalidateShelfProductCache(
-  queryClient: ReturnType<typeof useQueryClient>,
+  queryClient: ShelfQueryClient,
   id: string,
 ) {
   queryClient.invalidateQueries({ queryKey: [QueryKey.ShelfProduct, id] });
 }
 
 function invalidateShelfProductCaches(
-  queryClient: ReturnType<typeof useQueryClient>,
+  queryClient: ShelfQueryClient,
   ids: string[],
 ) {
   ids.forEach((id) => {
@@ -50,27 +61,56 @@ function invalidateShelfProductCaches(
   });
 }
 
-function updateShelfProductCache(
-  queryClient: ReturnType<typeof useQueryClient>,
+function syncShelfProduct(
+  queryClient: ShelfQueryClient,
   product: ShelfProduct,
 ) {
   setShelfProductCache(queryClient, product);
   invalidateShelfQueries(queryClient);
 }
 
-export function useShelfProducts(filters: ShelfListFilters) {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+function invalidateShelfProducts(
+  queryClient: ShelfQueryClient,
+  ids: string[],
+) {
+  invalidateShelfProductCaches(queryClient, ids);
+  invalidateShelfQueries(queryClient);
+}
+
+function createShelfProductMutationOptions<TVariables>(
+  queryClient: ShelfQueryClient,
+  mutationFn: ShelfProductMutationFn<TVariables>,
+) {
+  return {
+    mutationFn: (variables: TVariables) => mutationFn(variables),
+    onSuccess: (product: ShelfProduct) => {
+      syncShelfProduct(queryClient, product);
+    },
+  };
+}
+
+function createShelfIdsMutationOptions(
+  queryClient: ShelfQueryClient,
+  mutationFn: ShelfIdsMutationFn,
+) {
+  return {
+    mutationFn: (ids: string[]) => mutationFn(ids),
+    onSuccess: (_data: void, ids: string[]) => {
+      invalidateShelfProducts(queryClient, ids);
+    },
+  };
+}
+
+export function useShelfProducts(
+  filters: ShelfListFilters,
+  dateContext: ShelfDateContext,
+) {
+  const isEnabled = useAuthEnabled();
 
   const query = useInfiniteQuery({
-    queryKey: [
-      QueryKey.Shelf,
-      filters.stat,
-      filters.category,
-      filters.search,
-      filters.sort,
-    ],
+    queryKey: buildShelfProductsQueryKey(filters, dateContext),
     queryFn: ({ pageParam }) => shelfService.listProducts(filters, pageParam),
-    enabled: isAuthenticated,
+    enabled: isEnabled,
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
@@ -82,18 +122,18 @@ export function useShelfProducts(filters: ShelfListFilters) {
   };
 }
 
-export function useShelfStats() {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+export function useShelfStats(dateContext: ShelfDateContext) {
+  const isEnabled = useAuthEnabled();
 
   return useQuery({
-    queryKey: [QueryKey.Shelf, 'stats'],
+    queryKey: buildShelfStatsQueryKey(dateContext),
     queryFn: () => shelfService.countProductsByStat(),
-    enabled: isAuthenticated,
+    enabled: isEnabled,
   });
 }
 
 export function useShelfProduct(id: string | null) {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isEnabled = useAuthEnabled(Boolean(id));
 
   return useQuery({
     queryKey: [QueryKey.ShelfProduct, id],
@@ -103,19 +143,16 @@ export function useShelfProduct(id: string | null) {
       }
       return shelfService.getProduct(id);
     },
-    enabled: isAuthenticated && Boolean(id),
+    enabled: isEnabled,
   });
 }
 
 export function useCreateProduct() {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (draft: ShelfProductDraft) => shelfService.createProduct(draft),
-    onSuccess: (created) => {
-      updateShelfProductCache(queryClient, created);
-    },
-  });
+  return useMutation(
+    createShelfProductMutationOptions(queryClient, shelfService.createProduct),
+  );
 }
 
 type UpdateProductArgs = {
@@ -126,12 +163,17 @@ type UpdateProductArgs = {
 export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
+  return useMutation(
+    createShelfProductMutationOptions(
+      queryClient,
+      ({ id, patch }: UpdateProductArgs) => shelfService.updateProduct(id, patch),
+    ),
+  );
+}
+
+export function useUploadProductImage() {
   return useMutation({
-    mutationFn: ({ id, patch }: UpdateProductArgs) =>
-      shelfService.updateProduct(id, patch),
-    onSuccess: (updated) => {
-      updateShelfProductCache(queryClient, updated);
-    },
+    mutationFn: (file: File) => shelfService.uploadProductImage(file),
   });
 }
 
@@ -165,12 +207,9 @@ export function useDeleteProducts() {
 export function useArchiveProduct() {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (id: string) => shelfService.archiveProduct(id),
-    onSuccess: (updated) => {
-      updateShelfProductCache(queryClient, updated);
-    },
-  });
+  return useMutation(
+    createShelfProductMutationOptions(queryClient, shelfService.archiveProduct),
+  );
 }
 
 export function useExtractProductFromImages() {
@@ -184,13 +223,9 @@ export function useExtractProductFromImages() {
 export function useArchiveProducts() {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: (ids: string[]) => shelfService.archiveProducts(ids),
-    onSuccess: (_data, ids) => {
-      invalidateShelfProductCaches(queryClient, ids);
-      invalidateShelfQueries(queryClient);
-    },
-  });
+  const mutation = useMutation(
+    createShelfIdsMutationOptions(queryClient, shelfService.archiveProducts),
+  );
 
   return {
     ...mutation,
@@ -204,24 +239,17 @@ export function useArchiveProducts() {
 export function useRestoreProduct() {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (id: string) => shelfService.restoreProduct(id),
-    onSuccess: (updated) => {
-      updateShelfProductCache(queryClient, updated);
-    },
-  });
+  return useMutation(
+    createShelfProductMutationOptions(queryClient, shelfService.restoreProduct),
+  );
 }
 
 export function useRestoreProducts() {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: (ids: string[]) => shelfService.restoreProducts(ids),
-    onSuccess: (_data, ids) => {
-      invalidateShelfProductCaches(queryClient, ids);
-      invalidateShelfQueries(queryClient);
-    },
-  });
+  const mutation = useMutation(
+    createShelfIdsMutationOptions(queryClient, shelfService.restoreProducts),
+  );
 
   return {
     ...mutation,
@@ -235,24 +263,20 @@ export function useRestoreProducts() {
 export function useMarkProductFinished() {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (id: string) => shelfService.markProductFinished(id),
-    onSuccess: (updated) => {
-      updateShelfProductCache(queryClient, updated);
-    },
-  });
+  return useMutation(
+    createShelfProductMutationOptions(
+      queryClient,
+      shelfService.markProductFinished,
+    ),
+  );
 }
 
 export function useMarkFinished() {
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: (ids: string[]) => shelfService.markProductsFinished(ids),
-    onSuccess: (_data, ids) => {
-      invalidateShelfProductCaches(queryClient, ids);
-      invalidateShelfQueries(queryClient);
-    },
-  });
+  const mutation = useMutation(
+    createShelfIdsMutationOptions(queryClient, shelfService.markProductsFinished),
+  );
 
   return {
     ...mutation,

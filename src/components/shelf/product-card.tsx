@@ -18,6 +18,7 @@ import {
 
 type Props = {
   product: ShelfProduct;
+  timeZone: string;
   isSelected: boolean;
   onOpen: (id: string) => void;
   onToggleSelect: (id: string) => void;
@@ -43,14 +44,15 @@ const STATE_BAR_CLASS: Record<ShelfLifeState, string> = {
 
 export function ProductCard({
   product,
+  timeZone,
   isSelected,
   onOpen,
   onToggleSelect,
 }: Props) {
   const tCat = useTranslations('shelf.category');
   const tCard = useTranslations('shelf.card');
-  const life = deriveShelfLife(product);
-  const openedToken = formatOpenedToken(product);
+  const life = deriveShelfLife(product, { timeZone });
+  const openedToken = formatOpenedToken(product, { timeZone });
   const remainingToken = formatRemainingToken(life);
   const isAging = life.state === ShelfLifeState.Aging;
   const isExpired = life.state === ShelfLifeState.Expired;

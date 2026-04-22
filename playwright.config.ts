@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 const playwrightPort = process.env.PLAYWRIGHT_PORT ?? '3010';
 const baseURL =
   process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${playwrightPort}`;
+const apiBaseURL = process.env.PLAYWRIGHT_API_BASE_URL ?? `${baseURL}/api/v1`;
 
 export default defineConfig({
   testDir: './e2e',
@@ -28,7 +29,9 @@ export default defineConfig({
   webServer: process.env.PLAYWRIGHT_BASE_URL
     ? undefined
     : {
-        command: `npm run build && PORT=${playwrightPort} npm start`,
+        command:
+          `NEXT_PUBLIC_API_URL=${apiBaseURL} npm run build && ` +
+          `NEXT_PUBLIC_API_URL=${apiBaseURL} PORT=${playwrightPort} npm start`,
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 120000,

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useShelfProducts } from '@/hooks/use-shelf';
+import { useShelfDateContext } from '@/hooks/use-shelf-time-zone';
 import {
   ShelfCategoryFilter,
   ShelfSort,
@@ -34,13 +35,17 @@ export function ProductPickerSheet({
   const t = useTranslations('schedule.productPicker');
   const [search, setSearch] = useState('');
   const deferredSearch = useDeferredValue(search);
+  const shelfDateContext = useShelfDateContext();
 
-  const { data: products = [], isLoading } = useShelfProducts({
-    stat: ShelfStatFilter.All,
-    category: ShelfCategoryFilter.All,
-    search: deferredSearch,
-    sort: ShelfSort.Alphabetical,
-  });
+  const { data: products = [], isLoading } = useShelfProducts(
+    {
+      stat: ShelfStatFilter.All,
+      category: ShelfCategoryFilter.All,
+      search: deferredSearch,
+      sort: ShelfSort.Alphabetical,
+    },
+    shelfDateContext,
+  );
 
   const filtered = useMemo(
     () => products.filter((p) => p.status !== 'archived'),

@@ -15,6 +15,7 @@ import {
   useShelfStats,
   useUpdateProduct,
 } from '@/hooks/use-shelf';
+import type { ShelfDateContext } from '@/hooks/use-shelf-time-zone';
 import {
   DataProvenance,
   ProductCategory,
@@ -108,6 +109,11 @@ beforeEach(() => {
   });
 });
 
+const SHELF_DATE_CONTEXT: ShelfDateContext = {
+  timeZone: 'Europe/Stockholm',
+  todayDate: '2026-04-23',
+};
+
 describe('useShelfProducts', () => {
   it('stays idle until the user is authenticated', () => {
     const { result } = renderHookWithProviders(() =>
@@ -116,7 +122,7 @@ describe('useShelfProducts', () => {
         category: ShelfCategoryFilter.All,
         search: '',
         sort: ShelfSort.RecentlyAdded,
-      }),
+      }, SHELF_DATE_CONTEXT),
     );
 
     expect(result.current.fetchStatus).toBe('idle');
@@ -143,9 +149,11 @@ describe('useShelfProducts', () => {
         category: ShelfCategoryFilter.All,
         search: '',
         sort: ShelfSort.RecentlyAdded,
-      }),
+      }, SHELF_DATE_CONTEXT),
     );
-    const { result: stats } = renderHookWithProviders(() => useShelfStats());
+    const { result: stats } = renderHookWithProviders(() =>
+      useShelfStats(SHELF_DATE_CONTEXT),
+    );
 
     await waitFor(() => {
       expect(products.current.isSuccess).toBe(true);
@@ -163,6 +171,117 @@ describe('useShelfProducts', () => {
       expect(products.current.data).toHaveLength(2);
     });
     expect(stats.current.data?.[ShelfStatFilter.All]).toBe(2);
+  });
+
+  it('does not refetch non-date-sensitive shelf lists when the effective shelf day changes', async () => {
+    useAuthStore.setState({ isAuthenticated: true });
+    (shelfService.listProducts as jest.Mock).mockResolvedValue({
+      items: [PRODUCT],
+      nextCursor: null,
+    });
+
+    const { result: products, rerender: rerenderProducts } =
+      renderHookWithProviders(
+        ({
+          dateContext,
+        }: {
+          dateContext: ShelfDateContext;
+        }) =>
+          useShelfProducts(
+            {
+              stat: ShelfStatFilter.All,
+              category: ShelfCategoryFilter.All,
+              search: '',
+              sort: ShelfSort.RecentlyAdded,
+            },
+            dateContext,
+          ),
+        {
+          initialProps: { dateContext: SHELF_DATE_CONTEXT },
+        },
+      );
+
+    await waitFor(() => {
+      expect(products.current.isSuccess).toBe(true);
+    });
+
+    rerenderProducts({
+      dateContext: {
+        ...SHELF_DATE_CONTEXT,
+        todayDate: '2026-04-24',
+      },
+    });
+
+    await waitFor(() => {
+      expect(shelfService.listProducts).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('refetches date-sensitive shelf lists and stats when the effective shelf day changes', async () => {
+    useAuthStore.setState({ isAuthenticated: true });
+    (shelfService.listProducts as jest.Mock)
+      .mockResolvedValueOnce({
+        items: [PRODUCT],
+        nextCursor: null,
+      })
+      .mockResolvedValueOnce({
+        items: [PRODUCT],
+        nextCursor: null,
+      });
+    (shelfService.countProductsByStat as jest.Mock)
+      .mockResolvedValueOnce({ [ShelfStatFilter.All]: 1 })
+      .mockResolvedValueOnce({ [ShelfStatFilter.All]: 1 });
+
+    const { result: products, rerender: rerenderProducts } =
+      renderHookWithProviders(
+        ({
+          dateContext,
+        }: {
+          dateContext: ShelfDateContext;
+        }) =>
+          useShelfProducts(
+            {
+              stat: ShelfStatFilter.Expired,
+              category: ShelfCategoryFilter.All,
+              search: '',
+              sort: ShelfSort.RecentlyAdded,
+            },
+            dateContext,
+          ),
+        {
+          initialProps: { dateContext: SHELF_DATE_CONTEXT },
+        },
+      );
+    const { result: stats, rerender: rerenderStats } = renderHookWithProviders(
+      ({ dateContext }: { dateContext: ShelfDateContext }) =>
+        useShelfStats(dateContext),
+      {
+        initialProps: { dateContext: SHELF_DATE_CONTEXT },
+      },
+    );
+
+    await waitFor(() => {
+      expect(products.current.isSuccess).toBe(true);
+      expect(stats.current.isSuccess).toBe(true);
+    });
+
+    rerenderProducts({
+      dateContext: {
+        ...SHELF_DATE_CONTEXT,
+        todayDate: '2026-04-24',
+      },
+    });
+    rerenderStats({
+      dateContext: {
+        ...SHELF_DATE_CONTEXT,
+        todayDate: '2026-04-24',
+      },
+    });
+
+    await waitFor(() => {
+      expect(shelfService.listProducts).toHaveBeenCalledTimes(2);
+      expect(shelfService.countProductsByStat).toHaveBeenCalledTimes(2);
+    });
   });
 });
 

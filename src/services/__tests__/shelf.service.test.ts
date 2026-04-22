@@ -120,6 +120,29 @@ describe('shelf.service', () => {
     expect(api.deleteRequest).toHaveBeenCalledWith('/inventory/products/product-1');
   });
 
+  it('uploads a product image through the dedicated inventory endpoint', async () => {
+    const imageFile = new File(['photo'], 'product.jpg', {
+      type: 'image/jpeg',
+    });
+    (api.postMultipartRequest as jest.Mock).mockResolvedValue({
+      imageUrl: 'https://cdn.example.com/product-images/processed/photo.webp',
+    });
+
+    const result = await shelfService.uploadProductImage(imageFile);
+
+    expect(api.postMultipartRequest).toHaveBeenCalledWith(
+      '/inventory/products/upload-image',
+      expect.any(FormData),
+      expect.objectContaining({ timeout: 30000 }),
+    );
+
+    const body = (api.postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
+    expect(body.get('image')).toBe(imageFile);
+    expect(result.imageUrl).toBe(
+      'https://cdn.example.com/product-images/processed/photo.webp',
+    );
+  });
+
   it('uses explicit archive, restore, finish, and bulk delete endpoints', async () => {
     (api.postRequest as jest.Mock).mockResolvedValue(undefined);
 

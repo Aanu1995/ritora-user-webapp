@@ -21,6 +21,7 @@ import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { AppRoute } from "@/constants/app-routes";
 import { useAutoLoadMore } from "@/hooks/use-auto-load-more";
+import { useShelfDateContext } from "@/hooks/use-shelf-time-zone";
 import {
   useArchiveProducts,
   useDeleteProducts,
@@ -42,6 +43,7 @@ export function ShelfPage() {
   const tBulk = useTranslations("shelf.bulk");
   const tEmpty = useTranslations("shelf.empty");
   const router = useRouter();
+  const shelfDateContext = useShelfDateContext();
 
   const stat = useShelfUiStore((s) => s.stat);
   const setStat = useShelfUiStore((s) => s.setStat);
@@ -68,8 +70,8 @@ export function ShelfPage() {
     [stat, activeCategory, debouncedSearch, sort],
   );
 
-  const products = useShelfProducts(filters);
-  const stats = useShelfStats();
+  const products = useShelfProducts(filters, shelfDateContext);
+  const stats = useShelfStats(shelfDateContext);
   const archive = useArchiveProducts();
   const finish = useMarkFinished();
   const remove = useDeleteProducts();
@@ -172,6 +174,7 @@ export function ShelfPage() {
     content = (
       <ProductList
         products={productList}
+        timeZone={shelfDateContext.timeZone}
         selectedIds={selectedIds}
         onOpen={(id) => router.push(`${AppRoute.Shelf}/${id}`)}
         onToggleSelect={toggleSelected}
@@ -181,6 +184,7 @@ export function ShelfPage() {
     content = (
       <ProductGrid
         products={productList}
+        timeZone={shelfDateContext.timeZone}
         selectedIds={selectedIds}
         onOpen={(id) => router.push(`${AppRoute.Shelf}/${id}`)}
         onToggleSelect={toggleSelected}

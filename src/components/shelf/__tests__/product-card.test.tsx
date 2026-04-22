@@ -68,6 +68,7 @@ describe('ProductCard', () => {
     renderWithProviders(
       <ProductCard
         product={makeProduct()}
+        timeZone="Europe/Stockholm"
         isSelected={false}
         onOpen={jest.fn()}
         onToggleSelect={jest.fn()}
@@ -86,6 +87,7 @@ describe('ProductCard', () => {
     renderWithProviders(
       <ProductCard
         product={makeProduct()}
+        timeZone="Europe/Stockholm"
         isSelected={false}
         onOpen={onOpen}
         onToggleSelect={jest.fn()}
@@ -102,6 +104,7 @@ describe('ProductCard', () => {
     renderWithProviders(
       <ProductCard
         product={makeProduct()}
+        timeZone="Europe/Stockholm"
         isSelected={false}
         onOpen={onOpen}
         onToggleSelect={onToggleSelect}
@@ -128,6 +131,7 @@ describe('ProductCard', () => {
             preferredTimeOfDay: null,
           },
         })}
+        timeZone="Europe/Stockholm"
         isSelected={false}
         onOpen={jest.fn()}
         onToggleSelect={jest.fn()}
@@ -152,6 +156,7 @@ describe('ProductCard', () => {
             preferredTimeOfDay: null,
           },
         })}
+        timeZone="Europe/Stockholm"
         isSelected={false}
         onOpen={jest.fn()}
         onToggleSelect={jest.fn()}
@@ -165,6 +170,7 @@ describe('ProductCard', () => {
     renderWithProviders(
       <ProductCard
         product={makeProduct()}
+        timeZone="Europe/Stockholm"
         isSelected={false}
         onOpen={jest.fn()}
         onToggleSelect={jest.fn()}
@@ -180,6 +186,7 @@ describe('ProductCard', () => {
     renderWithProviders(
       <ProductCard
         product={makeProduct()}
+        timeZone="Europe/Stockholm"
         isSelected
         onOpen={jest.fn()}
         onToggleSelect={jest.fn()}

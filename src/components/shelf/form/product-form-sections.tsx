@@ -1,5 +1,8 @@
 'use client';
 
+import Image from 'next/image';
+import { useRef } from 'react';
+import { ImagePlus, RefreshCw, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type {
   ProductFormGuidanceErrors,
@@ -7,6 +10,7 @@ import type {
 } from '../product-form-body';
 import { ProductIllustration } from '../product-illustration';
 import { HowToUseEditor } from '../how-to-use-editor';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -57,9 +61,34 @@ function createReviewBadge(
   ) : null;
 }
 
+type ProductIdentityPhotoUploadText = {
+  chooseLabel: string;
+  replaceLabel: string;
+  chooseDifferentLabel: string;
+  uploadLabel: string;
+  uploadingLabel: string;
+  clearLabel: string;
+  inputLabel: string;
+  helperText: string;
+  emptyHint: string;
+  selectedHint: string;
+  uploadedHint: string;
+};
+
+export type ProductIdentityPhotoUploadProps = {
+  previewUrl: string | null;
+  isPendingSelection: boolean;
+  isUploading: boolean;
+  onSelectFile: (file: File | null) => void;
+  onUpload: () => void;
+  onClearSelection: () => void;
+  text: ProductIdentityPhotoUploadText;
+};
+
 type IdentitySectionProps = BaseSectionProps & {
   identity: CatalogueIdentity;
   onChange: (patch: Partial<CatalogueIdentity>) => void;
+  photoUpload?: ProductIdentityPhotoUploadProps;
 };
 
 export function ProductIdentitySection({
@@ -69,40 +98,90 @@ export function ProductIdentitySection({
   identitySourceLabel,
   fieldErrors,
   reviewFields,
+  photoUpload,
 }: IdentitySectionProps) {
   const t = useTranslations('shelf.dialog.confirm');
   const tField = useTranslations('shelf.dialog.confirm.fields');
   const tCategory = useTranslations('shelf.category');
   const reviewBadgeLabel = t('needsReviewBadge');
   const sourceBadge = createSourceBadge(identitySourceLabel);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const imageUrl = photoUpload?.previewUrl ?? identity.imageUrls[0] ?? null;
 
   return (
     <section className="flex flex-col gap-3">
       <SectionLabel>{t('sections.identity')}</SectionLabel>
       <p className="-mt-2 text-xs text-muted">{t('hints.identityDescription')}</p>
 
-      <div className="flex flex-col gap-5 sm:grid sm:grid-cols-[180px_1fr] sm:items-start sm:gap-6">
-        <div className="mx-auto w-full max-w-[160px] sm:mx-0 sm:max-w-none">
-          <div className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-surface-muted">
-            {identity.imageUrls[0] ? (
-              <img
-                src={identity.imageUrls[0]}
-                alt={`${identity.brand} ${identity.name}`.trim() || tField('name')}
-                className="h-full w-full object-cover"
+      <div className="flex flex-col gap-5 sm:grid sm:grid-cols-[minmax(0,10rem)_1fr] sm:items-start sm:gap-6">
+        <div className="mx-auto w-full max-w-40 sm:mx-0">
+          {photoUpload ? (
+            <>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                aria-label={photoUpload.text.inputLabel}
+                className="sr-only"
+                onChange={(event) => {
+                  const file = event.target.files?.[0] ?? null;
+                  photoUpload.onSelectFile(file);
+                  event.target.value = '';
+                }}
               />
-            ) : (
-              <ProductIllustration
-                brand={identity.brand}
-                category={identity.category}
-                className="h-[60%] w-auto"
-              />
-            )}
-          </div>
-          <p className="mt-2 text-center text-[11px] text-muted sm:text-left">
-            {identity.imageUrls[0]
-              ? t('hints.photoPreviewAvailable')
-              : t('hints.photoPreviewEmpty')}
-          </p>
+
+              {imageUrl ? (
+                <div
+                  className={`relative aspect-[4/5] w-full overflow-hidden rounded-2xl border-2 bg-background ${
+                    photoUpload.isPendingSelection
+                      ? 'border-accent-strong'
+                      : 'border-border'
+                  }`}
+                >
+                  <Image
+                    src={imageUrl}
+                    alt={`${identity.brand} ${identity.name}`.trim() || tField('name')}
+                    fill
+                    unoptimized
+                    sizes="160px"
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={photoUpload.isUploading}
+                  className="flex aspect-[4/5] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-surface-muted/40 px-4 text-center text-muted transition hover:border-border-strong hover:bg-surface-muted/70 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <ImagePlus className="h-8 w-8" />
+                  <span className="text-sm font-medium text-foreground">
+                    {photoUpload.text.chooseLabel}
+                  </span>
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-surface-muted">
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt={`${identity.brand} ${identity.name}`.trim() || tField('name')}
+                  width={320}
+                  height={320}
+                  unoptimized
+                  sizes="160px"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <ProductIllustration
+                  brand={identity.brand}
+                  category={identity.category}
+                  className="h-[60%] w-auto"
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -181,6 +260,57 @@ export function ProductIdentitySection({
           </Field>
         </div>
       </div>
+
+      {photoUpload && (photoUpload.isPendingSelection || imageUrl) ? (
+        <div className="flex flex-wrap gap-2">
+          {photoUpload.isPendingSelection ? (
+            <>
+              <Button
+                type="button"
+                size="sm"
+                onClick={photoUpload.onUpload}
+                disabled={photoUpload.isUploading}
+              >
+                {photoUpload.isUploading
+                  ? photoUpload.text.uploadingLabel
+                  : photoUpload.text.uploadLabel}
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={photoUpload.isUploading}
+              >
+                <RefreshCw className="h-3.5 w-3.5" />
+                {photoUpload.text.chooseDifferentLabel}
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={photoUpload.onClearSelection}
+                disabled={photoUpload.isUploading}
+                className="text-danger hover:bg-danger/10 hover:text-danger"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                {photoUpload.text.clearLabel}
+              </Button>
+            </>
+          ) : (
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={photoUpload.isUploading}
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              {photoUpload.text.replaceLabel}
+            </Button>
+          )}
+        </div>
+      ) : null}
     </section>
   );
 }

@@ -5,11 +5,8 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Calendar } from './calendar';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
-import {
-  formatLocalizedDate,
-  parseUtcDate,
-  toDateInputValue,
-} from '@/lib/dayjs';
+import { formatLocalizedDate, toDateInputValue } from '@/lib/dayjs';
+import { toShelfCalendarSelectionDate } from '@/lib/shelf-date';
 import { cn } from '@/lib/utils';
 
 type Props = {
@@ -25,7 +22,7 @@ type Props = {
 };
 
 function parseValue(value: string): Date | undefined {
-  return parseUtcDate(value)?.toDate();
+  return toShelfCalendarSelectionDate(value);
 }
 
 export function DatePicker({

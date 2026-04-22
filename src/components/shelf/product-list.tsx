@@ -18,6 +18,7 @@ import {
 
 type Props = {
   products: ShelfProduct[];
+  timeZone: string;
   selectedIds: ReadonlySet<string>;
   onOpen: (id: string) => void;
   onToggleSelect: (id: string) => void;
@@ -34,6 +35,7 @@ const STATE_DOT_CLASS: Record<ShelfLifeState, string> = {
 
 export function ProductList({
   products,
+  timeZone,
   selectedIds,
   onOpen,
   onToggleSelect,
@@ -47,6 +49,7 @@ export function ProductList({
         <ProductListRow
           key={product.id}
           product={product}
+          timeZone={timeZone}
           isSelected={selectedIds.has(product.id)}
           onOpen={onOpen}
           onToggleSelect={onToggleSelect}
@@ -61,6 +64,7 @@ type RowProps = {
   isSelected: boolean;
   onOpen: (id: string) => void;
   onToggleSelect: (id: string) => void;
+  timeZone: string;
 };
 
 function ProductListRow({
@@ -68,12 +72,13 @@ function ProductListRow({
   isSelected,
   onOpen,
   onToggleSelect,
+  timeZone,
 }: RowProps) {
   const tCat = useTranslations('shelf.category');
   const tCard = useTranslations('shelf.card');
 
-  const life = deriveShelfLife(product);
-  const openedToken = formatOpenedToken(product);
+  const life = deriveShelfLife(product, { timeZone });
+  const openedToken = formatOpenedToken(product, { timeZone });
   const remainingToken = formatRemainingToken(life);
   const isAging = life.state === ShelfLifeState.Aging;
   const isExpired = life.state === ShelfLifeState.Expired;

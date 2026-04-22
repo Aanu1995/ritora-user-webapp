@@ -4,6 +4,7 @@ import {
   ProductAboutSection,
   ProductHowToUseSection,
   ProductIdentitySection,
+  type ProductIdentityPhotoUploadProps,
 } from './form/product-form-sections';
 import {
   ProductManufacturerSection,
@@ -50,6 +51,7 @@ type ProductFormBodyProps = {
   identityReadOnly?: boolean;
   identitySourceLabel?: string;
   reviewFields?: ProductFormReviewFields;
+  photoUpload?: ProductIdentityPhotoUploadProps;
 };
 
 export function ProductFormBody({
@@ -63,6 +65,7 @@ export function ProductFormBody({
   identityReadOnly = false,
   identitySourceLabel,
   reviewFields,
+  photoUpload,
 }: ProductFormBodyProps) {
   const patchIdentity = (patch: Partial<CatalogueIdentity>) =>
     onIdentityChange({ ...value.identity, ...patch });
@@ -85,6 +88,7 @@ export function ProductFormBody({
         identityReadOnly={identityReadOnly}
         identitySourceLabel={identitySourceLabel}
         reviewFields={reviewFields}
+        photoUpload={photoUpload}
       />
       <ProductAboutSection
         identity={value.identity}

@@ -918,7 +918,6 @@
         "hints": {
           "identityDescription": "The basics about this product. Brand, name, category, and size.",
           "photoPreviewAvailable": "Selected product photo ready to save with this shelf item.",
-          "photoPreviewEmpty": "Upload a product photo and label photos above to autofill this section.",
           "sizeHint": "Volume in millilitres, from the packaging.",
           "aboutDescription": "Copy from the packaging or leave blank. Ritora pre-fills this when photo extraction or catalogue lookup succeeds.",
           "descriptionHint": "A short overview of what the product does.",
@@ -1104,6 +1103,21 @@
       "save": "Save changes",
       "saveShort": "Save",
       "saving": "Saving...",
+      "photo": {
+        "choose": "Choose photo",
+        "replace": "Replace photo",
+        "chooseDifferent": "Choose different",
+        "upload": "Upload photo",
+        "uploading": "Uploading…",
+        "clear": "Clear",
+        "inputLabel": "Choose product photo",
+        "helper": "",
+        "emptyHint": "",
+        "selectedHint": "",
+        "uploadedHint": "",
+        "uploadSuccess": "Product photo uploaded",
+        "uploadFailed": "We could not upload that product photo right now. Please try again."
+      },
       "genericError": "We could not save your changes right now. Please try again.",
       "successToast": "Changes saved"
     },

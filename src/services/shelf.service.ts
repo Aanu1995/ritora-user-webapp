@@ -15,6 +15,10 @@ import {
   type ShelfProductDraft,
 } from '@/types/shelf';
 
+type UploadedProductImage = {
+  imageUrl: string;
+};
+
 export async function listProducts(
   filters: ShelfListFilters,
   cursor?: string | null,
@@ -51,6 +55,19 @@ export async function updateProduct(
   patch: DeepPartial<ShelfProductDraft>,
 ): Promise<ShelfProduct> {
   return patchRequest<ShelfProduct>(ApiPath.InventoryProduct(id), patch);
+}
+
+export async function uploadProductImage(
+  file: File,
+): Promise<UploadedProductImage> {
+  const body = new FormData();
+  body.append('image', file);
+
+  return postMultipartRequest<UploadedProductImage>(
+    ApiPath.InventoryProductsUploadImage,
+    body,
+    { timeout: 30000 },
+  );
 }
 
 export async function removeProduct(id: string): Promise<void> {

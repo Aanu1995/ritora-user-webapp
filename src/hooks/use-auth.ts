@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKey } from "@/constants/query-keys";
+import { useAuthEnabled } from "@/hooks/use-auth-enabled";
 import { ApiError } from "@/lib/api-error";
 import * as authService from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth-store";
@@ -17,6 +18,28 @@ import type {
 } from "@/types/auth";
 
 const EMAIL_NOT_VERIFIED_CODE = "EMAIL_NOT_VERIFIED";
+
+type QueryClientLike = ReturnType<typeof useQueryClient>;
+type SetUser = ReturnType<typeof useAuthStore.getState>["setUser"];
+type Logout = ReturnType<typeof useAuthStore.getState>["logout"];
+
+function clearClientSession(
+  queryClient: QueryClientLike,
+  logout: Logout,
+): void {
+  logout();
+  queryClient.clear();
+}
+
+function syncCurrentUser(
+  queryClient: QueryClientLike,
+  setUser: SetUser,
+  user: User,
+  options?: Parameters<SetUser>[1],
+): void {
+  setUser(user, options);
+  queryClient.setQueryData<User>([QueryKey.AuthMe], user);
+}
 
 async function clearPendingAuthSession(): Promise<void> {
   try {
@@ -80,18 +103,13 @@ export function useLogout() {
   const logoutStore = useAuthStore((s) => s.logout);
   const queryClient = useQueryClient();
 
-  const clearClientSession = () => {
-    logoutStore();
-    queryClient.clear();
-  };
-
   return useMutation({
     mutationFn: () => authService.logout(),
     onSuccess: () => {
-      clearClientSession();
+      clearClientSession(queryClient, logoutStore);
     },
     onError: () => {
-      clearClientSession();
+      clearClientSession(queryClient, logoutStore);
     },
   });
 }
@@ -99,26 +117,22 @@ export function useLogout() {
 export function useLogoutAll() {
   const logoutStore = useAuthStore((s) => s.logout);
   const queryClient = useQueryClient();
-  const clearClientSession = () => {
-    logoutStore();
-    queryClient.clear();
-  };
 
   return useMutation({
     mutationFn: () => authService.logoutAll(),
     onSuccess: () => {
-      clearClientSession();
+      clearClientSession(queryClient, logoutStore);
     },
   });
 }
 
 export function useCurrentUser() {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isEnabled = useAuthEnabled();
 
   return useQuery({
     queryKey: [QueryKey.AuthMe],
     queryFn: () => authService.getCurrentUser(),
-    enabled: isAuthenticated,
+    enabled: isEnabled,
   });
 }
 
@@ -147,12 +161,12 @@ export function useResetPassword() {
 }
 
 export function useActiveSessions() {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isEnabled = useAuthEnabled();
 
   return useQuery({
     queryKey: [QueryKey.AuthSessions],
     queryFn: () => authService.getActiveSessions(),
-    enabled: isAuthenticated,
+    enabled: isEnabled,
   });
 }
 
@@ -163,8 +177,7 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: (data: UpdateProfileInput) => authService.updateProfile(data),
     onSuccess: (user) => {
-      setUser(user);
-      queryClient.setQueryData<User>([QueryKey.AuthMe], user);
+      syncCurrentUser(queryClient, setUser, user);
     },
   });
 }
@@ -177,8 +190,7 @@ export function useUpdatePreferredLanguage() {
     mutationFn: (data: UpdatePreferredLanguageInput) =>
       authService.updatePreferredLanguage(data),
     onSuccess: (user) => {
-      setUser(user, { syncLocale: true });
-      queryClient.setQueryData<User>([QueryKey.AuthMe], user);
+      syncCurrentUser(queryClient, setUser, user, { syncLocale: true });
     },
   });
 }
@@ -190,8 +202,7 @@ export function useUpdateTimeZone() {
   return useMutation({
     mutationFn: (data: UpdateTimeZoneInput) => authService.updateTimeZone(data),
     onSuccess: (user) => {
-      setUser(user);
-      queryClient.setQueryData<User>([QueryKey.AuthMe], user);
+      syncCurrentUser(queryClient, setUser, user);
       void queryClient.invalidateQueries({ queryKey: [QueryKey.Schedule] });
       void queryClient.invalidateQueries({ queryKey: [QueryKey.ScheduleToday] });
     },

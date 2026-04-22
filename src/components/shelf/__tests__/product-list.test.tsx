@@ -65,6 +65,7 @@ describe('ProductList', () => {
     renderWithProviders(
       <ProductList
         products={[PRODUCT]}
+        timeZone="Europe/Stockholm"
         selectedIds={new Set<string>()}
         onOpen={onOpen}
         onToggleSelect={onToggleSelect}

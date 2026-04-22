@@ -12,6 +12,9 @@ import {
 
 const mockPush = jest.fn();
 const mockMutate = jest.fn();
+const mockUploadMutateAsync = jest.fn();
+const mockCreateObjectUrl = jest.fn(() => 'blob:product-photo-preview');
+const mockRevokeObjectUrl = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -27,6 +30,10 @@ jest.mock('next/navigation', () => ({
 jest.mock('@/hooks/use-shelf', () => ({
   useUpdateProduct: () => ({
     mutate: mockMutate,
+    isPending: false,
+  }),
+  useUploadProductImage: () => ({
+    mutateAsync: mockUploadMutateAsync,
     isPending: false,
   }),
 }));
@@ -108,6 +115,11 @@ const PRODUCT: ShelfProduct = {
 beforeEach(() => {
   mockPush.mockReset();
   mockMutate.mockReset();
+  mockUploadMutateAsync.mockReset();
+  mockCreateObjectUrl.mockClear();
+  mockRevokeObjectUrl.mockClear();
+  URL.createObjectURL = mockCreateObjectUrl;
+  URL.revokeObjectURL = mockRevokeObjectUrl;
   useUnsavedChangesStore.setState({
     hasUnsavedChanges: false,
     isDialogOpen: false,
@@ -187,6 +199,86 @@ describe('ProductEditForm', () => {
       screen.getByText(/paste the inci ingredients list/i),
     ).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('lets the user choose a photo first and upload it before saving', async () => {
+    const user = userEvent.setup();
+    mockUploadMutateAsync.mockResolvedValue({
+      imageUrl: 'https://cdn.example.com/product-images/processed/photo.webp',
+    });
+    mockMutate.mockImplementation((_input, options) => {
+      options?.onSuccess?.();
+    });
+
+    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+
+    await user.upload(
+      screen.getByLabelText(/choose product photo/i),
+      new File(['photo'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+
+    expect(
+      screen.getByRole('button', { name: /upload photo/i }),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /upload photo/i }));
+
+    await waitFor(() => {
+      expect(mockUploadMutateAsync).toHaveBeenCalled();
+    });
+
+    await user.click(screen.getByRole('button', { name: /add step/i }));
+    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    await user.click(screen.getByRole('button', { name: /save changes/i }));
+
+    await waitFor(() => {
+      expect(mockMutate).toHaveBeenCalled();
+    });
+
+    expect(mockMutate.mock.calls[0]?.[0].patch.identity.imageUrls).toEqual([
+      'https://cdn.example.com/product-images/processed/photo.webp',
+    ]);
+  });
+
+  it('treats a selected but not yet uploaded photo as an unsaved change', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <>
+        <ProductEditForm product={PRODUCT} />
+        <UnsavedChangesDialog />
+      </>,
+    );
+
+    await user.upload(
+      screen.getByLabelText(/choose product photo/i),
+      new File(['photo'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+
+    await waitFor(() => {
+      expect(useUnsavedChangesStore.getState().hasUnsavedChanges).toBe(true);
+    });
+  });
+
+  it('creates preview object URLs only after selection and revokes them when cleared', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+
+    expect(mockCreateObjectUrl).not.toHaveBeenCalled();
+
+    await user.upload(
+      screen.getByLabelText(/choose product photo/i),
+      new File(['photo'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+
+    expect(mockCreateObjectUrl).toHaveBeenCalledTimes(1);
+
+    await user.click(screen.getByRole('button', { name: /^clear$/i }));
+
+    expect(mockRevokeObjectUrl).toHaveBeenCalledWith(
+      'blob:product-photo-preview',
+    );
   });
 
   it('saves and redirects to the detail page', async () => {

@@ -37,6 +37,7 @@ export const ApiPath = {
   CatalogueProductsExtractFromImages: `${CATALOGUE_PRODUCTS_BASE}/extract-from-images`,
 
   InventoryProducts: INVENTORY_PRODUCTS_BASE,
+  InventoryProductsUploadImage: `${INVENTORY_PRODUCTS_BASE}/upload-image`,
   InventoryProductsStats: `${INVENTORY_PRODUCTS_BASE}/stats`,
   InventoryProductsBulkArchive: `${INVENTORY_PRODUCTS_BASE}/bulk/archive`,
   InventoryProductsBulkRestore: `${INVENTORY_PRODUCTS_BASE}/bulk/restore`,

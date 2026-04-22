@@ -1,49 +1,47 @@
-/**
- * Shelf-life derivation.
- *
- * Pure function that maps a ShelfProduct's opened-on date, period-after-opening,
- * expiry date, and status into a live snapshot used by the UI:
- *
- * - state: the colour/label bucket (unopened, fresh, aging, expired, finished, archived)
- * - remainingFraction: [0, 1] used for progress-bar fill width
- * - remainingDays: integer days to expiry (negative when past)
- *
- * Thresholds:
- *   fresh   : >50% of shelf life remaining
- *   aging   : 0–50% remaining (amber)
- *   expired : past expiry (red)
- */
-
+import { Temporal } from '@js-temporal/polyfill';
 import type { ShelfLifeSnapshot, ShelfProduct } from '@/types/shelf';
 import { ShelfLifeState, ShelfStatus } from '@/types/shelf';
 import {
-  diffInDaysRounded,
-  parseUtcDate,
-  utcNow,
-} from '@/lib/dayjs';
+  diffShelfCalendarDays,
+  parseShelfPlainDate,
+  resolveShelfToday,
+  toShelfStoredIsoString,
+  type ShelfNowInput,
+} from '@/lib/shelf-date';
+import { DEFAULT_TIME_ZONE } from '@/lib/time-zone';
 
-/**
- * Compute the "effective" expiry date: prefer the explicit expiresAt, else
- * openedAt + PAO months, else null.
- */
-export function computeExpiresAt(product: ShelfProduct): Date | null {
-  const explicit = parseUtcDate(product.userFields.expiresAt);
+export type ShelfLifeOptions = {
+  now?: ShelfNowInput;
+  timeZone?: string;
+};
+
+function computeExpiresPlainDate(product: ShelfProduct): Temporal.PlainDate | null {
+  const explicit = parseShelfPlainDate(product.userFields.expiresAt);
   if (explicit) {
-    return explicit.toDate();
+    return explicit;
   }
 
-  const opened = parseUtcDate(product.userFields.openedAt);
+  const opened = parseShelfPlainDate(product.userFields.openedAt);
   const pao = product.userFields.periodAfterOpeningMonths;
   if (opened && pao && pao > 0) {
-    return opened.add(pao, 'month').toDate();
+    return opened.add({ months: pao });
   }
 
   return null;
 }
 
+/**
+ * Compute the "effective" expiry date: prefer the explicit expiresAt, else
+ * openedAt + PAO months, else null.
+ */
+export function computeExpiresAt(product: ShelfProduct): string | null {
+  const expires = computeExpiresPlainDate(product);
+  return expires ? toShelfStoredIsoString(expires) : null;
+}
+
 export function deriveShelfLife(
   product: ShelfProduct,
-  now: Date = utcNow().toDate(),
+  options: ShelfLifeOptions = {},
 ): ShelfLifeSnapshot {
   if (product.status === ShelfStatus.Archived) {
     return {
@@ -61,7 +59,7 @@ export function deriveShelfLife(
     };
   }
 
-  const opened = parseUtcDate(product.userFields.openedAt);
+  const opened = parseShelfPlainDate(product.userFields.openedAt);
   if (!opened) {
     return {
       state: ShelfLifeState.Unopened,
@@ -70,9 +68,8 @@ export function deriveShelfLife(
     };
   }
 
-  const expires = computeExpiresAt(product);
+  const expires = computeExpiresPlainDate(product);
   if (!expires) {
-    // Opened but no expiry or PAO known — treat as fresh with no progress info.
     return {
       state: ShelfLifeState.Fresh,
       remainingFraction: null,
@@ -80,8 +77,12 @@ export function deriveShelfLife(
     };
   }
 
-  const totalDays = diffInDaysRounded(opened.toDate(), expires);
-  const elapsedDays = diffInDaysRounded(opened.toDate(), now);
+  const totalDays = diffShelfCalendarDays(opened, expires);
+  const today = resolveShelfToday(
+    options.timeZone ?? DEFAULT_TIME_ZONE,
+    options.now,
+  );
+  const elapsedDays = Math.max(0, diffShelfCalendarDays(opened, today));
   const remainingDays = totalDays - elapsedDays;
 
   if (remainingDays <= 0) {
@@ -92,7 +93,8 @@ export function deriveShelfLife(
     };
   }
 
-  const fraction = totalDays > 0 ? Math.max(0, Math.min(1, remainingDays / totalDays)) : 0;
+  const fraction =
+    totalDays > 0 ? Math.max(0, Math.min(1, remainingDays / totalDays)) : 0;
   const state = fraction > 0.5 ? ShelfLifeState.Fresh : ShelfLifeState.Aging;
 
   return {
@@ -137,13 +139,18 @@ export function formatRemainingToken(snapshot: ShelfLifeSnapshot): string {
  */
 export function formatOpenedToken(
   product: ShelfProduct,
-  now: Date = utcNow().toDate(),
+  options: ShelfLifeOptions = {},
 ): string | null {
-  const opened = parseUtcDate(product.userFields.openedAt);
+  const opened = parseShelfPlainDate(product.userFields.openedAt);
   if (!opened) {
     return null;
   }
-  const days = Math.max(0, diffInDaysRounded(opened.toDate(), now));
+
+  const today = resolveShelfToday(
+    options.timeZone ?? DEFAULT_TIME_ZONE,
+    options.now,
+  );
+  const days = Math.max(0, diffShelfCalendarDays(opened, today));
   if (days < 1) {
     return 'today';
   }

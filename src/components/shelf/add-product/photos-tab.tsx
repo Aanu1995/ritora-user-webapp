@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import {
   ImagePlus,
   LoaderCircle,
@@ -257,11 +258,14 @@ export function PhotosTab({ onResolved }: Props) {
 
           {productPhoto ? (
             <div className="flex flex-col gap-3">
-              <div className="relative w-full max-w-60 overflow-hidden rounded-2xl border-2 border-accent-strong bg-background">
-                <img
+              <div className="relative aspect-[4/5] w-full max-w-60 overflow-hidden rounded-2xl border-2 border-accent-strong bg-background">
+                <Image
                   src={productPhoto.previewUrl}
                   alt={t('productPhoto.sectionTitle')}
-                  className="aspect-[4/5] w-full object-cover"
+                  fill
+                  unoptimized
+                  sizes="240px"
+                  className="object-cover"
                 />
               </div>
               <div className="flex flex-wrap gap-2">
@@ -279,6 +283,7 @@ export function PhotosTab({ onResolved }: Props) {
                   variant="ghost"
                   size="sm"
                   onClick={handleRemoveProductPhoto}
+                  className="text-danger hover:bg-danger/10 hover:text-danger"
                 >
                   <Trash2 className="h-4 w-4" />
                   {t('productPhoto.removeAction')}
@@ -343,18 +348,21 @@ export function PhotosTab({ onResolved }: Props) {
             {labelPhotos.map((photo) => (
               <div
                 key={photo.id}
-                className="relative overflow-hidden rounded-xl border border-border bg-background"
+                className="relative aspect-[4/5] overflow-hidden rounded-xl border border-border bg-background"
               >
-                <img
+                <Image
                   src={photo.previewUrl}
                   alt=""
-                  className="aspect-[4/5] w-full object-cover"
+                  fill
+                  unoptimized
+                  sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                  className="object-cover"
                 />
                 <button
                   type="button"
                   onClick={() => handleRemoveLabelPhoto(photo.id)}
                   aria-label={t('labelPhotos.removeAction')}
-                  className="absolute right-1.5 top-1.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-background/90 text-muted shadow-sm transition hover:bg-background hover:text-destructive"
+                  className="absolute right-1.5 top-1.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-background/90 text-danger shadow-sm transition hover:bg-danger/10"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>

@@ -39,6 +39,7 @@ import {
   useMarkProductFinished,
   useRestoreProduct,
 } from '@/hooks/use-shelf';
+import { useShelfDateContext } from '@/hooks/use-shelf-time-zone';
 import { formatLocalizedDate } from '@/lib/dayjs';
 import { cn } from '@/lib/utils';
 import {
@@ -75,6 +76,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
   const tEdit = useTranslations('shelf.edit');
   const locale = useLocale();
   const router = useRouter();
+  const { timeZone } = useShelfDateContext();
   const archive = useArchiveProduct();
   const restore = useRestoreProduct();
   const finish = useMarkProductFinished();
@@ -84,9 +86,9 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
   >('about');
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const life = deriveShelfLife(product);
+  const life = deriveShelfLife(product, { timeZone });
   const expires = computeExpiresAt(product);
-  const openedToken = formatOpenedToken(product);
+  const openedToken = formatOpenedToken(product, { timeZone });
   const expiresLabel = formatLocalizedDate(expires, locale);
   const fillPercent =
     life.remainingFraction !== null

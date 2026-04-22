@@ -5,6 +5,7 @@ import type { ShelfProduct } from '@/types/shelf';
 
 type Props = {
   products: ShelfProduct[];
+  timeZone: string;
   selectedIds: ReadonlySet<string>;
   onOpen: (id: string) => void;
   onToggleSelect: (id: string) => void;
@@ -12,6 +13,7 @@ type Props = {
 
 export function ProductGrid({
   products,
+  timeZone,
   selectedIds,
   onOpen,
   onToggleSelect,
@@ -25,6 +27,7 @@ export function ProductGrid({
         <ProductCard
           key={product.id}
           product={product}
+          timeZone={timeZone}
           isSelected={selectedIds.has(product.id)}
           onOpen={onOpen}
           onToggleSelect={onToggleSelect}

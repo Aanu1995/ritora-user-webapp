@@ -117,4 +117,58 @@ describe('shelf form sections', () => {
     await user.type(screen.getByLabelText(/your notes/i), '!');
     expect(onUserChange).toHaveBeenCalled();
   });
+
+  it('supports choosing a product photo before uploading it', async () => {
+    const user = userEvent.setup();
+    const onSelectFile = jest.fn();
+
+    renderWithProviders(
+      <ProductIdentitySection
+        identity={{
+          brand: 'CeraVe',
+          name: 'Retinol Serum',
+          category: ProductCategory.Serum,
+          barcode: null,
+          imageUrls: [],
+          sizeMl: 30,
+          description: null,
+          benefits: [],
+          suitedFor: [],
+          inciIngredients: [],
+          inciLastConfirmedAt: null,
+        }}
+        onChange={jest.fn()}
+        identityReadOnly={false}
+        photoUpload={{
+          previewUrl: 'blob:preview',
+          isPendingSelection: true,
+          isUploading: false,
+          onSelectFile,
+          onUpload: jest.fn(),
+          onClearSelection: jest.fn(),
+          text: {
+            chooseLabel: 'Choose photo',
+            replaceLabel: 'Replace photo',
+            chooseDifferentLabel: 'Choose different',
+            uploadLabel: 'Upload photo',
+            uploadingLabel: 'Uploading…',
+            clearLabel: 'Clear',
+            inputLabel: 'Choose product photo',
+            helperText: 'Pick first and upload later.',
+            emptyHint: 'Choose a product photo.',
+            selectedHint: 'New photo selected.',
+            uploadedHint: 'Current product photo shown here.',
+          },
+        }}
+      />,
+    );
+
+    await user.upload(
+      screen.getByLabelText(/choose product photo/i),
+      new File(['photo'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+
+    expect(screen.getByRole('button', { name: /upload photo/i })).toBeInTheDocument();
+    expect(onSelectFile).toHaveBeenCalled();
+  });
 });

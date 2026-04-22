@@ -7,62 +7,101 @@ const mockUser = {
   lastName: 'User',
   emailVerified: true,
   preferredLanguage: 'en',
+  timeZone: 'Europe/Stockholm',
   createdAt: '2024-01-01T00:00:00.000Z',
 };
+
+const PLAYWRIGHT_ORIGIN =
+  process.env.PLAYWRIGHT_BASE_URL ??
+  `http://localhost:${process.env.PLAYWRIGHT_PORT ?? '3010'}`;
+
+const CORS_HEADERS = {
+  'access-control-allow-origin': PLAYWRIGHT_ORIGIN,
+  'access-control-allow-credentials': 'true',
+  'access-control-allow-headers': 'content-type, authorization, accept-language, x-timezone',
+  'access-control-allow-methods': 'GET,POST,OPTIONS',
+};
+
+async function fulfillJson(
+  route: import('@playwright/test').Route,
+  status: number,
+  body: unknown,
+) {
+  await route.fulfill({
+    status,
+    headers: {
+      ...CORS_HEADERS,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+}
 
 function mockAuthApi(page: import('@playwright/test').Page) {
   return Promise.all([
     page.route('**/api/v1/auth/login', async (route) => {
+      if (route.request().method() !== 'POST') {
+        await route.fallback();
+        return;
+      }
+
       const body = route.request().postDataJSON();
       if (
         body.email === 'test@example.com' &&
         body.password === 'TestPass1'
       ) {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            accessToken: 'mock-token',
-            user: mockUser,
-          }),
+        await fulfillJson(route, 200, {
+          accessToken: 'mock-token',
+          user: mockUser,
         });
       } else {
-        await route.fulfill({
-          status: 401,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            code: 'INVALID_CREDENTIALS',
-            message: 'Invalid credentials',
-          }),
+        await fulfillJson(route, 401, {
+          code: 'INVALID_CREDENTIALS',
+          message: 'Invalid credentials',
         });
       }
     }),
 
     page.route('**/api/v1/auth/register', async (route) => {
-      await route.fulfill({
-        status: 201,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          message: 'Verification email sent',
-          user: { ...mockUser, emailVerified: false },
-        }),
+      if (route.request().method() !== 'POST') {
+        await route.fallback();
+        return;
+      }
+
+      await fulfillJson(route, 201, {
+        message: 'Verification email sent',
+        user: { ...mockUser, emailVerified: false },
       });
     }),
 
     page.route('**/api/v1/auth/refresh', async (route) => {
-      await route.fulfill({
-        status: 401,
-        contentType: 'application/json',
-        body: JSON.stringify({ message: 'No refresh token' }),
-      });
+      if (route.request().method() !== 'POST') {
+        await route.fallback();
+        return;
+      }
+
+      await fulfillJson(route, 401, { message: 'No refresh token' });
     }),
 
     page.route('**/api/v1/auth/me', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(mockUser),
-      });
+      if (route.request().method() !== 'GET') {
+        await route.fallback();
+        return;
+      }
+
+      await fulfillJson(route, 200, mockUser);
+    }),
+
+    page.route('**/api/v1/auth/**', async (route) => {
+      if (route.request().method() === 'OPTIONS') {
+        await route.fulfill({
+          status: 204,
+          headers: CORS_HEADERS,
+        });
+        return;
+      }
+
+      await route.fallback();
     }),
   ]);
 }
@@ -160,7 +199,7 @@ test.describe('Register Flow', () => {
 test.describe('Forgot Password', () => {
   test('shows forgot password form', async ({ page }) => {
     await page.route('**/api/v1/auth/refresh', (route) =>
-      route.fulfill({ status: 401, body: '{}' }),
+      fulfillJson(route, 401, {}),
     );
     await page.goto('/forgot-password');
 

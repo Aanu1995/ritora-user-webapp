@@ -918,7 +918,6 @@
         "hints": {
           "identityDescription": "Grunderna om produkten. Märke, namn, kategori och storlek.",
           "photoPreviewAvailable": "Den valda produktbilden är redo att sparas med den här produkten.",
-          "photoPreviewEmpty": "Ladda upp en produktbild och etikettbilder ovan för att fylla i det här avsnittet automatiskt.",
           "sizeHint": "Volym i milliliter från förpackningen.",
           "aboutDescription": "Kopiera från förpackningen eller lämna tomt. Ritora fyller i detta när fotoextraktion eller katalogträff lyckas.",
           "descriptionHint": "En kort överblick över vad produkten gör.",
@@ -1104,6 +1103,21 @@
       "save": "Spara ändringar",
       "saveShort": "Spara",
       "saving": "Sparar...",
+      "photo": {
+        "choose": "Välj foto",
+        "replace": "Byt foto",
+        "chooseDifferent": "Välj ett annat",
+        "upload": "Ladda upp foto",
+        "uploading": "Laddar upp…",
+        "clear": "Rensa",
+        "inputLabel": "Välj produktfoto",
+        "helper": "",
+        "emptyHint": "",
+        "selectedHint": "",
+        "uploadedHint": "",
+        "uploadSuccess": "Produktfoto uppladdat",
+        "uploadFailed": "Vi kunde inte ladda upp produktfotot just nu. Försök igen."
+      },
       "genericError": "Vi kunde inte spara dina ändringar just nu. Försök igen.",
       "successToast": "Ändringar sparade"
     },

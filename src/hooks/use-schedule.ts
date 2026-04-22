@@ -6,8 +6,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { QueryKey } from '@/constants/query-keys';
+import { useAuthEnabled } from '@/hooks/use-auth-enabled';
 import * as scheduleService from '@/services/schedule.service';
-import { useAuthStore } from '@/stores/auth-store';
 import type {
   ApplyPresetPayload,
   CreateSlotPayload,
@@ -52,20 +52,20 @@ function removeSlotFromSchedule(
 }
 
 export function useSchedule() {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isEnabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.Schedule],
     queryFn: () => scheduleService.getSchedule(),
-    enabled: isAuthenticated,
+    enabled: isEnabled,
   });
 }
 
 export function useTodaysSchedule() {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isEnabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.ScheduleToday],
     queryFn: () => scheduleService.getTodaysSchedule(),
-    enabled: isAuthenticated,
+    enabled: isEnabled,
     refetchOnWindowFocus: true,
   });
 }
