@@ -60,8 +60,8 @@ describe("NAV_ITEMS", () => {
     expect(groups.has(NavGroup.Account)).toBe(true);
   });
 
-  it("has exactly 10 navigation items", () => {
-    expect(NAV_ITEMS).toHaveLength(10);
+  it("has exactly 11 navigation items", () => {
+    expect(NAV_ITEMS).toHaveLength(11);
   });
 });
 
@@ -73,8 +73,8 @@ describe("getNavItemsByGroup", () => {
     }
   });
 
-  it("returns 6 items for the Main group", () => {
-    expect(getNavItemsByGroup(NavGroup.Main)).toHaveLength(6);
+  it("returns 7 items for the Main group", () => {
+    expect(getNavItemsByGroup(NavGroup.Main)).toHaveLength(7);
   });
 
   it("returns 2 items for the More group", () => {

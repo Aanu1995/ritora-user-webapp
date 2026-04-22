@@ -10,6 +10,7 @@
     "retry": "Try again",
     "skip": "Skip for Now",
     "submit": "Submit",
+    "close": "Close",
     "or": "or",
     "selectPlaceholder": "Select...",
     "recommended": "Recommended",
@@ -1235,6 +1236,7 @@
       "skinProfile": "Skin Profile",
       "shelf": "Shelf",
       "todaysSuggestion": "Today's Suggestion",
+      "schedule": "Schedule",
       "skinJournal": "Skin Journal",
       "smartPicks": "Smart Picks",
       "history": "History",
@@ -1247,6 +1249,7 @@
       "skinProfileDescription": "Your skin type, concerns, goals, and location context.",
       "shelfDescription": "Add and manage the skincare products you own.",
       "todaysSuggestionDescription": "AI-curated product pairings for your morning and evening care.",
+      "scheduleDescription": "Set up your daily skincare routines and when they run.",
       "skinJournalDescription": "Track skin progress, upload photos, and log reactions.",
       "smartPicksDescription": "AI-powered gap analysis and product suggestions.",
       "historyDescription": "Past suggestions, applied products, and usage timeline.",
@@ -1301,6 +1304,191 @@
     "notifications": {
       "title": "Notifications",
       "description": "Routine reminders, product expiry alerts, low stock warnings, progress check-ins, and rest day reminders. All configurable to your schedule."
+    }
+  },
+  "schedule": {
+    "title": "Schedule",
+    "subtitle": "Set up your daily skincare routines.",
+    "view": {
+      "list": "List",
+      "calendar": "Calendar"
+    },
+    "preset": {
+      "everyDay": "Every day",
+      "everyDayDescription": "Add one time to every day of the week at once",
+      "buildFromScratch": "Build from scratch",
+      "buildFromScratchDescription": "Add times to individual days"
+    },
+    "empty": {
+      "headline": "Build your weekly rhythm",
+      "body": "Apply one time to all days, or build each day separately."
+    },
+    "days": {
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday",
+      "sat": "Saturday",
+      "sun": "Sunday",
+      "monShort": "Mon",
+      "tueShort": "Tue",
+      "wedShort": "Wed",
+      "thuShort": "Thu",
+      "friShort": "Fri",
+      "satShort": "Sat",
+      "sunShort": "Sun",
+      "monInitial": "M",
+      "tueInitial": "T",
+      "wedInitial": "W",
+      "thuInitial": "T",
+      "friInitial": "F",
+      "satInitial": "S",
+      "sunInitial": "S"
+    },
+    "daypart": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening"
+    },
+    "daySection": {
+      "todayBadge": "Today",
+      "noRoutines": "No routines scheduled",
+      "addTime": "Add time",
+      "timeCount": "{count, plural, =0 {No times} one {# time} other {# times}}"
+    },
+    "slot": {
+      "stepCount": "{count, plural, =0 {No steps} one {# step} other {# steps}}",
+      "noNotes": "No notes",
+      "hasNotes": "Notes"
+    },
+    "mode": {
+      "manual": "Manual",
+      "manualShort": "M",
+      "manualDescription": "Your routine",
+      "ai": "AI",
+      "aiShort": "AI",
+      "aiDescription": "Smart picks"
+    },
+    "addDialog": {
+      "titleSingle": "Add time",
+      "titleEveryDay": "Apply to every day",
+      "subtitleSingle": "When should this routine run?",
+      "subtitleEveryDay": "Pick a time. We\u2019ll apply it to all seven days.",
+      "sheetDescription": "Create a scheduled time slot",
+      "daysLabel": "Apply to days",
+      "daysHintSingle": "Tap a day to toggle",
+      "daysHintEveryDay": "Every day — tap to deselect",
+      "timeLabel": "At what time?",
+      "timeHint": "Any time — 07:30, 14:00, 22:15, etc.",
+      "modeLabel": "Mode",
+      "submitSingle": "Add time",
+      "submitMultiple": "Add to {count} days",
+      "duplicateNote": "Days already using that time will be skipped.",
+      "selectAtLeastOneDay": "Select at least one day"
+    },
+    "editor": {
+      "sheetTitle": "{day} at {time}",
+      "sheetDescription": "Edit the selected routine slot",
+      "titleTime": "{time}",
+      "deleteButton": "Delete",
+      "saveButton": "Save",
+      "savingButton": "Saving...",
+      "modeLabel": "Mode",
+      "modeSwitchWarning": "Your steps stay saved; switch back to Manual to see them.",
+      "timeEditHint": "Tap to change",
+      "notesLabel": "Notes",
+      "notesHintManual": "Shown on Today",
+      "notesHintAI": "Context for the AI",
+      "notesDescriptionManual": "Extra context for this routine. Shown on Today next to the steps.",
+      "notesDescriptionAI": "Context the AI uses when it picks products. How your skin feels, anything worth knowing.",
+      "notesPlaceholderManual": "e.g. Gym day, lighter moisturizer, skip oils.",
+      "notesPlaceholderAI": "e.g. Skin feels tight today, go gentle on actives.",
+      "notesEmpty": "No notes yet. Anything you add here travels with the routine.",
+      "notesCounter": "{current} / {max}",
+      "stepsLabel": "Steps",
+      "stepsDescription": "Your routine in application order. Cleansers first, SPF last. Drag to reorder.",
+      "stepsCount": "{current} / {max}",
+      "addStep": "Add step",
+      "stepsMaxReached": "You\u2019ve reached the maximum of {max} steps",
+      "manualEmpty": "No steps yet. Add a product to start building your routine.",
+      "aiPlaceholderTitle": "AI suggestions coming soon",
+      "aiPlaceholderBody": "When the AI engine launches, it will pick products from your Shelf using your notes above as context.",
+      "switchToManual": "Switch to Manual for now →",
+      "confirmDeleteTitle": "Delete this time?",
+      "confirmDeleteBody": "This will remove the time and any steps you've added. This cannot be undone.",
+      "confirmDelete": "Delete",
+      "unsavedChangesTitle": "Discard changes?",
+      "unsavedChangesBody": "You have unsaved step changes. Leave and lose them?",
+      "unsavedChangesConfirm": "Discard",
+      "unsavedChangesCancel": "Keep editing"
+    },
+    "step": {
+      "labelPlaceholder": "Pick a step",
+      "productPlaceholder": "Pick a product",
+      "productMissing": "Missing product — pick again",
+      "notesPlaceholder": "Notes (optional)",
+      "optionalLabel": "Optional step",
+      "delete": "Remove step",
+      "dragHandle": "Drag to reorder"
+    },
+    "stepLabels": {
+      "cleanser": "Cleanser",
+      "toner": "Toner",
+      "essence": "Essence",
+      "serum": "Serum",
+      "moisturizer": "Moisturizer",
+      "sun-protection": "Sunscreen",
+      "mask": "Mask",
+      "exfoliant": "Exfoliant",
+      "eye-care": "Eye care",
+      "lip-care": "Lip care",
+      "treatment": "Treatment",
+      "other": "Other",
+      "custom": "Custom…"
+    },
+    "productPicker": {
+      "title": "Pick a product",
+      "searchPlaceholder": "Search your shelf",
+      "empty": "No products match your search.",
+      "emptyShelf": "Add products to your Shelf first.",
+      "addToShelf": "Add to Shelf",
+      "preferredConflict": "This product is usually used in the {preferred}."
+    },
+    "calendar": {
+      "dragHint": "Drag any slot to another day",
+      "noRoutines": "No routines",
+      "addShort": "Add"
+    },
+    "today": {
+      "subtitle": "{count, plural, =0 {No times scheduled} one {# time scheduled} other {# times scheduled}}",
+      "edit": "Edit",
+      "noteCalloutLabel": "Context the AI will use",
+      "aiPlaceholder": "AI suggestions coming soon",
+      "aiPlaceholderBody": "We'll pick from your Shelf.",
+      "manualEmpty": "Add steps on Schedule →",
+      "nothingScheduled": "Nothing scheduled today",
+      "nothingScheduledBody": "Add your first routine on the Schedule page.",
+      "goToSchedule": "Open Schedule"
+    },
+    "save": {
+      "saving": "Saving...",
+      "saved": "Saved",
+      "deleted": "Time deleted",
+      "errorGeneric": "Couldn't save. Try again.",
+      "errorDelete": "Couldn't delete. Try again.",
+      "errorDuplicate": "A slot already exists at that day and time.",
+      "errorConflictMove": "A slot already exists at the destination.",
+      "errorNotFound": "Slot not found."
+    },
+    "validation": {
+      "timeFormat": "Please enter a valid time.",
+      "dayRequired": "Day is required.",
+      "customLabelRequired": "Custom label is required.",
+      "customLabelMax": "Custom label is too long.",
+      "slotNotesMax": "Notes are too long.",
+      "stepNotesMax": "Step notes are too long.",
+      "maxSteps": "You can only have up to 10 steps."
     }
   }
 }

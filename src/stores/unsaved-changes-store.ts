@@ -11,13 +11,18 @@ import { create } from 'zustand';
  * delegates its onClick to `requestLeave(proceed)` when the flag is true —
  * the store stashes the pending navigation and opens the dialog. When the
  * user confirms "Discard changes", `confirmLeave()` flushes the stashed
- * callback; "Keep editing" runs `cancelLeave()`.
+ * callback; "Keep editing" runs `cancelLeave()`. On touch devices we also
+ * suppress immediate re-entry for a short window so the same tap cannot
+ * close the dialog and instantly reopen it via the underlying control.
  */
+
+const LEAVE_REQUEST_SUPPRESSION_MS = 300;
 
 type UnsavedChangesState = {
   hasUnsavedChanges: boolean;
   isDialogOpen: boolean;
   pendingProceed: (() => void) | null;
+  suppressRequestLeaveUntil: number;
   setHasUnsavedChanges: (has: boolean) => void;
   requestLeave: (proceed: () => void) => void;
   confirmLeave: () => void;
@@ -30,9 +35,13 @@ export const useUnsavedChangesStore = create<UnsavedChangesState>(
     hasUnsavedChanges: false,
     isDialogOpen: false,
     pendingProceed: null,
+    suppressRequestLeaveUntil: 0,
 
     setHasUnsavedChanges: (has) => {
-      set({ hasUnsavedChanges: has });
+      set((state) => ({
+        hasUnsavedChanges: has,
+        suppressRequestLeaveUntil: has ? state.suppressRequestLeaveUntil : 0,
+      }));
     },
 
     requestLeave: (proceed) => {
@@ -40,25 +49,48 @@ export const useUnsavedChangesStore = create<UnsavedChangesState>(
         proceed();
         return;
       }
-      set({ pendingProceed: proceed, isDialogOpen: true });
+
+      if (Date.now() < get().suppressRequestLeaveUntil) {
+        return;
+      }
+
+      set({
+        pendingProceed: proceed,
+        isDialogOpen: true,
+        suppressRequestLeaveUntil: 0,
+      });
     },
 
     confirmLeave: () => {
       const proceed = get().pendingProceed;
-      set({ pendingProceed: null, isDialogOpen: false });
+      set({
+        pendingProceed: null,
+        isDialogOpen: false,
+        suppressRequestLeaveUntil: 0,
+      });
       proceed?.();
     },
 
     cancelLeave: () => {
-      set({ pendingProceed: null, isDialogOpen: false });
+      set({
+        pendingProceed: null,
+        isDialogOpen: false,
+        suppressRequestLeaveUntil:
+          Date.now() + LEAVE_REQUEST_SUPPRESSION_MS,
+      });
     },
 
     setDialogOpen: (open) => {
       if (open) {
-        set({ isDialogOpen: true });
+        set({ isDialogOpen: true, suppressRequestLeaveUntil: 0 });
       } else {
         // Closing via backdrop/Escape is equivalent to Cancel
-        set({ pendingProceed: null, isDialogOpen: false });
+        set({
+          pendingProceed: null,
+          isDialogOpen: false,
+          suppressRequestLeaveUntil:
+            Date.now() + LEAVE_REQUEST_SUPPRESSION_MS,
+        });
       }
     },
   }),

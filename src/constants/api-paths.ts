@@ -22,4 +22,9 @@ export enum ApiPath {
   InventoryProductsBulkRestore = '/inventory/products/bulk/restore',
   InventoryProductsBulkMarkFinished = '/inventory/products/bulk/mark-finished',
   InventoryProductsBulkDelete = '/inventory/products/bulk-delete',
+  Schedule = '/schedule',
+  ScheduleToday = '/schedule/today',
+  ScheduleSlots = '/schedule/slots',
+  ScheduleSlotsBatch = '/schedule/slots/batch',
+  ScheduleApplyPreset = '/schedule/apply-preset',
 }

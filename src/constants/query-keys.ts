@@ -7,4 +7,6 @@ export enum QueryKey {
   Shelf = 'shelf',
   ShelfProduct = 'shelf-product',
   PhotoExtract = 'photo-extract',
+  Schedule = 'schedule',
+  ScheduleToday = 'schedule-today',
 }

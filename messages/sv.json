@@ -10,6 +10,7 @@
     "retry": "Försök igen",
     "skip": "Hoppa över",
     "submit": "Skicka",
+    "close": "Stäng",
     "or": "eller",
     "selectPlaceholder": "Välj...",
     "recommended": "Rekommenderat",
@@ -1238,6 +1239,7 @@
       "skinProfile": "Hudprofil",
       "shelf": "Hylla",
       "todaysSuggestion": "Dagens förslag",
+      "schedule": "Schema",
       "skinJournal": "Huddagbok",
       "smartPicks": "Smarta val",
       "history": "Historik",
@@ -1250,6 +1252,7 @@
       "skinProfileDescription": "Din hudtyp, bekymmer, mål och platskontext.",
       "shelfDescription": "Lägg till och hantera de hudvårdsprodukter du äger.",
       "todaysSuggestionDescription": "AI-kurerade produktpar för din morgon- och kvällsvård.",
+      "scheduleDescription": "Sätt upp dina dagliga hudvårdsrutiner och när de körs.",
       "skinJournalDescription": "Spåra hudframsteg, ladda upp foton och logga reaktioner.",
       "smartPicksDescription": "AI-driven gapanalys och produktförslag.",
       "historyDescription": "Tidigare förslag, applicerade produkter och användningstidslinje.",
@@ -1304,6 +1307,191 @@
     "notifications": {
       "title": "Aviseringar",
       "description": "Rutinpåminnelser, produktutgångsvarningar, låg lagernivåvarningar, framstegsincheckningar och vilopåminnelser. Allt konfigurerbart efter ditt schema."
+    }
+  },
+  "schedule": {
+    "title": "Schema",
+    "subtitle": "Sätt upp dina dagliga hudvårdsrutiner.",
+    "view": {
+      "list": "Lista",
+      "calendar": "Kalender"
+    },
+    "preset": {
+      "everyDay": "Varje dag",
+      "everyDayDescription": "Lägg till en tid till alla sju dagarna på en gång",
+      "buildFromScratch": "Bygg från grunden",
+      "buildFromScratchDescription": "Lägg till tider till enskilda dagar"
+    },
+    "empty": {
+      "headline": "Bygg din veckorutin",
+      "body": "Lägg till en tid för alla dagar, eller bygg varje dag separat."
+    },
+    "days": {
+      "mon": "Måndag",
+      "tue": "Tisdag",
+      "wed": "Onsdag",
+      "thu": "Torsdag",
+      "fri": "Fredag",
+      "sat": "Lördag",
+      "sun": "Söndag",
+      "monShort": "Mån",
+      "tueShort": "Tis",
+      "wedShort": "Ons",
+      "thuShort": "Tor",
+      "friShort": "Fre",
+      "satShort": "Lör",
+      "sunShort": "Sön",
+      "monInitial": "M",
+      "tueInitial": "T",
+      "wedInitial": "O",
+      "thuInitial": "T",
+      "friInitial": "F",
+      "satInitial": "L",
+      "sunInitial": "S"
+    },
+    "daypart": {
+      "morning": "Morgon",
+      "afternoon": "Eftermiddag",
+      "evening": "Kväll"
+    },
+    "daySection": {
+      "todayBadge": "Idag",
+      "noRoutines": "Inga rutiner schemalagda",
+      "addTime": "Lägg till tid",
+      "timeCount": "{count, plural, =0 {Inga tider} one {# tid} other {# tider}}"
+    },
+    "slot": {
+      "stepCount": "{count, plural, =0 {Inga steg} one {# steg} other {# steg}}",
+      "noNotes": "Inga anteckningar",
+      "hasNotes": "Anteckningar"
+    },
+    "mode": {
+      "manual": "Manuell",
+      "manualShort": "M",
+      "manualDescription": "Din rutin",
+      "ai": "AI",
+      "aiShort": "AI",
+      "aiDescription": "Smarta val"
+    },
+    "addDialog": {
+      "titleSingle": "Lägg till tid",
+      "titleEveryDay": "Lägg till varje dag",
+      "subtitleSingle": "När ska denna rutin köras?",
+      "subtitleEveryDay": "Välj en tid. Vi lägger till den för alla sju dagar.",
+      "sheetDescription": "Skapa en schemalagd rutinplats",
+      "daysLabel": "Gäller dagar",
+      "daysHintSingle": "Tryck på en dag för att växla",
+      "daysHintEveryDay": "Varje dag — tryck för att avmarkera",
+      "timeLabel": "Vilken tid?",
+      "timeHint": "Vilken tid som helst — 07:30, 14:00, 22:15 osv.",
+      "modeLabel": "Läge",
+      "submitSingle": "Lägg till tid",
+      "submitMultiple": "Lägg till i {count} dagar",
+      "duplicateNote": "Dagar som redan använder den tiden hoppas över.",
+      "selectAtLeastOneDay": "Välj minst en dag"
+    },
+    "editor": {
+      "sheetTitle": "{day} kl. {time}",
+      "sheetDescription": "Redigera den valda rutinplatsen",
+      "titleTime": "{time}",
+      "deleteButton": "Radera",
+      "saveButton": "Spara",
+      "savingButton": "Sparar...",
+      "modeLabel": "Läge",
+      "modeSwitchWarning": "Dina steg sparas; växla tillbaka till Manuell för att se dem.",
+      "timeEditHint": "Tryck för att ändra",
+      "notesLabel": "Anteckningar",
+      "notesHintManual": "Visas på Idag",
+      "notesHintAI": "Kontext för AI:n",
+      "notesDescriptionManual": "Extra kontext för denna rutin. Visas på Idag bredvid stegen.",
+      "notesDescriptionAI": "Kontext som AI:n använder när den väljer produkter. Hur huden känns, vad som är värt att veta.",
+      "notesPlaceholderManual": "t.ex. Gymdag, lättare fuktkräm, hoppa över oljor.",
+      "notesPlaceholderAI": "t.ex. Huden känns stram idag, var försiktig med aktiva.",
+      "notesEmpty": "Inga anteckningar ännu. Det du lägger till följer med rutinen.",
+      "notesCounter": "{current} / {max}",
+      "stepsLabel": "Steg",
+      "stepsDescription": "Din rutin i appliceringsordning. Rengöringar först, SPF sist. Dra för att ändra ordning.",
+      "stepsCount": "{current} / {max}",
+      "addStep": "Lägg till steg",
+      "stepsMaxReached": "Du har nått max {max} steg",
+      "manualEmpty": "Inga steg ännu. Lägg till en produkt för att börja bygga din rutin.",
+      "aiPlaceholderTitle": "AI-förslag kommer snart",
+      "aiPlaceholderBody": "När AI-motorn lanseras kommer den att välja produkter från din Hylla med dina anteckningar som kontext.",
+      "switchToManual": "Växla till Manuell för nu →",
+      "confirmDeleteTitle": "Radera denna tid?",
+      "confirmDeleteBody": "Detta tar bort tiden och alla steg du har lagt till. Detta kan inte ångras.",
+      "confirmDelete": "Radera",
+      "unsavedChangesTitle": "Kasta ändringar?",
+      "unsavedChangesBody": "Du har osparade stegändringar. Lämna och förlora dem?",
+      "unsavedChangesConfirm": "Kasta",
+      "unsavedChangesCancel": "Fortsätt redigera"
+    },
+    "step": {
+      "labelPlaceholder": "Välj ett steg",
+      "productPlaceholder": "Välj en produkt",
+      "productMissing": "Saknad produkt — välj igen",
+      "notesPlaceholder": "Anteckningar (valfritt)",
+      "optionalLabel": "Valfritt steg",
+      "delete": "Ta bort steg",
+      "dragHandle": "Dra för att ordna om"
+    },
+    "stepLabels": {
+      "cleanser": "Rengöring",
+      "toner": "Toner",
+      "essence": "Essens",
+      "serum": "Serum",
+      "moisturizer": "Fuktkräm",
+      "sun-protection": "Solskydd",
+      "mask": "Ansiktsmask",
+      "exfoliant": "Peeling",
+      "eye-care": "Ögonvård",
+      "lip-care": "Läppvård",
+      "treatment": "Behandling",
+      "other": "Övrigt",
+      "custom": "Anpassad…"
+    },
+    "productPicker": {
+      "title": "Välj en produkt",
+      "searchPlaceholder": "Sök på din hylla",
+      "empty": "Inga produkter matchar din sökning.",
+      "emptyShelf": "Lägg till produkter i din Hylla först.",
+      "addToShelf": "Lägg till i Hylla",
+      "preferredConflict": "Denna produkt används vanligtvis på {preferred}."
+    },
+    "calendar": {
+      "dragHint": "Dra vilken tid som helst till en annan dag",
+      "noRoutines": "Inga rutiner",
+      "addShort": "Lägg till"
+    },
+    "today": {
+      "subtitle": "{count, plural, =0 {Inga tider schemalagda} one {# tid schemalagd} other {# tider schemalagda}}",
+      "edit": "Redigera",
+      "noteCalloutLabel": "Kontext AI kommer att använda",
+      "aiPlaceholder": "AI-förslag kommer snart",
+      "aiPlaceholderBody": "Vi väljer från din Hylla.",
+      "manualEmpty": "Lägg till steg på Schema →",
+      "nothingScheduled": "Inget schemalagt idag",
+      "nothingScheduledBody": "Lägg till din första rutin på Schema-sidan.",
+      "goToSchedule": "Öppna Schema"
+    },
+    "save": {
+      "saving": "Sparar...",
+      "saved": "Sparat",
+      "deleted": "Tid borttagen",
+      "errorDelete": "Kunde inte ta bort. Försök igen.",
+      "errorGeneric": "Kunde inte spara. Försök igen.",
+      "errorDuplicate": "En tid finns redan för den dagen och tiden.",
+      "errorConflictMove": "En tid finns redan på destinationen.",
+      "errorNotFound": "Tid hittades inte."
+    },
+    "validation": {
+      "timeFormat": "Ange en giltig tid.",
+      "dayRequired": "Dag krävs.",
+      "customLabelRequired": "Anpassad etikett krävs.",
+      "customLabelMax": "Anpassad etikett är för lång.",
+      "slotNotesMax": "Anteckningarna är för långa.",
+      "stepNotesMax": "Steganteckningarna är för långa.",
+      "maxSteps": "Du kan bara ha upp till 10 steg."
     }
   }
 }

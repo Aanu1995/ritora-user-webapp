@@ -33,6 +33,10 @@ export function getApiErrorBody(error: unknown): ApiErrorBody | undefined {
   return error instanceof ApiError ? error.body : undefined;
 }
 
+export function getApiErrorCode(error: unknown): string | undefined {
+  return getApiErrorBody(error)?.code;
+}
+
 export function getApiErrorMessage(error: unknown): string | undefined {
   if (!(error instanceof ApiError)) {
     return error instanceof Error ? error.message : undefined;
