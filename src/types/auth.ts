@@ -5,6 +5,7 @@ export type User = {
   lastName: string;
   emailVerified: boolean;
   preferredLanguage: string;
+  timeZone: string | null;
   createdAt: string;
 };
 
@@ -62,4 +63,8 @@ export type UpdateProfileInput = {
 
 export type UpdatePreferredLanguageInput = {
   preferredLanguage: string;
+};
+
+export type UpdateTimeZoneInput = {
+  timeZone: string;
 };

@@ -1,34 +1,36 @@
 'use client';
 
+import { useForm, useStore } from '@tanstack/react-form';
 import { X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 import { TimePicker } from '@/components/ui/time-picker';
 import { useCreateSlots } from '@/hooks/use-schedule';
-import { TIME_REGEX } from '@/lib/schedule-schemas';
+import { firstFieldError } from '@/lib/form-errors';
+import {
+  clearSubmitErrors,
+  executeMutation,
+  readSubmissionErrorMessage,
+} from '@/lib/form-submission';
+import {
+  createSlotsFormSchema,
+  type CreateSlotsFormValues,
+} from '@/lib/schedule-schemas';
+import { getCreateSlotsSubmitError } from '@/lib/schedule-submit-errors';
 import {
   AddSlotPresetMode,
   DAYS_OF_WEEK,
   DayOfWeek,
-  SlotMode,
 } from '@/types/schedule';
 import { cn } from '@/lib/utils';
+import { AddSlotFooter } from './add-slot-footer';
+import {
+  createAddSlotDefaultValues,
+  getAddSlotDialogCopy,
+  shouldShowFieldError,
+  toggleDaySelection,
+} from './add-slot-content.utils';
 import { SlotModeToggle } from './slot-mode-toggle';
-
-function computeInitialDays(
-  presetMode: AddSlotPresetMode,
-  preselectDay: DayOfWeek | null,
-): Set<DayOfWeek> {
-  if (presetMode === AddSlotPresetMode.EveryDay) {
-    return new Set(DAYS_OF_WEEK);
-  }
-  if (preselectDay) {
-    return new Set([preselectDay]);
-  }
-  return new Set();
-}
 
 type AddSlotContentProps = {
   presetMode: AddSlotPresetMode;
@@ -49,68 +51,72 @@ export function AddSlotContent({
   const t = useTranslations('schedule');
   const tCommon = useTranslations('common');
   const createSlots = useCreateSlots();
+  const defaultValues: CreateSlotsFormValues = createAddSlotDefaultValues({
+    presetMode,
+    preselectDay,
+  });
 
-  const [selectedDays, setSelectedDays] = useState<Set<DayOfWeek>>(() =>
-    computeInitialDays(presetMode, preselectDay),
+  const form = useForm({
+    defaultValues,
+    listeners: {
+      onChange: ({ formApi }) => {
+        clearSubmitErrors(formApi);
+      },
+    },
+    validators: {
+      onChange: createSlotsFormSchema,
+      onSubmit: createSlotsFormSchema,
+      onSubmitAsync: async ({ value }) => {
+        const result = await executeMutation(createSlots.mutate, {
+          daysOfWeek: value.daysOfWeek,
+          slotTime: value.slotTime,
+          mode: value.mode,
+        });
+
+        if (result.error !== null) {
+          return getCreateSlotsSubmitError(result.error, t);
+        }
+
+        return undefined;
+      },
+    },
+    onSubmit: () => {
+      toast.success(t('save.saved'));
+      onClose();
+      onCreated?.();
+    },
+  });
+
+  const canSubmit = useStore(form.store, (state) => state.canSubmit);
+  const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
+  const selectedDayCount = useStore(
+    form.store,
+    (state) => state.values.daysOfWeek.length,
   );
-  const [slotTime, setSlotTime] = useState('08:00');
-  const [mode, setMode] = useState<SlotMode>(SlotMode.AI);
-
-  const toggleDay = (day: DayOfWeek) => {
-    setSelectedDays((prev) => {
-      const next = new Set(prev);
-      if (next.has(day)) next.delete(day);
-      else next.add(day);
-      return next;
-    });
-  };
-
-  const isValidTime = TIME_REGEX.test(slotTime);
-  const canSubmit = isValidTime && selectedDays.size > 0;
-  const isPending = createSlots.isPending;
-
-  const submit = () => {
-    if (!canSubmit || isPending) return;
-
-    createSlots.mutate(
-      {
-        daysOfWeek: DAYS_OF_WEEK.filter((day) => selectedDays.has(day)),
-        slotTime,
-        mode,
-      },
-      {
-        onError: () => {
-          toast.error(t('save.errorGeneric'));
-        },
-        onSuccess: () => {
-          toast.success(t('save.saved'));
-          onClose();
-          onCreated?.();
-        },
-      },
-    );
-  };
-
-  const submitLabel =
-    selectedDays.size <= 1
-      ? t('addDialog.submitSingle')
-      : t('addDialog.submitMultiple', { count: selectedDays.size });
-
-  const title =
-    presetMode === AddSlotPresetMode.EveryDay
-      ? t('addDialog.titleEveryDay')
-      : t('addDialog.titleSingle');
-  const subtitle =
-    presetMode === AddSlotPresetMode.EveryDay
-      ? t('addDialog.subtitleEveryDay')
-      : t('addDialog.subtitleSingle');
-  const daysHint =
-    selectedDays.size === 7
-      ? t('addDialog.daysHintEveryDay')
-      : t('addDialog.daysHintSingle');
+  const submissionAttempts = useStore(
+    form.store,
+    (state) => state.submissionAttempts,
+  );
+  const submitError = useStore(form.store, (state) => state.errorMap.onSubmit);
+  const showAllErrors = submissionAttempts > 0;
+  const formError = readSubmissionErrorMessage(submitError);
+  const isPending = createSlots.isPending || isSubmitting;
+  const dialogCopy = getAddSlotDialogCopy({
+    presetMode,
+    selectedDayCount,
+    t,
+  });
 
   return (
-    <div className="flex h-full flex-col">
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        void form.handleSubmit();
+      }}
+      noValidate
+      className="flex h-full flex-col"
+    >
       <header
         className={cn(
           'border-b border-border px-5 py-4',
@@ -119,8 +125,10 @@ export function AddSlotContent({
         )}
       >
         <div>
-          <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-          <p className="mt-1 text-xs text-muted">{subtitle}</p>
+          <h2 className="text-lg font-semibold text-foreground">
+            {dialogCopy.title}
+          </h2>
+          <p className="mt-1 text-xs text-muted">{dialogCopy.subtitle}</p>
         </div>
         {showCloseButton ? (
           <button
@@ -135,74 +143,125 @@ export function AddSlotContent({
       </header>
 
       <div className="flex-1 overflow-y-auto">
-        <section className="border-b border-border px-5 py-4">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
-            {t('addDialog.daysLabel')}
-          </p>
-          <div className="flex gap-1.5">
-            {DAYS_OF_WEEK.map((day) => {
-              const selected = selectedDays.has(day);
-              return (
-                <button
-                  key={day}
-                  type="button"
-                  onClick={() => toggleDay(day)}
-                  aria-pressed={selected}
-                  className={cn(
-                    'inline-flex h-10 min-w-10 flex-1 items-center justify-center rounded-full border text-sm font-semibold transition',
-                    selected
-                      ? 'border-accent bg-accent text-surface'
-                      : 'border-border bg-surface text-foreground hover:border-accent',
-                  )}
-                >
-                  {t(`days.${day}Initial`)}
-                </button>
-              );
-            })}
-          </div>
-          <p className="mt-2 text-[11px] text-muted">{daysHint}</p>
-          {selectedDays.size === 0 ? (
-            <p className="mt-2 text-xs font-medium text-red-600">
-              {t('addDialog.selectAtLeastOneDay')}
-            </p>
-          ) : null}
-        </section>
+        <form.Field name="daysOfWeek">
+          {(field) => {
+            const showError = shouldShowFieldError(
+              showAllErrors,
+              field.state.meta.isTouched,
+              field.state.meta.isDirty,
+            );
+            const errorText = showError
+              ? firstFieldError(field.state.meta.errors, t)
+              : undefined;
 
-        <section className="border-b border-border px-5 py-4">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
-            {t('addDialog.timeLabel')}
-          </p>
-          <TimePicker
-            value={slotTime}
-            onChange={setSlotTime}
-            invalid={!isValidTime}
-            ariaLabel={t('addDialog.timeLabel')}
-          />
-          <p className="mt-2 text-[11px] text-muted">
-            {t('addDialog.timeHint')}
-          </p>
-        </section>
+            return (
+              <section className="border-b border-border px-5 py-4">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
+                  {t('addDialog.daysLabel')}
+                </p>
+                <div className="flex gap-1.5">
+                  {DAYS_OF_WEEK.map((day) => {
+                    const selected = field.state.value.includes(day);
 
-        <section className="px-5 py-4">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
-            {t('addDialog.modeLabel')}
-          </p>
-          <SlotModeToggle value={mode} onChange={setMode} />
-        </section>
+                    return (
+                      <button
+                        key={day}
+                        type="button"
+                        onClick={() =>
+                          field.handleChange(
+                            toggleDaySelection(field.state.value, day),
+                          )
+                        }
+                        aria-pressed={selected}
+                        className={cn(
+                          'inline-flex h-10 min-w-10 flex-1 items-center justify-center rounded-full border text-sm font-semibold transition',
+                          selected
+                            ? 'border-accent bg-accent text-surface'
+                            : 'border-border bg-surface text-foreground hover:border-accent',
+                        )}
+                      >
+                        {t(`days.${day}Initial`)}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="mt-2 text-[11px] text-muted">
+                  {dialogCopy.daysHint}
+                </p>
+                {errorText ? (
+                  <p className="mt-2 text-xs font-medium text-danger" role="alert">
+                    {errorText}
+                  </p>
+                ) : null}
+              </section>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name="slotTime">
+          {(field) => {
+            const showError = shouldShowFieldError(
+              showAllErrors,
+              field.state.meta.isTouched,
+              field.state.meta.isDirty,
+            );
+            const errorText = showError
+              ? firstFieldError(field.state.meta.errors, t)
+              : undefined;
+
+            return (
+              <section className="border-b border-border px-5 py-4">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
+                  {t('addDialog.timeLabel')}
+                </p>
+                <TimePicker
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={field.handleChange}
+                  onBlur={field.handleBlur}
+                  invalid={Boolean(errorText)}
+                  ariaLabel={t('addDialog.timeLabel')}
+                  ariaDescribedBy={errorText ? `${field.name}-error` : undefined}
+                />
+                <p className="mt-2 text-[11px] text-muted">
+                  {t('addDialog.timeHint')}
+                </p>
+                {errorText ? (
+                  <p
+                    id={`${field.name}-error`}
+                    className="mt-2 text-xs font-medium text-danger"
+                    role="alert"
+                  >
+                    {errorText}
+                  </p>
+                ) : null}
+              </section>
+            );
+          }}
+        </form.Field>
+
+        <form.Field name="mode">
+          {(field) => (
+            <section className="px-5 py-4">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
+                {t('addDialog.modeLabel')}
+              </p>
+              <SlotModeToggle
+                value={field.state.value}
+                onChange={field.handleChange}
+              />
+            </section>
+          )}
+        </form.Field>
       </div>
-
-      <footer className="border-t border-border bg-surface px-5 py-4">
-        <Button
-          className="w-full"
-          onClick={submit}
-          disabled={!canSubmit || isPending}
-        >
-          {isPending ? t('save.saving') : submitLabel}
-        </Button>
-        <p className="mt-2 text-center text-[11px] text-muted">
-          {t('addDialog.duplicateNote')}
-        </p>
-      </footer>
-    </div>
+      <AddSlotFooter
+        canSubmit={canSubmit}
+        duplicateNote={dialogCopy.duplicateNote}
+        formError={formError}
+        isPending={isPending}
+        savingLabel={dialogCopy.savingLabel}
+        submitLabel={dialogCopy.submitLabel}
+      />
+    </form>
   );
 }

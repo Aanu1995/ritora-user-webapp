@@ -155,4 +155,18 @@ describe('auth.service', () => {
     );
     expect(result).toEqual(mockResponse);
   });
+
+  it('updateTimeZone calls patchRequest with timezone data', async () => {
+    const payload = { timeZone: 'Europe/Stockholm' };
+    const mockResponse = { id: '1', timeZone: 'Europe/Stockholm' };
+    (api.patchRequest as jest.Mock).mockResolvedValue(mockResponse);
+
+    const result = await authService.updateTimeZone(payload);
+
+    expect(api.patchRequest).toHaveBeenCalledWith(
+      '/users/me/time-zone',
+      payload,
+    );
+    expect(result).toEqual(mockResponse);
+  });
 });

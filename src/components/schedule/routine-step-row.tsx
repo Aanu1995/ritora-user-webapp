@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Trash2 } from 'lucide-react';
@@ -40,12 +41,12 @@ type RoutineStepRowProps = {
   index: number;
   step: RoutineStepInput;
   product: RoutineStepProductSummary | null;
-  onChange: (next: RoutineStepInput) => void;
-  onOpenProductPicker: () => void;
-  onRemove: () => void;
+  onChange: (index: number, next: RoutineStepInput) => void;
+  onOpenProductPicker: (index: number) => void;
+  onRemove: (index: number) => void;
 };
 
-export function RoutineStepRow({
+function RoutineStepRowComponent({
   index,
   step,
   product,
@@ -92,7 +93,7 @@ export function RoutineStepRow({
           <Select
             value={step.stepLabel}
             onValueChange={(value) =>
-              onChange({ ...step, stepLabel: value as StepLabel })
+              onChange(index, { ...step, stepLabel: value as StepLabel })
             }
           >
             <SelectTrigger className="h-9 text-xs">
@@ -112,7 +113,7 @@ export function RoutineStepRow({
               type="text"
               value={step.customLabel ?? ''}
               onChange={(e) =>
-                onChange({
+                onChange(index, {
                   ...step,
                   customLabel: e.target.value.slice(
                     0,
@@ -129,7 +130,7 @@ export function RoutineStepRow({
           {/* Product picker */}
           <button
             type="button"
-            onClick={onOpenProductPicker}
+            onClick={() => onOpenProductPicker(index)}
             className={cn(
               'flex w-full items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-left text-xs transition hover:border-accent',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30',
@@ -185,7 +186,7 @@ export function RoutineStepRow({
             type="text"
             value={step.notes ?? ''}
             onChange={(e) =>
-              onChange({
+              onChange(index, {
                 ...step,
                 notes: e.target.value.slice(0, MAX_STEP_NOTES_LENGTH),
               })
@@ -201,7 +202,7 @@ export function RoutineStepRow({
               type="checkbox"
               checked={step.optional ?? false}
               onChange={(e) =>
-                onChange({ ...step, optional: e.target.checked })
+                onChange(index, { ...step, optional: e.target.checked })
               }
               className="h-3.5 w-3.5 rounded border-border"
             />
@@ -211,7 +212,7 @@ export function RoutineStepRow({
 
         <button
           type="button"
-          onClick={onRemove}
+          onClick={() => onRemove(index)}
           aria-label={t('step.delete')}
           className="mt-1 rounded-md p-1 text-muted transition hover:bg-surface-muted hover:text-red-600"
         >
@@ -220,3 +221,24 @@ export function RoutineStepRow({
     </div>
   );
 }
+
+function areRoutineStepRowPropsEqual(
+  previousProps: RoutineStepRowProps,
+  nextProps: RoutineStepRowProps,
+): boolean {
+  return (
+    previousProps.index === nextProps.index &&
+    previousProps.step === nextProps.step &&
+    previousProps.product === nextProps.product &&
+    previousProps.onChange === nextProps.onChange &&
+    previousProps.onOpenProductPicker === nextProps.onOpenProductPicker &&
+    previousProps.onRemove === nextProps.onRemove
+  );
+}
+
+export const RoutineStepRow = memo(
+  RoutineStepRowComponent,
+  areRoutineStepRowPropsEqual,
+);
+
+RoutineStepRow.displayName = 'RoutineStepRow';

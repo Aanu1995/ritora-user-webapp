@@ -7,84 +7,34 @@ import { PageHeader } from '@/components/app/page-header';
 import { RetryPanel } from '@/components/ui/retry-panel';
 import { useIsLgDesktop } from '@/hooks/use-is-lg-desktop';
 import { useSchedule } from '@/hooks/use-schedule';
-import { ScheduleViewMode, useScheduleUiStore } from '@/stores/schedule-ui-store';
+import { useScheduleUiStore } from '@/stores/schedule-ui-store';
 import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 import {
   AddSlotPresetMode,
-  DAYS_OF_WEEK,
-  DAY_OF_WEEK_ORDER,
-  DayOfWeek,
-  type ScheduleSlot,
+  type DayOfWeek,
 } from '@/types/schedule';
 import { cn } from '@/lib/utils';
 import { AddSlotContent } from './add-slot-content';
 import { AddSlotDialog } from './add-slot-dialog';
-import { CalendarView } from './calendar-view';
-import { DaySection } from './day-section';
-import { EveryDayQuickAction } from './every-day-quick-action';
-import { ScheduleEmptyState } from './schedule-empty-state';
+import { SchedulePageContent } from './schedule-page-content';
 import { ScheduleSkeleton } from './schedule-skeleton';
-import { ScheduleViewToggle } from './schedule-view-toggle';
 import { SlotEditorContent } from './slot-editor-content';
 import { SlotEditorSheet } from './slot-editor-sheet';
+import {
+  buildSchedulePageHrefWithoutSlotParam,
+  findScheduleSlotById,
+  groupSlotsByDay,
+  orderedDaysStartingToday,
+} from './schedule-page.utils';
+import {
+  DEFAULT_TIME_ZONE,
+  resolveDayOfWeekForTimeZone,
+} from '@/lib/time-zone';
 
 const PANEL_WIDTH_PX = 440;
 
-function useTodayOfWeek(): DayOfWeek {
-  const order = [
-    DayOfWeek.Sun,
-    DayOfWeek.Mon,
-    DayOfWeek.Tue,
-    DayOfWeek.Wed,
-    DayOfWeek.Thu,
-    DayOfWeek.Fri,
-    DayOfWeek.Sat,
-  ];
-  return order[new Date().getDay()];
-}
-
-function groupSlotsByDay(
-  slots: ScheduleSlot[],
-): Record<DayOfWeek, ScheduleSlot[]> {
-  const grouped = DAYS_OF_WEEK.reduce<Record<DayOfWeek, ScheduleSlot[]>>(
-    (acc, day) => {
-      acc[day] = [];
-      return acc;
-    },
-    {
-      [DayOfWeek.Mon]: [],
-      [DayOfWeek.Tue]: [],
-      [DayOfWeek.Wed]: [],
-      [DayOfWeek.Thu]: [],
-      [DayOfWeek.Fri]: [],
-      [DayOfWeek.Sat]: [],
-      [DayOfWeek.Sun]: [],
-    },
-  );
-
-  for (const slot of slots) {
-    grouped[slot.dayOfWeek].push(slot);
-  }
-
-  for (const day of DAYS_OF_WEEK) {
-    grouped[day].sort((a, b) => a.slotTime.localeCompare(b.slotTime));
-  }
-
-  return grouped;
-}
-
-function orderedDaysStartingToday(today: DayOfWeek): DayOfWeek[] {
-  const todayIndex = DAY_OF_WEEK_ORDER[today];
-  return [...DAYS_OF_WEEK].sort((a, b) => {
-    const aOffset = (DAY_OF_WEEK_ORDER[a] - todayIndex + 7) % 7;
-    const bOffset = (DAY_OF_WEEK_ORDER[b] - todayIndex + 7) % 7;
-    return aOffset - bOffset;
-  });
-}
-
 export function SchedulePage() {
   const t = useTranslations('schedule');
-  const today = useTodayOfWeek();
   const tCommon = useTranslations('common');
   const { data, isLoading, isError, refetch } = useSchedule();
   const isDesktop = useIsLgDesktop();
@@ -105,16 +55,16 @@ export function SchedulePage() {
   );
   const requestLeave = useUnsavedChangesStore((s) => s.requestLeave);
 
+  const scheduleTimeZone = data?.timeZone ?? DEFAULT_TIME_ZONE;
+  const today = useMemo(
+    () => resolveDayOfWeekForTimeZone(scheduleTimeZone),
+    [scheduleTimeZone],
+  );
   const slots = useMemo(() => data?.slots ?? [], [data]);
   const grouped = useMemo(() => groupSlotsByDay(slots), [slots]);
   const orderedDays = useMemo(() => orderedDaysStartingToday(today), [today]);
-  const hasAnySlots = slots.length > 0;
-  const showDayList = hasAnySlots || buildFromScratch;
   const editingSlot = useMemo(
-    () =>
-      editingSlotId
-        ? slots.find((s) => s.id === editingSlotId) ?? null
-        : null,
+    () => findScheduleSlotById(slots, editingSlotId),
     [editingSlotId, slots],
   );
 
@@ -135,18 +85,31 @@ export function SchedulePage() {
       openEditor(match.id);
     }
 
-    const nextParams = new URLSearchParams(searchParams.toString());
-    nextParams.delete('slot');
-    const nextHref =
-      nextParams.size > 0 ? `${pathname}?${nextParams.toString()}` : pathname;
-
     startTransition(() => {
-      router.replace(nextHref);
+      router.replace(
+        buildSchedulePageHrefWithoutSlotParam(pathname, searchParams),
+      );
     });
-  }, [data, deepLinkSlotId, editingSlotId, openEditor, pathname, router, searchParams]);
+  }, [
+    data,
+    deepLinkSlotId,
+    editingSlotId,
+    openEditor,
+    pathname,
+    router,
+    searchParams,
+  ]);
 
   const closeEditorGuarded = () => requestLeave(() => closeEditor());
   const closeAddSlotGuarded = () => requestLeave(() => closeAddSlotDialog());
+  const openEveryDayDialog = () =>
+    openAddSlotDialog({ presetMode: AddSlotPresetMode.EveryDay });
+  const openSingleDayDialog = (day: DayOfWeek) =>
+    openAddSlotDialog({
+      day,
+      presetMode: AddSlotPresetMode.Single,
+    });
+  const addSlotDialogKey = `${addSlotDialog.presetMode ?? AddSlotPresetMode.Single}-${addSlotDialog.preselectDay ?? 'none'}`;
 
   if (isLoading) {
     return (
@@ -185,69 +148,20 @@ export function SchedulePage() {
           desktopPanelOpen && 'lg:pr-[440px]',
         )}
       >
-        <PageHeader
-          title={t('title')}
-          subtitle={t('subtitle')}
-          action={
-            showDayList ? (
-              <ScheduleViewToggle value={viewMode} onChange={setViewMode} />
-            ) : undefined
-          }
+        <SchedulePageContent
+          buildFromScratch={buildFromScratch}
+          groupedSlots={grouped}
+          onEnterBuildFromScratch={enterBuildFromScratch}
+          onOpenEveryDayDialog={openEveryDayDialog}
+          onOpenSingleDayDialog={openSingleDayDialog}
+          onOpenSlotEditor={openEditor}
+          orderedDays={orderedDays}
+          scheduleTimeZone={scheduleTimeZone}
+          slots={slots}
+          today={today}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
         />
-
-        <div className="mx-auto w-full max-w-3xl">
-          {!showDayList ? (
-            <ScheduleEmptyState
-              onEveryDay={() =>
-                openAddSlotDialog({ presetMode: AddSlotPresetMode.EveryDay })
-              }
-              onBuildFromScratch={() => enterBuildFromScratch()}
-            />
-          ) : viewMode === ScheduleViewMode.Calendar ? (
-            <div className="mt-4 space-y-3 pb-8">
-              <EveryDayQuickAction
-                onClick={() =>
-                  openAddSlotDialog({ presetMode: AddSlotPresetMode.EveryDay })
-                }
-              />
-              <CalendarView
-                slots={slots}
-                today={today}
-                onSlotClick={(id) => openEditor(id)}
-                onAddTime={(d) =>
-                  openAddSlotDialog({
-                    day: d,
-                    presetMode: AddSlotPresetMode.Single,
-                  })
-                }
-              />
-            </div>
-          ) : (
-            <div className="mt-4 space-y-3 pb-8">
-              <EveryDayQuickAction
-                onClick={() =>
-                  openAddSlotDialog({ presetMode: AddSlotPresetMode.EveryDay })
-                }
-              />
-
-              {orderedDays.map((day) => (
-                <DaySection
-                  key={day}
-                  day={day}
-                  slots={grouped[day]}
-                  isToday={day === today}
-                  onSlotClick={(id) => openEditor(id)}
-                  onAddTime={(d) =>
-                    openAddSlotDialog({
-                      day: d,
-                      presetMode: AddSlotPresetMode.Single,
-                    })
-                  }
-                />
-              ))}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Fixed right panel, flush to the viewport edge, full height. Slides in
@@ -272,7 +186,7 @@ export function SchedulePage() {
             />
           ) : addSlotDialog.open ? (
             <AddSlotContent
-              key={`${addSlotDialog.presetMode ?? AddSlotPresetMode.Single}-${addSlotDialog.preselectDay ?? 'none'}`}
+              key={addSlotDialogKey}
               presetMode={addSlotDialog.presetMode ?? AddSlotPresetMode.Single}
               preselectDay={addSlotDialog.preselectDay}
               onClose={closeAddSlotGuarded}
@@ -291,7 +205,9 @@ export function SchedulePage() {
             presetMode={addSlotDialog.presetMode ?? AddSlotPresetMode.Single}
             preselectDay={addSlotDialog.preselectDay}
             onOpenChange={(open) => {
-              if (!open) closeAddSlotDialog();
+              if (!open) {
+                closeAddSlotDialog();
+              }
             }}
           />
 
@@ -299,7 +215,9 @@ export function SchedulePage() {
             slot={editingSlot}
             open={editingSlotId !== null && editingSlot !== null}
             onOpenChange={(open) => {
-              if (!open) closeEditor();
+              if (!open) {
+                closeEditor();
+              }
             }}
           />
         </>

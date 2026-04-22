@@ -108,11 +108,13 @@ export type ScheduleSlot = {
 };
 
 export type Schedule = {
+  timeZone: string;
   slots: ScheduleSlot[];
 };
 
 export type TodaysSchedule = {
   dayOfWeek: DayOfWeek;
+  timeZone: string;
   slots: ScheduleSlot[];
 };
 

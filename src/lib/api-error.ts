@@ -1,6 +1,9 @@
+export type ApiFieldErrors = Record<string, string[]>;
+
 export type ApiErrorBody = {
   message?: string | string[];
   code?: string;
+  fieldErrors?: ApiFieldErrors;
   [key: string]: unknown;
 };
 
@@ -11,6 +14,18 @@ type ApiErrorOptions = {
 
 function isApiErrorBody(value: unknown): value is ApiErrorBody {
   return typeof value === 'object' && value !== null;
+}
+
+function isApiFieldErrors(value: unknown): value is ApiFieldErrors {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  return Object.values(value).every(
+    (entry) =>
+      Array.isArray(entry) &&
+      entry.every((message) => typeof message === 'string'),
+  );
 }
 
 export class ApiError extends Error {
@@ -35,6 +50,28 @@ export function getApiErrorBody(error: unknown): ApiErrorBody | undefined {
 
 export function getApiErrorCode(error: unknown): string | undefined {
   return getApiErrorBody(error)?.code;
+}
+
+export function getApiFieldErrors(
+  error: unknown,
+): ApiFieldErrors | undefined {
+  const fieldErrors = getApiErrorBody(error)?.fieldErrors;
+  return isApiFieldErrors(fieldErrors) ? fieldErrors : undefined;
+}
+
+export function getApiFieldError(
+  error: unknown,
+  field: string,
+): string | undefined {
+  const messages = getApiFieldErrors(error)?.[field];
+
+  if (!Array.isArray(messages)) {
+    return undefined;
+  }
+
+  return messages.find(
+    (message): message is string => typeof message === 'string' && message.length > 0,
+  );
 }
 
 export function getApiErrorMessage(error: unknown): string | undefined {

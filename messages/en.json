@@ -23,6 +23,11 @@
       "searchPlaceholder": "Search countries",
       "noMatch": "No countries match “{query}”."
     },
+    "timeZoneSelect": {
+      "placeholder": "Select a timezone",
+      "searchPlaceholder": "Search timezones",
+      "noMatch": "No timezones match “{query}”."
+    },
     "confirmDialog": {
       "cancel": "Cancel",
       "working": "Working..."
@@ -474,6 +479,25 @@
       "displayLanguage": "Language",
       "current": "Current: {locale}",
       "updateFailed": "Could not save your language preference."
+    },
+    "timeZone": {
+      "title": "Schedule timezone",
+      "description": "Your routines stay anchored to this timezone, even when you travel.",
+      "label": "Timezone",
+      "current": "Current: {timeZone}",
+      "deviceCurrent": "This device is set to {timeZone}.",
+      "useDevice": "Use {timeZone}",
+      "updateSuccess": "Timezone updated to {timeZone}.",
+      "updateFailed": "Could not save your timezone.",
+      "unavailable": "Timezone unavailable on this device."
+    },
+    "timeZoneMismatch": {
+      "title": "Timezone change detected",
+      "body": "Your schedule is still anchored to {savedTimeZone}, while this device is currently set to {deviceTimeZone}.",
+      "keep": "Keep current schedule timezone",
+      "switch": "Switch schedule timezone to {deviceTimeZone}",
+      "switched": "Schedule timezone updated to {timeZone}.",
+      "switchFailed": "Could not update your schedule timezone."
     },
     "privacy": {
       "legalTitle": "Legal",
@@ -1309,6 +1333,9 @@
   "schedule": {
     "title": "Schedule",
     "subtitle": "Set up your daily skincare routines.",
+    "timeZone": {
+      "label": "Schedule timezone: {timeZone}"
+    },
     "view": {
       "list": "List",
       "calendar": "Calendar"
@@ -1488,6 +1515,7 @@
       "customLabelMax": "Custom label is too long.",
       "slotNotesMax": "Notes are too long.",
       "stepNotesMax": "Step notes are too long.",
+      "productsNotOwned": "Only products from your shelf can be added.",
       "maxSteps": "You can only have up to 10 steps."
     }
   }

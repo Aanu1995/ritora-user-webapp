@@ -23,10 +23,27 @@ function collectKeys(
   return output;
 }
 
-describe('schedule message parity', () => {
-  it('keeps the English and Swedish schedule keys aligned', () => {
-    const englishKeys = new Set(collectKeys(enMessages.schedule as MessageTree));
-    const swedishKeys = new Set(collectKeys(svMessages.schedule as MessageTree));
+function collectFeatureKeys(messages: typeof enMessages): Set<string> {
+  const featureMessages = {
+    schedule: messages.schedule,
+    settings: {
+      timeZone: messages.settings.timeZone,
+      timeZoneMismatch: messages.settings.timeZoneMismatch,
+    },
+    common: {
+      close: messages.common.close,
+      processing: messages.common.processing,
+      timeZoneSelect: messages.common.timeZoneSelect,
+    },
+  } satisfies MessageTree;
+
+  return new Set(collectKeys(featureMessages));
+}
+
+describe('schedule/timezone message parity', () => {
+  it('keeps the English and Swedish feature keys aligned', () => {
+    const englishKeys = collectFeatureKeys(enMessages);
+    const swedishKeys = collectFeatureKeys(svMessages);
 
     const onlyEnglish = [...englishKeys]
       .filter((key) => !swedishKeys.has(key))

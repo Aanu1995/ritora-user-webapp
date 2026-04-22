@@ -15,19 +15,16 @@ afterEach(() => {
 });
 
 describe('schedule.service', () => {
-  it('fetches today with the client timezone header', async () => {
+  it('fetches today from the schedule endpoint without per-call headers', async () => {
     (api.getRequest as jest.Mock).mockResolvedValue({
       dayOfWeek: DayOfWeek.Mon,
+      timeZone: 'Europe/Stockholm',
       slots: [],
     });
 
     await scheduleService.getTodaysSchedule();
 
-    expect(api.getRequest).toHaveBeenCalledWith('/schedule/today', {
-      headers: {
-        'x-timezone': expect.any(String),
-      },
-    });
+    expect(api.getRequest).toHaveBeenCalledWith('/schedule/today');
   });
 
   it('creates multiple slots through the batch endpoint', async () => {

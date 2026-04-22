@@ -23,6 +23,11 @@
       "searchPlaceholder": "Sök land",
       "noMatch": "Inga länder matchar “{query}”."
     },
+    "timeZoneSelect": {
+      "placeholder": "Välj tidszon",
+      "searchPlaceholder": "Sök tidszoner",
+      "noMatch": "Inga tidszoner matchar “{query}”."
+    },
     "confirmDialog": {
       "cancel": "Avbryt",
       "working": "Bearbetar..."
@@ -474,6 +479,25 @@
       "displayLanguage": "Språk",
       "current": "Aktuellt: {locale}",
       "updateFailed": "Det gick inte att spara din språkinställning."
+    },
+    "timeZone": {
+      "title": "Schematidszon",
+      "description": "Dina rutiner förblir förankrade i den här tidszonen, även när du reser.",
+      "label": "Tidszon",
+      "current": "Aktuell: {timeZone}",
+      "deviceCurrent": "Den här enheten är inställd på {timeZone}.",
+      "useDevice": "Använd {timeZone}",
+      "updateSuccess": "Tidszonen uppdaterades till {timeZone}.",
+      "updateFailed": "Det gick inte att spara din tidszon.",
+      "unavailable": "Tidszonen är inte tillgänglig på den här enheten."
+    },
+    "timeZoneMismatch": {
+      "title": "Tidszonen har ändrats",
+      "body": "Ditt schema är fortfarande förankrat i {savedTimeZone}, medan den här enheten nu är inställd på {deviceTimeZone}.",
+      "keep": "Behåll nuvarande schematidszon",
+      "switch": "Byt schematidszon till {deviceTimeZone}",
+      "switched": "Schematidszonen uppdaterades till {timeZone}.",
+      "switchFailed": "Det gick inte att uppdatera schemats tidszon."
     },
     "privacy": {
       "legalTitle": "Juridik",
@@ -1312,6 +1336,9 @@
   "schedule": {
     "title": "Schema",
     "subtitle": "Sätt upp dina dagliga hudvårdsrutiner.",
+    "timeZone": {
+      "label": "Schematidszon: {timeZone}"
+    },
     "view": {
       "list": "Lista",
       "calendar": "Kalender"
@@ -1491,6 +1518,7 @@
       "customLabelMax": "Anpassad etikett är för lång.",
       "slotNotesMax": "Anteckningarna är för långa.",
       "stepNotesMax": "Steganteckningarna är för långa.",
+      "productsNotOwned": "Endast produkter från din hylla kan läggas till.",
       "maxSteps": "Du kan bara ha upp till 10 steg."
     }
   }

@@ -37,7 +37,7 @@ export async function countProductsByStat(): Promise<Record<string, number>> {
 }
 
 export async function getProduct(id: string): Promise<ShelfProduct> {
-  return getRequest<ShelfProduct>(`${ApiPath.InventoryProducts}/${id}`);
+  return getRequest<ShelfProduct>(ApiPath.InventoryProduct(id));
 }
 
 export async function createProduct(
@@ -50,11 +50,11 @@ export async function updateProduct(
   id: string,
   patch: DeepPartial<ShelfProductDraft>,
 ): Promise<ShelfProduct> {
-  return patchRequest<ShelfProduct>(`${ApiPath.InventoryProducts}/${id}`, patch);
+  return patchRequest<ShelfProduct>(ApiPath.InventoryProduct(id), patch);
 }
 
 export async function removeProduct(id: string): Promise<void> {
-  return deleteRequest<void>(`${ApiPath.InventoryProducts}/${id}`);
+  return deleteRequest<void>(ApiPath.InventoryProduct(id));
 }
 
 export async function removeProducts(ids: string[]): Promise<void> {
@@ -62,17 +62,15 @@ export async function removeProducts(ids: string[]): Promise<void> {
 }
 
 export async function archiveProduct(id: string): Promise<ShelfProduct> {
-  return postRequest<ShelfProduct>(`${ApiPath.InventoryProducts}/${id}/archive`);
+  return postRequest<ShelfProduct>(ApiPath.InventoryProductArchive(id));
 }
 
 export async function restoreProduct(id: string): Promise<ShelfProduct> {
-  return postRequest<ShelfProduct>(`${ApiPath.InventoryProducts}/${id}/restore`);
+  return postRequest<ShelfProduct>(ApiPath.InventoryProductRestore(id));
 }
 
 export async function markProductFinished(id: string): Promise<ShelfProduct> {
-  return postRequest<ShelfProduct>(
-    `${ApiPath.InventoryProducts}/${id}/mark-finished`,
-  );
+  return postRequest<ShelfProduct>(ApiPath.InventoryProductMarkFinished(id));
 }
 
 export async function archiveProducts(ids: string[]): Promise<void> {

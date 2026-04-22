@@ -93,9 +93,11 @@ describe('useCreateSlots', () => {
   it('stores the returned schedule in the query cache', async () => {
     const queryClient = createTestQueryClient();
     const initialSchedule: Schedule = {
+      timeZone: 'Europe/Stockholm',
       slots: [createSlot('slot-1', DayOfWeek.Mon)],
     };
     const nextSchedule: Schedule = {
+      timeZone: 'Europe/Stockholm',
       slots: [
         createSlot('slot-1', DayOfWeek.Mon),
         createSlot('slot-2', DayOfWeek.Wed),

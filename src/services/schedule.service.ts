@@ -18,23 +18,12 @@ import type {
   UpsertRoutineStepsPayload,
 } from '@/types/schedule';
 
-function getClientTimezone(): string | undefined {
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone;
-  } catch {
-    return undefined;
-  }
-}
-
 export async function getSchedule(): Promise<Schedule> {
   return getRequest<Schedule>(ApiPath.Schedule);
 }
 
 export async function getTodaysSchedule(): Promise<TodaysSchedule> {
-  const timezone = getClientTimezone();
-  return getRequest<TodaysSchedule>(ApiPath.ScheduleToday, {
-    headers: timezone ? { 'x-timezone': timezone } : undefined,
-  });
+  return getRequest<TodaysSchedule>(ApiPath.ScheduleToday);
 }
 
 export async function createSlot(
@@ -59,29 +48,23 @@ export async function updateSlot(
   id: string,
   payload: UpdateSlotPayload,
 ): Promise<ScheduleSlot> {
-  return patchRequest<ScheduleSlot>(`${ApiPath.ScheduleSlots}/${id}`, payload);
+  return patchRequest<ScheduleSlot>(ApiPath.ScheduleSlot(id), payload);
 }
 
 export async function deleteSlot(id: string): Promise<void> {
-  return deleteRequest<void>(`${ApiPath.ScheduleSlots}/${id}`);
+  return deleteRequest<void>(ApiPath.ScheduleSlot(id));
 }
 
 export async function upsertSteps(
   id: string,
   payload: UpsertRoutineStepsPayload,
 ): Promise<ScheduleSlot> {
-  return putRequest<ScheduleSlot>(
-    `${ApiPath.ScheduleSlots}/${id}/steps`,
-    payload,
-  );
+  return putRequest<ScheduleSlot>(ApiPath.ScheduleSlotSteps(id), payload);
 }
 
 export async function moveSlot(
   id: string,
   payload: MoveSlotPayload,
 ): Promise<ScheduleSlot> {
-  return postRequest<ScheduleSlot>(
-    `${ApiPath.ScheduleSlots}/${id}/move`,
-    payload,
-  );
+  return postRequest<ScheduleSlot>(ApiPath.ScheduleSlotMove(id), payload);
 }

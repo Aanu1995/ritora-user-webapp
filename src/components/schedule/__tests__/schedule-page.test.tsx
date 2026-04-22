@@ -122,7 +122,7 @@ describe('SchedulePage', () => {
 
   it('does not reopen a deep-linked slot after the user closes it', async () => {
     mockUseSchedule.mockReturnValue({
-      data: { slots: [createSlot()] },
+      data: { timeZone: 'Europe/Stockholm', slots: [createSlot()] },
       isLoading: false,
       isError: false,
       refetch: jest.fn(),

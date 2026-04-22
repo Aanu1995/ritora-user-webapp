@@ -35,7 +35,10 @@ function replaceSlotInSchedule(
     index >= 0
       ? [...slots.slice(0, index), slot, ...slots.slice(index + 1)]
       : [...slots, slot];
-  return { slots: nextSlots };
+  return {
+    timeZone: schedule?.timeZone ?? 'UTC',
+    slots: nextSlots,
+  };
 }
 
 function removeSlotFromSchedule(
@@ -43,6 +46,7 @@ function removeSlotFromSchedule(
   slotId: string,
 ): Schedule {
   return {
+    timeZone: schedule?.timeZone ?? 'UTC',
     slots: (schedule?.slots ?? []).filter((s) => s.id !== slotId),
   };
 }

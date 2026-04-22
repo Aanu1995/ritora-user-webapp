@@ -1,4 +1,5 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { ApiError } from '@/lib/api-error';
 import { renderWithProviders } from '@/test/utils';
 import { AddSlotPresetMode, DayOfWeek, SlotMode } from '@/types/schedule';
 import { AddSlotContent } from '../add-slot-content';
@@ -36,7 +37,7 @@ describe('AddSlotContent', () => {
     mockApplyPreset.mockReset();
   });
 
-  it('submits partial multi-day creates through one batch mutation', () => {
+  it('submits partial multi-day creates through one batch mutation', async () => {
     const onClose = jest.fn();
 
     mockCreateSlots.mockImplementation((_payload, options) => {
@@ -58,23 +59,53 @@ describe('AddSlotContent', () => {
     fireEvent.click(dayButtons[0]);
     fireEvent.click(screen.getByRole('button', { name: /add to 6 days/i }));
 
-    expect(mockCreateSlots).toHaveBeenCalledWith(
-      {
-        daysOfWeek: [
-          DayOfWeek.Tue,
-          DayOfWeek.Wed,
-          DayOfWeek.Thu,
-          DayOfWeek.Fri,
-          DayOfWeek.Sat,
-          DayOfWeek.Sun,
-        ],
-        slotTime: '08:00',
-        mode: SlotMode.AI,
-      },
-      expect.any(Object),
+    await waitFor(() => {
+      expect(mockCreateSlots).toHaveBeenCalledWith(
+        {
+          daysOfWeek: [
+            DayOfWeek.Tue,
+            DayOfWeek.Wed,
+            DayOfWeek.Thu,
+            DayOfWeek.Fri,
+            DayOfWeek.Sat,
+            DayOfWeek.Sun,
+          ],
+          slotTime: '08:00',
+          mode: SlotMode.AI,
+        },
+        expect.any(Object),
+      );
+      expect(mockCreateSlot).not.toHaveBeenCalled();
+      expect(mockApplyPreset).not.toHaveBeenCalled();
+      expect(onClose).toHaveBeenCalled();
+    });
+  });
+
+  it('renders a form-level server error instead of relying on a toast', async () => {
+    mockCreateSlots.mockImplementation((_payload, options) => {
+      options?.onError?.(
+        new ApiError('Could not save schedule', {
+          status: 500,
+        }),
+        _payload,
+        undefined,
+      );
+    });
+
+    renderWithProviders(
+      <AddSlotContent
+        presetMode={AddSlotPresetMode.Single}
+        preselectDay={DayOfWeek.Mon}
+        onClose={jest.fn()}
+      />,
     );
-    expect(mockCreateSlot).not.toHaveBeenCalled();
-    expect(mockApplyPreset).not.toHaveBeenCalled();
-    expect(onClose).toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: /add time/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        /could not save schedule/i,
+      );
+    });
   });
 });

@@ -19,6 +19,7 @@ describe("DashboardPage", () => {
         lastName: "Lovelace",
         emailVerified: true,
         preferredLanguage: "en",
+        timeZone: null,
         createdAt: "2026-04-15T10:00:00.000Z",
       },
       isAuthenticated: true,

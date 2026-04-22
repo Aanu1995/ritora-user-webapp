@@ -5,17 +5,30 @@ import { cn } from '@/lib/utils';
 export type TimePickerProps = {
   value: string;
   onChange: (value: string) => void;
+  onBlur?: () => void;
   id?: string;
   disabled?: boolean;
   invalid?: boolean;
   ariaLabel?: string;
+  ariaDescribedBy?: string;
   className?: string;
   step?: number;
 };
 
 const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
   (
-    { value, onChange, id, disabled, invalid, ariaLabel, className, step = 300 },
+    {
+      value,
+      onChange,
+      onBlur,
+      id,
+      disabled,
+      invalid,
+      ariaLabel,
+      ariaDescribedBy,
+      className,
+      step = 300,
+    },
     ref,
   ) => {
     const innerRef = React.useRef<HTMLInputElement | null>(null);
@@ -53,8 +66,11 @@ const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
           value={value}
           disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
+          onBlur={onBlur}
           step={step}
           aria-label={ariaLabel}
+          aria-invalid={invalid}
+          aria-describedby={ariaDescribedBy}
           data-slot="time-picker-input"
           className="time-picker-input w-full cursor-pointer bg-transparent font-semibold tabular-nums text-foreground outline-none placeholder:text-muted disabled:cursor-not-allowed"
         />

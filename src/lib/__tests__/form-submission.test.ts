@@ -61,6 +61,24 @@ describe("form-submission", () => {
     });
   });
 
+  it("skips clearing when there are no submit errors to remove", () => {
+    const setErrorMap = jest.fn();
+
+    clearSubmitErrors({
+      setErrorMap,
+      state: {
+        errorMap: {
+          onSubmit: {
+            form: undefined,
+            fields: {},
+          },
+        },
+      },
+    });
+
+    expect(setErrorMap).not.toHaveBeenCalled();
+  });
+
   it("sets submit errors on the form", () => {
     const setErrorMap = jest.fn();
 

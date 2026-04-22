@@ -28,30 +28,37 @@ export const slotNotesSchema = z
   .nullable()
   .optional();
 
+export const slotNotesInputSchema = z
+  .string()
+  .max(MAX_SLOT_NOTES_LENGTH, 'schedule.validation.slotNotesMax');
+
 export const stepLabelSchema = z.nativeEnum(StepLabel);
 
-export const addSlotFormSchema = z
+export const daySelectionSchema = z
+  .array(dayOfWeekSchema)
+  .min(1, 'addDialog.selectAtLeastOneDay');
+
+export const createSlotsFormSchema = z
   .object({
-    dayOfWeek: dayOfWeekSchema,
+    daysOfWeek: daySelectionSchema,
     slotTime: timeSchema,
-    mode: slotModeSchema.default(SlotMode.AI),
-    slotNotes: slotNotesSchema,
+    mode: slotModeSchema,
   })
   .strict();
 
-export type AddSlotFormValues = z.infer<typeof addSlotFormSchema>;
+export type CreateSlotsFormValues = z.infer<typeof createSlotsFormSchema>;
 
 export const applyPresetFormSchema = z
   .object({
     slotTime: timeSchema,
-    mode: slotModeSchema.default(SlotMode.AI),
+    mode: slotModeSchema,
     slotNotes: slotNotesSchema,
   })
   .strict();
 
 export type ApplyPresetFormValues = z.infer<typeof applyPresetFormSchema>;
 
-export const routineStepSchema = z
+export const routineStepBaseSchema = z
   .object({
     id: z.string().optional(),
     stepOrder: z.number().int().min(0),
@@ -68,7 +75,9 @@ export const routineStepSchema = z
       .nullable()
       .optional(),
     optional: z.boolean().optional(),
-  })
+  });
+
+export const routineStepSchema = routineStepBaseSchema
   .refine(
     (value) =>
       value.stepLabel !== StepLabel.Custom ||
@@ -82,3 +91,32 @@ export const routineStepSchema = z
 export const routineStepsSchema = z
   .array(routineStepSchema)
   .max(MAX_STEPS_PER_SLOT, 'schedule.validation.maxSteps');
+
+export const scheduleEditorFormSchema = z
+  .object({
+    slotTime: timeSchema,
+    mode: slotModeSchema,
+    slotNotes: slotNotesInputSchema,
+    steps: z.array(routineStepBaseSchema),
+  })
+  .superRefine((value, ctx) => {
+    if (value.mode !== SlotMode.Manual) {
+      return;
+    }
+
+    const parsedSteps = routineStepsSchema.safeParse(value.steps);
+
+    if (!parsedSteps.success) {
+      const firstIssue = parsedSteps.error.issues[0];
+
+      if (firstIssue) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['steps'],
+          message: firstIssue.message,
+        });
+      }
+    }
+  });
+
+export type ScheduleEditorFormValues = z.infer<typeof scheduleEditorFormSchema>;
