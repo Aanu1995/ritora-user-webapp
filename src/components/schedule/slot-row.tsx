@@ -1,6 +1,12 @@
 'use client';
 
-import { ChevronRight, ListOrdered, MessageSquareText } from 'lucide-react';
+import {
+  ChevronRight,
+  ListChecks,
+  ListMinus,
+  MessageSquareDashed,
+  MessageSquareText,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   type ScheduleSlot,
@@ -38,16 +44,34 @@ export function SlotRow({ slot, onClick }: SlotRowProps) {
         <div className="text-base font-bold tabular-nums text-foreground">
           {timeLabel}
         </div>
-        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
+        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
           <ModeBadge mode={slot.mode} />
           {isManual ? (
-            <span className="inline-flex items-center gap-1">
-              <ListOrdered className="h-3 w-3" aria-hidden />
+            <span
+              className={cn(
+                'inline-flex items-center gap-1 font-medium',
+                stepCount > 0 ? 'text-accent-strong' : 'text-warning',
+              )}
+            >
+              {stepCount > 0 ? (
+                <ListChecks className="h-3 w-3" aria-hidden />
+              ) : (
+                <ListMinus className="h-3 w-3" aria-hidden />
+              )}
               {t('slot.stepCount', { count: stepCount })}
             </span>
           ) : null}
-          <span className="inline-flex items-center gap-1">
-            <MessageSquareText className="h-3 w-3" aria-hidden />
+          <span
+            className={cn(
+              'inline-flex items-center gap-1 font-medium',
+              slot.slotNotes ? 'text-accent-strong' : 'text-warning',
+            )}
+          >
+            {slot.slotNotes ? (
+              <MessageSquareText className="h-3 w-3" aria-hidden />
+            ) : (
+              <MessageSquareDashed className="h-3 w-3" aria-hidden />
+            )}
             {slot.slotNotes ? t('slot.hasNotes') : t('slot.noNotes')}
           </span>
         </div>
