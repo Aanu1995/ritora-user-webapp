@@ -10,6 +10,7 @@ import type {
   ResetPasswordInput,
   Session,
   UpdatePreferredLanguageInput,
+  UpdateTimeZoneInput,
   UpdateProfileInput,
   User,
 } from '@/types/auth';
@@ -73,5 +74,9 @@ export async function updateProfile(data: UpdateProfileInput): Promise<User> {
 export async function updatePreferredLanguage(
   data: UpdatePreferredLanguageInput,
 ): Promise<User> {
-  return patchRequest<User>(`${ApiPath.UsersMe}/language`, data);
+  return patchRequest<User>(ApiPath.UsersMeLanguage, data);
+}
+
+export async function updateTimeZone(data: UpdateTimeZoneInput): Promise<User> {
+  return patchRequest<User>(ApiPath.UsersMeTimeZone, data);
 }

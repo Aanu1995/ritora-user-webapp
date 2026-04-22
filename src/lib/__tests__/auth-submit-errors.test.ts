@@ -30,14 +30,17 @@ describe("auth-submit-errors", () => {
     const error = new ApiError("Validation failed", {
       status: 400,
       body: {
-        message: ["first name is required"],
+        message: ["Det här fältet är obligatoriskt"],
+        fieldErrors: {
+          firstName: ["Det här fältet är obligatoriskt"],
+        },
       },
     });
 
     expect(getRegisterSubmitError(error, translate)).toEqual({
       form: undefined,
       fields: {
-        firstName: "first name is required",
+        firstName: "Det här fältet är obligatoriskt",
       },
     });
   });
@@ -46,14 +49,17 @@ describe("auth-submit-errors", () => {
     const error = new ApiError("Validation failed", {
       status: 400,
       body: {
-        message: ["password must be at least 8 characters"],
+        message: ["Password must contain at least 8 characters"],
+        fieldErrors: {
+          password: ["Password must contain at least 8 characters"],
+        },
       },
     });
 
     expect(getRegisterSubmitError(error, translate)).toEqual({
       form: undefined,
       fields: {
-        password: "password must be at least 8 characters",
+        password: "Password must contain at least 8 characters",
       },
     });
   });
@@ -77,14 +83,17 @@ describe("auth-submit-errors", () => {
     const error = new ApiError("Email is invalid", {
       status: 400,
       body: {
-        message: ["email must be a valid email"],
+        message: ["Ange en giltig e-postadress"],
+        fieldErrors: {
+          email: ["Ange en giltig e-postadress"],
+        },
       },
     });
 
     expect(getEmailOnlySubmitError(error, translate)).toEqual({
       form: undefined,
       fields: {
-        email: "email must be a valid email",
+        email: "Ange en giltig e-postadress",
       },
     });
   });
@@ -93,26 +102,35 @@ describe("auth-submit-errors", () => {
     const termsError = new ApiError("Terms required", {
       status: 400,
       body: {
-        message: ["terms must be accepted"],
+        message: ["You must accept the terms of service and privacy policy"],
+        fieldErrors: {
+          termsAccepted: ["You must accept the terms of service and privacy policy"],
+        },
       },
     });
     const privacyError = new ApiError("Privacy required", {
       status: 400,
       body: {
-        message: ["privacy policy must be accepted"],
+        message: ["Du måste godkänna användarvillkoren och integritetspolicyn"],
+        fieldErrors: {
+          privacyPolicyAccepted: [
+            "Du måste godkänna användarvillkoren och integritetspolicyn",
+          ],
+        },
       },
     });
 
     expect(getRegisterSubmitError(termsError, translate)).toEqual({
       form: undefined,
       fields: {
-        termsAccepted: "terms must be accepted",
+        termsAccepted: "You must accept the terms of service and privacy policy",
       },
     });
     expect(getRegisterSubmitError(privacyError, translate)).toEqual({
       form: undefined,
       fields: {
-        privacyPolicyAccepted: "privacy policy must be accepted",
+        privacyPolicyAccepted:
+          "Du måste godkänna användarvillkoren och integritetspolicyn",
       },
     });
   });
@@ -121,14 +139,36 @@ describe("auth-submit-errors", () => {
     const error = new ApiError("Password too short", {
       status: 400,
       body: {
-        message: ["password must be at least 8 characters"],
+        message: ["Password must contain at least 8 characters"],
+        fieldErrors: {
+          newPassword: ["Password must contain at least 8 characters"],
+        },
       },
     });
 
     expect(getResetPasswordSubmitError(error, translate)).toEqual({
       form: undefined,
       fields: {
-        newPassword: "password must be at least 8 characters",
+        newPassword: "Password must contain at least 8 characters",
+      },
+    });
+  });
+
+  it("maps login field validation without relying on translated text", () => {
+    const error = new ApiError("Validation failed", {
+      status: 400,
+      body: {
+        message: ["Ange en giltig e-postadress"],
+        fieldErrors: {
+          email: ["Ange en giltig e-postadress"],
+        },
+      },
+    });
+
+    expect(getLoginSubmitError(error, translate)).toEqual({
+      form: undefined,
+      fields: {
+        email: "Ange en giltig e-postadress",
       },
     });
   });

@@ -18,6 +18,16 @@ type FormApiWithSubmitErrors<TField extends string> = {
         }
       | undefined;
   }) => void;
+  state?: {
+    errorMap: {
+      onSubmit?:
+        | {
+            form?: unknown;
+            fields?: Partial<Record<TField, unknown>>;
+          }
+        | undefined;
+    };
+  };
 };
 
 export type MutationExecutionResult<TData, TError> =
@@ -43,6 +53,20 @@ export function executeMutation<TData, TError, TVariables, TContext>(
 export function clearSubmitErrors<TField extends string>(
   formApi: FormApiWithSubmitErrors<TField>,
 ): void {
+  const submitError = formApi.state?.errorMap.onSubmit;
+  if (submitError !== undefined) {
+    const fieldValues = Object.values(submitError.fields ?? {});
+    const hasFieldErrors = fieldValues.some((value) =>
+      readSubmissionErrorMessage(value) !== undefined,
+    );
+    const hasFormError =
+      readSubmissionErrorMessage(submitError.form) !== undefined;
+
+    if (!hasFormError && !hasFieldErrors) {
+      return;
+    }
+  }
+
   formApi.setErrorMap({
     onSubmit: {
       form: undefined,

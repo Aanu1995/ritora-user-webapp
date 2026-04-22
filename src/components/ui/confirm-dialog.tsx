@@ -12,7 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from './alert-dialog';
-import { Button } from './button';
+import { buttonVariants } from './button';
 import { cn } from '@/lib/utils';
 
 export enum ConfirmDialogTone {
@@ -26,6 +26,7 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   title: string;
   description?: string;
+  contentClassName?: string;
   confirmLabel: string;
   cancelLabel?: string;
   onConfirm: () => void;
@@ -44,6 +45,7 @@ export function ConfirmDialog({
   onOpenChange,
   title,
   description,
+  contentClassName,
   confirmLabel,
   cancelLabel,
   onConfirm,
@@ -54,7 +56,7 @@ export function ConfirmDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent className={contentClassName}>
         <AlertDialogHeader>
           <div className="mb-1 flex items-start gap-3">
             <span
@@ -68,32 +70,31 @@ export function ConfirmDialog({
             </span>
             <div className="flex-1">
               <AlertDialogTitle>{title}</AlertDialogTitle>
-              {description ? (
-                <AlertDialogDescription className="mt-1.5">
-                  {description}
-                </AlertDialogDescription>
-              ) : null}
+              <AlertDialogDescription
+                className={cn('mt-1.5', !description && 'sr-only')}
+              >
+                {description ?? title}
+              </AlertDialogDescription>
             </div>
           </div>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel asChild>
-            <Button variant="outline" size="sm" disabled={isPending}>
-              {cancelLabel ?? t('cancel')}
-            </Button>
+          <AlertDialogCancel
+            disabled={isPending}
+            className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
+          >
+            {cancelLabel ?? t('cancel')}
           </AlertDialogCancel>
-          <AlertDialogAction asChild>
-            <Button
-              size="sm"
-              onClick={onConfirm}
-              disabled={isPending}
-              className={cn(
-                tone === ConfirmDialogTone.Danger &&
-                  'bg-danger text-surface hover:bg-danger/90',
-              )}
-            >
-              {isPending ? t('working') : confirmLabel}
-            </Button>
+          <AlertDialogAction
+            onClick={onConfirm}
+            disabled={isPending}
+            className={cn(
+              buttonVariants({ size: 'sm' }),
+              tone === ConfirmDialogTone.Danger &&
+                'bg-danger text-surface hover:bg-danger/90',
+            )}
+          >
+            {isPending ? t('working') : confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

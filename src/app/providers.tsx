@@ -45,7 +45,7 @@ export function Providers({
     <AppPreferencesProvider initialThemePreference={initialThemePreference}>
       <QueryClientProvider client={appQueryClient}>
         <AuthHydration>{children}</AuthHydration>
-        <Toaster richColors position="top-right" />
+        <Toaster richColors closeButton position="top-right" />
       </QueryClientProvider>
     </AppPreferencesProvider>
   );

@@ -8,7 +8,8 @@ import { renderWithProviders } from "@/test/utils";
 const mockLogoutMutate = jest.fn();
 const mockLogoutAllMutate = jest.fn();
 const mockUpdateProfileMutate = jest.fn();
-const mockUpdatePreferredLanguageMutateAsync = jest.fn();
+const mockUpdatePreferredLanguageMutate = jest.fn();
+const mockUpdateTimeZoneMutate = jest.fn();
 const mockRouterRefresh = jest.fn();
 
 jest.mock("next/navigation", () => ({
@@ -32,7 +33,11 @@ jest.mock("@/hooks/use-auth", () => ({
     isPending: false,
   }),
   useUpdatePreferredLanguage: () => ({
-    mutateAsync: mockUpdatePreferredLanguageMutateAsync,
+    mutate: mockUpdatePreferredLanguageMutate,
+    isPending: false,
+  }),
+  useUpdateTimeZone: () => ({
+    mutate: mockUpdateTimeZoneMutate,
     isPending: false,
   }),
 }));
@@ -44,7 +49,22 @@ describe("SettingsPage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUpdatePreferredLanguageMutateAsync.mockResolvedValue(undefined);
+    mockUpdatePreferredLanguageMutate.mockImplementation(
+      (
+        values: { preferredLanguage: string },
+        options?: { onSuccess?: () => void },
+      ) => {
+        options?.onSuccess?.();
+      },
+    );
+    mockUpdateTimeZoneMutate.mockImplementation(
+      (
+        values: { timeZone: string },
+        options?: { onSuccess?: () => void },
+      ) => {
+        options?.onSuccess?.();
+      },
+    );
     useAuthStore.setState({
       user: {
         id: "user-1",
@@ -53,6 +73,7 @@ describe("SettingsPage", () => {
         lastName: "Lovelace",
         emailVerified: true,
         preferredLanguage: "en",
+        timeZone: "Europe/Stockholm",
         createdAt: "2026-04-15T10:00:00.000Z",
       },
       isAuthenticated: true,
@@ -210,15 +231,24 @@ describe("SettingsPage", () => {
     await user.click(screen.getByRole("tab", { name: /language/i }));
     await user.click(screen.getByRole("button", { name: /svenska/i }));
 
-    expect(mockUpdatePreferredLanguageMutateAsync).toHaveBeenCalledWith({
-      preferredLanguage: "sv",
-    });
+    expect(mockUpdatePreferredLanguageMutate).toHaveBeenCalledWith(
+      { preferredLanguage: "sv" },
+      expect.objectContaining({
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      }),
+    );
     expect(mockRouterRefresh).toHaveBeenCalledTimes(1);
   });
 
   it("does not refresh the route when the server rejects the language change", async () => {
-    mockUpdatePreferredLanguageMutateAsync.mockRejectedValue(
-      new Error("Could not update language"),
+    mockUpdatePreferredLanguageMutate.mockImplementation(
+      (
+        _values: { preferredLanguage: string },
+        options?: { onError?: (error: Error) => void },
+      ) => {
+        options?.onError?.(new Error("Could not update language"));
+      },
     );
 
     renderWithProviders(<SettingsPage />);
@@ -226,9 +256,36 @@ describe("SettingsPage", () => {
     await user.click(screen.getByRole("tab", { name: /language/i }));
     await user.click(screen.getByRole("button", { name: /svenska/i }));
 
-    expect(mockUpdatePreferredLanguageMutateAsync).toHaveBeenCalledWith({
-      preferredLanguage: "sv",
-    });
+    expect(mockUpdatePreferredLanguageMutate).toHaveBeenCalledWith(
+      { preferredLanguage: "sv" },
+      expect.objectContaining({
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      }),
+    );
     expect(mockRouterRefresh).not.toHaveBeenCalled();
+  });
+
+  it("updates the saved timezone from settings", async () => {
+    useAuthStore.setState({
+      user: {
+        ...(useAuthStore.getState().user as User),
+        timeZone: null,
+      },
+    });
+
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(screen.getByRole("tab", { name: /language/i }));
+    await user.click(screen.getByRole("button", { name: /timezone/i }));
+    await user.click(screen.getByRole("option", { name: /europe\/stockholm/i }));
+
+    expect(mockUpdateTimeZoneMutate).toHaveBeenCalledWith(
+      { timeZone: "Europe/Stockholm" },
+      expect.objectContaining({
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      }),
+    );
   });
 });

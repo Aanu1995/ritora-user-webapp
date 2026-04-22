@@ -5,6 +5,7 @@ import axios, {
 import { ApiPath } from '@/constants/api-paths';
 import { getPreferredLocale } from '@/i18n/config';
 import { ApiError, toApiErrorBody } from '@/lib/api-error';
+import { getBrowserTimeZone } from '@/lib/time-zone';
 import type { RefreshResponse } from '@/types/auth';
 
 export const API_BASE_URL =
@@ -17,7 +18,7 @@ const CREDENTIALLED_AUTH_PATHS = new Set<string>([
   ApiPath.AuthRefresh,
   ApiPath.AuthLogout,
   ApiPath.AuthLogoutAll,
-  `${ApiPath.UsersMe}/language`,
+  ApiPath.UsersMeLanguage,
 ]);
 
 const apiClient = axios.create({
@@ -171,6 +172,27 @@ export function isAllowedApiRequestUrl(
   }
 }
 
+export function isSecureApiRequestUrl(
+  url: string | undefined,
+  baseURL?: string,
+): boolean {
+  if (process.env.NODE_ENV !== 'production') {
+    return true;
+  }
+
+  const resolvedUrl = resolveConfiguredRequestUrl(url, baseURL);
+
+  if (!resolvedUrl || !ABSOLUTE_HTTP_URL_PATTERN.test(resolvedUrl)) {
+    return true;
+  }
+
+  try {
+    return new URL(resolvedUrl).protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 export function shouldSendCredentialCookies(
   url: string | undefined,
   baseURL?: string,
@@ -182,12 +204,23 @@ export function shouldSendCredentialCookies(
   return requestPath ? CREDENTIALLED_AUTH_PATHS.has(requestPath) : false;
 }
 
-apiClient.interceptors.request.use((config) => {
+export function applyRequestContext(
+  config: InternalAxiosRequestConfig,
+): InternalAxiosRequestConfig {
   if (!isAllowedApiRequestUrl(config.url, config.baseURL)) {
     throw new ApiError('Blocked request to unexpected API origin');
   }
 
+  if (!isSecureApiRequestUrl(config.url, config.baseURL)) {
+    throw new ApiError('Blocked insecure API transport in production');
+  }
+
+  config.headers = config.headers ?? {};
   config.headers['Accept-Language'] = getPreferredLocale();
+  const browserTimeZone = getBrowserTimeZone();
+  if (browserTimeZone) {
+    config.headers['x-timezone'] = browserTimeZone;
+  }
   config.withCredentials = shouldSendCredentialCookies(
     config.url,
     config.baseURL,
@@ -196,8 +229,11 @@ apiClient.interceptors.request.use((config) => {
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
+
   return config;
-});
+}
+
+apiClient.interceptors.request.use((config) => applyRequestContext(config));
 
 apiClient.interceptors.response.use(
   (response) => response,

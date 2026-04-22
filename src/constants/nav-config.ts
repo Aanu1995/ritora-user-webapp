@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   Bell,
   CalendarClock,
+  CalendarDays,
   ChartLine,
   House,
   NotebookPen,
@@ -55,6 +56,14 @@ export const NAV_ITEMS: NavItem[] = [
     icon: Store,
     labelKey: "shelf",
     descriptionKey: "shelfDescription",
+    group: NavGroup.Main,
+    status: NavItemStatus.Live,
+  },
+  {
+    route: AppRoute.Schedule,
+    icon: CalendarDays,
+    labelKey: "schedule",
+    descriptionKey: "scheduleDescription",
     group: NavGroup.Main,
     status: NavItemStatus.Live,
   },

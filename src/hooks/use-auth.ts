@@ -11,6 +11,7 @@ import type {
   RegisterResponse,
   ResetPasswordInput,
   UpdatePreferredLanguageInput,
+  UpdateTimeZoneInput,
   UpdateProfileInput,
   User,
 } from "@/types/auth";
@@ -178,6 +179,21 @@ export function useUpdatePreferredLanguage() {
     onSuccess: (user) => {
       setUser(user, { syncLocale: true });
       queryClient.setQueryData<User>([QueryKey.AuthMe], user);
+    },
+  });
+}
+
+export function useUpdateTimeZone() {
+  const setUser = useAuthStore((s) => s.setUser);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdateTimeZoneInput) => authService.updateTimeZone(data),
+    onSuccess: (user) => {
+      setUser(user);
+      queryClient.setQueryData<User>([QueryKey.AuthMe], user);
+      void queryClient.invalidateQueries({ queryKey: [QueryKey.Schedule] });
+      void queryClient.invalidateQueries({ queryKey: [QueryKey.ScheduleToday] });
     },
   });
 }

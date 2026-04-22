@@ -15,6 +15,7 @@ import {
   useActiveSessions,
   useUpdateProfile,
   useUpdatePreferredLanguage,
+  useUpdateTimeZone,
 } from '@/hooks/use-auth';
 
 const mockUser = {
@@ -24,6 +25,7 @@ const mockUser = {
   lastName: 'User',
   emailVerified: true,
   preferredLanguage: 'en',
+  timeZone: null,
   createdAt: '2024-01-01T00:00:00.000Z',
 };
 
@@ -41,6 +43,7 @@ jest.mock('@/services/auth.service', () => ({
   resetPassword: jest.fn(),
   updateProfile: jest.fn(),
   updatePreferredLanguage: jest.fn(),
+  updateTimeZone: jest.fn(),
 }));
 
 import * as authService from '@/services/auth.service';
@@ -423,5 +426,28 @@ describe('useUpdatePreferredLanguage', () => {
     });
     expect(useAuthStore.getState().user?.preferredLanguage).toBe('sv');
     expect(document.documentElement.lang).toBe('sv');
+  });
+});
+
+describe('useUpdateTimeZone', () => {
+  it('updates the current user timezone in the auth store', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    (authService.updateTimeZone as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      timeZone: 'Europe/Stockholm',
+    });
+
+    const { result } = renderHookWithProviders(() => useUpdateTimeZone());
+
+    await act(async () => {
+      await result.current.mutateAsync({
+        timeZone: 'Europe/Stockholm',
+      });
+    });
+
+    expect(authService.updateTimeZone).toHaveBeenCalledWith({
+      timeZone: 'Europe/Stockholm',
+    });
+    expect(useAuthStore.getState().user?.timeZone).toBe('Europe/Stockholm');
   });
 });

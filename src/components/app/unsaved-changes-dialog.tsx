@@ -27,6 +27,7 @@ export function UnsavedChangesDialog() {
       onOpenChange={setDialogOpen}
       title={t('title')}
       description={t('description')}
+      contentClassName="w-[calc(100%-1.5rem)] sm:w-full"
       confirmLabel={t('discard')}
       cancelLabel={t('keepEditing')}
       onConfirm={confirmLeave}

@@ -23,6 +23,41 @@
   --shadow-ring: 0 0 0 3px rgba(47, 122, 82, 0.18);
   --radius-card: 1.5rem;
   --radius-pill: 9999px;
+
+  /* Daypart tokens — morning (sunrise), noon (sun), evening (moon).
+     Used for time-of-day icons, slot accents, and note callouts. */
+  --daypart-morning-bg: #fef3c7;
+  --daypart-morning-fg: #92400e;
+  --daypart-morning-border: rgba(217, 119, 6, 0.22);
+  --daypart-morning-accent: #d97706;
+
+  --daypart-noon-bg: #ffedd5;
+  --daypart-noon-fg: #9a3412;
+  --daypart-noon-border: rgba(234, 88, 12, 0.22);
+  --daypart-noon-accent: #ea580c;
+
+  --daypart-evening-bg: #e0e7ff;
+  --daypart-evening-fg: #3730a3;
+  --daypart-evening-border: rgba(79, 70, 229, 0.22);
+  --daypart-evening-accent: #4f46e5;
+
+  /* AI mode — violet/purple that harmonises with the sage-green brand. */
+  --ai-bg: #ede9fe;
+  --ai-fg: #5b21b6;
+  --ai-strong: #7c3aed;
+  --ai-badge-bg: #7c3aed;
+  --ai-badge-fg: #ffffff;
+  --ai-soft: rgba(124, 58, 237, 0.08);
+  --ai-border: rgba(124, 58, 237, 0.24);
+
+  /* Note callout tones — warm (manual) and cool (AI). */
+  --note-warm-bg: #fffbeb;
+  --note-warm-fg: #78350f;
+  --note-warm-border: #f59e0b;
+
+  --note-cool-bg: #eef2ff;
+  --note-cool-fg: #3730a3;
+  --note-cool-border: #6366f1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,6 +82,37 @@
     --shadow-soft: 0 24px 70px rgba(0, 0, 0, 0.32);
     --shadow-hero: 0 32px 90px rgba(0, 0, 0, 0.4);
     --shadow-ring: 0 0 0 3px rgba(111, 195, 141, 0.2);
+
+    --daypart-morning-bg: rgba(251, 191, 36, 0.16);
+    --daypart-morning-fg: #fcd34d;
+    --daypart-morning-border: rgba(251, 191, 36, 0.32);
+    --daypart-morning-accent: #fbbf24;
+
+    --daypart-noon-bg: rgba(251, 146, 60, 0.16);
+    --daypart-noon-fg: #fdba74;
+    --daypart-noon-border: rgba(251, 146, 60, 0.32);
+    --daypart-noon-accent: #fb923c;
+
+    --daypart-evening-bg: rgba(129, 140, 248, 0.20);
+    --daypart-evening-fg: #c7d2fe;
+    --daypart-evening-border: rgba(129, 140, 248, 0.38);
+    --daypart-evening-accent: #818cf8;
+
+    --ai-bg: rgba(139, 92, 246, 0.18);
+    --ai-fg: #ddd6fe;
+    --ai-strong: #a78bfa;
+    --ai-badge-bg: #8b5cf6;
+    --ai-badge-fg: #ffffff;
+    --ai-soft: rgba(139, 92, 246, 0.1);
+    --ai-border: rgba(139, 92, 246, 0.35);
+
+    --note-warm-bg: rgba(251, 191, 36, 0.1);
+    --note-warm-fg: #fde68a;
+    --note-warm-border: rgba(251, 191, 36, 0.55);
+
+    --note-cool-bg: rgba(129, 140, 248, 0.1);
+    --note-cool-fg: #c7d2fe;
+    --note-cool-border: rgba(129, 140, 248, 0.55);
   }
 }
 
@@ -73,6 +139,37 @@
   --shadow-ring: 0 0 0 3px rgba(47, 122, 82, 0.18);
   --radius-card: 1.5rem;
   --radius-pill: 9999px;
+
+  --daypart-morning-bg: #fef3c7;
+  --daypart-morning-fg: #92400e;
+  --daypart-morning-border: rgba(217, 119, 6, 0.22);
+  --daypart-morning-accent: #d97706;
+
+  --daypart-noon-bg: #ffedd5;
+  --daypart-noon-fg: #9a3412;
+  --daypart-noon-border: rgba(234, 88, 12, 0.22);
+  --daypart-noon-accent: #ea580c;
+
+  --daypart-evening-bg: #e0e7ff;
+  --daypart-evening-fg: #3730a3;
+  --daypart-evening-border: rgba(79, 70, 229, 0.22);
+  --daypart-evening-accent: #4f46e5;
+
+  --ai-bg: #ede9fe;
+  --ai-fg: #5b21b6;
+  --ai-strong: #7c3aed;
+  --ai-badge-bg: #7c3aed;
+  --ai-badge-fg: #ffffff;
+  --ai-soft: rgba(124, 58, 237, 0.08);
+  --ai-border: rgba(124, 58, 237, 0.24);
+
+  --note-warm-bg: #fffbeb;
+  --note-warm-fg: #78350f;
+  --note-warm-border: #f59e0b;
+
+  --note-cool-bg: #eef2ff;
+  --note-cool-fg: #3730a3;
+  --note-cool-border: #6366f1;
 }
 
 :root[data-theme='dark'] {
@@ -96,6 +193,37 @@
   --shadow-soft: 0 24px 70px rgba(0, 0, 0, 0.32);
   --shadow-hero: 0 32px 90px rgba(0, 0, 0, 0.4);
   --shadow-ring: 0 0 0 3px rgba(111, 195, 141, 0.2);
+
+  --daypart-morning-bg: rgba(251, 191, 36, 0.16);
+  --daypart-morning-fg: #fcd34d;
+  --daypart-morning-border: rgba(251, 191, 36, 0.32);
+  --daypart-morning-accent: #fbbf24;
+
+  --daypart-noon-bg: rgba(251, 146, 60, 0.16);
+  --daypart-noon-fg: #fdba74;
+  --daypart-noon-border: rgba(251, 146, 60, 0.32);
+  --daypart-noon-accent: #fb923c;
+
+  --daypart-evening-bg: rgba(129, 140, 248, 0.20);
+  --daypart-evening-fg: #c7d2fe;
+  --daypart-evening-border: rgba(129, 140, 248, 0.38);
+  --daypart-evening-accent: #818cf8;
+
+  --ai-bg: rgba(139, 92, 246, 0.18);
+  --ai-fg: #ddd6fe;
+  --ai-strong: #a78bfa;
+  --ai-badge-bg: #8b5cf6;
+  --ai-badge-fg: #ffffff;
+  --ai-soft: rgba(139, 92, 246, 0.1);
+  --ai-border: rgba(139, 92, 246, 0.35);
+
+  --note-warm-bg: rgba(251, 191, 36, 0.1);
+  --note-warm-fg: #fde68a;
+  --note-warm-border: rgba(251, 191, 36, 0.55);
+
+  --note-cool-bg: rgba(129, 140, 248, 0.1);
+  --note-cool-fg: #c7d2fe;
+  --note-cool-border: rgba(129, 140, 248, 0.55);
 }
 
 @theme inline {
@@ -215,6 +343,17 @@ body {
     text-decoration: none;
   }
 
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role='button'][aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
   h1,
   h2,
   h3,
@@ -233,6 +372,11 @@ body {
 
 .text-balance {
   text-wrap: balance;
+}
+
+.time-picker-input::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
 }
 
 @layer utilities {
