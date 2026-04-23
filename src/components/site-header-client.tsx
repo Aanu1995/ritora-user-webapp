@@ -34,7 +34,6 @@ export function SiteHeaderClient({
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const search = searchParams.toString();
 
-  // Close on route or search param change
   useEffect(() => {
     if (!open) {
       return;
@@ -65,7 +64,6 @@ export function SiteHeaderClient({
     };
   }, [open]);
 
-  // Close on Escape + lock body scroll while open
   useEffect(() => {
     if (!open) return;
 

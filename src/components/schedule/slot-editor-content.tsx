@@ -56,7 +56,6 @@ import { SlotNotesField } from './slot-notes-field';
 type SlotEditorContentProps = {
   slot: ScheduleSlot;
   onClose: () => void;
-  /** Render a visible close X in the header. Sheets already show one; inline panels need their own. */
   showCloseButton?: boolean;
 };
 

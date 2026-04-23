@@ -287,5 +287,4 @@ export function useMarkFinished() {
   };
 }
 
-/** Export for consumers that need the raw product type. */
 export type { ShelfProduct };

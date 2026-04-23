@@ -583,7 +583,6 @@ describe('AddProductPage', () => {
 
       await user.click(screen.getByLabelText(/back to shelf/i));
 
-      // Dialog stays closed so next/link handles the navigation normally
       expect(screen.queryByText(/unsaved changes/i)).not.toBeInTheDocument();
     });
   });

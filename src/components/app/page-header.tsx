@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 interface PageHeaderProps {
   title: string;
   subtitle: string;
-  /** Optional trailing action (e.g. a primary button). Aligned right. */
   action?: ReactNode;
 }
 

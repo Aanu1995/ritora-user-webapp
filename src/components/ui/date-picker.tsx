@@ -10,13 +10,11 @@ import { toShelfCalendarSelectionDate } from '@/lib/shelf-date';
 import { cn } from '@/lib/utils';
 
 type Props = {
-  /** ISO date string (YYYY-MM-DD) or empty string. */
   value: string;
   onChange: (next: string) => void;
   placeholder?: string;
   disabled?: boolean;
   ariaLabel?: string;
-  /** When true, shows an X button to clear the value. */
   allowClear?: boolean;
   className?: string;
 };

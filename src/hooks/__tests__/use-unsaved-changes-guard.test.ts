@@ -72,20 +72,15 @@ describe('useUnsavedChangesGuard', () => {
 
     renderHook(() => useUnsavedChangesGuard({ hasUnsavedChanges: true }));
 
-    // Initial sentinel push
     expect(pushSpy).toHaveBeenCalledTimes(1);
     expect(pushSpy.mock.calls[0][0]).toMatchObject({
       __ritoraUnsavedGuard: true,
     });
 
-    // Simulate the user pressing browser back: the sentinel is consumed, then
-    // popstate fires with the prior entry's (null) state.
     act(() => {
       window.dispatchEvent(new PopStateEvent('popstate', { state: null }));
     });
 
-    // Handler should have re-pushed the sentinel and opened the dialog via
-    // the store's requestLeave.
     expect(pushSpy).toHaveBeenCalledTimes(2);
     expect(useUnsavedChangesStore.getState().isDialogOpen).toBe(true);
     expect(useUnsavedChangesStore.getState().pendingProceed).not.toBeNull();

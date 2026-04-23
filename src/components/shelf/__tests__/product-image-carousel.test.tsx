@@ -71,8 +71,6 @@ describe('ProductImageCarousel', () => {
     const nextBtn = screen.getByRole('button', { name: /next image/i });
     await user.click(nextBtn);
     await user.click(nextBtn);
-    // No assertion on the underlying image src due to next/image mocking;
-    // we just confirm the buttons are operable without crashing.
     expect(nextBtn).toBeInTheDocument();
   });
 

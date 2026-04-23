@@ -8,7 +8,6 @@ interface RetryPanelProps {
   description: string;
   actionLabel: string;
   onAction: () => void;
-  /** Override the default load-error illustration. */
   illustrationSrc?: string;
   illustrationAlt?: string;
 }

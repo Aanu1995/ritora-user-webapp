@@ -37,7 +37,6 @@ type AddSlotContentProps = {
   preselectDay: DayOfWeek | null;
   onClose: () => void;
   onCreated?: () => void;
-  /** Render a visible close X in the header (inline panels need one; Sheets have their own). */
   showCloseButton?: boolean;
 };
 

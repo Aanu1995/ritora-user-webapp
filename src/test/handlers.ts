@@ -39,7 +39,6 @@ export const mockSkinProfileOptions = {
 };
 
 export const handlers = [
-  // Auth
   http.post(`${API}/auth/login`, async ({ request }) => {
     const body = (await request.json()) as Record<string, string>;
     if (body.email === 'test@example.com' && body.password === 'TestPass1') {
@@ -108,7 +107,6 @@ export const handlers = [
     return HttpResponse.json({ message: 'Password reset successfully' });
   }),
 
-  // Skin Profile
   http.get(`${API}/skin-profile`, () => {
     return HttpResponse.json(mockSkinProfile);
   }),
