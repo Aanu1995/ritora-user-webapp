@@ -3,7 +3,7 @@
 import { useForm, useStore } from '@tanstack/react-form';
 import { X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import {
   ConfirmDialog,
@@ -67,20 +67,24 @@ export function SlotEditorContent({
   const t = useTranslations('schedule');
   const tCommon = useTranslations('common');
 
-  const initialSteps = useMemo(() => stepsFromEntity(slot.steps), [slot.steps]);
+  const [baselineSlot, setBaselineSlot] = useState(slot);
+  const [baselineSteps, setBaselineSteps] = useState(() =>
+    stepsFromEntity(slot.steps),
+  );
   const [productLookup, setProductLookup] = useState<
     Map<string, RoutineStepProductSummary>
   >(() => buildProductLookup(slot.steps));
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const latestSavedSlotRef = useRef<ScheduleSlot | null>(null);
 
   const updateSlot = useUpdateSlot();
   const deleteSlot = useDeleteSlot();
   const upsertSteps = useUpsertSteps();
   const defaultValues = useMemo(
-    () => createSlotEditorDefaultValues(slot, initialSteps),
-    [initialSteps, slot],
+    () => createSlotEditorDefaultValues(baselineSlot, baselineSteps),
+    [baselineSlot, baselineSteps],
   );
-  const normalizedInitialSlotNotes = normalizeSlotNotesInput(
+  const normalizedBaselineSlotNotes = normalizeSlotNotesInput(
     defaultValues.slotNotes,
   );
 
@@ -95,42 +99,54 @@ export function SlotEditorContent({
       onChange: scheduleEditorFormSchema,
       onSubmit: scheduleEditorFormSchema,
       onSubmitAsync: async ({ value }) => {
+        latestSavedSlotRef.current = null;
         const changeSummary = getSlotEditorChangeSummary({
-          initialSteps,
-          normalizedInitialSlotNotes,
-          slot,
+          initialSteps: baselineSteps,
+          normalizedInitialSlotNotes: normalizedBaselineSlotNotes,
+          slot: baselineSlot,
           value,
         });
 
         if (changeSummary.detailsChanged) {
           const result = await executeMutation(updateSlot.mutate, {
-            id: slot.id,
+            id: baselineSlot.id,
             payload: buildSlotUpdatePayload(changeSummary, value),
           });
 
           if (result.error !== null) {
             return getScheduleEditorSubmitError(result.error, t);
           }
+
+          latestSavedSlotRef.current = result.data;
         }
 
         if (changeSummary.stepsChanged) {
           const result = await executeMutation(upsertSteps.mutate, {
-            id: slot.id,
+            id: baselineSlot.id,
             payload: { steps: value.steps },
           });
 
           if (result.error !== null) {
             return getScheduleEditorSubmitError(result.error, t);
           }
+
+          latestSavedSlotRef.current = result.data;
         }
 
         return undefined;
       },
     },
     onSubmit: () => {
-      releaseGuard();
+      const savedSlot = latestSavedSlotRef.current ?? baselineSlot;
+      const nextBaselineSteps = stepsFromEntity(savedSlot.steps);
+
+      setBaselineSlot(savedSlot);
+      setBaselineSteps(nextBaselineSteps);
+      setProductLookup(buildProductLookup(savedSlot.steps));
+      form.reset(createSlotEditorDefaultValues(savedSlot, nextBaselineSteps));
+      latestSavedSlotRef.current = null;
+
       toast.success(t('save.saved'));
-      onClose();
     },
   });
 
@@ -149,9 +165,9 @@ export function SlotEditorContent({
   const changeSummary = useMemo(
     () =>
       getSlotEditorChangeSummary({
-        initialSteps,
-        normalizedInitialSlotNotes,
-        slot,
+        initialSteps: baselineSteps,
+        normalizedInitialSlotNotes: normalizedBaselineSlotNotes,
+        slot: baselineSlot,
         value: {
           slotTime: slotTimeValue,
           mode: modeValue,
@@ -160,10 +176,10 @@ export function SlotEditorContent({
         },
       }),
     [
-      initialSteps,
+      baselineSlot,
+      baselineSteps,
       modeValue,
-      normalizedInitialSlotNotes,
-      slot,
+      normalizedBaselineSlotNotes,
       slotNotesValue,
       slotTimeValue,
       stepsValue,
@@ -205,7 +221,7 @@ export function SlotEditorContent({
         toast.error(getDeleteErrorMessage(error));
       },
       onSuccess: () => {
-        releaseGuard();
+        releaseGuard({ removeHistoryEntry: false });
         toast.success(t('save.deleted'));
         setConfirmDelete(false);
         onClose();

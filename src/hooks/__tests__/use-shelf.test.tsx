@@ -160,6 +160,9 @@ describe('useShelfProducts', () => {
       expect(stats.current.isSuccess).toBe(true);
     });
 
+    expect(
+      (shelfService.listProducts as jest.Mock).mock.calls[0]?.[2],
+    ).toBeInstanceOf(AbortSignal);
     expect(products.current.data).toEqual([PRODUCT]);
     expect(products.current.hasNextPage).toBe(true);
 

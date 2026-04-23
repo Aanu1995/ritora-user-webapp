@@ -38,7 +38,7 @@ function isGuardState(state: unknown): boolean {
 }
 
 export type UnsavedChangesGuard = {
-  releaseGuard: () => void;
+  releaseGuard: (options?: { removeHistoryEntry?: boolean }) => void;
 };
 
 export function useUnsavedChangesGuard({
@@ -135,9 +135,15 @@ export function useUnsavedChangesGuard({
     };
   }, [hasUnsavedChanges]);
 
-  const releaseGuard = useCallback(() => {
-    // Caller is about to navigate intentionally (e.g., after save). Pop the
-    // sentinel now so the history stack has no orphan entry after the push.
+  const releaseGuard = useCallback((options?: { removeHistoryEntry?: boolean }) => {
+    hasUnsavedRef.current = false;
+    cancelPendingLeave();
+    setStoreDirty(false);
+
+    if (options?.removeHistoryEntry === false) {
+      return;
+    }
+
     if (typeof window === 'undefined') return;
     if (!isGuardState(window.history.state)) return;
     isReleasingRef.current = true;
@@ -145,7 +151,7 @@ export function useUnsavedChangesGuard({
     setTimeout(() => {
       isReleasingRef.current = false;
     }, 0);
-  }, []);
+  }, [cancelPendingLeave, setStoreDirty]);
 
   return { releaseGuard };
 }

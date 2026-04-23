@@ -2,7 +2,7 @@
 
 import { Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useDeferredValue, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import {
   Sheet,
@@ -11,6 +11,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useShelfProducts } from '@/hooks/use-shelf';
 import { useShelfDateContext } from '@/hooks/use-shelf-time-zone';
 import {
@@ -34,14 +35,14 @@ export function ProductPickerSheet({
 }: ProductPickerSheetProps) {
   const t = useTranslations('schedule.productPicker');
   const [search, setSearch] = useState('');
-  const deferredSearch = useDeferredValue(search);
+  const debouncedSearch = useDebouncedValue(search, 300);
   const shelfDateContext = useShelfDateContext();
 
   const { data: products = [], isLoading } = useShelfProducts(
     {
       stat: ShelfStatFilter.All,
       category: ShelfCategoryFilter.All,
-      search: deferredSearch,
+      search: debouncedSearch,
       sort: ShelfSort.Alphabetical,
     },
     shelfDateContext,

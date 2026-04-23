@@ -109,7 +109,8 @@ export function useShelfProducts(
 
   const query = useInfiniteQuery({
     queryKey: buildShelfProductsQueryKey(filters, dateContext),
-    queryFn: ({ pageParam }) => shelfService.listProducts(filters, pageParam),
+    queryFn: ({ pageParam, signal }) =>
+      shelfService.listProducts(filters, pageParam, signal),
     enabled: isEnabled,
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,

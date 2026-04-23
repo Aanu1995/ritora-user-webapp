@@ -25,6 +25,7 @@ describe('shelf.service', () => {
       items: [],
       nextCursor: 'next-cursor',
     });
+    const controller = new AbortController();
 
     const result = await shelfService.listProducts(
       {
@@ -34,6 +35,7 @@ describe('shelf.service', () => {
         sort: ShelfSort.RecentlyAdded,
       },
       'cursor-1',
+      controller.signal,
     );
 
     expect(api.getRequest).toHaveBeenCalledWith('/inventory/products', {
@@ -44,6 +46,7 @@ describe('shelf.service', () => {
         sort: 'recently-added',
         cursor: 'cursor-1',
       },
+      signal: controller.signal,
     });
     expect(result.nextCursor).toBe('next-cursor');
   });

@@ -22,6 +22,7 @@ type UploadedProductImage = {
 export async function listProducts(
   filters: ShelfListFilters,
   cursor?: string | null,
+  signal?: AbortSignal,
 ): Promise<PaginatedResult<ShelfProduct>> {
   const params = {
     stat: filters.stat,
@@ -33,6 +34,7 @@ export async function listProducts(
 
   return getRequest<PaginatedResult<ShelfProduct>>(ApiPath.InventoryProducts, {
     params,
+    signal,
   });
 }
 

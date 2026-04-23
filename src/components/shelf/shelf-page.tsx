@@ -59,7 +59,7 @@ export function ShelfPage() {
   const toggleSelected = useShelfUiStore((s) => s.toggleSelected);
   const clearSelection = useShelfUiStore((s) => s.clearSelection);
 
-  const debouncedSearch = useDebouncedValue(search, 220);
+  const debouncedSearch = useDebouncedValue(search, 300);
   const filters: ShelfListFilters = useMemo(
     () => ({
       stat,

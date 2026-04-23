@@ -163,6 +163,23 @@ describe('useUnsavedChangesGuard', () => {
     backSpy.mockRestore();
   });
 
+  it('releaseGuard clears dirty state before a guarded close runs', () => {
+    const { result } = renderHook(() =>
+      useUnsavedChangesGuard({ hasUnsavedChanges: true }),
+    );
+    const proceed = jest.fn();
+
+    act(() => {
+      result.current.releaseGuard();
+      useUnsavedChangesStore.getState().requestLeave(proceed);
+    });
+
+    expect(useUnsavedChangesStore.getState().hasUnsavedChanges).toBe(false);
+    expect(useUnsavedChangesStore.getState().isDialogOpen).toBe(false);
+    expect(useUnsavedChangesStore.getState().pendingProceed).toBeNull();
+    expect(proceed).toHaveBeenCalledTimes(1);
+  });
+
   it('releaseGuard does nothing when the top history entry is not the sentinel', () => {
     const { result } = renderHook(() =>
       useUnsavedChangesGuard({ hasUnsavedChanges: false }),

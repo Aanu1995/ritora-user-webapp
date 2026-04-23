@@ -1,4 +1,5 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { toast } from 'sonner';
 import { ApiError } from '@/lib/api-error';
 import { renderWithProviders } from '@/test/utils';
 import { DayOfWeek, SlotMode, type ScheduleSlot } from '@/types/schedule';
@@ -139,5 +140,41 @@ describe('SlotEditorContent', () => {
 
     expect(saveButton).toBeDisabled();
     expect(mockUpdateSlot).not.toHaveBeenCalled();
+  });
+
+  it('stays open and resets to a clean state after a successful save', async () => {
+    const onClose = jest.fn();
+
+    mockUpdateSlot.mockImplementation((_payload, options) => {
+      options?.onSuccess?.(
+        {
+          ...createSlot(),
+          slotTime: '09:00',
+        },
+        _payload,
+        undefined,
+      );
+    });
+
+    renderWithProviders(
+      <SlotEditorContent slot={createSlot()} onClose={onClose} />,
+    );
+
+    fireEvent.change(screen.getByLabelText(/time/i), {
+      target: { value: '09:00' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /save/i }));
+
+    await waitFor(() => {
+      expect(mockUpdateSlot).toHaveBeenCalled();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /save/i })).toBeDisabled();
+    });
+
+    expect(onClose).not.toHaveBeenCalled();
+    expect(mockReleaseGuard).not.toHaveBeenCalled();
+    expect(toast.success).toHaveBeenCalledWith('Saved');
   });
 });
