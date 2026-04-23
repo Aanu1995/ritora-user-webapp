@@ -1469,6 +1469,8 @@
     },
     "step": {
       "labelPlaceholder": "Välj ett steg",
+      "customLabelPlaceholder": "Namnge ditt steg",
+      "customHint": "För handlingar utan produkt, t.ex. ansiktsmassage, gua sha eller LED-behandling.",
       "productPlaceholder": "Välj en produkt",
       "productMissing": "Saknad produkt — välj igen",
       "notesPlaceholder": "Anteckningar (valfritt)",

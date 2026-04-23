@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProviders } from '@/test/utils';
 import { DayOfWeek, SlotMode, type ScheduleSlot } from '@/types/schedule';
 import {
@@ -14,6 +14,7 @@ const mockReplace = jest.fn((href: string) => {
   mockSearchParams = new URLSearchParams(query);
 });
 let mockSearchParams = new URLSearchParams('slot=slot-1');
+let mockIsDesktop = true;
 
 jest.mock('next/navigation', () => ({
   usePathname: () => '/schedule',
@@ -28,7 +29,7 @@ jest.mock('@/hooks/use-schedule', () => ({
 }));
 
 jest.mock('@/hooks/use-is-lg-desktop', () => ({
-  useIsLgDesktop: () => true,
+  useIsLgDesktop: () => mockIsDesktop,
 }));
 
 jest.mock('@/components/app/page-header', () => ({
@@ -68,7 +69,26 @@ jest.mock('../add-slot-dialog', () => ({
 }));
 
 jest.mock('../slot-editor-sheet', () => ({
-  SlotEditorSheet: () => <div>slot-editor-sheet</div>,
+  SlotEditorSheet: ({
+    suppressAutoClose,
+  }: {
+    suppressAutoClose?: boolean;
+  }) => <div>{`slot-editor-sheet-${suppressAutoClose ? 'suppressed' : 'active'}`}</div>,
+}));
+
+jest.mock('../product-picker-sheet', () => ({
+  ProductPickerSheet: ({
+    open,
+    onOpenChange,
+  }: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+  }) =>
+    open ? (
+      <button type="button" onClick={() => onOpenChange(false)}>
+        Close product picker
+      </button>
+    ) : null,
 }));
 
 jest.mock('../slot-editor-content', () => ({
@@ -103,9 +123,11 @@ function createSlot(): ScheduleSlot {
 
 describe('SchedulePage', () => {
   beforeEach(() => {
+    jest.useRealTimers();
     mockUseSchedule.mockReset();
     mockReplace.mockClear();
     mockSearchParams = new URLSearchParams('slot=slot-1');
+    mockIsDesktop = true;
     useScheduleUiStore.setState({
       editingSlotId: null,
       viewMode: ScheduleViewMode.List,
@@ -117,6 +139,7 @@ describe('SchedulePage', () => {
       hasUnsavedChanges: false,
       isDialogOpen: false,
       pendingProceed: null,
+      suppressRequestLeaveUntil: 0,
     });
   });
 
@@ -137,5 +160,40 @@ describe('SchedulePage', () => {
     await waitFor(() => {
       expect(screen.queryByText('editing-slot-1')).not.toBeInTheDocument();
     });
+  });
+
+  it('does not close the mobile editor or open the unsaved dialog when the product picker closes', () => {
+    jest.useFakeTimers();
+    mockIsDesktop = false;
+    mockUseSchedule.mockReturnValue({
+      data: { timeZone: 'Europe/Stockholm', slots: [createSlot()] },
+      isLoading: false,
+      isError: false,
+      refetch: jest.fn(),
+    });
+    useScheduleUiStore.setState({
+      editingSlotId: 'slot-1',
+      viewMode: ScheduleViewMode.List,
+      addSlotDialog: { open: false, preselectDay: null, presetMode: null },
+      buildFromScratch: false,
+      productPickerOpenForStepIndex: 0,
+    });
+
+    renderWithProviders(<SchedulePage />);
+
+    expect(screen.getByText('slot-editor-sheet-suppressed')).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole('button', { name: /close product picker/i }),
+    );
+
+    expect(screen.getByText('slot-editor-sheet-suppressed')).toBeInTheDocument();
+    expect(useUnsavedChangesStore.getState().isDialogOpen).toBe(false);
+
+    act(() => {
+      jest.advanceTimersByTime(300);
+    });
+
+    expect(screen.getByText('slot-editor-sheet-active')).toBeInTheDocument();
   });
 });

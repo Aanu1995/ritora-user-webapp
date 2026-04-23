@@ -1,6 +1,7 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { NextIntlClientProvider } from 'next-intl';
 import enMessages from '../../../../messages/en.json';
+import { useScheduleUiStore } from '@/stores/schedule-ui-store';
 import {
   StepLabel,
   type RoutineStepInput,
@@ -54,7 +55,10 @@ jest.mock('@/components/ui/select', () => ({
   ),
 }));
 
-function renderList(steps: RoutineStepInput[]) {
+function renderList(
+  steps: RoutineStepInput[],
+  props?: Partial<React.ComponentProps<typeof RoutineStepList>>,
+) {
   return render(
     <NextIntlClientProvider locale="en" messages={enMessages}>
       <RoutineStepList
@@ -62,6 +66,7 @@ function renderList(steps: RoutineStepInput[]) {
         productLookup={new Map()}
         onChange={jest.fn()}
         onProductPicked={jest.fn()}
+        {...props}
       />
     </NextIntlClientProvider>,
   );
@@ -74,9 +79,13 @@ describe('RoutineStepList', () => {
       data: [],
       isLoading: false,
     });
+    useScheduleUiStore.setState({
+      productPickerOpenForStepIndex: null,
+      pendingProductSelection: null,
+    });
   });
 
-  it('does not query shelf products until the picker is opened', async () => {
+  it('opens the picker with the selected step label without querying shelf products on its own', () => {
     renderList([
       {
         id: 'step-1',
@@ -96,8 +105,59 @@ describe('RoutineStepList', () => {
 
     fireEvent.click(screen.getAllByRole('button', { name: /pick a product/i })[0]);
 
+    expect(useScheduleUiStore.getState().productPickerOpenForStepIndex).toBe(0);
+    expect(useScheduleUiStore.getState().productPickerStepLabel).toBe(
+      StepLabel.Cleanser,
+    );
+  });
+
+  it('applies a picked product and closes the picker through the shared bridge', async () => {
+    const onChange = jest.fn();
+    const onProductPicked = jest.fn();
+    const onProductPickerClose = jest.fn();
+
+    renderList(
+      [
+        {
+          id: 'step-1',
+          stepOrder: 0,
+          inventoryProductId: null,
+          stepLabel: StepLabel.Cleanser,
+        },
+      ],
+      {
+        onChange,
+        onProductPicked,
+        onProductPickerClose,
+      },
+    );
+
+    act(() => {
+      useScheduleUiStore.setState({
+        productPickerOpenForStepIndex: 0,
+        pendingProductSelection: {
+          id: 'product-1',
+          brand: 'Brand',
+          name: 'Product',
+          category: 'cleanser',
+          imageUrl: null,
+          status: 'active',
+        },
+      });
+    });
+
     await waitFor(() => {
-      expect(mockUseShelfProducts).toHaveBeenCalledTimes(1);
+      expect(onProductPicked).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'product-1' }),
+      );
+      expect(onChange).toHaveBeenCalledWith([
+        expect.objectContaining({
+          id: 'step-1',
+          inventoryProductId: 'product-1',
+        }),
+      ]);
+      expect(onProductPickerClose).toHaveBeenCalled();
+      expect(useScheduleUiStore.getState().productPickerOpenForStepIndex).toBeNull();
     });
   });
 });

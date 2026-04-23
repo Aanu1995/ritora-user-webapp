@@ -27,7 +27,6 @@ import {
   type RoutineStepProductSummary,
 } from '@/types/schedule';
 import { cn } from '@/lib/utils';
-import { ProductPickerSheet } from './product-picker-sheet';
 import {
   createRoutineStepInput,
   findRoutineStepIndexByRowId,
@@ -44,6 +43,7 @@ type RoutineStepListProps = {
   productLookup: Map<string, RoutineStepProductSummary>;
   onChange: (steps: RoutineStepInput[]) => void;
   onProductPicked: (product: RoutineStepProductSummary) => void;
+  onProductPickerClose?: () => void;
   errorText?: string;
 };
 const NOOP_STEP_CHANGE = () => undefined;
@@ -54,6 +54,7 @@ export function RoutineStepList({
   productLookup,
   onChange,
   onProductPicked,
+  onProductPickerClose,
   errorText,
 }: RoutineStepListProps) {
   const t = useTranslations('schedule.editor');
@@ -67,6 +68,9 @@ export function RoutineStepList({
   );
   const closeProductPicker = useScheduleUiStore(
     (state) => state.closeProductPicker,
+  );
+  const pendingProductSelection = useScheduleUiStore(
+    (state) => state.pendingProductSelection,
   );
   const stepsRef = useRef(steps);
 
@@ -136,10 +140,20 @@ export function RoutineStepList({
 
   const handleOpenProductPicker = useCallback(
     (index: number) => {
-      openProductPicker(index);
+      const step = stepsRef.current[index];
+
+      if (!step) {
+        return;
+      }
+
+      openProductPicker(index, step.stepLabel);
     },
     [openProductPicker],
   );
+  const handleCloseProductPicker = useCallback(() => {
+    onProductPickerClose?.();
+    closeProductPicker();
+  }, [closeProductPicker, onProductPickerClose]);
 
   const canAdd = steps.length < MAX_STEPS_PER_SLOT;
   const pickerOpen =
@@ -154,9 +168,9 @@ export function RoutineStepList({
 
   useEffect(() => {
     if (pickerStepIndex !== null && !pickerOpen) {
-      closeProductPicker();
+      handleCloseProductPicker();
     }
-  }, [closeProductPicker, pickerOpen, pickerStepIndex]);
+  }, [handleCloseProductPicker, pickerOpen, pickerStepIndex]);
 
   useEffect(() => {
     return () => {
@@ -164,36 +178,31 @@ export function RoutineStepList({
     };
   }, [closeProductPicker]);
 
-  const handleProductSelect = useCallback(
-    (product: RoutineStepProductSummary) => {
-      if (pickerStepIndex === null) {
-        return;
-      }
+  // Store-bridge consumer: the inline or mobile picker writes the selected
+  // product into `pendingProductSelection`; we apply it to the current step
+  // here so form state stays owned by this component.
+  useEffect(() => {
+    if (!pendingProductSelection || pickerStepIndex === null) return;
 
-      const step = stepsRef.current[pickerStepIndex];
-      if (!step) {
-        closeProductPicker();
-        return;
-      }
+    const step = stepsRef.current[pickerStepIndex];
+    if (!step) {
+      handleCloseProductPicker();
+      return;
+    }
 
-      onProductPicked(product);
-      updateStep(pickerStepIndex, {
-        ...step,
-        inventoryProductId: product.id,
-      });
-      closeProductPicker();
-    },
-    [closeProductPicker, onProductPicked, pickerStepIndex, updateStep],
-  );
-
-  const handlePickerOpenChange = useCallback(
-    (open: boolean) => {
-      if (!open) {
-        closeProductPicker();
-      }
-    },
-    [closeProductPicker],
-  );
+    onProductPicked(pendingProductSelection);
+    updateStep(pickerStepIndex, {
+      ...step,
+      inventoryProductId: pendingProductSelection.id,
+    });
+    handleCloseProductPicker();
+  }, [
+    handleCloseProductPicker,
+    onProductPicked,
+    pendingProductSelection,
+    pickerStepIndex,
+    updateStep,
+  ]);
 
   return (
     <ScheduleRenderProfiler id="schedule.routine-step-list">
@@ -283,14 +292,6 @@ export function RoutineStepList({
           <p className="mt-2 text-xs text-danger" role="alert">
             {errorText}
           </p>
-        ) : null}
-
-        {pickerOpen ? (
-          <ProductPickerSheet
-            open={pickerOpen}
-            onOpenChange={handlePickerOpenChange}
-            onSelect={handleProductSelect}
-          />
         ) : null}
       </div>
     </ScheduleRenderProfiler>

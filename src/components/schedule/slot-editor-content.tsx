@@ -56,12 +56,14 @@ import { SlotNotesField } from './slot-notes-field';
 type SlotEditorContentProps = {
   slot: ScheduleSlot;
   onClose: () => void;
+  onProductPickerClose?: () => void;
   showCloseButton?: boolean;
 };
 
 export function SlotEditorContent({
   slot,
   onClose,
+  onProductPickerClose,
   showCloseButton = false,
 }: SlotEditorContentProps) {
   const t = useTranslations('schedule');
@@ -366,6 +368,7 @@ export function SlotEditorContent({
                       productLookup={productLookup}
                       onChange={field.handleChange}
                       onProductPicked={handleProductPicked}
+                      onProductPickerClose={onProductPickerClose}
                       errorText={errorText}
                     />
                   </section>

@@ -1,7 +1,12 @@
 'use client';
 
 import { create } from 'zustand';
-import { AddSlotPresetMode, type DayOfWeek } from '@/types/schedule';
+import {
+  AddSlotPresetMode,
+  type DayOfWeek,
+  type RoutineStepProductSummary,
+  type StepLabel,
+} from '@/types/schedule';
 
 export enum ScheduleViewMode {
   List = 'list',
@@ -37,8 +42,15 @@ type ScheduleUiState = {
   exitBuildFromScratch: () => void;
 
   productPickerOpenForStepIndex: number | null;
-  openProductPicker: (stepIndex: number) => void;
+  productPickerStepLabel: StepLabel | null;
+  openProductPicker: (stepIndex: number, stepLabel: StepLabel) => void;
   closeProductPicker: () => void;
+
+  /** Bridge for the inline product picker: the picker writes here on select;
+   * the step list consumes it and applies the product to the current step. */
+  pendingProductSelection: RoutineStepProductSummary | null;
+  selectProductForPicker: (product: RoutineStepProductSummary) => void;
+  clearPendingProductSelection: () => void;
 };
 
 export const useScheduleUiStore = create<ScheduleUiState>((set) => ({
@@ -68,7 +80,21 @@ export const useScheduleUiStore = create<ScheduleUiState>((set) => ({
   exitBuildFromScratch: () => set({ buildFromScratch: false }),
 
   productPickerOpenForStepIndex: null,
-  openProductPicker: (stepIndex) =>
-    set({ productPickerOpenForStepIndex: stepIndex }),
-  closeProductPicker: () => set({ productPickerOpenForStepIndex: null }),
+  productPickerStepLabel: null,
+  openProductPicker: (stepIndex, stepLabel) =>
+    set({
+      productPickerOpenForStepIndex: stepIndex,
+      productPickerStepLabel: stepLabel,
+    }),
+  closeProductPicker: () =>
+    set({
+      productPickerOpenForStepIndex: null,
+      productPickerStepLabel: null,
+      pendingProductSelection: null,
+    }),
+
+  pendingProductSelection: null,
+  selectProductForPicker: (product) =>
+    set({ pendingProductSelection: product }),
+  clearPendingProductSelection: () => set({ pendingProductSelection: null }),
 }));

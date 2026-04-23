@@ -92,9 +92,17 @@ function RoutineStepRowComponent({
           {/* Step label */}
           <Select
             value={step.stepLabel}
-            onValueChange={(value) =>
-              onChange(index, { ...step, stepLabel: value as StepLabel })
-            }
+            onValueChange={(value) => {
+              const nextLabel = value as StepLabel;
+              onChange(index, {
+                ...step,
+                stepLabel: nextLabel,
+                inventoryProductId:
+                  nextLabel === StepLabel.Custom
+                    ? null
+                    : step.inventoryProductId,
+              });
+            }}
           >
             <SelectTrigger className="h-9 text-xs">
               <SelectValue placeholder={t('step.labelPlaceholder')} />
@@ -109,77 +117,84 @@ function RoutineStepRowComponent({
           </Select>
 
           {step.stepLabel === StepLabel.Custom ? (
-            <input
-              type="text"
-              value={step.customLabel ?? ''}
-              onChange={(e) =>
-                onChange(index, {
-                  ...step,
-                  customLabel: e.target.value.slice(
-                    0,
-                    MAX_CUSTOM_LABEL_LENGTH,
-                  ),
-                })
-              }
-              placeholder={t('step.labelPlaceholder')}
-              className="h-9 w-full rounded-lg border border-border bg-background px-3 text-xs outline-none focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent/30"
-              maxLength={MAX_CUSTOM_LABEL_LENGTH}
-            />
+            <>
+              <input
+                type="text"
+                value={step.customLabel ?? ''}
+                onChange={(e) =>
+                  onChange(index, {
+                    ...step,
+                    customLabel: e.target.value.slice(
+                      0,
+                      MAX_CUSTOM_LABEL_LENGTH,
+                    ),
+                  })
+                }
+                placeholder={t('step.customLabelPlaceholder')}
+                className="h-9 w-full rounded-lg border border-border bg-background px-3 text-xs outline-none focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent/30"
+                maxLength={MAX_CUSTOM_LABEL_LENGTH}
+              />
+              <p className="text-[11px] leading-snug text-muted">
+                {t('step.customHint')}
+              </p>
+            </>
           ) : null}
 
-          {/* Product picker */}
-          <button
-            type="button"
-            onClick={() => onOpenProductPicker(index)}
-            className={cn(
-              'flex w-full items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-left text-xs transition hover:border-accent',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30',
-            )}
-          >
-            {product ? (
-              <>
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded bg-surface-muted">
-                  {product.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={product.imageUrl}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-[10px] text-muted">
-                      {product.category.slice(0, 1).toUpperCase()}
+          {/* Product picker — hidden for Custom steps (non-product actions). */}
+          {step.stepLabel !== StepLabel.Custom ? (
+            <button
+              type="button"
+              onClick={() => onOpenProductPicker(index)}
+              className={cn(
+                'flex w-full items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-left text-xs transition hover:border-accent',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30',
+              )}
+            >
+              {product ? (
+                <>
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded bg-surface-muted">
+                    {product.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={product.imageUrl}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-[10px] text-muted">
+                        {product.category.slice(0, 1).toUpperCase()}
+                      </span>
+                    )}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold text-foreground">
+                      {product.brand}
                     </span>
-                  )}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate font-semibold text-foreground">
-                    {product.brand}
+                    <span className="block truncate text-[11px] text-muted">
+                      {product.name}
+                    </span>
                   </span>
-                  <span className="block truncate text-[11px] text-muted">
-                    {product.name}
-                  </span>
-                </span>
-              </>
-            ) : step.inventoryProductId ? (
-              <span
-                style={{ color: 'var(--daypart-morning-fg)' }}
-                className="flex items-center gap-2"
-              >
+                </>
+              ) : step.inventoryProductId ? (
                 <span
-                  style={{
-                    backgroundColor: 'var(--daypart-morning-accent)',
-                  }}
-                  className="h-2 w-2 rounded-full"
-                />
-                {t('step.productMissing')}
-              </span>
-            ) : (
-              <span className="text-muted">
-                {t('step.productPlaceholder')}
-              </span>
-            )}
-          </button>
+                  style={{ color: 'var(--daypart-morning-fg)' }}
+                  className="flex items-center gap-2"
+                >
+                  <span
+                    style={{
+                      backgroundColor: 'var(--daypart-morning-accent)',
+                    }}
+                    className="h-2 w-2 rounded-full"
+                  />
+                  {t('step.productMissing')}
+                </span>
+              ) : (
+                <span className="text-muted">
+                  {t('step.productPlaceholder')}
+                </span>
+              )}
+            </button>
+          ) : null}
 
           {/* Notes */}
           <input

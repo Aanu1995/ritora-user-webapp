@@ -1466,6 +1466,8 @@
     },
     "step": {
       "labelPlaceholder": "Pick a step",
+      "customLabelPlaceholder": "Name your step",
+      "customHint": "For non-product actions like face massage, gua sha, or LED sessions.",
       "productPlaceholder": "Pick a product",
       "productMissing": "Missing product — pick again",
       "notesPlaceholder": "Notes (optional)",

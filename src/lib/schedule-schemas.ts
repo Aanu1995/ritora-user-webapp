@@ -14,7 +14,7 @@ export const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export const timeSchema = z
   .string()
-  .regex(TIME_REGEX, 'schedule.validation.timeFormat');
+  .regex(TIME_REGEX, 'validation.timeFormat');
 
 export const dayOfWeekSchema = z.enum(
   DAYS_OF_WEEK as unknown as [DayOfWeek, ...DayOfWeek[]],
@@ -24,13 +24,13 @@ export const slotModeSchema = z.nativeEnum(SlotMode);
 
 export const slotNotesSchema = z
   .string()
-  .max(MAX_SLOT_NOTES_LENGTH, 'schedule.validation.slotNotesMax')
+  .max(MAX_SLOT_NOTES_LENGTH, 'validation.slotNotesMax')
   .nullable()
   .optional();
 
 export const slotNotesInputSchema = z
   .string()
-  .max(MAX_SLOT_NOTES_LENGTH, 'schedule.validation.slotNotesMax');
+  .max(MAX_SLOT_NOTES_LENGTH, 'validation.slotNotesMax');
 
 export const stepLabelSchema = z.nativeEnum(StepLabel);
 
@@ -66,12 +66,12 @@ export const routineStepBaseSchema = z
     stepLabel: stepLabelSchema,
     customLabel: z
       .string()
-      .max(MAX_CUSTOM_LABEL_LENGTH, 'schedule.validation.customLabelMax')
+      .max(MAX_CUSTOM_LABEL_LENGTH, 'validation.customLabelMax')
       .nullable()
       .optional(),
     notes: z
       .string()
-      .max(MAX_STEP_NOTES_LENGTH, 'schedule.validation.stepNotesMax')
+      .max(MAX_STEP_NOTES_LENGTH, 'validation.stepNotesMax')
       .nullable()
       .optional(),
     optional: z.boolean().optional(),
@@ -84,13 +84,13 @@ export const routineStepSchema = routineStepBaseSchema
       Boolean(value.customLabel?.trim()),
     {
       path: ['customLabel'],
-      message: 'schedule.validation.customLabelRequired',
+      message: 'validation.customLabelRequired',
     },
   );
 
 export const routineStepsSchema = z
   .array(routineStepSchema)
-  .max(MAX_STEPS_PER_SLOT, 'schedule.validation.maxSteps');
+  .max(MAX_STEPS_PER_SLOT, 'validation.maxSteps');
 
 export const scheduleEditorFormSchema = z
   .object({
