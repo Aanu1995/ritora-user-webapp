@@ -9,18 +9,25 @@ import { toast } from 'sonner';
 import { QuickLookupCard } from './add-product/quick-lookup-card';
 import { buildTemplateGuidance } from './add-product/category-templates';
 import {
+  buildLookupReviewFields,
+  normalizeLookupCountryValue,
+} from './add-product/lookup-result-import';
+import {
   ProductFormBody,
   type ProductFormReviewFields,
   type ProductFormValue,
 } from './product-form-body';
+import {
+  buildShelfFieldErrors,
+  type ShelfFieldMeta,
+} from './form/product-form-errors';
 import { GuardedLink } from '@/components/app/guarded-link';
 import { Button } from '@/components/ui/button';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
-import { COUNTRIES } from '@/constants/countries';
 import { AppRoute } from '@/constants/app-routes';
 import { useUnsavedChangesGuard } from '@/hooks/use-unsaved-changes-guard';
 import { useCreateProduct } from '@/hooks/use-shelf';
-import { type FieldIssue, firstFieldError } from '@/lib/form-errors';
+import { firstFieldError } from '@/lib/form-errors';
 import {
   clearSubmitErrors,
   executeMutation,
@@ -31,7 +38,6 @@ import {
   createEmptyManufacturer,
   createEmptyUserFields,
   getShelfGuidanceValidationErrors,
-  type ShelfFormFieldErrors,
   shelfProductFormSchema,
   toShelfProductDraft,
 } from '@/lib/shelf-form';
@@ -39,44 +45,8 @@ import { getShelfSubmitError } from '@/lib/shelf-submit-errors';
 import {
   DataProvenance,
   LookupConfidence,
-  LookupWarningCode,
   type ResolvedLookup,
 } from '@/types/shelf';
-
-type ShelfFieldMeta = Partial<
-  Record<
-    string,
-    {
-      errors?: ReadonlyArray<FieldIssue>;
-      isTouched?: boolean;
-      isDirty?: boolean;
-    }
-  >
->;
-
-function shouldShowFieldError(
-  meta: ShelfFieldMeta[string] | undefined,
-  showAllErrors: boolean,
-): boolean {
-  if (showAllErrors) {
-    return true;
-  }
-
-  return Boolean(meta?.isTouched || meta?.isDirty);
-}
-
-function getFieldError(
-  fieldMeta: ShelfFieldMeta,
-  field: string,
-  translate: (key: string) => string,
-  showAllErrors: boolean,
-): string | undefined {
-  if (!shouldShowFieldError(fieldMeta[field], showAllErrors)) {
-    return undefined;
-  }
-
-  return firstFieldError(fieldMeta[field]?.errors, translate);
-}
 
 function buildDefaultValues(): ProductFormValue {
   const identity = createEmptyIdentity();
@@ -87,123 +57,6 @@ function buildDefaultValues(): ProductFormValue {
     guidance: buildTemplateGuidance(identity.category, [], []),
     userFields: createEmptyUserFields(),
   };
-}
-
-function hasMeaningfulValue(value: unknown): boolean {
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  if (typeof value === 'string') {
-    return value.trim().length > 0;
-  }
-
-  return value !== null && value !== undefined;
-}
-
-const COUNTRY_CODE_BY_NAME = COUNTRIES.reduce<Record<string, string>>(
-  (index, country) => {
-    index[country.name.trim().toLowerCase()] = country.code;
-    return index;
-  },
-  {
-    'south korea': 'KR',
-    'korea south': 'KR',
-    'korea, republic of': 'KR',
-    'republic of korea': 'KR',
-    'united states of america': 'US',
-    usa: 'US',
-    uk: 'GB',
-    'great britain': 'GB',
-    'united kingdom': 'GB',
-    uae: 'AE',
-    turkey: 'TR',
-  },
-);
-
-function normalizeCountryValue(
-  value: string | null | undefined,
-): string | null {
-  if (!value) {
-    return null;
-  }
-
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return null;
-  }
-
-  const upper = trimmed.toUpperCase();
-  if (COUNTRIES.some((country) => country.code === upper)) {
-    return upper;
-  }
-
-  return COUNTRY_CODE_BY_NAME[trimmed.toLowerCase()] ?? trimmed;
-}
-
-function buildReviewFields(
-  resolved: ResolvedLookup,
-): ProductFormReviewFields {
-  const resolvedIdentity = resolved.identity ?? {};
-  const resolvedGuidance = resolved.guidance ?? {};
-  const resolvedManufacturer = resolved.manufacturer ?? {};
-  const warnings = resolved.warnings ?? [];
-  const reviewFields: ProductFormReviewFields = {};
-  const hasGenericReviewWarning = warnings.some((warning) =>
-    [
-      LookupWarningCode.ReviewRequired,
-      LookupWarningCode.CommunityData,
-      LookupWarningCode.AiNormalized,
-      LookupWarningCode.PartialData,
-    ].includes(warning),
-  );
-
-  if (hasGenericReviewWarning) {
-    if (hasMeaningfulValue(resolvedIdentity.sizeMl)) {
-      reviewFields['identity.sizeMl'] = true;
-    }
-    if (hasMeaningfulValue(resolvedIdentity.description)) {
-      reviewFields['identity.description'] = true;
-    }
-    if (hasMeaningfulValue(resolvedIdentity.benefits)) {
-      reviewFields['identity.benefits'] = true;
-    }
-    if (hasMeaningfulValue(resolvedIdentity.suitedFor)) {
-      reviewFields['identity.suitedFor'] = true;
-    }
-    if (hasMeaningfulValue(resolvedManufacturer.parentCompany)) {
-      reviewFields['manufacturer.parentCompany'] = true;
-    }
-    if (
-      hasMeaningfulValue(resolvedManufacturer.countryOfManufacture) ||
-      hasMeaningfulValue(resolvedManufacturer.countryOfOrigin)
-    ) {
-      reviewFields['manufacturer.countryOfManufacture'] = true;
-    }
-    if (hasMeaningfulValue(resolvedManufacturer.supportEmail)) {
-      reviewFields['manufacturer.supportEmail'] = true;
-    }
-    if (hasMeaningfulValue(resolvedManufacturer.productUrl)) {
-      reviewFields['manufacturer.productUrl'] = true;
-    }
-  }
-
-  if (
-    warnings.includes(LookupWarningCode.IngredientsUnverified) &&
-    hasMeaningfulValue(resolvedIdentity.inciIngredients)
-  ) {
-    reviewFields['identity.inciIngredients'] = true;
-  }
-
-  if (
-    warnings.includes(LookupWarningCode.GuidanceUnverified) &&
-    (hasMeaningfulValue(resolvedGuidance.steps) ||
-      hasMeaningfulValue(resolvedGuidance.cautions))
-  ) {
-    reviewFields.guidance = true;
-  }
-
-  return reviewFields;
 }
 
 export function AddProductPage() {
@@ -224,6 +77,7 @@ export function AddProductPage() {
 
   const form = useForm({
     defaultValues: buildDefaultValues(),
+    canSubmitWhenInvalid: true,
     listeners: {
       onChange: ({ formApi }) => {
         clearSubmitErrors(formApi);
@@ -265,6 +119,40 @@ export function AddProductPage() {
 
   const { releaseGuard } = useUnsavedChangesGuard({ hasUnsavedChanges });
 
+  const setIdentityValue = (nextIdentity: ProductFormValue['identity']) => {
+    clearSubmitErrors(form);
+    form.setFieldValue('identity', nextIdentity);
+    form.setFieldValue('identity.brand', nextIdentity.brand);
+    form.setFieldValue('identity.name', nextIdentity.name);
+    form.setFieldValue('identity.description', nextIdentity.description);
+    form.setFieldValue('identity.benefits', nextIdentity.benefits);
+    form.setFieldValue('identity.suitedFor', nextIdentity.suitedFor);
+    form.setFieldValue(
+      'identity.inciIngredients',
+      nextIdentity.inciIngredients,
+    );
+    form.setFieldValue('identity.sizeMl', nextIdentity.sizeMl);
+  };
+
+  const setManufacturerValue = (
+    nextManufacturer: ProductFormValue['manufacturer'],
+  ) => {
+    clearSubmitErrors(form);
+    form.setFieldValue('manufacturer', nextManufacturer);
+  };
+
+  const setUserFieldsValue = (nextUserFields: ProductFormValue['userFields']) => {
+    clearSubmitErrors(form);
+    form.setFieldValue('userFields', nextUserFields);
+  };
+
+  const setGuidanceValue = (nextGuidance: ProductFormValue['guidance']) => {
+    clearSubmitErrors(form);
+    form.setFieldValue('guidance', nextGuidance);
+    form.setFieldValue('guidance.steps', nextGuidance.steps);
+    form.setFieldValue('guidance.cautions', nextGuidance.cautions);
+  };
+
   const handleLookupResult = (resolved: ResolvedLookup) => {
     if (resolved.confidence === LookupConfidence.Low) {
       setReviewFields({});
@@ -282,12 +170,12 @@ export function AddProductPage() {
     const nextManufacturer = {
       ...form.getFieldValue('manufacturer'),
       ...resolvedManufacturer,
-      countryOfOrigin: normalizeCountryValue(
+      countryOfOrigin: normalizeLookupCountryValue(
         resolvedManufacturer.countryOfOrigin ??
           resolvedManufacturer.countryOfManufacture ??
           form.getFieldValue('manufacturer').countryOfOrigin,
       ),
-      countryOfManufacture: normalizeCountryValue(
+      countryOfManufacture: normalizeLookupCountryValue(
         resolvedManufacturer.countryOfManufacture ??
           resolvedManufacturer.countryOfOrigin ??
           form.getFieldValue('manufacturer').countryOfManufacture,
@@ -301,11 +189,11 @@ export function AddProductPage() {
           ? currentGuidance
           : buildTemplateGuidance(nextIdentity.category, [], []);
 
-    form.setFieldValue('identity', nextIdentity);
-    form.setFieldValue('manufacturer', nextManufacturer);
-    form.setFieldValue('guidance', nextGuidance);
+    setIdentityValue(nextIdentity);
+    setManufacturerValue(nextManufacturer);
+    setGuidanceValue(nextGuidance);
     setProvenance(resolved.provenance);
-    const nextReviewFields = buildReviewFields(resolved);
+    const nextReviewFields = buildLookupReviewFields(resolved);
 
     setReviewFields(nextReviewFields);
     toast.success(tLookupImport('title'), {
@@ -315,73 +203,6 @@ export function AddProductPage() {
           : tLookupImport('description'),
     });
   };
-
-  const buildFieldErrors = (
-    fieldMeta: ShelfFieldMeta,
-    showAllErrors: boolean,
-  ): ShelfFormFieldErrors => ({
-    'identity.brand': getFieldError(
-      fieldMeta,
-      'identity.brand',
-      t,
-      showAllErrors,
-    ),
-    'identity.name': getFieldError(fieldMeta, 'identity.name', t, showAllErrors),
-    'identity.description': getFieldError(
-      fieldMeta,
-      'identity.description',
-      t,
-      showAllErrors,
-    ),
-    'identity.benefits': getFieldError(
-      fieldMeta,
-      'identity.benefits',
-      t,
-      showAllErrors,
-    ),
-    'identity.suitedFor': getFieldError(
-      fieldMeta,
-      'identity.suitedFor',
-      t,
-      showAllErrors,
-    ),
-    'identity.inciIngredients': getFieldError(
-      fieldMeta,
-      'identity.inciIngredients',
-      t,
-      showAllErrors,
-    ),
-    'identity.sizeMl': getFieldError(
-      fieldMeta,
-      'identity.sizeMl',
-      t,
-      showAllErrors,
-    ),
-    'userFields.pricePaid': getFieldError(
-      fieldMeta,
-      'userFields.pricePaid',
-      t,
-      showAllErrors,
-    ),
-    'userFields.expiresAt': getFieldError(
-      fieldMeta,
-      'userFields.expiresAt',
-      t,
-      showAllErrors,
-    ),
-    'manufacturer.supportEmail': getFieldError(
-      fieldMeta,
-      'manufacturer.supportEmail',
-      t,
-      showAllErrors,
-    ),
-    'manufacturer.productUrl': getFieldError(
-      fieldMeta,
-      'manufacturer.productUrl',
-      t,
-      showAllErrors,
-    ),
-  });
 
   return (
     <form
@@ -410,7 +231,12 @@ export function AddProductPage() {
           submissionAttempts,
         }) => {
           const showAllErrors = submissionAttempts > 0;
-          const fieldErrors = buildFieldErrors(fieldMeta, showAllErrors);
+          const fieldErrors = buildShelfFieldErrors(
+            fieldMeta,
+            values,
+            showAllErrors,
+            t,
+          );
           const rawGuidanceErrors = getShelfGuidanceValidationErrors(values);
           const guidanceErrors = {
             steps: firstFieldError(
@@ -473,18 +299,10 @@ export function AddProductPage() {
 
                 <ProductFormBody
                   value={values}
-                  onIdentityChange={(nextIdentity) =>
-                    form.setFieldValue('identity', nextIdentity)
-                  }
-                  onManufacturerChange={(nextManufacturer) =>
-                    form.setFieldValue('manufacturer', nextManufacturer)
-                  }
-                  onUserFieldsChange={(nextUserFields) =>
-                    form.setFieldValue('userFields', nextUserFields)
-                  }
-                  onGuidanceChange={(nextGuidance) =>
-                    form.setFieldValue('guidance', nextGuidance)
-                  }
+                  onIdentityChange={setIdentityValue}
+                  onManufacturerChange={setManufacturerValue}
+                  onUserFieldsChange={setUserFieldsValue}
+                  onGuidanceChange={setGuidanceValue}
                   fieldErrors={fieldErrors}
                   guidanceErrors={guidanceErrors}
                   reviewFields={reviewFields}

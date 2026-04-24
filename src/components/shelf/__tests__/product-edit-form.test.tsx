@@ -12,7 +12,7 @@ import {
 
 const mockPush = jest.fn();
 const mockMutate = jest.fn();
-const mockUploadMutateAsync = jest.fn();
+const mockUploadMutate = jest.fn();
 const mockCreateObjectUrl = jest.fn(() => 'blob:product-photo-preview');
 const mockRevokeObjectUrl = jest.fn();
 
@@ -33,7 +33,7 @@ jest.mock('@/hooks/use-shelf', () => ({
     isPending: false,
   }),
   useUploadProductImage: () => ({
-    mutateAsync: mockUploadMutateAsync,
+    mutate: mockUploadMutate,
     isPending: false,
   }),
 }));
@@ -115,7 +115,7 @@ const PRODUCT: ShelfProduct = {
 beforeEach(() => {
   mockPush.mockReset();
   mockMutate.mockReset();
-  mockUploadMutateAsync.mockReset();
+  mockUploadMutate.mockReset();
   mockCreateObjectUrl.mockClear();
   mockRevokeObjectUrl.mockClear();
   URL.createObjectURL = mockCreateObjectUrl;
@@ -201,10 +201,44 @@ describe('ProductEditForm', () => {
     expect(mockMutate).not.toHaveBeenCalled();
   });
 
+  it('saves when ingredients are re-added after a validation failure', async () => {
+    const user = userEvent.setup();
+    mockMutate.mockImplementation((_input, options) => {
+      options?.onSuccess?.();
+    });
+
+    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+
+    await user.clear(screen.getByLabelText(/^ingredients \(inci\)$/i));
+    await user.click(screen.getByRole('button', { name: /add step/i }));
+    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    await user.click(screen.getByRole('button', { name: /save changes/i }));
+
+    expect(
+      screen.getByText(/paste the inci ingredients list/i),
+    ).toBeInTheDocument();
+    expect(mockMutate).not.toHaveBeenCalled();
+
+    await user.type(
+      screen.getByLabelText(/^ingredients \(inci\)$/i),
+      'Aqua, Glycerin',
+    );
+    await user.click(screen.getByRole('button', { name: /save changes/i }));
+
+    await waitFor(() => {
+      expect(mockMutate).toHaveBeenCalled();
+    });
+    expect(
+      mockMutate.mock.calls[0]?.[0].patch.identity.inciIngredients,
+    ).toEqual(['Aqua', 'Glycerin']);
+  });
+
   it('lets the user choose a photo first and upload it before saving', async () => {
     const user = userEvent.setup();
-    mockUploadMutateAsync.mockResolvedValue({
-      imageUrl: 'https://cdn.example.com/product-images/processed/photo.webp',
+    mockUploadMutate.mockImplementation((_file, options) => {
+      options?.onSuccess?.({
+        imageUrl: 'https://cdn.example.com/product-images/processed/photo.webp',
+      });
     });
     mockMutate.mockImplementation((_input, options) => {
       options?.onSuccess?.();
@@ -224,7 +258,7 @@ describe('ProductEditForm', () => {
     await user.click(screen.getByRole('button', { name: /upload photo/i }));
 
     await waitFor(() => {
-      expect(mockUploadMutateAsync).toHaveBeenCalled();
+      expect(mockUploadMutate).toHaveBeenCalled();
     });
 
     await user.click(screen.getByRole('button', { name: /add step/i }));

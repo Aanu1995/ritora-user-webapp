@@ -131,10 +131,10 @@ type ListTextInputProps = Omit<
 };
 
 /**
- * A comma-separated list input that stores a raw string locally while the
- * user is typing and only commits back to the parent as `string[]` on blur.
- * Parsing on every keystroke strips intermediate whitespace and commas —
- * this lets users actually type commas, spaces, and special characters.
+ * A comma-separated list input that keeps the user's raw text locally while
+ * also committing a parsed string array to form state on every edit. This
+ * keeps validation current without stripping intermediate whitespace/commas
+ * from the visible input.
  */
 export function ListTextInput({
   value,
@@ -146,22 +146,30 @@ export function ListTextInput({
 }: ListTextInputProps) {
   const joined = value.join(', ');
   const [raw, setRaw] = useState(joined);
-  const [lastSynced, setLastSynced] = useState(joined);
+  const [lastExternalValue, setLastExternalValue] = useState(joined);
 
   // Sync the raw string when the external array changed for reasons other
   // than our own commit (e.g., a barcode lookup pre-filled values). This
   // follows React's "storing info from previous renders" pattern — the
   // setState triggers a synchronous re-render with the updated local state.
-  if (joined !== lastSynced) {
-    setLastSynced(joined);
+  if (joined !== lastExternalValue) {
+    setLastExternalValue(joined);
     setRaw(joined);
   }
+
+  const commitRawValue = (nextRaw: string) => {
+    const parsed = parseList(nextRaw);
+    const normalized = parsed.join(', ');
+    if (normalized !== joined) {
+      onChange(parsed);
+    }
+  };
 
   const handleBlur = (event: FocusEvent<HTMLInputElement>) => {
     const parsed = parseList(raw);
     const normalized = parsed.join(', ');
     setRaw(normalized);
-    setLastSynced(normalized);
+    setLastExternalValue(normalized);
     if (normalized !== joined) {
       onChange(parsed);
     }
@@ -171,7 +179,11 @@ export function ListTextInput({
   return (
     <input
       value={raw}
-      onChange={(event) => setRaw(event.target.value)}
+      onChange={(event) => {
+        const nextRaw = event.target.value;
+        setRaw(nextRaw);
+        commitRawValue(nextRaw);
+      }}
       onBlur={handleBlur}
       className={cn(
         'h-11 rounded-xl border border-border bg-surface px-3 text-sm text-foreground placeholder:text-muted focus:border-accent-strong focus:outline-none disabled:opacity-60',
@@ -195,8 +207,8 @@ type ListTextAreaInputProps = Omit<
 };
 
 /**
- * Multi-line variant of {@link ListTextInput} with the same blur-to-commit
- * semantics. Used for longer lists like INCI ingredients.
+ * Multi-line variant of {@link ListTextInput}. Used for longer lists like
+ * INCI ingredients.
  */
 export function ListTextAreaInput({
   value,
@@ -208,18 +220,26 @@ export function ListTextAreaInput({
 }: ListTextAreaInputProps) {
   const joined = value.join(', ');
   const [raw, setRaw] = useState(joined);
-  const [lastSynced, setLastSynced] = useState(joined);
+  const [lastExternalValue, setLastExternalValue] = useState(joined);
 
-  if (joined !== lastSynced) {
-    setLastSynced(joined);
+  if (joined !== lastExternalValue) {
+    setLastExternalValue(joined);
     setRaw(joined);
   }
+
+  const commitRawValue = (nextRaw: string) => {
+    const parsed = parseList(nextRaw);
+    const normalized = parsed.join(', ');
+    if (normalized !== joined) {
+      onChange(parsed);
+    }
+  };
 
   const handleBlur = (event: FocusEvent<HTMLTextAreaElement>) => {
     const parsed = parseList(raw);
     const normalized = parsed.join(', ');
     setRaw(normalized);
-    setLastSynced(normalized);
+    setLastExternalValue(normalized);
     if (normalized !== joined) {
       onChange(parsed);
     }
@@ -229,7 +249,11 @@ export function ListTextAreaInput({
   return (
     <textarea
       value={raw}
-      onChange={(event) => setRaw(event.target.value)}
+      onChange={(event) => {
+        const nextRaw = event.target.value;
+        setRaw(nextRaw);
+        commitRawValue(nextRaw);
+      }}
       onBlur={handleBlur}
       className={cn(
         'rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted focus:border-accent-strong focus:outline-none disabled:opacity-60',

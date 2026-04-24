@@ -116,4 +116,38 @@ describe('SkinProfileForm', () => {
     ).toBeInTheDocument();
     expect(mockCreateMutate).not.toHaveBeenCalled();
   });
+
+  it('saves after correcting location consent following validation failure', async () => {
+    mockCreateMutate.mockImplementation(
+      (
+        _payload: unknown,
+        options: {
+          onSuccess?: (data: unknown) => void;
+        },
+      ) => {
+        options.onSuccess?.({ id: 'profile-1' });
+      },
+    );
+
+    renderWithProviders(<SkinProfileForm options={mockOptions} initialStep={5} />);
+
+    await user.type(screen.getByPlaceholderText('SE'), 'SE');
+    await user.click(screen.getByRole('button', { name: /save profile/i }));
+
+    expect(
+      screen.getByText(/location consent is required/i),
+    ).toBeInTheDocument();
+    expect(mockCreateMutate).not.toHaveBeenCalled();
+
+    await user.click(
+      screen.getByLabelText(/processing my location data/i),
+    );
+    await user.click(screen.getByRole('button', { name: /save profile/i }));
+
+    expect(mockCreateMutate).toHaveBeenCalled();
+    expect(mockCreateMutate.mock.calls[0]?.[0]).toMatchObject({
+      countryCode: 'SE',
+      locationConsent: true,
+    });
+  });
 });
