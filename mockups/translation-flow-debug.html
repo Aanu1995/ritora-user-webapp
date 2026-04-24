@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ritora · Why ingredient intelligence is returning English</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --background: #f7f5f0;
+        --foreground: #14201a;
+        --surface: #ffffff;
+        --surface-muted: #f0ede4;
+        --muted: #586458;
+        --border: rgba(20, 32, 26, 0.12);
+        --border-strong: rgba(20, 32, 26, 0.22);
+        --accent: #2f7a52;
+        --accent-strong: #1f5f3d;
+        --accent-soft: #e4f0e8;
+        --warning: #b8540a;
+        --warning-soft: rgba(184, 84, 10, 0.12);
+        --danger: #b3261e;
+        --danger-soft: rgba(179, 38, 30, 0.1);
+        --success: #2f7a52;
+        --shadow-soft: 0 20px 50px rgba(20, 32, 26, 0.08);
+        --ai: #7c3aed;
+        --ai-soft: rgba(124, 58, 237, 0.08);
+        --ai-border: rgba(124, 58, 237, 0.24);
+      }
+
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        color: var(--foreground);
+        background: var(--background);
+        font-size: 14px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1, h2, h3, h4 {
+        font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+        letter-spacing: -0.01em;
+      }
+      code, .mono {
+        font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 0.88em;
+      }
+
+      .page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 28px 96px;
+      }
+
+      /* ===== Hero diagnosis ===== */
+      .hero {
+        background: linear-gradient(135deg, #fff5f4 0%, #fff 100%);
+        border: 1px solid var(--danger);
+        border-radius: 20px;
+        padding: 24px 28px;
+        margin-bottom: 28px;
+      }
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: var(--danger);
+        color: white;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .hero h1 {
+        margin: 10px 0 6px;
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .hero p { margin: 0; color: var(--foreground); max-width: 780px; }
+      .hero-fix {
+        margin-top: 16px;
+        padding: 14px 16px;
+        background: var(--surface);
+        border-radius: 12px;
+        border: 1px solid var(--border);
+      }
+      .hero-fix-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .hero-fix pre {
+        margin: 8px 0 0;
+        background: var(--surface-muted);
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        overflow-x: auto;
+      }
+
+      /* ===== Flow diagram ===== */
+      .section-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-weight: 700;
+        margin: 36px 0 12px;
+      }
+      .section-label:first-of-type { margin-top: 0; }
+
+      .flow {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .flow-step {
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        gap: 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 20px;
+        box-shadow: var(--shadow-soft);
+      }
+      .flow-step.ok { border-left: 4px solid var(--success); }
+      .flow-step.decision { border-left: 4px solid var(--warning); }
+      .flow-step.failure { border-left: 4px solid var(--danger); }
+      .flow-step.llm { border-left: 4px solid var(--ai); }
+
+      .step-num {
+        width: 36px;
+        height: 36px;
+        border-radius: 9999px;
+        background: var(--surface-muted);
+        color: var(--foreground);
+        font-weight: 700;
+        display: grid;
+        place-items: center;
+        font-size: 14px;
+      }
+      .flow-step.ok .step-num { background: var(--accent-soft); color: var(--accent-strong); }
+      .flow-step.decision .step-num { background: var(--warning-soft); color: var(--warning); }
+      .flow-step.failure .step-num { background: var(--danger-soft); color: var(--danger); }
+      .flow-step.llm .step-num { background: var(--ai-soft); color: var(--ai); }
+
+      .step-location {
+        font-size: 10px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 700;
+      }
+      .step-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin: 2px 0 0;
+      }
+      .step-body { margin: 10px 0 0; }
+      .step-body p { margin: 0 0 8px; }
+      .step-body p:last-child { margin-bottom: 0; }
+      .step-body code {
+        background: var(--surface-muted);
+        padding: 1px 5px;
+        border-radius: 4px;
+      }
+      .step-body pre {
+        background: #14201a;
+        color: #e7ebdf;
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 11.5px;
+        margin: 10px 0 0;
+        overflow-x: auto;
+      }
+      .step-body pre .line-ok { color: #a3d9b4; }
+      .step-body pre .line-fail { color: #ff9b94; }
+      .step-body pre .comment { color: #8fa99a; }
+
+      /* ===== Branch markers (RETURN ENGLISH) ===== */
+      .return-en {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+        padding: 10px 14px;
+        background: var(--danger-soft);
+        border: 1px solid var(--danger);
+        border-radius: 10px;
+        font-size: 12.5px;
+        color: var(--danger);
+        font-weight: 600;
+      }
+      .return-en svg { flex: none; }
+      .return-en strong { color: var(--danger); }
+
+      .return-translated {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 12px;
+        padding: 10px 14px;
+        background: var(--accent-soft);
+        border: 1px solid var(--accent);
+        border-radius: 10px;
+        font-size: 12.5px;
+        color: var(--accent-strong);
+        font-weight: 600;
+      }
+      .return-translated svg { flex: none; }
+
+      /* ===== Decision branches (the gates where English sneaks in) ===== */
+      .gates {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 14px;
+      }
+      @media (max-width: 880px) {
+        .gates { grid-template-columns: 1fr; }
+      }
+      .gate {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+      }
+      .gate-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 13px;
+      }
+      .gate-tag {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 9999px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .gate-tag.likely {
+        background: var(--danger);
+        color: white;
+      }
+      .gate-tag.possible {
+        background: var(--warning-soft);
+        color: var(--warning);
+      }
+      .gate-body { margin-top: 8px; font-size: 12.5px; }
+      .gate-body p { margin: 0 0 8px; }
+      .gate-body pre {
+        background: var(--surface-muted);
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 11px;
+        margin: 6px 0;
+        overflow-x: auto;
+      }
+
+      /* ===== Diagnosis table ===== */
+      .diag-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--surface);
+        font-size: 13px;
+      }
+      .diag-table th {
+        background: var(--surface-muted);
+        text-align: left;
+        padding: 10px 14px;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--muted);
+        font-weight: 700;
+      }
+      .diag-table td {
+        padding: 12px 14px;
+        border-top: 1px solid var(--border);
+        vertical-align: top;
+      }
+      .diag-table td code {
+        background: var(--surface-muted);
+        padding: 1px 5px;
+        border-radius: 4px;
+      }
+      .bar-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        margin-right: 6px;
+      }
+      .bar-dot.high { background: var(--danger); }
+      .bar-dot.med { background: var(--warning); }
+      .bar-dot.low { background: var(--muted); }
+
+      .kv {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 8px 14px;
+        font-size: 12.5px;
+        margin: 14px 0 0;
+      }
+      .kv dt { color: var(--muted); font-weight: 500; }
+      .kv dd { margin: 0; }
+
+      /* ===== Footer helper ===== */
+      .checklist {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 22px;
+      }
+      .checklist h3 { margin: 0 0 12px; font-size: 16px; }
+      .checklist ol {
+        padding-left: 22px;
+        margin: 0;
+      }
+      .checklist li {
+        font-size: 13.5px;
+        margin-bottom: 8px;
+        line-height: 1.55;
+      }
+      .checklist li code {
+        background: var(--surface-muted);
+        padding: 1px 5px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- ========== HERO DIAGNOSIS ========== -->
+      <section class="hero">
+        <span class="hero-tag">Likely cause</span>
+        <h1><code>OPENAI_INGREDIENT_EXPLANATION_MODEL</code> is not set</h1>
+        <p>
+          Translation happens at runtime through the LLM. When the model env
+          var is missing, the translator's LLM call short-circuits to
+          <code>null</code>, and the caller falls back to the English source
+          text. Your most recent boot log confirmed this warning:
+        </p>
+        <div class="hero-fix">
+          <span class="hero-fix-title">Seen in your logs</span>
+          <pre>WARN [OpenAiExplanationProvider] OPENAI_INGREDIENT_EXPLANATION_MODEL is not set.
+Ingredient explanations will be skipped; clients will receive deterministic findings only.</pre>
+        </div>
+        <div class="hero-fix" style="margin-top: 12px;">
+          <span class="hero-fix-title">Fix</span>
+          <pre># .env
+OPENAI_API_KEY=sk-...
+OPENAI_INGREDIENT_EXPLANATION_MODEL=gpt-5-mini</pre>
+          <p style="margin: 8px 0 0; font-size: 12px; color: var(--muted);">
+            Then restart and refresh the product detail. The first Swedish
+            request hits the LLM (~1–2&nbsp;s), subsequent ones return from
+            the cache instantly.
+          </p>
+        </div>
+      </section>
+
+      <!-- ========== THE FULL FLOW ========== -->
+      <p class="section-label">Full translation flow — where each step lives</p>
+
+      <div class="flow">
+        <!-- Step 1 — Frontend hook -->
+        <div class="flow-step ok">
+          <div class="step-num">1</div>
+          <div>
+            <span class="step-location">frontend · <code>src/hooks/use-ingredients.ts</code></span>
+            <p class="step-title">Hook resolves the user's locale and passes it in the request body</p>
+            <div class="step-body">
+              <pre>const locale = normalizeLocale(useLocale());  <span class="comment">// 'sv'</span>
+return ingredientsService.analyzeProducts(
+  { focusProductId: productId, <span class="line-ok">language: locale</span>, withExplanations },
+  signal,
+);</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 — Frontend service -->
+        <div class="flow-step ok">
+          <div class="step-num">2</div>
+          <div>
+            <span class="step-location">frontend · <code>src/services/ingredients.service.ts</code></span>
+            <p class="step-title"><code>POST /ingredients/analyze</code> — body includes <code>language: 'sv'</code></p>
+            <div class="step-body">
+              <pre>POST /api/v1/ingredients/analyze
+{
+  "focusProductId": "01HW...",
+  <span class="line-ok">"language": "sv"</span>,
+  "withExplanations": false
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 — Controller -->
+        <div class="flow-step decision">
+          <div class="step-num">3</div>
+          <div>
+            <span class="step-location">backend · <code>src/ingredients/ingredients.controller.ts</code></span>
+            <p class="step-title">Controller picks the language: <code>dto.language</code> first, <code>Accept-Language</code> header second</p>
+            <div class="step-body">
+              <pre>const language = dto.language
+  ? normalizeLanguage(dto.language)   <span class="line-ok">// body wins → 'sv'</span>
+  : resolveRequestLanguage(request);  <span class="comment">// fallback</span></pre>
+              <p style="margin-top: 10px; font-size: 12px; color: var(--muted);">
+                <strong>Decision 1:</strong> if <code>normalizeLanguage('sv')</code>
+                returns anything other than <code>'sv'</code> (e.g., it maps to
+                <code>'en'</code> because <code>'sv'</code> isn't in
+                <code>AppLanguage</code>), translation silently degrades to
+                English from this point forward.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 — Analysis service -->
+        <div class="flow-step ok">
+          <div class="step-num">4</div>
+          <div>
+            <span class="step-location">backend · <code>src/ingredients/analysis.service.ts</code></span>
+            <p class="step-title">Analysis builds an English result, then calls <code>localiseActives</code> or <code>localiseMultiResult</code></p>
+            <div class="step-body">
+              <pre>actives: <span class="line-ok">await this.localiseActives(actives, input.language)</span>,</pre>
+              <p style="margin-top: 8px; font-size: 12px; color: var(--muted);">
+                All <code>summary</code> and <code>mitigationHint</code> strings flow
+                through <code>TranslationService.translateMany()</code>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5 — Translation service entry -->
+        <div class="flow-step decision">
+          <div class="step-num">5</div>
+          <div>
+            <span class="step-location">backend · <code>src/ingredients/translation.service.ts</code></span>
+            <p class="step-title">First gate: target === source → return the English text as-is</p>
+            <div class="step-body">
+              <pre>if (target === source) {                   <span class="comment">// source = 'en' by default</span>
+  return [...sourceTexts];                  <span class="line-fail">// 🚨 English back to caller</span>
+}</pre>
+              <p style="margin-top: 8px; font-size: 12px; color: var(--muted);">
+                <strong>Decision 2:</strong> if <code>INGREDIENT_TRANSLATION_SOURCE_LANGUAGE</code>
+                is accidentally set to <code>sv</code>, this branch fires for
+                <em>every Swedish request</em> — the service thinks source == target
+                and skips the LLM entirely.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6 — Cache lookup -->
+        <div class="flow-step ok">
+          <div class="step-num">6</div>
+          <div>
+            <span class="step-location">backend · <code>translation.service.ts · readManyFromDb()</code></span>
+            <p class="step-title">Cache check — LRU, then <code>ingredient_translation_cache</code> by <code>(sha256, language)</code></p>
+            <div class="step-body">
+              <p style="margin: 0; font-size: 12px; color: var(--muted);">
+                Cache hit → Swedish text returned in microseconds (no LLM call).
+                Cache miss → proceeds to Step&nbsp;7.
+              </p>
+              <div class="return-translated" style="margin-top: 10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Cache hit → Swedish returned, done.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 7 — LLM call -->
+        <div class="flow-step llm">
+          <div class="step-num">7</div>
+          <div>
+            <span class="step-location">backend · <code>translation.service.ts · callLlm()</code></span>
+            <p class="step-title">LLM translation — the only path that actually produces Swedish</p>
+            <div class="step-body">
+              <pre>const apiKey = configService.get('OPENAI_API_KEY')?.trim();
+if (!apiKey) return null;                  <span class="line-fail">// 🚨 returns null → English</span>
+
+const model = configService.get(MODEL_ENV_KEY)?.trim();
+if (!model) return null;                   <span class="line-fail">// 🚨 returns null → English ← YOUR CASE</span>
+
+const response = await fetch('https://api.openai.com/v1/responses', { ... });
+if (!response.ok) return null;             <span class="line-fail">// 🚨 5xx → English</span>
+
+return parsed.translation.trim();          <span class="line-ok">// ✅ Swedish</span></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 8 — Fallback -->
+        <div class="flow-step failure">
+          <div class="step-num">8</div>
+          <div>
+            <span class="step-location">backend · <code>translation.service.ts · translate() / translateMany()</code></span>
+            <p class="step-title">Fallback: any <code>null</code> from the LLM → return the English source verbatim</p>
+            <div class="step-body">
+              <pre>const translated = await this.callLlm(sourceText, target);
+if (translated === null) {
+  return sourceText;                        <span class="line-fail">// 🚨 English back to the UI</span>
+}</pre>
+              <div class="return-en">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 6-12 12"/><path d="m6 6 12 12"/></svg>
+                This is the branch firing for you right now.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== THE 4 GATES ========== -->
+      <p class="section-label">Every place English can be returned — ranked by likelihood for your case</p>
+
+      <div class="gates">
+        <div class="gate">
+          <div class="gate-title">
+            <span class="gate-tag likely">Most likely</span>
+            Model env missing
+          </div>
+          <div class="gate-body">
+            <p>Your boot log flagged this one. Without the model, <code>callLlm()</code> returns <code>null</code> on step&nbsp;7 and the caller falls back to English.</p>
+            <pre>$ env | grep OPENAI
+OPENAI_API_KEY=sk-…
+<span style="color: var(--danger);">OPENAI_INGREDIENT_EXPLANATION_MODEL=</span>  <span class="comment">// unset</span></pre>
+            <p><strong>Fix:</strong> set it in <code>.env</code>, restart.</p>
+          </div>
+        </div>
+
+        <div class="gate">
+          <div class="gate-title">
+            <span class="gate-tag possible">Also check</span>
+            API key missing
+          </div>
+          <div class="gate-body">
+            <p>Same shape. If the key is blank in the running environment, step&nbsp;7 returns <code>null</code> before even checking the model.</p>
+            <pre>$ env | grep OPENAI_API_KEY</pre>
+          </div>
+        </div>
+
+        <div class="gate">
+          <div class="gate-title">
+            <span class="gate-tag possible">Possible</span>
+            Source language mis-configured
+          </div>
+          <div class="gate-body">
+            <p>If <code>INGREDIENT_TRANSLATION_SOURCE_LANGUAGE</code> is set to <code>sv</code>, the service thinks the DB content is Swedish and every <code>sv</code> request short-circuits at step&nbsp;5.</p>
+            <pre>$ env | grep INGREDIENT_TRANSLATION_SOURCE_LANGUAGE</pre>
+            <p>Should be unset or <code>en</code>.</p>
+          </div>
+        </div>
+
+        <div class="gate">
+          <div class="gate-title">
+            <span class="gate-tag possible">Possible</span>
+            Locale never left the UI
+          </div>
+          <div class="gate-body">
+            <p>If <code>useLocale()</code> returns <code>'en'</code> (e.g., the user's locale cookie is stale), the body carries <code>language: 'en'</code> and step 5 is a correct pass-through.</p>
+            <pre>document.cookie   <span class="comment">// look for NEXT_LOCALE=sv</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== DIAGNOSE WITH LOGS ========== -->
+      <p class="section-label">What to look for in the backend logs</p>
+
+      <table class="diag-table">
+        <thead>
+          <tr>
+            <th>Log line</th>
+            <th>Means</th>
+            <th>Do</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="bar-dot high"></span>
+              <code>{"event":"translation_skipped","reason":"missing_model_env"}</code>
+            </td>
+            <td>Model env not set. Swedish request returned as English.</td>
+            <td>Set <code>OPENAI_INGREDIENT_EXPLANATION_MODEL</code>.</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="bar-dot high"></span>
+              <code>{"event":"translation_skipped","reason":"missing_api_key"}</code>
+            </td>
+            <td>API key missing.</td>
+            <td>Set <code>OPENAI_API_KEY</code>.</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="bar-dot med"></span>
+              <code>{"event":"translation_failed","reason":"http_error","status":…}</code>
+            </td>
+            <td>OpenAI call failed — bad model name, quota, network.</td>
+            <td>Verify the model id is real; check OpenAI status.</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="bar-dot med"></span>
+              <code>{"event":"translation_failed","reason":"empty_output"}</code>
+            </td>
+            <td>OpenAI returned 200 but no text.</td>
+            <td>Usually a prompt/model interaction issue. Retry with a different model.</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="bar-dot low"></span>
+              <em>No log, just English</em>
+            </td>
+            <td>Step 5 short-circuit: target language equals source language.</td>
+            <td>Check <code>INGREDIENT_TRANSLATION_SOURCE_LANGUAGE</code> and the body's <code>language</code> field.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ========== QUICK CHECKLIST ========== -->
+      <p class="section-label">Quick recovery checklist</p>
+
+      <div class="checklist">
+        <h3>Get Swedish back in 60 seconds</h3>
+        <ol>
+          <li>Set <code>OPENAI_API_KEY</code> and <code>OPENAI_INGREDIENT_EXPLANATION_MODEL</code> in <code>.env</code>.</li>
+          <li>Restart the backend. Confirm the <em>"OPENAI_INGREDIENT_EXPLANATION_MODEL is not set"</em> warning is gone.</li>
+          <li>Open a product detail in the app with the locale set to Swedish. First load takes a second or two (LLM warming the cache).</li>
+          <li>Refresh — now it's instant (cache hit from <code>ingredient_translation_cache</code>).</li>
+          <li>Double-check: <code>SELECT * FROM ingredient_translation_cache LIMIT 5;</code> — rows with <code>language = 'sv'</code> should appear.</li>
+        </ol>
+
+        <dl class="kv">
+          <dt>Env vars</dt>
+          <dd><code>OPENAI_API_KEY</code>, <code>OPENAI_INGREDIENT_EXPLANATION_MODEL</code>, optional <code>INGREDIENT_TRANSLATION_SOURCE_LANGUAGE</code> (default <code>en</code>).</dd>
+          <dt>Cache table</dt>
+          <dd><code>ingredient_translation_cache(source_hash, language, translated_text)</code> — truncate to force retranslation.</dd>
+          <dt>Cache key</dt>
+          <dd><code>sha256(sourceText)</code> + <code>language</code>. Edit the English text → new hash → next request hits the LLM.</dd>
+        </dl>
+      </div>
+    </div>
+  </body>
+</html>

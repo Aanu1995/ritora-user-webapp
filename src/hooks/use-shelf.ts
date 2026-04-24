@@ -29,6 +29,11 @@ type ShelfIdsMutationFn = (ids: string[]) => Promise<void>;
 
 function invalidateShelfQueries(queryClient: ShelfQueryClient) {
   void queryClient.invalidateQueries({ queryKey: [QueryKey.Shelf] });
+  // Focus-product ingredient analyses depend on each product's INCI data;
+  // any mutation that changes a shelf product must bust them too.
+  void queryClient.invalidateQueries({
+    queryKey: [QueryKey.IngredientsAnalysis],
+  });
 }
 
 function setShelfProductCache(

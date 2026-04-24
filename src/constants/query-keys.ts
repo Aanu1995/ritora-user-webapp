@@ -9,4 +9,5 @@ export enum QueryKey {
   PhotoExtract = 'photo-extract',
   Schedule = 'schedule',
   ScheduleToday = 'schedule-today',
+  IngredientsAnalysis = 'ingredients-analysis',
 }
