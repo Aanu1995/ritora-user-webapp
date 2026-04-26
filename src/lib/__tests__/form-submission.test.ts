@@ -1,3 +1,4 @@
+import type { UseMutateFunction } from "@tanstack/react-query";
 import {
   clearSubmitErrors,
   executeMutation,
@@ -8,13 +9,15 @@ import {
 describe("form-submission", () => {
   it("resolves successful mutations", async () => {
     const mutate = jest.fn(
-      (
-        _variables: { email: string },
-        options?: { onSuccess?: (value: { ok: boolean }) => void },
-      ) => {
+      (_variables: { email: string }, options?: { onSuccess?: (...args: unknown[]) => void }) => {
         options?.onSuccess?.({ ok: true });
       },
-    );
+    ) as unknown as UseMutateFunction<
+      { ok: boolean },
+      unknown,
+      { email: string },
+      unknown
+    >;
 
     await expect(
       executeMutation(mutate, { email: "ada@example.com" }),
@@ -27,13 +30,15 @@ describe("form-submission", () => {
   it("resolves failed mutations without throwing", async () => {
     const error = new Error("Boom");
     const mutate = jest.fn(
-      (
-        _variables: { email: string },
-        options?: { onError?: (value: Error) => void },
-      ) => {
+      (_variables: { email: string }, options?: { onError?: (...args: unknown[]) => void }) => {
         options?.onError?.(error);
       },
-    );
+    ) as unknown as UseMutateFunction<
+      unknown,
+      Error,
+      { email: string },
+      unknown
+    >;
 
     await expect(
       executeMutation(mutate, { email: "ada@example.com" }),
@@ -54,6 +59,24 @@ describe("form-submission", () => {
         fields: {},
       },
     });
+  });
+
+  it("skips clearing when there are no submit errors to remove", () => {
+    const setErrorMap = jest.fn();
+
+    clearSubmitErrors({
+      setErrorMap,
+      state: {
+        errorMap: {
+          onSubmit: {
+            form: undefined,
+            fields: {},
+          },
+        },
+      },
+    });
+
+    expect(setErrorMap).not.toHaveBeenCalled();
   });
 
   it("sets submit errors on the form", () => {

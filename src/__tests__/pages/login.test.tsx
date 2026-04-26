@@ -2,6 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AppRoute } from '@/constants/app-routes';
 import { ApiError } from '@/lib/api-error';
+import { navigateToUrl } from '@/lib/browser-navigation';
 import { resolvePostLoginRoute } from '@/lib/post-login-route';
 import { renderWithProviders } from '@/test/utils';
 
@@ -28,6 +29,10 @@ jest.mock('@/lib/post-login-route', () => ({
   resolvePostLoginRoute: jest.fn(),
 }));
 
+jest.mock('@/lib/browser-navigation', () => ({
+  navigateToUrl: jest.fn(),
+}));
+
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: mockPush,
@@ -48,7 +53,7 @@ describe('LoginPage', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (resolvePostLoginRoute as jest.Mock).mockResolvedValue(AppRoute.Onboarding);
+    (resolvePostLoginRoute as jest.Mock).mockResolvedValue(AppRoute.SkinProfile);
     mockLoginReturn = {
       mutate: mockMutate,
       isPending: false,
@@ -83,10 +88,15 @@ describe('LoginPage', () => {
     });
   });
 
-  it('navigates to onboarding on success when setup is still needed', async () => {
+  it('navigates to skin profile on success when setup is still needed', async () => {
     mockMutate.mockImplementation(
       (_input: unknown, options?: MutationCallbacks) => {
-        options?.onSuccess?.();
+        options?.onSuccess?.({
+          accessToken: 'tok',
+          user: {
+            preferredLanguage: 'en',
+          },
+        });
       },
     );
 
@@ -98,7 +108,33 @@ describe('LoginPage', () => {
 
     await waitFor(() => {
       expect(resolvePostLoginRoute).toHaveBeenCalled();
-      expect(mockPush).toHaveBeenCalledWith(AppRoute.Onboarding);
+      expect(mockPush).toHaveBeenCalledWith(AppRoute.SkinProfile);
+      expect(navigateToUrl).not.toHaveBeenCalled();
+    });
+  });
+
+  it('uses a document navigation when the saved user locale differs', async () => {
+    mockMutate.mockImplementation(
+      (_input: unknown, options?: MutationCallbacks) => {
+        options?.onSuccess?.({
+          accessToken: 'tok',
+          user: {
+            preferredLanguage: 'sv',
+          },
+        });
+      },
+    );
+
+    renderWithProviders(<LoginPage />);
+
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.type(screen.getByLabelText(/^password$/i), 'TestPass1');
+    await user.click(screen.getByRole('button', { name: /^log in$/i }));
+
+    await waitFor(() => {
+      expect(resolvePostLoginRoute).not.toHaveBeenCalled();
+      expect(navigateToUrl).toHaveBeenCalledWith(AppRoute.PostLogin);
+      expect(mockPush).not.toHaveBeenCalled();
     });
   });
 

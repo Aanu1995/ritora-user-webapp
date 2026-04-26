@@ -1,6 +1,7 @@
 {
   "common": {
     "loading": "Laddar...",
+    "processing": "Bearbetar...",
     "error": "Något gick fel",
     "save": "Spara",
     "cancel": "Avbryt",
@@ -9,9 +10,28 @@
     "retry": "Försök igen",
     "skip": "Hoppa över",
     "submit": "Skicka",
+    "close": "Stäng",
     "or": "eller",
     "selectPlaceholder": "Välj...",
-    "recommended": "Rekommenderat"
+    "recommended": "Rekommenderat",
+    "datePicker": {
+      "placeholder": "Välj datum",
+      "clear": "Rensa datum"
+    },
+    "countrySelect": {
+      "placeholder": "Välj land",
+      "searchPlaceholder": "Sök land",
+      "noMatch": "Inga länder matchar “{query}”."
+    },
+    "timeZoneSelect": {
+      "placeholder": "Välj tidszon",
+      "searchPlaceholder": "Sök tidszoner",
+      "noMatch": "Inga tidszoner matchar “{query}”."
+    },
+    "confirmDialog": {
+      "cancel": "Avbryt",
+      "working": "Bearbetar..."
+    }
   },
   "nav": {
     "whyRitora": "Varför Ritora",
@@ -303,7 +323,8 @@
   },
   "dashboard": {
     "welcome": "Välkommen tillbaka, {firstName}",
-    "subtitle": "Här är vad som händer med din hudvård",
+    "subtitle": "En lugn överblick över idag och din hylla.",
+    "upcomingHeading": "Kommer snart",
     "profileCard": {
       "title": "Hudprofil",
       "complete": "Din hudprofil är redo. AI-rekommendationer kommer att använda detta.",
@@ -426,12 +447,21 @@
       "nameTooLong": "Namn får vara högst 100 tecken.",
       "nameUpdated": "Namnet har uppdaterats.",
       "nameUpdateFailed": "Vi kunde inte uppdatera ditt namn. Försök igen.",
-      "sessionsTitle": "Session",
-      "sessionsDescription": "Hantera din nuvarande inloggning.",
-      "signOut": "Logga ut",
-      "signOutDescription": "Avsluta din nuvarande session på denna enhet.",
+      "sessionsTitle": "Sessioner",
+      "sessionsDescription": "Hantera den här enheten eller avsluta åtkomst på alla enheter där du är inloggad.",
+      "signOut": "Den här enheten",
+      "signOutDescription": "Avsluta bara sessionen på denna enhet.",
       "signOutButton": "Logga ut",
-      "signingOut": "Loggar ut..."
+      "signingOut": "Loggar ut...",
+      "signOutAll": "Alla enheter",
+      "signOutAllDescription": "Avsluta alla aktiva sessioner på alla enheter, inklusive denna.",
+      "signOutAllButton": "Logga ut alla enheter",
+      "signingOutAll": "Loggar ut överallt...",
+      "signOutAllConfirmTitle": "Logga ut på alla enheter?",
+      "signOutAllConfirmBody": "Detta avslutar alla aktiva sessioner för ditt konto, inklusive denna enhet. Du behöver logga in igen på varje enhet.",
+      "signOutAllConfirmAction": "Logga ut alla enheter",
+      "signOutAllConfirmCancel": "Behåll sessionerna",
+      "signOutAllFailed": "Vi kunde inte logga ut alla enheter. Försök igen."
     },
     "appearance": {
       "themeTitle": "Tema",
@@ -448,7 +478,27 @@
       "title": "Visningsspråk",
       "description": "Ändra språket som används i gränssnittet.",
       "displayLanguage": "Språk",
-      "current": "Aktuellt: {locale}"
+      "current": "Aktuellt: {locale}",
+      "updateFailed": "Det gick inte att spara din språkinställning."
+    },
+    "timeZone": {
+      "title": "Schematidszon",
+      "description": "Dina rutiner förblir förankrade i den här tidszonen, även när du reser.",
+      "label": "Tidszon",
+      "current": "Aktuell: {timeZone}",
+      "deviceCurrent": "Den här enheten är inställd på {timeZone}.",
+      "useDevice": "Använd {timeZone}",
+      "updateSuccess": "Tidszonen uppdaterades till {timeZone}.",
+      "updateFailed": "Det gick inte att spara din tidszon.",
+      "unavailable": "Tidszonen är inte tillgänglig på den här enheten."
+    },
+    "timeZoneMismatch": {
+      "title": "Tidszonen har ändrats",
+      "body": "Ditt schema är fortfarande förankrat i {savedTimeZone}, medan den här enheten nu är inställd på {deviceTimeZone}.",
+      "keep": "Behåll nuvarande schematidszon",
+      "switch": "Byt schematidszon till {deviceTimeZone}",
+      "switched": "Schematidszonen uppdaterades till {timeZone}.",
+      "switchFailed": "Det gick inte att uppdatera schemats tidszon."
     },
     "privacy": {
       "legalTitle": "Juridik",
@@ -683,6 +733,532 @@
       "comprehensive": "När Ritora föreslår"
     }
   },
+  "shelf": {
+    "title": "Din hylla",
+    "pageSubtitle": "Allt du redan äger, samlat på en lugn plats.",
+    "unsavedChanges": {
+      "title": "Osparade ändringar",
+      "description": "Dina ändringar försvinner om du lämnar sidan nu.",
+      "discard": "Kasta ändringar",
+      "keepEditing": "Fortsätt redigera"
+    },
+    "searchPlaceholder": "Sök märke, produkt, ingrediens",
+    "sort": {
+      "label": "Sortera",
+      "recentlyAdded": "Senast tillagda",
+      "expiringSoon": "Snart utgångsdatum",
+      "alphabetical": "Alfabetiskt",
+      "categoryGrouped": "Grupperat efter kategori"
+    },
+    "view": {
+      "grid": "Rutnätsvy",
+      "list": "Listvy"
+    },
+    "stat": {
+      "all": "Alla",
+      "inUse": "Används",
+      "unopened": "Oöppnade",
+      "nearingExpiry": "Snart utgångsdatum",
+      "expired": "Utgångna",
+      "archived": "Arkiverade"
+    },
+    "category": {
+      "all": "Alla",
+      "cleanser": "Rengöring",
+      "toner": "Toner",
+      "essence": "Essens",
+      "serum": "Serum",
+      "moisturizer": "Fuktkräm",
+      "sun-protection": "Solskydd",
+      "mask": "Mask",
+      "exfoliant": "Peeling",
+      "eye-care": "Ögonvård",
+      "lip-care": "Läppvård",
+      "treatment": "Behandling",
+      "other": "Övrigt"
+    },
+    "lookupSource": {
+      "user-photos": "Dina produktfoton",
+      "ritora-catalogue": "Ritoras katalog",
+      "open-beauty-facts": "Open Beauty Facts",
+      "official-page": "Officiell produktsida"
+    },
+    "lookupConfidence": {
+      "high": "Hög tillförlitlighet",
+      "medium": "Medel tillförlitlighet",
+      "low": "Låg tillförlitlighet"
+    },
+    "lookupWarning": {
+      "review-required": "Granska innan du sparar",
+      "community-data": "Källan är community-baserad",
+      "ai-normalized": "Vissa fält normaliserades från verifierbart sidinnehåll",
+      "partial-data": "Bara delar av produktinformationen hittades",
+      "ingredients-unverified": "Verifiera ingredienserna mot förpackningen",
+      "guidance-unverified": "Granska användningsråden innan du sparar"
+    },
+    "empty": {
+      "title": "Din hylla är tom",
+      "description": "Lägg till produkter du äger så bygger Ritora en lugnare rutin runt dem.",
+      "cta": "Lägg till din första produkt",
+      "filtered": "Inga produkter matchar ditt nuvarande filter."
+    },
+    "errors": {
+      "retry": "Försök igen",
+      "loadShelfTitle": "Vi kunde inte läsa din hylla",
+      "loadShelfDescription": "Hylla kunde inte läsas in just nu. Försök igen om en liten stund.",
+      "loadProductTitle": "Vi kunde inte läsa den här produkten",
+      "loadProductDescription": "Produktdetaljerna kunde inte läsas in just nu. Försök igen om en liten stund.",
+      "loadMore": "Kunde inte hämta fler produkter."
+    },
+    "card": {
+      "unopened": "Oöppnad",
+      "finished": "Förbrukad",
+      "expired": "Utgången",
+      "archived": "Arkiverad",
+      "sizeSuffix": "ml",
+      "lowStock": "Lite kvar"
+    },
+    "actions": {
+      "add": "Lägg till produkt",
+      "edit": "Redigera",
+      "archive": "Arkivera",
+      "markFinished": "Markera som förbrukad",
+      "loadMore": "Ladda fler",
+      "loadingMore": "Laddar fler…",
+      "delete": "Ta bort",
+      "cancel": "Avbryt",
+      "back": "Tillbaka",
+      "clearSelection": "Avmarkera alla",
+      "save": "Spara ändringar",
+      "saving": "Sparar..."
+    },
+    "bulk": {
+      "selected": "{count} valda",
+      "archiveTooltip": "Arkivering döljer produkter från den aktiva vyn men behåller historiken.",
+      "finishedTooltip": "Markerar en produkt som förbrukad och sparar historiken.",
+      "deleteTooltip": "Ta bort permanent från din hylla.",
+      "deleteConfirmTitle": "Ta bort {count} produkter?",
+      "deleteConfirmTitleSingle": "Ta bort den här produkten?",
+      "deleteConfirmBody": "Detta kan inte ångras. Anteckningar och historik tas bort.",
+      "deleteConfirmCancel": "Behåll"
+    },
+    "dialog": {
+      "title": "Lägg till på din hylla",
+      "subtitle": "Ladda upp en produktbild och etikettbilder, eller fyll i manuellt.",
+      "close": "Stäng",
+      "step": "Steg {current} av 2",
+      "photos": {
+        "productPhoto": {
+          "sectionTitle": "Din produktbild",
+          "helper": "Det är så här produkten kommer att visas på din hylla.",
+          "addAction": "Lägg till produktbild",
+          "replaceAction": "Byt ut",
+          "removeAction": "Ta bort"
+        },
+        "labelPhotos": {
+          "sectionTitle": "Etikettbilder",
+          "helper": "Fånga varje läsbar panel. Ritora läser dessa för att automatiskt fylla i varumärke, ingredienser, anvisningar och varningar.",
+          "addAction": "Lägg till etikettbild",
+          "removeAction": "Ta bort"
+        },
+        "shapeTips": {
+          "heading": "Tips per förpackningstyp",
+          "rectangular": "Kartong eller rektangulär — fram och bak, eller sidan med mest text.",
+          "cylindrical": "Flaska, tub eller cylinder — ta 3–4 överlappande foton medan du roterar runt kroppen. Håll viktig text borta från kanterna; kurvan förvränger texten där.",
+          "roundJar": "Burk, sfär eller rund — ovansidan eller locket, plus 2–3 sidosektioner ~90° mellan bilderna.",
+          "pouch": "Påse eller sachet — lägg den platt på en yta och ta ett foto per tryckt sida."
+        },
+        "incomplete": "Lägg till en produktbild och minst en etikettbild.",
+        "ready": "Redo. Ritora sparar din produktbild och läser etiketterna.",
+        "maxReached": "Du har nått gränsen på 6 bilder. Ta bort en etikettbild för att lägga till en annan.",
+        "extracting": "Läser dina foton…",
+        "partial": "Vissa fält behöver fortfarande granskas — se de markerade fälten nedan.",
+        "errorTitle": "Kunde inte läsa fotona",
+        "error": "Prova tydligare etikettfoton eller fyll i manuellt.",
+        "serviceUnavailableTitle": "Kunde inte nå fotoläsaren",
+        "serviceUnavailableDescription": "Kontrollera din anslutning och försök igen. Dina foton finns kvar.",
+        "serviceUnavailable": "Kunde inte nå fotoläsaren. Kontrollera din anslutning och försök igen.",
+        "extractAction": "Extrahera från foton",
+        "extractingAction": "Extraherar…"
+      },
+      "lookup": {
+        "heading": "Hitta din produkt",
+        "description": "Lägg till en produktbild och etikettbilder. Ritora fyller i det den kan och du kan justera resten nedan."
+      },
+      "lookupImport": {
+        "title": "Detaljer ifyllda",
+        "description": "Ändra något innan du sparar.",
+        "reviewDescription": "Granska de markerade fälten innan du sparar."
+      },
+      "lookupReview": {
+        "title": "Importerade detaljer att granska",
+        "description": "Vi fyllde i det vi kunde från {source}. Granska detaljerna innan du sparar till din hylla.",
+        "reviewRequired": "Granskning rekommenderas",
+        "confidenceLabel": "Tillförlitlighet",
+        "warningsLabel": "Det här bör du granska",
+        "evidenceLabel": "Underliggande källor",
+        "lowConfidenceError": "Vi kunde inte verifiera tillräckligt med produktdetaljer för att fylla i formuläret på ett säkert sätt. Prova tydligare bilder eller fyll i uppgifterna manuellt."
+      },
+      "manual": {
+        "heading": "Lägg till manuellt",
+        "description": "Fyll i det du vet. Du kan lägga till mer senare."
+      },
+      "confirm": {
+        "heading": "Granska och lägg till på din hylla",
+        "subheading": "Du kan ändra detta senare.",
+        "autoFromPao": "Beräknat från PAO",
+        "needsReviewBadge": "Behöver granskas",
+        "pleaseFill": "Fyll i",
+        "sections": {
+          "identity": "Identitet",
+          "about": "Om produkten",
+          "lookup": "Från uppslagningen",
+          "yours": "Bara du vet dessa",
+          "guidance": "Så använder du produkten"
+        },
+        "hints": {
+          "identityDescription": "Grunderna om produkten. Märke, namn, kategori och storlek.",
+          "photoPreviewAvailable": "Den valda produktbilden är redo att sparas med den här produkten.",
+          "sizeHint": "Volym i milliliter från förpackningen.",
+          "aboutDescription": "Kopiera från förpackningen eller lämna tomt. Ritora fyller i detta när fotoextraktion eller katalogträff lyckas.",
+          "descriptionHint": "En kort överblick över vad produkten gör.",
+          "benefitsHint": "Kommaseparerat, till exempel återfuktande, lugnande, utjämnande.",
+          "suitedForHint": "Kommaseparerade hudtyper, till exempel torr, kombinerad, känslig.",
+          "ingredientsHint": "Valfritt men rekommenderat. Klistra in hela INCI-listan när den finns; utan den hoppar Ritora över ingrediensbaserade säkerhetskontroller för produkten.",
+          "yoursDescription": "Ritora använder detta för att följa hållbarhet och dina personliga preferenser.",
+          "openedAtHint": "Lämna tomt om produkten fortfarande är förseglad.",
+          "paoHint": "Brukar stå på burksymbolen som 12M, 24M och liknande.",
+          "expiresAtHint": "Ritora fyller i detta från öppningsdatum och PAO. Du kan ändra det.",
+          "preferredTimeHint": "Om du brukar använda den här på morgonen eller kvällen tar Ritoras AI-förslag hänsyn till det när din rutin byggs.",
+          "priceHint": "För framtida insikter om kostnader. Valfritt.",
+          "purchasedFromHint": "Var du köpte den.",
+          "personalNotesHint": "Hur den känns på huden. Det ser bara du.",
+          "guidanceDescription": "Hur du applicerar produkten och vad du ska tänka på. Börja från en mall eller skriv själv.",
+          "manufacturerDescription": "Valfritt. Ritora använder produktlänken för att snabbt öppna den officiella sidan.",
+          "parentCompanyHint": "Moderbolag eller paraplyvarumärke.",
+          "countryManufactureHint": "Välj landet som står på förpackningen.",
+          "supportEmailHint": "Varumärkets supportadress.",
+          "productUrlHint": "Länk till produkten på varumärkets egen webbplats."
+        },
+        "fields": {
+          "brand": "Märke",
+          "brandPlaceholder": "t.ex. CeraVe",
+          "name": "Produktnamn",
+          "namePlaceholder": "t.ex. Resurfacing Retinol Serum",
+          "category": "Kategori",
+          "size": "Storlek",
+          "description": "Beskrivning",
+          "descriptionPlaceholder": "t.ex. Ett milt kvällsserum som hjälper huden att kännas jämnare över tid.",
+          "benefits": "Fördelar",
+          "benefitsPlaceholder": "återfuktande, lugnande",
+          "suitedFor": "Passar för",
+          "suitedForPlaceholder": "torr, känslig",
+          "inciIngredients": "Ingredienser (INCI)",
+          "ingredientsPlaceholder": "Aqua, Glycerin, Niacinamide, Retinol, Ceramide NP, …",
+          "openedAt": "Öppnad den",
+          "periodAfterOpening": "Hållbar efter öppning",
+          "expiresAt": "Utgångsdatum",
+          "preferredTimeOfDay": "Föredragen tid (valfritt)",
+          "pricePaid": "Pris (valfritt)",
+          "purchasedFrom": "Köpt hos (valfritt)",
+          "personalNotes": "Dina anteckningar (valfritt)",
+          "datePlaceholder": "Välj datum",
+          "productUrl": "Produkt-URL",
+          "productUrlPlaceholder": "https://example.com/produkt",
+          "notesPlaceholder": "Hur känns den på huden?",
+          "sizePlaceholder": "t.ex. 30",
+          "pricePlaceholder": "t.ex. 249",
+          "purchasedFromPlaceholder": "t.ex. Kicks",
+          "parentPlaceholder": "t.ex. L'Oréal",
+          "supportPlaceholder": "support@varumarke.com"
+        },
+        "paoOptions": {
+          "6": "6 månader",
+          "12": "12 månader",
+          "18": "18 månader",
+          "24": "24 månader",
+          "36": "36 månader",
+          "unknown": "Vet inte"
+        },
+        "preferredTimeOptions": {
+          "none": "Ingen preferens",
+          "morning": "Morgon",
+          "evening": "Kväll",
+          "either": "Antingen"
+        },
+        "submit": "Lägg till på hyllan",
+        "submitting": "Lägger till...",
+        "successToast": "Tillagd på din hylla"
+      },
+      "validation": {
+        "brandRequired": "Märke är obligatoriskt.",
+        "nameRequired": "Produktnamn är obligatoriskt.",
+        "descriptionRequired": "Beskrivning är obligatorisk.",
+        "benefitsRequired": "Lägg till minst en produktfördel.",
+        "suitedForRequired": "Lägg till minst en hudtyp som produkten passar för.",
+        "ingredientsRequired": "Klistra in INCI-ingredienserna.",
+        "categoryRequired": "Kategori är obligatorisk.",
+        "sizeRequired": "Storlek är obligatorisk.",
+        "sizeInvalid": "Storlek måste vara ett giltigt nummer.",
+        "shelfLifeDateRequired": "Lägg till antingen öppningsdatum eller utgångsdatum.",
+        "priceInvalid": "Pris måste vara ett giltigt nummer.",
+        "periodAfterOpeningInvalid": "Hållbarhet efter öppning måste vara ett giltigt antal månader.",
+        "supportEmailInvalid": "Supportadress måste vara en giltig e-postadress.",
+        "productUrlInvalid": "Produkt-URL måste börja med http:// eller https://.",
+        "expiresAtInvalid": "Utgångsdatum måste vara samma dag som eller senare än öppningsdatumet.",
+        "waitMinutesInvalid": "Väntetiden måste vara noll minuter eller mer.",
+        "stepsRequired": "Lägg till minst ett steg så att Ritora kan förklara hur produkten ska användas.",
+        "stepsMax": "Håll varje steg kort. Under 280 tecken.",
+        "cautionsMax": "Håll varje varning kort. Under 200 tecken."
+      },
+      "genericError": "Vi kunde inte spara produkten just nu. Försök igen."
+    },
+    "detail": {
+      "backLink": "Tillbaka till hyllan",
+      "meta": {
+        "opened": "Öppnad",
+        "unopened": "Oöppnad",
+        "expires": "Utgår",
+        "size": "Storlek",
+        "pao": "PAO",
+        "paoValue": "{count} månader"
+      },
+      "shelfLife": {
+        "label": "Hållbarhet",
+        "remainingDay": "{count} dag kvar",
+        "remainingDays": "{count} dagar kvar",
+        "remainingMonth": "{count} månad kvar",
+        "remainingMonths": "{count} månader kvar",
+        "expired": "Utgången",
+        "unopened": "Inte öppnad än",
+        "noData": "Ange ett öppningsdatum för att följa hållbarheten."
+      },
+      "tabs": {
+        "about": "Om",
+        "ingredients": "Ingredienser",
+        "howToUse": "Användning",
+        "manufacturer": "Tillverkare"
+      },
+      "carousel": {
+        "previousImage": "Föregående bild",
+        "nextImage": "Nästa bild"
+      },
+      "about": {
+        "benefits": "Fördelar",
+        "suitedFor": "Passar för",
+        "origin": "Tillverkad i",
+        "empty": "Ingen beskrivning än. Öppna Redigera för att lägga till en."
+      },
+      "ingredients": {
+        "heading": "Ingredienser",
+        "lastConfirmed": "Senast bekräftad {date}.",
+        "empty": "Ingen ingredienslista finns. Ritora kan ändå spara produkten på din hylla, men ingrediensbaserade säkerhetskontroller blir begränsade tills du lägger till en.",
+        "intelligenceStub": "Ingrediensintelligens kommer snart.",
+        "intelligenceBody": "Ritora kommer att flagga ingredienser som inte matchar din hudprofil när nästa funktion släpps."
+      },
+      "howToUse": {
+        "heading": "Så använder du",
+        "method": "Metod",
+        "quantity": "Mängd",
+        "steps": "Steg",
+        "cautions": "Varningar",
+        "addStep": "Lägg till steg",
+        "removeStep": "Ta bort steg {index}",
+        "stepInput": "Steg {index}",
+        "addCaution": "Lägg till varning",
+        "removeCaution": "Ta bort varning {index}",
+        "cautionInput": "Varning {index}",
+        "waitTimerLabel": "Väntetid",
+        "waitTimerHint": "För produkter som behöver ligga kvar på huden innan nästa steg, till exempel peelings eller masker. Ritoras rutinförslag planerar kring väntan.",
+        "waitTimerPlaceholder": "Till exempel 10",
+        "waitMinute": "Låt verka i {minutes} minut.",
+        "waitMinutes": "Låt verka i {minutes} minuter.",
+        "empty": "Inga instruktioner än. Öppna Redigera för att lägga till steg och varningar.",
+        "routineNote": "När produkten ska användas i din morgon- eller kvällsrutin bestäms av Dagens förslag, inte hyllan.",
+        "preferredNote": "Du har sagt till Ritora att du föredrar att använda den på {time}."
+      },
+      "manufacturer": {
+        "heading": "Tillverkare",
+        "brand": "Märke",
+        "parent": "Moderbolag",
+        "madeIn": "Tillverkad i",
+        "support": "Support",
+        "productLink": "Öppna produktsidan på {domain}",
+        "empty": "Inga tillverkaruppgifter än.",
+        "source": "Data från {source}, bekräftad av dig {date}."
+      },
+      "actions": {
+        "edit": "Redigera",
+        "archive": "Arkivera",
+        "markFinished": "Markera som förbrukad",
+        "delete": "Ta bort",
+        "unarchive": "Återställ",
+        "deleteConfirmTitle": "Ta bort {name}?",
+        "deleteConfirmBody": "Detta kan inte ångras. All historik och alla personliga anteckningar för den här produkten tas bort.",
+        "deleteConfirmCancel": "Behåll"
+      }
+    },
+    "edit": {
+      "title": "Redigera produkt",
+      "cancel": "Avbryt",
+      "save": "Spara ändringar",
+      "saveShort": "Spara",
+      "saving": "Sparar...",
+      "photo": {
+        "choose": "Välj foto",
+        "replace": "Byt foto",
+        "chooseDifferent": "Välj ett annat",
+        "upload": "Ladda upp foto",
+        "uploading": "Laddar upp…",
+        "clear": "Rensa",
+        "inputLabel": "Välj produktfoto",
+        "helper": "",
+        "emptyHint": "",
+        "selectedHint": "",
+        "uploadedHint": "",
+        "uploadSuccess": "Produktfoto uppladdat",
+        "uploadFailed": "Vi kunde inte ladda upp produktfotot just nu. Försök igen."
+      },
+      "genericError": "Vi kunde inte spara dina ändringar just nu. Försök igen.",
+      "successToast": "Ändringar sparade"
+    },
+    "method": {
+      "fingertips": "Fingertoppar",
+      "cotton-pad": "Bomullspad",
+      "brush": "Borste",
+      "spray": "Spray",
+      "dropper": "Pipett",
+      "spatula": "Spatel",
+      "other": "Annat"
+    },
+    "quantity": {
+      "one-drop": "En droppe",
+      "two-to-three-drops": "Två till tre droppar",
+      "pea-size": "Ärtstor mängd",
+      "pump-one": "En pump",
+      "pump-two": "Två pumpar",
+      "coin-size": "Myntstor mängd",
+      "generous": "Generöst",
+      "as-needed": "Efter behov",
+      "other": "Annat"
+    },
+    "preferredTime": {
+      "morning": "morgon",
+      "evening": "kväll",
+      "either": "morgon eller kväll"
+    },
+    "provenance": {
+      "photo-lookup": "fotoextraktion",
+      "barcode-lookup": "streckkodsuppslag",
+      "url-fetch": "tillverkarens länk",
+      "catalogue": "Ritoras katalog",
+      "user-entered": "egna uppgifter"
+    },
+    "templates": {
+      "pickOne": "Välj en mall",
+      "applyTemplate": "Använd mall för {category}",
+      "cleanser": {
+        "steps": [
+          "Tryck ut en liten mängd på fuktiga fingertoppar.",
+          "Massera mjukt i cirklar på fuktig hud.",
+          "Skölj noga med ljummet vatten."
+        ],
+        "cautions": ["Undvik ögonpartiet."]
+      },
+      "toner": {
+        "steps": [
+          "Efter rengöring, fördela på en bomullspad eller rena handflator.",
+          "Sveja mjukt över ansikte och hals.",
+          "Låt sjunka in innan nästa steg."
+        ],
+        "cautions": []
+      },
+      "essence": {
+        "steps": [
+          "Tryck två pumpar på rena fingertoppar.",
+          "Klappa in mjukt över ansiktet.",
+          "Följ med serum eller fuktkräm."
+        ],
+        "cautions": []
+      },
+      "serum": {
+        "steps": [
+          "Rengör och tona. Klappa huden tills den är nästan torr.",
+          "Tryck ut två till tre droppar på rena fingertoppar.",
+          "Tryck varsamt över ansiktet. Undvik ögonpartiet och läpparna.",
+          "Vänta 60 sekunder och följ med fuktkräm."
+        ],
+        "cautions": [
+          "Undvik ögonpartiet och läpparna.",
+          "Testa på en liten yta innan första användning."
+        ]
+      },
+      "moisturizer": {
+        "steps": [
+          "Värm en ärtstor mängd mellan fingertopparna.",
+          "Tryck mjukt över ansikte och hals.",
+          "Låt sjunka in innan du applicerar SPF eller fortsätter."
+        ],
+        "cautions": []
+      },
+      "sun-protection": {
+        "steps": [
+          "Använd som sista steg i morgonrutinen.",
+          "Tryck ut en myntstor mängd och värm mellan fingertopparna.",
+          "Tryck jämnt över ansikte och hals."
+        ],
+        "cautions": [
+          "Applicera om varannan timme i direkt sol.",
+          "Undvik kontakt med ögonen."
+        ]
+      },
+      "mask": {
+        "steps": [
+          "Applicera ett jämnt lager på ren, torr hud.",
+          "Låt verka enligt förpackningens instruktioner.",
+          "Skölj noga med ljummet vatten."
+        ],
+        "cautions": [
+          "Testa på en liten yta innan första användning.",
+          "Undvik ögonpartiet."
+        ]
+      },
+      "exfoliant": {
+        "steps": [
+          "Använd på ren, torr hud efter rengöring.",
+          "Applicera ett tunt lager med bomullspad eller fingertoppar.",
+          "Följ med fuktgivande steg."
+        ],
+        "cautions": [
+          "Börja med två till tre gånger i veckan.",
+          "Ökar solkänslighet. Använd SPF på dagen.",
+          "Använd inte tillsammans med retinol samma kväll."
+        ]
+      },
+      "eye-care": {
+        "steps": [
+          "Knacka mjukt med ringfingret runt ögonbenet.",
+          "Dra eller sträck inte ut den tunna huden kring ögonen."
+        ],
+        "cautions": ["Undvik att få produkten i ögat."]
+      },
+      "lip-care": {
+        "steps": ["Applicera ett tunt lager efter behov under dagen."],
+        "cautions": []
+      },
+      "treatment": {
+        "steps": [
+          "Följ förpackningens instruktioner.",
+          "Applicera endast på det berörda området."
+        ],
+        "cautions": ["Testa på en liten yta innan första användning."]
+      },
+      "other": {
+        "steps": [],
+        "cautions": []
+      }
+    }
+  },
   "cookies": {
     "message": "Vi använder nödvändiga cookies för autentisering. Inga spårningscookies används.",
     "accept": "Acceptera",
@@ -702,6 +1278,7 @@
       "skinProfile": "Hudprofil",
       "shelf": "Hylla",
       "todaysSuggestion": "Dagens förslag",
+      "schedule": "Schema",
       "skinJournal": "Huddagbok",
       "smartPicks": "Smarta val",
       "history": "Historik",
@@ -714,6 +1291,7 @@
       "skinProfileDescription": "Din hudtyp, bekymmer, mål och platskontext.",
       "shelfDescription": "Lägg till och hantera de hudvårdsprodukter du äger.",
       "todaysSuggestionDescription": "AI-kurerade produktpar för din morgon- och kvällsvård.",
+      "scheduleDescription": "Sätt upp dina dagliga hudvårdsrutiner och när de körs.",
       "skinJournalDescription": "Spåra hudframsteg, ladda upp foton och logga reaktioner.",
       "smartPicksDescription": "AI-driven gapanalys och produktförslag.",
       "historyDescription": "Tidigare förslag, applicerade produkter och användningstidslinje.",
@@ -743,7 +1321,7 @@
     "backToDashboard": "Tillbaka till Hem",
     "shelf": {
       "title": "Hylla",
-      "description": "Lägg till och hantera de hudvårdsprodukter du äger. Skanna streckkoder, sök efter namn, klistra in produktlänkar eller ange detaljer manuellt. Detta är ditt digitala badrumsskåp."
+      "description": "Lägg till och hantera de hudvårdsprodukter du äger. Ladda upp en produktbild och etikettbilder eller ange detaljer manuellt. Detta är ditt digitala badrumsskåp."
     },
     "todaysSuggestion": {
       "title": "Dagens förslag",
@@ -768,6 +1346,248 @@
     "notifications": {
       "title": "Aviseringar",
       "description": "Rutinpåminnelser, produktutgångsvarningar, låg lagernivåvarningar, framstegsincheckningar och vilopåminnelser. Allt konfigurerbart efter ditt schema."
+    }
+  },
+  "ingredients": {
+    "panel": {
+      "heading": "Ingrediensintelligens",
+      "errorTitle": "Kunde inte köra kontrollen",
+      "errorBody": "Vi stötte på ett problem vid analysen. Försök igen om en stund.",
+      "retry": "Försök igen"
+    },
+    "severity": {
+      "low": "Låg",
+      "medium": "Medel",
+      "high": "Hög"
+    },
+    "actives": {
+      "heading": "Aktiva ingredienser",
+      "empty": "Vi kunde inte matcha några aktiva ingredienser i produktens INCI-lista ännu."
+    },
+    "pairing": {
+      "heading": "Så kombinerar du den",
+      "avoidWith": "Undvik i samma rutin med:",
+      "mitigationHint": "Tips: {hint}"
+    },
+    "category": {
+      "retinoid": "Retinoid",
+      "aha": "AHA",
+      "bha": "BHA",
+      "pha": "PHA",
+      "benzoyl-peroxide": "Bensoylperoxid",
+      "vitamin-c": "Vitamin C",
+      "niacinamide": "Niacinamid",
+      "hydroquinone": "Hydrokinon",
+      "azelaic-acid": "Azelainsyra",
+      "tyrosinase-inhibitor": "Pigmentdämpare",
+      "bakuchiol": "Bakuchiol",
+      "sulphur": "Svavel",
+      "peptide": "Peptid",
+      "barrier": "Barriärstöd",
+      "humectant": "Fuktbindare",
+      "antioxidant": "Antioxidant",
+      "mineral-spf": "Mineralfilter",
+      "chemical-spf": "Kemiskt filter"
+    },
+    "insufficientData": {
+      "title": "Vi behöver mer ingrediensdata",
+      "bodySingle": "{count} produkt saknar ingredienslista. Ritora hoppar över ingrediensbaserade säkerhetskontroller för den tills du lägger till en.",
+      "bodyPlural": "{count} produkter saknar ingredienslistor. Ritora hoppar över ingrediensbaserade säkerhetskontroller för dem tills du lägger till dem.",
+      "cta": "Lägg till ingredienser",
+      "list": {
+        "itemFallback": "Produkt utan namn"
+      }
+    }
+  },
+  "schedule": {
+    "title": "Schema",
+    "subtitle": "Sätt upp dina dagliga hudvårdsrutiner.",
+    "timeZone": {
+      "label": "Schematidszon: {timeZone}"
+    },
+    "view": {
+      "list": "Lista",
+      "calendar": "Kalender"
+    },
+    "preset": {
+      "everyDay": "Varje dag",
+      "everyDayDescription": "Lägg till en tid till alla sju dagarna på en gång",
+      "buildFromScratch": "Bygg från grunden",
+      "buildFromScratchDescription": "Lägg till tider till enskilda dagar"
+    },
+    "empty": {
+      "headline": "Bygg din veckorutin",
+      "body": "Lägg till en tid för alla dagar, eller bygg varje dag separat."
+    },
+    "days": {
+      "mon": "Måndag",
+      "tue": "Tisdag",
+      "wed": "Onsdag",
+      "thu": "Torsdag",
+      "fri": "Fredag",
+      "sat": "Lördag",
+      "sun": "Söndag",
+      "monShort": "Mån",
+      "tueShort": "Tis",
+      "wedShort": "Ons",
+      "thuShort": "Tor",
+      "friShort": "Fre",
+      "satShort": "Lör",
+      "sunShort": "Sön",
+      "monInitial": "M",
+      "tueInitial": "T",
+      "wedInitial": "O",
+      "thuInitial": "T",
+      "friInitial": "F",
+      "satInitial": "L",
+      "sunInitial": "S"
+    },
+    "daypart": {
+      "morning": "Morgon",
+      "afternoon": "Eftermiddag",
+      "evening": "Kväll"
+    },
+    "daySection": {
+      "todayBadge": "Idag",
+      "noRoutines": "Inga rutiner schemalagda",
+      "addTime": "Lägg till tid",
+      "timeCount": "{count, plural, =0 {Inga tider} one {# tid} other {# tider}}"
+    },
+    "slot": {
+      "stepCount": "{count, plural, =0 {Inga steg} one {# steg} other {# steg}}",
+      "noNotes": "Inga anteckningar",
+      "hasNotes": "Anteckningar"
+    },
+    "mode": {
+      "manual": "Manuell",
+      "manualShort": "M",
+      "manualDescription": "Din rutin",
+      "ai": "AI",
+      "aiShort": "AI",
+      "aiDescription": "Smarta val"
+    },
+    "addDialog": {
+      "titleSingle": "Lägg till tid",
+      "titleEveryDay": "Lägg till varje dag",
+      "subtitleSingle": "När ska denna rutin köras?",
+      "subtitleEveryDay": "Välj en tid. Vi lägger till den för alla sju dagar.",
+      "sheetDescription": "Skapa en schemalagd rutinplats",
+      "daysLabel": "Gäller dagar",
+      "daysHintSingle": "Tryck på en dag för att växla",
+      "daysHintEveryDay": "Varje dag — tryck för att avmarkera",
+      "timeLabel": "Vilken tid?",
+      "timeHint": "Vilken tid som helst — 07:30, 14:00, 22:15 osv.",
+      "modeLabel": "Läge",
+      "submitSingle": "Lägg till tid",
+      "submitMultiple": "Lägg till i {count} dagar",
+      "duplicateNote": "Dagar som redan använder den tiden hoppas över.",
+      "selectAtLeastOneDay": "Välj minst en dag"
+    },
+    "editor": {
+      "sheetTitle": "{day} kl. {time}",
+      "sheetDescription": "Redigera den valda rutinplatsen",
+      "titleTime": "{time}",
+      "deleteButton": "Radera",
+      "saveButton": "Spara",
+      "savingButton": "Sparar...",
+      "modeLabel": "Läge",
+      "modeSwitchWarning": "Dina steg sparas; växla tillbaka till Manuell för att se dem.",
+      "timeEditHint": "Tryck för att ändra",
+      "notesLabel": "Anteckningar",
+      "notesHintManual": "Visas på Idag",
+      "notesHintAI": "Kontext för AI:n",
+      "notesDescriptionManual": "Extra kontext för denna rutin. Visas på Idag bredvid stegen.",
+      "notesDescriptionAI": "Kontext som AI:n använder när den väljer produkter. Hur huden känns, vad som är värt att veta.",
+      "notesPlaceholderManual": "t.ex. Gymdag, lättare fuktkräm, hoppa över oljor.",
+      "notesPlaceholderAI": "t.ex. Huden känns stram idag, var försiktig med aktiva.",
+      "notesEmpty": "Inga anteckningar ännu. Det du lägger till följer med rutinen.",
+      "notesCounter": "{current} / {max}",
+      "stepsLabel": "Steg",
+      "stepsDescription": "Din rutin i appliceringsordning. Rengöringar först, SPF sist. Dra för att ändra ordning.",
+      "stepsCount": "{current} / {max}",
+      "addStep": "Lägg till steg",
+      "stepsMaxReached": "Du har nått max {max} steg",
+      "manualEmpty": "Inga steg ännu. Lägg till en produkt för att börja bygga din rutin.",
+      "aiPlaceholderTitle": "AI-förslag kommer snart",
+      "aiPlaceholderBody": "När AI-motorn lanseras kommer den att välja produkter från din Hylla med dina anteckningar som kontext.",
+      "switchToManual": "Växla till Manuell för nu →",
+      "confirmDeleteTitle": "Radera denna tid?",
+      "confirmDeleteBody": "Detta tar bort tiden och alla steg du har lagt till. Detta kan inte ångras.",
+      "confirmDelete": "Radera",
+      "unsavedChangesTitle": "Kasta ändringar?",
+      "unsavedChangesBody": "Du har osparade stegändringar. Lämna och förlora dem?",
+      "unsavedChangesConfirm": "Kasta",
+      "unsavedChangesCancel": "Fortsätt redigera"
+    },
+    "step": {
+      "labelPlaceholder": "Välj ett steg",
+      "customLabelPlaceholder": "Namnge ditt steg",
+      "customHint": "För handlingar utan produkt, t.ex. ansiktsmassage, gua sha eller LED-behandling.",
+      "productPlaceholder": "Välj en produkt",
+      "productMissing": "Saknad produkt — välj igen",
+      "notesPlaceholder": "Anteckningar (valfritt)",
+      "optionalLabel": "Valfritt steg",
+      "delete": "Ta bort steg",
+      "dragHandle": "Dra för att ordna om"
+    },
+    "stepLabels": {
+      "cleanser": "Rengöring",
+      "toner": "Toner",
+      "essence": "Essens",
+      "serum": "Serum",
+      "moisturizer": "Fuktkräm",
+      "sun-protection": "Solskydd",
+      "mask": "Ansiktsmask",
+      "exfoliant": "Peeling",
+      "eye-care": "Ögonvård",
+      "lip-care": "Läppvård",
+      "treatment": "Behandling",
+      "other": "Övrigt",
+      "custom": "Anpassad…"
+    },
+    "productPicker": {
+      "title": "Välj en produkt",
+      "searchPlaceholder": "Sök på din hylla",
+      "empty": "Inga produkter matchar din sökning.",
+      "emptyShelf": "Lägg till produkter i din Hylla först.",
+      "addToShelf": "Lägg till i Hylla",
+      "preferredConflict": "Denna produkt används vanligtvis på {preferred}."
+    },
+    "calendar": {
+      "dragHint": "Dra vilken tid som helst till en annan dag",
+      "noRoutines": "Inga rutiner",
+      "addShort": "Lägg till"
+    },
+    "today": {
+      "subtitle": "{count, plural, =0 {Inga tider schemalagda} one {# tid schemalagd} other {# tider schemalagda}}",
+      "edit": "Redigera",
+      "noteCalloutLabel": "Kontext AI kommer att använda",
+      "aiPlaceholder": "AI-förslag kommer snart",
+      "aiPlaceholderBody": "Vi väljer från din Hylla.",
+      "manualEmpty": "Lägg till steg på Schema →",
+      "nothingScheduled": "Inget schemalagt idag",
+      "nothingScheduledBody": "Lägg till din första rutin på Schema-sidan.",
+      "goToSchedule": "Öppna Schema"
+    },
+    "save": {
+      "saving": "Sparar...",
+      "saved": "Sparat",
+      "deleted": "Tid borttagen",
+      "errorDelete": "Kunde inte ta bort. Försök igen.",
+      "errorGeneric": "Kunde inte spara. Försök igen.",
+      "errorDuplicate": "En tid finns redan för den dagen och tiden.",
+      "errorConflictMove": "En tid finns redan på destinationen.",
+      "errorNotFound": "Tid hittades inte."
+    },
+    "validation": {
+      "timeFormat": "Ange en giltig tid.",
+      "dayRequired": "Dag krävs.",
+      "customLabelRequired": "Anpassad etikett krävs.",
+      "customLabelMax": "Anpassad etikett är för lång.",
+      "slotNotesMax": "Anteckningarna är för långa.",
+      "stepNotesMax": "Steganteckningarna är för långa.",
+      "productsNotOwned": "Endast produkter från din hylla kan läggas till.",
+      "maxSteps": "Du kan bara ha upp till 10 steg."
     }
   }
 }

@@ -1,10 +1,10 @@
 'use client';
 
 import { useForm } from '@tanstack/react-form';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { z } from 'zod';
 import { PasswordInputField } from '@/components/auth/password-input-field';
 import { TextInputField } from '@/components/auth/text-input-field';
@@ -12,8 +12,10 @@ import { Button } from '@/components/ui/button';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { AppRoute } from '@/constants/app-routes';
 import { useLogin } from '@/hooks/use-auth';
+import { normalizeLocale } from '@/i18n/config';
 import { getApiErrorBody } from '@/lib/api-error';
 import { getLoginSubmitError } from '@/lib/auth-submit-errors';
+import { navigateToUrl } from '@/lib/browser-navigation';
 import { firstFieldError } from '@/lib/form-errors';
 import { resolvePostLoginRoute } from '@/lib/post-login-route';
 import {
@@ -51,8 +53,10 @@ function buildResendVerificationHref(email: string) {
 export default function LoginPage() {
   const t = useTranslations('auth');
   const router = useRouter();
+  const currentLocale = normalizeLocale(useLocale());
   const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
+  const successfulLoginLocaleRef = useRef<string | undefined>(undefined);
   const loginErrorCode = getApiErrorBody(login.error)?.code;
   const showResendVerificationLink =
     typeof loginErrorCode === 'string' &&
@@ -72,13 +76,22 @@ export default function LoginPage() {
         const result = await executeMutation(login.mutate, value);
 
         if (result.error !== null) {
+          successfulLoginLocaleRef.current = undefined;
           return getLoginSubmitError(result.error, t);
         }
 
+        successfulLoginLocaleRef.current = result.data.user.preferredLanguage;
         return undefined;
       },
     },
     onSubmit: async () => {
+      const preferredLocale = normalizeLocale(successfulLoginLocaleRef.current);
+
+      if (preferredLocale !== currentLocale && typeof window !== 'undefined') {
+        navigateToUrl(AppRoute.PostLogin);
+        return;
+      }
+
       const nextRoute = await resolvePostLoginRoute();
       router.push(nextRoute);
     },

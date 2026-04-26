@@ -39,7 +39,7 @@ export function PrivacyTab() {
         title={t("privacy.dataTitle")}
         description={t("privacy.dataDescription")}
       >
-        <p className="py-4 text-sm text-muted">
+        <p className="px-5 py-5 text-sm text-muted">
           {t("privacy.dataExportNote")}
         </p>
       </SettingsSection>

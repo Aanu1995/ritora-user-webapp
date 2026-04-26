@@ -1,6 +1,6 @@
 import messages from '../../messages/en.json';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, renderHook } from '@testing-library/react';
+import { render, renderHook, type RenderHookOptions } from '@testing-library/react';
 import { NextIntlClientProvider } from 'next-intl';
 import type { ReactNode } from 'react';
 import { AppPreferencesProvider } from '@/components/preferences/app-preferences-provider';
@@ -29,9 +29,13 @@ export function renderWithProviders(ui: React.ReactElement) {
   });
 }
 
-export function renderHookWithProviders<T>(hook: () => T) {
+export function renderHookWithProviders<TProps, TResult>(
+  hook: (props: TProps) => TResult,
+  options?: RenderHookOptions<TProps>,
+) {
   const queryClient = createTestQueryClient();
   return renderHook(hook, {
+    ...options,
     wrapper: ({ children }: { children: ReactNode }) => (
       <NextIntlClientProvider locale="en" messages={messages}>
         <AppPreferencesProvider>

@@ -86,6 +86,7 @@ export function SkinProfileForm({
 
   const form = useForm({
     defaultValues: getSkinProfileFormValues(existingProfile),
+    canSubmitWhenInvalid: true,
     listeners: {
       onChange: ({ formApi }) => {
         clearSubmitErrors(formApi);
@@ -118,6 +119,7 @@ export function SkinProfileForm({
   );
 
   const updateStringField = (field: StringField, value: string) => {
+    clearSubmitErrors(form);
     form.setFieldValue(field, value);
 
     if (
@@ -135,14 +137,17 @@ export function SkinProfileForm({
     field: "locationConsent",
     value: boolean,
   ) => {
+    clearSubmitErrors(form);
     form.setFieldValue(field, value);
   };
 
   const toggleSingleSelect = (field: SingleSelectField, value: string) => {
+    clearSubmitErrors(form);
     form.setFieldValue(field, (previous) => (previous === value ? "" : value));
   };
 
   const toggleMultiSelect = (field: MultiSelectField, value: string) => {
+    clearSubmitErrors(form);
     form.setFieldValue(field, (previous) =>
       previous.includes(value)
         ? previous.filter((entry) => entry !== value)
@@ -158,6 +163,7 @@ export function SkinProfileForm({
 
     let wasAdded = false;
 
+    clearSubmitErrors(form);
     form.setFieldValue("knownSensitivities", (previous) => {
       const alreadyExists = previous.some(
         (entry) => entry.toLocaleLowerCase() === trimmed.toLocaleLowerCase(),
@@ -177,6 +183,7 @@ export function SkinProfileForm({
   };
 
   const removeSensitivity = (value: string) => {
+    clearSubmitErrors(form);
     form.setFieldValue("knownSensitivities", (previous) =>
       previous.filter((entry) => entry !== value),
     );

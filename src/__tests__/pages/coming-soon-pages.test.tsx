@@ -2,10 +2,9 @@ import { screen } from "@testing-library/react";
 import { renderWithProviders } from "@/test/utils";
 
 jest.mock("next/navigation", () => ({
-  usePathname: () => "/shelf",
+  usePathname: () => "/todays-suggestion",
 }));
 
-import ShelfPage from "@/app/(app)/shelf/page";
 import TodaysSuggestionPage from "@/app/(app)/todays-suggestion/page";
 import JournalPage from "@/app/(app)/journal/page";
 import SmartPicksPage from "@/app/(app)/smart-picks/page";
@@ -14,11 +13,6 @@ import InsightsPage from "@/app/(app)/insights/page";
 import NotificationsPage from "@/app/(app)/notifications/page";
 
 describe("Placeholder pages", () => {
-  it("renders Shelf page with title", () => {
-    renderWithProviders(<ShelfPage />);
-    expect(screen.getByText("Shelf")).toBeInTheDocument();
-  });
-
   it("renders Today's Suggestion page with title", () => {
     renderWithProviders(<TodaysSuggestionPage />);
     expect(screen.getByText("Today's Suggestion")).toBeInTheDocument();

@@ -117,7 +117,6 @@ describe('RegisterPage', () => {
 
     fillRegistrationForm();
 
-    // Check consent boxes
     const checkboxes = screen.getAllByRole('checkbox');
     await user.click(checkboxes[0]); // terms
     await user.click(checkboxes[1]); // privacy

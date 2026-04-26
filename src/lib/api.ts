@@ -3,13 +3,23 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from 'axios';
 import { ApiPath } from '@/constants/api-paths';
+import { getPreferredLocale } from '@/i18n/config';
 import { ApiError, toApiErrorBody } from '@/lib/api-error';
+import { getBrowserTimeZone } from '@/lib/time-zone';
 import type { RefreshResponse } from '@/types/auth';
 
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
 
 const ABSOLUTE_HTTP_URL_PATTERN = /^https?:\/\//i;
+const CREDENTIALLED_AUTH_PATHS = new Set<string>([
+  ApiPath.AuthLogin,
+  ApiPath.AuthRegister,
+  ApiPath.AuthRefresh,
+  ApiPath.AuthLogout,
+  ApiPath.AuthLogoutAll,
+  ApiPath.UsersMeLanguage,
+]);
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -29,6 +39,69 @@ type AuthRequestConfig = InternalAxiosRequestConfig & {
   _retry?: boolean;
   _skipAuthRefresh?: boolean;
 };
+
+function isLoopbackHttpUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    const host = parsedUrl.hostname.toLowerCase();
+
+    if (parsedUrl.protocol !== 'http:') {
+      return false;
+    }
+
+    return (
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === '::1' ||
+      host === '[::1]'
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getAllowedApiOrigin(baseURL?: string): string | null {
+  const effectiveBaseURL = baseURL ?? API_BASE_URL;
+
+  if (ABSOLUTE_HTTP_URL_PATTERN.test(effectiveBaseURL)) {
+    try {
+      return new URL(effectiveBaseURL).origin;
+    } catch {
+      return null;
+    }
+  }
+
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+
+  return null;
+}
+
+function resolveConfiguredRequestUrl(
+  url: string | undefined,
+  baseURL?: string,
+): string | undefined {
+  if (!url) {
+    return undefined;
+  }
+
+  try {
+    const effectiveBaseURL = baseURL ?? API_BASE_URL;
+
+    if (ABSOLUTE_HTTP_URL_PATTERN.test(effectiveBaseURL)) {
+      return new URL(url, effectiveBaseURL).toString();
+    }
+
+    if (typeof window !== 'undefined') {
+      return new URL(url, window.location.origin).toString();
+    }
+
+    return url;
+  } catch {
+    return url;
+  }
+}
 
 function normalizeRequestPath(url: string | undefined): string | undefined {
   if (!url) {
@@ -96,12 +169,95 @@ export function warnIfDevApiTargetsFrontend(): void {
   );
 }
 
-apiClient.interceptors.request.use((config) => {
+export function isAllowedApiRequestUrl(
+  url: string | undefined,
+  baseURL?: string,
+): boolean {
+  const resolvedUrl = resolveConfiguredRequestUrl(url, baseURL);
+
+  if (!resolvedUrl || !ABSOLUTE_HTTP_URL_PATTERN.test(resolvedUrl)) {
+    return true;
+  }
+
+  const allowedOrigin = getAllowedApiOrigin(baseURL);
+
+  if (!allowedOrigin) {
+    return false;
+  }
+
+  try {
+    return new URL(resolvedUrl).origin === allowedOrigin;
+  } catch {
+    return false;
+  }
+}
+
+export function isSecureApiRequestUrl(
+  url: string | undefined,
+  baseURL?: string,
+): boolean {
+  if (process.env.NODE_ENV !== 'production') {
+    return true;
+  }
+
+  const resolvedUrl = resolveConfiguredRequestUrl(url, baseURL);
+
+  if (!resolvedUrl || !ABSOLUTE_HTTP_URL_PATTERN.test(resolvedUrl)) {
+    return true;
+  }
+
+  if (isLoopbackHttpUrl(resolvedUrl)) {
+    return true;
+  }
+
+  try {
+    return new URL(resolvedUrl).protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+export function shouldSendCredentialCookies(
+  url: string | undefined,
+  baseURL?: string,
+): boolean {
+  const requestPath = normalizeRequestPath(
+    resolveConfiguredRequestUrl(url, baseURL),
+  );
+
+  return requestPath ? CREDENTIALLED_AUTH_PATHS.has(requestPath) : false;
+}
+
+export function applyRequestContext(
+  config: InternalAxiosRequestConfig,
+): InternalAxiosRequestConfig {
+  if (!isAllowedApiRequestUrl(config.url, config.baseURL)) {
+    throw new ApiError('Blocked request to unexpected API origin');
+  }
+
+  if (!isSecureApiRequestUrl(config.url, config.baseURL)) {
+    throw new ApiError('Blocked insecure API transport in production');
+  }
+
+  config.headers = config.headers ?? {};
+  config.headers['Accept-Language'] = getPreferredLocale();
+  const browserTimeZone = getBrowserTimeZone();
+  if (browserTimeZone) {
+    config.headers['x-timezone'] = browserTimeZone;
+  }
+  config.withCredentials = shouldSendCredentialCookies(
+    config.url,
+    config.baseURL,
+  );
+
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
+
   return config;
-});
+}
+
+apiClient.interceptors.request.use((config) => applyRequestContext(config));
 
 apiClient.interceptors.response.use(
   (response) => response,
@@ -203,6 +359,25 @@ export async function postRequest<T>(
     return data;
   } catch (error) {
     throwServerError(error, `Failed to post to ${url}`);
+  }
+}
+
+export async function postMultipartRequest<T>(
+  url: string,
+  body: FormData,
+  config?: AxiosRequestConfig,
+): Promise<T> {
+  try {
+    const { data } = await apiClient.post<T>(url, body, {
+      ...config,
+      headers: {
+        ...(config?.headers ?? {}),
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data;
+  } catch (error) {
+    throwServerError(error, `Failed to post multipart data to ${url}`);
   }
 }
 

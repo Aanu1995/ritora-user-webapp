@@ -20,14 +20,12 @@ import Image, { type StaticImageData } from 'next/image';
 type BaseProps = {
   src: StaticImageData;
   sizes: string;
-  /** Hero photo only. Paints into the LCP candidate. */
   priority?: boolean;
   /**
    * Extra classes applied to the outer frame (e.g. aspect ratio, max width).
    * The wrapper already provides rounded corners, border, shadow, and overflow.
    */
   className?: string;
-  /** Reveal animation. Only used on below-the-fold photos. */
   reveal?: 'none' | 'fade-up' | 'fade-up-delay-1' | 'fade-up-delay-2';
 };
 

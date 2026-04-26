@@ -6,10 +6,17 @@ import { useAuthStore } from "@/stores/auth-store";
 import { renderWithProviders } from "@/test/utils";
 
 const mockLogoutMutate = jest.fn();
+const mockLogoutAllMutate = jest.fn();
 const mockUpdateProfileMutate = jest.fn();
+const mockUpdatePreferredLanguageMutate = jest.fn();
+const mockUpdateTimeZoneMutate = jest.fn();
+const mockRouterRefresh = jest.fn();
 
 jest.mock("next/navigation", () => ({
   usePathname: () => AppRoute.Settings,
+  useRouter: () => ({
+    refresh: mockRouterRefresh,
+  }),
 }));
 
 jest.mock("@/hooks/use-auth", () => ({
@@ -17,8 +24,20 @@ jest.mock("@/hooks/use-auth", () => ({
     mutate: mockLogoutMutate,
     isPending: false,
   }),
+  useLogoutAll: () => ({
+    mutate: mockLogoutAllMutate,
+    isPending: false,
+  }),
   useUpdateProfile: () => ({
     mutate: mockUpdateProfileMutate,
+    isPending: false,
+  }),
+  useUpdatePreferredLanguage: () => ({
+    mutate: mockUpdatePreferredLanguageMutate,
+    isPending: false,
+  }),
+  useUpdateTimeZone: () => ({
+    mutate: mockUpdateTimeZoneMutate,
     isPending: false,
   }),
 }));
@@ -30,6 +49,22 @@ describe("SettingsPage", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUpdatePreferredLanguageMutate.mockImplementation(
+      (
+        values: { preferredLanguage: string },
+        options?: { onSuccess?: () => void },
+      ) => {
+        options?.onSuccess?.();
+      },
+    );
+    mockUpdateTimeZoneMutate.mockImplementation(
+      (
+        values: { timeZone: string },
+        options?: { onSuccess?: () => void },
+      ) => {
+        options?.onSuccess?.();
+      },
+    );
     useAuthStore.setState({
       user: {
         id: "user-1",
@@ -38,6 +73,7 @@ describe("SettingsPage", () => {
         lastName: "Lovelace",
         emailVerified: true,
         preferredLanguage: "en",
+        timeZone: "Europe/Stockholm",
         createdAt: "2026-04-15T10:00:00.000Z",
       },
       isAuthenticated: true,
@@ -136,8 +172,48 @@ describe("SettingsPage", () => {
   it("calls logout when sign out button is clicked", async () => {
     renderWithProviders(<SettingsPage />);
 
-    await user.click(screen.getByRole("button", { name: /sign out/i }));
+    await user.click(
+      screen.getByRole("button", { name: /^sign out$/i }),
+    );
     expect(mockLogoutMutate).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens confirmation before signing out from all devices", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /sign out all devices/i }),
+    );
+
+    expect(
+      screen.getByRole("heading", { name: /sign out on all devices/i }),
+    ).toBeInTheDocument();
+    expect(mockLogoutAllMutate).not.toHaveBeenCalled();
+  });
+
+  it("calls logoutAll after confirmation", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /sign out all devices/i }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: /^sign out all devices$/i }),
+    );
+
+    expect(mockLogoutAllMutate).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps the user signed in when all-devices sign out is cancelled", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /sign out all devices/i }),
+    );
+    await user.click(screen.getByRole("button", { name: /keep sessions/i }));
+
+    expect(mockLogoutAllMutate).not.toHaveBeenCalled();
+    expect(screen.getByText("ada@example.com")).toBeInTheDocument();
   });
 
   it("switches to Appearance tab and shows theme controls", async () => {
@@ -147,5 +223,69 @@ describe("SettingsPage", () => {
     expect(screen.getByText("System")).toBeInTheDocument();
     expect(screen.getByText("Light")).toBeInTheDocument();
     expect(screen.getByText("Dark")).toBeInTheDocument();
+  });
+
+  it("updates the preferred language when the user changes it in settings", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(screen.getByRole("tab", { name: /language/i }));
+    await user.click(screen.getByRole("button", { name: /svenska/i }));
+
+    expect(mockUpdatePreferredLanguageMutate).toHaveBeenCalledWith(
+      { preferredLanguage: "sv" },
+      expect.objectContaining({
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      }),
+    );
+    expect(mockRouterRefresh).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not refresh the route when the server rejects the language change", async () => {
+    mockUpdatePreferredLanguageMutate.mockImplementation(
+      (
+        _values: { preferredLanguage: string },
+        options?: { onError?: (error: Error) => void },
+      ) => {
+        options?.onError?.(new Error("Could not update language"));
+      },
+    );
+
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(screen.getByRole("tab", { name: /language/i }));
+    await user.click(screen.getByRole("button", { name: /svenska/i }));
+
+    expect(mockUpdatePreferredLanguageMutate).toHaveBeenCalledWith(
+      { preferredLanguage: "sv" },
+      expect.objectContaining({
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      }),
+    );
+    expect(mockRouterRefresh).not.toHaveBeenCalled();
+  });
+
+  it("updates the saved timezone from settings", async () => {
+    useAuthStore.setState({
+      user: {
+        ...(useAuthStore.getState().user as User),
+        timeZone: null,
+      },
+    });
+
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(screen.getByRole("tab", { name: /language/i }));
+    await user.click(screen.getByRole("button", { name: /timezone/i }));
+    await user.click(screen.getByRole("option", { name: /europe\/stockholm/i }));
+
+    expect(mockUpdateTimeZoneMutate).toHaveBeenCalledWith(
+      { timeZone: "Europe/Stockholm" },
+      expect.objectContaining({
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      }),
+    );
   });
 });

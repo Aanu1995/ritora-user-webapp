@@ -1,19 +1,23 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAuthStore } from '@/stores/auth-store';
 import { QueryKey } from '@/constants/query-keys';
+import { useAuthEnabled } from '@/hooks/use-auth-enabled';
 import { getApiErrorStatus } from '@/lib/api-error';
 import * as skinProfileService from '@/services/skin-profile.service';
 import type { SkinProfileInput } from '@/types/skin-profile';
 
-export function useSkinProfile() {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+type UseSkinProfileOptions = {
+  enabled?: boolean;
+};
+
+export function useSkinProfile(options?: UseSkinProfileOptions) {
+  const isEnabled = useAuthEnabled(options?.enabled ?? true);
 
   return useQuery({
     queryKey: [QueryKey.SkinProfile],
     queryFn: () => skinProfileService.getSkinProfile(),
-    enabled: isAuthenticated,
+    enabled: isEnabled,
     retry: (failureCount, error) => {
       if (getApiErrorStatus(error) === 404) {
         return false;

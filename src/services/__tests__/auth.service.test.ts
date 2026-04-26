@@ -61,6 +61,14 @@ describe('auth.service', () => {
     expect(api.postRequest).toHaveBeenCalledWith('/auth/logout');
   });
 
+  it('logoutAll calls postRequest with logout-all path', async () => {
+    (api.postRequest as jest.Mock).mockResolvedValue(undefined);
+
+    await authService.logoutAll();
+
+    expect(api.postRequest).toHaveBeenCalledWith('/auth/logout-all');
+  });
+
   it('getCurrentUser calls getRequest with me path', async () => {
     const user = { id: '1', email: 'a@b.com' };
     (api.getRequest as jest.Mock).mockResolvedValue(user);
@@ -131,6 +139,34 @@ describe('auth.service', () => {
     const result = await authService.updateProfile(payload);
 
     expect(api.patchRequest).toHaveBeenCalledWith('/users/me', payload);
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('updatePreferredLanguage calls patchRequest with language data', async () => {
+    const payload = { preferredLanguage: 'sv' };
+    const mockResponse = { id: '1', preferredLanguage: 'sv' };
+    (api.patchRequest as jest.Mock).mockResolvedValue(mockResponse);
+
+    const result = await authService.updatePreferredLanguage(payload);
+
+    expect(api.patchRequest).toHaveBeenCalledWith(
+      '/users/me/language',
+      payload,
+    );
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('updateTimeZone calls patchRequest with timezone data', async () => {
+    const payload = { timeZone: 'Europe/Stockholm' };
+    const mockResponse = { id: '1', timeZone: 'Europe/Stockholm' };
+    (api.patchRequest as jest.Mock).mockResolvedValue(mockResponse);
+
+    const result = await authService.updateTimeZone(payload);
+
+    expect(api.patchRequest).toHaveBeenCalledWith(
+      '/users/me/time-zone',
+      payload,
+    );
     expect(result).toEqual(mockResponse);
   });
 });

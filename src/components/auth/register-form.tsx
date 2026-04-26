@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { AppRoute } from '@/constants/app-routes';
 import { useRegister } from '@/hooks/use-auth';
+import { normalizeLocale } from '@/i18n/config';
 import { getRegisterSubmitError } from '@/lib/auth-submit-errors';
 import { firstFieldError } from '@/lib/form-errors';
 import {
@@ -19,7 +20,6 @@ import {
   readSubmissionErrorMessage,
 } from '@/lib/form-submission';
 import {
-  normalizeLocale,
   registerSchema,
   type RegisterValues,
 } from './register-form.constants';

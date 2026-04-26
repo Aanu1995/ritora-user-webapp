@@ -9,6 +9,8 @@ import type {
   RegisterResponse,
   ResetPasswordInput,
   Session,
+  UpdatePreferredLanguageInput,
+  UpdateTimeZoneInput,
   UpdateProfileInput,
   User,
 } from '@/types/auth';
@@ -27,6 +29,10 @@ export async function refreshTokens(): Promise<RefreshResponse> {
 
 export async function logout(): Promise<void> {
   return postRequest(ApiPath.AuthLogout);
+}
+
+export async function logoutAll(): Promise<void> {
+  return postRequest(ApiPath.AuthLogoutAll);
 }
 
 export async function getCurrentUser(): Promise<User> {
@@ -63,4 +69,14 @@ export async function resetPassword(
 
 export async function updateProfile(data: UpdateProfileInput): Promise<User> {
   return patchRequest<User>(ApiPath.UsersMe, data);
+}
+
+export async function updatePreferredLanguage(
+  data: UpdatePreferredLanguageInput,
+): Promise<User> {
+  return patchRequest<User>(ApiPath.UsersMeLanguage, data);
+}
+
+export async function updateTimeZone(data: UpdateTimeZoneInput): Promise<User> {
+  return patchRequest<User>(ApiPath.UsersMeTimeZone, data);
 }

@@ -7,12 +7,15 @@ import {
   useLogin,
   useRegister,
   useLogout,
+  useLogoutAll,
   useVerifyEmail,
   useResendVerification,
   useForgotPassword,
   useResetPassword,
   useActiveSessions,
   useUpdateProfile,
+  useUpdatePreferredLanguage,
+  useUpdateTimeZone,
 } from '@/hooks/use-auth';
 
 const mockUser = {
@@ -22,6 +25,7 @@ const mockUser = {
   lastName: 'User',
   emailVerified: true,
   preferredLanguage: 'en',
+  timeZone: null,
   createdAt: '2024-01-01T00:00:00.000Z',
 };
 
@@ -30,6 +34,7 @@ jest.mock('@/services/auth.service', () => ({
   register: jest.fn(),
   refreshTokens: jest.fn(),
   logout: jest.fn(),
+  logoutAll: jest.fn(),
   getCurrentUser: jest.fn(),
   getActiveSessions: jest.fn(),
   verifyEmail: jest.fn(),
@@ -37,6 +42,8 @@ jest.mock('@/services/auth.service', () => ({
   forgotPassword: jest.fn(),
   resetPassword: jest.fn(),
   updateProfile: jest.fn(),
+  updatePreferredLanguage: jest.fn(),
+  updateTimeZone: jest.fn(),
 }));
 
 import * as authService from '@/services/auth.service';
@@ -213,6 +220,45 @@ describe('useLogout', () => {
   });
 });
 
+describe('useLogoutAll', () => {
+  it('logs out all devices and clears auth store', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    (authService.logoutAll as jest.Mock).mockResolvedValue(undefined);
+
+    const { result } = renderHookWithProviders(() => useLogoutAll());
+
+    await act(async () => {
+      await result.current.mutateAsync();
+    });
+
+    const state = useAuthStore.getState();
+    expect(authService.logoutAll).toHaveBeenCalled();
+    expect(state.isAuthenticated).toBe(false);
+    expect(state.user).toBeNull();
+  });
+
+  it('keeps auth state when logoutAll fails', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    (authService.logoutAll as jest.Mock).mockRejectedValue(
+      new Error('Network error'),
+    );
+
+    const { result } = renderHookWithProviders(() => useLogoutAll());
+
+    await act(async () => {
+      try {
+        await result.current.mutateAsync();
+      } catch {
+        // expected
+      }
+    });
+
+    const state = useAuthStore.getState();
+    expect(state.isAuthenticated).toBe(true);
+    expect(state.user).toEqual(mockUser);
+  });
+});
+
 describe('useResendVerification', () => {
   it('resends verification email', async () => {
     (authService.resendVerification as jest.Mock).mockResolvedValue({
@@ -330,6 +376,7 @@ describe('useResetPassword', () => {
 describe('useUpdateProfile', () => {
   it('updates the current user in the auth store', async () => {
     useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    document.documentElement.lang = 'sv';
     (authService.updateProfile as jest.Mock).mockResolvedValue({
       ...mockUser,
       firstName: 'Ada',
@@ -351,5 +398,56 @@ describe('useUpdateProfile', () => {
     });
     expect(useAuthStore.getState().user?.firstName).toBe('Ada');
     expect(useAuthStore.getState().user?.lastName).toBe('Lovelace');
+    expect(document.documentElement.lang).toBe('sv');
+  });
+});
+
+describe('useUpdatePreferredLanguage', () => {
+  it('updates the current user language in the auth store', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    document.documentElement.lang = 'en';
+    (authService.updatePreferredLanguage as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      preferredLanguage: 'sv',
+    });
+
+    const { result } = renderHookWithProviders(() =>
+      useUpdatePreferredLanguage(),
+    );
+
+    await act(async () => {
+      await result.current.mutateAsync({
+        preferredLanguage: 'sv',
+      });
+    });
+
+    expect(authService.updatePreferredLanguage).toHaveBeenCalledWith({
+      preferredLanguage: 'sv',
+    });
+    expect(useAuthStore.getState().user?.preferredLanguage).toBe('sv');
+    expect(document.documentElement.lang).toBe('sv');
+  });
+});
+
+describe('useUpdateTimeZone', () => {
+  it('updates the current user timezone in the auth store', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    (authService.updateTimeZone as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      timeZone: 'Europe/Stockholm',
+    });
+
+    const { result } = renderHookWithProviders(() => useUpdateTimeZone());
+
+    await act(async () => {
+      await result.current.mutateAsync({
+        timeZone: 'Europe/Stockholm',
+      });
+    });
+
+    expect(authService.updateTimeZone).toHaveBeenCalledWith({
+      timeZone: 'Europe/Stockholm',
+    });
+    expect(useAuthStore.getState().user?.timeZone).toBe('Europe/Stockholm');
   });
 });

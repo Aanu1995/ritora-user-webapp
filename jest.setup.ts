@@ -1,19 +1,29 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import messages from './messages/en.json';
+import defaultMessages from './messages/en.json';
 
 type MessageLeaf = string | readonly MessageLeaf[] | MessageTree;
 interface MessageTree {
   readonly [key: string]: MessageLeaf;
 }
 
-function resolveMessage(path: string): string {
+type IntlContextValue = {
+  locale: string;
+  messages: MessageTree;
+};
+
+let currentIntl: IntlContextValue = {
+  locale: 'en',
+  messages: defaultMessages as unknown as MessageTree,
+};
+
+function resolveMessage(messages: MessageTree, path: string): string {
   const value = path.split('.').reduce<MessageLeaf | undefined>(
     (current, key) =>
       current && typeof current === 'object' && !Array.isArray(current)
         ? (current as MessageTree)[key]
         : undefined,
-    messages as unknown as MessageTree,
+    messages,
   );
 
   return typeof value === 'string' ? value : path;
@@ -34,15 +44,43 @@ function formatMessage(
 }
 
 jest.mock('next-intl', () => ({
-  useTranslations: (namespace?: string) => (key: string, values?: Record<string, string | number>) =>
-    formatMessage(resolveMessage(namespace ? `${namespace}.${key}` : key), values),
-  useLocale: () => 'en',
-  NextIntlClientProvider: ({ children }: { children: React.ReactNode }) => children,
+  useTranslations:
+    (namespace?: string) => (key: string, values?: Record<string, string | number>) => {
+      return formatMessage(
+        resolveMessage(
+          currentIntl.messages,
+          namespace ? `${namespace}.${key}` : key,
+        ),
+        values,
+      );
+    },
+  useLocale: () => currentIntl.locale,
+  NextIntlClientProvider: ({
+    children,
+    locale = 'en',
+    messages = defaultMessages,
+    }: {
+      children: React.ReactNode;
+      locale?: string;
+      messages?: MessageTree;
+    }) => {
+      currentIntl = {
+        locale,
+        messages: (messages ?? defaultMessages) as MessageTree,
+      };
+      return children;
+    },
 }));
 
 jest.mock('next-intl/server', () => ({
   getTranslations: async (namespace?: string) => (key: string, values?: Record<string, string | number>) =>
-    formatMessage(resolveMessage(namespace ? `${namespace}.${key}` : key), values),
+    formatMessage(
+      resolveMessage(
+        defaultMessages as unknown as MessageTree,
+        namespace ? `${namespace}.${key}` : key,
+      ),
+      values,
+    ),
 }));
 
 class ResizeObserverMock {

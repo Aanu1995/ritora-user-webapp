@@ -44,6 +44,7 @@ export function ConsentCheckbox({
             href={href}
             className="font-medium text-accent-strong hover:underline"
             target="_blank"
+            rel="noopener noreferrer"
           >
             {linkLabel}
           </Link>

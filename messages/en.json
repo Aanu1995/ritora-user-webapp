@@ -1,6 +1,7 @@
 {
   "common": {
     "loading": "Loading...",
+    "processing": "Working...",
     "error": "Something went wrong",
     "save": "Save",
     "cancel": "Cancel",
@@ -9,9 +10,28 @@
     "retry": "Try again",
     "skip": "Skip for Now",
     "submit": "Submit",
+    "close": "Close",
     "or": "or",
     "selectPlaceholder": "Select...",
-    "recommended": "Recommended"
+    "recommended": "Recommended",
+    "datePicker": {
+      "placeholder": "Pick a date",
+      "clear": "Clear date"
+    },
+    "countrySelect": {
+      "placeholder": "Select a country",
+      "searchPlaceholder": "Search countries",
+      "noMatch": "No countries match “{query}”."
+    },
+    "timeZoneSelect": {
+      "placeholder": "Select a timezone",
+      "searchPlaceholder": "Search timezones",
+      "noMatch": "No timezones match “{query}”."
+    },
+    "confirmDialog": {
+      "cancel": "Cancel",
+      "working": "Working..."
+    }
   },
   "nav": {
     "whyRitora": "Why Ritora",
@@ -303,7 +323,8 @@
   },
   "dashboard": {
     "welcome": "Welcome back, {firstName}",
-    "subtitle": "Here's what's happening with your skincare",
+    "subtitle": "A calm look at today and your shelf.",
+    "upcomingHeading": "Coming soon",
     "profileCard": {
       "title": "Skin Profile",
       "complete": "Your skin profile is ready. AI recommendations will use this context.",
@@ -426,12 +447,21 @@
       "nameTooLong": "Names must be 100 characters or fewer.",
       "nameUpdated": "Name updated.",
       "nameUpdateFailed": "We couldn't update your name. Please try again.",
-      "sessionsTitle": "Session",
-      "sessionsDescription": "Manage your current sign-in.",
-      "signOut": "Sign out",
-      "signOutDescription": "End your current session on this device.",
+      "sessionsTitle": "Sessions",
+      "sessionsDescription": "Manage this device or end access on every device where you're signed in.",
+      "signOut": "This device",
+      "signOutDescription": "End only the session on this device.",
       "signOutButton": "Sign out",
-      "signingOut": "Signing out..."
+      "signingOut": "Signing out...",
+      "signOutAll": "All devices",
+      "signOutAllDescription": "End every active session on every device, including this one.",
+      "signOutAllButton": "Sign out all devices",
+      "signingOutAll": "Signing out everywhere...",
+      "signOutAllConfirmTitle": "Sign out on all devices?",
+      "signOutAllConfirmBody": "This ends every active session for your account, including this device. You'll need to sign in again on each device.",
+      "signOutAllConfirmAction": "Sign out all devices",
+      "signOutAllConfirmCancel": "Keep sessions",
+      "signOutAllFailed": "We couldn't sign out all devices. Please try again."
     },
     "appearance": {
       "themeTitle": "Theme",
@@ -448,7 +478,27 @@
       "title": "Display language",
       "description": "Change the language used across the interface.",
       "displayLanguage": "Language",
-      "current": "Current: {locale}"
+      "current": "Current: {locale}",
+      "updateFailed": "Could not save your language preference."
+    },
+    "timeZone": {
+      "title": "Schedule timezone",
+      "description": "Your routines stay anchored to this timezone, even when you travel.",
+      "label": "Timezone",
+      "current": "Current: {timeZone}",
+      "deviceCurrent": "This device is set to {timeZone}.",
+      "useDevice": "Use {timeZone}",
+      "updateSuccess": "Timezone updated to {timeZone}.",
+      "updateFailed": "Could not save your timezone.",
+      "unavailable": "Timezone unavailable on this device."
+    },
+    "timeZoneMismatch": {
+      "title": "Timezone change detected",
+      "body": "Your schedule is still anchored to {savedTimeZone}, while this device is currently set to {deviceTimeZone}.",
+      "keep": "Keep current schedule timezone",
+      "switch": "Switch schedule timezone to {deviceTimeZone}",
+      "switched": "Schedule timezone updated to {timeZone}.",
+      "switchFailed": "Could not update your schedule timezone."
     },
     "privacy": {
       "legalTitle": "Legal",
@@ -683,6 +733,529 @@
       "comprehensive": "Whenever Ritora suggests"
     }
   },
+  "shelf": {
+    "title": "Your shelf",
+    "pageSubtitle": "Everything you already own, in one calm place.",
+    "unsavedChanges": {
+      "title": "Unsaved changes",
+      "description": "Your edits will be lost if you leave now.",
+      "discard": "Discard changes",
+      "keepEditing": "Keep editing"
+    },
+    "searchPlaceholder": "Search brand, product, ingredient",
+    "sort": {
+      "label": "Sort",
+      "recentlyAdded": "Recently added",
+      "expiringSoon": "Expiring soon",
+      "alphabetical": "Alphabetical",
+      "categoryGrouped": "Grouped by category"
+    },
+    "view": {
+      "grid": "Grid view",
+      "list": "List view"
+    },
+    "stat": {
+      "all": "All",
+      "inUse": "In use",
+      "unopened": "Unopened",
+      "nearingExpiry": "Nearing expiry",
+      "expired": "Expired",
+      "archived": "Archived"
+    },
+    "category": {
+      "all": "All",
+      "cleanser": "Cleanser",
+      "toner": "Toner",
+      "essence": "Essence",
+      "serum": "Serum",
+      "moisturizer": "Moisturizer",
+      "sun-protection": "SPF",
+      "mask": "Mask",
+      "exfoliant": "Exfoliant",
+      "eye-care": "Eye care",
+      "lip-care": "Lip care",
+      "treatment": "Treatment",
+      "other": "Other"
+    },
+    "lookupSource": {
+      "user-photos": "Your product photos",
+      "ritora-catalogue": "Ritora catalogue",
+      "open-beauty-facts": "Open Beauty Facts",
+      "official-page": "Official brand page"
+    },
+    "lookupConfidence": {
+      "high": "High confidence",
+      "medium": "Medium confidence",
+      "low": "Low confidence"
+    },
+    "lookupWarning": {
+      "review-required": "Review before saving",
+      "community-data": "Community-provided source",
+      "ai-normalized": "Some fields were normalized from grounded page content",
+      "partial-data": "Only partial product details were found",
+      "ingredients-unverified": "Verify ingredients against the packaging",
+      "guidance-unverified": "Review usage guidance before saving"
+    },
+    "empty": {
+      "title": "Your shelf is empty",
+      "description": "Add products you own and Ritora builds a calmer routine around them.",
+      "cta": "Add your first product",
+      "filtered": "No products match your current filter."
+    },
+    "errors": {
+      "retry": "Try again",
+      "loadShelfTitle": "We couldn't load your shelf",
+      "loadShelfDescription": "The shelf did not load this time. Try again in a moment.",
+      "loadProductTitle": "We couldn't load this product",
+      "loadProductDescription": "The product details did not load this time. Try again in a moment.",
+      "loadMore": "Couldn't load more products."
+    },
+    "card": {
+      "unopened": "Unopened",
+      "finished": "Finished",
+      "expired": "Expired",
+      "archived": "Archived",
+      "sizeSuffix": "ml",
+      "lowStock": "Low"
+    },
+    "actions": {
+      "add": "Add product",
+      "edit": "Edit",
+      "archive": "Archive",
+      "markFinished": "Mark finished",
+      "loadMore": "Load more",
+      "loadingMore": "Loading more…",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "back": "Back",
+      "clearSelection": "Clear selection",
+      "save": "Save changes",
+      "saving": "Saving..."
+    },
+    "bulk": {
+      "selected": "{count} selected",
+      "archiveTooltip": "Archive hides products from the active view but keeps the history.",
+      "finishedTooltip": "Marks a product as used up so you keep its history without cluttering your active shelf.",
+      "deleteTooltip": "Permanently remove from your shelf.",
+      "deleteConfirmTitle": "Delete {count} products?",
+      "deleteConfirmTitleSingle": "Delete this product?",
+      "deleteConfirmBody": "This cannot be undone. Any notes or history for these products will also be removed.",
+      "deleteConfirmCancel": "Keep"
+    },
+    "dialog": {
+      "title": "Add to your shelf",
+      "subtitle": "Upload a product photo plus label photos, or enter the details yourself.",
+      "close": "Close",
+      "step": "Step {current} of 2",
+      "photos": {
+        "productPhoto": {
+          "sectionTitle": "Your product photo",
+          "helper": "This is how your product will appear on your shelf.",
+          "addAction": "Add product photo",
+          "replaceAction": "Replace",
+          "removeAction": "Remove"
+        },
+        "labelPhotos": {
+          "sectionTitle": "Label photos",
+          "helper": "Capture every readable panel. Ritora reads these to auto-fill brand, ingredients, directions, and warnings.",
+          "addAction": "Add label photo",
+          "removeAction": "Remove"
+        },
+        "shapeTips": {
+          "heading": "Tips by container shape",
+          "rectangular": "Box or rectangular — front and back, or the side with the most text.",
+          "cylindrical": "Bottle, tube, or cylinder — take 3–4 overlapping photos while rotating around the body. Keep important text away from the edges; the curve distorts text there.",
+          "roundJar": "Jar, sphere, or round — top or lid, plus 2–3 side sections rotating ~90° between shots.",
+          "pouch": "Pouch or sachet — lay flat on a surface and take one photo per printed side."
+        },
+        "incomplete": "Add a product photo and at least one label photo.",
+        "ready": "Ready. Ritora will save your product photo and read the labels.",
+        "maxReached": "You're at the 6-photo limit. Remove a label photo to add a different one.",
+        "extracting": "Reading your photos…",
+        "partial": "Some fields still need review — see the highlighted fields below.",
+        "errorTitle": "Couldn't read those photos",
+        "error": "Try clearer label photos, or enter details manually.",
+        "serviceUnavailableTitle": "Couldn't reach the photo reader",
+        "serviceUnavailableDescription": "Check your connection and try again. Your photos are still here.",
+        "serviceUnavailable": "Couldn't reach the photo reader. Check your connection and try again.",
+        "extractAction": "Extract from photos",
+        "extractingAction": "Extracting…"
+      },
+      "lookup": {
+        "heading": "Find your product",
+        "description": "Add a product photo and label photos. Ritora pre-fills what it can and you can refine the rest below."
+      },
+      "lookupImport": {
+        "title": "Details filled in",
+        "description": "Edit anything before saving.",
+        "reviewDescription": "Review the highlighted fields before saving."
+      },
+      "lookupReview": {
+        "title": "Imported details to review",
+        "description": "We filled what we could from {source}. Review the details before saving to your shelf.",
+        "reviewRequired": "Review recommended",
+        "confidenceLabel": "Confidence",
+        "warningsLabel": "What to review",
+        "evidenceLabel": "Grounded sources",
+        "lowConfidenceError": "We couldn't verify enough product details to fill this form safely. Try clearer photos or enter the details manually."
+      },
+      "manual": {
+        "heading": "Add manually",
+        "description": "Fill in what you know. You can come back later to add more."
+      },
+      "confirm": {
+        "heading": "Review and add to your shelf",
+        "subheading": "You can edit any of this later.",
+        "autoFromPao": "Auto from PAO",
+        "needsReviewBadge": "Needs review",
+        "pleaseFill": "Please fill",
+        "sections": {
+          "identity": "Identity",
+          "about": "About this product",
+          "lookup": "From the lookup",
+          "yours": "Only you know these",
+          "guidance": "How to use"
+        },
+        "hints": {
+          "identityDescription": "The basics about this product. Brand, name, category, and size.",
+          "photoPreviewAvailable": "Selected product photo ready to save with this shelf item.",
+          "sizeHint": "Volume in millilitres, from the packaging.",
+          "aboutDescription": "Copy from the packaging or leave blank. Ritora pre-fills this when photo extraction or catalogue lookup succeeds.",
+          "descriptionHint": "A short overview of what the product does.",
+          "benefitsHint": "Comma-separated. e.g. hydrating, smoothing, brightening.",
+          "suitedForHint": "Comma-separated skin types. e.g. dry, combination, sensitive.",
+          "ingredientsHint": "Optional but recommended. Paste the full INCI list when available; without it, Ritora skips ingredient safety checks for this product.",
+          "yoursDescription": "Ritora uses these to track shelf life and your personal preference.",
+          "openedAtHint": "Leave blank if still sealed.",
+          "paoHint": "Usually printed on the jar icon as 12M, 24M, etc.",
+          "expiresAtHint": "Ritora fills this from opened date and PAO. You can override it.",
+          "preferredTimeHint": "If you typically reach for this in the morning or evening, Ritora's AI suggestions will respect that when building your routine.",
+          "priceHint": "For later spend insights. Optional.",
+          "purchasedFromHint": "Where you bought it.",
+          "personalNotesHint": "How it feels on your skin. Only you see this.",
+          "guidanceDescription": "How to apply and what to watch for. Start from a template or write your own.",
+          "manufacturerDescription": "Optional. Ritora uses the product link for a quick jump to the official page.",
+          "parentCompanyHint": "Parent brand or holding company.",
+          "countryManufactureHint": "Select the country printed on the packaging.",
+          "supportEmailHint": "Brand's support email.",
+          "productUrlHint": "Link to this product on the brand's site."
+        },
+        "fields": {
+          "brand": "Brand",
+          "brandPlaceholder": "e.g. CeraVe",
+          "name": "Product name",
+          "namePlaceholder": "e.g. Resurfacing Retinol Serum",
+          "category": "Category",
+          "size": "Size",
+          "description": "Description",
+          "descriptionPlaceholder": "e.g. A gentle nightly serum that supports smoother texture over time.",
+          "benefits": "Benefits",
+          "benefitsPlaceholder": "hydrating, calming",
+          "suitedFor": "Suited for",
+          "suitedForPlaceholder": "dry, sensitive",
+          "inciIngredients": "Ingredients (INCI)",
+          "ingredientsPlaceholder": "Aqua, Glycerin, Niacinamide, Retinol, Ceramide NP, …",
+          "openedAt": "Opened on",
+          "periodAfterOpening": "Period after opening",
+          "expiresAt": "Expires on",
+          "preferredTimeOfDay": "Preferred time (optional)",
+          "pricePaid": "Price paid (optional)",
+          "purchasedFrom": "Bought from (optional)",
+          "personalNotes": "Your notes (optional)",
+          "datePlaceholder": "Pick the date",
+          "productUrl": "Product URL",
+          "productUrlPlaceholder": "https://example.com/product",
+          "notesPlaceholder": "How does it feel on your skin?",
+          "sizePlaceholder": "e.g. 30",
+          "pricePlaceholder": "e.g. 24",
+          "purchasedFromPlaceholder": "e.g. Boots",
+          "parentPlaceholder": "e.g. L'Oréal",
+          "supportPlaceholder": "support@brand.com"
+        },
+        "paoOptions": {
+          "6": "6 months",
+          "12": "12 months",
+          "18": "18 months",
+          "24": "24 months",
+          "36": "36 months",
+          "unknown": "I don't know"
+        },
+        "preferredTimeOptions": {
+          "none": "No preference",
+          "morning": "Morning",
+          "evening": "Evening",
+          "either": "Either"
+        },
+        "submit": "Add to shelf",
+        "submitting": "Adding...",
+        "successToast": "Added to your shelf"
+      },
+      "validation": {
+        "brandRequired": "Brand is required.",
+        "nameRequired": "Product name is required.",
+        "descriptionRequired": "Description is required.",
+        "benefitsRequired": "Add at least one product benefit.",
+        "suitedForRequired": "Add at least one skin type this product suits.",
+        "ingredientsRequired": "Paste the INCI ingredients list.",
+        "categoryRequired": "Category is required.",
+        "sizeRequired": "Size is required.",
+        "sizeInvalid": "Size must be a valid number.",
+        "shelfLifeDateRequired": "Add either an opened date or an expiry date.",
+        "priceInvalid": "Price must be a valid number.",
+        "periodAfterOpeningInvalid": "Period after opening must be a valid number of months.",
+        "supportEmailInvalid": "Support email must be a valid email address.",
+        "productUrlInvalid": "Product URL must start with http:// or https://.",
+        "expiresAtInvalid": "Expiry date must be on or after the opened date.",
+        "waitMinutesInvalid": "Wait timer must be zero minutes or more.",
+        "stepsRequired": "Add at least one step so Ritora can explain how to use this product.",
+        "stepsMax": "Keep each step short — under 280 characters.",
+        "cautionsMax": "Keep each caution short — under 200 characters."
+      },
+      "genericError": "We could not save this product right now. Please try again."
+    },
+    "detail": {
+      "backLink": "Back to shelf",
+      "meta": {
+        "opened": "Opened",
+        "unopened": "Unopened",
+        "expires": "Expires",
+        "size": "Size",
+        "pao": "PAO",
+        "paoValue": "{count} months"
+      },
+      "shelfLife": {
+        "label": "Shelf life",
+        "remainingDay": "{count} day remaining",
+        "remainingDays": "{count} days remaining",
+        "remainingMonth": "{count} month remaining",
+        "remainingMonths": "{count} months remaining",
+        "expired": "Expired",
+        "unopened": "Not opened yet",
+        "noData": "Set an opened date to track shelf life."
+      },
+      "tabs": {
+        "about": "About",
+        "ingredients": "Ingredients",
+        "howToUse": "How to use",
+        "manufacturer": "Manufacturer"
+      },
+      "carousel": {
+        "previousImage": "Previous image",
+        "nextImage": "Next image"
+      },
+      "about": {
+        "benefits": "Benefits",
+        "suitedFor": "Suited for",
+        "origin": "Made in",
+        "empty": "No description on file yet. Open Edit to add one."
+      },
+      "ingredients": {
+        "heading": "Ingredients",
+        "lastConfirmed": "Last confirmed on {date}.",
+        "empty": "No ingredient list on file. Ritora can still keep this product on your shelf, but ingredient safety checks will stay limited until you add one.",
+        "intelligenceStub": "Ingredient intelligence coming soon.",
+        "intelligenceBody": "Ritora will flag ingredients that clash with your skin profile once the next feature lands."
+      },
+      "howToUse": {
+        "heading": "How to apply",
+        "method": "Method",
+        "quantity": "Quantity",
+        "steps": "Steps",
+        "cautions": "Cautions",
+        "addStep": "Add step",
+        "removeStep": "Remove step {index}",
+        "stepInput": "Step {index}",
+        "addCaution": "Add caution",
+        "removeCaution": "Remove caution {index}",
+        "cautionInput": "Caution {index}",
+        "waitTimerLabel": "Wait timer",
+        "waitTimerHint": "For products that need to sit on the skin before the next step, like peels or masks. Ritora's routine suggestions will pace around this wait.",
+        "waitTimerPlaceholder": "For example, 10",
+        "waitMinute": "Leave on for {minutes} minute.",
+        "waitMinutes": "Leave on for {minutes} minutes.",
+        "empty": "No instructions yet. Open Edit to add steps and cautions.",
+        "routineNote": "When to apply this product inside your morning or evening routine is decided by Today's Suggestion, not the Shelf.",
+        "preferredNote": "You told Ritora you prefer to use this in the {time}."
+      },
+      "manufacturer": {
+        "heading": "Manufacturer",
+        "brand": "Brand",
+        "parent": "Parent company",
+        "madeIn": "Made in",
+        "support": "Support",
+        "productLink": "Open product page on {domain}",
+        "empty": "No manufacturer details on file yet.",
+        "source": "Data resolved from {source}, confirmed by you on {date}."
+      },
+      "actions": {
+        "edit": "Edit",
+        "archive": "Archive",
+        "markFinished": "Mark finished",
+        "delete": "Delete",
+        "unarchive": "Restore",
+        "deleteConfirmTitle": "Delete {name}?",
+        "deleteConfirmBody": "This cannot be undone. All history and personal notes for this product will be removed.",
+        "deleteConfirmCancel": "Keep"
+      }
+    },
+    "edit": {
+      "title": "Edit product",
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "saveShort": "Save",
+      "saving": "Saving...",
+      "photo": {
+        "choose": "Choose photo",
+        "replace": "Replace photo",
+        "chooseDifferent": "Choose different",
+        "upload": "Upload photo",
+        "uploading": "Uploading…",
+        "clear": "Clear",
+        "inputLabel": "Choose product photo",
+        "helper": "",
+        "emptyHint": "",
+        "selectedHint": "",
+        "uploadedHint": "",
+        "uploadSuccess": "Product photo uploaded",
+        "uploadFailed": "We could not upload that product photo right now. Please try again."
+      },
+      "genericError": "We could not save your changes right now. Please try again.",
+      "successToast": "Changes saved"
+    },
+    "method": {
+      "fingertips": "Fingertips",
+      "cotton-pad": "Cotton pad",
+      "brush": "Brush",
+      "spray": "Spray",
+      "dropper": "Dropper",
+      "spatula": "Spatula",
+      "other": "Other"
+    },
+    "quantity": {
+      "one-drop": "One drop",
+      "two-to-three-drops": "Two to three drops",
+      "pea-size": "Pea-size",
+      "pump-one": "One pump",
+      "pump-two": "Two pumps",
+      "coin-size": "Coin-size",
+      "generous": "Generous",
+      "as-needed": "As needed",
+      "other": "Other"
+    },
+    "preferredTime": {
+      "morning": "morning",
+      "evening": "evening",
+      "either": "morning or evening"
+    },
+    "provenance": {
+      "photo-lookup": "photo extraction",
+      "barcode-lookup": "barcode lookup",
+      "url-fetch": "manufacturer link",
+      "catalogue": "Ritora catalogue",
+      "user-entered": "your own input"
+    },
+    "templates": {
+      "pickOne": "Pick a starter template",
+      "applyTemplate": "Use {category} template",
+      "cleanser": {
+        "steps": [
+          "Dispense a small amount onto damp fingertips.",
+          "Massage gently onto damp skin in circular motions.",
+          "Rinse thoroughly with lukewarm water."
+        ],
+        "cautions": ["Avoid the eye area."]
+      },
+      "toner": {
+        "steps": [
+          "After cleansing, dispense onto a cotton pad or clean palms.",
+          "Sweep gently across the face and neck.",
+          "Allow to absorb before the next step."
+        ],
+        "cautions": []
+      },
+      "essence": {
+        "steps": [
+          "Dispense two pumps onto clean fingertips.",
+          "Pat gently across the face.",
+          "Follow with serum or moisturiser."
+        ],
+        "cautions": []
+      },
+      "serum": {
+        "steps": [
+          "Cleanse and tone. Pat skin until just barely damp.",
+          "Dispense two to three drops onto clean fingertips.",
+          "Press gently over the face. Avoid the eye area and lips.",
+          "Wait 60 seconds, then follow with moisturiser."
+        ],
+        "cautions": [
+          "Avoid the eye area and lips.",
+          "Patch-test before first use."
+        ]
+      },
+      "moisturizer": {
+        "steps": [
+          "Warm a pea-sized amount between fingertips.",
+          "Press gently over the face and neck.",
+          "Allow to absorb before applying SPF or moving on."
+        ],
+        "cautions": []
+      },
+      "sun-protection": {
+        "steps": [
+          "Apply as the last step of your morning routine.",
+          "Dispense a coin-sized amount and warm between fingertips.",
+          "Press evenly across the face and neck."
+        ],
+        "cautions": [
+          "Reapply every two hours when in direct sun.",
+          "Avoid contact with the eyes."
+        ]
+      },
+      "mask": {
+        "steps": [
+          "Apply an even layer to clean, dry skin.",
+          "Leave on for the time printed on the packaging.",
+          "Rinse thoroughly with lukewarm water."
+        ],
+        "cautions": ["Patch-test before first use.", "Avoid the eye area."]
+      },
+      "exfoliant": {
+        "steps": [
+          "Use on clean, dry skin after cleansing.",
+          "Apply a thin layer with a cotton pad or fingertips.",
+          "Follow with hydrating steps."
+        ],
+        "cautions": [
+          "Start with two or three times a week.",
+          "Increases sun sensitivity. Use SPF during the day.",
+          "Do not use with retinol on the same night."
+        ]
+      },
+      "eye-care": {
+        "steps": [
+          "Use the ring finger to tap gently around the orbital bone.",
+          "Avoid pulling or dragging the thin eye-area skin."
+        ],
+        "cautions": ["Keep product out of the eye itself."]
+      },
+      "lip-care": {
+        "steps": ["Apply a thin layer as needed throughout the day."],
+        "cautions": []
+      },
+      "treatment": {
+        "steps": [
+          "Follow the directions on the packaging.",
+          "Apply to the target area only."
+        ],
+        "cautions": ["Patch-test before first use."]
+      },
+      "other": {
+        "steps": [],
+        "cautions": []
+      }
+    }
+  },
   "cookies": {
     "message": "We use essential cookies for authentication. No tracking cookies are used.",
     "accept": "Accept",
@@ -702,6 +1275,7 @@
       "skinProfile": "Skin Profile",
       "shelf": "Shelf",
       "todaysSuggestion": "Today's Suggestion",
+      "schedule": "Schedule",
       "skinJournal": "Skin Journal",
       "smartPicks": "Smart Picks",
       "history": "History",
@@ -714,6 +1288,7 @@
       "skinProfileDescription": "Your skin type, concerns, goals, and location context.",
       "shelfDescription": "Add and manage the skincare products you own.",
       "todaysSuggestionDescription": "AI-curated product pairings for your morning and evening care.",
+      "scheduleDescription": "Set up your daily skincare routines and when they run.",
       "skinJournalDescription": "Track skin progress, upload photos, and log reactions.",
       "smartPicksDescription": "AI-powered gap analysis and product suggestions.",
       "historyDescription": "Past suggestions, applied products, and usage timeline.",
@@ -743,7 +1318,7 @@
     "backToDashboard": "Back to Home",
     "shelf": {
       "title": "Shelf",
-      "description": "Add and manage the skincare products you own. Scan barcodes, search by name, paste product links, or enter details manually. This is your digital bathroom cabinet."
+      "description": "Add and manage the skincare products you own. Upload a product photo plus label photos or enter details manually. This is your digital bathroom cabinet."
     },
     "todaysSuggestion": {
       "title": "Today's Suggestion",
@@ -768,6 +1343,248 @@
     "notifications": {
       "title": "Notifications",
       "description": "Routine reminders, product expiry alerts, low stock warnings, progress check-ins, and rest day reminders. All configurable to your schedule."
+    }
+  },
+  "ingredients": {
+    "panel": {
+      "heading": "Ingredient intelligence",
+      "errorTitle": "Couldn't run the check",
+      "errorBody": "We hit a snag analysing this product. Try again in a moment.",
+      "retry": "Retry"
+    },
+    "severity": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "actives": {
+      "heading": "Key actives",
+      "empty": "We couldn't match any active ingredients in this product's INCI list yet."
+    },
+    "pairing": {
+      "heading": "How to pair it",
+      "avoidWith": "Avoid in the same routine with:",
+      "mitigationHint": "Tip: {hint}"
+    },
+    "category": {
+      "retinoid": "Retinoid",
+      "aha": "AHA",
+      "bha": "BHA",
+      "pha": "PHA",
+      "benzoyl-peroxide": "Benzoyl peroxide",
+      "vitamin-c": "Vitamin C",
+      "niacinamide": "Niacinamide",
+      "hydroquinone": "Hydroquinone",
+      "azelaic-acid": "Azelaic acid",
+      "tyrosinase-inhibitor": "Brightener",
+      "bakuchiol": "Bakuchiol",
+      "sulphur": "Sulphur",
+      "peptide": "Peptide",
+      "barrier": "Barrier support",
+      "humectant": "Humectant",
+      "antioxidant": "Antioxidant",
+      "mineral-spf": "Mineral SPF",
+      "chemical-spf": "Chemical SPF"
+    },
+    "insufficientData": {
+      "title": "We need more ingredient data",
+      "bodySingle": "{count} product is missing an ingredient list. Ritora will skip ingredient safety checks for it until one is added.",
+      "bodyPlural": "{count} products are missing ingredient lists. Ritora will skip ingredient safety checks for them until they are added.",
+      "cta": "Add ingredients",
+      "list": {
+        "itemFallback": "Product without a name"
+      }
+    }
+  },
+  "schedule": {
+    "title": "Schedule",
+    "subtitle": "Set up your daily skincare routines.",
+    "timeZone": {
+      "label": "Schedule timezone: {timeZone}"
+    },
+    "view": {
+      "list": "List",
+      "calendar": "Calendar"
+    },
+    "preset": {
+      "everyDay": "Every day",
+      "everyDayDescription": "Add one time to every day of the week at once",
+      "buildFromScratch": "Build from scratch",
+      "buildFromScratchDescription": "Add times to individual days"
+    },
+    "empty": {
+      "headline": "Build your weekly rhythm",
+      "body": "Apply one time to all days, or build each day separately."
+    },
+    "days": {
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday",
+      "sat": "Saturday",
+      "sun": "Sunday",
+      "monShort": "Mon",
+      "tueShort": "Tue",
+      "wedShort": "Wed",
+      "thuShort": "Thu",
+      "friShort": "Fri",
+      "satShort": "Sat",
+      "sunShort": "Sun",
+      "monInitial": "M",
+      "tueInitial": "T",
+      "wedInitial": "W",
+      "thuInitial": "T",
+      "friInitial": "F",
+      "satInitial": "S",
+      "sunInitial": "S"
+    },
+    "daypart": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening"
+    },
+    "daySection": {
+      "todayBadge": "Today",
+      "noRoutines": "No routines scheduled",
+      "addTime": "Add time",
+      "timeCount": "{count, plural, =0 {No times} one {# time} other {# times}}"
+    },
+    "slot": {
+      "stepCount": "{count, plural, =0 {No steps} one {# step} other {# steps}}",
+      "noNotes": "No notes",
+      "hasNotes": "Notes"
+    },
+    "mode": {
+      "manual": "Manual",
+      "manualShort": "M",
+      "manualDescription": "Your routine",
+      "ai": "AI",
+      "aiShort": "AI",
+      "aiDescription": "Smart picks"
+    },
+    "addDialog": {
+      "titleSingle": "Add time",
+      "titleEveryDay": "Apply to every day",
+      "subtitleSingle": "When should this routine run?",
+      "subtitleEveryDay": "Pick a time. We\u2019ll apply it to all seven days.",
+      "sheetDescription": "Create a scheduled time slot",
+      "daysLabel": "Apply to days",
+      "daysHintSingle": "Tap a day to toggle",
+      "daysHintEveryDay": "Every day — tap to deselect",
+      "timeLabel": "At what time?",
+      "timeHint": "Any time — 07:30, 14:00, 22:15, etc.",
+      "modeLabel": "Mode",
+      "submitSingle": "Add time",
+      "submitMultiple": "Add to {count} days",
+      "duplicateNote": "Days already using that time will be skipped.",
+      "selectAtLeastOneDay": "Select at least one day"
+    },
+    "editor": {
+      "sheetTitle": "{day} at {time}",
+      "sheetDescription": "Edit the selected routine slot",
+      "titleTime": "{time}",
+      "deleteButton": "Delete",
+      "saveButton": "Save",
+      "savingButton": "Saving...",
+      "modeLabel": "Mode",
+      "modeSwitchWarning": "Your steps stay saved; switch back to Manual to see them.",
+      "timeEditHint": "Tap to change",
+      "notesLabel": "Notes",
+      "notesHintManual": "Shown on Today",
+      "notesHintAI": "Context for the AI",
+      "notesDescriptionManual": "Extra context for this routine. Shown on Today next to the steps.",
+      "notesDescriptionAI": "Context the AI uses when it picks products. How your skin feels, anything worth knowing.",
+      "notesPlaceholderManual": "e.g. Gym day, lighter moisturizer, skip oils.",
+      "notesPlaceholderAI": "e.g. Skin feels tight today, go gentle on actives.",
+      "notesEmpty": "No notes yet. Anything you add here travels with the routine.",
+      "notesCounter": "{current} / {max}",
+      "stepsLabel": "Steps",
+      "stepsDescription": "Your routine in application order. Cleansers first, SPF last. Drag to reorder.",
+      "stepsCount": "{current} / {max}",
+      "addStep": "Add step",
+      "stepsMaxReached": "You\u2019ve reached the maximum of {max} steps",
+      "manualEmpty": "No steps yet. Add a product to start building your routine.",
+      "aiPlaceholderTitle": "AI suggestions coming soon",
+      "aiPlaceholderBody": "When the AI engine launches, it will pick products from your Shelf using your notes above as context.",
+      "switchToManual": "Switch to Manual for now →",
+      "confirmDeleteTitle": "Delete this time?",
+      "confirmDeleteBody": "This will remove the time and any steps you've added. This cannot be undone.",
+      "confirmDelete": "Delete",
+      "unsavedChangesTitle": "Discard changes?",
+      "unsavedChangesBody": "You have unsaved step changes. Leave and lose them?",
+      "unsavedChangesConfirm": "Discard",
+      "unsavedChangesCancel": "Keep editing"
+    },
+    "step": {
+      "labelPlaceholder": "Pick a step",
+      "customLabelPlaceholder": "Name your step",
+      "customHint": "For non-product actions like face massage, gua sha, or LED sessions.",
+      "productPlaceholder": "Pick a product",
+      "productMissing": "Missing product — pick again",
+      "notesPlaceholder": "Notes (optional)",
+      "optionalLabel": "Optional step",
+      "delete": "Remove step",
+      "dragHandle": "Drag to reorder"
+    },
+    "stepLabels": {
+      "cleanser": "Cleanser",
+      "toner": "Toner",
+      "essence": "Essence",
+      "serum": "Serum",
+      "moisturizer": "Moisturizer",
+      "sun-protection": "Sunscreen",
+      "mask": "Mask",
+      "exfoliant": "Exfoliant",
+      "eye-care": "Eye care",
+      "lip-care": "Lip care",
+      "treatment": "Treatment",
+      "other": "Other",
+      "custom": "Custom…"
+    },
+    "productPicker": {
+      "title": "Pick a product",
+      "searchPlaceholder": "Search your shelf",
+      "empty": "No products match your search.",
+      "emptyShelf": "Add products to your Shelf first.",
+      "addToShelf": "Add to Shelf",
+      "preferredConflict": "This product is usually used in the {preferred}."
+    },
+    "calendar": {
+      "dragHint": "Drag any slot to another day",
+      "noRoutines": "No routines",
+      "addShort": "Add"
+    },
+    "today": {
+      "subtitle": "{count, plural, =0 {No times scheduled} one {# time scheduled} other {# times scheduled}}",
+      "edit": "Edit",
+      "noteCalloutLabel": "Context the AI will use",
+      "aiPlaceholder": "AI suggestions coming soon",
+      "aiPlaceholderBody": "We'll pick from your Shelf.",
+      "manualEmpty": "Add steps on Schedule →",
+      "nothingScheduled": "Nothing scheduled today",
+      "nothingScheduledBody": "Add your first routine on the Schedule page.",
+      "goToSchedule": "Open Schedule"
+    },
+    "save": {
+      "saving": "Saving...",
+      "saved": "Saved",
+      "deleted": "Time deleted",
+      "errorGeneric": "Couldn't save. Try again.",
+      "errorDelete": "Couldn't delete. Try again.",
+      "errorDuplicate": "A slot already exists at that day and time.",
+      "errorConflictMove": "A slot already exists at the destination.",
+      "errorNotFound": "Slot not found."
+    },
+    "validation": {
+      "timeFormat": "Please enter a valid time.",
+      "dayRequired": "Day is required.",
+      "customLabelRequired": "Custom label is required.",
+      "customLabelMax": "Custom label is too long.",
+      "slotNotesMax": "Notes are too long.",
+      "stepNotesMax": "Step notes are too long.",
+      "productsNotOwned": "Only products from your shelf can be added.",
+      "maxSteps": "You can only have up to 10 steps."
     }
   }
 }

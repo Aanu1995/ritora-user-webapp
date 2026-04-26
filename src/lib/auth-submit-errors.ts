@@ -1,6 +1,6 @@
 import {
   getApiErrorBody,
-  getApiErrorMessages,
+  getApiFieldError,
   getApiErrorStatus,
 } from '@/lib/api-error';
 import { getAuthErrorMessage } from '@/lib/auth-errors';
@@ -20,28 +20,36 @@ export type RegisterFieldName =
 export type EmailFieldName = 'email';
 export type ResetPasswordFieldName = 'confirmPassword' | 'newPassword';
 
-const EMAIL_MESSAGE_PATTERN = /\bemail\b/i;
-const PASSWORD_MESSAGE_PATTERN = /\bpassword\b/i;
-const FIRST_NAME_MESSAGE_PATTERN = /first\s*name/i;
-const LAST_NAME_MESSAGE_PATTERN = /last\s*name/i;
-const TERMS_MESSAGE_PATTERN = /\bterms\b/i;
-const PRIVACY_MESSAGE_PATTERN = /\bprivacy\b/i;
+function getFirstStructuredFieldError<FieldName extends string>(
+  error: unknown,
+  fields: readonly FieldName[],
+): { field: FieldName; message: string } | null {
+  for (const field of fields) {
+    const message = getApiFieldError(error, field);
 
-function firstMatchingMessage(
-  messages: string[],
-  pattern: RegExp,
-): string | undefined {
-  return messages.find((message) => pattern.test(message));
-}
+    if (message) {
+      return { field, message };
+    }
+  }
 
-function getValidationMessages(error: unknown): string[] {
-  return getApiErrorMessages(error);
+  return null;
 }
 
 export function getLoginSubmitError(
   error: unknown,
   t: AuthTranslator,
 ): SubmissionValidationResult<LoginFieldName> {
+  const fieldError = getFirstStructuredFieldError(error, ['email', 'password']);
+
+  if (fieldError) {
+    return {
+      form: undefined,
+      fields: {
+        [fieldError.field]: fieldError.message,
+      } as SubmissionValidationResult<LoginFieldName>['fields'],
+    };
+  }
+
   return {
     form: getAuthErrorMessage(error, t),
     fields: {},
@@ -55,7 +63,6 @@ export function getRegisterSubmitError(
   const status = getApiErrorStatus(error);
   const body = getApiErrorBody(error);
   const code = typeof body?.code === 'string' ? body.code.toUpperCase() : '';
-  const messages = getValidationMessages(error);
 
   if (
     status === 409 ||
@@ -70,72 +77,28 @@ export function getRegisterSubmitError(
     };
   }
 
-  const emailMessage = firstMatchingMessage(messages, EMAIL_MESSAGE_PATTERN);
-  if (emailMessage) {
+  const fieldError = getFirstStructuredFieldError(error, [
+    'email',
+    'password',
+    'firstName',
+    'lastName',
+    'termsAccepted',
+    'privacyPolicyAccepted',
+  ]);
+
+  if (fieldError) {
     return {
       form: undefined,
       fields: {
-        email: emailMessage,
+        [fieldError.field]: fieldError.message,
       },
-    };
+    } as SubmissionValidationResult<RegisterFieldName>;
   }
 
-  const passwordMessage = firstMatchingMessage(
-    messages,
-    PASSWORD_MESSAGE_PATTERN,
-  );
-  if (passwordMessage) {
+  if (code === 'VALIDATION_FAILED' || status === 400 || status === 422) {
     return {
-      form: undefined,
-      fields: {
-        password: passwordMessage,
-      },
-    };
-  }
-
-  const firstNameMessage = firstMatchingMessage(
-    messages,
-    FIRST_NAME_MESSAGE_PATTERN,
-  );
-  if (firstNameMessage) {
-    return {
-      form: undefined,
-      fields: {
-        firstName: firstNameMessage,
-      },
-    };
-  }
-
-  const lastNameMessage = firstMatchingMessage(
-    messages,
-    LAST_NAME_MESSAGE_PATTERN,
-  );
-  if (lastNameMessage) {
-    return {
-      form: undefined,
-      fields: {
-        lastName: lastNameMessage,
-      },
-    };
-  }
-
-  const termsMessage = firstMatchingMessage(messages, TERMS_MESSAGE_PATTERN);
-  if (termsMessage) {
-    return {
-      form: undefined,
-      fields: {
-        termsAccepted: termsMessage,
-      },
-    };
-  }
-
-  const privacyMessage = firstMatchingMessage(messages, PRIVACY_MESSAGE_PATTERN);
-  if (privacyMessage) {
-    return {
-      form: undefined,
-      fields: {
-        privacyPolicyAccepted: privacyMessage,
-      },
+      form: getAuthErrorMessage(error, t, 'errors.validationFailed'),
+      fields: {},
     };
   }
 
@@ -149,8 +112,7 @@ export function getEmailOnlySubmitError(
   error: unknown,
   t: AuthTranslator,
 ): SubmissionValidationResult<EmailFieldName> {
-  const messages = getValidationMessages(error);
-  const emailMessage = firstMatchingMessage(messages, EMAIL_MESSAGE_PATTERN);
+  const emailMessage = getApiFieldError(error, 'email');
 
   if (emailMessage) {
     return {
@@ -171,11 +133,7 @@ export function getResetPasswordSubmitError(
   error: unknown,
   t: AuthTranslator,
 ): SubmissionValidationResult<ResetPasswordFieldName> {
-  const messages = getValidationMessages(error);
-  const passwordMessage = firstMatchingMessage(
-    messages,
-    PASSWORD_MESSAGE_PATTERN,
-  );
+  const passwordMessage = getApiFieldError(error, 'newPassword');
 
   if (passwordMessage) {
     return {
@@ -183,6 +141,15 @@ export function getResetPasswordSubmitError(
       fields: {
         newPassword: passwordMessage,
       },
+    };
+  }
+
+  const tokenMessage = getApiFieldError(error, 'token');
+
+  if (tokenMessage) {
+    return {
+      form: tokenMessage,
+      fields: {},
     };
   }
 

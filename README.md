@@ -1,19 +1,16 @@
 # Ritora User Web App
 
-Ritora's frontend is a Next.js App Router application for account creation, secure sign-in, guided onboarding, skin profile setup, and the authenticated skincare workspace. It is paired with the NestJS API in the sibling repo at `../ritora-backend-app`.
+Ritora's frontend is a Next.js App Router application for authenticated skincare planning and product management. It works with the NestJS API in `../ritora-backend-app`.
 
-## Current product scope
+## Current product areas
 
-- Email/password authentication with mandatory email verification before a user can log in
-- Resend verification, forgot password, and reset password flows
-- Guided onboarding that routes users into skin profile setup
-- Skin profile capture and editing
-- Authenticated dashboard shell with sidebar navigation
-- Settings for language, theme, and plain-language mode
-- English and Swedish copy via `next-intl`
-- Shared shadcn-style UI primitives built on Radix
-
-The dashboard shell already reserves product areas from the blueprint such as inventory, routines, progress, and gap analysis, but those modules are still staged rather than fully implemented.
+- Authentication: register, login, resend verification, forgot password, reset password, session-aware logout flows
+- Onboarding: gated post-login flow that routes new users into skin profile setup
+- Skin profile: create, edit, and review profile data used by the rest of the workspace
+- Schedule: daily and weekly routine planning with slot editing, routine steps, and shelf product selection
+- Shelf: photo-first product intake, product detail pages, edit flows, product-image upload, status updates, and bulk actions
+- Settings and preferences: language, theme, plain-language mode, and account/session views
+- Localization: English and Swedish via `next-intl`
 
 ## Tech stack
 
@@ -21,18 +18,17 @@ The dashboard shell already reserves product areas from the blueprint such as in
 - React 19
 - TypeScript
 - Tailwind CSS 4
-- Radix UI primitives with shadcn-style wrappers
-- TanStack Query for server state
-- Zustand for auth state
-- `next-intl` for localization
-- Jest + Testing Library for component and logic tests
-- Playwright for end-to-end desktop and mobile coverage
+- Radix UI primitives
+- TanStack Query
+- Zustand
+- Jest + Testing Library
+- Playwright
 
 ## Prerequisites
 
 - Node.js `>=20`
 - npm `>=10`
-- The backend API running locally, usually from `../ritora-backend-app`
+- The backend API running from `../ritora-backend-app`
 
 ## Environment
 
@@ -42,17 +38,19 @@ Create `/.env.local` from `/.env.example`:
 cp .env.example .env.local
 ```
 
-Current variables:
+Variables:
 
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_PRODUCT_MEDIA_URL=
 ```
 
 Notes:
 
 - `NEXT_PUBLIC_API_URL` must point to the backend API, not the Next.js dev server.
-- If the frontend accidentally points to itself during development, the app warns about the misconfiguration and clears auth state instead of looping on refresh.
+- `NEXT_PUBLIC_PRODUCT_MEDIA_URL` is optional. Set it when product images are served from private CloudFront media URLs.
+- The frontend blocks unexpected API origins and insecure production API transport.
 
 ## Local development
 
@@ -62,7 +60,7 @@ Notes:
 npm install
 ```
 
-2. Start the backend in the sibling repo.
+2. Start the backend.
 
 ```bash
 cd ../ritora-backend-app
@@ -80,12 +78,9 @@ npm run dev
 
 4. Open `http://localhost:3000`.
 
-If you want to exercise email verification or password reset locally, the backend defaults to Mailpit:
+Email verification and reset flows depend on the backend mail setup. In local development, the backend logs fallback links when mail delivery is not configured or fails.
 
-- SMTP listener: `localhost:1025`
-- Mail UI: `http://localhost:8025`
-
-## Key routes
+## Routes
 
 Public routes:
 
@@ -94,7 +89,9 @@ Public routes:
 - `/register`
 - `/forgot-password`
 - `/reset-password`
+- `/reset-password/[token]`
 - `/verify-email`
+- `/verify-email/[token]`
 - `/resend-verification`
 - `/privacy`
 - `/terms`
@@ -102,23 +99,32 @@ Public routes:
 
 Protected routes:
 
-- `/onboarding`
 - `/dashboard`
+- `/onboarding`
 - `/skin-profile`
+- `/schedule`
+- `/shelf`
+- `/shelf/new`
+- `/shelf/[productId]`
+- `/shelf/[productId]/edit`
 - `/settings`
+
+## Shelf product flow
+
+- Add Product is photo-first: users upload one product photo plus additional label photos.
+- The frontend sends ordered multipart images plus the selected hero image index to the backend.
+- Search and barcode are no longer part of the add-product UI.
+- Edit Product supports separate choose/preview/upload behavior for product photos.
 
 ## Auth and security notes
 
-- Users can register without becoming authenticated immediately.
-- Login is blocked until `emailVerified` is true.
-- Verification and password-reset links use `#token=...` URL fragments, so the token is not sent to the server as a query string.
-- Sensitive auth pages send `Referrer-Policy: no-referrer` and `Cache-Control: no-store`.
-- Access tokens are kept in memory and refreshed with the backend's HTTP-only refresh cookie.
-- Theme preference is bootstrapped before hydration so the app paints directly in the active theme instead of flashing light mode first.
+- Access tokens are kept in memory.
+- Refresh uses the backend's HTTP-only cookie.
+- Auth-sensitive routes hydrate from `/auth/refresh` and `/auth/me`.
+- Verification and reset pages send `Referrer-Policy: no-referrer` and `Cache-Control: no-store`.
+- The app ships security headers and a report-only CSP from `next.config.ts`.
 
-## Testing and quality checks
-
-Available scripts:
+## Scripts
 
 ```bash
 npm run dev
@@ -131,16 +137,7 @@ npm run test:cov
 npm run test:e2e
 ```
 
-Coverage thresholds enforced in Jest:
-
-- Lines: `80%`
-- Functions: `80%`
-
-Playwright details:
-
-- Runs desktop Chrome and mobile Chrome projects
-- Builds and serves the app automatically unless `PLAYWRIGHT_BASE_URL` is provided
-- Optional overrides:
+Playwright examples:
 
 ```bash
 PLAYWRIGHT_BASE_URL=http://localhost:3000 npm run test:e2e
@@ -149,12 +146,13 @@ PLAYWRIGHT_PORT=3010 npm run test:e2e
 
 ## Useful folders
 
-- `src/app` - App Router pages and layouts
-- `src/components` - shared UI and product components
-- `src/hooks` - auth, skin profile, and utility hooks
-- `src/lib` - API client, theme bootstrap, routing helpers, and utilities
-- `src/services` - HTTP service wrappers for backend endpoints
-- `src/stores` - client state stores
+- `src/app` - App Router routes and layouts
+- `src/components` - shared UI and feature components
+- `src/hooks` - feature hooks and query wiring
+- `src/lib` - API client, date/time helpers, form helpers, and utilities
+- `src/services` - API service wrappers
+- `src/stores` - auth and UI state
+- `src/types` - shared frontend types
 - `messages` - translation files
 - `e2e` - Playwright specs
 

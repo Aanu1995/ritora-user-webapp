@@ -13,10 +13,22 @@ let mockSkinProfileData: { data: unknown } = { data: null };
 
 jest.mock("next/navigation", () => ({
   usePathname: () => mockPathname,
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    back: jest.fn(),
+    forward: jest.fn(),
+    prefetch: jest.fn(),
+    refresh: jest.fn(),
+  }),
 }));
 
 jest.mock("@/hooks/use-auth", () => ({
   useLogout: () => mockLogoutState,
+  useUpdateTimeZone: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+  }),
 }));
 
 jest.mock("@/hooks/use-skin-profile", () => ({
@@ -39,6 +51,7 @@ describe("AppShell", () => {
         lastName: "Lovelace",
         emailVerified: true,
         preferredLanguage: "en",
+        timeZone: null,
         createdAt: "2026-04-15T10:00:00.000Z",
       },
       isAuthenticated: true,

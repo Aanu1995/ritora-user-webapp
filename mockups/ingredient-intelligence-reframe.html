@@ -1,0 +1,906 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ritora · Ingredient Intelligence — Where and how it works</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --background: #f7f5f0;
+        --foreground: #14201a;
+        --surface: #ffffff;
+        --surface-muted: #f0ede4;
+        --muted: #586458;
+        --border: rgba(20, 32, 26, 0.12);
+        --border-strong: rgba(20, 32, 26, 0.22);
+        --accent: #2f7a52;
+        --accent-strong: #1f5f3d;
+        --accent-soft: #e4f0e8;
+        --warning: #b8540a;
+        --warning-soft: rgba(184, 84, 10, 0.1);
+        --danger: #b3261e;
+        --danger-soft: rgba(179, 38, 30, 0.1);
+        --success: #2f7a52;
+        --shadow-soft: 0 20px 50px rgba(20, 32, 26, 0.08);
+        --ai: #7c3aed;
+        --ai-soft: rgba(124, 58, 237, 0.08);
+        --ai-border: rgba(124, 58, 237, 0.24);
+      }
+
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        color: var(--foreground);
+        background: var(--background);
+        font-size: 14px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1, h2, h3, h4 {
+        font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+        letter-spacing: -0.01em;
+      }
+      code, .mono {
+        font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      }
+
+      .page {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 48px 32px 96px;
+      }
+
+      .hero {
+        background: linear-gradient(135deg, var(--accent-soft) 0%, var(--surface-muted) 100%);
+        border-radius: 24px;
+        padding: 32px 36px;
+        margin-bottom: 32px;
+      }
+      .hero h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+      }
+      .hero p {
+        margin: 10px 0 0;
+        color: var(--foreground);
+        max-width: 760px;
+      }
+      .hero-meta {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+      }
+      .hero-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .hero-pill strong { color: var(--accent-strong); }
+
+      .section-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-weight: 600;
+        margin: 44px 0 14px;
+      }
+      .section-label:first-of-type { margin-top: 0; }
+
+      .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 4px;
+      }
+      .section-subtitle {
+        color: var(--muted);
+        font-size: 14px;
+        margin: 0 0 20px;
+      }
+
+      /* ===== Frames ===== */
+      .frame {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        box-shadow: var(--shadow-soft);
+        overflow: hidden;
+      }
+      .frame-caption {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface-muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        font-weight: 600;
+      }
+      .frame-caption .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+        background: var(--accent);
+      }
+      .frame-caption .dot.future { background: var(--ai); }
+      .frame-caption .dot.muted { background: var(--muted); }
+      .frame-caption .dot.danger { background: var(--danger); }
+      .frame-body { padding: 24px; }
+
+      .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+      @media (max-width: 1100px) {
+        .grid-2 { grid-template-columns: 1fr; }
+      }
+
+      /* ===== Shelf product-detail layout ===== */
+      .detail-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface-muted);
+        padding: 0 20px;
+        margin: -24px -24px 20px;
+      }
+      .detail-tab {
+        padding: 14px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+      }
+      .detail-tab.active {
+        color: var(--foreground);
+        border-bottom-color: var(--accent);
+        font-weight: 600;
+      }
+
+      .product-top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+      .product-thumb {
+        width: 56px;
+        height: 72px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #e7ebdf 0%, #d3d9c5 100%);
+        flex: none;
+      }
+      .product-brand {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+      }
+      .product-name {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 2px 0 0;
+      }
+
+      .ingredient-list-heading {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0 0 8px;
+      }
+      .ingredient-list {
+        background: var(--surface-muted);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--foreground);
+      }
+      .ingredient-confirmed {
+        font-size: 11px;
+        color: var(--muted);
+        margin: 8px 0 20px;
+      }
+
+      /* ===== Panel header + sections ===== */
+      .panel-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .panel-header h3 {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      /* Actives list */
+      .actives-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .active-card {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--surface);
+        padding: 14px;
+      }
+      .active-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .active-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0;
+      }
+      .category-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 10px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        border-radius: 9999px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .active-summary {
+        font-size: 12px;
+        line-height: 1.55;
+        color: var(--muted);
+        margin: 8px 0 0;
+      }
+
+      /* Pairing */
+      .pairing-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 16px;
+      }
+      .pairing-card {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--surface);
+        padding: 14px;
+      }
+      .pairing-card-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0;
+      }
+      .pairing-card-note {
+        font-size: 12px;
+        color: var(--muted);
+        margin: 6px 0 10px;
+      }
+      .avoid-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .avoid-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 10px;
+        background: var(--surface-muted);
+        color: var(--foreground);
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+      .mitigation-tip {
+        margin-top: 10px;
+        padding: 8px 10px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        border-radius: 10px;
+        font-size: 11px;
+        line-height: 1.5;
+      }
+
+      /* ===== Data flow diagram ===== */
+      .flow {
+        display: grid;
+        grid-template-columns: 1fr 24px 1fr 24px 1fr;
+        gap: 12px;
+        align-items: stretch;
+        margin: 4px 0;
+      }
+      @media (max-width: 980px) {
+        .flow { grid-template-columns: 1fr; }
+        .flow-arrow { display: none; }
+      }
+      .flow-node {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+        background: var(--surface-muted);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .flow-node.source {
+        background: #e4f0e8;
+        border-color: rgba(47, 122, 82, 0.22);
+      }
+      .flow-node.engine {
+        background: var(--surface);
+      }
+      .flow-node.llm {
+        background: var(--ai-soft);
+        border-color: var(--ai-border);
+      }
+      .flow-title {
+        font-size: 13px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .flow-sub {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .flow-sub code {
+        font-size: 10px;
+        background: rgba(0, 0, 0, 0.05);
+        padding: 1px 4px;
+        border-radius: 4px;
+      }
+      .flow-arrow {
+        display: grid;
+        place-items: center;
+        color: var(--muted);
+        font-size: 20px;
+      }
+
+      .kv {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 6px 14px;
+        font-size: 11px;
+        margin-top: 10px;
+      }
+      .kv dt { color: var(--muted); font-weight: 500; }
+      .kv dd { margin: 0; }
+
+      .call-out {
+        margin-top: 20px;
+        padding: 14px 18px;
+        background: #fffbeb;
+        border: 1px solid #f59e0b;
+        border-radius: 14px;
+        font-size: 12px;
+        color: #78350f;
+        line-height: 1.55;
+      }
+      .call-out strong { color: #78350f; }
+
+      /* ===== Today's Suggestion preview ===== */
+      .window-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .window-chip {
+        padding: 7px 14px;
+        border-radius: 9999px;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+      }
+      .window-chip.active {
+        background: var(--foreground);
+        color: var(--background);
+        border-color: var(--foreground);
+      }
+      .window-chip.pending {
+        background: var(--ai-soft);
+        color: var(--ai);
+        border-color: var(--ai-border);
+      }
+
+      .routine-step {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--surface);
+        margin-bottom: 8px;
+      }
+      .step-num {
+        width: 24px;
+        height: 24px;
+        border-radius: 9999px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: 12px;
+      }
+      .step-body { flex: 1; min-width: 0; }
+      .step-name { font-size: 13px; font-weight: 600; margin: 0; }
+      .step-reason { font-size: 11px; color: var(--muted); margin: 2px 0 0; }
+      .step-time {
+        font-size: 10px;
+        padding: 2px 6px;
+        background: var(--surface-muted);
+        border-radius: 4px;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .rejected-step {
+        background: var(--danger-soft);
+        border-color: rgba(179, 38, 30, 0.25);
+      }
+      .rejected-step .step-num {
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+      .rejected-reason {
+        font-size: 11px;
+        color: var(--danger);
+        margin-top: 4px;
+      }
+
+      .routine-meta {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.6;
+        padding: 12px;
+        background: var(--surface-muted);
+        border-radius: 10px;
+        margin-top: 12px;
+      }
+      .routine-meta strong {
+        color: var(--accent-strong);
+      }
+
+      .state-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        border: 1px dashed var(--border-strong);
+        border-radius: 16px;
+        padding: 16px;
+        background: var(--surface);
+      }
+      .state-card svg { flex: none; color: var(--accent-strong); margin-top: 2px; }
+      .state-card-title { font-size: 13px; font-weight: 600; margin: 0; }
+      .state-card-body { font-size: 12px; color: var(--muted); margin: 4px 0 0; line-height: 1.55; }
+      .state-card a {
+        color: var(--accent-strong);
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .state-card a:hover { text-decoration: underline; }
+
+      .legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 16px;
+      }
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 9999px;
+      }
+      .legend-dot.live { background: var(--accent); }
+      .legend-dot.future { background: var(--ai); }
+      .legend-dot.retired { background: var(--muted); }
+
+      .gone-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .gone-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 12px;
+        background: var(--surface-muted);
+        border-radius: 10px;
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .gone-item strong {
+        color: var(--foreground);
+      }
+      .gone-item .strike {
+        text-decoration: line-through;
+        text-decoration-color: var(--danger);
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- ========== HERO ========== -->
+      <header class="hero">
+        <h1>Ingredient Intelligence — where it lives now</h1>
+        <p>
+          The shelf-wide routine check was removed: it assumed every product a
+          user owns is used together, which isn't true. Intelligence is now
+          <strong>educational on each product</strong> today — and will power
+          the Today's Suggestion pipeline when that ships. Rules live in
+          Postgres, English-only. Other languages are produced at runtime by
+          an LLM, cached per-string.
+        </p>
+        <div class="hero-meta">
+          <span class="hero-pill"><strong>79</strong> ingredients</span>
+          <span class="hero-pill"><strong>31</strong> conflict rules</span>
+          <span class="hero-pill"><strong>v2</strong> engine</span>
+          <span class="hero-pill"><strong>en → any</strong> runtime translation</span>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-dot live"></span>Live now</span>
+          <span class="legend-item"><span class="legend-dot future"></span>Future (Today's Suggestion)</span>
+          <span class="legend-item"><span class="legend-dot retired"></span>Removed in this reframe</span>
+        </div>
+      </header>
+
+      <!-- ========== SECTION 1: LIVE SURFACE ========== -->
+      <p class="section-label">1 · Live surface</p>
+      <h2 class="section-title">Shelf · product detail · Ingredients tab</h2>
+      <p class="section-subtitle">
+        This is the only place the engine renders today. It tells the user
+        what the actives in THIS product are, and what they don't play well
+        with — no cross-shelf comparison.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption">
+          <span class="dot"></span>
+          /shelf/[productId] — Ingredients tab
+        </div>
+        <div class="frame-body">
+          <div class="detail-tabs">
+            <span class="detail-tab">About</span>
+            <span class="detail-tab active">Ingredients</span>
+            <span class="detail-tab">How to apply</span>
+            <span class="detail-tab">Manufacturer</span>
+          </div>
+
+          <div class="product-top">
+            <div class="product-thumb"></div>
+            <div>
+              <p class="product-brand">Paula's Choice</p>
+              <h3 class="product-name">1% Retinol Booster</h3>
+            </div>
+          </div>
+
+          <h4 class="ingredient-list-heading">Ingredients</h4>
+          <div class="ingredient-list">
+            Aqua, Glycerin, Cyclopentasiloxane, Retinol, Tocopherol, Panthenol,
+            Dimethicone, Palmitoyl Pentapeptide-4, Sodium Hyaluronate …
+          </div>
+          <p class="ingredient-confirmed">Last confirmed on 12 April 2026.</p>
+
+          <div class="panel-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-strong)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            <h3>Ingredient intelligence</h3>
+          </div>
+
+          <!-- Actives block -->
+          <div class="panel-header" style="margin: 0 0 10px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-strong)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+            <h3 style="font-size:13px;">Key actives</h3>
+          </div>
+
+          <div class="actives-list">
+            <article class="active-card">
+              <div class="active-card-top">
+                <p class="active-title">Retinol</p>
+                <span class="category-badge">Retinoid</span>
+              </div>
+              <p class="active-summary">A retinoid that speeds cell turnover, smooths fine lines, and evens tone.</p>
+            </article>
+            <article class="active-card">
+              <div class="active-card-top">
+                <p class="active-title">Matrixyl peptide</p>
+                <span class="category-badge">Peptide</span>
+              </div>
+              <p class="active-summary">A signalling peptide that supports collagen and elasticity over time.</p>
+            </article>
+            <article class="active-card">
+              <div class="active-card-top">
+                <p class="active-title">Vitamin E</p>
+                <span class="category-badge">Antioxidant</span>
+              </div>
+              <p class="active-summary">A fat-soluble antioxidant that supports the barrier and pairs well with vitamin C.</p>
+            </article>
+          </div>
+
+          <!-- Pairing block -->
+          <div class="panel-header" style="margin: 24px 0 10px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-strong)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></svg>
+            <h3 style="font-size:13px;">How to pair it</h3>
+          </div>
+
+          <div class="pairing-list">
+            <article class="pairing-card">
+              <p class="pairing-card-title">Retinol</p>
+              <p class="pairing-card-note">Avoid in the same routine with:</p>
+              <div class="avoid-pills">
+                <span class="avoid-pill">AHA</span>
+                <span class="avoid-pill">BHA</span>
+                <span class="avoid-pill">Benzoyl peroxide</span>
+                <span class="avoid-pill">Sulphur</span>
+                <span class="avoid-pill">Vitamin C (ascorbic acid)</span>
+              </div>
+              <div class="mitigation-tip">Tip: Use them on alternate nights.</div>
+            </article>
+          </div>
+
+          <div class="call-out">
+            <strong>What's not here, deliberately:</strong> no "conflicts with
+            your other shelf products," no shelf safety score, no unresolved-INCI
+            list. The shelf isn't a routine — that analysis would mislead.
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== SECTION 2: DATA FLOW ========== -->
+      <p class="section-label">2 · How it works under the hood</p>
+      <h2 class="section-title">Deterministic-first + LLM translation only</h2>
+      <p class="section-subtitle">
+        The safety verdict always comes from hardcoded-in-Postgres rules. The
+        LLM's only job is turning English into whatever language the user
+        asked for. Translations are cached by <code>sha256(source) + language</code>.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption">
+          <span class="dot"></span>
+          Backend data flow — <code>POST /ingredients/analyze</code>
+        </div>
+        <div class="frame-body">
+          <div class="flow">
+            <div class="flow-node source">
+              <span class="flow-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+                Postgres
+              </span>
+              <span class="flow-sub"><code>ingredient_entries</code>, <code>ingredient_aliases</code>, <code>ingredient_category_patterns</code>, <code>ingredient_conflict_rules</code></span>
+              <span class="flow-sub">English-only. Seeded at boot from JSON.</span>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node engine">
+              <span class="flow-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent-strong)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10v10H7z"/></svg>
+                Deterministic engine
+              </span>
+              <span class="flow-sub"><code>MatchingService</code> → normalize INCI → alias → regex.</span>
+              <span class="flow-sub"><code>AnalysisService</code> → build actives + pairing guidance from rules.</span>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node llm">
+              <span class="flow-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--ai)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="m6.8 4.2 2.6 2.6"/><path d="m17.2 4.2-2.6 2.6"/><path d="M12 18v4"/><path d="m6.8 19.8 2.6-2.6"/><path d="m17.2 19.8-2.6-2.6"/><circle cx="12" cy="12" r="4"/></svg>
+                TranslationService
+              </span>
+              <span class="flow-sub">LRU (in-memory) + <code>ingredient_translation_cache</code> (Postgres).</span>
+              <span class="flow-sub">LLM only on cache miss. English passes through untouched.</span>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-top: 24px;">
+            <div>
+              <h4 style="margin: 0 0 8px; font-size: 13px;">Request example</h4>
+              <div class="ingredient-list mono" style="font-size: 11px; line-height: 1.7;">
+POST /api/v1/ingredients/analyze<br/>
+Accept-Language: sv<br/><br/>
+{<br/>
+&nbsp;&nbsp;"focusProductId": "01HW...",<br/>
+&nbsp;&nbsp;"withExplanations": false<br/>
+}
+              </div>
+            </div>
+            <div>
+              <h4 style="margin: 0 0 8px; font-size: 13px;">Response example (sv)</h4>
+              <div class="ingredient-list mono" style="font-size: 11px; line-height: 1.7;">
+{<br/>
+&nbsp;&nbsp;"mode": "focus",<br/>
+&nbsp;&nbsp;"engineVersion": "v2",<br/>
+&nbsp;&nbsp;"actives": [{<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"slug": "retinol",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"displayName": "Retinol",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"category": "retinoid",<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"summary": "En retinoid som...", <span style="color: var(--muted); font-style: italic;">// from cache</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;"avoidCategories": ["aha", "bha", ...]<br/>
+&nbsp;&nbsp;}]<br/>
+}
+              </div>
+            </div>
+          </div>
+
+          <dl class="kv">
+            <dt>Rule storage</dt>
+            <dd>5 Postgres tables, English canonical. Bump <code>ENGINE_VERSION</code> to bust caches.</dd>
+            <dt>Seeder</dt>
+            <dd>Reads <code>src/ingredients/seed/ingredients-seed.json</code>, upserts idempotently on boot.</dd>
+            <dt>Translation LLM</dt>
+            <dd>Same OpenAI client as the explanation provider. <code>temperature: 0</code>. Tight prompt forbids adding new info.</dd>
+            <dt>Graceful fallback</dt>
+            <dd>Any translation failure → return English source. Safety verdict is never LLM-sourced.</dd>
+          </dl>
+        </div>
+      </div>
+
+      <!-- ========== SECTION 3: FUTURE ========== -->
+      <p class="section-label">3 · Future — Today's Suggestion integration</p>
+      <h2 class="section-title">Where intelligence becomes really useful</h2>
+      <p class="section-subtitle">
+        Today's Suggestion generates morning / afternoon / evening windows
+        progressively. When an AI picks products for a window, the
+        deterministic engine runs as a safety filter — rejecting conflicts and
+        ordering the accepted picks by layering rules.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption">
+          <span class="dot future"></span>
+          /todays-suggestion — preview (not built yet)
+        </div>
+        <div class="frame-body">
+          <div class="window-tabs">
+            <span class="window-chip">Morning ✓ applied</span>
+            <span class="window-chip active">Afternoon · generating now</span>
+            <span class="window-chip pending">Evening · waits for afternoon</span>
+          </div>
+
+          <h3 style="margin: 0 0 4px; font-size: 16px;">Afternoon suggestion</h3>
+          <p style="margin: 0 0 16px; color: var(--muted); font-size: 13px;">
+            Based on what you applied this morning + today's weather + your skin state.
+          </p>
+
+          <div class="routine-step">
+            <span class="step-num">1</span>
+            <div class="step-body">
+              <p class="step-name">CeraVe · Hydrating Cleanser</p>
+              <p class="step-reason">Rinse away midday buildup before leave-on steps.</p>
+            </div>
+            <span class="step-time">2 min</span>
+          </div>
+          <div class="routine-step">
+            <span class="step-num">2</span>
+            <div class="step-body">
+              <p class="step-name">La Roche-Posay · Hyalu B5 Serum</p>
+              <p class="step-reason">Hydrating step; rebuilds moisture lost to afternoon air-con.</p>
+            </div>
+            <span class="step-time">1 min</span>
+          </div>
+          <div class="routine-step">
+            <span class="step-num">3</span>
+            <div class="step-body">
+              <p class="step-name">CeraVe · AM Facial Moisturiser SPF 30</p>
+              <p class="step-reason">Reapply sunscreen before you head out again.</p>
+            </div>
+            <span class="step-time">1 min</span>
+          </div>
+
+          <div class="routine-step rejected-step" style="margin-top: 14px;">
+            <span class="step-num">✕</span>
+            <div class="step-body">
+              <p class="step-name" style="color: var(--danger);">The Ordinary · Glycolic Acid 7% <span style="font-weight: 400; color: var(--muted);">(AI suggested, engine rejected)</span></p>
+              <p class="rejected-reason">
+                Retinol already applied this morning · <strong>RETINOID_AHA</strong> high conflict within the day. Engine asked the LLM to pick a non-acid alternative.
+              </p>
+            </div>
+          </div>
+
+          <div class="routine-meta">
+            <strong>Why this set was approved:</strong> No conflicts inside the afternoon window ·
+            layering order sorted by category weight + active pH ·
+            cumulative-exposure check passed (acids from morning not repeated).
+            <br/>
+            <strong>Engine called:</strong>
+            <code class="mono">POST /ingredients/analyze</code>
+            with <code>productIds</code>
+            + previously-applied morning products as context.
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== WHAT'S GONE ========== -->
+      <p class="section-label">4 · What was removed</p>
+      <h2 class="section-title">Surfaces that were misleading by construction</h2>
+      <p class="section-subtitle">
+        Anything that treated "shelf" as "routine" had to go. The tests for
+        these are deleted; the components are no longer imported.
+      </p>
+
+      <div class="grid-2">
+        <div class="frame">
+          <div class="frame-caption">
+            <span class="dot danger"></span>
+            Gone — shelf-wide "Routine check"
+          </div>
+          <div class="frame-body">
+            <div class="gone-list">
+              <div class="gone-item">
+                <span class="strike">GET /ingredients/shelf-summary</span>&nbsp; — endpoint, service method, test.
+              </div>
+              <div class="gone-item">
+                <span class="strike">Dashboard RoutineCheckCard</span>&nbsp; — rendered a fake routine score built from the whole shelf.
+              </div>
+              <div class="gone-item">
+                <span class="strike">/routine-check detail page</span>&nbsp; — the deep-dive for the same misleading model.
+              </div>
+              <div class="gone-item">
+                <span class="strike">Unresolved-INCI footnote</span>&nbsp; — user called it noise. Unmatched tokens still tracked server-side for telemetry.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frame">
+          <div class="frame-caption">
+            <span class="dot muted"></span>
+            Edge state — when a product lacks INCI
+          </div>
+          <div class="frame-body">
+            <div class="state-card">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 10.3c.2-.4.5-.8.9-1a2.1 2.1 0 0 1 2.6.4c.3.4.5.8.5 1.3 0 1.3-2 2-2 2"/><path d="M12 17h.01"/></svg>
+              <div>
+                <p class="state-card-title">We need more ingredient data</p>
+                <p class="state-card-body">
+                  1 product is missing an ingredient list. Add one to unlock
+                  safety checks.
+                </p>
+                <a href="#">Add ingredients →</a>
+              </div>
+            </div>
+            <p style="font-size: 11px; color: var(--muted); margin: 12px 0 0; line-height: 1.55;">
+              Shown inside the product-detail Ingredients tab when INCI is
+              empty. No fake score, no guesses.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

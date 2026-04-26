@@ -5,6 +5,7 @@ export type User = {
   lastName: string;
   emailVerified: boolean;
   preferredLanguage: string;
+  timeZone: string | null;
   createdAt: string;
 };
 
@@ -58,4 +59,12 @@ export type ResetPasswordInput = {
 export type UpdateProfileInput = {
   firstName: string;
   lastName: string;
+};
+
+export type UpdatePreferredLanguageInput = {
+  preferredLanguage: string;
+};
+
+export type UpdateTimeZoneInput = {
+  timeZone: string;
 };
