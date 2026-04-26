@@ -4,7 +4,7 @@ import {
   mockPush,
   renderAddProductPage,
   resetAddProductPageMocks,
-} from './add-product-page.test-harness';
+} from '@/test/shelf/add-product-page.test-harness';
 
 beforeEach(() => {
   resetAddProductPageMocks();
