@@ -23,7 +23,6 @@ const FIELD_ERROR_KEYS: ReadonlyArray<ShelfFormFieldName> = [
   'identity.description',
   'identity.benefits',
   'identity.suitedFor',
-  'identity.inciIngredients',
   'identity.sizeMl',
   'userFields.pricePaid',
   'userFields.expiresAt',

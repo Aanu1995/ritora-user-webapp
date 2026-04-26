@@ -70,9 +70,7 @@ export function AddProductPage() {
   const [provenance, setProvenance] = useState<DataProvenance>(
     DataProvenance.UserEntered,
   );
-  const [reviewFields, setReviewFields] = useState<ProductFormReviewFields>(
-    {},
-  );
+  const [reviewFields, setReviewFields] = useState<ProductFormReviewFields>({});
   const [isSaved, setIsSaved] = useState(false);
 
   const form = useForm({
@@ -124,6 +122,7 @@ export function AddProductPage() {
     form.setFieldValue('identity', nextIdentity);
     form.setFieldValue('identity.brand', nextIdentity.brand);
     form.setFieldValue('identity.name', nextIdentity.name);
+    form.setFieldValue('identity.category', nextIdentity.category);
     form.setFieldValue('identity.description', nextIdentity.description);
     form.setFieldValue('identity.benefits', nextIdentity.benefits);
     form.setFieldValue('identity.suitedFor', nextIdentity.suitedFor);
@@ -141,7 +140,9 @@ export function AddProductPage() {
     form.setFieldValue('manufacturer', nextManufacturer);
   };
 
-  const setUserFieldsValue = (nextUserFields: ProductFormValue['userFields']) => {
+  const setUserFieldsValue = (
+    nextUserFields: ProductFormValue['userFields'],
+  ) => {
     clearSubmitErrors(form);
     form.setFieldValue('userFields', nextUserFields);
   };
@@ -276,7 +277,9 @@ export function AddProductPage() {
                   <div className="shrink-0">
                     <Button type="submit" size="sm" disabled={isSubmitting}>
                       {isSubmitting ? (
-                        <LoadingIndicator label={tDialog('confirm.submitting')} />
+                        <LoadingIndicator
+                          label={tDialog('confirm.submitting')}
+                        />
                       ) : (
                         tDialog('confirm.submit')
                       )}

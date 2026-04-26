@@ -27,6 +27,7 @@ export type ProductFormGuidanceErrors = {
 export type ProductFormReviewFields = Partial<
   Record<
     | 'identity.sizeMl'
+    | 'identity.category'
     | 'identity.description'
     | 'identity.benefits'
     | 'identity.suitedFor'

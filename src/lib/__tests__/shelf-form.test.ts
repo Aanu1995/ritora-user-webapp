@@ -19,7 +19,9 @@ import {
   type ShelfProductFormValue,
 } from '@/types/shelf';
 
-function createValue(overrides?: Partial<ShelfProductFormValue>): ShelfProductFormValue {
+function createValue(
+  overrides?: Partial<ShelfProductFormValue>,
+): ShelfProductFormValue {
   return {
     identity: {
       ...createEmptyIdentity(),
@@ -80,15 +82,49 @@ describe('shelf-form', () => {
 
   it('validates required brand and name', () => {
     expect(
-      validateShelfProductForm(createValue({ identity: { ...createEmptyIdentity(), brand: ' ', name: 'Serum', category: ProductCategory.Serum, imageUrls: [], barcode: null, sizeMl: null, description: null, benefits: [], suitedFor: [], inciIngredients: [], inciLastConfirmedAt: null } })),
+      validateShelfProductForm(
+        createValue({
+          identity: {
+            ...createEmptyIdentity(),
+            brand: ' ',
+            name: 'Serum',
+            category: ProductCategory.Serum,
+            imageUrls: [],
+            barcode: null,
+            sizeMl: null,
+            description: null,
+            benefits: [],
+            suitedFor: [],
+            inciIngredients: [],
+            inciLastConfirmedAt: null,
+          },
+        }),
+      ),
     ).toBe(ShelfFormValidationCode.BrandRequired);
 
     expect(
-      validateShelfProductForm(createValue({ identity: { ...createEmptyIdentity(), brand: 'CeraVe', name: ' ', category: ProductCategory.Serum, imageUrls: [], barcode: null, sizeMl: null, description: null, benefits: [], suitedFor: [], inciIngredients: [], inciLastConfirmedAt: null } })),
+      validateShelfProductForm(
+        createValue({
+          identity: {
+            ...createEmptyIdentity(),
+            brand: 'CeraVe',
+            name: ' ',
+            category: ProductCategory.Serum,
+            imageUrls: [],
+            barcode: null,
+            sizeMl: null,
+            description: null,
+            benefits: [],
+            suitedFor: [],
+            inciIngredients: [],
+            inciLastConfirmedAt: null,
+          },
+        }),
+      ),
     ).toBe(ShelfFormValidationCode.NameRequired);
   });
 
-  it('requires the about fields used for product understanding', () => {
+  it('requires core about fields but allows missing ingredients', () => {
     expect(
       validateShelfProductForm(
         createValue({
@@ -119,7 +155,7 @@ describe('shelf-form', () => {
           identity: { ...createValue().identity, inciIngredients: [] },
         }),
       ),
-    ).toBe(ShelfFormValidationCode.IngredientsRequired);
+    ).toBeNull();
   });
 
   it('requires size and at least one guidance step', () => {
@@ -157,13 +193,17 @@ describe('shelf-form', () => {
   it('validates numeric and structured fields', () => {
     expect(
       validateShelfProductForm(
-        createValue({ identity: { ...createValue().identity, sizeMl: Number.NaN } }),
+        createValue({
+          identity: { ...createValue().identity, sizeMl: Number.NaN },
+        }),
       ),
     ).toBe(ShelfFormValidationCode.SizeInvalid);
 
     expect(
       validateShelfProductForm(
-        createValue({ userFields: { ...createValue().userFields, pricePaid: Number.NaN } }),
+        createValue({
+          userFields: { ...createValue().userFields, pricePaid: Number.NaN },
+        }),
       ),
     ).toBe(ShelfFormValidationCode.PriceInvalid);
 
@@ -279,8 +319,14 @@ describe('shelf-form', () => {
     ]);
     expect(normalized.identity.description).toBe('Smooth overnight serum.');
     expect(normalized.identity.benefits).toEqual(['calming', 'hydrating']);
-    expect(normalized.identity.inciIngredients).toEqual(['Aqua', 'Niacinamide']);
-    expect(normalized.guidance.steps).toEqual(['Cleanse first.', 'Pat gently.']);
+    expect(normalized.identity.inciIngredients).toEqual([
+      'Aqua',
+      'Niacinamide',
+    ]);
+    expect(normalized.guidance.steps).toEqual([
+      'Cleanse first.',
+      'Pat gently.',
+    ]);
     expect(normalized.guidance.cautions).toEqual(['Avoid eyes.']);
     expect(normalized.manufacturer.parentCompany).toBe('L’Oreal');
     expect(normalized.manufacturer.supportEmail).toBe('support@cerave.com');
@@ -309,7 +355,9 @@ describe('shelf-form', () => {
     expect(isSafeExternalUrl('https://127.0.0.1/product')).toBe(false);
     expect(isSafeExternalUrl('http://10.0.0.5/product')).toBe(false);
     expect(isSafeExternalUrl('https://localhost:3000/product')).toBe(false);
-    expect(isSafeExternalUrl('https://user:pass@ritora.com/product')).toBe(false);
+    expect(isSafeExternalUrl('https://user:pass@ritora.com/product')).toBe(
+      false,
+    );
   });
 
   it('allows configured api media URLs only for stored product images', () => {
@@ -318,10 +366,12 @@ describe('shelf-form', () => {
         'http://localhost:3001/media/catalogue-front-photos/front-photo.jpg',
       ),
     ).toBe(true);
-    expect(isSafeProductImageUrl('http://localhost:3001/private.jpg')).toBe(false);
-    expect(
-      isSafeProductImageUrl('https://cdn.ritora.com/product.jpg'),
-    ).toBe(true);
+    expect(isSafeProductImageUrl('http://localhost:3001/private.jpg')).toBe(
+      false,
+    );
+    expect(isSafeProductImageUrl('https://cdn.ritora.com/product.jpg')).toBe(
+      true,
+    );
     expect(
       isSafeExternalUrl(
         'http://localhost:3001/media/catalogue-front-photos/front-photo.jpg',

@@ -169,6 +169,7 @@ export function ProductEditForm({ product }: Props) {
     form.setFieldValue('identity', nextIdentity);
     form.setFieldValue('identity.brand', nextIdentity.brand);
     form.setFieldValue('identity.name', nextIdentity.name);
+    form.setFieldValue('identity.category', nextIdentity.category);
     form.setFieldValue('identity.description', nextIdentity.description);
     form.setFieldValue('identity.benefits', nextIdentity.benefits);
     form.setFieldValue('identity.suitedFor', nextIdentity.suitedFor);
@@ -186,7 +187,9 @@ export function ProductEditForm({ product }: Props) {
     form.setFieldValue('manufacturer', nextManufacturer);
   };
 
-  const setUserFieldsValue = (nextUserFields: ProductFormValue['userFields']) => {
+  const setUserFieldsValue = (
+    nextUserFields: ProductFormValue['userFields'],
+  ) => {
     clearSubmitErrors(form);
     form.setFieldValue('userFields', nextUserFields);
   };

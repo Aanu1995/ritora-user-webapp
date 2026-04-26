@@ -873,8 +873,8 @@
         "maxReached": "Du har nått gränsen på 6 bilder. Ta bort en etikettbild för att lägga till en annan.",
         "extracting": "Läser dina foton…",
         "partial": "Vissa fält behöver fortfarande granskas — se de markerade fälten nedan.",
-        "errorTitle": "Vi kunde inte läsa de här bilderna",
-        "error": "Fotoextraktionen slutfördes inte den här gången. Lägg till tydligare eller mer kompletta etikettbilder eller fyll i uppgifterna manuellt.",
+        "errorTitle": "Kunde inte läsa fotona",
+        "error": "Prova tydligare etikettfoton eller fyll i manuellt.",
         "serviceUnavailableTitle": "Kunde inte nå fotoläsaren",
         "serviceUnavailableDescription": "Kontrollera din anslutning och försök igen. Dina foton finns kvar.",
         "serviceUnavailable": "Kunde inte nå fotoläsaren. Kontrollera din anslutning och försök igen.",
@@ -886,9 +886,9 @@
         "description": "Lägg till en produktbild och etikettbilder. Ritora fyller i det den kan och du kan justera resten nedan."
       },
       "lookupImport": {
-        "title": "Produktdetaljer ifyllda",
-        "description": "Vi hittade produktdetaljer och fyllde i formuläret åt dig. Du kan ändra allt innan du sparar.",
-        "reviewDescription": "Vi hittade produktdetaljer och fyllde i formuläret åt dig. Granska de markerade fälten innan du sparar."
+        "title": "Detaljer ifyllda",
+        "description": "Ändra något innan du sparar.",
+        "reviewDescription": "Granska de markerade fälten innan du sparar."
       },
       "lookupReview": {
         "title": "Importerade detaljer att granska",
@@ -924,7 +924,7 @@
           "descriptionHint": "En kort överblick över vad produkten gör.",
           "benefitsHint": "Kommaseparerat, till exempel återfuktande, lugnande, utjämnande.",
           "suitedForHint": "Kommaseparerade hudtyper, till exempel torr, kombinerad, känslig.",
-          "ingredientsHint": "Klistra in hela listan från förpackningen, kommaseparerad. Ritora använder den för säkerhetskontroller senare.",
+          "ingredientsHint": "Valfritt men rekommenderat. Klistra in hela INCI-listan när den finns; utan den hoppar Ritora över ingrediensbaserade säkerhetskontroller för produkten.",
           "yoursDescription": "Ritora använder detta för att följa hållbarhet och dina personliga preferenser.",
           "openedAtHint": "Lämna tomt om produkten fortfarande är förseglad.",
           "paoHint": "Brukar stå på burksymbolen som 12M, 24M och liknande.",
@@ -1052,7 +1052,7 @@
       "ingredients": {
         "heading": "Ingredienser",
         "lastConfirmed": "Senast bekräftad {date}.",
-        "empty": "Ingen ingredienslista finns. Klistra in från förpackningen för att låsa upp säkerhetskontroller senare.",
+        "empty": "Ingen ingredienslista finns. Ritora kan ändå spara produkten på din hylla, men ingrediensbaserade säkerhetskontroller blir begränsade tills du lägger till en.",
         "intelligenceStub": "Ingrediensintelligens kommer snart.",
         "intelligenceBody": "Ritora kommer att flagga ingredienser som inte matchar din hudprofil när nästa funktion släpps."
       },
@@ -1391,8 +1391,8 @@
     },
     "insufficientData": {
       "title": "Vi behöver mer ingrediensdata",
-      "bodySingle": "{count} produkt saknar ingredienslista. Lägg till en för att låsa upp säkerhetskontroller.",
-      "bodyPlural": "{count} produkter saknar ingredienslista. Lägg till dem för att låsa upp säkerhetskontroller.",
+      "bodySingle": "{count} produkt saknar ingredienslista. Ritora hoppar över ingrediensbaserade säkerhetskontroller för den tills du lägger till en.",
+      "bodyPlural": "{count} produkter saknar ingredienslistor. Ritora hoppar över ingrediensbaserade säkerhetskontroller för dem tills du lägger till dem.",
       "cta": "Lägg till ingredienser",
       "list": {
         "itemFallback": "Produkt utan namn"

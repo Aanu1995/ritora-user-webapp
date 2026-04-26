@@ -160,7 +160,9 @@ describe('PhotosTab', () => {
       ingredientImage,
       directionsImage,
     ]);
-    await user.click(screen.getByRole('button', { name: /extract from photos/i }));
+    await user.click(
+      screen.getByRole('button', { name: /extract from photos/i }),
+    );
 
     expect(mutate).toHaveBeenCalledWith(
       {
@@ -186,10 +188,12 @@ describe('PhotosTab', () => {
     const productImage = new File(['product'], 'product.jpg', {
       type: 'image/jpeg',
     });
-    const labelImages = Array.from({ length: 6 }, (_, index) =>
-      new File([`label-${index}`], `label-${index}.jpg`, {
-        type: 'image/jpeg',
-      }),
+    const labelImages = Array.from(
+      { length: 6 },
+      (_, index) =>
+        new File([`label-${index}`], `label-${index}.jpg`, {
+          type: 'image/jpeg',
+        }),
     );
 
     await user.upload(getProductInput(container), productImage);
@@ -261,15 +265,15 @@ describe('PhotosTab', () => {
       getLabelInput(container),
       new File(['label'], 'label.jpg', { type: 'image/jpeg' }),
     );
-    await user.click(screen.getByRole('button', { name: /extract from photos/i }));
+    await user.click(
+      screen.getByRole('button', { name: /extract from photos/i }),
+    );
 
     await waitFor(() => {
       expect(mockToastError).toHaveBeenCalledWith(
-        expect.stringMatching(/we couldn't read these photos/i),
+        expect.stringMatching(/couldn't read those photos/i),
         expect.objectContaining({
-          description: expect.stringMatching(
-            /add clearer or more complete label photos/i,
-          ),
+          description: expect.stringMatching(/try clearer label photos/i),
         }),
       );
     });
@@ -303,7 +307,9 @@ describe('PhotosTab', () => {
       getLabelInput(container),
       new File(['label'], 'label.jpg', { type: 'image/jpeg' }),
     );
-    await user.click(screen.getByRole('button', { name: /extract from photos/i }));
+    await user.click(
+      screen.getByRole('button', { name: /extract from photos/i }),
+    );
 
     await waitFor(() => {
       expect(mockToastError).toHaveBeenCalledWith(

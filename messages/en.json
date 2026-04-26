@@ -873,8 +873,8 @@
         "maxReached": "You're at the 6-photo limit. Remove a label photo to add a different one.",
         "extracting": "Reading your photos…",
         "partial": "Some fields still need review — see the highlighted fields below.",
-        "errorTitle": "We couldn't read these photos",
-        "error": "The photo extraction did not complete this time. Add clearer or more complete label photos, or enter the details manually.",
+        "errorTitle": "Couldn't read those photos",
+        "error": "Try clearer label photos, or enter details manually.",
         "serviceUnavailableTitle": "Couldn't reach the photo reader",
         "serviceUnavailableDescription": "Check your connection and try again. Your photos are still here.",
         "serviceUnavailable": "Couldn't reach the photo reader. Check your connection and try again.",
@@ -886,9 +886,9 @@
         "description": "Add a product photo and label photos. Ritora pre-fills what it can and you can refine the rest below."
       },
       "lookupImport": {
-        "title": "Product details filled in",
-        "description": "We found product details and filled the form for you. You can change anything before saving.",
-        "reviewDescription": "We found product details and filled the form for you. Review the highlighted fields before saving."
+        "title": "Details filled in",
+        "description": "Edit anything before saving.",
+        "reviewDescription": "Review the highlighted fields before saving."
       },
       "lookupReview": {
         "title": "Imported details to review",
@@ -924,7 +924,7 @@
           "descriptionHint": "A short overview of what the product does.",
           "benefitsHint": "Comma-separated. e.g. hydrating, smoothing, brightening.",
           "suitedForHint": "Comma-separated skin types. e.g. dry, combination, sensitive.",
-          "ingredientsHint": "Paste the full list from the packaging, comma-separated. Ritora will use it for safety checks later.",
+          "ingredientsHint": "Optional but recommended. Paste the full INCI list when available; without it, Ritora skips ingredient safety checks for this product.",
           "yoursDescription": "Ritora uses these to track shelf life and your personal preference.",
           "openedAtHint": "Leave blank if still sealed.",
           "paoHint": "Usually printed on the jar icon as 12M, 24M, etc.",
@@ -1052,7 +1052,7 @@
       "ingredients": {
         "heading": "Ingredients",
         "lastConfirmed": "Last confirmed on {date}.",
-        "empty": "No ingredient list on file. Paste from the packaging to unlock safety checks later.",
+        "empty": "No ingredient list on file. Ritora can still keep this product on your shelf, but ingredient safety checks will stay limited until you add one.",
         "intelligenceStub": "Ingredient intelligence coming soon.",
         "intelligenceBody": "Ritora will flag ingredients that clash with your skin profile once the next feature lands."
       },
@@ -1388,8 +1388,8 @@
     },
     "insufficientData": {
       "title": "We need more ingredient data",
-      "bodySingle": "{count} product is missing an ingredient list. Add one to unlock safety checks.",
-      "bodyPlural": "{count} products are missing an ingredient list. Add them to unlock safety checks.",
+      "bodySingle": "{count} product is missing an ingredient list. Ritora will skip ingredient safety checks for it until one is added.",
+      "bodyPlural": "{count} products are missing ingredient lists. Ritora will skip ingredient safety checks for them until they are added.",
       "cta": "Add ingredients",
       "list": {
         "itemFallback": "Product without a name"

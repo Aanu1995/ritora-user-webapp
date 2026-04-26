@@ -1,151 +1,47 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { UnsavedChangesDialog } from '@/components/app/unsaved-changes-dialog';
-import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
-import { renderWithProviders } from '@/test/utils';
 import {
-  DataProvenance,
-  ProductCategory,
-  ShelfStatus,
-  type ShelfProduct,
-} from '@/types/shelf';
-
-const mockPush = jest.fn();
-const mockMutate = jest.fn();
-const mockUploadMutate = jest.fn();
-const mockCreateObjectUrl = jest.fn(() => 'blob:product-photo-preview');
-const mockRevokeObjectUrl = jest.fn();
-
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: mockPush,
-    replace: jest.fn(),
-    back: jest.fn(),
-    prefetch: jest.fn(),
-  }),
-  usePathname: () => '/shelf/product-1/edit',
-  useSearchParams: () => new URLSearchParams(),
-}));
-
-jest.mock('@/hooks/use-shelf', () => ({
-  useUpdateProduct: () => ({
-    mutate: mockMutate,
-    isPending: false,
-  }),
-  useUploadProductImage: () => ({
-    mutate: mockUploadMutate,
-    isPending: false,
-  }),
-}));
-
-jest.mock('@/components/ui/date-picker', () => ({
-  DatePicker: ({
-    value,
-    onChange,
-    ariaLabel,
-  }: {
-    value: string;
-    onChange: (next: string) => void;
-    ariaLabel?: string;
-  }) => (
-    <input
-      type="date"
-      aria-label={ariaLabel}
-      value={value}
-      onChange={(event) => onChange(event.target.value)}
-    />
-  ),
-}));
-
-import { ProductEditForm } from '@/components/shelf/edit/product-edit-form';
-
-function getStepInput(index: number) {
-  return screen
-    .getAllByLabelText(new RegExp(`step ${index}`, 'i'))
-    .find((element) => element.tagName === 'INPUT') as HTMLInputElement;
-}
-
-const PRODUCT: ShelfProduct = {
-  id: 'product-1',
-  identity: {
-    brand: 'CeraVe',
-    name: 'Retinol Serum',
-    category: ProductCategory.Serum,
-    barcode: null,
-    imageUrls: [],
-    sizeMl: 30,
-    description: 'A calm nightly serum that smooths texture over time.',
-    benefits: ['smoothing'],
-    suitedFor: ['dry'],
-    inciIngredients: ['Aqua', 'Niacinamide'],
-    inciLastConfirmedAt: null,
-  },
-  guidance: {
-    applicationMethod: null,
-    quantity: null,
-    steps: [],
-    cautions: [],
-    waitMinutes: null,
-  },
-  manufacturer: {
-    brand: 'CeraVe',
-    parentCompany: null,
-    countryOfOrigin: null,
-    countryOfManufacture: null,
-    supportEmail: null,
-    productUrl: null,
-    websiteUrl: null,
-  },
-  userFields: {
-    openedAt: null,
-    expiresAt: null,
-    periodAfterOpeningMonths: 12,
-    pricePaid: null,
-    pricePaidCurrency: null,
-    purchasedFrom: null,
-    personalNotes: null,
-    preferredTimeOfDay: null,
-  },
-  status: ShelfStatus.Active,
-  provenance: DataProvenance.UserEntered,
-  createdAt: '2026-04-17T00:00:00.000Z',
-  updatedAt: '2026-04-17T00:00:00.000Z',
-};
+  getStepInput,
+  mockCreateObjectUrl,
+  mockMutate,
+  mockPush,
+  mockRevokeObjectUrl,
+  mockUploadMutate,
+  renderProductEditForm,
+  resetProductEditFormMocks,
+} from './product-edit-form.test-harness';
+import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 
 beforeEach(() => {
-  mockPush.mockReset();
-  mockMutate.mockReset();
-  mockUploadMutate.mockReset();
-  mockCreateObjectUrl.mockClear();
-  mockRevokeObjectUrl.mockClear();
-  URL.createObjectURL = mockCreateObjectUrl;
-  URL.revokeObjectURL = mockRevokeObjectUrl;
-  useUnsavedChangesStore.setState({
-    hasUnsavedChanges: false,
-    isDialogOpen: false,
-    pendingProceed: null,
-  });
+  resetProductEditFormMocks();
 });
 
 describe('ProductEditForm', () => {
   it('shows validation feedback instead of silently failing', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+    renderProductEditForm();
 
     await user.clear(screen.getByLabelText(/product name/i));
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     expect(screen.getByText(/product name is required/i)).toBeInTheDocument();
-    expect(screen.getByText(/add at least one step so ritora can explain how to use this product/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /add at least one step so ritora can explain how to use this product/i,
+      ),
+    ).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
   });
 
   it('shows inline validation for invalid product links', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+    renderProductEditForm();
 
     await user.clear(screen.getByLabelText(/product url/i));
-    await user.type(screen.getByLabelText(/product url/i), 'ftp://example.com/product');
+    await user.type(
+      screen.getByLabelText(/product url/i),
+      'ftp://example.com/product',
+    );
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     expect(
@@ -156,31 +52,35 @@ describe('ProductEditForm', () => {
 
   it('requires shelf-critical data before saving', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+    renderProductEditForm();
 
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     expect(
-      screen.getByText(/add at least one step so ritora can explain how to use this product/i),
+      screen.getByText(
+        /add at least one step so ritora can explain how to use this product/i,
+      ),
     ).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
   });
 
   it('does not show unrelated validation errors while the user is still typing', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+    renderProductEditForm();
 
     await user.clear(screen.getByLabelText(/product name/i));
     await user.type(screen.getByLabelText(/product name/i), 'U');
 
     expect(
-      screen.queryByText(/add at least one step so ritora can explain how to use this product/i),
+      screen.queryByText(
+        /add at least one step so ritora can explain how to use this product/i,
+      ),
     ).not.toBeInTheDocument();
   });
 
   it('requires the about fields before saving', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+    renderProductEditForm();
 
     await user.clear(screen.getByLabelText(/^description$/i));
     await user.clear(screen.getByLabelText(/^benefits$/i));
@@ -195,34 +95,20 @@ describe('ProductEditForm', () => {
     expect(
       screen.getByText(/add at least one skin type this product suits/i),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/paste the inci ingredients list/i),
-    ).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
   });
 
-  it('saves when ingredients are re-added after a validation failure', async () => {
+  it('saves when ingredients are cleared because the list is optional', async () => {
     const user = userEvent.setup();
     mockMutate.mockImplementation((_input, options) => {
       options?.onSuccess?.();
     });
 
-    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+    renderProductEditForm();
 
     await user.clear(screen.getByLabelText(/^ingredients \(inci\)$/i));
     await user.click(screen.getByRole('button', { name: /add step/i }));
     await user.type(getStepInput(1), 'Pat onto clean skin.');
-    await user.click(screen.getByRole('button', { name: /save changes/i }));
-
-    expect(
-      screen.getByText(/paste the inci ingredients list/i),
-    ).toBeInTheDocument();
-    expect(mockMutate).not.toHaveBeenCalled();
-
-    await user.type(
-      screen.getByLabelText(/^ingredients \(inci\)$/i),
-      'Aqua, Glycerin',
-    );
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {
@@ -230,7 +116,7 @@ describe('ProductEditForm', () => {
     });
     expect(
       mockMutate.mock.calls[0]?.[0].patch.identity.inciIngredients,
-    ).toEqual(['Aqua', 'Glycerin']);
+    ).toEqual([]);
   });
 
   it('lets the user choose a photo first and upload it before saving', async () => {
@@ -244,7 +130,7 @@ describe('ProductEditForm', () => {
       options?.onSuccess?.();
     });
 
-    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+    renderProductEditForm();
 
     await user.upload(
       screen.getByLabelText(/choose product photo/i),
@@ -277,12 +163,7 @@ describe('ProductEditForm', () => {
   it('treats a selected but not yet uploaded photo as an unsaved change', async () => {
     const user = userEvent.setup();
 
-    renderWithProviders(
-      <>
-        <ProductEditForm product={PRODUCT} />
-        <UnsavedChangesDialog />
-      </>,
-    );
+    renderProductEditForm({ withUnsavedDialog: true });
 
     await user.upload(
       screen.getByLabelText(/choose product photo/i),
@@ -297,7 +178,7 @@ describe('ProductEditForm', () => {
   it('creates preview object URLs only after selection and revokes them when cleared', async () => {
     const user = userEvent.setup();
 
-    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+    renderProductEditForm();
 
     expect(mockCreateObjectUrl).not.toHaveBeenCalled();
 
@@ -321,7 +202,7 @@ describe('ProductEditForm', () => {
       options?.onSuccess?.();
     });
 
-    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+    renderProductEditForm();
 
     await user.clear(screen.getByLabelText(/product name/i));
     await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
@@ -342,7 +223,7 @@ describe('ProductEditForm', () => {
       options?.onSuccess?.();
     });
 
-    renderWithProviders(<ProductEditForm product={PRODUCT} />);
+    renderProductEditForm();
 
     await user.clear(screen.getByLabelText(/product name/i));
     await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
@@ -361,12 +242,7 @@ describe('ProductEditForm', () => {
   describe('unsaved changes guard', () => {
     it('opens the discard dialog when the back arrow is clicked with dirty state', async () => {
       const user = userEvent.setup();
-      renderWithProviders(
-        <>
-          <ProductEditForm product={PRODUCT} />
-          <UnsavedChangesDialog />
-        </>,
-      );
+      renderProductEditForm({ withUnsavedDialog: true });
 
       await user.clear(screen.getByLabelText(/product name/i));
       await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
@@ -382,12 +258,7 @@ describe('ProductEditForm', () => {
 
     it('keeps the user on the form when "Keep editing" is clicked', async () => {
       const user = userEvent.setup();
-      renderWithProviders(
-        <>
-          <ProductEditForm product={PRODUCT} />
-          <UnsavedChangesDialog />
-        </>,
-      );
+      renderProductEditForm({ withUnsavedDialog: true });
 
       await user.clear(screen.getByLabelText(/product name/i));
       await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
@@ -405,17 +276,14 @@ describe('ProductEditForm', () => {
 
     it('navigates to the detail page when "Discard changes" is clicked', async () => {
       const user = userEvent.setup();
-      renderWithProviders(
-        <>
-          <ProductEditForm product={PRODUCT} />
-          <UnsavedChangesDialog />
-        </>,
-      );
+      renderProductEditForm({ withUnsavedDialog: true });
 
       await user.clear(screen.getByLabelText(/product name/i));
       await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
       await user.click(screen.getByLabelText(/back to shelf/i));
-      await user.click(screen.getByRole('button', { name: /discard changes/i }));
+      await user.click(
+        screen.getByRole('button', { name: /discard changes/i }),
+      );
 
       await waitFor(() => {
         expect(mockPush).toHaveBeenCalledWith('/shelf/product-1');
@@ -424,12 +292,7 @@ describe('ProductEditForm', () => {
 
     it('does not open the dialog when the back arrow is clicked with a clean form', async () => {
       const user = userEvent.setup();
-      renderWithProviders(
-        <>
-          <ProductEditForm product={PRODUCT} />
-          <UnsavedChangesDialog />
-        </>,
-      );
+      renderProductEditForm({ withUnsavedDialog: true });
 
       await user.click(screen.getByLabelText(/back to shelf/i));
 

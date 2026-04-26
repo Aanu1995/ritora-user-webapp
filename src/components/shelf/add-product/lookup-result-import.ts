@@ -62,18 +62,23 @@ export function buildLookupReviewFields(
   const resolvedManufacturer = resolved.manufacturer ?? {};
   const warnings = resolved.warnings ?? [];
   const reviewFields: ProductFormReviewFields = {};
-  const hasGenericReviewWarning = warnings.some((warning) =>
-    [
-      LookupWarningCode.ReviewRequired,
-      LookupWarningCode.CommunityData,
-      LookupWarningCode.AiNormalized,
-      LookupWarningCode.PartialData,
-    ].includes(warning),
-  );
+  const hasGenericReviewWarning =
+    resolved.reviewRequired ||
+    warnings.some((warning) =>
+      [
+        LookupWarningCode.ReviewRequired,
+        LookupWarningCode.CommunityData,
+        LookupWarningCode.AiNormalized,
+        LookupWarningCode.PartialData,
+      ].includes(warning),
+    );
 
   if (hasGenericReviewWarning) {
     if (hasMeaningfulValue(resolvedIdentity.sizeMl)) {
       reviewFields['identity.sizeMl'] = true;
+    }
+    if (hasMeaningfulValue(resolvedIdentity.category)) {
+      reviewFields['identity.category'] = true;
     }
     if (hasMeaningfulValue(resolvedIdentity.description)) {
       reviewFields['identity.description'] = true;
@@ -110,7 +115,9 @@ export function buildLookupReviewFields(
 
   if (
     warnings.includes(LookupWarningCode.GuidanceUnverified) &&
-    (hasMeaningfulValue(resolvedGuidance.steps) ||
+    (hasMeaningfulValue(resolvedGuidance.applicationMethod) ||
+      hasMeaningfulValue(resolvedGuidance.quantity) ||
+      hasMeaningfulValue(resolvedGuidance.steps) ||
       hasMeaningfulValue(resolvedGuidance.cautions))
   ) {
     reviewFields.guidance = true;
