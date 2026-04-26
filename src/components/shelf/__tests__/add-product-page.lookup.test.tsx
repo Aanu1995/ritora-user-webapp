@@ -8,7 +8,7 @@ import {
   renderAddProductPage,
   resetAddProductPageMocks,
   setMockLookupResolve,
-} from './add-product-page.test-harness';
+} from '@/test/shelf/add-product-page.test-harness';
 import {
   CatalogueSource,
   DataProvenance,

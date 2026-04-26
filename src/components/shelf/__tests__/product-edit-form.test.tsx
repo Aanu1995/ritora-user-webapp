@@ -9,7 +9,7 @@ import {
   mockUploadMutate,
   renderProductEditForm,
   resetProductEditFormMocks,
-} from './product-edit-form.test-harness';
+} from '@/test/shelf/product-edit-form.test-harness';
 import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 
 beforeEach(() => {
