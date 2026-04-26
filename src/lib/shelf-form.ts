@@ -464,6 +464,26 @@ export function getShelfGuidanceValidationErrors(
   };
 }
 
+export function getShelfFormFieldValidationErrors(
+  value: ShelfProductFormValue,
+): ShelfFormFieldErrors {
+  const result = shelfProductFormSchema.safeParse(value);
+
+  if (result.success) {
+    return {};
+  }
+
+  return result.error.issues.reduce<ShelfFormFieldErrors>((errors, issue) => {
+    const path = issue.path.join('.') as ShelfFormFieldName;
+
+    if (path in VALIDATION_CODE_BY_FIELD && !errors[path]) {
+      errors[path] = issue.message;
+    }
+
+    return errors;
+  }, {});
+}
+
 export function normalizeShelfProductForm(
   value: ShelfProductFormValue,
 ): ShelfProductFormValue {

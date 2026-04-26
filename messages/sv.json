@@ -323,7 +323,8 @@
   },
   "dashboard": {
     "welcome": "Välkommen tillbaka, {firstName}",
-    "subtitle": "Här är vad som händer med din hudvård",
+    "subtitle": "En lugn överblick över idag och din hylla.",
+    "upcomingHeading": "Kommer snart",
     "profileCard": {
       "title": "Hudprofil",
       "complete": "Din hudprofil är redo. AI-rekommendationer kommer att använda detta.",
@@ -1345,6 +1346,57 @@
     "notifications": {
       "title": "Aviseringar",
       "description": "Rutinpåminnelser, produktutgångsvarningar, låg lagernivåvarningar, framstegsincheckningar och vilopåminnelser. Allt konfigurerbart efter ditt schema."
+    }
+  },
+  "ingredients": {
+    "panel": {
+      "heading": "Ingrediensintelligens",
+      "errorTitle": "Kunde inte köra kontrollen",
+      "errorBody": "Vi stötte på ett problem vid analysen. Försök igen om en stund.",
+      "retry": "Försök igen"
+    },
+    "severity": {
+      "low": "Låg",
+      "medium": "Medel",
+      "high": "Hög"
+    },
+    "actives": {
+      "heading": "Aktiva ingredienser",
+      "empty": "Vi kunde inte matcha några aktiva ingredienser i produktens INCI-lista ännu."
+    },
+    "pairing": {
+      "heading": "Så kombinerar du den",
+      "avoidWith": "Undvik i samma rutin med:",
+      "mitigationHint": "Tips: {hint}"
+    },
+    "category": {
+      "retinoid": "Retinoid",
+      "aha": "AHA",
+      "bha": "BHA",
+      "pha": "PHA",
+      "benzoyl-peroxide": "Bensoylperoxid",
+      "vitamin-c": "Vitamin C",
+      "niacinamide": "Niacinamid",
+      "hydroquinone": "Hydrokinon",
+      "azelaic-acid": "Azelainsyra",
+      "tyrosinase-inhibitor": "Pigmentdämpare",
+      "bakuchiol": "Bakuchiol",
+      "sulphur": "Svavel",
+      "peptide": "Peptid",
+      "barrier": "Barriärstöd",
+      "humectant": "Fuktbindare",
+      "antioxidant": "Antioxidant",
+      "mineral-spf": "Mineralfilter",
+      "chemical-spf": "Kemiskt filter"
+    },
+    "insufficientData": {
+      "title": "Vi behöver mer ingrediensdata",
+      "bodySingle": "{count} produkt saknar ingredienslista. Lägg till en för att låsa upp säkerhetskontroller.",
+      "bodyPlural": "{count} produkter saknar ingredienslista. Lägg till dem för att låsa upp säkerhetskontroller.",
+      "cta": "Lägg till ingredienser",
+      "list": {
+        "itemFallback": "Produkt utan namn"
+      }
     }
   },
   "schedule": {

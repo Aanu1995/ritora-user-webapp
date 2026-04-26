@@ -7,6 +7,10 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { ProductFormBody, type ProductFormValue } from '../product-form-body';
+import {
+  buildShelfFieldErrors,
+  type ShelfFieldMeta,
+} from '../form/product-form-errors';
 import { GuardedLink } from '@/components/app/guarded-link';
 import { Button } from '@/components/ui/button';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
@@ -14,7 +18,7 @@ import { AppRoute } from '@/constants/app-routes';
 import { useFilePreviewSelection } from '@/hooks/use-file-preview-selection';
 import { useUnsavedChangesGuard } from '@/hooks/use-unsaved-changes-guard';
 import { useUpdateProduct, useUploadProductImage } from '@/hooks/use-shelf';
-import { type FieldIssue, firstFieldError } from '@/lib/form-errors';
+import { firstFieldError } from '@/lib/form-errors';
 import {
   clearSubmitErrors,
   executeMutation,
@@ -23,7 +27,6 @@ import {
 import {
   getShelfGuidanceValidationErrors,
   normalizeShelfProductForm,
-  type ShelfFormFieldErrors,
   shelfProductFormSchema,
 } from '@/lib/shelf-form';
 import { getShelfSubmitError } from '@/lib/shelf-submit-errors';
@@ -33,41 +36,6 @@ type Props = {
   product: ShelfProduct;
 };
 
-type ShelfFieldMeta = Partial<
-  Record<
-    string,
-    {
-      errors?: ReadonlyArray<FieldIssue>;
-      isTouched?: boolean;
-      isDirty?: boolean;
-    }
-  >
->;
-
-function shouldShowFieldError(
-  meta: ShelfFieldMeta[string] | undefined,
-  showAllErrors: boolean,
-): boolean {
-  if (showAllErrors) {
-    return true;
-  }
-
-  return Boolean(meta?.isTouched || meta?.isDirty);
-}
-
-function getFieldError(
-  fieldMeta: ShelfFieldMeta,
-  field: string,
-  translate: (key: string) => string,
-  showAllErrors: boolean,
-): string | undefined {
-  if (!shouldShowFieldError(fieldMeta[field], showAllErrors)) {
-    return undefined;
-  }
-
-  return firstFieldError(fieldMeta[field]?.errors, translate);
-}
-
 function getDefaultValues(product: ShelfProduct): ProductFormValue {
   return {
     identity: product.identity,
@@ -76,20 +44,6 @@ function getDefaultValues(product: ShelfProduct): ProductFormValue {
     userFields: product.userFields,
   };
 }
-
-const FIELD_ERROR_KEYS: ReadonlyArray<keyof ShelfFormFieldErrors> = [
-  'identity.brand',
-  'identity.name',
-  'identity.description',
-  'identity.benefits',
-  'identity.suitedFor',
-  'identity.inciIngredients',
-  'identity.sizeMl',
-  'userFields.pricePaid',
-  'userFields.expiresAt',
-  'manufacturer.supportEmail',
-  'manufacturer.productUrl',
-];
 
 function withUploadedImageUrl<T extends { identity: { imageUrls: string[] } }>(
   value: T,
@@ -132,6 +86,7 @@ export function ProductEditForm({ product }: Props) {
 
   const form = useForm({
     defaultValues: getDefaultValues(product),
+    canSubmitWhenInvalid: true,
     listeners: {
       onChange: ({ formApi }) => {
         clearSubmitErrors(formApi);
@@ -178,6 +133,7 @@ export function ProductEditForm({ product }: Props) {
   });
 
   const setUploadedPhoto = (imageUrl: string) => {
+    clearSubmitErrors(form);
     form.setFieldValue('identity', (previous) =>
       withIdentityImageUrl(previous, imageUrl),
     );
@@ -188,7 +144,16 @@ export function ProductEditForm({ product }: Props) {
       return null;
     }
 
-    const uploaded = await uploadProductImage.mutateAsync(selectedPhotoFile);
+    const result = await executeMutation(
+      uploadProductImage.mutate,
+      selectedPhotoFile,
+    );
+
+    if (result.error !== null) {
+      throw result.error;
+    }
+
+    const uploaded = result.data;
     setUploadedPhoto(uploaded.imageUrl);
     clearSelectedPhoto();
     return uploaded.imageUrl;
@@ -198,6 +163,40 @@ export function ProductEditForm({ product }: Props) {
   const hasUnsavedChanges = (isFormDirty || hasSelectedPhoto) && !isSaved;
 
   const { releaseGuard } = useUnsavedChangesGuard({ hasUnsavedChanges });
+
+  const setIdentityValue = (nextIdentity: ProductFormValue['identity']) => {
+    clearSubmitErrors(form);
+    form.setFieldValue('identity', nextIdentity);
+    form.setFieldValue('identity.brand', nextIdentity.brand);
+    form.setFieldValue('identity.name', nextIdentity.name);
+    form.setFieldValue('identity.description', nextIdentity.description);
+    form.setFieldValue('identity.benefits', nextIdentity.benefits);
+    form.setFieldValue('identity.suitedFor', nextIdentity.suitedFor);
+    form.setFieldValue(
+      'identity.inciIngredients',
+      nextIdentity.inciIngredients,
+    );
+    form.setFieldValue('identity.sizeMl', nextIdentity.sizeMl);
+  };
+
+  const setManufacturerValue = (
+    nextManufacturer: ProductFormValue['manufacturer'],
+  ) => {
+    clearSubmitErrors(form);
+    form.setFieldValue('manufacturer', nextManufacturer);
+  };
+
+  const setUserFieldsValue = (nextUserFields: ProductFormValue['userFields']) => {
+    clearSubmitErrors(form);
+    form.setFieldValue('userFields', nextUserFields);
+  };
+
+  const setGuidanceValue = (nextGuidance: ProductFormValue['guidance']) => {
+    clearSubmitErrors(form);
+    form.setFieldValue('guidance', nextGuidance);
+    form.setFieldValue('guidance.steps', nextGuidance.steps);
+    form.setFieldValue('guidance.cautions', nextGuidance.cautions);
+  };
 
   const uploadSelectedPhoto = async () => {
     if (!hasSelectedPhoto) {
@@ -211,17 +210,6 @@ export function ProductEditForm({ product }: Props) {
       toast.error(t('photo.uploadFailed'));
     }
   };
-
-  const buildFieldErrors = (
-    fieldMeta: ShelfFieldMeta,
-    showAllErrors: boolean,
-  ): ShelfFormFieldErrors =>
-    Object.fromEntries(
-      FIELD_ERROR_KEYS.map((field) => [
-        field,
-        getFieldError(fieldMeta, field, tShelf, showAllErrors),
-      ]),
-    ) as ShelfFormFieldErrors;
 
   return (
     <form
@@ -250,7 +238,12 @@ export function ProductEditForm({ product }: Props) {
           submissionAttempts,
         }) => {
           const showAllErrors = submissionAttempts > 0;
-          const fieldErrors = buildFieldErrors(fieldMeta, showAllErrors);
+          const fieldErrors = buildShelfFieldErrors(
+            fieldMeta,
+            values,
+            showAllErrors,
+            tShelf,
+          );
           const rawGuidanceErrors = getShelfGuidanceValidationErrors(values);
           const guidanceErrors = {
             steps: firstFieldError(
@@ -318,18 +311,10 @@ export function ProductEditForm({ product }: Props) {
 
                 <ProductFormBody
                   value={values}
-                  onIdentityChange={(nextIdentity) =>
-                    form.setFieldValue('identity', nextIdentity)
-                  }
-                  onManufacturerChange={(nextManufacturer) =>
-                    form.setFieldValue('manufacturer', nextManufacturer)
-                  }
-                  onUserFieldsChange={(nextUserFields) =>
-                    form.setFieldValue('userFields', nextUserFields)
-                  }
-                  onGuidanceChange={(nextGuidance) =>
-                    form.setFieldValue('guidance', nextGuidance)
-                  }
+                  onIdentityChange={setIdentityValue}
+                  onManufacturerChange={setManufacturerValue}
+                  onUserFieldsChange={setUserFieldsValue}
+                  onGuidanceChange={setGuidanceValue}
                   fieldErrors={fieldErrors}
                   guidanceErrors={guidanceErrors}
                   photoUpload={{

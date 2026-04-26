@@ -254,6 +254,74 @@ describe('AddProductPage', () => {
     });
   });
 
+  it('creates after a lookup fills ingredients following a validation failure', async () => {
+    const user = userEvent.setup();
+    mockMutate.mockImplementation((_draft, options) => {
+      options?.onSuccess?.({ id: 'product-123' });
+    });
+    mockLookupResolve = (onResult) => {
+      onResult({
+        identity: {
+          brand: 'CeraVe',
+          name: 'Resurfacing Retinol Serum',
+          category: ProductCategory.Serum,
+          imageUrls: [],
+          sizeMl: 30,
+          description: 'A renewing serum for smoother-looking skin.',
+          benefits: ['smoother texture'],
+          suitedFor: ['combination'],
+          inciIngredients: ['Aqua', 'Glycerin'],
+          inciLastConfirmedAt: null,
+        },
+        guidance: {
+          steps: ['Apply at night after cleansing.'],
+          cautions: [],
+        },
+        manufacturer: {
+          brand: 'CeraVe',
+          parentCompany: null,
+          countryOfOrigin: null,
+          countryOfManufacture: null,
+          supportEmail: null,
+          productUrl: null,
+          websiteUrl: null,
+        },
+        provenance: DataProvenance.PhotoLookup,
+        source: CatalogueSource.UserPhotos,
+        confidence: LookupConfidence.Medium,
+        reviewRequired: true,
+        warnings: [
+          LookupWarningCode.ReviewRequired,
+          LookupWarningCode.IngredientsUnverified,
+        ],
+        evidence: [],
+      });
+    };
+
+    renderWithProviders(<AddProductPage />);
+
+    await user.click(screen.getByRole('button', { name: /add to shelf/i }));
+    expect(
+      screen.getByText(/paste the inci ingredients list/i),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /import lookup/i }));
+    expect(screen.getByLabelText(/^ingredients \(inci\)$/i)).toHaveValue(
+      'Aqua, Glycerin',
+    );
+
+    await user.click(screen.getByRole('button', { name: /add to shelf/i }));
+
+    await waitFor(() => {
+      expect(mockMutate).toHaveBeenCalled();
+      expect(mockPush).toHaveBeenCalledWith('/shelf/product-123');
+    });
+    expect(mockMutate.mock.calls[0]?.[0].identity.inciIngredients).toEqual([
+      'Aqua',
+      'Glycerin',
+    ]);
+  });
+
   it('creates an unopened product without an opened date', async () => {
     const user = userEvent.setup();
     mockMutate.mockImplementation((_draft, options) => {

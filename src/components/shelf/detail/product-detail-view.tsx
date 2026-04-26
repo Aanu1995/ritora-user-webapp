@@ -323,6 +323,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
         </TabsContent>
         <TabsContent value="ingredients" className="px-6 py-6">
           <DetailIngredientsTab
+            productId={product.id}
             ingredients={product.identity.inciIngredients}
             lastConfirmedAt={product.identity.inciLastConfirmedAt}
           />

@@ -1,4 +1,5 @@
 import type { UseMutateFunction } from '@tanstack/react-query';
+import type { AnyFieldMetaBase } from '@tanstack/form-core';
 
 export type SubmissionFieldErrors<TField extends string> = Partial<
   Record<TField, string>
@@ -8,6 +9,8 @@ export type SubmissionValidationResult<TField extends string> = {
   form?: string;
   fields: SubmissionFieldErrors<TField>;
 };
+
+type FieldMetaWithSubmitErrors = AnyFieldMetaBase;
 
 type FormApiWithSubmitErrors<TField extends string> = {
   setErrorMap: (errorMap: {
@@ -27,7 +30,12 @@ type FormApiWithSubmitErrors<TField extends string> = {
           }
         | undefined;
     };
+    fieldMeta?: Partial<Record<TField, FieldMetaWithSubmitErrors>>;
   };
+  setFieldMeta?: (
+    field: TField,
+    updater: (meta: FieldMetaWithSubmitErrors) => FieldMetaWithSubmitErrors,
+  ) => void;
 };
 
 export type MutationExecutionResult<TData, TError> =
@@ -54,17 +62,13 @@ export function clearSubmitErrors<TField extends string>(
   formApi: FormApiWithSubmitErrors<TField>,
 ): void {
   const submitError = formApi.state?.errorMap.onSubmit;
-  if (submitError !== undefined) {
-    const fieldValues = Object.values(submitError.fields ?? {});
-    const hasFieldErrors = fieldValues.some((value) =>
-      readSubmissionErrorMessage(value) !== undefined,
-    );
-    const hasFormError =
-      readSubmissionErrorMessage(submitError.form) !== undefined;
+  const hasSubmitError =
+    formApi.state === undefined ||
+    (submitError !== undefined && hasSubmitErrorPayload(submitError));
+  const hasFieldMetaErrors = clearFieldSubmitErrors(formApi);
 
-    if (!hasFormError && !hasFieldErrors) {
-      return;
-    }
+  if (!hasSubmitError && !hasFieldMetaErrors) {
+    return;
   }
 
   formApi.setErrorMap({
@@ -73,6 +77,75 @@ export function clearSubmitErrors<TField extends string>(
       fields: {},
     },
   });
+}
+
+function hasSubmitErrorPayload(submitError: unknown): boolean {
+  if (readSubmissionErrorMessage(submitError) !== undefined) {
+    return true;
+  }
+
+  if (typeof submitError !== 'object' || submitError === null) {
+    return Boolean(submitError);
+  }
+
+  const shapedError = submitError as {
+    form?: unknown;
+    fields?: Record<string, unknown>;
+  };
+  const hasFormError =
+    readSubmissionErrorMessage(shapedError.form) !== undefined;
+  const hasFieldErrors = Object.values(shapedError.fields ?? {}).some(
+    (value) => readSubmissionErrorMessage(value) !== undefined,
+  );
+
+  if (hasFormError || hasFieldErrors) {
+    return true;
+  }
+
+  const keys = Object.keys(submitError);
+  const isEmptyKnownShape = keys.every(
+    (key) => key === 'form' || key === 'fields',
+  );
+
+  return keys.length > 0 && !isEmptyKnownShape;
+}
+
+function clearFieldSubmitErrors<TField extends string>(
+  formApi: FormApiWithSubmitErrors<TField>,
+): boolean {
+  if (!formApi.setFieldMeta || !formApi.state?.fieldMeta) {
+    return false;
+  }
+
+  let cleared = false;
+  const fieldMeta = formApi.state.fieldMeta;
+
+  for (const field of Object.keys(fieldMeta) as TField[]) {
+    const meta = fieldMeta[field];
+    const hasSubmitError = meta?.errorMap?.onSubmit !== undefined;
+    const hasBlurError = meta?.errorMap?.onBlur !== undefined;
+
+    if (!hasSubmitError && !hasBlurError) {
+      continue;
+    }
+
+    cleared = true;
+    formApi.setFieldMeta(field, (previous) => ({
+      ...previous,
+      errorMap: {
+        ...previous.errorMap,
+        onSubmit: undefined,
+        onBlur: undefined,
+      },
+      errorSourceMap: {
+        ...previous.errorSourceMap,
+        onSubmit: undefined,
+        onBlur: undefined,
+      },
+    }));
+  }
+
+  return cleared;
 }
 
 export function setSubmitErrors<TField extends string>(

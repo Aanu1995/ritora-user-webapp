@@ -6,6 +6,7 @@ const CATALOGUE_PRODUCTS_BASE = '/catalogue/products';
 const INVENTORY_PRODUCTS_BASE = '/inventory/products';
 const SCHEDULE_BASE = '/schedule';
 const SCHEDULE_SLOTS_BASE = `${SCHEDULE_BASE}/slots`;
+const INGREDIENTS_BASE = '/ingredients';
 
 const buildInventoryProductPath = (id: string) =>
   `${INVENTORY_PRODUCTS_BASE}/${id}`;
@@ -59,4 +60,6 @@ export const ApiPath = {
   ScheduleSlot: buildScheduleSlotPath,
   ScheduleSlotSteps: (id: string) => `${buildScheduleSlotPath(id)}/steps`,
   ScheduleSlotMove: (id: string) => `${buildScheduleSlotPath(id)}/move`,
+
+  IngredientsAnalyze: `${INGREDIENTS_BASE}/analyze`,
 } as const;

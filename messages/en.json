@@ -323,7 +323,8 @@
   },
   "dashboard": {
     "welcome": "Welcome back, {firstName}",
-    "subtitle": "Here's what's happening with your skincare",
+    "subtitle": "A calm look at today and your shelf.",
+    "upcomingHeading": "Coming soon",
     "profileCard": {
       "title": "Skin Profile",
       "complete": "Your skin profile is ready. AI recommendations will use this context.",
@@ -1342,6 +1343,57 @@
     "notifications": {
       "title": "Notifications",
       "description": "Routine reminders, product expiry alerts, low stock warnings, progress check-ins, and rest day reminders. All configurable to your schedule."
+    }
+  },
+  "ingredients": {
+    "panel": {
+      "heading": "Ingredient intelligence",
+      "errorTitle": "Couldn't run the check",
+      "errorBody": "We hit a snag analysing this product. Try again in a moment.",
+      "retry": "Retry"
+    },
+    "severity": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "actives": {
+      "heading": "Key actives",
+      "empty": "We couldn't match any active ingredients in this product's INCI list yet."
+    },
+    "pairing": {
+      "heading": "How to pair it",
+      "avoidWith": "Avoid in the same routine with:",
+      "mitigationHint": "Tip: {hint}"
+    },
+    "category": {
+      "retinoid": "Retinoid",
+      "aha": "AHA",
+      "bha": "BHA",
+      "pha": "PHA",
+      "benzoyl-peroxide": "Benzoyl peroxide",
+      "vitamin-c": "Vitamin C",
+      "niacinamide": "Niacinamide",
+      "hydroquinone": "Hydroquinone",
+      "azelaic-acid": "Azelaic acid",
+      "tyrosinase-inhibitor": "Brightener",
+      "bakuchiol": "Bakuchiol",
+      "sulphur": "Sulphur",
+      "peptide": "Peptide",
+      "barrier": "Barrier support",
+      "humectant": "Humectant",
+      "antioxidant": "Antioxidant",
+      "mineral-spf": "Mineral SPF",
+      "chemical-spf": "Chemical SPF"
+    },
+    "insufficientData": {
+      "title": "We need more ingredient data",
+      "bodySingle": "{count} product is missing an ingredient list. Add one to unlock safety checks.",
+      "bodyPlural": "{count} products are missing an ingredient list. Add them to unlock safety checks.",
+      "cta": "Add ingredients",
+      "list": {
+        "itemFallback": "Product without a name"
+      }
     }
   },
   "schedule": {
