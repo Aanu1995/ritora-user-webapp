@@ -17,7 +17,7 @@ export function PairingGuidance({ actives }: Props) {
 
   const actionable = actives.filter(
     (active) =>
-      active.avoidCategories.length > 0 || active.avoidIngredientSlugs.length > 0,
+      active.avoidCategories.length > 0 || active.avoidIngredients.length > 0,
   );
 
   if (actionable.length === 0) {
@@ -51,12 +51,12 @@ export function PairingGuidance({ actives }: Props) {
                   {tCategory(cat)}
                 </span>
               ))}
-              {active.avoidIngredientSlugs.map((slug) => (
+              {active.avoidIngredients.map((ingredient) => (
                 <span
-                  key={`slug-${slug}`}
+                  key={`ingredient-${ingredient.slug}`}
                   className="inline-flex items-center rounded-full bg-surface-muted px-2 py-0.5 text-[11px] font-medium text-foreground"
                 >
-                  {slug}
+                  {ingredient.displayName}
                 </span>
               ))}
             </div>

@@ -48,7 +48,10 @@ export type AnalysisActive = {
   category: IngredientCategory;
   summary: string;
   avoidCategories: IngredientCategory[];
-  avoidIngredientSlugs: string[];
+  avoidIngredients: Array<{
+    slug: string;
+    displayName: string;
+  }>;
   mitigationHint: string | null;
 };
 

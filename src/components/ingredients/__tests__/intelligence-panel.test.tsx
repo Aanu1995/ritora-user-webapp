@@ -25,7 +25,12 @@ function buildActive(partial: Partial<AnalysisActive> = {}): AnalysisActive {
     category: IngredientCategory.Retinoid,
     summary: 'A retinoid that speeds turnover and evens tone.',
     avoidCategories: [IngredientCategory.Aha, IngredientCategory.Bha],
-    avoidIngredientSlugs: [],
+    avoidIngredients: [
+      {
+        slug: 'benzoyl-peroxide',
+        displayName: 'Benzoyl peroxide',
+      },
+    ],
     mitigationHint: 'Alternate nights.',
     ...partial,
   };
@@ -144,6 +149,7 @@ describe('IntelligencePanel', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('AHA')).toBeInTheDocument();
     expect(screen.getByText('BHA')).toBeInTheDocument();
+    expect(screen.getByText('Benzoyl peroxide')).toBeInTheDocument();
     expect(screen.getByText(/alternate nights/i)).toBeInTheDocument();
   });
 
@@ -158,7 +164,7 @@ describe('IntelligencePanel', () => {
             displayName: 'Niacinamide',
             category: IngredientCategory.Niacinamide,
             avoidCategories: [],
-            avoidIngredientSlugs: [],
+            avoidIngredients: [],
             mitigationHint: null,
           }),
         ],

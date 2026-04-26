@@ -1,6 +1,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
+import { InsufficientDataState } from '@/components/ingredients/insufficient-data-state';
 import { IntelligencePanel } from '@/components/ingredients/intelligence-panel';
 import { formatLocalizedDate } from '@/lib/dayjs';
 
@@ -23,7 +24,10 @@ export function DetailIngredientsTab({
     return (
       <div className="flex flex-col gap-3">
         <p className="text-sm text-muted">{t('empty')}</p>
-        <IntelligencePanel productId={productId} />
+        <InsufficientDataState
+          productsMissingInci={[productId]}
+          compact
+        />
       </div>
     );
   }
