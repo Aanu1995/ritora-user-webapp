@@ -730,6 +730,8 @@
       "addNow": "Add now",
       "notApplicable": "Not applicable",
       "review": "Review",
+      "reactionEntriesCount": "{count} entries",
+      "activeToleranceCount": "{count} tracked",
       "encryptedBadge": "Encrypted",
       "consentRequired": "Asks for consent first",
       "controlBannerTitle": "You're in control",
@@ -1334,7 +1336,7 @@
     },
     "dialog": {
       "title": "Add to your shelf",
-      "subtitle": "Upload a product photo plus label photos, or enter the details yourself.",
+      "subtitle": "Upload a product photo plus label photos so Ritora can read the product before saving.",
       "close": "Close",
       "step": "Step {current} of 2",
       "photos": {
@@ -1364,22 +1366,12 @@
         "extracting": "Reading your photos…",
         "partial": "Some fields still need review — see the highlighted fields below.",
         "errorTitle": "Couldn't read those photos",
-        "error": "Try clearer label photos, or enter details manually.",
+        "error": "Try clearer product and label photos.",
         "serviceUnavailableTitle": "Couldn't reach the photo reader",
         "serviceUnavailableDescription": "Check your connection and try again. Your photos are still here.",
         "serviceUnavailable": "Couldn't reach the photo reader. Check your connection and try again.",
         "extractAction": "Extract from photos",
-        "extractingAction": "Extracting…",
-        "scanner": {
-          "insecureContext": "Barcode scanning requires a secure context.",
-          "unsupported": "Barcode scanning is not supported on this device.",
-          "policyBlocked": "Camera access is blocked by the page permissions policy.",
-          "permissionDenied": "Camera access has been denied for this site.",
-          "systemBlocked": "Camera access is blocked by the browser or operating system.",
-          "unavailable": "No usable camera is available on this device.",
-          "previewStartFailed": "The camera preview could not start.",
-          "unknownError": "Unknown barcode error."
-        }
+        "extractingAction": "Extracting…"
       },
       "lookup": {
         "heading": "Find your product",
@@ -1388,7 +1380,8 @@
       "lookupImport": {
         "title": "Details filled in",
         "description": "Edit anything before saving.",
-        "reviewDescription": "Review the highlighted fields before saving."
+        "reviewDescription": "Review the highlighted fields before saving.",
+        "requiredError": "Extract product details from photos before saving."
       },
       "lookupReview": {
         "title": "Imported details to review",
@@ -1397,7 +1390,7 @@
         "confidenceLabel": "Confidence",
         "warningsLabel": "What to review",
         "evidenceLabel": "Grounded sources",
-        "lowConfidenceError": "We couldn't verify enough product details to fill this form safely. Try clearer photos or enter the details manually."
+        "lowConfidenceError": "We couldn't verify enough product details to fill this form safely. Try clearer photos."
       },
       "manual": {
         "heading": "Add manually",
@@ -1648,11 +1641,7 @@
       "either": "morning or evening"
     },
     "provenance": {
-      "photo-lookup": "photo extraction",
-      "barcode-lookup": "barcode lookup",
-      "url-fetch": "manufacturer link",
-      "catalogue": "Ritora catalogue",
-      "user-entered": "your own input"
+      "photo-lookup": "photo extraction"
     },
     "templates": {
       "pickOne": "Pick a starter template",

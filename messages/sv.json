@@ -730,6 +730,8 @@
       "addNow": "Lägg till nu",
       "notApplicable": "Ej tillämpligt",
       "review": "Granska",
+      "reactionEntriesCount": "{count} poster",
+      "activeToleranceCount": "{count} följs",
       "encryptedBadge": "Krypterad",
       "consentRequired": "Frågar om samtycke först",
       "controlBannerTitle": "Du har kontrollen",
@@ -1334,7 +1336,7 @@
     },
     "dialog": {
       "title": "Lägg till på din hylla",
-      "subtitle": "Ladda upp en produktbild och etikettbilder, eller fyll i manuellt.",
+      "subtitle": "Ladda upp en produktbild och etikettbilder så att Ritora kan läsa produkten innan du sparar.",
       "close": "Stäng",
       "step": "Steg {current} av 2",
       "photos": {
@@ -1364,22 +1366,12 @@
         "extracting": "Läser dina foton…",
         "partial": "Vissa fält behöver fortfarande granskas — se de markerade fälten nedan.",
         "errorTitle": "Kunde inte läsa fotona",
-        "error": "Prova tydligare etikettfoton eller fyll i manuellt.",
+        "error": "Prova tydligare produkt- och etikettbilder.",
         "serviceUnavailableTitle": "Kunde inte nå fotoläsaren",
         "serviceUnavailableDescription": "Kontrollera din anslutning och försök igen. Dina foton finns kvar.",
         "serviceUnavailable": "Kunde inte nå fotoläsaren. Kontrollera din anslutning och försök igen.",
         "extractAction": "Extrahera från foton",
-        "extractingAction": "Extraherar…",
-        "scanner": {
-          "insecureContext": "Streckkodsskanning kräver en säker anslutning.",
-          "unsupported": "Streckkodsskanning stöds inte på den här enheten.",
-          "policyBlocked": "Kameraåtkomst blockeras av sidans behörighetspolicy.",
-          "permissionDenied": "Kameraåtkomst har nekats för den här webbplatsen.",
-          "systemBlocked": "Kameraåtkomst blockeras av webbläsaren eller operativsystemet.",
-          "unavailable": "Ingen användbar kamera är tillgänglig på den här enheten.",
-          "previewStartFailed": "Kameraförhandsvisningen kunde inte starta.",
-          "unknownError": "Okänt streckkodsfel."
-        }
+        "extractingAction": "Extraherar…"
       },
       "lookup": {
         "heading": "Hitta din produkt",
@@ -1388,7 +1380,8 @@
       "lookupImport": {
         "title": "Detaljer ifyllda",
         "description": "Ändra något innan du sparar.",
-        "reviewDescription": "Granska de markerade fälten innan du sparar."
+        "reviewDescription": "Granska de markerade fälten innan du sparar.",
+        "requiredError": "Extrahera produktdetaljer från foton innan du sparar."
       },
       "lookupReview": {
         "title": "Importerade detaljer att granska",
@@ -1397,7 +1390,7 @@
         "confidenceLabel": "Tillförlitlighet",
         "warningsLabel": "Det här bör du granska",
         "evidenceLabel": "Underliggande källor",
-        "lowConfidenceError": "Vi kunde inte verifiera tillräckligt med produktdetaljer för att fylla i formuläret på ett säkert sätt. Prova tydligare bilder eller fyll i uppgifterna manuellt."
+        "lowConfidenceError": "Vi kunde inte verifiera tillräckligt med produktdetaljer för att fylla i formuläret på ett säkert sätt. Prova tydligare bilder."
       },
       "manual": {
         "heading": "Lägg till manuellt",
@@ -1648,11 +1641,7 @@
       "either": "morgon eller kväll"
     },
     "provenance": {
-      "photo-lookup": "fotoextraktion",
-      "barcode-lookup": "streckkodsuppslag",
-      "url-fetch": "tillverkarens länk",
-      "catalogue": "Ritoras katalog",
-      "user-entered": "egna uppgifter"
+      "photo-lookup": "fotoextraktion"
     },
     "templates": {
       "pickOne": "Välj en mall",

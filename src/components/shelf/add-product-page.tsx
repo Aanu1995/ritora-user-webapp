@@ -44,7 +44,6 @@ import {
 } from '@/lib/shelf-form';
 import { getShelfSubmitError } from '@/lib/shelf-submit-errors';
 import {
-  DataProvenance,
   LookupConfidence,
   type ResolvedLookup,
 } from '@/types/shelf';
@@ -60,6 +59,35 @@ function buildDefaultValues(): ProductFormValue {
   };
 }
 
+function hasLookupValue(value: unknown): boolean {
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  if (typeof value === 'string') {
+    return value.trim().length > 0;
+  }
+
+  return value !== null && value !== undefined;
+}
+
+function mergeLookupValues<T extends object>(
+  current: T,
+  resolved: Partial<T>,
+): T {
+  const next = { ...current };
+
+  for (const key of Object.keys(resolved) as Array<keyof T>) {
+    const value = resolved[key];
+
+    if (hasLookupValue(value)) {
+      next[key] = value as T[typeof key];
+    }
+  }
+
+  return next;
+}
+
 export function AddProductPage() {
   const t = useTranslations('shelf');
   const tDialog = useTranslations('shelf.dialog');
@@ -68,9 +96,7 @@ export function AddProductPage() {
   const router = useRouter();
   const createProduct = useCreateProduct();
   const createdProductIdRef = useRef<string | null>(null);
-  const [provenance, setProvenance] = useState<DataProvenance>(
-    DataProvenance.UserEntered,
-  );
+  const hasPhotoExtractionRef = useRef(false);
   const [reviewFields, setReviewFields] = useState<ProductFormReviewFields>({});
   const [isSaved, setIsSaved] = useState(false);
 
@@ -88,9 +114,13 @@ export function AddProductPage() {
       onSubmitAsync: async ({ value }) => {
         createdProductIdRef.current = null;
 
+        if (!hasPhotoExtractionRef.current) {
+          return tLookupImport('requiredError');
+        }
+
         const result = await executeMutation(
           createProduct.mutate,
-          toShelfProductDraft(value, provenance),
+          toShelfProductDraft(value),
         );
 
         if (result.error !== null) {
@@ -158,6 +188,7 @@ export function AddProductPage() {
   const handleLookupResult = (resolved: ResolvedLookup) => {
     if (resolved.confidence === LookupConfidence.Low) {
       setReviewFields({});
+      hasPhotoExtractionRef.current = false;
       toast.error(tLookupReview('lowConfidenceError'));
       return;
     }
@@ -165,28 +196,34 @@ export function AddProductPage() {
     const resolvedIdentity = resolved.identity ?? {};
     const resolvedManufacturer = resolved.manufacturer ?? {};
     const resolvedGuidance = resolved.guidance ?? {};
-    const nextIdentity = {
-      ...form.getFieldValue('identity'),
-      ...resolvedIdentity,
-    };
+    const nextIdentity = mergeLookupValues(
+      form.getFieldValue('identity'),
+      resolvedIdentity,
+    );
+    const mergedManufacturer = mergeLookupValues(
+      form.getFieldValue('manufacturer'),
+      resolvedManufacturer,
+    );
     const nextManufacturer = {
-      ...form.getFieldValue('manufacturer'),
-      ...resolvedManufacturer,
+      ...mergedManufacturer,
       countryOfOrigin: normalizeLookupCountryValue(
         resolvedManufacturer.countryOfOrigin ??
           resolvedManufacturer.countryOfManufacture ??
-          form.getFieldValue('manufacturer').countryOfOrigin,
+          mergedManufacturer.countryOfOrigin,
       ),
       countryOfManufacture: normalizeLookupCountryValue(
         resolvedManufacturer.countryOfManufacture ??
           resolvedManufacturer.countryOfOrigin ??
-          form.getFieldValue('manufacturer').countryOfManufacture,
+          mergedManufacturer.countryOfManufacture,
       ),
     };
     const currentGuidance = form.getFieldValue('guidance');
+    const hasResolvedGuidance = Object.values(resolvedGuidance).some(
+      hasLookupValue,
+    );
     const nextGuidance =
-      Object.keys(resolvedGuidance).length > 0
-        ? { ...currentGuidance, ...resolvedGuidance }
+      hasResolvedGuidance
+        ? mergeLookupValues(currentGuidance, resolvedGuidance)
         : currentGuidance.steps.length > 0
           ? currentGuidance
           : buildTemplateGuidance(nextIdentity.category, [], []);
@@ -194,7 +231,7 @@ export function AddProductPage() {
     setIdentityValue(nextIdentity);
     setManufacturerValue(nextManufacturer);
     setGuidanceValue(nextGuidance);
-    setProvenance(resolved.provenance);
+    hasPhotoExtractionRef.current = true;
     const nextReviewFields = buildLookupReviewFields(resolved);
 
     setReviewFields(nextReviewFields);
@@ -204,6 +241,12 @@ export function AddProductPage() {
           ? tLookupImport('reviewDescription')
           : tLookupImport('description'),
     });
+  };
+
+  const handlePhotosChange = () => {
+    hasPhotoExtractionRef.current = false;
+    setReviewFields({});
+    clearSubmitErrors(form);
   };
 
   return (
@@ -285,7 +328,10 @@ export function AddProductPage() {
               />
 
               <div className="mx-auto mt-6 flex max-w-5xl flex-col gap-6">
-                <QuickLookupCard onResult={handleLookupResult} />
+                <QuickLookupCard
+                  onPhotosChange={handlePhotosChange}
+                  onResult={handleLookupResult}
+                />
 
                 {formError ? (
                   <div

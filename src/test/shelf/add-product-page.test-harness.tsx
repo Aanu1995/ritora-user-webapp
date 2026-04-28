@@ -2,6 +2,12 @@ import { screen } from '@testing-library/react';
 import { UnsavedChangesDialog } from '@/components/app/unsaved-changes-dialog';
 import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 import { renderWithProviders } from '@/test/utils';
+import {
+  CatalogueSource,
+  DataProvenance,
+  LookupConfidence,
+  type ResolvedLookup,
+} from '@/types/shelf';
 
 export const mockPush = jest.fn();
 export const mockMutate = jest.fn();
@@ -9,8 +15,9 @@ export const mockExtractFromImagesMutate = jest.fn();
 export const mockToastSuccess = jest.fn();
 export const mockToastError = jest.fn();
 
-let mockLookupResolve: ((onResult: (value: unknown) => void) => void) | null =
-  null;
+let mockLookupResolve:
+  | ((onResult: (value: ResolvedLookup) => void) => void)
+  | null = null;
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -42,7 +49,11 @@ jest.mock('@/hooks/use-shelf', () => ({
 }));
 
 jest.mock('@/components/shelf/add-product/quick-lookup-card', () => ({
-  QuickLookupCard: ({ onResult }: { onResult: (value: unknown) => void }) => (
+  QuickLookupCard: ({
+    onResult,
+  }: {
+    onResult: (value: ResolvedLookup) => void;
+  }) => (
     <button type="button" onClick={() => mockLookupResolve?.(onResult)}>
       import lookup
     </button>
@@ -85,9 +96,28 @@ export function resetAddProductPageMocks(): void {
 }
 
 export function setMockLookupResolve(
-  resolver: (onResult: (value: unknown) => void) => void,
+  resolver: (onResult: (value: ResolvedLookup) => void) => void,
 ): void {
   mockLookupResolve = resolver;
+}
+
+export function setSuccessfulPhotoExtraction(
+  overrides: Partial<ResolvedLookup> = {},
+): void {
+  setMockLookupResolve((onResult) => {
+    onResult({
+      identity: {},
+      guidance: {},
+      manufacturer: {},
+      provenance: DataProvenance.PhotoLookup,
+      source: CatalogueSource.UserPhotos,
+      confidence: LookupConfidence.High,
+      reviewRequired: false,
+      warnings: [],
+      evidence: [],
+      ...overrides,
+    });
+  });
 }
 
 export function renderAddProductPage(options?: {

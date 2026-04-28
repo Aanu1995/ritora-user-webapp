@@ -6,6 +6,7 @@ import {
   mockPush,
   renderAddProductPage,
   resetAddProductPageMocks,
+  setSuccessfulPhotoExtraction,
 } from '@/test/shelf/add-product-page.test-harness';
 
 beforeEach(() => {
@@ -132,6 +133,7 @@ describe('AddProductPage', () => {
     mockMutate.mockImplementation((_draft, options) => {
       options?.onSuccess?.({ id: 'product-123' });
     });
+    setSuccessfulPhotoExtraction();
 
     renderAddProductPage();
 
@@ -151,6 +153,7 @@ describe('AddProductPage', () => {
     await user.click(screen.getByRole('button', { name: /add step/i }));
     await user.type(getStepInput(1), 'Pat onto clean skin.');
     await user.type(screen.getByLabelText(/^opened on$/i), '2026-04-15');
+    await user.click(screen.getByRole('button', { name: /import lookup/i }));
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 
@@ -165,6 +168,7 @@ describe('AddProductPage', () => {
     mockMutate.mockImplementation((_draft, options) => {
       options?.onSuccess?.({ id: 'product-123' });
     });
+    setSuccessfulPhotoExtraction();
 
     renderAddProductPage();
 
@@ -182,6 +186,7 @@ describe('AddProductPage', () => {
     await user.type(screen.getByLabelText(/^size$/i), '50');
     await user.click(screen.getByRole('button', { name: /add step/i }));
     await user.type(getStepInput(1), 'Apply before sun exposure.');
+    await user.click(screen.getByRole('button', { name: /import lookup/i }));
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 
@@ -197,6 +202,7 @@ describe('AddProductPage', () => {
     mockMutate.mockImplementation((_draft, options) => {
       options?.onSuccess?.({ id: 'product-123' });
     });
+    setSuccessfulPhotoExtraction();
 
     renderAddProductPage();
 
@@ -215,6 +221,7 @@ describe('AddProductPage', () => {
     await user.type(screen.getByLabelText(/^size$/i), '30');
     await user.click(screen.getByRole('button', { name: /add step/i }));
     await user.type(getStepInput(1), 'Pat onto clean skin.');
+    await user.click(screen.getByRole('button', { name: /import lookup/i }));
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 

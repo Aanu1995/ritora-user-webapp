@@ -13,8 +13,9 @@ import {
 
 const mockUseExtractProductFromImages = jest.fn();
 const mockToastError = jest.fn();
-const mockCreateObjectURL = jest.fn(() => 'blob:preview');
+const mockCreateObjectURL = jest.fn();
 const mockRevokeObjectURL = jest.fn();
+let objectUrlSequence = 0;
 
 jest.mock('@/hooks/use-shelf', () => ({
   useExtractProductFromImages: () => mockUseExtractProductFromImages(),
@@ -67,7 +68,12 @@ beforeEach(() => {
   mockUseExtractProductFromImages.mockReset();
   mockToastError.mockReset();
   mockCreateObjectURL.mockClear();
+  mockCreateObjectURL.mockImplementation(() => {
+    objectUrlSequence += 1;
+    return `blob:preview-${objectUrlSequence}`;
+  });
   mockRevokeObjectURL.mockClear();
+  objectUrlSequence = 0;
   mockUseExtractProductFromImages.mockReturnValue({
     mutate: jest.fn(),
     isPending: false,
@@ -237,6 +243,34 @@ describe('PhotosTab', () => {
     ).toBeInTheDocument();
   });
 
+  it('revokes preview URLs when photos are replaced, removed, or unmounted', async () => {
+    const user = userEvent.setup();
+    const { container, unmount } = renderWithProviders(
+      <PhotosTab onResolved={jest.fn()} />,
+    );
+
+    await user.upload(
+      getProductInput(container),
+      new File(['product-a'], 'product-a.jpg', { type: 'image/jpeg' }),
+    );
+    await user.upload(
+      getProductInput(container),
+      new File(['product-b'], 'product-b.jpg', { type: 'image/jpeg' }),
+    );
+    await user.upload(
+      getLabelInput(container),
+      new File(['label'], 'label.jpg', { type: 'image/jpeg' }),
+    );
+
+    expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:preview-1');
+
+    await user.click(screen.getAllByRole('button', { name: /^remove$/i })[1]);
+    expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:preview-3');
+
+    unmount();
+    expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:preview-2');
+  });
+
   it('shows a toast when extraction fails on content', async () => {
     const user = userEvent.setup();
     const mutate = jest.fn(
@@ -273,7 +307,9 @@ describe('PhotosTab', () => {
       expect(mockToastError).toHaveBeenCalledWith(
         expect.stringMatching(/couldn't read those photos/i),
         expect.objectContaining({
-          description: expect.stringMatching(/try clearer label photos/i),
+          description: expect.stringMatching(
+            /try clearer product and label photos/i,
+          ),
         }),
       );
     });

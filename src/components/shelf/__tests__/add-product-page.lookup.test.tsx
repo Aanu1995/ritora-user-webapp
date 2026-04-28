@@ -15,11 +15,86 @@ import {
   LookupConfidence,
   LookupWarningCode,
   ProductCategory,
+  type ResolvedLookup,
 } from '@/types/shelf';
 
 beforeEach(() => {
   resetAddProductPageMocks();
 });
+
+async function fillValidManualProduct(user: ReturnType<typeof userEvent.setup>) {
+  fireEvent.change(screen.getByLabelText(/^brand$/i), {
+    target: { value: 'CeraVe' },
+  });
+  fireEvent.change(screen.getByLabelText(/^product name$/i), {
+    target: { value: 'Barrier Serum' },
+  });
+  fireEvent.change(screen.getByLabelText(/^description$/i), {
+    target: {
+      value: 'A calming serum that supports smoother texture overnight.',
+    },
+  });
+  fireEvent.change(screen.getByLabelText(/^benefits$/i), {
+    target: { value: 'calming, smoothing' },
+  });
+  fireEvent.change(screen.getByLabelText(/^suited for$/i), {
+    target: { value: 'dry, sensitive' },
+  });
+  fireEvent.change(screen.getByLabelText(/^size$/i), {
+    target: { value: '30' },
+  });
+  await user.click(screen.getByRole('button', { name: /add step/i }));
+  fireEvent.change(getStepInput(1), {
+    target: { value: 'Pat onto clean skin.' },
+  });
+  fireEvent.change(screen.getByLabelText(/^opened on$/i), {
+    target: { value: '2026-04-15' },
+  });
+  fireEvent.change(screen.getByLabelText(/^product url$/i), {
+    target: { value: 'https://example.com/product' },
+  });
+}
+
+function setSuccessfulPhotoLookup(
+  overrides: Partial<ResolvedLookup> = {},
+): void {
+  setMockLookupResolve((onResult) => {
+    onResult({
+      identity: {
+        brand: 'CeraVe',
+        name: 'Resurfacing Retinol Serum',
+        category: ProductCategory.Serum,
+        imageUrls: [],
+        sizeMl: 30,
+        description: 'A renewing serum for smoother-looking skin.',
+        benefits: ['smoother texture'],
+        suitedFor: ['combination'],
+        inciIngredients: ['Aqua', 'Glycerin'],
+        inciLastConfirmedAt: null,
+      },
+      guidance: {
+        steps: ['Apply at night after cleansing.'],
+        cautions: [],
+      },
+      manufacturer: {
+        brand: 'CeraVe',
+        parentCompany: null,
+        countryOfOrigin: null,
+        countryOfManufacture: null,
+        supportEmail: null,
+        productUrl: null,
+        websiteUrl: null,
+      },
+      provenance: DataProvenance.PhotoLookup,
+      source: CatalogueSource.UserPhotos,
+      confidence: LookupConfidence.Medium,
+      reviewRequired: false,
+      warnings: [],
+      evidence: [],
+      ...overrides,
+    });
+  });
+}
 
 describe('AddProductPage lookup imports', () => {
   it('creates after a lookup fills optional ingredients following a validation failure', async () => {
@@ -88,30 +163,31 @@ describe('AddProductPage lookup imports', () => {
     ]);
   });
 
-  it('shows a server error when create fails', async () => {
+  it('requires photo extraction before saving manually entered details', async () => {
     const user = userEvent.setup();
+
+    renderAddProductPage();
+
+    await fillValidManualProduct(user);
+
+    await user.click(screen.getByRole('button', { name: /add to shelf/i }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      /extract product details from photos before saving/i,
+    );
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  it('shows a server error when create fails after photo extraction', async () => {
+    const user = userEvent.setup();
+    setSuccessfulPhotoLookup();
     mockMutate.mockImplementation((_draft, options) => {
       options?.onError?.(new Error('boom'));
     });
 
     renderAddProductPage();
 
-    await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
-    await user.type(screen.getByLabelText(/^product name$/i), 'Barrier Serum');
-    await user.type(
-      screen.getByLabelText(/^description$/i),
-      'A calming serum that supports smoother texture overnight.',
-    );
-    await user.type(screen.getByLabelText(/^benefits$/i), 'calming, smoothing');
-    await user.type(screen.getByLabelText(/^suited for$/i), 'dry, sensitive');
-    await user.type(screen.getByLabelText(/^size$/i), '30');
-    await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
-    await user.type(screen.getByLabelText(/^opened on$/i), '2026-04-15');
-    fireEvent.change(screen.getByLabelText(/^product url$/i), {
-      target: { value: 'https://example.com/product' },
-    });
-
+    await user.click(screen.getByRole('button', { name: /import lookup/i }));
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 
     expect(screen.getByRole('alert')).toHaveTextContent(
@@ -149,7 +225,7 @@ describe('AddProductPage lookup imports', () => {
           productUrl: 'https://example.com/product',
           websiteUrl: null,
         },
-        provenance: DataProvenance.Catalogue,
+        provenance: DataProvenance.PhotoLookup,
         source: CatalogueSource.OpenBeautyFacts,
         confidence: LookupConfidence.Medium,
         reviewRequired: true,
@@ -202,7 +278,7 @@ describe('AddProductPage lookup imports', () => {
           category: ProductCategory.Serum,
           description: 'A resurfacing serum.',
         },
-        provenance: DataProvenance.Catalogue,
+        provenance: DataProvenance.PhotoLookup,
         source: CatalogueSource.RitoraCatalogue,
         confidence: LookupConfidence.High,
         reviewRequired: false,
@@ -213,12 +289,18 @@ describe('AddProductPage lookup imports', () => {
 
     renderAddProductPage();
 
-    await user.type(screen.getByLabelText(/^support$/i), 'stale@example.com');
+    fireEvent.change(screen.getByLabelText(/^support$/i), {
+      target: { value: 'stale@example.com' },
+    });
     fireEvent.change(screen.getByLabelText(/^product url$/i), {
       target: { value: 'https://example.com/stale-product' },
     });
-    await user.type(screen.getByLabelText(/^benefits$/i), 'stale benefit');
-    await user.type(screen.getByLabelText(/^suited for$/i), 'stale skin');
+    fireEvent.change(screen.getByLabelText(/^benefits$/i), {
+      target: { value: 'stale benefit' },
+    });
+    fireEvent.change(screen.getByLabelText(/^suited for$/i), {
+      target: { value: 'stale skin' },
+    });
 
     await user.click(screen.getByRole('button', { name: /import lookup/i }));
 
@@ -271,7 +353,7 @@ describe('AddProductPage lookup imports', () => {
           productUrl: 'https://example.com/product',
           websiteUrl: null,
         },
-        provenance: DataProvenance.Catalogue,
+        provenance: DataProvenance.PhotoLookup,
         source: CatalogueSource.OfficialPage,
         confidence: LookupConfidence.High,
         reviewRequired: true,

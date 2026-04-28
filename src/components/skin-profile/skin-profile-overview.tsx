@@ -80,7 +80,11 @@ export function SkinProfileOverview({
             description={tCards("reactionHistoryDesc")}
             time={tCards("reactionHistoryTime")}
             filled={hasReactions}
-            filledLabel={hasReactions ? `${totalReactions} entries` : undefined}
+            filledLabel={
+              hasReactions
+                ? tOverview("reactionEntriesCount", { count: totalReactions })
+                : undefined
+            }
           />
           <OptionalCard
             href="/skin-profile/active-tolerance"
@@ -89,7 +93,11 @@ export function SkinProfileOverview({
             description={tCards("activeToleranceDesc")}
             time={tCards("activeToleranceTime")}
             filled={hasTolerance}
-            filledLabel={hasTolerance ? `${toleranceCount} tracked` : undefined}
+            filledLabel={
+              hasTolerance
+                ? tOverview("activeToleranceCount", { count: toleranceCount })
+                : undefined
+            }
           />
           <OptionalCard
             href="/skin-profile/lifestyle"

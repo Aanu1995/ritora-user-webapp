@@ -19,7 +19,7 @@ describe('DetailManufacturerTab', () => {
     renderWithProviders(
       <DetailManufacturerTab
         manufacturer={FULL}
-        provenance={DataProvenance.BarcodeLookup}
+        provenance={DataProvenance.PhotoLookup}
         confirmedAt="2026-04-14T09:00:00.000Z"
       />,
     );
@@ -34,7 +34,7 @@ describe('DetailManufacturerTab', () => {
     renderWithProviders(
       <DetailManufacturerTab
         manufacturer={FULL}
-        provenance={DataProvenance.BarcodeLookup}
+        provenance={DataProvenance.PhotoLookup}
         confirmedAt="2026-04-14T09:00:00.000Z"
       />,
     );
@@ -54,7 +54,7 @@ describe('DetailManufacturerTab', () => {
     renderWithProviders(
       <DetailManufacturerTab
         manufacturer={{ ...FULL, productUrl: null }}
-        provenance={DataProvenance.UserEntered}
+        provenance={DataProvenance.PhotoLookup}
         confirmedAt={null}
       />,
     );
@@ -74,7 +74,7 @@ describe('DetailManufacturerTab', () => {
           productUrl: null,
           websiteUrl: null,
         }}
-        provenance={DataProvenance.UserEntered}
+        provenance={DataProvenance.PhotoLookup}
         confirmedAt={null}
       />,
     );

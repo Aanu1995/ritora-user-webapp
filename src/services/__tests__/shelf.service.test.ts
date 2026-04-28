@@ -127,7 +127,7 @@ describe('shelf.service', () => {
         preferredTimeOfDay: null,
       },
       status: ShelfStatus.Active,
-      provenance: DataProvenance.UserEntered,
+      provenance: DataProvenance.PhotoLookup,
     });
     await updateProduct('product-1', {
       identity: { name: 'Updated' },

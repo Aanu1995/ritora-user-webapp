@@ -100,7 +100,6 @@ export function normalizeShelfProductForm(
 
 export function toShelfProductDraft(
   value: ShelfProductFormValue,
-  provenance: DataProvenance,
 ): ShelfProductDraft {
   const normalized = normalizeShelfProductForm(value);
 
@@ -110,7 +109,7 @@ export function toShelfProductDraft(
     guidance: normalized.guidance,
     userFields: normalized.userFields,
     status: ShelfStatus.Active,
-    provenance,
+    provenance: DataProvenance.PhotoLookup,
   };
 }
 
