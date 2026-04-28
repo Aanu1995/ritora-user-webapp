@@ -46,7 +46,21 @@ jest.mock('@/services/auth.service', () => ({
   updateTimeZone: jest.fn(),
 }));
 
-import * as authService from '@/services/auth.service';
+import {
+  forgotPassword,
+  getActiveSessions,
+  getCurrentUser,
+  login,
+  logout,
+  logoutAll,
+  register,
+  resendVerification,
+  resetPassword,
+  updatePreferredLanguage,
+  updateProfile,
+  updateTimeZone,
+  verifyEmail,
+} from '@/services/auth.service';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -59,7 +73,7 @@ afterEach(() => {
 
 describe('useLogin', () => {
   it('logs in and sets auth store', async () => {
-    (authService.login as jest.Mock).mockResolvedValue({
+    (login as jest.Mock).mockResolvedValue({
       accessToken: 'mock-token',
       user: mockUser,
     });
@@ -73,7 +87,7 @@ describe('useLogin', () => {
       });
     });
 
-    expect(authService.login).toHaveBeenCalledWith({
+    expect(login).toHaveBeenCalledWith({
       email: 'test@example.com',
       password: 'TestPass1',
     });
@@ -84,7 +98,7 @@ describe('useLogin', () => {
   });
 
   it('rejects invalid credentials', async () => {
-    (authService.login as jest.Mock).mockRejectedValue(
+    (login as jest.Mock).mockRejectedValue(
       new Error('Invalid credentials'),
     );
 
@@ -103,7 +117,7 @@ describe('useLogin', () => {
 
 describe('useRegister', () => {
   it('registers without authenticating the user or forcing logout', async () => {
-    (authService.register as jest.Mock).mockResolvedValue({
+    (register as jest.Mock).mockResolvedValue({
       message: 'Verification email sent',
       user: { ...mockUser, emailVerified: false },
     });
@@ -123,17 +137,17 @@ describe('useRegister', () => {
     });
 
     const state = useAuthStore.getState();
-    expect(authService.logout).not.toHaveBeenCalled();
+    expect(logout).not.toHaveBeenCalled();
     expect(state.isAuthenticated).toBe(false);
     expect(state.user).toBeNull();
   });
 
   it('clears a legacy session if registration still returns an access token', async () => {
-    (authService.register as jest.Mock).mockResolvedValue({
+    (register as jest.Mock).mockResolvedValue({
       accessToken: 'mock-token',
       user: { ...mockUser, emailVerified: false },
     });
-    (authService.logout as jest.Mock).mockResolvedValue(undefined);
+    (logout as jest.Mock).mockResolvedValue(undefined);
 
     const { result } = renderHookWithProviders(() => useRegister());
 
@@ -149,17 +163,17 @@ describe('useRegister', () => {
       });
     });
 
-    expect(authService.logout).toHaveBeenCalled();
+    expect(logout).toHaveBeenCalled();
   });
 });
 
 describe('useLogin', () => {
   it('rejects unverified users and clears any pending session', async () => {
-    (authService.login as jest.Mock).mockResolvedValue({
+    (login as jest.Mock).mockResolvedValue({
       accessToken: 'mock-token',
       user: { ...mockUser, emailVerified: false },
     });
-    (authService.logout as jest.Mock).mockResolvedValue(undefined);
+    (logout as jest.Mock).mockResolvedValue(undefined);
 
     const { result } = renderHookWithProviders(() => useLogin());
 
@@ -178,7 +192,7 @@ describe('useLogin', () => {
 
     expect(error).toBeInstanceOf(ApiError);
     expect((error as ApiError).body?.code).toBe('EMAIL_NOT_VERIFIED');
-    expect(authService.logout).toHaveBeenCalled();
+    expect(logout).toHaveBeenCalled();
     expect(useAuthStore.getState().isAuthenticated).toBe(false);
   });
 });
@@ -186,7 +200,7 @@ describe('useLogin', () => {
 describe('useLogout', () => {
   it('logs out and clears auth store', async () => {
     useAuthStore.setState({ isAuthenticated: true, user: mockUser });
-    (authService.logout as jest.Mock).mockResolvedValue(undefined);
+    (logout as jest.Mock).mockResolvedValue(undefined);
 
     const { result } = renderHookWithProviders(() => useLogout());
 
@@ -201,7 +215,7 @@ describe('useLogout', () => {
 
   it('clears store even on logout error', async () => {
     useAuthStore.setState({ isAuthenticated: true, user: mockUser });
-    (authService.logout as jest.Mock).mockRejectedValue(
+    (logout as jest.Mock).mockRejectedValue(
       new Error('Network error'),
     );
 
@@ -223,7 +237,7 @@ describe('useLogout', () => {
 describe('useLogoutAll', () => {
   it('logs out all devices and clears auth store', async () => {
     useAuthStore.setState({ isAuthenticated: true, user: mockUser });
-    (authService.logoutAll as jest.Mock).mockResolvedValue(undefined);
+    (logoutAll as jest.Mock).mockResolvedValue(undefined);
 
     const { result } = renderHookWithProviders(() => useLogoutAll());
 
@@ -232,14 +246,14 @@ describe('useLogoutAll', () => {
     });
 
     const state = useAuthStore.getState();
-    expect(authService.logoutAll).toHaveBeenCalled();
+    expect(logoutAll).toHaveBeenCalled();
     expect(state.isAuthenticated).toBe(false);
     expect(state.user).toBeNull();
   });
 
   it('keeps auth state when logoutAll fails', async () => {
     useAuthStore.setState({ isAuthenticated: true, user: mockUser });
-    (authService.logoutAll as jest.Mock).mockRejectedValue(
+    (logoutAll as jest.Mock).mockRejectedValue(
       new Error('Network error'),
     );
 
@@ -261,7 +275,7 @@ describe('useLogoutAll', () => {
 
 describe('useResendVerification', () => {
   it('resends verification email', async () => {
-    (authService.resendVerification as jest.Mock).mockResolvedValue({
+    (resendVerification as jest.Mock).mockResolvedValue({
       message: 'Sent',
     });
 
@@ -271,7 +285,7 @@ describe('useResendVerification', () => {
       await result.current.mutateAsync('test@example.com');
     });
 
-    expect(authService.resendVerification).toHaveBeenCalledWith(
+    expect(resendVerification).toHaveBeenCalledWith(
       'test@example.com',
     );
   });
@@ -280,7 +294,7 @@ describe('useResendVerification', () => {
 describe('useCurrentUser', () => {
   it('fetches user when authenticated', async () => {
     useAuthStore.setState({ isAuthenticated: true });
-    (authService.getCurrentUser as jest.Mock).mockResolvedValue(mockUser);
+    (getCurrentUser as jest.Mock).mockResolvedValue(mockUser);
 
     const { result } = renderHookWithProviders(() => useCurrentUser());
 
@@ -303,7 +317,7 @@ describe('useCurrentUser', () => {
 describe('useActiveSessions', () => {
   it('fetches sessions when authenticated', async () => {
     useAuthStore.setState({ isAuthenticated: true });
-    (authService.getActiveSessions as jest.Mock).mockResolvedValue([
+    (getActiveSessions as jest.Mock).mockResolvedValue([
       { id: 'session-1', userAgent: 'test', ipAddress: '127.0.0.1' },
     ]);
 
@@ -319,7 +333,7 @@ describe('useActiveSessions', () => {
 
 describe('useVerifyEmail', () => {
   it('verifies email', async () => {
-    (authService.verifyEmail as jest.Mock).mockResolvedValue({
+    (verifyEmail as jest.Mock).mockResolvedValue({
       message: 'Verified',
     });
 
@@ -329,13 +343,13 @@ describe('useVerifyEmail', () => {
       await result.current.mutateAsync('valid-token');
     });
 
-    expect(authService.verifyEmail).toHaveBeenCalledWith('valid-token');
+    expect(verifyEmail).toHaveBeenCalledWith('valid-token');
   });
 });
 
 describe('useForgotPassword', () => {
   it('sends forgot password', async () => {
-    (authService.forgotPassword as jest.Mock).mockResolvedValue({
+    (forgotPassword as jest.Mock).mockResolvedValue({
       message: 'Sent',
     });
 
@@ -345,7 +359,7 @@ describe('useForgotPassword', () => {
       await result.current.mutateAsync('test@example.com');
     });
 
-    expect(authService.forgotPassword).toHaveBeenCalledWith(
+    expect(forgotPassword).toHaveBeenCalledWith(
       'test@example.com',
     );
   });
@@ -353,7 +367,7 @@ describe('useForgotPassword', () => {
 
 describe('useResetPassword', () => {
   it('resets password', async () => {
-    (authService.resetPassword as jest.Mock).mockResolvedValue({
+    (resetPassword as jest.Mock).mockResolvedValue({
       message: 'Reset',
     });
 
@@ -366,7 +380,7 @@ describe('useResetPassword', () => {
       });
     });
 
-    expect(authService.resetPassword).toHaveBeenCalledWith({
+    expect(resetPassword).toHaveBeenCalledWith({
       token: 'token',
       newPassword: 'NewPass1!',
     });
@@ -377,7 +391,7 @@ describe('useUpdateProfile', () => {
   it('updates the current user in the auth store', async () => {
     useAuthStore.setState({ isAuthenticated: true, user: mockUser });
     document.documentElement.lang = 'sv';
-    (authService.updateProfile as jest.Mock).mockResolvedValue({
+    (updateProfile as jest.Mock).mockResolvedValue({
       ...mockUser,
       firstName: 'Ada',
       lastName: 'Lovelace',
@@ -392,7 +406,7 @@ describe('useUpdateProfile', () => {
       });
     });
 
-    expect(authService.updateProfile).toHaveBeenCalledWith({
+    expect(updateProfile).toHaveBeenCalledWith({
       firstName: 'Ada',
       lastName: 'Lovelace',
     });
@@ -406,7 +420,7 @@ describe('useUpdatePreferredLanguage', () => {
   it('updates the current user language in the auth store', async () => {
     useAuthStore.setState({ isAuthenticated: true, user: mockUser });
     document.documentElement.lang = 'en';
-    (authService.updatePreferredLanguage as jest.Mock).mockResolvedValue({
+    (updatePreferredLanguage as jest.Mock).mockResolvedValue({
       ...mockUser,
       preferredLanguage: 'sv',
     });
@@ -421,7 +435,7 @@ describe('useUpdatePreferredLanguage', () => {
       });
     });
 
-    expect(authService.updatePreferredLanguage).toHaveBeenCalledWith({
+    expect(updatePreferredLanguage).toHaveBeenCalledWith({
       preferredLanguage: 'sv',
     });
     expect(useAuthStore.getState().user?.preferredLanguage).toBe('sv');
@@ -432,7 +446,7 @@ describe('useUpdatePreferredLanguage', () => {
 describe('useUpdateTimeZone', () => {
   it('updates the current user timezone in the auth store', async () => {
     useAuthStore.setState({ isAuthenticated: true, user: mockUser });
-    (authService.updateTimeZone as jest.Mock).mockResolvedValue({
+    (updateTimeZone as jest.Mock).mockResolvedValue({
       ...mockUser,
       timeZone: 'Europe/Stockholm',
     });
@@ -445,7 +459,7 @@ describe('useUpdateTimeZone', () => {
       });
     });
 
-    expect(authService.updateTimeZone).toHaveBeenCalledWith({
+    expect(updateTimeZone).toHaveBeenCalledWith({
       timeZone: 'Europe/Stockholm',
     });
     expect(useAuthStore.getState().user?.timeZone).toBe('Europe/Stockholm');

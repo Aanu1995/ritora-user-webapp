@@ -18,6 +18,7 @@ interface SiteHeaderClientProps {
   signUpLabel: string;
   openMenuLabel: string;
   closeMenuLabel: string;
+  primaryNavLabel: string;
 }
 
 export function SiteHeaderClient({
@@ -26,6 +27,7 @@ export function SiteHeaderClient({
   signUpLabel,
   openMenuLabel,
   closeMenuLabel,
+  primaryNavLabel,
 }: SiteHeaderClientProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -151,7 +153,7 @@ export function SiteHeaderClient({
         }`}
       >
         <div className="mx-auto w-full max-w-7xl px-5 pb-8 pt-4 sm:px-6">
-          <nav aria-label="Primary">
+          <nav aria-label={primaryNavLabel}>
             <ul className="flex flex-col divide-y divide-border">
               {navLinks.map((item) => (
                 <li key={item.href}>

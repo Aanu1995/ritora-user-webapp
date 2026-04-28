@@ -6,8 +6,24 @@ jest.mock('@/lib/api', () => ({
   putRequest: jest.fn(),
 }));
 
-import * as api from '@/lib/api';
-import * as scheduleService from '@/services/schedule.service';
+import {
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+  putRequest,
+} from '@/lib/api';
+import {
+  applyEveryDayPreset,
+  createSlot,
+  createSlots,
+  deleteSlot,
+  getSchedule,
+  getTodaysSchedule,
+  moveSlot,
+  updateSlot,
+  upsertSteps,
+} from '@/services/schedule.service';
 import { DayOfWeek, SchedulePreset, SlotMode, StepLabel } from '@/types/schedule';
 
 afterEach(() => {
@@ -16,38 +32,38 @@ afterEach(() => {
 
 describe('schedule.service', () => {
   it('fetches the full schedule', async () => {
-    (api.getRequest as jest.Mock).mockResolvedValue({
+    (getRequest as jest.Mock).mockResolvedValue({
       timeZone: 'Europe/Stockholm',
       slots: [],
     });
 
-    await scheduleService.getSchedule();
+    await getSchedule();
 
-    expect(api.getRequest).toHaveBeenCalledWith('/schedule');
+    expect(getRequest).toHaveBeenCalledWith('/schedule');
   });
 
   it('fetches today from the schedule endpoint without per-call headers', async () => {
-    (api.getRequest as jest.Mock).mockResolvedValue({
+    (getRequest as jest.Mock).mockResolvedValue({
       dayOfWeek: DayOfWeek.Mon,
       timeZone: 'Europe/Stockholm',
       slots: [],
     });
 
-    await scheduleService.getTodaysSchedule();
+    await getTodaysSchedule();
 
-    expect(api.getRequest).toHaveBeenCalledWith('/schedule/today');
+    expect(getRequest).toHaveBeenCalledWith('/schedule/today');
   });
 
   it('creates multiple slots through the batch endpoint', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({ slots: [] });
+    (postRequest as jest.Mock).mockResolvedValue({ slots: [] });
 
-    await scheduleService.createSlots({
+    await createSlots({
       daysOfWeek: [DayOfWeek.Mon, DayOfWeek.Wed],
       slotTime: '08:00',
       mode: SlotMode.AI,
     });
 
-    expect(api.postRequest).toHaveBeenCalledWith('/schedule/slots/batch', {
+    expect(postRequest).toHaveBeenCalledWith('/schedule/slots/batch', {
       daysOfWeek: [DayOfWeek.Mon, DayOfWeek.Wed],
       slotTime: '08:00',
       mode: SlotMode.AI,
@@ -55,15 +71,15 @@ describe('schedule.service', () => {
   });
 
   it('creates one slot through the slots endpoint', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({ id: 'slot-1' });
+    (postRequest as jest.Mock).mockResolvedValue({ id: 'slot-1' });
 
-    await scheduleService.createSlot({
+    await createSlot({
       dayOfWeek: DayOfWeek.Mon,
       slotTime: '08:00',
       mode: SlotMode.Manual,
     });
 
-    expect(api.postRequest).toHaveBeenCalledWith('/schedule/slots', {
+    expect(postRequest).toHaveBeenCalledWith('/schedule/slots', {
       dayOfWeek: DayOfWeek.Mon,
       slotTime: '08:00',
       mode: SlotMode.Manual,
@@ -71,15 +87,15 @@ describe('schedule.service', () => {
   });
 
   it('keeps the every-day preset endpoint for compatibility', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({ slots: [] });
+    (postRequest as jest.Mock).mockResolvedValue({ slots: [] });
 
-    await scheduleService.applyEveryDayPreset({
+    await applyEveryDayPreset({
       preset: SchedulePreset.EveryDay,
       slotTime: '21:00',
       mode: SlotMode.Manual,
     });
 
-    expect(api.postRequest).toHaveBeenCalledWith('/schedule/apply-preset', {
+    expect(postRequest).toHaveBeenCalledWith('/schedule/apply-preset', {
       preset: SchedulePreset.EveryDay,
       slotTime: '21:00',
       mode: SlotMode.Manual,
@@ -87,31 +103,31 @@ describe('schedule.service', () => {
   });
 
   it('updates a slot by id', async () => {
-    (api.patchRequest as jest.Mock).mockResolvedValue({ id: 'slot-1' });
+    (patchRequest as jest.Mock).mockResolvedValue({ id: 'slot-1' });
 
-    await scheduleService.updateSlot('slot-1', {
+    await updateSlot('slot-1', {
       slotTime: '09:30',
       slotNotes: 'After cleanser',
     });
 
-    expect(api.patchRequest).toHaveBeenCalledWith('/schedule/slots/slot-1', {
+    expect(patchRequest).toHaveBeenCalledWith('/schedule/slots/slot-1', {
       slotTime: '09:30',
       slotNotes: 'After cleanser',
     });
   });
 
   it('deletes a slot by id', async () => {
-    (api.deleteRequest as jest.Mock).mockResolvedValue(undefined);
+    (deleteRequest as jest.Mock).mockResolvedValue(undefined);
 
-    await scheduleService.deleteSlot('slot-1');
+    await deleteSlot('slot-1');
 
-    expect(api.deleteRequest).toHaveBeenCalledWith('/schedule/slots/slot-1');
+    expect(deleteRequest).toHaveBeenCalledWith('/schedule/slots/slot-1');
   });
 
   it('upserts routine steps for a slot', async () => {
-    (api.putRequest as jest.Mock).mockResolvedValue({ id: 'slot-1' });
+    (putRequest as jest.Mock).mockResolvedValue({ id: 'slot-1' });
 
-    await scheduleService.upsertSteps('slot-1', {
+    await upsertSteps('slot-1', {
       steps: [
         {
           stepOrder: 0,
@@ -121,7 +137,7 @@ describe('schedule.service', () => {
       ],
     });
 
-    expect(api.putRequest).toHaveBeenCalledWith('/schedule/slots/slot-1/steps', {
+    expect(putRequest).toHaveBeenCalledWith('/schedule/slots/slot-1/steps', {
       steps: [
         {
           stepOrder: 0,
@@ -133,14 +149,14 @@ describe('schedule.service', () => {
   });
 
   it('moves a slot to another day and time', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({ id: 'slot-1' });
+    (postRequest as jest.Mock).mockResolvedValue({ id: 'slot-1' });
 
-    await scheduleService.moveSlot('slot-1', {
+    await moveSlot('slot-1', {
       toDay: DayOfWeek.Wed,
       toTime: '20:00',
     });
 
-    expect(api.postRequest).toHaveBeenCalledWith('/schedule/slots/slot-1/move', {
+    expect(postRequest).toHaveBeenCalledWith('/schedule/slots/slot-1/move', {
       toDay: DayOfWeek.Wed,
       toTime: '20:00',
     });

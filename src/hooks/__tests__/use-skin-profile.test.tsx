@@ -31,7 +31,13 @@ jest.mock("@/services/skin-profile.service", () => ({
   deleteSkinProfile: jest.fn(),
 }));
 
-import * as skinProfileService from "@/services/skin-profile.service";
+import {
+  createSkinProfile,
+  getSkinProfile,
+  getSkinProfileAccessLogs,
+  getSkinProfileOptions,
+  updateSkinProfile,
+} from "@/services/skin-profile.service";
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -73,7 +79,7 @@ afterEach(() => {
 describe("useSkinProfile", () => {
   it("fetches profile when authenticated", async () => {
     useAuthStore.setState({ isAuthenticated: true });
-    (skinProfileService.getSkinProfile as jest.Mock).mockResolvedValue(
+    (getSkinProfile as jest.Mock).mockResolvedValue(
       mockProfile,
     );
 
@@ -98,7 +104,7 @@ describe("useSkinProfile", () => {
 
 describe("useSkinProfileOptions", () => {
   it("fetches options", async () => {
-    (skinProfileService.getSkinProfileOptions as jest.Mock).mockResolvedValue(
+    (getSkinProfileOptions as jest.Mock).mockResolvedValue(
       mockOptions,
     );
 
@@ -116,7 +122,7 @@ describe("useSkinProfileAccessLogs", () => {
   it("fetches access logs when authenticated", async () => {
     useAuthStore.setState({ isAuthenticated: true });
     (
-      skinProfileService.getSkinProfileAccessLogs as jest.Mock
+      getSkinProfileAccessLogs as jest.Mock
     ).mockResolvedValue(mockSkinProfileAccessLogs);
 
     const { result } = renderSkinProfileHook(() => useSkinProfileAccessLogs());
@@ -131,7 +137,7 @@ describe("useSkinProfileAccessLogs", () => {
 
 describe("useCreateSkinProfile", () => {
   it("creates a profile", async () => {
-    (skinProfileService.createSkinProfile as jest.Mock).mockResolvedValue(
+    (createSkinProfile as jest.Mock).mockResolvedValue(
       mockProfile,
     );
 
@@ -154,7 +160,7 @@ describe("useCreateSkinProfile", () => {
         }),
     );
 
-    expect(skinProfileService.createSkinProfile).toHaveBeenCalledWith({
+    expect(createSkinProfile).toHaveBeenCalledWith({
       skinType: "oily",
       currentConcerns: ["acne"],
     });
@@ -166,7 +172,7 @@ describe("useCreateSkinProfile", () => {
 
 describe("useUpdateSkinProfile", () => {
   it("updates a profile", async () => {
-    (skinProfileService.updateSkinProfile as jest.Mock).mockResolvedValue({
+    (updateSkinProfile as jest.Mock).mockResolvedValue({
       ...mockProfile,
       skinType: "combination",
     });
@@ -187,7 +193,7 @@ describe("useUpdateSkinProfile", () => {
         }),
     );
 
-    expect(skinProfileService.updateSkinProfile).toHaveBeenCalledWith({
+    expect(updateSkinProfile).toHaveBeenCalledWith({
       skinType: "combination",
     });
     expect(queryClient.getQueryData([QueryKey.SkinProfile])).toEqual({

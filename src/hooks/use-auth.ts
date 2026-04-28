@@ -4,7 +4,21 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKey } from "@/constants/query-keys";
 import { useAuthEnabled } from "@/hooks/use-auth-enabled";
 import { ApiError } from "@/lib/api-error";
-import * as authService from "@/services/auth.service";
+import {
+  forgotPassword,
+  getActiveSessions,
+  getCurrentUser,
+  login,
+  logout as logoutRequest,
+  logoutAll,
+  register,
+  resendVerification,
+  resetPassword,
+  updatePreferredLanguage,
+  updateProfile,
+  updateTimeZone,
+  verifyEmail,
+} from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth-store";
 import type {
   LoginInput,
@@ -43,7 +57,7 @@ function syncCurrentUser(
 
 async function clearPendingAuthSession(): Promise<void> {
   try {
-    await authService.logout();
+    await logoutRequest();
   } catch {
     // Registration/login should still surface the original verification state.
   }
@@ -74,7 +88,7 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async (data: LoginInput) => {
-      const response = await authService.login(data);
+      const response = await login(data);
 
       if (!response.user.emailVerified) {
         await clearPendingAuthSession();
@@ -92,7 +106,7 @@ export function useLogin() {
 export function useRegister() {
   return useMutation({
     mutationFn: async (data: RegisterInput) => {
-      const response = await authService.register(data);
+      const response = await register(data);
       await clearPendingRegistrationSession(response);
       return response;
     },
@@ -104,7 +118,7 @@ export function useLogout() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => authService.logout(),
+    mutationFn: () => logoutRequest(),
     onSuccess: () => {
       clearClientSession(queryClient, logoutStore);
     },
@@ -119,7 +133,7 @@ export function useLogoutAll() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => authService.logoutAll(),
+    mutationFn: () => logoutAll(),
     onSuccess: () => {
       clearClientSession(queryClient, logoutStore);
     },
@@ -131,32 +145,32 @@ export function useCurrentUser() {
 
   return useQuery({
     queryKey: [QueryKey.AuthMe],
-    queryFn: () => authService.getCurrentUser(),
+    queryFn: () => getCurrentUser(),
     enabled: isEnabled,
   });
 }
 
 export function useVerifyEmail() {
   return useMutation({
-    mutationFn: (token: string) => authService.verifyEmail(token),
+    mutationFn: (token: string) => verifyEmail(token),
   });
 }
 
 export function useResendVerification() {
   return useMutation({
-    mutationFn: (email: string) => authService.resendVerification(email),
+    mutationFn: (email: string) => resendVerification(email),
   });
 }
 
 export function useForgotPassword() {
   return useMutation({
-    mutationFn: (email: string) => authService.forgotPassword(email),
+    mutationFn: (email: string) => forgotPassword(email),
   });
 }
 
 export function useResetPassword() {
   return useMutation({
-    mutationFn: (data: ResetPasswordInput) => authService.resetPassword(data),
+    mutationFn: (data: ResetPasswordInput) => resetPassword(data),
   });
 }
 
@@ -165,7 +179,7 @@ export function useActiveSessions() {
 
   return useQuery({
     queryKey: [QueryKey.AuthSessions],
-    queryFn: () => authService.getActiveSessions(),
+    queryFn: () => getActiveSessions(),
     enabled: isEnabled,
   });
 }
@@ -175,7 +189,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: UpdateProfileInput) => authService.updateProfile(data),
+    mutationFn: (data: UpdateProfileInput) => updateProfile(data),
     onSuccess: (user) => {
       syncCurrentUser(queryClient, setUser, user);
     },
@@ -188,7 +202,7 @@ export function useUpdatePreferredLanguage() {
 
   return useMutation({
     mutationFn: (data: UpdatePreferredLanguageInput) =>
-      authService.updatePreferredLanguage(data),
+      updatePreferredLanguage(data),
     onSuccess: (user) => {
       syncCurrentUser(queryClient, setUser, user, { syncLocale: true });
     },
@@ -200,7 +214,7 @@ export function useUpdateTimeZone() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: UpdateTimeZoneInput) => authService.updateTimeZone(data),
+    mutationFn: (data: UpdateTimeZoneInput) => updateTimeZone(data),
     onSuccess: (user) => {
       syncCurrentUser(queryClient, setUser, user);
       void queryClient.invalidateQueries({ queryKey: [QueryKey.Schedule] });

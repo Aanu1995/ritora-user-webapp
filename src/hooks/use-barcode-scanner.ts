@@ -3,11 +3,13 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type RefObject,
 } from 'react';
 import type { IScannerControls } from '@zxing/browser';
+import { useTranslations } from 'next-intl';
 import { BarcodeScannerStatus } from '@/types/shelf';
 
 type ScannerError = {
@@ -18,6 +20,17 @@ type ScannerError = {
 type CameraEnvironment = {
   permissionState: PermissionState | null;
   policyAllowsCamera: boolean | null;
+};
+
+type ScannerMessages = {
+  insecureContext: string;
+  unsupported: string;
+  policyBlocked: string;
+  permissionDenied: string;
+  systemBlocked: string;
+  unavailable: string;
+  previewStartFailed: string;
+  unknownError: string;
 };
 
 type UseBarcodeScannerResult = {
@@ -85,6 +98,7 @@ async function readCameraEnvironment(): Promise<CameraEnvironment> {
 
 async function waitForVideoPlayback(
   videoElement: HTMLVideoElement,
+  messages: ScannerMessages,
 ): Promise<void> {
   if (videoElement.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
     await videoElement.play();
@@ -116,7 +130,7 @@ async function waitForVideoPlayback(
 
       resolved = true;
       cleanup();
-      reject(new Error('The camera preview could not start.'));
+      reject(new Error(messages.previewStartFailed));
     };
 
     videoElement.addEventListener('loadedmetadata', handleLoadedMetadata);
@@ -129,6 +143,7 @@ async function waitForVideoPlayback(
 function classifyScannerError(
   error: unknown,
   environment: CameraEnvironment,
+  messages: ScannerMessages,
 ): ScannerError {
   if (
     error instanceof DOMException &&
@@ -137,18 +152,18 @@ function classifyScannerError(
     if (environment.policyAllowsCamera === false) {
       return {
         status: BarcodeScannerStatus.PolicyBlocked,
-        message: error.message,
+        message: messages.policyBlocked,
       };
     }
 
     return environment.permissionState === 'denied'
       ? {
           status: BarcodeScannerStatus.PermissionDenied,
-          message: error.message,
+          message: messages.permissionDenied,
         }
       : {
           status: BarcodeScannerStatus.SystemBlocked,
-          message: error.message,
+          message: messages.systemBlocked,
         };
   }
 
@@ -161,17 +176,31 @@ function classifyScannerError(
   ) {
     return {
       status: BarcodeScannerStatus.Unavailable,
-      message: error.message,
+      message: messages.unavailable,
     };
   }
 
   return {
     status: BarcodeScannerStatus.Error,
-    message: error instanceof Error ? error.message : 'Unknown barcode error.',
+    message: error instanceof Error ? error.message : messages.unknownError,
   };
 }
 
 export function useBarcodeScanner(): UseBarcodeScannerResult {
+  const t = useTranslations('shelf.dialog.photos.scanner');
+  const scannerMessages = useMemo<ScannerMessages>(
+    () => ({
+      insecureContext: t('insecureContext'),
+      unsupported: t('unsupported'),
+      policyBlocked: t('policyBlocked'),
+      permissionDenied: t('permissionDenied'),
+      systemBlocked: t('systemBlocked'),
+      unavailable: t('unavailable'),
+      previewStartFailed: t('previewStartFailed'),
+      unknownError: t('unknownError'),
+    }),
+    [t],
+  );
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const controlsRef = useRef<IScannerControls | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -241,7 +270,7 @@ export function useBarcodeScanner(): UseBarcodeScannerResult {
         setStatus(BarcodeScannerStatus.InsecureContext);
         setError({
           status: BarcodeScannerStatus.InsecureContext,
-          message: 'Barcode scanning requires a secure context.',
+          message: scannerMessages.insecureContext,
         });
         return;
       }
@@ -254,7 +283,7 @@ export function useBarcodeScanner(): UseBarcodeScannerResult {
         setStatus(BarcodeScannerStatus.Unsupported);
         setError({
           status: BarcodeScannerStatus.Unsupported,
-          message: 'Barcode scanning is not supported on this device.',
+          message: scannerMessages.unsupported,
         });
         return;
       }
@@ -269,7 +298,7 @@ export function useBarcodeScanner(): UseBarcodeScannerResult {
         setStatus(BarcodeScannerStatus.PolicyBlocked);
         setError({
           status: BarcodeScannerStatus.PolicyBlocked,
-          message: 'Camera access is blocked by the page permissions policy.',
+          message: scannerMessages.policyBlocked,
         });
         return;
       }
@@ -278,7 +307,7 @@ export function useBarcodeScanner(): UseBarcodeScannerResult {
         setStatus(BarcodeScannerStatus.PermissionDenied);
         setError({
           status: BarcodeScannerStatus.PermissionDenied,
-          message: 'Camera access has been denied for this site.',
+          message: scannerMessages.permissionDenied,
         });
         return;
       }
@@ -355,7 +384,7 @@ export function useBarcodeScanner(): UseBarcodeScannerResult {
         }
 
         videoElement.srcObject = streamRef.current;
-        await waitForVideoPlayback(videoElement);
+        await waitForVideoPlayback(videoElement, scannerMessages);
 
         controlsRef.current = reader.scan(videoElement, handleScanResult, () => {
           controlsRef.current = null;
@@ -370,7 +399,11 @@ export function useBarcodeScanner(): UseBarcodeScannerResult {
         }
 
         const latestEnvironment = await readCameraEnvironment();
-        const nextError = classifyScannerError(error, latestEnvironment);
+        const nextError = classifyScannerError(
+          error,
+          latestEnvironment,
+          scannerMessages,
+        );
         setError(nextError);
         setStatus(nextError.status);
       }
@@ -382,7 +415,7 @@ export function useBarcodeScanner(): UseBarcodeScannerResult {
       isActive = false;
       stopScanner();
     };
-  }, [activationCount, stopScanner]);
+  }, [activationCount, scannerMessages, stopScanner]);
 
   return {
     detectedBarcode,

@@ -1,18 +1,24 @@
 import type { SVGProps } from 'react';
 
-export function HeroShelfIllustration(props: SVGProps<SVGSVGElement>) {
+type IllustrationProps = SVGProps<SVGSVGElement> & {
+  title?: string;
+};
+
+export function HeroShelfIllustration({
+  title,
+  ...props
+}: IllustrationProps) {
   return (
     <svg
       viewBox="0 0 520 440"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-labelledby="hero-shelf-title"
+      role={title ? 'img' : undefined}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
       {...props}
     >
-      <title id="hero-shelf-title">
-        A skincare shelf with serum, moisturizer and cleanser bottles on a warm botanical backdrop
-      </title>
+      {title ? <title>{title}</title> : null}
       <defs>
         <linearGradient id="hero-bg-gradient" x1="0" y1="0" x2="520" y2="440" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="var(--color-accent-glow)" />

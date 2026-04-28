@@ -1,31 +1,32 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Cookie Notice",
-  description: "Cookie notice foundations for the Ritora web experience.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("legalPages.cookies");
 
-export default function CookiesPage() {
+  return {
+    title: t("metadataTitle"),
+    description: t("metadataDescription"),
+  };
+}
+
+export default async function CookiesPage() {
+  const t = await getTranslations("legalPages.cookies");
+  const paragraphs = t.raw("paragraphs") as string[];
+
   return (
     <main className="mx-auto w-full max-w-4xl px-5 py-16 sm:px-6 lg:px-8">
       <div className="rounded-4xl border border-border bg-surface/92 p-8 shadow-soft sm:p-10">
         <p className="text-sm font-semibold tracking-[0.2em] text-accent uppercase">
-          Cookie Notice
+          {t("eyebrow")}
         </p>
         <h1 className="mt-4 font-display text-4xl tracking-tight sm:text-5xl">
-          Cookie foundations for Ritora
+          {t("title")}
         </h1>
         <div className="mt-8 space-y-6 text-base leading-8 text-muted">
-          <p>
-            The product direction aims to keep cookie use minimal and
-            transparent. Authentication cookies and carefully scoped preference
-            cookies are preferred over unnecessary tracking.
-          </p>
-          <p>
-            A fuller cookie notice will document what is essential, what is
-            optional, and how user consent affects analytics or preference
-            storage as more features ship.
-          </p>
+          {paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
         </div>
       </div>
     </main>

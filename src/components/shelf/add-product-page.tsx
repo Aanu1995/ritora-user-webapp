@@ -17,6 +17,7 @@ import {
   type ProductFormReviewFields,
   type ProductFormValue,
 } from './product-form-body';
+import { ProductPageHeader } from './product-page-header';
 import {
   buildShelfFieldErrors,
   type ShelfFieldMeta,
@@ -257,8 +258,8 @@ export function AddProductPage() {
 
           return (
             <>
-              <div className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-                <div className="mx-auto flex max-w-5xl items-center gap-3">
+              <ProductPageHeader
+                leading={
                   <GuardedLink
                     href={AppRoute.Shelf}
                     restoreScrollTo={AppRoute.Shelf}
@@ -267,27 +268,21 @@ export function AddProductPage() {
                   >
                     <ArrowLeft className="h-4 w-4" />
                   </GuardedLink>
-                  <div className="min-w-0 flex-1">
-                    <h1 className="truncate text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                      {tDialog('title')}
-                    </h1>
-                    <p className="mt-0.5 truncate text-xs text-muted sm:text-sm">
-                      {tDialog('subtitle')}
-                    </p>
-                  </div>
-                  <div className="shrink-0">
-                    <Button type="submit" size="sm" disabled={isSubmitting}>
-                      {isSubmitting ? (
-                        <LoadingIndicator
-                          label={tDialog('confirm.submitting')}
-                        />
-                      ) : (
-                        tDialog('confirm.submit')
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </div>
+                }
+                title={tDialog('title')}
+                subtitle={tDialog('subtitle')}
+                actions={
+                  <Button type="submit" size="sm" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <LoadingIndicator
+                        label={tDialog('confirm.submitting')}
+                      />
+                    ) : (
+                      tDialog('confirm.submit')
+                    )}
+                  </Button>
+                }
+              />
 
               <div className="mx-auto mt-6 flex max-w-5xl flex-col gap-6">
                 <QuickLookupCard onResult={handleLookupResult} />

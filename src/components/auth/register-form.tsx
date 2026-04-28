@@ -186,7 +186,7 @@ export function RegisterForm() {
               }
               type="email"
               autoComplete="email"
-              placeholder="you@example.com"
+              placeholder={t('emailPlaceholder')}
               onBlur={field.handleBlur}
               onChange={field.handleChange}
             />

@@ -13,7 +13,23 @@ import {
   buildShelfProductsQueryKey,
   buildShelfStatsQueryKey,
 } from '@/lib/shelf-query';
-import * as shelfService from '@/services/shelf.service';
+import {
+  archiveProduct,
+  archiveProducts,
+  countProductsByStat,
+  createProduct,
+  extractProductFromImages,
+  getProduct,
+  listProducts,
+  markProductFinished,
+  markProductsFinished,
+  removeProduct,
+  removeProducts,
+  restoreProduct,
+  restoreProducts,
+  updateProduct,
+  uploadProductImage,
+} from '@/services/shelf.service';
 import {
   type DeepPartial,
   type ShelfListFilters,
@@ -26,6 +42,8 @@ type ShelfProductMutationFn<TVariables> = (
   variables: TVariables,
 ) => Promise<ShelfProduct>;
 type ShelfIdsMutationFn = (ids: string[]) => Promise<void>;
+
+const MISSING_PRODUCT_ID_ERROR = 'MISSING_PRODUCT_ID';
 
 function invalidateShelfQueries(queryClient: ShelfQueryClient) {
   void queryClient.invalidateQueries({ queryKey: [QueryKey.Shelf] });
@@ -115,7 +133,7 @@ export function useShelfProducts(
   const query = useInfiniteQuery({
     queryKey: buildShelfProductsQueryKey(filters, dateContext),
     queryFn: ({ pageParam, signal }) =>
-      shelfService.listProducts(filters, pageParam, signal),
+      listProducts(filters, pageParam, signal),
     enabled: isEnabled,
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
@@ -133,7 +151,7 @@ export function useShelfStats(dateContext: ShelfDateContext) {
 
   return useQuery({
     queryKey: buildShelfStatsQueryKey(dateContext),
-    queryFn: () => shelfService.countProductsByStat(),
+    queryFn: () => countProductsByStat(),
     enabled: isEnabled,
   });
 }
@@ -145,9 +163,9 @@ export function useShelfProduct(id: string | null) {
     queryKey: [QueryKey.ShelfProduct, id],
     queryFn: () => {
       if (!id) {
-        throw new Error('Product id is required');
+        throw new Error(MISSING_PRODUCT_ID_ERROR);
       }
-      return shelfService.getProduct(id);
+      return getProduct(id);
     },
     enabled: isEnabled,
   });
@@ -157,7 +175,7 @@ export function useCreateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    createShelfProductMutationOptions(queryClient, shelfService.createProduct),
+    createShelfProductMutationOptions(queryClient, createProduct),
   );
 }
 
@@ -172,14 +190,14 @@ export function useUpdateProduct() {
   return useMutation(
     createShelfProductMutationOptions(
       queryClient,
-      ({ id, patch }: UpdateProductArgs) => shelfService.updateProduct(id, patch),
+      ({ id, patch }: UpdateProductArgs) => updateProduct(id, patch),
     ),
   );
 }
 
 export function useUploadProductImage() {
   return useMutation({
-    mutationFn: (file: File) => shelfService.uploadProductImage(file),
+    mutationFn: (file: File) => uploadProductImage(file),
   });
 }
 
@@ -187,7 +205,7 @@ export function useDeleteProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => shelfService.removeProduct(id),
+    mutationFn: (id: string) => removeProduct(id),
     onSuccess: (_data, id) => {
       removeShelfProductCache(queryClient, id);
       invalidateShelfQueries(queryClient);
@@ -199,7 +217,7 @@ export function useDeleteProducts() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (ids: string[]) => shelfService.removeProducts(ids),
+    mutationFn: (ids: string[]) => removeProducts(ids),
     onSuccess: (_data, ids) => {
       ids.forEach((id) => {
         removeShelfProductCache(queryClient, id);
@@ -214,7 +232,7 @@ export function useArchiveProduct() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    createShelfProductMutationOptions(queryClient, shelfService.archiveProduct),
+    createShelfProductMutationOptions(queryClient, archiveProduct),
   );
 }
 
@@ -222,7 +240,7 @@ export function useExtractProductFromImages() {
   return useMutation({
     mutationKey: [QueryKey.PhotoExtract],
     mutationFn: (input: { images: File[]; heroImageIndex: number }) =>
-      shelfService.extractProductFromImages(input),
+      extractProductFromImages(input),
   });
 }
 
@@ -230,7 +248,7 @@ export function useArchiveProducts() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
-    createShelfIdsMutationOptions(queryClient, shelfService.archiveProducts),
+    createShelfIdsMutationOptions(queryClient, archiveProducts),
   );
 
   return {
@@ -246,7 +264,7 @@ export function useRestoreProduct() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    createShelfProductMutationOptions(queryClient, shelfService.restoreProduct),
+    createShelfProductMutationOptions(queryClient, restoreProduct),
   );
 }
 
@@ -254,7 +272,7 @@ export function useRestoreProducts() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
-    createShelfIdsMutationOptions(queryClient, shelfService.restoreProducts),
+    createShelfIdsMutationOptions(queryClient, restoreProducts),
   );
 
   return {
@@ -272,7 +290,7 @@ export function useMarkProductFinished() {
   return useMutation(
     createShelfProductMutationOptions(
       queryClient,
-      shelfService.markProductFinished,
+      markProductFinished,
     ),
   );
 }
@@ -281,7 +299,7 @@ export function useMarkFinished() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
-    createShelfIdsMutationOptions(queryClient, shelfService.markProductsFinished),
+    createShelfIdsMutationOptions(queryClient, markProductsFinished),
   );
 
   return {

@@ -17,6 +17,7 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({
     refresh: mockRouterRefresh,
   }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 jest.mock("@/hooks/use-auth", () => ({

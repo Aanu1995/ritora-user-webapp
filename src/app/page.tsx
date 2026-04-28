@@ -27,27 +27,17 @@ import { siteConfig } from "@/lib/site";
 
 import heroShelf from "../../public/images/landing/hero-shelf-01.jpg";
 
-export const metadata: Metadata = {
-  title: siteConfig.title,
-  description: siteConfig.description,
-  alternates: {
-    canonical: "/",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("site");
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: siteConfig.name,
-  applicationCategory: "HealthApplication",
-  operatingSystem: "Web",
-  description: siteConfig.description,
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-  },
-};
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: {
+      canonical: "/",
+    },
+  };
+}
 
 const featureIconMap: Record<string, LucideIcon> = {
   package: Package,
@@ -88,7 +78,23 @@ interface LabelledBody {
 }
 
 export default async function Home() {
-  const t = await getTranslations("landing");
+  const [t, tSite] = await Promise.all([
+    getTranslations("landing"),
+    getTranslations("site"),
+  ]);
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: siteConfig.name,
+    applicationCategory: "HealthApplication",
+    operatingSystem: "Web",
+    description: tSite("description"),
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
 
   const problems = t.raw("problems") as ProblemItem[];
   const steps = t.raw("steps") as StepItem[];
@@ -302,7 +308,10 @@ export default async function Home() {
               className="relative mx-auto w-full max-w-xl"
             >
               <div className="absolute -inset-6 rounded-[3rem] bg-secondary-glow blur-3xl" />
-              <RoutineCycleIllustration className="relative h-auto w-full" />
+              <RoutineCycleIllustration
+                title={t("howItWorks.illustrationTitle")}
+                className="relative h-auto w-full"
+              />
             </div>
           </div>
         </section>
@@ -329,7 +338,10 @@ export default async function Home() {
               className="relative mx-auto w-full max-w-lg"
             >
               <div className="absolute -inset-6 rounded-[3rem] bg-accent-glow blur-3xl" />
-              <IngredientCheckIllustration className="relative h-auto w-full" />
+              <IngredientCheckIllustration
+                title={t("features.illustrationTitle")}
+                className="relative h-auto w-full"
+              />
             </div>
           </div>
 

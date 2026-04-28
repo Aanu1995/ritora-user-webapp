@@ -23,7 +23,10 @@
       "day": "Dag",
       "month": "Månad",
       "year": "År",
-      "hint": "Till exempel 27 4 1985"
+      "hint": "Till exempel 27 4 1985",
+      "dayPlaceholder": "DD",
+      "monthPlaceholder": "MM",
+      "yearPlaceholder": "ÅÅÅÅ"
     },
     "countrySelect": {
       "placeholder": "Välj land",
@@ -52,7 +55,8 @@
     "settings": "Inställningar",
     "logout": "Logga ut",
     "openMenu": "Öppna meny",
-    "closeMenu": "Stäng meny"
+    "closeMenu": "Stäng meny",
+    "primaryNavigation": "Primär navigering"
   },
   "landing": {
     "hero": {
@@ -326,7 +330,8 @@
       "privacyRequired": "Acceptera integritetspolicyn för att fortsätta.",
       "fieldRequired": "Detta fält krävs.",
       "tokenRequired": "Återställningstoken saknas."
-    }
+    },
+    "emailPlaceholder": "du@example.com"
   },
   "dashboard": {
     "welcome": "Välkommen tillbaka, {firstName}",
@@ -1364,7 +1369,17 @@
         "serviceUnavailableDescription": "Kontrollera din anslutning och försök igen. Dina foton finns kvar.",
         "serviceUnavailable": "Kunde inte nå fotoläsaren. Kontrollera din anslutning och försök igen.",
         "extractAction": "Extrahera från foton",
-        "extractingAction": "Extraherar…"
+        "extractingAction": "Extraherar…",
+        "scanner": {
+          "insecureContext": "Streckkodsskanning kräver en säker anslutning.",
+          "unsupported": "Streckkodsskanning stöds inte på den här enheten.",
+          "policyBlocked": "Kameraåtkomst blockeras av sidans behörighetspolicy.",
+          "permissionDenied": "Kameraåtkomst har nekats för den här webbplatsen.",
+          "systemBlocked": "Kameraåtkomst blockeras av webbläsaren eller operativsystemet.",
+          "unavailable": "Ingen användbar kamera är tillgänglig på den här enheten.",
+          "previewStartFailed": "Kameraförhandsvisningen kunde inte starta.",
+          "unknownError": "Okänt streckkodsfel."
+        }
       },
       "lookup": {
         "heading": "Hitta din produkt",
@@ -1648,7 +1663,9 @@
           "Massera mjukt i cirklar på fuktig hud.",
           "Skölj noga med ljummet vatten."
         ],
-        "cautions": ["Undvik ögonpartiet."]
+        "cautions": [
+          "Undvik ögonpartiet."
+        ]
       },
       "toner": {
         "steps": [
@@ -1725,10 +1742,14 @@
           "Knacka mjukt med ringfingret runt ögonbenet.",
           "Dra eller sträck inte ut den tunna huden kring ögonen."
         ],
-        "cautions": ["Undvik att få produkten i ögat."]
+        "cautions": [
+          "Undvik att få produkten i ögat."
+        ]
       },
       "lip-care": {
-        "steps": ["Applicera ett tunt lager efter behov under dagen."],
+        "steps": [
+          "Applicera ett tunt lager efter behov under dagen."
+        ],
         "cautions": []
       },
       "treatment": {
@@ -1736,7 +1757,9 @@
           "Följ förpackningens instruktioner.",
           "Applicera endast på det berörda området."
         ],
-        "cautions": ["Testa på en liten yta innan första användning."]
+        "cautions": [
+          "Testa på en liten yta innan första användning."
+        ]
       },
       "other": {
         "steps": [],
@@ -2073,6 +2096,44 @@
       "stepNotesMax": "Steganteckningarna är för långa.",
       "productsNotOwned": "Endast produkter från din hylla kan läggas till.",
       "maxSteps": "Du kan bara ha upp till 10 steg."
+    }
+  },
+  "site": {
+    "title": "Ritora · En lugnare hudvårdsrutin från hyllan du redan äger",
+    "description": "Ritora gör hudvårdsprodukterna du redan äger till en lugnare morgon- och kvällsrutin, med ingredienskontroller och vägledning formad av din hud."
+  },
+  "legalPages": {
+    "cookies": {
+      "metadataTitle": "Cookieinformation",
+      "metadataDescription": "Grunderna för cookies i Ritoras webbupplevelse.",
+      "eyebrow": "Cookieinformation",
+      "title": "Cookiegrunder för Ritora",
+      "paragraphs": [
+        "Produktinriktningen är att hålla cookieanvändningen minimal och transparent. Autentiseringscookies och tydligt avgränsade preferenscookies prioriteras framför onödig spårning.",
+        "En mer komplett cookieinformation kommer att beskriva vad som är nödvändigt, vad som är valfritt och hur användarens samtycke påverkar analys eller lagring av preferenser när fler funktioner lanseras."
+      ]
+    },
+    "privacy": {
+      "metadataTitle": "Integritetspolicy",
+      "metadataDescription": "Integritetsgrunder för Ritoras webbupplevelse.",
+      "eyebrow": "Integritetspolicy",
+      "title": "Integritetsgrunder för Ritora",
+      "paragraphs": [
+        "Ritora byggs med privacy-by-design från början. Produktinriktningen prioriterar dataminimering, tydligt samtycke och en gräns mellan offentlig utbildning och privata personliga rutiner.",
+        "När implementationen växer kommer den här sidan att ersättas av en fullständig policy som beskriver rättslig grund, lagringstider, personuppgiftsbiträden samt export- och raderingsrättigheter mer detaljerat.",
+        "För tillfället beskriver sidan avsikten bakom de aktuella tekniska förbättringarna: säkra autentiseringsgrunder, tydlig samtyckesversionering och en integritetsmedveten backendbas."
+      ]
+    },
+    "terms": {
+      "metadataTitle": "Användarvillkor",
+      "metadataDescription": "Villkorsgrunder för Ritoras webbupplevelse.",
+      "eyebrow": "Användarvillkor",
+      "title": "Villkorsgrunder för Ritora",
+      "paragraphs": [
+        "Ritora är tänkt som ett beslutsstöd för hudvård, inte som ett diagnostiskt eller medicinskt verktyg. Plattformens inriktning fokuserar på tryggare rutinbeslut, tydligare produktöversikt och lugnare produktanvändning.",
+        "När produkten mognar kommer villkoren att utökas med kontoansvar, acceptabel användning, ansvarsfriskrivningar och tjänstens gränser i produktionsdetalj.",
+        "Den nuvarande sidan finns så att den publika upplevelsen redan har en riktig juridisk routestruktur i stället för platshållarlänkar."
+      ]
     }
   }
 }

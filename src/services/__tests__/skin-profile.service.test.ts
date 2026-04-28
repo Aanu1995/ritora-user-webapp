@@ -7,75 +7,83 @@ jest.mock("@/lib/api", () => ({
 }));
 
 import { ApiPath } from "@/constants/api-paths";
-import * as api from "@/lib/api";
-import * as skinProfileService from "@/services/skin-profile.service";
+import { deleteRequest, getRequest, patchRequest, postRequest } from "@/lib/api";
+import {
+  createSkinProfile,
+  deleteSkinProfile,
+  deleteSkinProfileHormonalContext,
+  getSkinProfile,
+  getSkinProfileAccessLogs,
+  getSkinProfileOptions,
+  updateSkinProfile,
+} from "@/services/skin-profile.service";
 
 afterEach(() => jest.clearAllMocks());
 
 describe("skin-profile.service", () => {
   it("getSkinProfile calls getRequest", async () => {
     const profile = { id: "p1", skinType: "oily" };
-    (api.getRequest as jest.Mock).mockResolvedValue(profile);
+    (getRequest as jest.Mock).mockResolvedValue(profile);
 
-    const result = await skinProfileService.getSkinProfile();
+    const result = await getSkinProfile();
 
-    expect(api.getRequest).toHaveBeenCalledWith(ApiPath.SkinProfile);
+    expect(getRequest).toHaveBeenCalledWith(ApiPath.SkinProfile);
     expect(result).toEqual(profile);
   });
 
   it("getSkinProfileOptions calls getRequest", async () => {
     const options = { skinTypes: ["oily"] };
-    (api.getRequest as jest.Mock).mockResolvedValue(options);
+    (getRequest as jest.Mock).mockResolvedValue(options);
 
-    const result = await skinProfileService.getSkinProfileOptions();
+    const result = await getSkinProfileOptions();
 
-    expect(api.getRequest).toHaveBeenCalledWith(ApiPath.SkinProfileOptions);
+    expect(getRequest).toHaveBeenCalledWith(ApiPath.SkinProfileOptions);
     expect(result).toEqual(options);
   });
 
   it("getSkinProfileAccessLogs calls getRequest", async () => {
     const logs = [{ id: "access-log-1" }];
-    (api.getRequest as jest.Mock).mockResolvedValue(logs);
+    (getRequest as jest.Mock).mockResolvedValue(logs);
 
-    const result = await skinProfileService.getSkinProfileAccessLogs();
+    const result = await getSkinProfileAccessLogs();
 
-    expect(api.getRequest).toHaveBeenCalledWith(ApiPath.SkinProfileAccessLogs);
+    expect(getRequest).toHaveBeenCalledWith(ApiPath.SkinProfileAccessLogs);
     expect(result).toEqual(logs);
   });
 
   it("createSkinProfile calls postRequest with data", async () => {
     const input = { skinType: "oily", currentConcerns: ["acne"] };
-    (api.postRequest as jest.Mock).mockResolvedValue({ id: "p1", ...input });
+    (postRequest as jest.Mock).mockResolvedValue({ id: "p1", ...input });
 
-    await skinProfileService.createSkinProfile(input);
+    await createSkinProfile(input);
 
-    expect(api.postRequest).toHaveBeenCalledWith(ApiPath.SkinProfile, input);
+    expect(postRequest).toHaveBeenCalledWith(ApiPath.SkinProfile, input);
   });
 
   it("updateSkinProfile calls patchRequest with data", async () => {
     const input = { skinType: "dry" };
-    (api.patchRequest as jest.Mock).mockResolvedValue({ id: "p1", ...input });
+    (patchRequest as jest.Mock).mockResolvedValue({ id: "p1", ...input });
 
-    await skinProfileService.updateSkinProfile(input);
+    await updateSkinProfile(input);
 
-    expect(api.patchRequest).toHaveBeenCalledWith(ApiPath.SkinProfile, input);
+    expect(patchRequest).toHaveBeenCalledWith(ApiPath.SkinProfile, input);
   });
 
   it("deleteSkinProfile calls deleteRequest", async () => {
-    (api.deleteRequest as jest.Mock).mockResolvedValue(undefined);
+    (deleteRequest as jest.Mock).mockResolvedValue(undefined);
 
-    await skinProfileService.deleteSkinProfile();
+    await deleteSkinProfile();
 
-    expect(api.deleteRequest).toHaveBeenCalledWith(ApiPath.SkinProfile);
+    expect(deleteRequest).toHaveBeenCalledWith(ApiPath.SkinProfile);
   });
 
   it("deleteSkinProfileHormonalContext calls deleteRequest", async () => {
     const profile = { id: "p1", hormonalContext: {} };
-    (api.deleteRequest as jest.Mock).mockResolvedValue(profile);
+    (deleteRequest as jest.Mock).mockResolvedValue(profile);
 
-    const result = await skinProfileService.deleteSkinProfileHormonalContext();
+    const result = await deleteSkinProfileHormonalContext();
 
-    expect(api.deleteRequest).toHaveBeenCalledWith(
+    expect(deleteRequest).toHaveBeenCalledWith(
       ApiPath.SkinProfileHormonalContext,
     );
     expect(result).toEqual(profile);

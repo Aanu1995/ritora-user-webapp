@@ -35,7 +35,17 @@ jest.mock('@/services/schedule.service', () => ({
   upsertSteps: jest.fn(),
 }));
 
-import * as scheduleService from '@/services/schedule.service';
+import {
+  applyEveryDayPreset,
+  createSlot as createScheduleSlot,
+  createSlots,
+  deleteSlot,
+  getSchedule,
+  getTodaysSchedule,
+  moveSlot,
+  updateSlot,
+  upsertSteps,
+} from '@/services/schedule.service';
 
 function createTestQueryClient() {
   return new QueryClient({
@@ -112,7 +122,7 @@ describe('useSchedule', () => {
       timeZone: 'Europe/Stockholm',
       slots: [createSlot('slot-1', DayOfWeek.Mon)],
     };
-    (scheduleService.getSchedule as jest.Mock).mockResolvedValue(schedule);
+    (getSchedule as jest.Mock).mockResolvedValue(schedule);
 
     const { result } = renderHook(() => useSchedule(), {
       wrapper: createWrapper(queryClient),
@@ -133,7 +143,7 @@ describe('useTodaysSchedule', () => {
       timeZone: 'Europe/Stockholm',
       slots: [createSlot('slot-1', DayOfWeek.Mon)],
     };
-    (scheduleService.getTodaysSchedule as jest.Mock).mockResolvedValue(today);
+    (getTodaysSchedule as jest.Mock).mockResolvedValue(today);
 
     const { result } = renderHook(() => useTodaysSchedule(), {
       wrapper: createWrapper(queryClient),
@@ -161,7 +171,7 @@ describe('useCreateSlots', () => {
     };
 
     queryClient.setQueryData([QueryKey.Schedule], initialSchedule);
-    (scheduleService.createSlots as jest.Mock).mockResolvedValue(nextSchedule);
+    (createSlots as jest.Mock).mockResolvedValue(nextSchedule);
 
     const { result } = renderHook(() => useCreateSlots(), {
       wrapper: createWrapper(queryClient),
@@ -176,7 +186,7 @@ describe('useCreateSlots', () => {
     });
 
     await waitFor(() => {
-      expect(scheduleService.createSlots).toHaveBeenCalledWith({
+      expect(createSlots).toHaveBeenCalledWith({
         daysOfWeek: [DayOfWeek.Mon, DayOfWeek.Wed],
         slotTime: '08:00',
         mode: SlotMode.Manual,
@@ -196,7 +206,7 @@ describe('schedule slot mutations', () => {
     const queryClient = createTestQueryClient();
     const slot = createSlot('slot-1', DayOfWeek.Tue);
     queryClient.setQueryData([QueryKey.ScheduleToday], { slots: [] });
-    (scheduleService.createSlot as jest.Mock).mockResolvedValue(slot);
+    (createScheduleSlot as jest.Mock).mockResolvedValue(slot);
 
     const { result } = renderHook(() => useCreateSlot(), {
       wrapper: createWrapper(queryClient),
@@ -226,7 +236,7 @@ describe('schedule slot mutations', () => {
       slots: [createSlot('slot-1', DayOfWeek.Mon)],
     };
     queryClient.setQueryData([QueryKey.ScheduleToday], { slots: [] });
-    (scheduleService.applyEveryDayPreset as jest.Mock).mockResolvedValue(
+    (applyEveryDayPreset as jest.Mock).mockResolvedValue(
       schedule,
     );
 
@@ -260,7 +270,7 @@ describe('schedule slot mutations', () => {
       slots: [original],
     });
     queryClient.setQueryData([QueryKey.ScheduleToday], { slots: [] });
-    (scheduleService.updateSlot as jest.Mock).mockResolvedValue(updated);
+    (updateSlot as jest.Mock).mockResolvedValue(updated);
 
     const { result } = renderHook(() => useUpdateSlot(), {
       wrapper: createWrapper(queryClient),
@@ -290,7 +300,7 @@ describe('schedule slot mutations', () => {
       slots: [deleted, kept],
     });
     queryClient.setQueryData([QueryKey.ScheduleToday], { slots: [] });
-    (scheduleService.deleteSlot as jest.Mock).mockResolvedValue(undefined);
+    (deleteSlot as jest.Mock).mockResolvedValue(undefined);
 
     const { result } = renderHook(() => useDeleteSlot(), {
       wrapper: createWrapper(queryClient),
@@ -325,7 +335,7 @@ describe('schedule slot mutations', () => {
       slots: [original],
     });
     queryClient.setQueryData([QueryKey.ScheduleToday], { slots: [] });
-    (scheduleService.upsertSteps as jest.Mock).mockResolvedValue(updated);
+    (upsertSteps as jest.Mock).mockResolvedValue(updated);
 
     const { result } = renderHook(() => useUpsertSteps(), {
       wrapper: createWrapper(queryClient),
@@ -366,7 +376,7 @@ describe('schedule slot mutations', () => {
       slots: [original],
     });
     queryClient.setQueryData([QueryKey.ScheduleToday], { slots: [] });
-    (scheduleService.moveSlot as jest.Mock).mockResolvedValue(moved);
+    (moveSlot as jest.Mock).mockResolvedValue(moved);
 
     const { result } = renderHook(() => useMoveSlot(), {
       wrapper: createWrapper(queryClient),

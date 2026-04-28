@@ -3,15 +3,15 @@ jest.mock('@/lib/api', () => ({
   postRequest: jest.fn(),
 }));
 
-import * as api from '@/lib/api';
-import * as ingredientsService from '@/services/ingredients.service';
+import { postRequest } from '@/lib/api';
+import { analyzeProducts } from '@/services/ingredients.service';
 
 afterEach(() => jest.clearAllMocks());
 
 describe('ingredients.service', () => {
   it('posts focus-product analysis requests with explanations', async () => {
     const controller = new AbortController();
-    (api.postRequest as jest.Mock).mockResolvedValue({
+    (postRequest as jest.Mock).mockResolvedValue({
       mode: 'focus',
       status: 'ok',
       confidence: 'high',
@@ -25,7 +25,7 @@ describe('ingredients.service', () => {
       generatedAt: '2026-04-24T09:00:00.000Z',
     });
 
-    await ingredientsService.analyzeProducts(
+    await analyzeProducts(
       {
         focusProductId: 'product-1',
         language: 'sv',
@@ -34,7 +34,7 @@ describe('ingredients.service', () => {
       controller.signal,
     );
 
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/ingredients/analyze',
       {
         focusProductId: 'product-1',
@@ -46,7 +46,7 @@ describe('ingredients.service', () => {
   });
 
   it('posts explicit productIds analysis requests', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({
+    (postRequest as jest.Mock).mockResolvedValue({
       mode: 'multi',
       status: 'ok',
       confidence: 'high',
@@ -60,12 +60,12 @@ describe('ingredients.service', () => {
       generatedAt: '2026-04-24T09:00:00.000Z',
     });
 
-    await ingredientsService.analyzeProducts({
+    await analyzeProducts({
       productIds: ['a', 'b'],
       language: 'en',
     });
 
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/ingredients/analyze',
       {
         productIds: ['a', 'b'],

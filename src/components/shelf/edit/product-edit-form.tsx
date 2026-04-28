@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { ProductPageHeader } from '../product-page-header';
 import { ProductFormBody, type ProductFormValue } from '../product-form-body';
 import {
   buildShelfFieldErrors,
@@ -266,8 +267,8 @@ export function ProductEditForm({ product }: Props) {
 
           return (
             <>
-              <div className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-                <div className="mx-auto flex max-w-5xl items-center gap-3">
+              <ProductPageHeader
+                leading={
                   <GuardedLink
                     href={`${AppRoute.Shelf}/${product.id}`}
                     restoreScrollTo={`${AppRoute.Shelf}/${product.id}`}
@@ -276,32 +277,26 @@ export function ProductEditForm({ product }: Props) {
                   >
                     <ArrowLeft className="h-4 w-4" />
                   </GuardedLink>
-                  <div className="min-w-0 flex-1">
-                    <h1 className="truncate text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                      {t('title')}
-                    </h1>
-                    <p className="mt-0.5 truncate text-xs text-muted sm:text-sm">
-                      {product.identity.brand} · {product.identity.name}
-                    </p>
-                  </div>
-                  <div className="shrink-0">
-                    <Button
-                      type="submit"
-                      size="sm"
-                      disabled={isSubmitting || uploadProductImage.isPending}
-                    >
-                      {isSubmitting ? (
-                        <LoadingIndicator label={t('saving')} />
-                      ) : (
-                        <>
-                          <span className="sm:hidden">{t('saveShort')}</span>
-                          <span className="hidden sm:inline">{t('save')}</span>
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </div>
+                }
+                title={t('title')}
+                subtitle={`${product.identity.brand} · ${product.identity.name}`}
+                actions={
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={isSubmitting || uploadProductImage.isPending}
+                  >
+                    {isSubmitting ? (
+                      <LoadingIndicator label={t('saving')} />
+                    ) : (
+                      <>
+                        <span className="sm:hidden">{t('saveShort')}</span>
+                        <span className="hidden sm:inline">{t('save')}</span>
+                      </>
+                    )}
+                  </Button>
+                }
+              />
 
               <div className="mx-auto mt-6 max-w-5xl">
                 {formError ? (

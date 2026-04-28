@@ -14,7 +14,11 @@ import {
   persistLocalePreference,
 } from '@/i18n/config';
 import { resetPostLoginState } from '@/lib/post-login-route';
-import * as authService from '@/services/auth.service';
+import {
+  getCurrentUser,
+  logout as logoutRequest,
+  refreshTokens,
+} from '@/services/auth.service';
 import type { User } from '@/types/auth';
 
 type AuthState = {
@@ -74,13 +78,13 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       resetPostLoginState();
       const initialLocale = getPreferredLocale();
-      const { accessToken } = await authService.refreshTokens();
+      const { accessToken } = await refreshTokens();
       setAccessToken(accessToken);
 
-      const user = await authService.getCurrentUser();
+      const user = await getCurrentUser();
 
       if (!user.emailVerified) {
-        await authService.logout().catch(() => undefined);
+        await logoutRequest().catch(() => undefined);
         setAccessToken(null);
         appQueryClient.clear();
         set({ user: null, isAuthenticated: false, isLoading: false });

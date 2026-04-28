@@ -7,7 +7,7 @@ jest.mock('@/services/ingredients.service', () => ({
   analyzeProducts: jest.fn(),
 }));
 
-import * as ingredientsService from '@/services/ingredients.service';
+import { analyzeProducts } from '@/services/ingredients.service';
 
 const ANALYSIS_RESULT = {
   mode: 'focus' as const,
@@ -43,7 +43,7 @@ describe('useFocusProductAnalysis', () => {
 
   it('requests focus-product analysis when authenticated', async () => {
     useAuthStore.setState({ isAuthenticated: true });
-    (ingredientsService.analyzeProducts as jest.Mock).mockResolvedValue(
+    (analyzeProducts as jest.Mock).mockResolvedValue(
       ANALYSIS_RESULT,
     );
 
@@ -55,7 +55,7 @@ describe('useFocusProductAnalysis', () => {
       expect(result.current.isSuccess).toBe(true);
     });
 
-    expect(ingredientsService.analyzeProducts).toHaveBeenCalledWith(
+    expect(analyzeProducts).toHaveBeenCalledWith(
       {
         focusProductId: 'product-1',
         language: 'en',

@@ -137,7 +137,7 @@ export function BirthdayPicker({
             aria-invalid={errorText ? true : undefined}
             aria-describedby={describedBy}
             maxLength={2}
-            placeholder="DD"
+            placeholder={t('dayPlaceholder')}
             value={partsSnapshot.parts.day}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               const next = updatePart('day', event.target.value, 2);
@@ -167,7 +167,7 @@ export function BirthdayPicker({
             aria-invalid={errorText ? true : undefined}
             aria-describedby={describedBy}
             maxLength={2}
-            placeholder="MM"
+            placeholder={t('monthPlaceholder')}
             value={partsSnapshot.parts.month}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               const next = updatePart('month', event.target.value, 2);
@@ -197,7 +197,7 @@ export function BirthdayPicker({
             aria-invalid={errorText ? true : undefined}
             aria-describedby={describedBy}
             maxLength={4}
-            placeholder="YYYY"
+            placeholder={t('yearPlaceholder')}
             value={partsSnapshot.parts.year}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               updatePart('year', event.target.value, 4);

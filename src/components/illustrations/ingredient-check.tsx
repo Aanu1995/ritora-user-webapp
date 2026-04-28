@@ -1,18 +1,24 @@
 import type { SVGProps } from 'react';
 
-export function IngredientCheckIllustration(props: SVGProps<SVGSVGElement>) {
+type IllustrationProps = SVGProps<SVGSVGElement> & {
+  title?: string;
+};
+
+export function IngredientCheckIllustration({
+  title,
+  ...props
+}: IllustrationProps) {
   return (
     <svg
       viewBox="0 0 480 320"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-labelledby="ingredient-check-title"
+      role={title ? 'img' : undefined}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
       {...props}
     >
-      <title id="ingredient-check-title">
-        An ingredient safety checklist with green ticks and a warning flag
-      </title>
+      {title ? <title>{title}</title> : null}
       <defs>
         <linearGradient id="check-bg" x1="0" y1="0" x2="480" y2="320" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="var(--color-secondary-glow)" />

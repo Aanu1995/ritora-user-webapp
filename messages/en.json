@@ -23,7 +23,10 @@
       "day": "Day",
       "month": "Month",
       "year": "Year",
-      "hint": "For example, 27 4 1985"
+      "hint": "For example, 27 4 1985",
+      "dayPlaceholder": "DD",
+      "monthPlaceholder": "MM",
+      "yearPlaceholder": "YYYY"
     },
     "countrySelect": {
       "placeholder": "Select a country",
@@ -52,7 +55,8 @@
     "settings": "Settings",
     "logout": "Log out",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "primaryNavigation": "Primary navigation"
   },
   "landing": {
     "hero": {
@@ -326,7 +330,8 @@
       "privacyRequired": "Please accept the Privacy Policy to continue.",
       "fieldRequired": "This field is required.",
       "tokenRequired": "Reset token is missing."
-    }
+    },
+    "emailPlaceholder": "you@example.com"
   },
   "dashboard": {
     "welcome": "Welcome back, {firstName}",
@@ -1364,7 +1369,17 @@
         "serviceUnavailableDescription": "Check your connection and try again. Your photos are still here.",
         "serviceUnavailable": "Couldn't reach the photo reader. Check your connection and try again.",
         "extractAction": "Extract from photos",
-        "extractingAction": "Extracting…"
+        "extractingAction": "Extracting…",
+        "scanner": {
+          "insecureContext": "Barcode scanning requires a secure context.",
+          "unsupported": "Barcode scanning is not supported on this device.",
+          "policyBlocked": "Camera access is blocked by the page permissions policy.",
+          "permissionDenied": "Camera access has been denied for this site.",
+          "systemBlocked": "Camera access is blocked by the browser or operating system.",
+          "unavailable": "No usable camera is available on this device.",
+          "previewStartFailed": "The camera preview could not start.",
+          "unknownError": "Unknown barcode error."
+        }
       },
       "lookup": {
         "heading": "Find your product",
@@ -1648,7 +1663,9 @@
           "Massage gently onto damp skin in circular motions.",
           "Rinse thoroughly with lukewarm water."
         ],
-        "cautions": ["Avoid the eye area."]
+        "cautions": [
+          "Avoid the eye area."
+        ]
       },
       "toner": {
         "steps": [
@@ -1703,7 +1720,10 @@
           "Leave on for the time printed on the packaging.",
           "Rinse thoroughly with lukewarm water."
         ],
-        "cautions": ["Patch-test before first use.", "Avoid the eye area."]
+        "cautions": [
+          "Patch-test before first use.",
+          "Avoid the eye area."
+        ]
       },
       "exfoliant": {
         "steps": [
@@ -1722,10 +1742,14 @@
           "Use the ring finger to tap gently around the orbital bone.",
           "Avoid pulling or dragging the thin eye-area skin."
         ],
-        "cautions": ["Keep product out of the eye itself."]
+        "cautions": [
+          "Keep product out of the eye itself."
+        ]
       },
       "lip-care": {
-        "steps": ["Apply a thin layer as needed throughout the day."],
+        "steps": [
+          "Apply a thin layer as needed throughout the day."
+        ],
         "cautions": []
       },
       "treatment": {
@@ -1733,7 +1757,9 @@
           "Follow the directions on the packaging.",
           "Apply to the target area only."
         ],
-        "cautions": ["Patch-test before first use."]
+        "cautions": [
+          "Patch-test before first use."
+        ]
       },
       "other": {
         "steps": [],
@@ -1952,7 +1978,7 @@
       "titleSingle": "Add time",
       "titleEveryDay": "Apply to every day",
       "subtitleSingle": "When should this routine run?",
-      "subtitleEveryDay": "Pick a time. We\u2019ll apply it to all seven days.",
+      "subtitleEveryDay": "Pick a time. We’ll apply it to all seven days.",
       "sheetDescription": "Create a scheduled time slot",
       "daysLabel": "Apply to days",
       "daysHintSingle": "Tap a day to toggle",
@@ -1988,7 +2014,7 @@
       "stepsDescription": "Your routine in application order. Cleansers first, SPF last. Drag to reorder.",
       "stepsCount": "{current} / {max}",
       "addStep": "Add step",
-      "stepsMaxReached": "You\u2019ve reached the maximum of {max} steps",
+      "stepsMaxReached": "You’ve reached the maximum of {max} steps",
       "manualEmpty": "No steps yet. Add a product to start building your routine.",
       "aiPlaceholderTitle": "AI suggestions coming soon",
       "aiPlaceholderBody": "When the AI engine launches, it will pick products from your Shelf using your notes above as context.",
@@ -2070,6 +2096,44 @@
       "stepNotesMax": "Step notes are too long.",
       "productsNotOwned": "Only products from your shelf can be added.",
       "maxSteps": "You can only have up to 10 steps."
+    }
+  },
+  "site": {
+    "title": "Ritora · A calmer skincare routine from the shelf you already own",
+    "description": "Ritora turns the skincare products you already own into a calmer morning and evening routine, with ingredient safety checks and guidance shaped by your skin."
+  },
+  "legalPages": {
+    "cookies": {
+      "metadataTitle": "Cookie Notice",
+      "metadataDescription": "Cookie notice foundations for the Ritora web experience.",
+      "eyebrow": "Cookie Notice",
+      "title": "Cookie foundations for Ritora",
+      "paragraphs": [
+        "The product direction aims to keep cookie use minimal and transparent. Authentication cookies and carefully scoped preference cookies are preferred over unnecessary tracking.",
+        "A fuller cookie notice will document what is essential, what is optional, and how user consent affects analytics or preference storage as more features ship."
+      ]
+    },
+    "privacy": {
+      "metadataTitle": "Privacy Policy",
+      "metadataDescription": "Privacy foundations for the Ritora web experience.",
+      "eyebrow": "Privacy Policy",
+      "title": "Privacy foundations for Ritora",
+      "paragraphs": [
+        "Ritora is being built with privacy-by-design principles from the start. The product direction prioritizes data minimization, clear consent, and a boundary between public education features and private personalized routines.",
+        "As implementation expands, this page will be replaced with a full policy that documents lawful basis, retention periods, processor relationships, and export and deletion rights in more detail.",
+        "For now, this page establishes the intent behind the current technical improvements: secure auth foundations, explicit consent versioning, and a privacy-aware backend baseline."
+      ]
+    },
+    "terms": {
+      "metadataTitle": "Terms of Service",
+      "metadataDescription": "Terms foundations for the Ritora web experience.",
+      "eyebrow": "Terms of Service",
+      "title": "Terms foundations for Ritora",
+      "paragraphs": [
+        "Ritora is intended as a skincare decision-support experience, not a diagnostic or medical tool. The platform direction focuses on safer routine decisions, inventory clarity, and calmer product use.",
+        "As the product matures, these terms will be expanded to cover account responsibilities, acceptable use, disclaimer language, and service boundaries in production detail.",
+        "The current page exists so the public experience already has a real legal route structure instead of placeholder links."
+      ]
     }
   }
 }

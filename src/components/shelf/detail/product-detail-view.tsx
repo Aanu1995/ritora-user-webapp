@@ -21,6 +21,7 @@ import { DetailAboutTab } from './detail-about-tab';
 import { DetailHowToUseTab } from './detail-how-to-use-tab';
 import { DetailIngredientsTab } from './detail-ingredients-tab';
 import { DetailManufacturerTab } from './detail-manufacturer-tab';
+import { ProductPageHeader } from '../product-page-header';
 import {
   isProductDetailTab,
   readProductDetailTab,
@@ -182,8 +183,8 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
 
   return (
     <div className="relative pb-16">
-      <div className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-        <div className="mx-auto flex max-w-5xl items-center gap-2">
+      <ProductPageHeader
+        leading={
           <Link
             href={AppRoute.Shelf}
             aria-label={t('backLink')}
@@ -202,10 +203,10 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
           >
             <ArrowLeft className="h-4 w-4" />
           </Link>
-
-          <div className="flex-1" />
-
-          <div className="flex flex-wrap items-center gap-2">
+        }
+        actionClassName="flex flex-wrap items-center justify-end gap-2"
+        actions={
+          <>
           <Button asChild size="sm">
             <Link
               href={`${productDetailPath}/edit`}
@@ -255,9 +256,9 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
             <Trash2 className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{t('actions.delete')}</span>
           </Button>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       <div className="mx-auto mt-4 grid max-w-5xl gap-6 md:grid-cols-[minmax(220px,260px)_1fr] md:gap-8">
         <div className="mx-auto w-full max-w-[200px] sm:max-w-[240px] md:mx-0 md:max-w-none">

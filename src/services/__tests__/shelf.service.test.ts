@@ -6,8 +6,29 @@ jest.mock('@/lib/api', () => ({
   postRequest: jest.fn(),
 }));
 
-import * as api from '@/lib/api';
-import * as shelfService from '@/services/shelf.service';
+import {
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postMultipartRequest,
+  postRequest,
+} from '@/lib/api';
+import {
+  archiveProduct,
+  archiveProducts,
+  countProductsByStat,
+  createProduct,
+  extractProductFromImages,
+  listProducts,
+  markProductFinished,
+  markProductsFinished,
+  removeProduct,
+  removeProducts,
+  restoreProduct,
+  restoreProducts,
+  updateProduct,
+  uploadProductImage,
+} from '@/services/shelf.service';
 import {
   DataProvenance,
   ProductCategory,
@@ -21,13 +42,13 @@ afterEach(() => jest.clearAllMocks());
 
 describe('shelf.service', () => {
   it('lists inventory products with pagination params', async () => {
-    (api.getRequest as jest.Mock).mockResolvedValue({
+    (getRequest as jest.Mock).mockResolvedValue({
       items: [],
       nextCursor: 'next-cursor',
     });
     const controller = new AbortController();
 
-    const result = await shelfService.listProducts(
+    const result = await listProducts(
       {
         stat: ShelfStatFilter.All,
         category: ShelfCategoryFilter.All,
@@ -38,7 +59,7 @@ describe('shelf.service', () => {
       controller.signal,
     );
 
-    expect(api.getRequest).toHaveBeenCalledWith('/inventory/products', {
+    expect(getRequest).toHaveBeenCalledWith('/inventory/products', {
       params: {
         stat: 'all',
         category: 'all',
@@ -52,20 +73,20 @@ describe('shelf.service', () => {
   });
 
   it('fetches inventory stats', async () => {
-    (api.getRequest as jest.Mock).mockResolvedValue({ all: 2 });
+    (getRequest as jest.Mock).mockResolvedValue({ all: 2 });
 
-    const result = await shelfService.countProductsByStat();
+    const result = await countProductsByStat();
 
-    expect(api.getRequest).toHaveBeenCalledWith('/inventory/products/stats');
+    expect(getRequest).toHaveBeenCalledWith('/inventory/products/stats');
     expect(result.all).toBe(2);
   });
 
   it('creates, updates, and deletes products through inventory endpoints', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({ id: 'product-1' });
-    (api.patchRequest as jest.Mock).mockResolvedValue({ id: 'product-1' });
-    (api.deleteRequest as jest.Mock).mockResolvedValue(undefined);
+    (postRequest as jest.Mock).mockResolvedValue({ id: 'product-1' });
+    (patchRequest as jest.Mock).mockResolvedValue({ id: 'product-1' });
+    (deleteRequest as jest.Mock).mockResolvedValue(undefined);
 
-    await shelfService.createProduct({
+    await createProduct({
       identity: {
         brand: 'CeraVe',
         name: 'Serum',
@@ -108,38 +129,38 @@ describe('shelf.service', () => {
       status: ShelfStatus.Active,
       provenance: DataProvenance.UserEntered,
     });
-    await shelfService.updateProduct('product-1', {
+    await updateProduct('product-1', {
       identity: { name: 'Updated' },
     });
-    await shelfService.removeProduct('product-1');
+    await removeProduct('product-1');
 
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/inventory/products',
       expect.any(Object),
     );
-    expect(api.patchRequest).toHaveBeenCalledWith('/inventory/products/product-1', {
+    expect(patchRequest).toHaveBeenCalledWith('/inventory/products/product-1', {
       identity: { name: 'Updated' },
     });
-    expect(api.deleteRequest).toHaveBeenCalledWith('/inventory/products/product-1');
+    expect(deleteRequest).toHaveBeenCalledWith('/inventory/products/product-1');
   });
 
   it('uploads a product image through the dedicated inventory endpoint', async () => {
     const imageFile = new File(['photo'], 'product.jpg', {
       type: 'image/jpeg',
     });
-    (api.postMultipartRequest as jest.Mock).mockResolvedValue({
+    (postMultipartRequest as jest.Mock).mockResolvedValue({
       imageUrl: 'https://cdn.example.com/product-images/processed/photo.webp',
     });
 
-    const result = await shelfService.uploadProductImage(imageFile);
+    const result = await uploadProductImage(imageFile);
 
-    expect(api.postMultipartRequest).toHaveBeenCalledWith(
+    expect(postMultipartRequest).toHaveBeenCalledWith(
       '/inventory/products/upload-image',
       expect.any(FormData),
       expect.objectContaining({ timeout: 30000 }),
     );
 
-    const body = (api.postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
+    const body = (postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
     expect(body.get('image')).toBe(imageFile);
     expect(result.imageUrl).toBe(
       'https://cdn.example.com/product-images/processed/photo.webp',
@@ -147,38 +168,38 @@ describe('shelf.service', () => {
   });
 
   it('uses explicit archive, restore, finish, and bulk delete endpoints', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue(undefined);
+    (postRequest as jest.Mock).mockResolvedValue(undefined);
 
-    await shelfService.archiveProduct('product-1');
-    await shelfService.restoreProduct('product-1');
-    await shelfService.markProductFinished('product-1');
-    await shelfService.archiveProducts(['product-1']);
-    await shelfService.restoreProducts(['product-1']);
-    await shelfService.markProductsFinished(['product-1']);
-    await shelfService.removeProducts(['product-1', 'product-2']);
+    await archiveProduct('product-1');
+    await restoreProduct('product-1');
+    await markProductFinished('product-1');
+    await archiveProducts(['product-1']);
+    await restoreProducts(['product-1']);
+    await markProductsFinished(['product-1']);
+    await removeProducts(['product-1', 'product-2']);
 
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/inventory/products/product-1/archive',
     );
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/inventory/products/product-1/restore',
     );
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/inventory/products/product-1/mark-finished',
     );
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/inventory/products/bulk/archive',
       { ids: ['product-1'] },
     );
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/inventory/products/bulk/restore',
       { ids: ['product-1'] },
     );
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/inventory/products/bulk/mark-finished',
       { ids: ['product-1'] },
     );
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/inventory/products/bulk-delete',
       { ids: ['product-1', 'product-2'] },
     );
@@ -194,20 +215,20 @@ describe('shelf.service', () => {
     const directionsImage = new File(['directions'], 'directions.jpg', {
       type: 'image/jpeg',
     });
-    (api.postMultipartRequest as jest.Mock).mockResolvedValue(null);
+    (postMultipartRequest as jest.Mock).mockResolvedValue(null);
 
-    await shelfService.extractProductFromImages({
+    await extractProductFromImages({
       images: [productImage, ingredientImage, directionsImage],
       heroImageIndex: 2,
     });
 
-    expect(api.postMultipartRequest).toHaveBeenCalledWith(
+    expect(postMultipartRequest).toHaveBeenCalledWith(
       '/catalogue/products/extract-from-images',
       expect.any(FormData),
       expect.objectContaining({ timeout: 75000 }),
     );
 
-    const body = (api.postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
+    const body = (postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
     expect(body.getAll('images')).toEqual([
       productImage,
       ingredientImage,

@@ -1,18 +1,24 @@
 import type { SVGProps } from 'react';
 
-export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
+type IllustrationProps = SVGProps<SVGSVGElement> & {
+  title?: string;
+};
+
+export function RoutineCycleIllustration({
+  title,
+  ...props
+}: IllustrationProps) {
   return (
     <svg
       viewBox="0 0 480 320"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-labelledby="routine-cycle-title"
+      role={title ? 'img' : undefined}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
       {...props}
     >
-      <title id="routine-cycle-title">
-        A daily routine cycle that runs from morning sun to evening moon with the shelf at the centre
-      </title>
+      {title ? <title>{title}</title> : null}
       <defs>
         <linearGradient id="routine-bg" x1="0" y1="0" x2="480" y2="320" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="var(--color-accent-glow)" />
