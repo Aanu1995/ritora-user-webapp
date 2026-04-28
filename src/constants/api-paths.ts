@@ -1,12 +1,12 @@
-const AUTH_BASE = '/auth';
-const USERS_BASE = '/users';
+const AUTH_BASE = "/auth";
+const USERS_BASE = "/users";
 const USERS_ME_BASE = `${USERS_BASE}/me`;
-const SKIN_PROFILE_BASE = '/skin-profile';
-const CATALOGUE_PRODUCTS_BASE = '/catalogue/products';
-const INVENTORY_PRODUCTS_BASE = '/inventory/products';
-const SCHEDULE_BASE = '/schedule';
+const SKIN_PROFILE_BASE = "/skin-profile";
+const CATALOGUE_PRODUCTS_BASE = "/catalogue/products";
+const INVENTORY_PRODUCTS_BASE = "/inventory/products";
+const SCHEDULE_BASE = "/schedule";
 const SCHEDULE_SLOTS_BASE = `${SCHEDULE_BASE}/slots`;
-const INGREDIENTS_BASE = '/ingredients';
+const INGREDIENTS_BASE = "/ingredients";
 
 const buildInventoryProductPath = (id: string) =>
   `${INVENTORY_PRODUCTS_BASE}/${id}`;
@@ -34,6 +34,9 @@ export const ApiPath = {
 
   SkinProfile: SKIN_PROFILE_BASE,
   SkinProfileOptions: `${SKIN_PROFILE_BASE}/options`,
+  SkinProfileAccessLogs: `${SKIN_PROFILE_BASE}/access-logs`,
+  SkinProfileHealthContext: `${SKIN_PROFILE_BASE}/health-context`,
+  SkinProfileHormonalContext: `${SKIN_PROFILE_BASE}/hormonal-context`,
 
   CatalogueProductsExtractFromImages: `${CATALOGUE_PRODUCTS_BASE}/extract-from-images`,
 

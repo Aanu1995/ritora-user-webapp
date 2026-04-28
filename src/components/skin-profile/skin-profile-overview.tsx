@@ -1,174 +1,140 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Moon } from "lucide-react";
 import type { SkinProfile } from "@/types/skin-profile";
+import {
+  CompletenessCard,
+  EssentialsSection,
+  OptionalCard,
+  SectionHeading,
+} from "./skin-profile-overview-sections";
+import { SkinProfileValue } from "./skin-profile-domain-values";
 
 interface SkinProfileOverviewProps {
   profile: SkinProfile;
   onEdit: (step: number) => void;
 }
 
-function OverviewRow({
-  label,
-  step,
-  onEdit,
-  children,
-}: {
-  label: string;
-  step: number;
-  onEdit: (step: number) => void;
-  children: React.ReactNode;
-}) {
-  const t = useTranslations("skinProfile");
-
-  return (
-    <div className="flex items-start justify-between border-b border-border py-4 last:border-b-0">
-      <div className="min-w-0 flex-1">
-        <p className="text-sm text-muted">{label}</p>
-        <div className="mt-1">{children}</div>
-      </div>
-      <button
-        type="button"
-        onClick={() => onEdit(step)}
-        className="shrink-0 cursor-pointer text-sm text-accent-strong hover:underline"
-      >
-        {t("overview.edit")}
-      </button>
-    </div>
-  );
-}
-
-function EnumTagList({ values }: { values: string[] }) {
-  const t = useTranslations("skinProfile");
-
-  if (values.length === 0) {
-    return (
-      <span className="text-sm italic text-muted">{t("overview.notSet")}</span>
-    );
-  }
-
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {values.map((v) => (
-        <span
-          key={v}
-          className="rounded-full bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent-strong"
-        >
-          {t(`options.${v}`)}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function FreeTextTagList({ values }: { values: string[] }) {
-  const t = useTranslations("skinProfile");
-
-  if (values.length === 0) {
-    return (
-      <span className="text-sm italic text-muted">{t("overview.notSet")}</span>
-    );
-  }
-
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {values.map((v) => (
-        <span
-          key={v}
-          className="rounded-full border border-border px-2.5 py-1 text-xs text-foreground"
-        >
-          {v}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function EnumValue({ value }: { value: string | null }) {
-  const t = useTranslations("skinProfile");
-
-  if (!value) {
-    return (
-      <span className="text-sm italic text-muted">{t("overview.notSet")}</span>
-    );
-  }
-
-  return (
-    <span className="text-sm font-medium text-foreground">
-      {t(`options.${value}`)}
-    </span>
-  );
-}
-
 export function SkinProfileOverview({
   profile,
   onEdit,
 }: SkinProfileOverviewProps) {
-  const t = useTranslations("skinProfile");
+  const tOverview = useTranslations("skinProfile.overview");
+  const tCards = useTranslations("skinProfile.optionalCards");
 
-  const contextParts = [
-    profile.ethnicity ? t(`options.${profile.ethnicity}`) : null,
-    profile.city,
-    profile.countryCode,
-  ].filter(Boolean);
+  const hasMedicalData = Boolean(
+    profile.pregnancyStatus ||
+    profile.underDermatologistCare ||
+    profile.safetyContext?.conditions?.length ||
+    profile.safetyContext?.medications?.length ||
+    profile.safetyContext?.recent_procedures?.length,
+  );
+  const totalReactions = profile.reactionHistory?.entries?.length ?? 0;
+  const hasReactions = totalReactions > 0;
+  const toleranceCount = Object.keys(profile.activeTolerances ?? {}).length;
+  const hasTolerance = toleranceCount > 0;
+  const lifestyleFilled = Boolean(
+    profile.lifestyleContext?.sleep ||
+    profile.lifestyleContext?.stress ||
+    profile.lifestyleContext?.water_intake ||
+    (profile.lifestyleContext?.diet_flags?.length ?? 0) > 0,
+  );
+  const hormonalFilled = Boolean(
+    profile.hormonalContext?.cycle_pattern ||
+    profile.hormonalContext?.breakout_pattern ||
+    typeof profile.hormonalContext?.cycle_related_breakouts === "boolean" ||
+    typeof profile.hormonalContext?.uses_hormonal_contraception === "boolean" ||
+    typeof profile.hormonalContext?.menopause_related_changes === "boolean",
+  );
+  const hormonalNotApplicable = profile.sexAtBirth === SkinProfileValue.Male;
 
   return (
-    <div className="mx-auto max-w-xl">
-      <OverviewRow
-        label={t("fieldLabels.skinType")}
-        step={1}
-        onEdit={onEdit}
-      >
-        <EnumValue value={profile.skinType} />
-      </OverviewRow>
+    <div className="mx-auto max-w-2xl space-y-6">
+      <CompletenessCard value={profile.completeness} />
+      <EssentialsSection profile={profile} onEdit={onEdit} />
 
-      <OverviewRow
-        label={t("fieldLabels.concerns")}
-        step={2}
-        onEdit={onEdit}
-      >
-        <EnumTagList values={profile.currentConcerns} />
-      </OverviewRow>
+      <div>
+        <SectionHeading
+          title={tOverview("optionalSectionsTitle")}
+          subtitle={tOverview("optionalSectionsHint")}
+          trailing={tOverview("allOptionalLabel")}
+        />
+        <div className="space-y-2.5">
+          <OptionalCard
+            href="/skin-profile/medical-safety"
+            icon="⚕"
+            iconTone="warning"
+            title={tCards("medicalSafetyTitle")}
+            description={tCards("medicalSafetyDesc")}
+            time={tCards("medicalSafetyTime")}
+            encrypted
+            consentRequired
+            filled={hasMedicalData}
+            filledLabel={hasMedicalData ? tOverview("review") : undefined}
+          />
+          <OptionalCard
+            href="/skin-profile/reactions"
+            icon="⚠"
+            title={tCards("reactionHistoryTitle")}
+            description={tCards("reactionHistoryDesc")}
+            time={tCards("reactionHistoryTime")}
+            filled={hasReactions}
+            filledLabel={hasReactions ? `${totalReactions} entries` : undefined}
+          />
+          <OptionalCard
+            href="/skin-profile/active-tolerance"
+            icon="⚗"
+            title={tCards("activeToleranceTitle")}
+            description={tCards("activeToleranceDesc")}
+            time={tCards("activeToleranceTime")}
+            filled={hasTolerance}
+            filledLabel={hasTolerance ? `${toleranceCount} tracked` : undefined}
+          />
+          <OptionalCard
+            href="/skin-profile/lifestyle"
+            icon={<Moon className="h-4 w-4" />}
+            iconTone="violet"
+            title={tCards("lifestyleTitle")}
+            description={tCards("lifestyleDesc")}
+            time={tCards("lifestyleTime")}
+            filled={lifestyleFilled}
+            filledLabel={lifestyleFilled ? tOverview("review") : undefined}
+          />
+          <OptionalCard
+            href="/skin-profile/hormonal"
+            icon="⌖"
+            iconTone="warm"
+            title={tCards("hormonalTitle")}
+            description={tCards("hormonalDesc")}
+            time={tCards("hormonalTime")}
+            encrypted
+            consentRequired
+            filled={hormonalFilled}
+            filledLabel={hormonalFilled ? tOverview("review") : undefined}
+            notApplicable={hormonalNotApplicable && !hormonalFilled}
+          />
+        </div>
+      </div>
 
-      <OverviewRow
-        label={t("fieldLabels.sensitivities")}
-        step={2}
-        onEdit={onEdit}
-      >
-        <FreeTextTagList values={profile.knownSensitivities} />
-      </OverviewRow>
-
-      <OverviewRow
-        label={t("fieldLabels.goals")}
-        step={3}
-        onEdit={onEdit}
-      >
-        <EnumTagList values={profile.skinGoals} />
-      </OverviewRow>
-
-      <OverviewRow
-        label={t("fieldLabels.routine")}
-        step={4}
-        onEdit={onEdit}
-      >
-        <EnumValue value={profile.routineComplexity} />
-      </OverviewRow>
-
-      <OverviewRow
-        label={t("fieldLabels.aboutYou")}
-        step={5}
-        onEdit={onEdit}
-      >
-        {contextParts.length > 0 ? (
-          <span className="text-sm font-medium text-foreground">
-            {contextParts.join(" · ")}
+      <div className="rounded-2xl border border-accent/20 bg-accent-soft/50 p-4">
+        <div className="flex items-start gap-3">
+          <span
+            aria-hidden
+            className="grid h-7 w-7 flex-none place-items-center rounded-full bg-accent text-xs text-white"
+          >
+            🛡
           </span>
-        ) : (
-          <span className="text-sm italic text-muted">
-            {t("overview.notSet")}
-          </span>
-        )}
-      </OverviewRow>
+          <div>
+            <p className="text-sm font-semibold text-foreground">
+              {tOverview("controlBannerTitle")}
+            </p>
+            <p className="mt-0.5 text-xs text-muted">
+              {tOverview("controlBannerBody")}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

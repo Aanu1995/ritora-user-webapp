@@ -261,6 +261,7 @@ export function AddProductPage() {
                 <div className="mx-auto flex max-w-5xl items-center gap-3">
                   <GuardedLink
                     href={AppRoute.Shelf}
+                    restoreScrollTo={AppRoute.Shelf}
                     aria-label={t('detail.backLink')}
                     className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-surface-muted"
                   >

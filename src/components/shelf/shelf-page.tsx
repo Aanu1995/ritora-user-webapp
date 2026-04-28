@@ -30,6 +30,7 @@ import {
   useShelfStats,
 } from "@/hooks/use-shelf";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { saveCurrentAppScrollPosition } from "@/lib/app-scroll-restoration";
 import { useShelfUiStore } from "@/stores/shelf-ui-store";
 import {
   ShelfCategoryFilter,
@@ -134,6 +135,11 @@ export function ShelfPage() {
     },
   });
 
+  const navigateFromShelf = (href: string) => {
+    saveCurrentAppScrollPosition(AppRoute.Shelf);
+    router.push(href);
+  };
+
   let content: ReactNode;
 
   if (isLoading) {
@@ -160,7 +166,7 @@ export function ShelfPage() {
     content = (
       <div className="flex flex-1 items-center justify-center">
         <ShelfEmptyState
-          onAddFirst={() => router.push(`${AppRoute.Shelf}/new`)}
+          onAddFirst={() => navigateFromShelf(`${AppRoute.Shelf}/new`)}
         />
       </div>
     );
@@ -176,7 +182,7 @@ export function ShelfPage() {
         products={productList}
         timeZone={shelfDateContext.timeZone}
         selectedIds={selectedIds}
-        onOpen={(id) => router.push(`${AppRoute.Shelf}/${id}`)}
+        onOpen={(id) => navigateFromShelf(`${AppRoute.Shelf}/${id}`)}
         onToggleSelect={toggleSelected}
       />
     );
@@ -186,7 +192,7 @@ export function ShelfPage() {
         products={productList}
         timeZone={shelfDateContext.timeZone}
         selectedIds={selectedIds}
-        onOpen={(id) => router.push(`${AppRoute.Shelf}/${id}`)}
+        onOpen={(id) => navigateFromShelf(`${AppRoute.Shelf}/${id}`)}
         onToggleSelect={toggleSelected}
       />
     );
@@ -215,7 +221,7 @@ export function ShelfPage() {
           <div className="shrink-0">
             <Button
               size="sm"
-              onClick={() => router.push(`${AppRoute.Shelf}/new`)}
+              onClick={() => navigateFromShelf(`${AppRoute.Shelf}/new`)}
               aria-label={t("actions.add")}
             >
               <Plus className="h-3.5 w-3.5" />

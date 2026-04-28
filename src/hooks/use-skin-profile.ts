@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QueryKey } from '@/constants/query-keys';
-import { useAuthEnabled } from '@/hooks/use-auth-enabled';
-import { getApiErrorStatus } from '@/lib/api-error';
-import * as skinProfileService from '@/services/skin-profile.service';
-import type { SkinProfileInput } from '@/types/skin-profile';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryKey } from "@/constants/query-keys";
+import { useAuthEnabled } from "@/hooks/use-auth-enabled";
+import { getApiErrorStatus } from "@/lib/api-error";
+import * as skinProfileService from "@/services/skin-profile.service";
+import type { SkinProfileInput } from "@/types/skin-profile";
 
 type UseSkinProfileOptions = {
   enabled?: boolean;
@@ -36,6 +36,16 @@ export function useSkinProfileOptions() {
   });
 }
 
+export function useSkinProfileAccessLogs(options?: UseSkinProfileOptions) {
+  const isEnabled = useAuthEnabled(options?.enabled ?? true);
+
+  return useQuery({
+    queryKey: [QueryKey.SkinProfileAccessLogs],
+    queryFn: () => skinProfileService.getSkinProfileAccessLogs(),
+    enabled: isEnabled,
+  });
+}
+
 export function useCreateSkinProfile() {
   const queryClient = useQueryClient();
 
@@ -44,6 +54,9 @@ export function useCreateSkinProfile() {
       skinProfileService.createSkinProfile(data),
     onSuccess: (profile) => {
       queryClient.setQueryData([QueryKey.SkinProfile], profile);
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.SkinProfileAccessLogs],
+      });
     },
   });
 }
@@ -56,6 +69,37 @@ export function useUpdateSkinProfile() {
       skinProfileService.updateSkinProfile(data),
     onSuccess: (profile) => {
       queryClient.setQueryData([QueryKey.SkinProfile], profile);
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.SkinProfileAccessLogs],
+      });
+    },
+  });
+}
+
+export function useDeleteSkinProfileHealthContext() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => skinProfileService.deleteSkinProfileHealthContext(),
+    onSuccess: (profile) => {
+      queryClient.setQueryData([QueryKey.SkinProfile], profile);
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.SkinProfileAccessLogs],
+      });
+    },
+  });
+}
+
+export function useDeleteSkinProfileHormonalContext() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => skinProfileService.deleteSkinProfileHormonalContext(),
+    onSuccess: (profile) => {
+      queryClient.setQueryData([QueryKey.SkinProfile], profile);
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.SkinProfileAccessLogs],
+      });
     },
   });
 }

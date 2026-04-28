@@ -3,7 +3,8 @@
 import { Check, ChevronDown, Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useMemo, useRef, useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import * as PopoverPrimitive from '@radix-ui/react-popover';
+import { Popover, PopoverTrigger } from './popover';
 import { cn } from '@/lib/utils';
 import { COUNTRIES, flagEmoji, getCountry } from '@/constants/countries';
 
@@ -88,9 +89,10 @@ export function CountrySelect({
           <ChevronDown className="h-4 w-4 shrink-0 text-muted" />
         </button>
       </PopoverTrigger>
-      <PopoverContent
-        className="w-[--radix-popover-trigger-width] min-w-[260px] p-0"
+      <PopoverPrimitive.Content
         align="start"
+        sideOffset={6}
+        className="z-[80] w-[--radix-popover-trigger-width] min-w-[260px] rounded-2xl border border-border bg-surface p-0 text-foreground shadow-[var(--shadow-hero)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-1"
         onOpenAutoFocus={(e) => {
           // Focus will move to the search input via the input's autoFocus
           e.preventDefault();
@@ -142,7 +144,7 @@ export function CountrySelect({
             })
           )}
         </div>
-      </PopoverContent>
+      </PopoverPrimitive.Content>
     </Popover>
   );
 }

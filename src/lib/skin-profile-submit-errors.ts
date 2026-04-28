@@ -7,15 +7,17 @@ import type { SubmissionValidationResult } from "@/lib/form-submission";
 type ProfileTranslator = (key: string) => string;
 
 export type SkinProfileFieldName =
-  | "ageRange"
   | "city"
   | "countryCode"
   | "currentConcerns"
+  | "dateOfBirth"
   | "ethnicity"
-  | "knownSensitivities"
+  | "fitzpatrickPhototype"
   | "locationConsent"
-  | "routineComplexity"
-  | "skinGoals"
+  | "primaryGoal"
+  | "routinePreferences"
+  | "sexAtBirth"
+  | "skinBehavior"
   | "skinTone"
   | "skinType";
 
@@ -25,19 +27,21 @@ const FIELD_PATTERNS: Array<{
 }> = [
   { field: "skinType", pattern: /skin[\s_-]*type/i },
   { field: "skinTone", pattern: /skin[\s_-]*tone/i },
-  { field: "ageRange", pattern: /age[\s_-]*range/i },
+  { field: "fitzpatrickPhototype", pattern: /fitzpatrick|phototype/i },
+  { field: "dateOfBirth", pattern: /date[\s_-]*of[\s_-]*birth|dob/i },
+  { field: "sexAtBirth", pattern: /sex[\s_-]*at[\s_-]*birth/i },
   { field: "ethnicity", pattern: /\bethnicity\b/i },
   { field: "currentConcerns", pattern: /concerns?/i },
-  { field: "knownSensitivities", pattern: /sensitivit/i },
-  { field: "skinGoals", pattern: /goals?/i },
+  { field: "primaryGoal", pattern: /primary[\s_-]*goal|goals?/i },
+  { field: "skinBehavior", pattern: /burn|pigment|sunscreen|melasma|keloid/i },
   { field: "countryCode", pattern: /country/i },
   { field: "city", pattern: /\bcity\b/i },
-  { field: "routineComplexity", pattern: /routine[\s_-]*complexity/i },
+  { field: "routinePreferences", pattern: /routine|fragrance|comedogenic|budget/i },
   { field: "locationConsent", pattern: /location[\s_-]*consent/i },
 ];
 
 export function getSkinProfileSubmitError(
-  error: unknown,
+  error: Error | null | undefined,
   t: ProfileTranslator,
 ): SubmissionValidationResult<SkinProfileFieldName> {
   const messages = getApiErrorMessages(error);

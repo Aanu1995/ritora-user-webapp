@@ -16,10 +16,16 @@ import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { DetailKvCell } from './detail-kv-cell';
 import { DetailAboutTab } from './detail-about-tab';
 import { DetailHowToUseTab } from './detail-how-to-use-tab';
 import { DetailIngredientsTab } from './detail-ingredients-tab';
 import { DetailManufacturerTab } from './detail-manufacturer-tab';
+import {
+  isProductDetailTab,
+  readProductDetailTab,
+  saveProductDetailTab,
+} from './product-detail-view-state';
 import { ProductImageCarousel } from './product-image-carousel';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,6 +46,10 @@ import {
   useRestoreProduct,
 } from '@/hooks/use-shelf';
 import { useShelfDateContext } from '@/hooks/use-shelf-time-zone';
+import {
+  requestAppScrollRestore,
+  saveCurrentAppScrollPosition,
+} from '@/lib/app-scroll-restoration';
 import { formatLocalizedDate } from '@/lib/dayjs';
 import { cn } from '@/lib/utils';
 import {
@@ -81,10 +91,11 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
   const restore = useRestoreProduct();
   const finish = useMarkProductFinished();
   const remove = useDeleteProduct();
-  const [activeTab, setActiveTab] = useState<
-    'about' | 'ingredients' | 'how-to-use' | 'manufacturer'
-  >('about');
+  const [activeTab, setActiveTab] = useState(() =>
+    readProductDetailTab(product.id),
+  );
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const productDetailPath = `${AppRoute.Shelf}/${product.id}`;
 
   const life = deriveShelfLife(product, { timeZone });
   const expires = computeExpiresAt(product);
@@ -94,26 +105,6 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
     life.remainingFraction !== null
       ? Math.max(4, Math.round(life.remainingFraction * 100))
       : 100;
-
-  const handleFinish = () => {
-    finish.mutate(product.id, {
-      onSuccess: () => {
-        toast.success(t('actions.markFinished'));
-        onAfterMutation?.();
-        router.push(AppRoute.Shelf);
-      },
-    });
-  };
-  const handleDeleteConfirm = () => {
-    remove.mutate(product.id, {
-      onSuccess: () => {
-        toast.success(t('actions.delete'));
-        setDeleteOpen(false);
-        onAfterMutation?.();
-        router.push(AppRoute.Shelf);
-      },
-    });
-  };
 
   const remainingLabel =
     life.remainingDays !== null
@@ -136,6 +127,44 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
   const isMutating =
     archive.isPending || restore.isPending || finish.isPending || remove.isPending;
 
+  const navigateToShelfWithRestore = () => {
+    requestAppScrollRestore(AppRoute.Shelf);
+    router.push(AppRoute.Shelf);
+  };
+
+  const handleEditClick = () => {
+    saveCurrentAppScrollPosition(productDetailPath);
+  };
+
+  const handleTabChange = (value: string) => {
+    if (!isProductDetailTab(value)) {
+      return;
+    }
+
+    setActiveTab(value);
+    saveProductDetailTab(product.id, value);
+  };
+
+  const handleFinish = () => {
+    finish.mutate(product.id, {
+      onSuccess: () => {
+        toast.success(t('actions.markFinished'));
+        onAfterMutation?.();
+        navigateToShelfWithRestore();
+      },
+    });
+  };
+  const handleDeleteConfirm = () => {
+    remove.mutate(product.id, {
+      onSuccess: () => {
+        toast.success(t('actions.delete'));
+        setDeleteOpen(false);
+        onAfterMutation?.();
+        navigateToShelfWithRestore();
+      },
+    });
+  };
+
   const handleArchiveToggle = () => {
     const mutate = isArchived ? restore.mutate : archive.mutate;
     const successMessage = isArchived
@@ -146,19 +175,29 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
       onSuccess: () => {
         toast.success(successMessage);
         onAfterMutation?.();
-        router.push(AppRoute.Shelf);
+        navigateToShelfWithRestore();
       },
     });
   };
 
   return (
     <div className="relative pb-16">
-      {/* Sticky header: back arrow + compact action bar — direct child of <main> */}
       <div className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div className="mx-auto flex max-w-5xl items-center gap-2">
           <Link
             href={AppRoute.Shelf}
             aria-label={t('backLink')}
+            onClick={(event) => {
+              if (
+                event.button === 0 &&
+                !event.metaKey &&
+                !event.ctrlKey &&
+                !event.shiftKey &&
+                !event.altKey
+              ) {
+                requestAppScrollRestore(AppRoute.Shelf);
+              }
+            }}
             className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-surface-muted"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -167,18 +206,17 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
           <div className="flex-1" />
 
           <div className="flex flex-wrap items-center gap-2">
-          {/* Edit — primary */}
           <Button asChild size="sm">
             <Link
-              href={`${AppRoute.Shelf}/${product.id}/edit`}
+              href={`${productDetailPath}/edit`}
               aria-label={tEdit('title')}
+              onClick={handleEditClick}
             >
               <Pencil className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{t('actions.edit')}</span>
             </Link>
           </Button>
 
-          {/* Archive — secondary */}
           <Button
             size="sm"
             variant="secondary"
@@ -194,7 +232,6 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
             </span>
           </Button>
 
-          {/* Mark finished */}
           <Button
             size="sm"
             variant="secondary"
@@ -208,7 +245,6 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
             </span>
           </Button>
 
-          {/* Delete — danger */}
           <Button
             size="sm"
             onClick={() => setDeleteOpen(true)}
@@ -245,27 +281,27 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
           </h2>
 
           <dl className="grid gap-2 sm:grid-cols-2">
-            <KvCell
+            <DetailKvCell
               icon={<Calendar className="h-4 w-4" />}
               label={t('meta.opened')}
               value={openedToken ?? t('meta.unopened')}
             />
             {expiresLabel ? (
-              <KvCell
+              <DetailKvCell
                 icon={<Clock className="h-4 w-4" />}
                 label={t('meta.expires')}
                 value={expiresLabel}
               />
             ) : null}
             {product.identity.sizeMl ? (
-              <KvCell
+              <DetailKvCell
                 icon={<Droplet className="h-4 w-4" />}
                 label={t('meta.size')}
                 value={`${product.identity.sizeMl} ${tCard('sizeSuffix')}`}
               />
             ) : null}
             {product.userFields.periodAfterOpeningMonths ? (
-              <KvCell
+              <DetailKvCell
                 icon={<Package className="h-4 w-4" />}
                 label={t('meta.pao')}
                 value={t('meta.paoValue', {
@@ -309,7 +345,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
 
       <Tabs
         value={activeTab}
-        onValueChange={(value) => setActiveTab(value as typeof activeTab)}
+        onValueChange={handleTabChange}
         className="mx-auto mt-8 max-w-5xl overflow-hidden rounded-3xl border border-border bg-surface"
       >
         <TabsList className="w-full justify-start rounded-none border-b border-border bg-surface-muted">
@@ -356,26 +392,6 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
         tone={ConfirmDialogTone.Danger}
         isPending={isMutating}
       />
-    </div>
-  );
-}
-
-type KvProps = {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-};
-
-function KvCell({ icon, label, value }: KvProps) {
-  return (
-    <div className="flex items-start gap-2.5 rounded-xl bg-surface-muted p-2.5">
-      <span className="mt-0.5 text-accent-strong">{icon}</span>
-      <div>
-        <span className="block text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
-          {label}
-        </span>
-        <span className="text-[15px] font-semibold">{value}</span>
-      </div>
     </div>
   );
 }

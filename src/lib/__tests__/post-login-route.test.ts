@@ -17,24 +17,76 @@ jest.mock('@/services/skin-profile.service', () => ({
   getSkinProfile: () => mockGetSkinProfile(),
 }));
 
+const completeRoutinePreferences = {
+  pace: 'cautious',
+  am_minutes: 5,
+  pm_minutes: 10,
+  max_active_nights_per_week: 3,
+  fragrance_free: true,
+  non_comedogenic: true,
+  sunscreen_filter: 'hybrid',
+  sunscreen_finish: 'natural',
+};
+
 const buildProfile = (
   overrides: Partial<SkinProfile> = {},
 ): SkinProfile => ({
   id: 'profile-1',
+  dateOfBirth: '1992-04-15',
+  sexAtBirth: 'female',
   skinType: 'oily',
   skinTone: 'medium',
-  ageRange: '25_34',
-  ethnicity: null,
+  ethnicity: 'black',
   currentConcerns: ['acne'],
-  knownSensitivities: [],
-  skinGoals: ['clear_acne'],
   countryCode: null,
   city: null,
-  routineComplexity: 'moderate',
+  fitzpatrickPhototype: 'IV',
+  sensitivityLevel: null,
+  hydrationLevel: null,
+  primaryGoal: 'acne',
+  pregnancyStatus: null,
+  underDermatologistCare: null,
+  allowSmartPicks: true,
+  budgetTier: 'mid',
+  safetyContext: {},
+  reactionHistory: {},
+  concernDetails: {
+    per_concern: [
+      {
+        concern: 'acne',
+        severity: 'moderate',
+        priority: 1,
+      },
+    ],
+  },
+  skinBehavior: {
+    burn_tendency: 'sometimes',
+    pih_tendency: 'often',
+    melasma_tendency: 'never',
+    keloid_tendency: 'never',
+    sunscreen_habit: 'most_days',
+    sunscreen_tolerance: 'fine',
+  },
+  activeTolerances: {},
+  routinePreferences: completeRoutinePreferences,
+  lifestyleContext: {},
+  shoppingPreferences: {},
+  hormonalContext: {},
+  completeness: 0,
+  hasHealthContextConsent: false,
+  hasHormonalContextConsent: false,
   createdAt: '2026-04-15T10:00:00.000Z',
   updatedAt: '2026-04-15T10:00:00.000Z',
   ...overrides,
 });
+
+const buildIncompleteRoutineProfile = () =>
+  buildProfile({
+    routinePreferences: {
+      ...completeRoutinePreferences,
+      pace: undefined,
+    },
+  });
 
 describe('resolvePostLoginRoute', () => {
   beforeEach(() => {
@@ -65,13 +117,12 @@ describe('resolvePostLoginRoute', () => {
   });
 
   it('routes users with an incomplete core profile to skin profile', async () => {
-    mockGetSkinProfile.mockResolvedValue(
-      buildProfile({ routineComplexity: null }),
-    );
+    const profile = buildIncompleteRoutineProfile();
+    mockGetSkinProfile.mockResolvedValue(profile);
 
     await expect(resolvePostLoginRoute()).resolves.toBe(AppRoute.SkinProfile);
     expect(appQueryClient.getQueryData([QueryKey.SkinProfile])).toEqual(
-      buildProfile({ routineComplexity: null }),
+      profile,
     );
   });
 
@@ -137,7 +188,7 @@ describe('resolvePostLoginRoute', () => {
       }),
     );
     mockGetSkinProfile.mockResolvedValueOnce(
-      buildProfile({ routineComplexity: null }),
+      buildIncompleteRoutineProfile(),
     );
 
     const firstRoute = resolvePostLoginRoute();
@@ -174,7 +225,7 @@ describe('resolvePostLoginRoute', () => {
       }),
     );
     mockGetSkinProfile.mockResolvedValueOnce(
-      buildProfile({ routineComplexity: null }),
+      buildIncompleteRoutineProfile(),
     );
 
     const firstRoute = resolvePostLoginRoute();
@@ -188,7 +239,7 @@ describe('resolvePostLoginRoute', () => {
     await expect(firstRoute).resolves.toBe(AppRoute.Dashboard);
     expect(
       appQueryClient.getQueryData([QueryKey.SkinProfile]),
-    ).toEqual(buildProfile({ routineComplexity: null }));
+    ).toEqual(buildIncompleteRoutineProfile());
     expect(consumeMissingSkinProfileHandoff()).toBe(false);
   });
 });

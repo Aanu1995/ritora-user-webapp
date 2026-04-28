@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useRef } from 'react';
-import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
+import { useCallback, useEffect, useRef } from "react";
+import { useUnsavedChangesStore } from "@/stores/unsaved-changes-store";
 
 /**
  * Page-side guard for unsaved-changes protection.
@@ -28,12 +28,12 @@ import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 
 type Options = { hasUnsavedChanges: boolean };
 
-const GUARD_MARKER = '__ritoraUnsavedGuard';
+const GUARD_MARKER = "__ritoraUnsavedGuard";
 
 type GuardState = { [GUARD_MARKER]?: true } | null;
 
 function isGuardState(state: unknown): boolean {
-  if (typeof state !== 'object' || state === null) return false;
+  if (typeof state !== "object" || state === null) return false;
   return (state as GuardState)?.[GUARD_MARKER] === true;
 }
 
@@ -52,6 +52,26 @@ export function useUnsavedChangesGuard({
   );
   const hasUnsavedRef = useRef(hasUnsavedChanges);
   const isReleasingRef = useRef(false);
+  const releaseResetTimeoutRef = useRef<number | null>(null);
+
+  const scheduleReleaseReset = useCallback(() => {
+    if (releaseResetTimeoutRef.current !== null) {
+      window.clearTimeout(releaseResetTimeoutRef.current);
+    }
+
+    releaseResetTimeoutRef.current = window.setTimeout(() => {
+      isReleasingRef.current = false;
+      releaseResetTimeoutRef.current = null;
+    }, 0);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (releaseResetTimeoutRef.current !== null) {
+        window.clearTimeout(releaseResetTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Keep a ref in sync so event-handler closures read the latest flag
   useEffect(() => {
@@ -79,24 +99,24 @@ export function useUnsavedChangesGuard({
     const handler = (event: BeforeUnloadEvent) => {
       event.preventDefault();
       // returnValue is required for Chrome/Firefox to trigger the native dialog
-      event.returnValue = '';
+      event.returnValue = "";
     };
-    window.addEventListener('beforeunload', handler);
+    window.addEventListener("beforeunload", handler);
     return () => {
-      window.removeEventListener('beforeunload', handler);
+      window.removeEventListener("beforeunload", handler);
     };
   }, [hasUnsavedChanges]);
 
   // popstate + sentinel — intercept browser back button
   useEffect(() => {
     if (!hasUnsavedChanges) return;
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     const sentinelUrl = window.location.href;
 
     // Push a sentinel so the next browser-back consumes this entry and fires
     // popstate without the page actually unmounting.
-    window.history.pushState({ [GUARD_MARKER]: true }, '', sentinelUrl);
+    window.history.pushState({ [GUARD_MARKER]: true }, "", sentinelUrl);
 
     const handler = () => {
       if (isReleasingRef.current) return;
@@ -105,20 +125,22 @@ export function useUnsavedChangesGuard({
       // The sentinel was just consumed. Re-push it so we stay put, then ask
       // the store to open the dialog. On confirm, `history.go(-2)` skips
       // both the re-pushed sentinel and the form entry below it.
-      window.history.pushState({ [GUARD_MARKER]: true }, '', sentinelUrl);
+      window.history.pushState({ [GUARD_MARKER]: true }, "", sentinelUrl);
       useUnsavedChangesStore.getState().requestLeave(() => {
         isReleasingRef.current = true;
         window.history.go(-2);
-        setTimeout(() => {
-          isReleasingRef.current = false;
-        }, 0);
+        scheduleReleaseReset();
       });
     };
 
-    window.addEventListener('popstate', handler);
+    window.addEventListener("popstate", handler);
 
     return () => {
-      window.removeEventListener('popstate', handler);
+      window.removeEventListener("popstate", handler);
+      if (isReleasingRef.current) {
+        return;
+      }
+
       // If the sentinel is still on top and we're still at the same URL, pop
       // it so the history stack stays tidy. Skipped when the form already
       // navigated away (e.g., after a successful save via router.push).
@@ -128,30 +150,29 @@ export function useUnsavedChangesGuard({
       ) {
         isReleasingRef.current = true;
         window.history.back();
-        setTimeout(() => {
-          isReleasingRef.current = false;
-        }, 0);
+        scheduleReleaseReset();
       }
     };
-  }, [hasUnsavedChanges]);
+  }, [hasUnsavedChanges, scheduleReleaseReset]);
 
-  const releaseGuard = useCallback((options?: { removeHistoryEntry?: boolean }) => {
-    hasUnsavedRef.current = false;
-    cancelPendingLeave();
-    setStoreDirty(false);
+  const releaseGuard = useCallback(
+    (options?: { removeHistoryEntry?: boolean }) => {
+      hasUnsavedRef.current = false;
+      cancelPendingLeave();
+      setStoreDirty(false);
 
-    if (options?.removeHistoryEntry === false) {
-      return;
-    }
+      if (options?.removeHistoryEntry === false) {
+        return;
+      }
 
-    if (typeof window === 'undefined') return;
-    if (!isGuardState(window.history.state)) return;
-    isReleasingRef.current = true;
-    window.history.back();
-    setTimeout(() => {
-      isReleasingRef.current = false;
-    }, 0);
-  }, [cancelPendingLeave, setStoreDirty]);
+      if (typeof window === "undefined") return;
+      if (!isGuardState(window.history.state)) return;
+      isReleasingRef.current = true;
+      window.history.back();
+      scheduleReleaseReset();
+    },
+    [cancelPendingLeave, scheduleReleaseReset, setStoreDirty],
+  );
 
   return { releaseGuard };
 }

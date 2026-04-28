@@ -56,6 +56,40 @@ function getDefaultValues(
   };
 }
 
+function YourDataSection() {
+  const tConsent = useTranslations("skinProfile.consentCenter");
+
+  return (
+    <SettingsSection
+      title={tConsent("yourDataTitle")}
+      description={tConsent("yourDataDesc")}
+    >
+      <SettingsRow
+        label={tConsent("downloadTitle")}
+        description={tConsent("downloadDesc")}
+      >
+        <Button type="button" variant="outline" size="sm" disabled>
+          {tConsent("comingSoon")}
+        </Button>
+      </SettingsRow>
+      <SettingsRow
+        label={tConsent("deleteTitle")}
+        description={tConsent("deleteDesc")}
+      >
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled
+          className="border-danger text-danger"
+        >
+          {tConsent("comingSoon")}
+        </Button>
+      </SettingsRow>
+    </SettingsSection>
+  );
+}
+
 function AccountSessionsSection({
   onLogout,
   onLogoutAll,
@@ -216,6 +250,8 @@ export function AccountTab() {
           isLogoutPending={logout.isPending}
           isLogoutAllPending={logoutAll.isPending}
         />
+
+        <YourDataSection />
       </div>
     );
   }
@@ -376,6 +412,8 @@ export function AccountTab() {
         isLogoutPending={logout.isPending}
         isLogoutAllPending={logoutAll.isPending}
       />
+
+      <YourDataSection />
     </div>
   );
 }

@@ -163,6 +163,22 @@ describe('useUnsavedChangesGuard', () => {
     backSpy.mockRestore();
   });
 
+  it('does not pop history twice when releaseGuard is followed by cleanup', () => {
+    const { result, unmount } = renderHook(() =>
+      useUnsavedChangesGuard({ hasUnsavedChanges: true }),
+    );
+
+    const backSpy = jest.spyOn(window.history, 'back');
+
+    act(() => {
+      result.current.releaseGuard();
+      unmount();
+    });
+
+    expect(backSpy).toHaveBeenCalledTimes(1);
+    backSpy.mockRestore();
+  });
+
   it('releaseGuard clears dirty state before a guarded close runs', () => {
     const { result } = renderHook(() =>
       useUnsavedChangesGuard({ hasUnsavedChanges: true }),

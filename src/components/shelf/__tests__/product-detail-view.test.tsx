@@ -41,6 +41,7 @@ jest.mock('@/hooks/use-shelf', () => ({
 }));
 
 import { ProductDetailView } from '@/components/shelf/detail/product-detail-view';
+import { getAppScrollPosition } from '@/lib/app-scroll-restoration';
 import {
   ApplicationMethod,
   DataProvenance,
@@ -102,6 +103,7 @@ beforeEach(() => {
   mockRestore.mockReset();
   mockFinish.mockReset();
   mockDelete.mockReset();
+  window.sessionStorage.clear();
 });
 
 describe('ProductDetailView', () => {
@@ -140,6 +142,45 @@ describe('ProductDetailView', () => {
     expect(
       screen.getByRole('tab', { name: /manufacturer/i }),
     ).toBeInTheDocument();
+  });
+
+  it('restores the active tab for the product detail page', async () => {
+    const user = userEvent.setup();
+    const { unmount } = renderWithProviders(
+      <ProductDetailView product={PRODUCT} />,
+    );
+
+    await user.click(screen.getByRole('tab', { name: /manufacturer/i }));
+    expect(screen.getByRole('tab', { name: /manufacturer/i })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    unmount();
+    renderWithProviders(<ProductDetailView product={PRODUCT} />);
+
+    expect(screen.getByRole('tab', { name: /manufacturer/i })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+  });
+
+  it('saves product detail scroll before opening edit', async () => {
+    const user = userEvent.setup();
+    const scrollRoot = document.createElement('main');
+    scrollRoot.setAttribute('data-app-scroll-root', '');
+    Object.defineProperty(scrollRoot, 'scrollTop', {
+      configurable: true,
+      value: 420,
+    });
+    document.body.appendChild(scrollRoot);
+
+    renderWithProviders(<ProductDetailView product={PRODUCT} />);
+
+    await user.click(screen.getByRole('link', { name: /edit/i }));
+
+    expect(getAppScrollPosition('/shelf/p1')).toBe(420);
+    scrollRoot.remove();
   });
 
   it('does not render any AM/PM/step chips next to the title', () => {
