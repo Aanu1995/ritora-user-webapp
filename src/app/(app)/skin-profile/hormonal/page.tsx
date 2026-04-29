@@ -7,7 +7,10 @@ import { Loader2, Lock } from "lucide-react";
 import { HormonalSection } from "@/components/skin-profile/hormonal-section";
 import type { SectionFormHandle } from "@/components/skin-profile/medical-safety-section";
 import { SectionPageHeader } from "@/components/skin-profile/section-page-header";
-import { SkinProfileSkeleton } from "@/components/skin-profile/skin-profile-skeleton";
+import {
+  SkinProfileSaveActionSkeleton,
+  SkinProfileSkeleton,
+} from "@/components/skin-profile/skin-profile-skeleton";
 import { AppRoute } from "@/constants/app-routes";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
@@ -41,10 +44,9 @@ export default function HormonalPage() {
           title={t("pageTitle")}
           subtitle={t("pageDesc")}
           badge={encryptedBadge}
+          action={<SkinProfileSaveActionSkeleton />}
         />
-        <div className="mx-auto w-full max-w-3xl">
-          <SkinProfileSkeleton mode="generic" />
-        </div>
+        <SkinProfileSkeleton mode="section" />
       </div>
     );
   }

@@ -6,7 +6,10 @@ import { Loader2 } from "lucide-react";
 import { ActiveToleranceSection } from "@/components/skin-profile/active-tolerance-section";
 import type { SectionFormHandle } from "@/components/skin-profile/medical-safety-section";
 import { SectionPageHeader } from "@/components/skin-profile/section-page-header";
-import { SkinProfileSkeleton } from "@/components/skin-profile/skin-profile-skeleton";
+import {
+  SkinProfileSaveActionSkeleton,
+  SkinProfileSkeleton,
+} from "@/components/skin-profile/skin-profile-skeleton";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { useSkinProfile, useSkinProfileOptions } from "@/hooks/use-skin-profile";
@@ -23,10 +26,12 @@ export default function ActiveTolerancePage() {
   if (profile.isPending || options.isPending) {
     return (
       <div>
-        <SectionPageHeader title={t("pageTitle")} subtitle={t("pageDesc")} />
-        <div className="mx-auto w-full max-w-3xl">
-          <SkinProfileSkeleton mode="generic" />
-        </div>
+        <SectionPageHeader
+          title={t("pageTitle")}
+          subtitle={t("pageDesc")}
+          action={<SkinProfileSaveActionSkeleton />}
+        />
+        <SkinProfileSkeleton mode="active-tolerance-section" />
       </div>
     );
   }

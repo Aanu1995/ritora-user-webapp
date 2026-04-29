@@ -7,6 +7,9 @@ const INVENTORY_PRODUCTS_BASE = "/inventory/products";
 const SCHEDULE_BASE = "/schedule";
 const SCHEDULE_SLOTS_BASE = `${SCHEDULE_BASE}/slots`;
 const INGREDIENTS_BASE = "/ingredients";
+const SKIN_JOURNAL_BASE = "/skin-journal";
+const NOTIFICATIONS_BASE = "/notifications";
+const APP_BASE = "/app";
 
 const buildInventoryProductPath = (id: string) =>
   `${INVENTORY_PRODUCTS_BASE}/${id}`;
@@ -65,4 +68,40 @@ export const ApiPath = {
   ScheduleSlotMove: (id: string) => `${buildScheduleSlotPath(id)}/move`,
 
   IngredientsAnalyze: `${INGREDIENTS_BASE}/analyze`,
+
+  AppNavBadges: `${APP_BASE}/nav-badges`,
+
+  SkinJournalToday: `${SKIN_JOURNAL_BASE}/today`,
+  SkinJournalCalendar: `${SKIN_JOURNAL_BASE}/calendar`,
+  SkinJournalEntries: `${SKIN_JOURNAL_BASE}/entries`,
+  SkinJournalPhotos: `${SKIN_JOURNAL_BASE}/photos`,
+  SkinJournalDay: (date: string) => `${SKIN_JOURNAL_BASE}/days/${date}`,
+  SkinJournalEntry: (id: string) => `${SKIN_JOURNAL_BASE}/entries/${id}`,
+  SkinJournalEntryRetry: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/entries/${id}/analyze/retry`,
+  SkinJournalCompare: `${SKIN_JOURNAL_BASE}/compare`,
+  SkinJournalEvents: `${SKIN_JOURNAL_BASE}/events`,
+  SkinJournalEventAck: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/events/${id}/acknowledge`,
+  SkinJournalInsights: `${SKIN_JOURNAL_BASE}/insights`,
+  SkinJournalInsightDismiss: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/insights/${id}/dismiss`,
+  SkinJournalInsightSeen: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/insights/${id}/seen`,
+  SkinJournalWrappedList: `${SKIN_JOURNAL_BASE}/wrapped`,
+  SkinJournalWrapped: (id: string) => `${SKIN_JOURNAL_BASE}/wrapped/${id}`,
+  SkinJournalSimplificationActive: `${SKIN_JOURNAL_BASE}/simplification/active`,
+  SkinJournalSimplificationStart: `${SKIN_JOURNAL_BASE}/simplification/start`,
+  SkinJournalSimplification: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/simplification/${id}`,
+  SkinJournalSimplificationAck: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/simplification/${id}/acknowledge`,
+  SkinJournalStats: `${SKIN_JOURNAL_BASE}/stats`,
+  SkinJournalExport: `${SKIN_JOURNAL_BASE}/export`,
+  SkinJournalExportJob: (id: string) => `${SKIN_JOURNAL_BASE}/export/${id}`,
+
+  Notifications: NOTIFICATIONS_BASE,
+  NotificationRead: (id: string) => `${NOTIFICATIONS_BASE}/${id}/read`,
+  NotificationsReadAll: `${NOTIFICATIONS_BASE}/read-all`,
+  NotificationPreferences: `${NOTIFICATIONS_BASE}/preferences`,
 } as const;

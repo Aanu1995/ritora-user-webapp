@@ -442,7 +442,8 @@
       "account": "Konto",
       "appearance": "Utseende",
       "language": "Språk",
-      "privacy": "Integritet"
+      "privacy": "Integritet",
+      "notifications": "Aviseringar"
     },
     "account": {
       "profileTitle": "Profil",
@@ -987,6 +988,7 @@
       "revokeSuccess": "Samtycke återkallat.",
       "grantSuccess": "Samtycke beviljat.",
       "errorMissingFields": "Landskod krävs.",
+      "errorConsentRequired": "Samtycke krävs innan platsdata sparas.",
       "yes": "Ja",
       "no": "Nej",
       "storedPregnancy": "Graviditet",
@@ -2123,6 +2125,541 @@
         "När produkten mognar kommer villkoren att utökas med kontoansvar, acceptabel användning, ansvarsfriskrivningar och tjänstens gränser i produktionsdetalj.",
         "Den nuvarande sidan finns så att den publika upplevelsen redan har en riktig juridisk routestruktur i stället för platshållarlänkar."
       ]
+    }
+  },
+  "journal": {
+    "title": "Hudjournal",
+    "subtitle": "En post per dag. Foto, betyg, AI-observationer och insikter, allt på ett ställe.",
+    "eyebrow": "Din hudresa",
+    "fab": "Lägg till dagens foto",
+    "exportForDermatologist": "Exportera för hudläkare",
+    "tabs": {
+      "calendar": "Kalender",
+      "photos": "Foton",
+      "insights": "Insikter",
+      "wrapped": "Wrapped"
+    },
+    "stats": {
+      "currentStreak": "Nuvarande streak",
+      "currentStreakValue": "{days, plural, one {# dag} other {# dagar}}",
+      "totalEntries": "Totala poster",
+      "weeklyUploadRate": "Veckovis uppladdning",
+      "weeklyUploadValue": "{count} av {target} dagar",
+      "streakDelta": "+{count} mot förra veckan",
+      "sinceDate": "sedan {date}",
+      "loadingLabel": "Laddar journalstatistik"
+    },
+    "calendar": {
+      "selectMonth": "Välj månad",
+      "previous": "Föregående månad",
+      "next": "Nästa månad",
+      "loading": "Laddar kalender",
+      "monthlyWrapped": "Månads-Wrapped",
+      "weekdays": ["M", "T", "O", "T", "F", "L", "S"],
+      "legend": {
+        "completed": "Klar",
+        "noEntry": "Ingen",
+        "pending": "Analyserar",
+        "reaction": "Reaktion",
+        "insight": "Insikt"
+      },
+      "tooltip": {
+        "completed": "Foto & analys klar",
+        "no_entry": "Ingen post",
+        "entry_no_photo": "Post utan foto",
+        "pending": "Analys pågår",
+        "reaction": "Reaktion flaggad",
+        "failed": "Analys misslyckades"
+      }
+    },
+    "dayDetail": {
+      "today": "idag",
+      "metaToday": "{weekday} · {date} · idag",
+      "meta": "{weekday} · {date}",
+      "reactionFlagged": "Reaktion flaggad",
+      "dayDetailSubtitle": "Dagsdetalj",
+      "backToJournal": "Tillbaka till Hudjournal",
+      "loadingLabel": "Laddar dagsdetalj",
+      "title": "{date}-post",
+      "todayTitle": "Dagens post",
+      "noEntry": "Ingen post för denna dag",
+      "noEntryBody": "Lägg till ett foto eller en snabb avstämning för denna dag.",
+      "addPhoto": "Lägg till foto",
+      "replace": "Ersätt",
+      "addAngle": "Lägg till vinkel",
+      "delete": "Radera",
+      "retryAnalysis": "Försök igen",
+      "replacePhoto": "Ersätt foto",
+      "addPhotoForDay": "Lägg till foto för denna dag",
+      "ratingsTitle": "Din avstämning",
+      "ratingsRecorded": "Inspelade betyg",
+      "noteLabel": "Klagomål / anteckning",
+      "feelLabel": "Hudkänsla",
+      "contextLabel": "Dagens kontext",
+      "preRoutineTag": "före rutin",
+      "noPhotoTag": "Inget foto",
+      "photoAlt": "Hudjournalfoto för {date}",
+      "statusCompleted": "Analys klar",
+      "statusAnalysing": "Analyserar…",
+      "statusFailed": "Analys misslyckades",
+      "noPhotoTitle": "Endast avstämning",
+      "noPhotoBody": "Du loggade hur huden kändes utan foto. AI-analys hoppas över denna dag."
+    },
+    "analysis": {
+      "title": "Hudobservationer idag",
+      "modelBadge": "AI · {model}",
+      "confidence": "Säkerhet {value}",
+      "concernsLabel": "Detekterade problem",
+      "imageQualityLabel": "Bildkvalitet",
+      "lightingGood": "Bra ljus",
+      "lightingFair": "Ok ljus",
+      "lightingPoor": "Dåligt ljus",
+      "framingGood": "Bra inramning",
+      "framingFair": "Ok inramning",
+      "framingPoor": "Dålig inramning",
+      "sharp": "Skarp",
+      "blurry": "Suddig",
+      "disclaimer": "Inte en medicinsk diagnos. Ritora är beslutsstöd. Kontakta en hudläkare för medicinska frågor.",
+      "indicators": "Indikatorer",
+      "comparedToPrevious": "Jämfört med tidigare"
+    },
+    "severity": {
+      "none": "Ingen",
+      "mild": "Mild",
+      "moderate": "Måttlig",
+      "severe": "Svår"
+    },
+    "concerns": {
+      "oiliness": "Fetthet",
+      "dryness": "Torrhet",
+      "redness": "Rodnad",
+      "breakouts": "Utbrott",
+      "texture": "Textur",
+      "irritation": "Irritation",
+      "sensitivity": "Känslighet",
+      "acne": "Akne",
+      "hyperpigmentation": "Hyperpigmentering",
+      "redness_inflammation": "Rodnad · inflammation",
+      "fine_lines": "Fina linjer",
+      "skin_barrier_damage": "Skadad hudbarriär",
+      "eczema_indicator": "Eksemtecken",
+      "uneven_tone": "Ojämn ton",
+      "under_eye_darkness": "Mörkhet under ögon",
+      "large_pores": "Stora porer"
+    },
+    "feels": {
+      "awful": "Hemskt",
+      "bad": "Dåligt",
+      "ok": "OK",
+      "good": "Bra",
+      "great": "Toppen"
+    },
+    "context": {
+      "sleepLabel": "Sömn i natt",
+      "sleep_lt5h": "<5h",
+      "sleep_5to7h": "5–7h",
+      "sleep_7to9h": "7–9h",
+      "sleep_gt9h": ">9h",
+      "stressLabel": "Stress idag",
+      "stress_low": "Låg",
+      "stress_mid": "Medel",
+      "stress_high": "Hög",
+      "sunLabel": "Solexponering",
+      "sun_none": "Ingen",
+      "sun_brief": "Kort",
+      "sun_lots": "Mycket",
+      "sweatLabel": "Svett / motion",
+      "sweat_no": "Nej",
+      "sweat_yes": "Ja",
+      "cycleLabel": "Cykeldag",
+      "cycle_not_on": "Inte i cykel",
+      "cycle_day_1_3": "Dag 1–3",
+      "cycle_day_4_7": "Dag 4–7",
+      "cycle_late_cycle": "Sen cykel",
+      "cycle_dont_track": "Spårar ej"
+    },
+    "recentChange": {
+      "label": "Något som ändrats idag?",
+      "hint": "Hög signal: ny produkt, slutad produkt, behandling, sjukdom eller resa.",
+      "typeLabel": "Typ av ändring",
+      "kinds": {
+        "started_new_product": "Började med ny produkt",
+        "stopped_a_product": "Slutade med en produkt",
+        "changed_frequency": "Ändrade frekvens",
+        "got_a_treatment": "Fick en behandling",
+        "felt_unwell": "Mått dåligt",
+        "travelled": "Reste",
+        "other": "Övrigt"
+      },
+      "productLabel": "Relaterad produkt (valfritt)",
+      "productPlaceholder": "Sök i hyllan…"
+    },
+    "upload": {
+      "eyebrow": "Hudjournal · ny post",
+      "title": "Lägg till dagens foto",
+      "subtitle": "Ta ett foto i bra dagsljus. Ditt framtida jag tackar dig för konsekvensen.",
+      "dateLabel": "Datum",
+      "dateToday": "Idag · {date}",
+      "dateBackfill": "{date} (fyller i)",
+      "guidanceTitle": "Tips för tydligare jämförelser",
+      "guidanceSubtitle": "Samma tid, samma plats ger AI:n den starkaste trendsignalen.",
+      "hideTips": "Dölj tips",
+      "showTips": "Visa tips",
+      "tips": {
+        "naturalLight": {
+          "title": "Naturligt dagsljus",
+          "body": "Stå mot ett fönster, inte under taklampa."
+        },
+        "noMirror": {
+          "title": "Hoppa över spegeln",
+          "body": "Reflektioner förvränger hudtonen."
+        },
+        "neutralFace": {
+          "title": "Neutralt ansikte",
+          "body": "Inget smink, avslappnat."
+        },
+        "sameTime": {
+          "title": "Samma tid varje dag",
+          "body": "Bättre trendprecision."
+        },
+        "distance": {
+          "title": "~30 cm bort",
+          "body": "Rakt på, fyll bilden."
+        }
+      },
+      "photoLabel": "Foto",
+      "dropZoneTitle": "Tryck för att välja ett foto",
+      "dropZoneDesc": "Eller dra och släpp · JPG, PNG, HEIC, WebP upp till 10 MB",
+      "noWebcam": "Ingen webbkamera i webbläsaren. Ett foto i naturligt ljus ger bästa AI-signal.",
+      "replace": "Ersätt",
+      "crop": "Beskär kvadrat",
+      "remove": "Ta bort",
+      "fileMeta": "{name} · {size} · {kind}",
+      "processedKind": "WebP efter uppladdning · EXIF borttaget",
+      "photoPreviewAlt": "Valt journalfoto",
+      "cropBadge": "Beskuren 1:1",
+      "photoProcessingConsent": "Jag samtycker till att Ritora behandlar detta hudprogressionsfoto för AI-analys. Fotot krypteras i vila, EXIF tas bort och AI-förfrågan innehåller inte mitt namn, min e-post eller mitt användar-id.",
+      "angleLabel": "Vinkel",
+      "angles": {
+        "head_on": "Rakt fram",
+        "left_profile": "Vänster profil",
+        "right_profile": "Höger profil"
+      },
+      "preRoutine": "Tagit före dagens produkter (före rutin)",
+      "nextStepHint": "Din avstämning finns i nästa steg. Du kan också spara endast fotot och lägga till betyg senare.",
+      "savePhotoOnly": "Spara endast foto",
+      "continueToCheckIn": "Fortsätt till avstämning",
+      "saveEntry": "Spara post",
+      "skipCheckIn": "Hoppa över avstämning",
+      "back": "Tillbaka",
+      "cancel": "Avbryt",
+      "saving": "Sparar…",
+      "savedToast": "Foto sparat. Ritora tittar på det (cirka 10–20s)…",
+      "noPhotoSaved": "Avstämning sparad utan foto.",
+      "futureDateError": "Kan inte skapa poster för framtida datum.",
+      "checkInTitle": "Dagens avstämning",
+      "privacyLabel": "Integritet",
+      "privacyBody": "Dina foton och betyg är krypterade i lagring. AI:n ser endast bilden, aldrig ditt namn, din e-post eller ditt användar-id.",
+      "privacyLink": "Så skyddar vi din data",
+      "privacyLinkHref": "/privacy",
+      "feelQuestion": "Hur känns din hud idag?",
+      "concernsQuestion": "Allvarlighetsgrad (1 = ingen, 5 = svår)",
+      "contextQuestion": "Dagens kontext (valfritt)",
+      "noteLabel": "Klagomål eller anteckning (valfritt)",
+      "addNote": "Lägg till anteckning",
+      "notePlaceholder": "Berätta vad som helst. Sträv, kliar, ser tråkig ut…",
+      "privacyNote": "Ditt foto och dina betyg är krypterade. AI:n ser bara fotot. Aldrig namn, e-post eller användar-id."
+    },
+    "compare": {
+      "title": "Jämför två dagar",
+      "subtitle": "Synkroniserad zoom · tryck för att växla på mobil.",
+      "swap": "Byt plats",
+      "fromLabel": "Från",
+      "toLabel": "Till",
+      "deltaTitle": "Vad har ändrats på {days, plural, one {# dag} other {# dagar}}",
+      "noBaseline": "Välj två datum att jämföra.",
+      "events": "Rutinhändelser mellan dessa datum",
+      "concernsThen": "Problem då",
+      "concernsNow": "Problem nu",
+      "fromPhotoAlt": "Hudjournalfoto från {date}",
+      "toPhotoAlt": "Hudjournalfoto från {date}",
+      "aiDeltaBadge": "AI-delta",
+      "none": "Inga",
+      "medicalDisclaimerStrong": "Inte en medicinsk diagnos.",
+      "medicalDisclaimerBody": "Synliga förändringar kan ha många orsaker."
+    },
+    "photos": {
+      "compareCta": "Jämför",
+      "filtersAll": "Alla foton",
+      "filterReaction": "Har reaktion",
+      "filterAcne": "Problem · akne",
+      "filterRedness": "Problem · rodnad",
+      "filterAngleHeadOn": "Vinkel · rakt fram",
+      "filterLast30": "Senaste 30 dagarna",
+      "empty": "Inga foton än",
+      "emptyTitle": "Dina foton dyker upp här",
+      "emptyBody": "När du börjar lägga till dagliga foton visas de här så att du kan bläddra tillbaka i din samling med ett ögonkast."
+    },
+    "insightsTab": {
+      "subtitle": "Trender och korrelationer från dina avstämningar och AI-observationer.",
+      "kinds": {
+        "trend": "Trend",
+        "correlation": "Korrelation",
+        "effectiveness": "Effektivitet",
+        "referral": "Hudläkarremiss",
+        "daily": "Daglig insikt",
+        "weekly": "Veckosammanfattning",
+        "monthly": "Månadssammanfattning",
+        "reaction_recovery": "Återhämtning"
+      },
+      "showHow": "Visa mig hur",
+      "dismiss": "Avfärda",
+      "exportHistory": "Exportera hudhistorik",
+      "notNow": "Inte nu",
+      "charts": {
+        "trendTitle": "Allvarlighetsgrad över tid",
+        "reactionsTitle": "Reaktionsfrekvens · veckovis",
+        "checkInTitle": "Avstämning genomsnitt · 7-axel",
+        "thisWeek": "Denna vecka",
+        "lastWeek": "Förra veckan"
+      },
+      "empty": {
+        "title": "Insikter dyker upp efter ~2 veckors spårning",
+        "body": "Vi behöver en baslinje innan trender kan ritas. Fortsätt lägga till dagliga foton och AI:n hinner ifatt.",
+        "openCalendar": "Öppna Kalender-fliken"
+      }
+    },
+    "wrapped": {
+      "title": "Din Skin Wrapped",
+      "subtitle": "Vi förvandlar dina dagliga foton till en privat Wrapped varje månad, kvartal och år. De dyker upp här när de är klara.",
+      "save": "Spara",
+      "play": "Spela",
+      "almostReady": "Nästan klar",
+      "notYet": "Snart tillgänglig",
+      "status": {
+        "ready": "Klar · {photos} foton",
+        "generating": "Förbereder… · {photos} foton",
+        "ready_to_generate": "Nästan klar · {photos} foton",
+        "not_enough_photos": "Vi förbereder denna när du har {min}+ foton",
+        "failed": "Kunde inte förbereda denna Wrapped. Vi försöker igen.",
+        "pending": "I kö"
+      },
+      "empty": {
+        "title": "Din Skin Wrapped dyker upp här",
+        "body": "Varje månad ser vi tillbaka på dina dagliga foton och sätter ihop en privat Wrapped. Fortsätt lägga till foton och din första är snart klar."
+      },
+      "periodKind": {
+        "monthly": "Månadsvis",
+        "quarterly": "Kvartalsvis",
+        "yearly": "Årlig"
+      },
+      "viewer": {
+        "title": "Wrapped",
+        "subtitle": "{kind} · {period}",
+        "notFound": "Wrapped hittades inte.",
+        "noFrames": "Inga bildrutor tillgängliga.",
+        "frameAlt": "Hudjournalfoto från {date}",
+        "frameCaption": "{date} · {caption}",
+        "captionsAuto": "{count} foton · {label} · texter skrivna av AI",
+        "play": "Spela",
+        "pause": "Pausa",
+        "previous": "Föregående",
+        "next": "Nästa",
+        "close": "Stäng"
+      }
+    },
+    "reaction": {
+      "modalTitle": "Vi noterade möjlig irritation",
+      "modalLede": "Ditt foto från {date} visar tecken som kan tyda på en reaktion. {comparedNote}",
+      "comparedWorse": "Jämfört med tidigare post: ser värre ut på kinder och haka.",
+      "indicatorsTitle": "Indikatorer",
+      "disclaimer": "Inte en medicinsk diagnos. Om symtom förvärras eller kvarstår, kontakta en hudläkare.",
+      "primaryCta": "Förenkla rutin tills detta klingar (rekommenderas)",
+      "secondaryCta": "Behåll min rutin",
+      "howWeDecide": "Hur bestämmer Ritora?",
+      "severeTitle": "Starka reaktionssignaler upptäckta",
+      "severeLede": "Flera indikatorer på betydande irritation. Vi har redan pausat dina aktiva behandlingar och bytt till barriär-reparation tills du bekräftar.",
+      "severeWarning": "Om symtomen inkluderar andningssvårigheter eller svullnad i ansiktet, sök akutvård.",
+      "severePrimary": "Bekräfta & håll förenklat",
+      "severeSecondary": "Återställ ändå",
+      "simplificationReason": "Reaktion upptäckt {date}"
+    },
+    "indicators": {
+      "redness_spike": "Rodnadsspik",
+      "swelling_appearance": "Svullnadsutseende",
+      "rash_appearance": "Utslagsutseende",
+      "new_breakouts_cluster": "Nytt utbrottskluster",
+      "peeling": "Fjällning",
+      "burning_appearance": "Brännande utseende",
+      "hives_appearance": "Nässelutslagsutseende",
+      "diffuse_inflammation": "Diffus inflammation",
+      "flaking": "Flagning",
+      "tightness_appearance": "Stramhetsutseende",
+      "cracking_appearance": "Sprickbildning"
+    },
+    "simplification": {
+      "bannerTitle": "Rutin förenklad till barriär-reparation",
+      "bannerBody": "Vi upptäckte möjlig irritation i ditt foto från {date}. Din vanliga rutin är pausad tills du bekräftar.",
+      "viewDetails": "Visa detaljer",
+      "restoreRoutine": "Återställ rutin",
+      "keepSimplified": "Behåll förenklat",
+      "compactAlert": "Rutin förenklad. Visa i Journal",
+      "compactAlertSubtitle": "Sedan {date} · barriär-reparation aktiv",
+      "viewInJournal": "Visa i Journal →",
+      "detail": {
+        "eyebrow": "Hudjournal · säkerhet",
+        "title": "Rutinförenkling · {start} → {endLabel}",
+        "ongoing": "pågår",
+        "subtitle": "Startad från en säkerhetshändelse i journalen {date}",
+        "noticedTitle": "Vad vi märkte",
+        "noticedFallback": "En säkerhetshändelse i journalen föreslog att förenkla rutinen medan huden lugnar sig.",
+        "presetTitle": "Barriär-reparation (aktiv)",
+        "presetSubtitle": "En konservativ barriärstödjande rutin att använda medan du granskar varningen.",
+        "presetAm": "FM",
+        "presetPm": "EM",
+        "presetAmBody": "Mild rengöring, fukt och solskydd.",
+        "presetPmBody": "Mild rengöring och fukt.",
+        "pausedTitle": "Vad som pausades",
+        "pausedSubtitle": "Om en schemakopia sparades {date} visas den nedan.",
+        "pausedAmTitle": "FM (pausad)",
+        "pausedPmTitle": "EM (pausad)",
+        "noSnapshot": "Inget schema var aktivt när förenklingen startade."
+      }
+    },
+    "events": {
+      "kinds": {
+        "reaction_detected": "Reaktion upptäckt",
+        "worsening": "Försämring",
+        "recovery": "Återhämtning",
+        "dermatologist_referral": "Hudläkarremiss",
+        "product_effectiveness": "Produkteffektivitet"
+      }
+    },
+    "deleteConfirm": {
+      "title": "Radera denna post?",
+      "body": "Ditt foto och dina betyg för denna dag tas bort permanent.",
+      "cancel": "Avbryt",
+      "confirm": "Radera post"
+    },
+    "empty": {
+      "title": "Din hudresa börjar här",
+      "body": "Ta ett foto i bra dagsljus för att börja spåra. Vi sköter resten: analys, trender och en månads-Wrapped.",
+      "addFirst": "+ Lägg till ditt första foto"
+    },
+    "errors": {
+      "analysisFailedTitle": "Kunde inte analysera detta foto",
+      "analysisFailedBody": "Nätverksproblem eller för dåligt ljus. Ditt foto är sparat ändå.",
+      "tooDark": "Vi hade svårt att se din hud tydligt. Prova naturligt ljus nästa gång.",
+      "futureDate": "Kan inte välja ett framtida datum.",
+      "uploadFailed": "Uppladdning misslyckades. Försök igen."
+    },
+    "export": {
+      "title": "Exportera för hudläkare",
+      "body": "Välj datumintervall. Vi paketerar dina poster, foton, AI-observationer, händelser och insikter till en delbar sammanfattning.",
+      "fromLabel": "Från",
+      "toLabel": "Till",
+      "submit": "Generera export",
+      "cancel": "Avbryt",
+      "generating": "Genererar…",
+      "readyTitle": "Exporten är klar",
+      "readyBody": "{entries, plural, one {# post} other {# poster}} ingår. Du får också en avisering med den säkra exporten.",
+      "validation": {
+        "invalidDate": "Välj ett giltigt datum.",
+        "endBeforeStart": "Slutdatumet måste vara efter startdatumet."
+      }
+    }
+  },
+  "dashboardJournal": {
+    "missingPhotoTitle": "Lägg till dagens foto",
+    "missingPhotoBody": "Det är efter din vanliga påminnelse. Ett dagligt foto håller din trend igång.",
+    "openJournal": "Öppna Hudjournal →"
+  },
+  "settingsNotifications": {
+    "eyebrow": "Inställningar",
+    "title": "Aviseringar",
+    "subtitle": "Fotopåminnelse, varningar och kanaler.",
+    "saving": "Sparar",
+    "updateFailed": "Det gick inte att spara aviseringsinställningarna.",
+    "errors": {
+      "loadTitle": "Vi kunde inte ladda aviseringsinställningarna",
+      "loadBody": "Försök igen. Dina aviseringsinställningar är oförändrade.",
+      "retry": "Försök igen"
+    },
+    "validation": {
+      "invalidReminderTime": "Ange en giltig påminnelsetid.",
+      "invalidChannels": "Välj giltiga aviseringskanaler."
+    },
+    "photoReminderTitle": "Fotopåminnelse",
+    "photoReminderBody": "Daglig uppmaning att lägga till dagens foto",
+    "reminderTime": "Påminnelsetid",
+    "reminderTimeNote": "Skickas i din tidszon · {timeZone}",
+    "channels": "Kanaler",
+    "channelInApp": "I appen",
+    "channelEmail": "E-post",
+    "channelPush": "Push (när mobil lanseras)",
+    "reactionAlertsTitle": "Reaktionsvarningar",
+    "reactionAlertsBody": "Notifiera mig när AI flaggar en möjlig reaktion",
+    "autoSimplifyBody": "Förenkla rutin automatiskt vid måttlig/svår reaktion",
+    "autoSimplifyNote": "När av får du fortfarande en varning, men din rutin ändras aldrig automatiskt.",
+    "insightsTitle": "Insikter & Wrapped",
+    "insightAlertsBody": "Insiktsaviseringar",
+    "wrappedAlertsBody": "Wrapped-klar-aviseringar"
+  },
+  "notificationsPage": {
+    "eyebrow": "Inkorg",
+    "title": "Aviseringar",
+    "subtitle": "Reaktioner, insikter, fotopåminnelser och din Skin Wrapped, samlat på en plats.",
+    "markAllRead": "Markera alla som lästa",
+    "markingAllRead": "Markerar alla som lästa",
+    "unreadHeading": "Olästa",
+    "readHeading": "Lästa",
+    "view": "Visa →",
+    "play": "Spela →",
+    "empty": "Allt ikapp.",
+    "emptyTitle": "Lugnt här just nu",
+    "emptyBody": "När något behöver din uppmärksamhet, som en möjlig reaktion, en ny insikt eller din månatliga Skin Wrapped, dyker det upp här.",
+    "managePreferences": "Hantera aviseringar",
+    "loadingMore": "Laddar fler",
+    "sourceSkinJournal": "Hudjournal",
+    "errors": {
+      "loadTitle": "Vi kunde inte ladda aviseringar",
+      "loadBody": "Försök igen. Dina aviseringsinställningar och journaldata är oförändrade.",
+      "loadMore": "Vi kunde inte ladda fler aviseringar.",
+      "retry": "Försök igen"
+    },
+    "kinds": {
+      "photo_reminder": {
+        "title": "Dags för dagens foto",
+        "body": "Fånga din morgonbaslinje i naturligt dagsljus."
+      },
+      "reaction_detected": {
+        "title": "Möjlig reaktion upptäckt",
+        "body": "Ökad rodnad, nya utbrott. Rutin förenklad till barriär-reparation tills du bekräftar."
+      },
+      "simplification_started": {
+        "title": "Rutin förenklad",
+        "body": "Barriärreparation aktiv. Återställ när som helst."
+      },
+      "doctor_referral": {
+        "title": "Hudläkarremiss",
+        "body": "Kvarstående reaktionssignaler. Överväg ett hudläkarbesök."
+      },
+      "insight_ready": {
+        "title": "Ny insikt",
+        "body": "Tryck för att se vad som fungerar."
+      },
+      "wrapped_ready": {
+        "title": "Din Wrapped är klar",
+        "body": "Din privata sammanfattning är klar med AI-texter om synliga förändringar."
+      },
+      "analysis_failed": {
+        "title": "Analys misslyckades",
+        "body": "Tryck för att försöka igen."
+      },
+      "export_ready": {
+        "title": "Din export är klar",
+        "body": "Tryck för att ladda ner."
+      }
     }
   }
 }

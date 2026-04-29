@@ -96,7 +96,28 @@ describe("SkinProfilePage", () => {
       screen.getByRole("heading", { name: /skin profile/i }),
     ).toBeInTheDocument();
     expect(screen.getByTestId("skin-profile-skeleton")).toBeInTheDocument();
+    expect(screen.getByTestId("skin-profile-skeleton")).toHaveAttribute(
+      "data-skeleton-mode",
+      "onboarding",
+    );
     expect(screen.queryByText(/what best describes/i)).not.toBeInTheDocument();
+  });
+
+  it("uses the overview skeleton when an existing profile is refetching", () => {
+    mockSkinProfileReturn = {
+      data: completeProfile,
+      isPending: true,
+      isError: false,
+      error: null,
+      refetch: createRefetchMock(),
+    };
+
+    renderWithProviders(<SkinProfilePage />);
+
+    expect(screen.getByTestId("skin-profile-skeleton")).toHaveAttribute(
+      "data-skeleton-mode",
+      "overview",
+    );
   });
 
   it("keeps the page header visible when profile loading fails", () => {

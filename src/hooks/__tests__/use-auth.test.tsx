@@ -142,29 +142,6 @@ describe('useRegister', () => {
     expect(state.user).toBeNull();
   });
 
-  it('clears a legacy session if registration still returns an access token', async () => {
-    (register as jest.Mock).mockResolvedValue({
-      accessToken: 'mock-token',
-      user: { ...mockUser, emailVerified: false },
-    });
-    (logout as jest.Mock).mockResolvedValue(undefined);
-
-    const { result } = renderHookWithProviders(() => useRegister());
-
-    await act(async () => {
-      await result.current.mutateAsync({
-        email: 'test@example.com',
-        password: 'TestPass1',
-        firstName: 'Test',
-        lastName: 'User',
-        preferredLanguage: 'en',
-        termsAccepted: true,
-        privacyPolicyAccepted: true,
-      });
-    });
-
-    expect(logout).toHaveBeenCalled();
-  });
 });
 
 describe('useLogin', () => {

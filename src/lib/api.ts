@@ -368,13 +368,7 @@ export async function postMultipartRequest<T>(
   config?: AxiosRequestConfig,
 ): Promise<T> {
   try {
-    const { data } = await apiClient.post<T>(url, body, {
-      ...config,
-      headers: {
-        ...(config?.headers ?? {}),
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const { data } = await apiClient.post<T>(url, body, config);
     return data;
   } catch (error) {
     throwServerError(error, `Failed to post multipart data to ${url}`);

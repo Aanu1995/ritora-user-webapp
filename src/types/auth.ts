@@ -15,9 +15,8 @@ export type AuthResponse = {
 };
 
 export type RegisterResponse = {
-  accessToken?: string;
-  user?: User;
-  message?: string;
+  message: string;
+  user: User;
 };
 
 export type RefreshResponse = {

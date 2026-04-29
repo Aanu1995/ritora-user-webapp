@@ -11,11 +11,13 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  fixedWeeks = true,
   ...props
 }: CalendarProps) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      fixedWeeks={fixedWeeks}
       className={cn('p-2 font-sans text-sm text-foreground', className)}
       classNames={{
         months: 'flex flex-col gap-4',

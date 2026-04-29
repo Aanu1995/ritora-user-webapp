@@ -18,15 +18,16 @@ const buttonVariants = cva(
         link: 'rounded-none px-0 py-0 text-accent-strong shadow-none hover:underline',
       },
       size: {
-        default: 'h-12 px-6 py-3',
-        sm: 'h-9 px-3 text-xs',
-        lg: 'h-14 px-8 text-base',
+        sm: 'h-8 px-3 text-xs',
+        md: 'h-10 px-4 text-sm',
+        lg: 'h-12 px-6 text-base',
+        xl: 'h-14 px-8 text-base',
         icon: 'h-10 w-10',
       },
     },
     defaultVariants: {
       variant: 'default',
-      size: 'default',
+      size: 'md',
     },
   },
 );

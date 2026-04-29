@@ -101,6 +101,8 @@ export function MedicalSafetyConsentDialog({
         <p className="mt-3 text-xs text-muted">
           <a
             href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-accent-strong underline-offset-2 hover:underline"
           >
             {t("consentDialogPrivacyLink")}

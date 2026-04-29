@@ -86,7 +86,7 @@ describe('schedule.service', () => {
     });
   });
 
-  it('keeps the every-day preset endpoint for compatibility', async () => {
+  it('applies the every-day preset through the preset endpoint', async () => {
     (postRequest as jest.Mock).mockResolvedValue({ slots: [] });
 
     await applyEveryDayPreset({

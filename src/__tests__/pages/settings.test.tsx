@@ -92,6 +92,25 @@ describe("SettingsPage", () => {
     expect(screen.getByRole("tab", { name: /privacy/i })).toBeInTheDocument();
   });
 
+  it("uses the same underline indicator rail as journal tabs", () => {
+    renderWithProviders(<SettingsPage />);
+
+    const tabList = screen.getByRole("tablist");
+    const rail = screen.getByTestId("settings-tab-indicator-rail");
+    const scrollRegion = screen.getByTestId("settings-tab-scroll-region");
+    const activeTab = screen.getByRole("tab", { selected: true });
+
+    expect(rail).toHaveClass("border-b", "border-border");
+    expect(rail).not.toHaveClass("overflow-x-auto");
+    expect(scrollRegion).toHaveClass("overflow-x-auto", "pb-px");
+    expect(tabList).toHaveClass("border-b-0");
+    expect(activeTab).toHaveClass(
+      "after:h-[2px]",
+      "data-[state=active]:after:opacity-100",
+    );
+    expect(rail).toContainElement(tabList);
+  });
+
   it("shows account info on the default Account tab", () => {
     renderWithProviders(<SettingsPage />);
 

@@ -104,11 +104,21 @@ export function ProductPickerContent({
 
       <div className="flex-1 overflow-y-auto px-3 py-2">
         {isLoading ? (
-          <div className="space-y-2 px-2">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-14 rounded-xl" />
+          <ul className="space-y-1" aria-label="Loading products">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <li
+                key={i}
+                className="flex items-center gap-3 rounded-xl px-2 py-2.5"
+              >
+                <Skeleton className="h-10 w-10 shrink-0 rounded-lg" />
+                <div className="min-w-0 flex-1 space-y-1.5">
+                  <Skeleton className="h-3 w-20" />
+                  <Skeleton className="h-3.5 w-3/4" />
+                </div>
+                <Skeleton className="h-3 w-12 shrink-0" />
+              </li>
             ))}
-          </div>
+          </ul>
         ) : filtered.length === 0 ? (
           <p className="mx-5 my-8 text-center text-sm text-muted">
             {search ? t('empty') : t('emptyShelf')}

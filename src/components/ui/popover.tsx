@@ -33,7 +33,7 @@ const PopoverContent = React.forwardRef<
       sideOffset={sideOffset}
       data-slot="popover-content"
       className={cn(
-        'z-50 rounded-2xl border border-border bg-surface p-4 text-foreground shadow-[var(--shadow-hero)]',
+        'z-[80] rounded-2xl border border-border bg-surface p-4 text-foreground shadow-[var(--shadow-hero)]',
         'data-[state=open]:animate-in data-[state=closed]:animate-out',
         'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
         'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',

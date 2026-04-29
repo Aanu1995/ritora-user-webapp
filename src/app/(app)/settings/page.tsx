@@ -7,12 +7,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AccountTab } from "@/components/settings/account-tab";
 import { AppearanceTab } from "@/components/settings/appearance-tab";
 import { LanguageTab } from "@/components/settings/language-tab";
+import { NotificationsTab } from "@/components/settings/notifications-tab";
 import { PrivacyTab } from "@/components/settings/privacy-tab";
+import { SettingsPageSkeleton } from "@/components/settings/settings-page-skeleton";
 
 enum SettingsTab {
   Account = "account",
   Appearance = "appearance",
   Language = "language",
+  Notifications = "notifications",
   Privacy = "privacy",
 }
 
@@ -35,21 +38,32 @@ function SettingsTabs() {
           {t("title")}
         </h1>
         <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>
-        <div className="mx-auto max-w-2xl">
-          <TabsList className="mt-6 w-full overflow-x-auto">
-            <TabsTrigger value={SettingsTab.Account}>
-              {t("tabs.account")}
-            </TabsTrigger>
-            <TabsTrigger value={SettingsTab.Appearance}>
-              {t("tabs.appearance")}
-            </TabsTrigger>
-            <TabsTrigger value={SettingsTab.Language}>
-              {t("tabs.language")}
-            </TabsTrigger>
-            <TabsTrigger value={SettingsTab.Privacy}>
-              {t("tabs.privacy")}
-            </TabsTrigger>
-          </TabsList>
+        <div
+          data-testid="settings-tab-indicator-rail"
+          className="mx-auto mt-6 max-w-2xl border-b border-border"
+        >
+          <div
+            data-testid="settings-tab-scroll-region"
+            className="overflow-x-auto pb-px"
+          >
+            <TabsList className="border-b-0">
+              <TabsTrigger value={SettingsTab.Account}>
+                {t("tabs.account")}
+              </TabsTrigger>
+              <TabsTrigger value={SettingsTab.Appearance}>
+                {t("tabs.appearance")}
+              </TabsTrigger>
+              <TabsTrigger value={SettingsTab.Language}>
+                {t("tabs.language")}
+              </TabsTrigger>
+              <TabsTrigger value={SettingsTab.Notifications}>
+                {t("tabs.notifications")}
+              </TabsTrigger>
+              <TabsTrigger value={SettingsTab.Privacy}>
+                {t("tabs.privacy")}
+              </TabsTrigger>
+            </TabsList>
+          </div>
         </div>
       </div>
 
@@ -68,6 +82,11 @@ function SettingsTabs() {
           <LanguageTab />
         </div>
       </TabsContent>
+      <TabsContent value={SettingsTab.Notifications}>
+        <div className="mx-auto max-w-2xl">
+          <NotificationsTab />
+        </div>
+      </TabsContent>
       <TabsContent value={SettingsTab.Privacy}>
         <div className="mx-auto max-w-2xl">
           <PrivacyTab />
@@ -80,7 +99,7 @@ function SettingsTabs() {
 export default function SettingsPage() {
   return (
     <div>
-      <Suspense>
+      <Suspense fallback={<SettingsPageSkeleton />}>
         <SettingsTabs />
       </Suspense>
     </div>

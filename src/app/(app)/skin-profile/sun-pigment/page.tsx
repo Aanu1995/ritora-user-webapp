@@ -5,7 +5,10 @@ import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import type { SectionFormHandle } from "@/components/skin-profile/medical-safety-section";
 import { SectionPageHeader } from "@/components/skin-profile/section-page-header";
-import { SkinProfileSkeleton } from "@/components/skin-profile/skin-profile-skeleton";
+import {
+  SkinProfileSaveActionSkeleton,
+  SkinProfileSkeleton,
+} from "@/components/skin-profile/skin-profile-skeleton";
 import { SunPigmentSection } from "@/components/skin-profile/sun-pigment-section";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
@@ -23,10 +26,12 @@ export default function SunPigmentPage() {
   if (profile.isPending || options.isPending) {
     return (
       <div>
-        <SectionPageHeader title={t("pageTitle")} subtitle={t("pageDesc")} />
-        <div className="mx-auto w-full max-w-3xl">
-          <SkinProfileSkeleton mode="generic" />
-        </div>
+        <SectionPageHeader
+          title={t("pageTitle")}
+          subtitle={t("pageDesc")}
+          action={<SkinProfileSaveActionSkeleton />}
+        />
+        <SkinProfileSkeleton mode="section" />
       </div>
     );
   }

@@ -278,6 +278,8 @@ export function PrivacyTab() {
           <SettingsRow key={link.route} label={t(`privacy.${link.labelKey}`)}>
             <Link
               href={link.route}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-sm text-accent-strong hover:underline"
             >
               {t("privacy.view")}

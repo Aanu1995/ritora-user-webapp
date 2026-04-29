@@ -86,7 +86,7 @@ beforeEach(() => {
 });
 
 describe('ProductDetailPage', () => {
-  it('renders loading skeletons while the product is loading', () => {
+  it('renders the product-detail shaped skeleton while the product is loading', () => {
     mockUseShelfProduct.mockReturnValue({
       isPending: true,
       isError: false,
@@ -97,7 +97,9 @@ describe('ProductDetailPage', () => {
       <ProductDetailPage productId="product-1" />,
     );
 
-    expect(container.querySelectorAll('.animate-pulse').length).toBeGreaterThan(0);
+    expect(screen.getByTestId('product-detail-skeleton')).toBeInTheDocument();
+    expect(screen.getByTestId('product-detail-skeleton-tabs')).toBeInTheDocument();
+    expect(container.querySelector('.sticky.top-0')).toBeInTheDocument();
   });
 
   it('renders a retry panel when the query fails', () => {

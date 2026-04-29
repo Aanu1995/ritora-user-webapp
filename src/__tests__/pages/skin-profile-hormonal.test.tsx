@@ -74,4 +74,18 @@ describe("HormonalPage", () => {
       screen.getByText(/how predictable is your cycle pattern/i),
     ).toBeInTheDocument();
   });
+
+  it("renders a section-shaped skeleton while loading", () => {
+    mockOptionsReturn = {
+      ...mockOptionsReturn,
+      isPending: true,
+    };
+
+    renderWithProviders(<HormonalPage />);
+
+    expect(screen.getByTestId("skin-profile-skeleton")).toHaveAttribute(
+      "data-skeleton-mode",
+      "section",
+    );
+  });
 });

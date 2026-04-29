@@ -257,7 +257,7 @@ export function AddProductPage() {
         void form.handleSubmit();
       }}
       noValidate
-      className="relative pb-16"
+      className="relative"
     >
       <form.Subscribe
         selector={(state) => ({

@@ -4,8 +4,8 @@ import {
   patchRequest,
   postMultipartRequest,
   postRequest,
-} from '@/lib/api';
-import { ApiPath } from '@/constants/api-paths';
+} from "@/lib/api";
+import { ApiPath } from "@/constants/api-paths";
 import {
   type DeepPartial,
   type PaginatedResult,
@@ -13,7 +13,7 @@ import {
   type ShelfListFilters,
   type ShelfProduct,
   type ShelfProductDraft,
-} from '@/types/shelf';
+} from "@/types/shelf";
 
 type UploadedProductImage = {
   imageUrl: string;
@@ -63,7 +63,7 @@ export async function uploadProductImage(
   file: File,
 ): Promise<UploadedProductImage> {
   const body = new FormData();
-  body.append('image', file);
+  body.append("image", file);
 
   return postMultipartRequest<UploadedProductImage>(
     ApiPath.InventoryProductsUploadImage,
@@ -110,9 +110,9 @@ export async function extractProductFromImages(input: {
 }): Promise<ResolvedLookup | null> {
   const body = new FormData();
   input.images.forEach((image) => {
-    body.append('images', image);
+    body.append("images", image);
   });
-  body.append('heroImageIndex', String(input.heroImageIndex));
+  body.append("heroImageIndex", String(input.heroImageIndex));
 
   return postMultipartRequest<ResolvedLookup | null>(
     ApiPath.CatalogueProductsExtractFromImages,

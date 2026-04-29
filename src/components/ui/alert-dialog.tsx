@@ -83,7 +83,7 @@ function AlertDialogFooter({
   return (
     <div
       className={cn(
-        'mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end',
+        'mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-4',
         className,
       )}
       {...props}
@@ -120,7 +120,21 @@ AlertDialogDescription.displayName =
   AlertDialogPrimitive.Description.displayName;
 
 const AlertDialogAction = AlertDialogPrimitive.Action;
-const AlertDialogCancel = AlertDialogPrimitive.Cancel;
+
+const AlertDialogCancel = React.forwardRef<
+  React.ElementRef<typeof AlertDialogPrimitive.Cancel>,
+  React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Cancel>
+>(({ className, ...props }, ref) => (
+  <AlertDialogPrimitive.Cancel
+    ref={ref}
+    className={cn(
+      'inline-flex h-10 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full border border-border bg-background/80 px-4 text-sm font-semibold text-foreground transition outline-none hover:border-accent hover:bg-surface focus-visible:ring-2 focus-visible:ring-accent/30 disabled:pointer-events-none disabled:opacity-50',
+      className,
+    )}
+    {...props}
+  />
+));
+AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
 
 export {
   AlertDialog,

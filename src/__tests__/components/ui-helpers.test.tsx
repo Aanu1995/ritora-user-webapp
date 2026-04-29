@@ -13,18 +13,46 @@ describe('UI helper components', () => {
     expect(container.querySelectorAll('.animate-pulse').length).toBeGreaterThan(5);
   });
 
-  it('renders the skin profile skeleton placeholders', () => {
-    const { container } = render(<SkinProfileSkeleton />);
+  it('renders the skin profile onboarding skeleton with the wizard shape', () => {
+    const { container } = render(<SkinProfileSkeleton mode="onboarding" />);
 
-    expect(container.querySelectorAll('[aria-hidden="true"]').length).toBeGreaterThan(0);
-    expect(container.querySelectorAll('.animate-pulse').length).toBeGreaterThan(5);
+    expect(screen.getByTestId('skin-profile-skeleton')).toHaveAttribute(
+      'data-skeleton-mode',
+      'onboarding',
+    );
+    expect(screen.getByTestId('skin-profile-skeleton-sticky-actions')).toBeInTheDocument();
+    expect(screen.getAllByTestId('skin-profile-skeleton-field-row')).toHaveLength(5);
+    expect(container.querySelectorAll('.animate-pulse').length).toBeGreaterThan(20);
   });
 
-  it('renders the skin profile overview skeleton placeholders', () => {
+  it('renders the skin profile overview skeleton with the overview shape', () => {
     const { container } = render(<SkinProfileSkeleton mode="overview" />);
 
-    expect(container.querySelectorAll('[aria-hidden="true"]').length).toBeGreaterThan(0);
-    expect(container.querySelectorAll('.animate-pulse').length).toBeGreaterThan(5);
+    expect(screen.getByTestId('skin-profile-skeleton')).toHaveAttribute(
+      'data-skeleton-mode',
+      'overview',
+    );
+    expect(screen.getByTestId('skin-profile-skeleton-completeness')).toBeInTheDocument();
+    expect(screen.getByTestId('skin-profile-skeleton-essentials')).toBeInTheDocument();
+    expect(screen.getByTestId('skin-profile-skeleton-optional')).toBeInTheDocument();
+    expect(container.querySelectorAll('.animate-pulse').length).toBeGreaterThan(20);
+  });
+
+  it('renders skin profile section skeletons with section page shapes', () => {
+    const { rerender } = render(<SkinProfileSkeleton mode="section" />);
+
+    expect(screen.getByTestId('skin-profile-skeleton')).toHaveAttribute(
+      'data-skeleton-mode',
+      'section',
+    );
+    expect(screen.getAllByTestId('skin-profile-skeleton-section-row')).toHaveLength(6);
+
+    rerender(<SkinProfileSkeleton mode="reaction-section" />);
+    expect(screen.getByTestId('skin-profile-skeleton')).toHaveAttribute(
+      'data-skeleton-mode',
+      'reaction-section',
+    );
+    expect(screen.getAllByTestId('skin-profile-skeleton-reaction-column')).toHaveLength(2);
   });
 
   it('renders the base skeleton primitive with the provided class name', () => {

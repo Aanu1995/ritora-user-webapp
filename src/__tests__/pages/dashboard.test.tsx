@@ -5,6 +5,11 @@ import { renderWithProviders } from "@/test/utils";
 
 jest.mock("next/navigation", () => ({
   usePathname: () => AppRoute.Dashboard,
+  useRouter: () => ({
+    back: jest.fn(),
+    push: jest.fn(),
+    replace: jest.fn(),
+  }),
 }));
 
 import DashboardPage from "@/app/(app)/dashboard/page";

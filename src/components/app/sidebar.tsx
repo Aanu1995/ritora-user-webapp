@@ -3,19 +3,26 @@
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { GuardedLink } from "@/components/app/guarded-link";
+import { NavBadge } from "@/components/app/nav-badge";
 import { RitoraMark } from "@/components/icons/ritora-mark";
 import { cn } from "@/lib/utils";
 import { AppRoute } from "@/constants/app-routes";
 import { getNavItemsByGroup, NavGroup, type NavItem } from "@/constants/nav-config";
+import {
+  useNavBadgeCounts,
+  type NavBadgeCounts,
+} from "@/hooks/use-nav-badge-counts";
 
 function NavList({
   items,
   pathname,
   t,
+  badgeCounts,
 }: {
   items: NavItem[];
   pathname: string;
   t: (key: string) => string;
+  badgeCounts: NavBadgeCounts;
 }) {
   return (
     <ul role="list" className="-mx-2 space-y-1">
@@ -25,20 +32,22 @@ function NavList({
             ? pathname === AppRoute.Dashboard
             : pathname === item.route || pathname.startsWith(item.route + "/");
         const Icon = item.icon;
+        const badgeCount = badgeCounts[item.route] ?? 0;
 
         return (
           <li key={item.route}>
             <GuardedLink
               href={item.route}
               className={cn(
-                "group flex gap-x-3 rounded-lg p-2.5 text-sm font-medium leading-6 transition-colors",
+                "group flex items-center gap-x-3 rounded-lg p-2.5 text-sm font-medium leading-6 transition-colors",
                 isActive
                   ? "bg-accent-soft text-accent-strong"
                   : "text-muted hover:bg-accent/5 hover:text-foreground",
               )}
             >
               <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
-              {t(`items.${item.labelKey}`)}
+              <span className="flex-1">{t(`items.${item.labelKey}`)}</span>
+              <NavBadge count={badgeCount} />
             </GuardedLink>
           </li>
         );
@@ -53,6 +62,7 @@ export function Sidebar() {
   const mainItems = getNavItemsByGroup(NavGroup.Main);
   const moreItems = getNavItemsByGroup(NavGroup.More);
   const accountItems = getNavItemsByGroup(NavGroup.Account);
+  const badgeCounts = useNavBadgeCounts();
 
   return (
     <aside className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col border-r border-border bg-surface">
@@ -72,7 +82,7 @@ export function Sidebar() {
       <nav className="flex flex-1 flex-col overflow-y-auto px-6 pb-4">
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>
-            <NavList items={mainItems} pathname={pathname} t={t} />
+            <NavList items={mainItems} pathname={pathname} t={t} badgeCounts={badgeCounts} />
           </li>
 
           <li>
@@ -80,7 +90,7 @@ export function Sidebar() {
               {t("groups.more")}
             </div>
             <div className="mt-2">
-              <NavList items={moreItems} pathname={pathname} t={t} />
+              <NavList items={moreItems} pathname={pathname} t={t} badgeCounts={badgeCounts} />
             </div>
           </li>
 
@@ -89,7 +99,7 @@ export function Sidebar() {
               {t("groups.account")}
             </div>
             <div className="mt-2">
-              <NavList items={accountItems} pathname={pathname} t={t} />
+              <NavList items={accountItems} pathname={pathname} t={t} badgeCounts={badgeCounts} />
             </div>
           </li>
         </ul>

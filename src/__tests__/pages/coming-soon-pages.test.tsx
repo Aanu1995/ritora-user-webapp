@@ -3,6 +3,11 @@ import { renderWithProviders } from "@/test/utils";
 
 jest.mock("next/navigation", () => ({
   usePathname: () => "/todays-suggestion",
+  useRouter: () => ({
+    back: jest.fn(),
+    push: jest.fn(),
+    replace: jest.fn(),
+  }),
 }));
 
 import TodaysSuggestionPage from "@/app/(app)/todays-suggestion/page";

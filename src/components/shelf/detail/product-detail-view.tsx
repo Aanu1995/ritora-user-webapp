@@ -182,7 +182,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
   };
 
   return (
-    <div className="relative pb-16">
+    <div className="relative">
       <ProductPageHeader
         leading={
           <Link

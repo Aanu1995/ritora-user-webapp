@@ -442,7 +442,8 @@
       "account": "Account",
       "appearance": "Appearance",
       "language": "Language",
-      "privacy": "Privacy"
+      "privacy": "Privacy",
+      "notifications": "Notifications"
     },
     "account": {
       "profileTitle": "Profile",
@@ -987,6 +988,7 @@
       "revokeSuccess": "Consent revoked.",
       "grantSuccess": "Consent granted.",
       "errorMissingFields": "Country code is required.",
+      "errorConsentRequired": "Consent is required before saving location data.",
       "yes": "Yes",
       "no": "No",
       "storedPregnancy": "Pregnancy",
@@ -2123,6 +2125,541 @@
         "As the product matures, these terms will be expanded to cover account responsibilities, acceptable use, disclaimer language, and service boundaries in production detail.",
         "The current page exists so the public experience already has a real legal route structure instead of placeholder links."
       ]
+    }
+  },
+  "journal": {
+    "title": "Skin Journal",
+    "subtitle": "One entry per day. Photo, ratings, AI observations and insights, all in one place.",
+    "eyebrow": "Your skin journey",
+    "fab": "Add today's photo",
+    "exportForDermatologist": "Export for dermatologist",
+    "tabs": {
+      "calendar": "Calendar",
+      "photos": "Photos",
+      "insights": "Insights",
+      "wrapped": "Wrapped"
+    },
+    "stats": {
+      "currentStreak": "Current streak",
+      "currentStreakValue": "{days, plural, one {# day} other {# days}}",
+      "totalEntries": "Total entries",
+      "weeklyUploadRate": "Weekly upload rate",
+      "weeklyUploadValue": "{count} of {target} days",
+      "streakDelta": "+{count} vs last week",
+      "sinceDate": "since {date}",
+      "loadingLabel": "Loading journal stats"
+    },
+    "calendar": {
+      "selectMonth": "Pick month",
+      "previous": "Previous month",
+      "next": "Next month",
+      "loading": "Loading calendar",
+      "monthlyWrapped": "Monthly Wrapped",
+      "weekdays": ["M", "T", "W", "T", "F", "S", "S"],
+      "legend": {
+        "completed": "Done",
+        "noEntry": "None",
+        "pending": "Analysing",
+        "reaction": "Reaction",
+        "insight": "Insight"
+      },
+      "tooltip": {
+        "completed": "Photo & analysis done",
+        "no_entry": "No entry",
+        "entry_no_photo": "Entry without photo",
+        "pending": "Analysis pending",
+        "reaction": "Reaction flagged",
+        "failed": "Analysis failed"
+      }
+    },
+    "dayDetail": {
+      "today": "today",
+      "metaToday": "{weekday} · {date} · today",
+      "meta": "{weekday} · {date}",
+      "reactionFlagged": "Reaction flagged",
+      "dayDetailSubtitle": "Day detail",
+      "backToJournal": "Back to Skin Journal",
+      "loadingLabel": "Loading day detail",
+      "title": "{date} entry",
+      "todayTitle": "Today's entry",
+      "noEntry": "No entry for this day",
+      "noEntryBody": "Add a photo or quick check-in for this day.",
+      "addPhoto": "Add photo",
+      "replace": "Replace",
+      "addAngle": "Add angle",
+      "delete": "Delete",
+      "retryAnalysis": "Retry analysis",
+      "replacePhoto": "Replace photo",
+      "addPhotoForDay": "Add a photo for this day",
+      "ratingsTitle": "Your check-in",
+      "ratingsRecorded": "Ratings recorded",
+      "noteLabel": "Complaint / note",
+      "feelLabel": "Skin feel",
+      "contextLabel": "Today's context",
+      "preRoutineTag": "pre-routine",
+      "noPhotoTag": "No photo",
+      "photoAlt": "Skin journal photo for {date}",
+      "statusCompleted": "Analysis complete",
+      "statusAnalysing": "Analysing…",
+      "statusFailed": "Analysis failed",
+      "noPhotoTitle": "Check-in only",
+      "noPhotoBody": "You logged how your skin felt without a photo. AI analysis is skipped for this day."
+    },
+    "analysis": {
+      "title": "Skin observations today",
+      "modelBadge": "AI · {model}",
+      "confidence": "Confidence {value}",
+      "concernsLabel": "Detected concerns",
+      "imageQualityLabel": "Image quality",
+      "lightingGood": "Lighting good",
+      "lightingFair": "Lighting fair",
+      "lightingPoor": "Lighting poor",
+      "framingGood": "Framing good",
+      "framingFair": "Framing fair",
+      "framingPoor": "Framing poor",
+      "sharp": "Sharp",
+      "blurry": "Blurry",
+      "disclaimer": "Not a medical diagnosis. Ritora is decision support. Consult a dermatologist for medical concerns.",
+      "indicators": "Indicators",
+      "comparedToPrevious": "Compared to previous"
+    },
+    "severity": {
+      "none": "None",
+      "mild": "Mild",
+      "moderate": "Moderate",
+      "severe": "Severe"
+    },
+    "concerns": {
+      "oiliness": "Oiliness",
+      "dryness": "Dryness",
+      "redness": "Redness",
+      "breakouts": "Breakouts",
+      "texture": "Texture",
+      "irritation": "Irritation",
+      "sensitivity": "Sensitivity",
+      "acne": "Acne",
+      "hyperpigmentation": "Hyperpigmentation",
+      "redness_inflammation": "Redness · inflammation",
+      "fine_lines": "Fine lines",
+      "skin_barrier_damage": "Skin barrier damage",
+      "eczema_indicator": "Eczema indicator",
+      "uneven_tone": "Uneven tone",
+      "under_eye_darkness": "Under-eye darkness",
+      "large_pores": "Large pores"
+    },
+    "feels": {
+      "awful": "Awful",
+      "bad": "Bad",
+      "ok": "OK",
+      "good": "Good",
+      "great": "Great"
+    },
+    "context": {
+      "sleepLabel": "Sleep last night",
+      "sleep_lt5h": "<5h",
+      "sleep_5to7h": "5–7h",
+      "sleep_7to9h": "7–9h",
+      "sleep_gt9h": ">9h",
+      "stressLabel": "Stress today",
+      "stress_low": "Low",
+      "stress_mid": "Mid",
+      "stress_high": "High",
+      "sunLabel": "Sun exposure",
+      "sun_none": "None",
+      "sun_brief": "Brief",
+      "sun_lots": "Lots",
+      "sweatLabel": "Sweat / exercise",
+      "sweat_no": "No",
+      "sweat_yes": "Yes",
+      "cycleLabel": "Period day",
+      "cycle_not_on": "Not on period",
+      "cycle_day_1_3": "Day 1–3",
+      "cycle_day_4_7": "Day 4–7",
+      "cycle_late_cycle": "Late cycle",
+      "cycle_dont_track": "Don't track"
+    },
+    "recentChange": {
+      "label": "Anything change today?",
+      "hint": "High-signal: a new product, a stopped product, a treatment, illness, or travel.",
+      "typeLabel": "Type of change",
+      "kinds": {
+        "started_new_product": "Started new product",
+        "stopped_a_product": "Stopped a product",
+        "changed_frequency": "Changed frequency",
+        "got_a_treatment": "Got a treatment",
+        "felt_unwell": "Felt unwell",
+        "travelled": "Travelled",
+        "other": "Other"
+      },
+      "productLabel": "Related product (optional)",
+      "productPlaceholder": "Search inventory…"
+    },
+    "upload": {
+      "eyebrow": "Skin Journal · new entry",
+      "title": "Add today's photo",
+      "subtitle": "Take a photo in good daylight. Your future self will thank you for the consistency.",
+      "dateLabel": "Date",
+      "dateToday": "Today · {date}",
+      "dateBackfill": "{date} (backfill)",
+      "guidanceTitle": "Tips for clearer comparisons",
+      "guidanceSubtitle": "Same time, same place gives the AI the strongest trend signal.",
+      "hideTips": "Hide tips",
+      "showTips": "Show tips",
+      "tips": {
+        "naturalLight": {
+          "title": "Natural daylight",
+          "body": "Face a window, no overhead light."
+        },
+        "noMirror": {
+          "title": "Skip the mirror",
+          "body": "Reflections distort skin tone."
+        },
+        "neutralFace": {
+          "title": "Neutral face",
+          "body": "No makeup, relaxed."
+        },
+        "sameTime": {
+          "title": "Same time daily",
+          "body": "Better trend accuracy."
+        },
+        "distance": {
+          "title": "~30 cm away",
+          "body": "Square-on, fill the frame."
+        }
+      },
+      "photoLabel": "Photo",
+      "dropZoneTitle": "Tap to choose a photo",
+      "dropZoneDesc": "Or drag and drop · JPG, PNG, HEIC, WebP up to 10 MB",
+      "noWebcam": "No camera in the browser. A photo taken in natural light gives the best AI signal.",
+      "replace": "Replace",
+      "crop": "Crop to square",
+      "remove": "Remove",
+      "fileMeta": "{name} · {size} · {kind}",
+      "processedKind": "WebP after upload · EXIF stripped",
+      "photoPreviewAlt": "Selected journal photo",
+      "cropBadge": "Cropped 1:1",
+      "photoProcessingConsent": "I consent to Ritora processing this skin-progress photo for AI analysis. The photo is encrypted at rest, EXIF is stripped, and the AI request does not include my name, email, or user id.",
+      "angleLabel": "Angle",
+      "angles": {
+        "head_on": "Head-on",
+        "left_profile": "Left profile",
+        "right_profile": "Right profile"
+      },
+      "preRoutine": "Taken before today's products (pre-routine)",
+      "nextStepHint": "Your check-in is on the next step. You can also save just the photo and add ratings later.",
+      "savePhotoOnly": "Save photo only",
+      "continueToCheckIn": "Continue to check-in",
+      "saveEntry": "Save entry",
+      "skipCheckIn": "Skip check-in",
+      "back": "Back",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "savedToast": "Photo saved. Ritora is taking a look (about 10–20s)…",
+      "noPhotoSaved": "Check-in saved without photo.",
+      "futureDateError": "Cannot create entries for future dates.",
+      "checkInTitle": "Today's check-in",
+      "privacyLabel": "Privacy",
+      "privacyBody": "Your photo and ratings are encrypted at rest. The AI sees the photo only, never your name, email, or user id.",
+      "privacyLink": "How we protect your data",
+      "privacyLinkHref": "/privacy",
+      "feelQuestion": "How does your skin feel today?",
+      "concernsQuestion": "Concern severity (1 = none, 5 = severe)",
+      "contextQuestion": "Today's context (optional)",
+      "noteLabel": "Complaint or note (optional)",
+      "addNote": "Add complaint or note",
+      "notePlaceholder": "Tell us anything. Feels tight, itches, looks dull…",
+      "privacyNote": "Your photo and ratings are encrypted at rest. The AI only sees the photo. Never your name, email, or user id."
+    },
+    "compare": {
+      "title": "Compare two days",
+      "subtitle": "Synchronised zoom and pan · tap to flip on mobile.",
+      "swap": "Swap",
+      "fromLabel": "From",
+      "toLabel": "To",
+      "deltaTitle": "What's changed in {days, plural, one {# day} other {# days}}",
+      "noBaseline": "Pick two dates to compare.",
+      "events": "Routine events between these dates",
+      "concernsThen": "Concerns then",
+      "concernsNow": "Concerns now",
+      "fromPhotoAlt": "Skin journal photo from {date}",
+      "toPhotoAlt": "Skin journal photo from {date}",
+      "aiDeltaBadge": "AI delta",
+      "none": "None",
+      "medicalDisclaimerStrong": "Not a medical diagnosis.",
+      "medicalDisclaimerBody": "Visible changes may have many causes."
+    },
+    "photos": {
+      "compareCta": "Compare",
+      "filtersAll": "All photos",
+      "filterReaction": "Has reaction",
+      "filterAcne": "Concern · acne",
+      "filterRedness": "Concern · redness",
+      "filterAngleHeadOn": "Angle · head-on",
+      "filterLast30": "Last 30 days",
+      "empty": "No photos yet",
+      "emptyTitle": "Your photos will appear here",
+      "emptyBody": "Once you start adding daily photos they'll show up here so you can scan back through your shelf at a glance."
+    },
+    "insightsTab": {
+      "subtitle": "Trends and correlations from your check-ins and AI observations.",
+      "kinds": {
+        "trend": "Trend",
+        "correlation": "Correlation",
+        "effectiveness": "Effectiveness",
+        "referral": "Doctor referral",
+        "daily": "Daily insight",
+        "weekly": "Weekly summary",
+        "monthly": "Monthly summary",
+        "reaction_recovery": "Recovery"
+      },
+      "showHow": "Show me how",
+      "dismiss": "Dismiss",
+      "exportHistory": "Export skin history",
+      "notNow": "Not now",
+      "charts": {
+        "trendTitle": "Concern severity over time",
+        "reactionsTitle": "Reaction frequency · weekly",
+        "checkInTitle": "Check-in averages · 7-axis",
+        "thisWeek": "This week",
+        "lastWeek": "Last week"
+      },
+      "empty": {
+        "title": "Insights appear after ~2 weeks of tracking",
+        "body": "We need a baseline before drawing trends. Keep adding daily photos and the AI will catch up.",
+        "openCalendar": "Open Calendar tab"
+      }
+    },
+    "wrapped": {
+      "title": "Your Skin Wrapped",
+      "subtitle": "We turn your daily photos into a private Wrapped each month, quarter, and year. They appear here when ready.",
+      "save": "Save",
+      "play": "Play",
+      "almostReady": "Almost ready",
+      "notYet": "Coming soon",
+      "status": {
+        "ready": "Ready · {photos} photos",
+        "generating": "Preparing… · {photos} photos",
+        "ready_to_generate": "Almost ready · {photos} photos",
+        "not_enough_photos": "We'll prepare this once you have {min}+ photos",
+        "failed": "Couldn't prepare this Wrapped. We'll try again.",
+        "pending": "Queued"
+      },
+      "empty": {
+        "title": "Your Skin Wrapped appears here",
+        "body": "Each month we look back on your daily photos and put together a private Wrapped. Keep adding photos and your first one will be ready soon."
+      },
+      "periodKind": {
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "yearly": "Yearly"
+      },
+      "viewer": {
+        "title": "Wrapped",
+        "subtitle": "{kind} · {period}",
+        "notFound": "Wrapped not found.",
+        "noFrames": "No frames available.",
+        "frameAlt": "Skin journal photo from {date}",
+        "frameCaption": "{date} · {caption}",
+        "captionsAuto": "{count} photos · {label} · captions written by AI",
+        "play": "Play",
+        "pause": "Pause",
+        "previous": "Previous",
+        "next": "Next",
+        "close": "Close"
+      }
+    },
+    "reaction": {
+      "modalTitle": "We noticed possible irritation",
+      "modalLede": "Your photo from {date} shows signs that may indicate a reaction. {comparedNote}",
+      "comparedWorse": "Compared to your previous entry: appears worse on cheeks and chin.",
+      "indicatorsTitle": "Indicators",
+      "disclaimer": "Not a medical diagnosis. If symptoms worsen or persist, consult a dermatologist.",
+      "primaryCta": "Simplify routine until this clears (recommended)",
+      "secondaryCta": "Keep my routine",
+      "howWeDecide": "How does Ritora decide?",
+      "severeTitle": "Strong reaction signals detected",
+      "severeLede": "Several indicators of significant irritation. We've already paused your active treatments and switched to barrier-repair until you confirm.",
+      "severeWarning": "If symptoms include difficulty breathing or facial swelling, seek emergency care.",
+      "severePrimary": "Acknowledge & keep simplified",
+      "severeSecondary": "Restore my routine anyway",
+      "simplificationReason": "Reaction detected on {date}"
+    },
+    "indicators": {
+      "redness_spike": "Redness spike",
+      "swelling_appearance": "Swelling appearance",
+      "rash_appearance": "Rash appearance",
+      "new_breakouts_cluster": "New breakouts cluster",
+      "peeling": "Peeling",
+      "burning_appearance": "Burning appearance",
+      "hives_appearance": "Hives appearance",
+      "diffuse_inflammation": "Diffuse inflammation",
+      "flaking": "Flaking",
+      "tightness_appearance": "Tightness appearance",
+      "cracking_appearance": "Cracking appearance"
+    },
+    "simplification": {
+      "bannerTitle": "Routine simplified to barrier-repair mode",
+      "bannerBody": "We detected possible irritation in your photo from {date}. Your usual routine is paused until you acknowledge.",
+      "viewDetails": "View details",
+      "restoreRoutine": "Restore routine",
+      "keepSimplified": "Keep simplified",
+      "compactAlert": "Routine simplified. View in Journal",
+      "compactAlertSubtitle": "Since {date} · barrier-repair mode active",
+      "viewInJournal": "View in Journal →",
+      "detail": {
+        "eyebrow": "Skin Journal · safety",
+        "title": "Routine simplification · {start} → {endLabel}",
+        "ongoing": "ongoing",
+        "subtitle": "Started from a journal safety event on {date}",
+        "noticedTitle": "What we noticed",
+        "noticedFallback": "A journal safety event suggested simplifying your routine while your skin settles.",
+        "presetTitle": "Barrier-repair preset (active)",
+        "presetSubtitle": "A conservative barrier-support routine to use while you review the alert.",
+        "presetAm": "AM",
+        "presetPm": "PM",
+        "presetAmBody": "Gentle cleanse, moisturise, and sunscreen.",
+        "presetPmBody": "Gentle cleanse and moisturise.",
+        "pausedTitle": "What was paused",
+        "pausedSubtitle": "If a schedule snapshot was captured on {date}, it appears below.",
+        "pausedAmTitle": "AM (paused)",
+        "pausedPmTitle": "PM (paused)",
+        "noSnapshot": "No schedule was active when this simplification started."
+      }
+    },
+    "events": {
+      "kinds": {
+        "reaction_detected": "Reaction detected",
+        "worsening": "Worsening",
+        "recovery": "Recovery",
+        "dermatologist_referral": "Dermatologist referral",
+        "product_effectiveness": "Product effectiveness"
+      }
+    },
+    "deleteConfirm": {
+      "title": "Delete this entry?",
+      "body": "Your photo and ratings for this day will be removed permanently.",
+      "cancel": "Cancel",
+      "confirm": "Delete entry"
+    },
+    "empty": {
+      "title": "Your skin journey starts here",
+      "body": "Take a photo in good daylight to begin tracking. We'll handle the rest: analysis, trends, and a monthly Wrapped.",
+      "addFirst": "+ Add your first photo"
+    },
+    "errors": {
+      "analysisFailedTitle": "Couldn't analyse this photo",
+      "analysisFailedBody": "Network hiccup · or lighting too low. Your photo is saved either way.",
+      "tooDark": "We had trouble seeing your skin clearly. Try natural daylight next time.",
+      "futureDate": "Cannot pick a future date.",
+      "uploadFailed": "Upload failed. Please try again."
+    },
+    "export": {
+      "title": "Export for dermatologist",
+      "body": "Pick a date range. We'll bundle your entries, photos, AI observations, events, and insights into a sharable summary.",
+      "fromLabel": "From",
+      "toLabel": "To",
+      "submit": "Generate export",
+      "cancel": "Cancel",
+      "generating": "Generating…",
+      "readyTitle": "Export is ready",
+      "readyBody": "{entries, plural, one {# entry} other {# entries}} included. You'll also receive a notification with the secure export.",
+      "validation": {
+        "invalidDate": "Choose a valid date.",
+        "endBeforeStart": "The end date must be after the start date."
+      }
+    }
+  },
+  "dashboardJournal": {
+    "missingPhotoTitle": "Add today's photo",
+    "missingPhotoBody": "It's after your usual reminder. A daily photo keeps your trend going.",
+    "openJournal": "Open Skin Journal →"
+  },
+  "settingsNotifications": {
+    "eyebrow": "Settings",
+    "title": "Notifications",
+    "subtitle": "Photo reminder, alerts, and channels.",
+    "saving": "Saving",
+    "updateFailed": "Could not save notification settings.",
+    "errors": {
+      "loadTitle": "We couldn't load notification settings",
+      "loadBody": "Please try again. Your notification preferences are unchanged.",
+      "retry": "Try again"
+    },
+    "validation": {
+      "invalidReminderTime": "Enter a valid reminder time.",
+      "invalidChannels": "Choose valid notification channels."
+    },
+    "photoReminderTitle": "Photo reminder",
+    "photoReminderBody": "Daily prompt to add today's photo",
+    "reminderTime": "Reminder time",
+    "reminderTimeNote": "Sent in your timezone · {timeZone}",
+    "channels": "Channels",
+    "channelInApp": "In-app",
+    "channelEmail": "Email",
+    "channelPush": "Push (when mobile launches)",
+    "reactionAlertsTitle": "Reaction alerts",
+    "reactionAlertsBody": "Notify me when AI flags a possible reaction",
+    "autoSimplifyBody": "Auto-simplify routine on moderate/severe reactions",
+    "autoSimplifyNote": "When off, you'll still get an alert but your routine is never changed automatically.",
+    "insightsTitle": "Insights & Wrapped",
+    "insightAlertsBody": "Insight notifications",
+    "wrappedAlertsBody": "Wrapped ready notifications"
+  },
+  "notificationsPage": {
+    "eyebrow": "Inbox",
+    "title": "Notifications",
+    "subtitle": "Reactions, insights, photo reminders, and your Skin Wrapped, all in one place.",
+    "markAllRead": "Mark all read",
+    "markingAllRead": "Marking all read",
+    "unreadHeading": "Unread",
+    "readHeading": "Read",
+    "view": "View →",
+    "play": "Play →",
+    "empty": "All caught up.",
+    "emptyTitle": "All quiet for now",
+    "emptyBody": "When something needs your attention, like a possible reaction, a new insight, or your monthly Skin Wrapped, it will show up here.",
+    "managePreferences": "Manage notification preferences",
+    "loadingMore": "Loading more",
+    "sourceSkinJournal": "Skin Journal",
+    "errors": {
+      "loadTitle": "We couldn't load notifications",
+      "loadBody": "Please try again. Your notification preferences and journal data are unchanged.",
+      "loadMore": "We couldn't load more notifications.",
+      "retry": "Try again"
+    },
+    "kinds": {
+      "photo_reminder": {
+        "title": "Time for today's photo",
+        "body": "Capture your morning baseline in natural daylight."
+      },
+      "reaction_detected": {
+        "title": "Possible reaction detected",
+        "body": "Increased redness, new breakouts. Routine simplified to barrier-repair until you acknowledge."
+      },
+      "simplification_started": {
+        "title": "Routine simplified",
+        "body": "Barrier repair mode active. Restore any time."
+      },
+      "doctor_referral": {
+        "title": "Doctor referral nudge",
+        "body": "Persistent reaction signals. Consider a dermatologist visit."
+      },
+      "insight_ready": {
+        "title": "New insight",
+        "body": "Tap to see what's working."
+      },
+      "wrapped_ready": {
+        "title": "Your Wrapped is ready",
+        "body": "Your private recap is ready with AI captions on visible changes."
+      },
+      "analysis_failed": {
+        "title": "Analysis failed",
+        "body": "Tap to retry on the entry."
+      },
+      "export_ready": {
+        "title": "Your export is ready",
+        "body": "Tap to download."
+      }
     }
   }
 }

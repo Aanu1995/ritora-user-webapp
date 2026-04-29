@@ -1,0 +1,143 @@
+import { screen } from '@testing-library/react';
+import { renderWithProviders } from '@/test/utils';
+import type { InAppNotification } from '@/types/notifications';
+
+const mockFetchNextPage = jest.fn();
+const mockMarkAll = jest.fn();
+const intersectionObservers: MockIntersectionObserverInstance[] = [];
+
+type MockIntersectionObserverInstance = {
+  callback: IntersectionObserverCallback;
+  elements: Set<Element>;
+  observe: jest.Mock<void, [Element]>;
+  disconnect: jest.Mock<void, []>;
+};
+
+function installIntersectionObserverMock() {
+  intersectionObservers.length = 0;
+
+  class MockIntersectionObserver {
+    readonly root = null;
+    readonly rootMargin = '0px';
+    readonly thresholds = [0];
+    private readonly instance: MockIntersectionObserverInstance;
+
+    constructor(callback: IntersectionObserverCallback) {
+      this.instance = {
+        callback,
+        elements: new Set<Element>(),
+        observe: jest.fn((element: Element) => {
+          this.instance.elements.add(element);
+        }),
+        disconnect: jest.fn(() => {
+          this.instance.elements.clear();
+        }),
+      };
+      intersectionObservers.push(this.instance);
+    }
+
+    observe = (element: Element) => this.instance.observe(element);
+    disconnect = () => this.instance.disconnect();
+    unobserve = jest.fn();
+    takeRecords = () => [];
+  }
+
+  Object.defineProperty(window, 'IntersectionObserver', {
+    writable: true,
+    configurable: true,
+    value: MockIntersectionObserver,
+  });
+}
+
+function triggerIntersection(testId: string) {
+  const target = screen.getByTestId(testId);
+  const observer = intersectionObservers.at(-1);
+  if (!observer) {
+    throw new Error('No IntersectionObserver instance was registered.');
+  }
+
+  observer.callback(
+    [
+      {
+        isIntersecting: true,
+        target,
+        time: 0,
+        intersectionRatio: 1,
+        boundingClientRect: target.getBoundingClientRect(),
+        intersectionRect: target.getBoundingClientRect(),
+        rootBounds: null,
+      } as IntersectionObserverEntry,
+    ],
+    {} as IntersectionObserver,
+  );
+}
+
+function notification(id: string, readAt: string | null): InAppNotification {
+  return {
+    id,
+    kind: 'photo_reminder',
+    title_key: 'skinJournal.notifications.photoReminder.title',
+    body_key: 'skinJournal.notifications.photoReminder.body',
+    severity: 'info',
+    payload: null,
+    deep_link: '/journal/upload',
+    read_at: readAt,
+    created_at: '2026-04-29T08:00:00.000Z',
+  };
+}
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+}));
+
+jest.mock('@/hooks/use-notifications', () => ({
+  useNotifications: () => ({
+    data: {
+      unread: [notification('unread-1', null)],
+      read: [notification('read-1', '2026-04-29T09:00:00.000Z')],
+      unread_count: 2,
+    },
+    isPending: false,
+    isError: false,
+    hasNextPage: true,
+    isFetchingNextPage: false,
+    isFetchNextPageError: false,
+    fetchNextPage: mockFetchNextPage,
+    refetch: jest.fn(),
+  }),
+  useMarkAllNotificationsRead: () => ({
+    mutate: mockMarkAll,
+    isPending: false,
+  }),
+  useMarkNotificationRead: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+  }),
+}));
+
+import NotificationsPage from '@/app/(app)/notifications/page';
+
+describe('NotificationsPage', () => {
+  beforeEach(() => {
+    installIntersectionObserverMock();
+    mockFetchNextPage.mockReset();
+    mockMarkAll.mockReset();
+  });
+
+  it('auto-loads the next notifications cursor page when the sentinel enters view', () => {
+    renderWithProviders(<NotificationsPage />);
+
+    triggerIntersection('notifications-auto-load-sentinel');
+
+    expect(mockFetchNextPage).toHaveBeenCalled();
+  });
+
+  it('renders unread and read buckets from paginated API data', () => {
+    renderWithProviders(<NotificationsPage />);
+
+    expect(screen.getByText(/unread · 2/i)).toBeInTheDocument();
+    expect(screen.getByText(/read · 1/i)).toBeInTheDocument();
+  });
+});

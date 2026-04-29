@@ -5,21 +5,28 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import { GuardedLink } from "@/components/app/guarded-link";
+import { NavBadge } from "@/components/app/nav-badge";
 import { RitoraMark } from "@/components/icons/ritora-mark";
 import { cn } from "@/lib/utils";
 import { AppRoute } from "@/constants/app-routes";
 import { getNavItemsByGroup, NavGroup, type NavItem } from "@/constants/nav-config";
+import {
+  useNavBadgeCounts,
+  type NavBadgeCounts,
+} from "@/hooks/use-nav-badge-counts";
 
 function MobileNavList({
   items,
   pathname,
   t,
   onClose,
+  badgeCounts,
 }: {
   items: NavItem[];
   pathname: string;
   t: (key: string) => string;
   onClose: () => void;
+  badgeCounts: NavBadgeCounts;
 }) {
   return (
     <ul role="list" className="-mx-2 space-y-1">
@@ -29,6 +36,7 @@ function MobileNavList({
             ? pathname === AppRoute.Dashboard
             : pathname === item.route || pathname.startsWith(item.route + "/");
         const Icon = item.icon;
+        const badgeCount = badgeCounts[item.route] ?? 0;
 
         return (
           <li key={item.route}>
@@ -36,14 +44,15 @@ function MobileNavList({
               href={item.route}
               onClick={onClose}
               className={cn(
-                "group flex gap-x-3 rounded-lg p-2.5 text-sm font-medium leading-6 transition-colors",
+                "group flex items-center gap-x-3 rounded-lg p-2.5 text-sm font-medium leading-6 transition-colors",
                 isActive
                   ? "bg-accent-soft text-accent-strong"
                   : "text-muted hover:bg-accent/5 hover:text-foreground",
               )}
             >
               <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
-              {t(`items.${item.labelKey}`)}
+              <span className="flex-1">{t(`items.${item.labelKey}`)}</span>
+              <NavBadge count={badgeCount} />
             </GuardedLink>
           </li>
         );
@@ -63,6 +72,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
   const mainItems = getNavItemsByGroup(NavGroup.Main);
   const moreItems = getNavItemsByGroup(NavGroup.More);
   const accountItems = getNavItemsByGroup(NavGroup.Account);
+  const badgeCounts = useNavBadgeCounts();
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -123,14 +133,14 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
           <nav className="flex flex-1 flex-col">
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li>
-                <MobileNavList items={mainItems} pathname={pathname} t={t} onClose={onClose} />
+                <MobileNavList items={mainItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
               </li>
               <li>
                 <div className="text-xs font-semibold uppercase tracking-wider text-muted">
                   {t("groups.more")}
                 </div>
                 <div className="mt-2">
-                  <MobileNavList items={moreItems} pathname={pathname} t={t} onClose={onClose} />
+                  <MobileNavList items={moreItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
                 </div>
               </li>
               <li className="mt-auto">
@@ -138,7 +148,7 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
                   {t("groups.account")}
                 </div>
                 <div className="mt-2">
-                  <MobileNavList items={accountItems} pathname={pathname} t={t} onClose={onClose} />
+                  <MobileNavList items={accountItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
                 </div>
               </li>
             </ul>

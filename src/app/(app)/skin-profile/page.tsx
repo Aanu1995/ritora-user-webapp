@@ -10,7 +10,10 @@ import { SkinProfileOverview } from "@/components/skin-profile/skin-profile-over
 import { SkinProfileSkeleton } from "@/components/skin-profile/skin-profile-skeleton";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
-import { useSkinProfile, useSkinProfileOptions } from "@/hooks/use-skin-profile";
+import {
+  useSkinProfile,
+  useSkinProfileOptions,
+} from "@/hooks/use-skin-profile";
 import { getApiErrorStatus } from "@/lib/api-error";
 import { getAppScrollRoot } from "@/lib/app-scroll-restoration";
 import {
@@ -53,7 +56,9 @@ export default function SkinProfilePage() {
     (profile.isError && profileStatus === 404);
   const hasProfileError = profile.isError && profileStatus !== 404;
   const hasOptionsError = options.isError;
-  const isLoading = options.isPending || (profile.isPending && !profile.isError);
+  const isLoading =
+    options.isPending ||
+    (!hasMissingProfileHandoff && profile.isPending && !profile.isError);
   const isEditMode = editStep !== null && profile.data !== undefined;
   const isOnboardingMode = hasNoProfile || !profile.data;
   const isOverviewMode = !isEditMode && !isOnboardingMode;
@@ -97,14 +102,13 @@ export default function SkinProfilePage() {
   if (isLoading) {
     return (
       <div>
-        <PageHeader
-          title={t("title")}
-          subtitle={t("overview.description")}
-        />
+        <PageHeader title={t("title")} subtitle={t("overview.description")} />
         <div className="mx-auto w-full max-w-3xl">
           <SkinProfileSkeleton
             mode={
-              Boolean(profile.data) && editStep === null ? "overview" : "generic"
+              Boolean(profile.data) && editStep === null
+                ? "overview"
+                : "onboarding"
             }
           />
         </div>
@@ -115,10 +119,7 @@ export default function SkinProfilePage() {
   if (showLoadError) {
     return (
       <div>
-        <PageHeader
-          title={t("title")}
-          subtitle={t("overview.description")}
-        />
+        <PageHeader title={t("title")} subtitle={t("overview.description")} />
         <div className="mx-auto mt-6 w-full max-w-3xl">
           <RetryPanel
             title={tCommon("error")}
@@ -178,10 +179,7 @@ export default function SkinProfilePage() {
         ) : isOnboardingMode && options.data ? (
           <SkinProfileForm key="create-profile" options={options.data} />
         ) : isOverviewMode && profile.data ? (
-          <SkinProfileOverview
-            profile={profile.data}
-            onEdit={openEditStep}
-          />
+          <SkinProfileOverview profile={profile.data} onEdit={openEditStep} />
         ) : null}
       </div>
     </div>

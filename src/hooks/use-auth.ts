@@ -23,7 +23,6 @@ import { useAuthStore } from "@/stores/auth-store";
 import type {
   LoginInput,
   RegisterInput,
-  RegisterResponse,
   ResetPasswordInput,
   UpdatePreferredLanguageInput,
   UpdateTimeZoneInput,
@@ -63,16 +62,6 @@ async function clearPendingAuthSession(): Promise<void> {
   }
 }
 
-async function clearPendingRegistrationSession(
-  response: RegisterResponse,
-): Promise<void> {
-  if (!response.accessToken) {
-    return;
-  }
-
-  await clearPendingAuthSession();
-}
-
 function createEmailNotVerifiedError(): ApiError {
   return new ApiError("Email not verified", {
     status: 403,
@@ -107,7 +96,6 @@ export function useRegister() {
   return useMutation({
     mutationFn: async (data: RegisterInput) => {
       const response = await register(data);
-      await clearPendingRegistrationSession(response);
       return response;
     },
   });
