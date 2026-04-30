@@ -16,9 +16,11 @@ export function ConcernRatingRow({
   variant = "default",
 }: ConcernRatingRowProps) {
   return (
-    <div className="grid grid-cols-[130px_1fr] items-center gap-3 border-b border-dashed border-border py-1.5 last:border-b-0">
-      <span className="text-xs font-semibold">{label}</span>
-      <div className="flex gap-1">
+    <div className="flex items-center gap-3 border-b border-dashed border-border py-1.5 last:border-b-0">
+      <span className="w-24 shrink-0 truncate text-xs font-semibold">
+        {label}
+      </span>
+      <div className="flex shrink-0 gap-1">
         {[1, 2, 3, 4, 5].map((n) => {
           const selected = value === n;
           return (
@@ -29,7 +31,7 @@ export function ConcernRatingRow({
               aria-pressed={selected}
               onClick={() => onChange?.(n as 1 | 2 | 3 | 4 | 5)}
               className={cn(
-                "grid h-7 w-7 place-items-center rounded-full border text-xs font-semibold transition",
+                "grid h-6 w-6 place-items-center rounded-full border text-[11px] font-semibold transition",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/30",
                 selected
                   ? variant === "danger"

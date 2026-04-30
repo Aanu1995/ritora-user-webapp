@@ -96,7 +96,7 @@ export default function NotificationsPage() {
             </div>
           </div>
         ) : (
-          <>
+          <div className="rounded-2xl border border-border bg-surface p-4 sm:p-6">
             {unread.length > 0 ? (
               <>
                 <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-muted">
@@ -149,7 +149,7 @@ export default function NotificationsPage() {
                 />
               </div>
             ) : null}
-          </>
+          </div>
         )}
       </div>
     </div>

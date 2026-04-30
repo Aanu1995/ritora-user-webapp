@@ -12,7 +12,7 @@ export function NavBadge({ count, max = 99, className }: NavBadgeProps) {
   return (
     <span
       className={cn(
-        "ml-auto inline-flex min-w-[18px] items-center justify-center rounded-full bg-danger px-1.5 py-px text-[10px] font-bold leading-none text-white",
+        "ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-danger px-1.5 text-[11px] font-bold leading-none text-white",
         className,
       )}
       aria-label={`${count} unread`}

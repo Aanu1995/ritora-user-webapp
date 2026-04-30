@@ -1,18 +1,18 @@
 "use client";
 
 import { use } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
 import { AppRoute } from "@/constants/app-routes";
-import {
-  useDay,
-  useDeleteEntry,
-  useRetryAnalysis,
-} from "@/hooks/use-skin-journal";
+import { useDay, useRetryAnalysis } from "@/hooks/use-skin-journal";
 import { BackButton } from "@/components/skin-journal/back-button";
 import { DayDetailPanel } from "@/components/skin-journal/day-detail";
-import { buildJournalUploadHref } from "@/components/skin-journal/journal-navigation";
+import { formatJournalLongDate } from "@/components/skin-journal/journal-date";
+import {
+  JournalUploadMode,
+  buildJournalUploadHref,
+} from "@/components/skin-journal/journal-navigation";
 
 function todayYmd(): string {
   const now = new Date();
@@ -28,19 +28,22 @@ export default function JournalDayPage({
 }) {
   const { date } = use(params);
   const t = useTranslations("journal.dayDetail");
+  const locale = useLocale();
   const router = useRouter();
   const { data, isLoading } = useDay(date);
-  const deleteEntry = useDeleteEntry();
   const retryAnalysis = useRetryAnalysis();
+  const formattedDate = formatJournalLongDate(date, locale);
 
   const today = todayYmd();
   const isToday = date === today;
   const openTodayUpload = () => router.push(buildJournalUploadHref());
+  const openTodayEdit = () =>
+    router.push(buildJournalUploadHref({ mode: JournalUploadMode.Edit }));
 
   return (
     <div>
       <PageHeader
-        title={date}
+        title={formattedDate}
         subtitle={
           data?.entry?.has_reaction
             ? t("reactionFlagged")
@@ -48,19 +51,17 @@ export default function JournalDayPage({
         }
         leading={<BackButton href={AppRoute.Journal} label={t("backToJournal")} />}
       />
-      <div className="mt-2 max-w-3xl">
+      <div className="mx-auto mt-2 max-w-3xl">
         <DayDetailPanel
           detail={data ?? null}
           isLoading={isLoading}
           isToday={isToday}
           onAddPhoto={isToday ? openTodayUpload : undefined}
-          onRetryAnalysis={(entry) => retryAnalysis.mutate(entry.id)}
-          onReplacePhoto={isToday ? openTodayUpload : undefined}
-          onDeleteEntry={(entry) => {
-            deleteEntry.mutate(entry.id, {
-              onSuccess: () => router.push(AppRoute.Journal),
-            });
-          }}
+          onEditEntry={isToday ? openTodayEdit : undefined}
+          onRetryAnalysis={
+            isToday ? (entry) => retryAnalysis.mutate(entry.id) : undefined
+          }
+          onReplacePhoto={isToday ? openTodayEdit : undefined}
         />
       </div>
     </div>

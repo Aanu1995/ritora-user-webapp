@@ -16,7 +16,10 @@ export function PageHeader({
   leading,
 }: PageHeaderProps) {
   return (
-    <div className="sticky top-0 z-10 bg-background pb-4 pt-6">
+    <div
+      data-slot="page-header"
+      className="sticky top-0 z-10 bg-background pb-4 pt-6"
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-3">
           {leading ? <div className="shrink-0">{leading}</div> : null}

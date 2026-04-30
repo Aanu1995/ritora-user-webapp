@@ -1,10 +1,11 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { buildBackendUrl } from "@/lib/media-url";
+import { formatJournalShortDate } from "@/components/skin-journal/journal-date";
 import type { JournalEntry } from "@/types/skin-journal";
 
 interface PhotoGridProps {
@@ -13,6 +14,7 @@ interface PhotoGridProps {
 
 export function PhotoGrid({ entries }: PhotoGridProps) {
   const t = useTranslations("journal.photos");
+  const locale = useLocale();
   const router = useRouter();
 
   if (entries.length === 0) {
@@ -48,11 +50,11 @@ export function PhotoGrid({ entries }: PhotoGridProps) {
               />
             ) : null}
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/70 to-transparent px-2.5 py-2 text-white">
-              <p className="text-[11px] font-semibold">
-                {entry.entry_date}
-                {entry.has_reaction ? " · reaction" : ""}
+              <p className="text-sm font-semibold">
+                {formatJournalShortDate(entry.entry_date, locale)}
+                {entry.has_reaction ? ` · ${t("reactionTag")}` : ""}
               </p>
-              <span className="mt-0.5 inline-block rounded-full bg-white/20 px-1.5 py-0.5 text-[9px]">
+              <span className="mt-0.5 inline-block rounded-full bg-white/20 px-1.5 py-0.5 text-[10px]">
                 {entry.angle.replace("_", " ")}
               </span>
             </div>

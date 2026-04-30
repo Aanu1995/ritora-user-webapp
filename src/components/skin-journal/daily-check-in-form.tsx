@@ -3,105 +3,29 @@
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { useTranslations } from "next-intl";
-import { z } from "zod";
 import {
   CONCERN_KEYS,
   CYCLE_MARKERS,
-  RECENT_CHANGE_KINDS,
   SLEEP_BANDS,
   STRESS_LEVELS,
   SUN_EXPOSURES,
-  OVERALL_FEELS,
   type ConcernKey,
-  type CycleMarker,
-  type OverallFeel,
-  type Ratings,
-  type RecentChange,
-  type SleepBand,
-  type StressLevel,
-  type SunExposure,
-  type UpsertEntryPayload,
 } from "@/types/skin-journal";
 import { Button } from "@/components/ui/button";
 import { Chip } from "./chip";
 import { ConcernRatingRow } from "./concern-rating-row";
 import { FeelPicker } from "./feel-picker";
 import { RecentChangeInput } from "./recent-change-input";
+import {
+  checkInFormSchema,
+  type CheckInFormValue,
+} from "./daily-check-in-validation";
 
-export interface CheckInFormValue {
-  overall_feel?: OverallFeel;
-  ratings: Ratings;
-  sleep_band?: SleepBand;
-  stress_today?: StressLevel;
-  sun_exposure_today?: SunExposure;
-  sweat_exercise_today?: boolean;
-  cycle_marker?: CycleMarker;
-  recent_change?: RecentChange | null;
-  complaint_note?: string | null;
-}
-
-const VALID_RATINGS = [1, 2, 3, 4, 5] as const;
-const MAX_COMPLAINT_NOTE_LENGTH = 2000;
-
-function isRecord(input: unknown): input is Record<string, unknown> {
-  return typeof input === "object" && input !== null && !Array.isArray(input);
-}
-
-function isRating(input: unknown): input is 1 | 2 | 3 | 4 | 5 {
-  return (
-    typeof input === "number" &&
-    VALID_RATINGS.includes(input as (typeof VALID_RATINGS)[number])
-  );
-}
-
-function optionalStringEnum<T extends string>(values: readonly T[]) {
-  return z.custom<T | undefined>(
-    (input) =>
-      input === undefined ||
-      (typeof input === "string" && values.includes(input as T)),
-  );
-}
-
-function nullableRecentChange(input: unknown): input is RecentChange | null {
-  if (input === null || input === undefined) {
-    return true;
-  }
-
-  if (!isRecord(input) || typeof input.kind !== "string") {
-    return false;
-  }
-
-  return RECENT_CHANGE_KINDS.includes(input.kind as RecentChange["kind"]);
-}
-
-const ratingsSchema = z.custom<Ratings>((input) => {
-  if (!isRecord(input)) {
-    return false;
-  }
-
-  return Object.entries(input).every(
-    ([key, rating]) =>
-      CONCERN_KEYS.includes(key as ConcernKey) && isRating(rating),
-  );
-});
-
-const checkInFormSchema = z.object({
-  overall_feel: optionalStringEnum(OVERALL_FEELS),
-  ratings: ratingsSchema,
-  sleep_band: optionalStringEnum(SLEEP_BANDS),
-  stress_today: optionalStringEnum(STRESS_LEVELS),
-  sun_exposure_today: optionalStringEnum(SUN_EXPOSURES),
-  sweat_exercise_today: z.boolean().optional(),
-  cycle_marker: optionalStringEnum(CYCLE_MARKERS),
-  recent_change: z.custom<RecentChange | null | undefined>(
-    nullableRecentChange,
-  ),
-  complaint_note: z
-    .string()
-    .max(MAX_COMPLAINT_NOTE_LENGTH, "validation.noteTooLong")
-    .nullable()
-    .optional(),
-});
+export {
+  checkInToPayload,
+  validateCheckInForSave,
+} from "./daily-check-in-validation";
+export type { CheckInFormValue } from "./daily-check-in-validation";
 
 interface DailyCheckInFormProps {
   value: CheckInFormValue;
@@ -330,18 +254,4 @@ export function DailyCheckInForm({
       )}
     </form.Subscribe>
   );
-}
-
-export function checkInToPayload(value: CheckInFormValue): UpsertEntryPayload {
-  return {
-    overall_feel: value.overall_feel,
-    ratings: value.ratings,
-    sleep_band: value.sleep_band,
-    stress_today: value.stress_today,
-    sun_exposure_today: value.sun_exposure_today,
-    sweat_exercise_today: value.sweat_exercise_today,
-    cycle_marker: value.cycle_marker,
-    recent_change: value.recent_change,
-    complaint_note: value.complaint_note,
-  };
 }

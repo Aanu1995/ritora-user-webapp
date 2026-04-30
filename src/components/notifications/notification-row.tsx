@@ -23,7 +23,7 @@ const KIND_STYLES: Record<
   },
   reaction_detected: {
     emoji: "!",
-    bg: "bg-[color:var(--danger-soft)]",
+    bg: "bg-danger-soft",
     fg: "text-danger",
   },
   simplification_started: {
@@ -110,13 +110,13 @@ export function NotificationRow({ notification }: NotificationRowProps) {
       className={cn(
         "flex items-start gap-3 border-b border-border py-3.5 last:border-b-0",
         isUnread &&
-          "rounded-xl border-b-0 bg-accent/5 px-2.5 py-3.5",
+          "-mx-2.5 my-1 rounded-xl border-b-0 bg-[color:var(--accent-strong)]/[0.04] px-2.5 py-3.5",
       )}
     >
       <div
         aria-hidden
         className={cn(
-          "grid h-9 w-9 shrink-0 place-items-center rounded-xl text-base font-bold leading-none",
+          "grid h-9 w-9 shrink-0 place-items-center rounded-[10px] text-base font-bold leading-none",
           styles.bg,
           styles.fg,
         )}
@@ -124,11 +124,13 @@ export function NotificationRow({ notification }: NotificationRowProps) {
         {styles.emoji}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-[13px] font-semibold">{tKind("title")}</p>
-        <p className="mt-0.5 text-xs leading-relaxed text-muted">
+        <p className="text-sm font-semibold text-foreground">
+          {tKind("title")}
+        </p>
+        <p className="mt-1 text-sm leading-[1.55] text-muted">
           {tKind("body")}
         </p>
-        <p className="mt-1 text-[11px] text-muted">
+        <p className="mt-1.5 text-xs text-muted">
           {formatRelative(notification.created_at, locale)} ·{" "}
           {t("sourceSkinJournal")}
         </p>
@@ -139,6 +141,7 @@ export function NotificationRow({ notification }: NotificationRowProps) {
           size="sm"
           disabled={markRead.isPending}
           onClick={handleClick}
+          className="shrink-0"
         >
           {notification.kind === "wrapped_ready" ? t("play") : t("view")}
         </Button>

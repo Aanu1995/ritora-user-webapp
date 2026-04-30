@@ -57,7 +57,7 @@ export function AnalysisCard({ observations }: AnalysisCardProps) {
         )}
       </div>
 
-      <p className="mb-3 text-xs leading-relaxed text-muted">
+      <p className="mb-3 text-sm leading-relaxed text-muted">
         {observations.overall_assessment}
       </p>
 
@@ -68,7 +68,7 @@ export function AnalysisCard({ observations }: AnalysisCardProps) {
         />
 
         <div>
-          <p className="mb-1.5 text-xs text-muted">{t("concernsLabel")}</p>
+          <p className="mb-1.5 text-sm text-muted">{t("concernsLabel")}</p>
           <div className="flex flex-wrap gap-1.5">
             {observations.detected_concerns.map((c, idx) => (
               <Chip
@@ -91,7 +91,7 @@ export function AnalysisCard({ observations }: AnalysisCardProps) {
             ) : null}
           </div>
 
-          <p className="mb-1.5 mt-3 text-xs text-muted">
+          <p className="mb-1.5 mt-3 text-sm text-muted">
             {t("imageQualityLabel")}
           </p>
           <div className="flex flex-wrap gap-1.5">
@@ -118,7 +118,7 @@ export function AnalysisCard({ observations }: AnalysisCardProps) {
         </div>
       </div>
 
-      <p className="mt-3 text-[11px] leading-relaxed text-muted">
+      <p className="mt-3 text-xs leading-relaxed text-muted">
         <strong className="text-foreground">{t("disclaimer").split(".")[0]}.</strong>{" "}
         {t("disclaimer").split(".").slice(1).join(".").trim()}
       </p>

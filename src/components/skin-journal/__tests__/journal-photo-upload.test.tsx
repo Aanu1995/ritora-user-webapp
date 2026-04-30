@@ -41,6 +41,31 @@ describe('JournalPhotoUpload', () => {
     expect(onConsentChange).toHaveBeenCalledWith(true);
   });
 
+  it('shows the current journal photo in edit mode before a replacement is selected', () => {
+    renderWithProviders(
+      <JournalPhotoUpload
+        photo={null}
+        existingPhotoUrl="https://example.com/current.webp"
+        existingPhotoAlt="Current journal photo"
+        onPhotoChange={jest.fn()}
+        angle="head_on"
+        onAngleChange={jest.fn()}
+        isPreRoutine
+        onPreRoutineChange={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByRole('img', { name: /current journal photo/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /replace/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /tap to choose a photo/i }),
+    ).not.toBeInTheDocument();
+  });
+
   it('releases the preview object URL when the parent clears the selected photo', async () => {
     const onPhotoChange = jest.fn();
     const file = new File(['face'], 'face.jpg', { type: 'image/jpeg' });

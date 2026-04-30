@@ -16,6 +16,8 @@ import { Chip } from "./chip";
 
 interface JournalPhotoUploadProps {
   photo: File | null;
+  existingPhotoUrl?: string | null;
+  existingPhotoAlt?: string;
   onPhotoChange: (photo: File | null) => void;
   angle: Angle;
   onAngleChange: (angle: Angle) => void;
@@ -34,6 +36,8 @@ function formatMegabytes(size: number): string {
 
 export function JournalPhotoUpload({
   photo,
+  existingPhotoUrl,
+  existingPhotoAlt,
   onPhotoChange,
   angle,
   onAngleChange,
@@ -156,6 +160,43 @@ export function JournalPhotoUpload({
               size: formatMegabytes(photo.size),
               kind: t("processedKind"),
             })}
+          </p>
+        </div>
+      ) : existingPhotoUrl ? (
+        <div>
+          <div className="relative aspect-square w-full max-w-[320px] overflow-hidden rounded-2xl border border-border">
+            <Image
+              src={existingPhotoUrl}
+              alt={existingPhotoAlt ?? t("photoPreviewAlt")}
+              fill
+              unoptimized
+              className="object-cover"
+            />
+            <div className="absolute left-2.5 top-2.5">
+              <Chip variant="accent" selected>
+                {t("currentPhotoBadge")}
+              </Chip>
+            </div>
+            <div className="absolute bottom-2.5 left-2.5 right-2.5 flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (inputRef.current) {
+                    inputRef.current.value = "";
+                    inputRef.current.click();
+                  }
+                }}
+                className="bg-surface/90 backdrop-blur"
+                type="button"
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                {t("replace")}
+              </Button>
+            </div>
+          </div>
+          <p className="mt-2 text-xs text-muted">
+            {t("currentPhotoHint")}
           </p>
         </div>
       ) : (

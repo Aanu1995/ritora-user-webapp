@@ -130,10 +130,12 @@ describe("Skin Journal frontend quality guardrails", () => {
       join(process.cwd(), "src/hooks/use-skin-journal.ts"),
     );
 
-    expect(uploadPage).not.toContain("useSearchParams");
     expect(uploadPage).not.toContain("useUpsertForDate");
     expect(uploadPage).toContain("useUpsertToday");
     expect(uploadPage).not.toContain("?date=");
+    expect(uploadPage).not.toContain('searchParams.get("date")');
+    expect(uploadPage).toContain('searchParams.get("mode")');
+    expect(uploadPage).not.toContain("Boolean(entry)");
     expect(service).not.toContain("upsertForDate");
     expect(service).not.toContain("postMultipartRequest(\n    ApiPath.SkinJournalDay");
     expect(hooks).not.toContain("useUpsertForDate");
@@ -143,9 +145,15 @@ describe("Skin Journal frontend quality guardrails", () => {
     const dayPage = readSource(
       join(process.cwd(), "src/app/(app)/journal/days/[date]/page.tsx"),
     );
+    const journalPage = readSource(
+      join(process.cwd(), "src/app/(app)/journal/page.tsx"),
+    );
 
     expect(dayPage).not.toContain("/journal/upload?date=");
     expect(dayPage).toContain("buildJournalUploadHref()");
+    expect(dayPage).toContain("JournalUploadMode.Edit");
+    expect(journalPage).not.toContain("editTodayPhoto");
+    expect(journalPage).toContain("router.push(buildJournalUploadHref())");
   });
 
   it("guards AI-generated compare concern labels before translation lookup", () => {
@@ -160,9 +168,18 @@ describe("Skin Journal frontend quality guardrails", () => {
   it("uses TanStack Form with Zod validators for Skin Journal forms", () => {
     const violations = FORM_FILES.flatMap((file) => {
       const source = readSource(join(process.cwd(), file));
+      const validationSource = source.includes("daily-check-in-validation")
+        ? readSource(
+            join(
+              process.cwd(),
+              "src/components/skin-journal/daily-check-in-validation.ts",
+            ),
+          )
+        : "";
+      const sourceWithValidators = `${source}\n${validationSource}`;
       const missing = [
         source.includes("@tanstack/react-form") ? null : "TanStack Form",
-        source.includes("zod") ? null : "Zod",
+        sourceWithValidators.includes("zod") ? null : "Zod",
         source.includes("validators:") ? null : "form validators",
       ].filter((value): value is string => value !== null);
 

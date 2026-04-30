@@ -11,22 +11,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { AppRoute } from "@/constants/app-routes";
 import { useJournalUiStore } from "@/stores/journal-ui-store";
 import {
   useCalendar,
   useDay,
-  useDeleteEntry,
   useDismissInsight,
   useInsights,
   useJournalStats,
@@ -42,8 +31,10 @@ import { ReactionDetectedModal } from "@/components/skin-journal/reaction-detect
 import { DermatologistExportModal } from "@/components/skin-journal/dermatologist-export-modal";
 import { JournalTabPanels } from "@/components/skin-journal/journal-tab-panels";
 import { resolveCanonicalTodayDate } from "@/components/skin-journal/journal-date";
-import { buildJournalUploadHref } from "@/components/skin-journal/journal-navigation";
-import type { JournalEntry } from "@/types/skin-journal";
+import {
+  JournalUploadMode,
+  buildJournalUploadHref,
+} from "@/components/skin-journal/journal-navigation";
 
 function formatLocalYmd(date: Date): string {
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -63,7 +54,6 @@ function todayLocal(): { ymd: string; year: number; month: number } {
 export default function JournalPage() {
   const locale = useLocale();
   const t = useTranslations("journal");
-  const tDelete = useTranslations("journal.deleteConfirm");
   const tReaction = useTranslations("journal.reaction");
   const router = useRouter();
 
@@ -98,13 +88,10 @@ export default function JournalPage() {
   const startSimplification = useStartSimplification();
   const dismissInsight = useDismissInsight();
   const retryAnalysis = useRetryAnalysis();
-  const deleteEntry = useDeleteEntry();
 
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [dismissedReactionEntryId, setDismissedReactionEntryId] =
     useState<string | null>(null);
-  const [pendingDeleteEntry, setPendingDeleteEntry] =
-    useState<JournalEntry | null>(null);
 
   const todayEntry = todayPayload?.entry ?? null;
   const reactionEntry =
@@ -176,12 +163,16 @@ export default function JournalPage() {
         value={tab}
         onValueChange={(v) => setTab(v as typeof tab)}
       >
-        <div className="sticky top-0 z-20 bg-background pt-2 backdrop-blur supports-[backdrop-filter]:bg-background/85">
-          <div className="mx-auto max-w-5xl space-y-3 pb-3">
-            <SimplificationBanner />
+        <div className="sticky top-[88px] z-[5] bg-background pt-2 backdrop-blur supports-[backdrop-filter]:bg-background/85">
+          <div className="pointer-events-none absolute inset-x-0 top-2 z-30 px-4 sm:px-6 lg:px-0">
+            <div className="pointer-events-auto mx-auto max-w-7xl">
+              <SimplificationBanner />
+            </div>
+          </div>
+          <div className="mx-auto max-w-7xl pb-3">
             <StatStrip stats={stats} />
           </div>
-          <div className="mx-auto max-w-5xl overflow-x-auto border-b border-border [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="mx-auto max-w-7xl overflow-x-auto border-b border-border [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <TabsList className="border-b-0">
               <TabsTrigger value="calendar">{t("tabs.calendar")}</TabsTrigger>
               <TabsTrigger value="photos">
@@ -232,13 +223,27 @@ export default function JournalPage() {
           }
           onOpenCompare={() => router.push(`${AppRoute.Journal}/compare`)}
           onOpenExport={() => setExportModalOpen(true)}
-          onRetryAnalysis={(entry) => retryAnalysis.mutate(entry.id)}
-          onReplacePhoto={
+          onEditEntry={
             canUploadForSelectedDate
-              ? () => router.push(buildJournalUploadHref())
+              ? () =>
+                  router.push(
+                    buildJournalUploadHref({ mode: JournalUploadMode.Edit }),
+                  )
               : undefined
           }
-          onDeleteEntry={setPendingDeleteEntry}
+          onRetryAnalysis={
+            canUploadForSelectedDate
+              ? (entry) => retryAnalysis.mutate(entry.id)
+              : undefined
+          }
+          onReplacePhoto={
+            canUploadForSelectedDate
+              ? () =>
+                  router.push(
+                    buildJournalUploadHref({ mode: JournalUploadMode.Edit }),
+                  )
+              : undefined
+          }
           onDismissInsight={(id) => dismissInsight.mutate(id)}
         />
       </Tabs>
@@ -267,33 +272,6 @@ export default function JournalPage() {
         />
       ) : null}
 
-      <AlertDialog
-        open={!!pendingDeleteEntry}
-        onOpenChange={(open) => {
-          if (!open) setPendingDeleteEntry(null);
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{tDelete("title")}</AlertDialogTitle>
-            <AlertDialogDescription>{tDelete("body")}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{tDelete("cancel")}</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-danger text-white hover:bg-danger/90"
-              onClick={() => {
-                if (pendingDeleteEntry) {
-                  deleteEntry.mutate(pendingDeleteEntry.id);
-                  setPendingDeleteEntry(null);
-                }
-              }}
-            >
-              {tDelete("confirm")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

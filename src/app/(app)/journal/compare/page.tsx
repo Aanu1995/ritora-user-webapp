@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeftRight, Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { BackButton } from "@/components/skin-journal/back-button";
 import { PhotoFrame } from "@/components/skin-journal/photo-frame";
 import { Chip } from "@/components/skin-journal/chip";
 import { JournalCompareSkeleton } from "@/components/skin-journal/journal-loading-skeletons";
+import { formatJournalShortDate } from "@/components/skin-journal/journal-date";
 import { safeDynamicTranslation } from "@/components/skin-journal/safe-translation";
 
 function todayYmd(): string {
@@ -29,9 +30,12 @@ export default function JournalComparePage() {
   const tDayDetail = useTranslations("journal.dayDetail");
   const tConcerns = useTranslations("journal.concerns");
   const tSeverity = useTranslations("journal.severity");
+  const locale = useLocale();
 
   const [from, setFrom] = useState(thirtyDaysAgo());
   const [to, setTo] = useState(todayYmd());
+  const fromLabel = formatJournalShortDate(from, locale);
+  const toLabel = formatJournalShortDate(to, locale);
 
   const { data, isLoading } = useCompareDays(from, to);
 
@@ -87,10 +91,10 @@ export default function JournalComparePage() {
 
       <div className="mx-auto mt-4 grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <p className="text-xs font-bold">{from}</p>
+          <p className="text-sm font-bold">{fromLabel}</p>
           <PhotoFrame
             url={data?.from?.photo_url ?? null}
-            alt={t("fromPhotoAlt", { date: from })}
+            alt={t("fromPhotoAlt", { date: fromLabel })}
             aspect="square"
           />
           {data?.from ? (
@@ -123,10 +127,10 @@ export default function JournalComparePage() {
         </div>
 
         <div className="space-y-2">
-          <p className="text-xs font-bold">{to}</p>
+          <p className="text-sm font-bold">{toLabel}</p>
           <PhotoFrame
             url={data?.to?.photo_url ?? null}
-            alt={t("toPhotoAlt", { date: to })}
+            alt={t("toPhotoAlt", { date: toLabel })}
             fallbackTone="cool"
             aspect="square"
           />

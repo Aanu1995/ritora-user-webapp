@@ -80,11 +80,11 @@ export function InsightCard({
         <styles.Icon className="h-3 w-3" />
         {t(`kinds.${insight.kind}`)}
       </span>
-      <p className="mt-1.5 text-sm font-bold leading-relaxed">
+      <p className="mt-1.5 text-base font-bold leading-relaxed">
         {insight.summary}
       </p>
       {expanded && insight.supporting_data ? (
-        <pre className="mt-2 max-h-48 overflow-auto rounded-lg bg-surface-muted p-2.5 text-[11px] leading-relaxed text-muted">
+        <pre className="mt-2 max-h-48 overflow-auto rounded-lg bg-surface-muted p-2.5 text-xs leading-relaxed text-muted">
           {JSON.stringify(insight.supporting_data, null, 2)}
         </pre>
       ) : null}

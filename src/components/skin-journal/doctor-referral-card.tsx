@@ -23,11 +23,11 @@ export function DoctorReferralCard({
         <Stethoscope className="h-3.5 w-3.5" />
         {t("kinds.referral")}
       </span>
-      <p className="mt-1.5 text-sm font-bold leading-relaxed">
+      <p className="mt-1.5 text-base font-bold leading-relaxed">
         {insight.summary}
       </p>
       {insight.supporting_data ? (
-        <p className="mt-1 text-xs leading-relaxed text-muted">
+        <p className="mt-1 text-sm leading-relaxed text-muted">
           This is a precautionary nudge, not a diagnosis. We can package your
           recent entries into a sharable summary for your appointment.
         </p>
