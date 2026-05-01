@@ -62,6 +62,7 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     complaint_note: null,
     analysis_status: "completed",
     analysis_observations: null,
+    analysis_interpretation: null,
     analysis_summary: null,
     analysis_model: null,
     analysis_version: null,
@@ -96,6 +97,28 @@ function selectPhoto(container: HTMLElement): File {
     screen.getByRole("checkbox", { name: /processing this skin-progress/i }),
   );
   return file;
+}
+
+function completeCheckIn() {
+  fireEvent.click(screen.getByRole("button", { name: "Good" }));
+
+  for (const concern of [
+    "Oiliness",
+    "Dryness",
+    "Redness",
+    "Breakouts",
+    "Texture",
+    "Irritation",
+    "Sensitivity",
+  ]) {
+    fireEvent.click(screen.getByRole("button", { name: `${concern} 2` }));
+  }
+
+  fireEvent.click(screen.getByRole("button", { name: "5–7h" }));
+  fireEvent.click(screen.getByRole("button", { name: "Low" }));
+  fireEvent.click(screen.getByRole("button", { name: "Brief" }));
+  fireEvent.click(screen.getByRole("button", { name: "No" }));
+  fireEvent.click(screen.getByRole("button", { name: "Don't track" }));
 }
 
 describe("JournalUploadPage edit actions", () => {
@@ -198,6 +221,69 @@ describe("JournalUploadPage edit actions", () => {
       /complete the check-in/i,
     );
     expect(mockUpsertTodayMutate).not.toHaveBeenCalled();
+  });
+
+  it("allows users to continue to check-in without selecting a photo", () => {
+    mockSearchParams = new URLSearchParams();
+    mockTodayPayload = {
+      date: "2026-04-30",
+      entry: null,
+      events: [],
+      insights: [],
+    };
+
+    renderWithProviders(<JournalUploadPage />);
+
+    const continueButton = screen.getByRole("button", {
+      name: /continue to check-in/i,
+    });
+    expect(continueButton).toBeEnabled();
+
+    fireEvent.click(continueButton);
+
+    expect(screen.getByText(/today's check-in/i)).toBeInTheDocument();
+  });
+
+  it("saves a complete check-in without a photo", () => {
+    mockSearchParams = new URLSearchParams();
+    mockTodayPayload = {
+      date: "2026-04-30",
+      entry: null,
+      events: [],
+      insights: [],
+    };
+
+    renderWithProviders(<JournalUploadPage />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /continue to check-in/i }),
+    );
+    completeCheckIn();
+    fireEvent.click(screen.getByRole("button", { name: /save entry/i }));
+
+    expect(mockUpsertTodayMutate).toHaveBeenCalledWith(
+      {
+        payload: expect.objectContaining({
+          overall_feel: "good",
+          ratings: expect.objectContaining({
+            oiliness: 2,
+            dryness: 2,
+            redness: 2,
+            breakouts: 2,
+            texture: 2,
+            irritation: 2,
+            sensitivity: 2,
+          }),
+          sleep_band: "5to7h",
+          stress_today: "low",
+          sun_exposure_today: "brief",
+          sweat_exercise_today: false,
+          cycle_marker: "dont_track",
+        }),
+        photo: null,
+      },
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
+    );
   });
 
   it("validates required check-in fields before saving edit check-ins", () => {

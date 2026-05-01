@@ -1,0 +1,54 @@
+import type { SkinProfile } from '@/types/skin-profile';
+
+export function createReadySkinProfile(
+  overrides: Partial<SkinProfile> = {},
+): SkinProfile {
+  return {
+    id: 'profile-1',
+    dateOfBirth: '1992-04-15',
+    sexAtBirth: 'female',
+    skinType: 'oily',
+    skinTone: 'medium',
+    ethnicity: 'black',
+    currentConcerns: ['acne'],
+    countryCode: null,
+    city: null,
+    fitzpatrickPhototype: 'IV',
+    sensitivityLevel: null,
+    hydrationLevel: null,
+    primaryGoal: 'clear_acne',
+    pregnancyStatus: null,
+    underDermatologistCare: null,
+    allowSmartPicks: true,
+    budgetTier: 'mid',
+    safetyContext: {},
+    reactionHistory: {},
+    concernDetails: {
+      per_concern: [{ concern: 'acne', severity: 'moderate' }],
+    },
+    skinBehavior: {
+      pih_tendency: 'often',
+      melasma_tendency: 'never',
+      keloid_tendency: 'never',
+      sunscreen_habit: 'most_days',
+      sunscreen_tolerance: 'fine',
+    },
+    activeTolerances: {},
+    routinePreferences: {
+      pace: 'cautious',
+      fragrance_free: true,
+      non_comedogenic: true,
+      sunscreen_filter: 'hybrid',
+      sunscreen_finish: 'natural',
+    },
+    lifestyleContext: {},
+    shoppingPreferences: {},
+    hormonalContext: {},
+    completeness: 100,
+    hasHealthContextConsent: false,
+    hasHormonalContextConsent: false,
+    createdAt: '2026-05-01T00:00:00.000Z',
+    updatedAt: '2026-05-01T00:00:00.000Z',
+    ...overrides,
+  };
+}

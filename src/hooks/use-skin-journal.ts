@@ -42,7 +42,9 @@ import {
   type AnalysisStatus,
   type CalendarPayload,
   type DayDetail,
+  type InsightWindow,
   type JournalEventFilters,
+  type JournalInsightsResponse,
   type JournalExportJob,
   type PhotoDateIndex,
   type PhotoFilterId,
@@ -52,6 +54,7 @@ import {
 
 const EMPTY_EVENT_FILTERS: JournalEventFilters = {};
 const JOURNAL_ANALYSIS_POLL_INTERVAL_MS = 5000;
+const JOURNAL_INSIGHT_POLL_INTERVAL_MS = 5000;
 const JOURNAL_PHOTO_PAGE_SIZE = 24;
 const ACTIVE_ANALYSIS_STATUSES = new Set<AnalysisStatus>([
   "pending",
@@ -75,6 +78,16 @@ export function shouldPollCalendar(
 
 export function shouldPollDay(detail: DayDetail | null | undefined): boolean {
   return hasActiveAnalysisStatus(detail?.entry?.analysis_status);
+}
+
+function shouldPollInsights(
+  payload: JournalInsightsResponse | undefined,
+): boolean {
+  return (
+    payload?.meta.generation_status === "queued" ||
+    payload?.meta.generation_status === "sent" ||
+    payload?.meta.generation_status === "running"
+  );
 }
 
 export function useTodayEntry() {
@@ -245,12 +258,18 @@ export function useAcknowledgeEvent() {
   });
 }
 
-export function useInsights() {
+export function useInsights(
+  params: { window?: InsightWindow; locale?: string } = {},
+) {
   const enabled = useAuthEnabled();
   return useQuery({
-    queryKey: [QueryKey.SkinJournalInsights],
-    queryFn: () => listInsights(),
+    queryKey: [QueryKey.SkinJournalInsights, params],
+    queryFn: () => listInsights(params),
     enabled,
+    refetchInterval: (query) =>
+      shouldPollInsights(query.state.data)
+        ? JOURNAL_INSIGHT_POLL_INTERVAL_MS
+        : false,
   });
 }
 

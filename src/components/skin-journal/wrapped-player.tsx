@@ -11,6 +11,13 @@ interface WrappedPlayerProps {
   wrapped: Wrapped;
 }
 
+export function getSafeWrappedFrameIndex(index: number, total: number): number {
+  if (total <= 0) {
+    return 0;
+  }
+  return Math.min(Math.max(index, 0), total - 1);
+}
+
 export function WrappedPlayer({ wrapped }: WrappedPlayerProps) {
   const t = useTranslations("journal.wrapped.viewer");
   const [index, setIndex] = useState(0);
@@ -34,8 +41,11 @@ export function WrappedPlayer({ wrapped }: WrappedPlayerProps) {
     );
   }
 
-  const current = wrapped.manifest!.entries[index];
-  const previous = wrapped.manifest!.entries.slice(0, index).map((e) => e.entry_id);
+  const safeIndex = getSafeWrappedFrameIndex(index, total);
+  const current = wrapped.manifest!.entries[safeIndex];
+  const previous = wrapped.manifest!.entries
+    .slice(0, safeIndex)
+    .map((e) => e.entry_id);
 
   return (
     <div className="mx-auto flex max-w-[360px] flex-col items-center">
@@ -44,7 +54,7 @@ export function WrappedPlayer({ wrapped }: WrappedPlayerProps) {
           <div
             key={entry.entry_id}
             className="absolute inset-0 transition-opacity duration-500"
-            style={{ opacity: i === index ? 1 : 0 }}
+            style={{ opacity: i === safeIndex ? 1 : 0 }}
           >
             <div
               className="absolute inset-0"

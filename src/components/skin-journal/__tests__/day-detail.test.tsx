@@ -26,6 +26,7 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     complaint_note: null,
     analysis_status: "failed",
     analysis_observations: null,
+    analysis_interpretation: null,
     analysis_summary: null,
     analysis_model: null,
     analysis_version: null,

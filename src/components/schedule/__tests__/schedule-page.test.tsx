@@ -1,4 +1,5 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/utils';
 import { DayOfWeek, SlotMode, type ScheduleSlot } from '@/types/schedule';
 import {
@@ -9,16 +10,19 @@ import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 import { SchedulePage } from '../schedule-page';
 
 const mockUseSchedule = jest.fn();
+const mockUseShelfStats = jest.fn();
 const mockReplace = jest.fn((href: string) => {
   const query = href.split('?')[1] ?? '';
   mockSearchParams = new URLSearchParams(query);
 });
+const mockPush = jest.fn();
 let mockSearchParams = new URLSearchParams('slot=slot-1');
 let mockIsDesktop = true;
 
 jest.mock('next/navigation', () => ({
   usePathname: () => '/schedule',
   useRouter: () => ({
+    push: mockPush,
     replace: mockReplace,
   }),
   useSearchParams: () => mockSearchParams,
@@ -26,6 +30,17 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('@/hooks/use-schedule', () => ({
   useSchedule: () => mockUseSchedule(),
+}));
+
+jest.mock('@/hooks/use-shelf', () => ({
+  useShelfStats: () => mockUseShelfStats(),
+}));
+
+jest.mock('@/hooks/use-shelf-time-zone', () => ({
+  useShelfDateContext: () => ({
+    timeZone: 'Europe/Stockholm',
+    todayDate: '2026-05-02',
+  }),
 }));
 
 jest.mock('@/hooks/use-is-lg-desktop', () => ({
@@ -37,7 +52,15 @@ jest.mock('@/components/app/page-header', () => ({
 }));
 
 jest.mock('../schedule-empty-state', () => ({
-  ScheduleEmptyState: () => <div>empty-state</div>,
+  ScheduleEmptyState: ({
+    onEveryDay,
+  }: {
+    onEveryDay: () => void;
+  }) => (
+    <button type="button" onClick={onEveryDay}>
+      empty-state
+    </button>
+  ),
 }));
 
 jest.mock('../schedule-skeleton', () => ({
@@ -125,7 +148,15 @@ describe('SchedulePage', () => {
   beforeEach(() => {
     jest.useRealTimers();
     mockUseSchedule.mockReset();
+    mockUseShelfStats.mockReset();
+    mockUseShelfStats.mockReturnValue({
+      data: { all: 1 },
+      isError: false,
+      isLoading: false,
+      refetch: jest.fn(),
+    });
     mockReplace.mockClear();
+    mockPush.mockClear();
     mockSearchParams = new URLSearchParams('slot=slot-1');
     mockIsDesktop = true;
     useScheduleUiStore.setState({
@@ -141,6 +172,35 @@ describe('SchedulePage', () => {
       pendingProceed: null,
       suppressRequestLeaveUntil: 0,
     });
+  });
+
+  it('opens a product prerequisite dialog when schedule setup is clicked without shelf products', async () => {
+    const user = userEvent.setup();
+    mockUseSchedule.mockReturnValue({
+      data: { timeZone: 'Europe/Stockholm', slots: [] },
+      isLoading: false,
+      isError: false,
+      refetch: jest.fn(),
+    });
+    mockUseShelfStats.mockReturnValue({
+      data: { all: 0 },
+      isError: false,
+      isLoading: false,
+      refetch: jest.fn(),
+    });
+
+    renderWithProviders(<SchedulePage />);
+
+    await user.click(screen.getByRole('button', { name: /empty-state/i }));
+
+    expect(
+      screen.getByRole('heading', { name: /add a product first/i }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('add-slot-dialog')).toBeNull();
+
+    await user.click(screen.getByRole('button', { name: /add product/i }));
+
+    expect(mockPush).toHaveBeenCalledWith('/shelf');
   });
 
   it('does not reopen a deep-linked slot after the user closes it', async () => {

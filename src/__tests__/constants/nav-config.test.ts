@@ -63,6 +63,15 @@ describe("NAV_ITEMS", () => {
   it("has exactly 11 navigation items", () => {
     expect(NAV_ITEMS).toHaveLength(11);
   });
+
+  it("marks implemented account and journal surfaces as live", () => {
+    const byRoute = new Map(NAV_ITEMS.map((item) => [item.route, item]));
+
+    expect(byRoute.get(AppRoute.Journal)?.status).toBe(NavItemStatus.Live);
+    expect(byRoute.get(AppRoute.Notifications)?.status).toBe(
+      NavItemStatus.Live,
+    );
+  });
 });
 
 describe("getNavItemsByGroup", () => {

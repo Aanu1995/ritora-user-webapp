@@ -15,7 +15,8 @@ import {
   type JournalEvent,
   type JournalEventFilters,
   type JournalExportJob,
-  type JournalInsight,
+  type JournalInsightsResponse,
+  type InsightWindow,
   type JournalStats,
   type PhotoDateIndex,
   type PhotoFilterId,
@@ -174,8 +175,27 @@ export async function acknowledgeEvent(id: string): Promise<JournalEvent> {
   return postRequest(ApiPath.SkinJournalEventAck(id), {});
 }
 
-export async function listInsights(): Promise<JournalInsight[]> {
-  return getRequest(ApiPath.SkinJournalInsights);
+interface InsightListParams {
+  window?: InsightWindow;
+  locale?: string;
+}
+
+function buildInsightQuery(params: InsightListParams = {}): string {
+  const query = new URLSearchParams();
+  if (params.window) query.set("window", params.window);
+  if (params.locale) query.set("locale", params.locale);
+  return query.toString();
+}
+
+export async function listInsights(
+  params: InsightListParams = {},
+): Promise<JournalInsightsResponse> {
+  const query = buildInsightQuery(params);
+  return getRequest(
+    query
+      ? `${ApiPath.SkinJournalInsights}?${query}`
+      : ApiPath.SkinJournalInsights,
+  );
 }
 
 export async function dismissInsight(id: string): Promise<void> {

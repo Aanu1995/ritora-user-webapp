@@ -37,6 +37,7 @@ function preferences(
     reaction_alerts_enabled: true,
     simplification_alerts_enabled: true,
     insight_alerts_enabled: true,
+    ai_polished_insights_enabled: true,
     wrapped_alerts_enabled: true,
     photo_tutorial_completed: false,
     ...overrides,

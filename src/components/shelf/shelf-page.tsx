@@ -22,6 +22,7 @@ import { RetryPanel } from "@/components/ui/retry-panel";
 import { AppRoute } from "@/constants/app-routes";
 import { useAutoLoadMore } from "@/hooks/use-auto-load-more";
 import { useShelfDateContext } from "@/hooks/use-shelf-time-zone";
+import { useSkinProfile } from "@/hooks/use-skin-profile";
 import {
   useArchiveProducts,
   useDeleteProducts,
@@ -30,7 +31,9 @@ import {
   useShelfStats,
 } from "@/hooks/use-shelf";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { getApiErrorStatus } from "@/lib/api-error";
 import { saveCurrentAppScrollPosition } from "@/lib/app-scroll-restoration";
+import { isSkinProfileReady } from "@/lib/skin-profile-readiness";
 import { useShelfUiStore } from "@/stores/shelf-ui-store";
 import {
   ShelfCategoryFilter,
@@ -73,11 +76,18 @@ export function ShelfPage() {
 
   const products = useShelfProducts(filters, shelfDateContext);
   const stats = useShelfStats(shelfDateContext);
+  const skinProfile = useSkinProfile();
   const archive = useArchiveProducts();
   const finish = useMarkFinished();
   const remove = useDeleteProducts();
 
   const selectedArray = useMemo(() => Array.from(selectedIds), [selectedIds]);
+  const canAddProduct = isSkinProfileReady(skinProfile.data);
+  const profileFetchFailed =
+    skinProfile.isError && getApiErrorStatus(skinProfile.error) !== 404;
+  const profileDialogDescription = profileFetchFailed
+    ? t("prerequisites.profile.loadError")
+    : t("prerequisites.profile.body");
 
   const handleArchive = () => {
     archive.archive(selectedArray, {
@@ -96,6 +106,7 @@ export function ShelfPage() {
     });
   };
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [profileRequiredOpen, setProfileRequiredOpen] = useState(false);
   const handleDeleteRequest = () => {
     setDeleteConfirmOpen(true);
   };
@@ -139,6 +150,14 @@ export function ShelfPage() {
     saveCurrentAppScrollPosition(AppRoute.Shelf);
     router.push(href);
   };
+  const handleAddProduct = () => {
+    if (!canAddProduct) {
+      setProfileRequiredOpen(true);
+      return;
+    }
+
+    navigateFromShelf(`${AppRoute.Shelf}/new`);
+  };
 
   let content: ReactNode;
 
@@ -165,9 +184,7 @@ export function ShelfPage() {
   } else if (isEmpty) {
     content = (
       <div className="flex flex-1 items-center justify-center">
-        <ShelfEmptyState
-          onAddFirst={() => navigateFromShelf(`${AppRoute.Shelf}/new`)}
-        />
+        <ShelfEmptyState onAddFirst={handleAddProduct} />
       </div>
     );
   } else if (productList.length === 0) {
@@ -221,7 +238,7 @@ export function ShelfPage() {
           <div className="shrink-0">
             <Button
               size="sm"
-              onClick={() => navigateFromShelf(`${AppRoute.Shelf}/new`)}
+              onClick={handleAddProduct}
               aria-label={t("actions.add")}
             >
               <Plus className="h-3.5 w-3.5" />
@@ -302,6 +319,18 @@ export function ShelfPage() {
         onConfirm={handleDeleteConfirm}
         tone={ConfirmDialogTone.Danger}
         isPending={archive.isPending || finish.isPending || remove.isPending}
+      />
+
+      <ConfirmDialog
+        open={profileRequiredOpen}
+        onOpenChange={setProfileRequiredOpen}
+        title={t("prerequisites.profile.title")}
+        description={profileDialogDescription}
+        confirmLabel={t("prerequisites.profile.cta")}
+        onConfirm={() => {
+          setProfileRequiredOpen(false);
+          navigateFromShelf(AppRoute.SkinProfile);
+        }}
       />
     </div>
   );

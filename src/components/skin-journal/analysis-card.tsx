@@ -1,14 +1,19 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { AlertTriangle, Sparkles } from "lucide-react";
-import type { AnalysisObservations } from "@/types/skin-journal";
+import { AlertTriangle, ExternalLink, Sparkles } from "lucide-react";
+import type {
+  AnalysisObservations,
+  PhotoAnalysisInterpretation,
+  PhotoAnalysisSourceCitation,
+} from "@/types/skin-journal";
 import { Chip } from "./chip";
 import { FaceZoneOverlay } from "./face-zone-overlay";
 import { safeDynamicTranslation } from "./safe-translation";
 
 interface AnalysisCardProps {
   observations: AnalysisObservations;
+  interpretation?: PhotoAnalysisInterpretation | null;
 }
 
 const SEVERITY_VARIANT: Record<
@@ -20,7 +25,118 @@ const SEVERITY_VARIANT: Record<
   severe: "danger",
 };
 
-export function AnalysisCard({ observations }: AnalysisCardProps) {
+const ANALYSIS_PREFIX = "journal.analysis.";
+
+function analysisMessageKey(key: string): string {
+  return key.startsWith(ANALYSIS_PREFIX)
+    ? key.slice(ANALYSIS_PREFIX.length)
+    : key;
+}
+
+function toTranslationValues(
+  values: Record<string, string | number> | undefined,
+): Record<string, string | number> {
+  return values ?? {};
+}
+
+function translateKey(
+  t: ReturnType<typeof useTranslations>,
+  key: string,
+  values?: Record<string, string | number>,
+): string {
+  try {
+    return t(analysisMessageKey(key), toTranslationValues(values));
+  } catch {
+    return key;
+  }
+}
+
+function fallbackSummaryKey(
+  observations: AnalysisObservations,
+  needsRetake: boolean,
+  hasSafetyEscalation: boolean,
+): string {
+  if (needsRetake) {
+    return "journal.analysis.interpretation.retakeNeeded.summary";
+  }
+  if (
+    observations.safety_flags?.urgent_review_recommended === true ||
+    observations.safety_flags?.reasons.includes("possible_swelling") ||
+    observations.safety_flags?.reasons.includes("hive_like_appearance")
+  ) {
+    return "journal.analysis.interpretation.urgentReview.summary";
+  }
+  if (hasSafetyEscalation) {
+    return "journal.analysis.interpretation.professionalReview.summary";
+  }
+  if (
+    observations.barrier_signs.barrier_compromise ||
+    observations.barrier_signs.indicators.length > 0 ||
+    (observations.reaction_signals.reaction_detected &&
+      observations.reaction_signals.reaction_severity !== "mild" &&
+      observations.reaction_signals.reaction_severity !== "none")
+  ) {
+    return "journal.analysis.interpretation.barrierSupport.summary";
+  }
+  if (
+    observations.detected_concerns.some(
+      (concern) =>
+        concern.concern === "acne" &&
+        concern.change_from_previous !== "unknown" &&
+        concern.change_from_previous !== "not_comparable",
+    )
+  ) {
+    return "journal.analysis.interpretation.acneProgressTiming.summary";
+  }
+  if (
+    observations.detected_concerns.some(
+      (concern) =>
+        (concern.concern === "hyperpigmentation" ||
+          concern.concern === "uneven_tone") &&
+        concern.confidence >= 0.55,
+    )
+  ) {
+    return "journal.analysis.interpretation.hyperpigmentationTracking.summary";
+  }
+  return "journal.analysis.interpretation.stableBaseline.summary";
+}
+
+function AnalysisSourceLink({
+  source,
+}: {
+  source: PhotoAnalysisSourceCitation;
+}) {
+  const t = useTranslations("journal.analysis");
+  return (
+    <a
+      href={source.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-start justify-between gap-3 rounded-xl border border-border bg-surface-muted p-3 text-sm transition hover:border-accent/50"
+    >
+      <span>
+        <span className="block font-semibold text-foreground">
+          {source.organization}
+        </span>
+        <span className="mt-0.5 block text-muted">
+          {translateKey(t, source.title_key)}
+        </span>
+        <span className="mt-1 block text-xs text-muted">
+          {translateKey(t, source.summary_key)}
+        </span>
+        <span className="mt-1 block text-xs text-muted">
+          {t("sources.lastVerified", { date: source.last_verified })}
+        </span>
+      </span>
+      <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-muted" />
+    </a>
+  );
+}
+
+export function AnalysisCard({
+  observations,
+  interpretation,
+}: AnalysisCardProps) {
   const t = useTranslations("journal.analysis");
   const tConcerns = useTranslations("journal.concerns");
   const tQuality = useTranslations("journal.analysis");
@@ -38,6 +154,9 @@ export function AnalysisCard({ observations }: AnalysisCardProps) {
     observations.safety_flags?.urgent_review_recommended === true ||
     observations.safety_flags?.doctor_follow_up_recommended === true ||
     safetyReasons.length > 0;
+  const summary = interpretation
+    ? translateKey(t, interpretation.summary_key, interpretation.summary_values)
+    : translateKey(t, fallbackSummaryKey(observations, needsRetake, hasSafetyEscalation));
 
   return (
     <div
@@ -67,9 +186,14 @@ export function AnalysisCard({ observations }: AnalysisCardProps) {
         )}
       </div>
 
-      <p className="mb-3 text-sm leading-relaxed text-muted">
-        {observations.user_visible_message ?? observations.overall_assessment}
-      </p>
+      <div className="mb-3 space-y-2">
+        <p className="text-sm leading-relaxed text-muted">{summary}</p>
+        {interpretation?.guidance_keys.map((key) => (
+          <p key={key} className="text-sm leading-relaxed text-muted">
+            {translateKey(t, key)}
+          </p>
+        ))}
+      </div>
 
       {needsRetake ? (
         <div className="mb-3 rounded-xl border border-[color:var(--warning-border)] bg-warning-soft p-3">
@@ -162,6 +286,27 @@ export function AnalysisCard({ observations }: AnalysisCardProps) {
           </div>
         </div>
       </div>
+
+      {interpretation?.sources.length ? (
+        <div className="mt-3 space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted">
+            {t("sources.label")}
+          </p>
+          {interpretation.sources.map((source) => (
+            <AnalysisSourceLink key={source.id} source={source} />
+          ))}
+        </div>
+      ) : null}
+
+      {interpretation?.caveat_keys.length ? (
+        <div className="mt-3 space-y-1">
+          {interpretation.caveat_keys.map((key) => (
+            <p key={key} className="text-xs leading-relaxed text-muted">
+              {translateKey(t, key)}
+            </p>
+          ))}
+        </div>
+      ) : null}
 
       <p className="mt-3 text-xs leading-relaxed text-muted">
         <strong className="text-foreground">{t("disclaimer").split(".")[0]}.</strong>{" "}

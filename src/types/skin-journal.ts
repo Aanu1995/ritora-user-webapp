@@ -1,13 +1,36 @@
 import type {
   AnalysisConcern,
   AnalysisObservations,
+  PhotoAnalysisInterpretation,
 } from "./skin-journal-analysis";
+import type { JournalInsight } from "./skin-journal-insights";
 
 export type {
   AnalysisConcern,
   AnalysisObservations,
+  PhotoAnalysisInterpretation,
+  PhotoAnalysisSourceCitation,
   ReactionSeverity,
 } from "./skin-journal-analysis";
+export type {
+  InsightAction,
+  InsightBlock,
+  InsightEvidenceGrade,
+  InsightGenerationJobStatus,
+  InsightGenerationTrigger,
+  InsightKind,
+  InsightMetadata,
+  InsightSourceCitation,
+  InsightSourceType,
+  InsightTone,
+  InsightValue,
+  InsightValues,
+  InsightWindow,
+  JournalInsight,
+  JournalInsightsMeta,
+  JournalInsightsResponse,
+  LocalizedInsightText,
+} from "./skin-journal-insights";
 
 export type Angle = "head_on" | "left_profile" | "right_profile";
 
@@ -85,16 +108,6 @@ export type EventKind =
 
 export type EventSeverity = "info" | "warning" | "critical";
 
-export type InsightKind =
-  | "daily"
-  | "weekly"
-  | "monthly"
-  | "trend"
-  | "correlation"
-  | "effectiveness"
-  | "reaction_recovery"
-  | "referral";
-
 export type WrappedPeriodKind = "monthly" | "quarterly" | "yearly";
 
 export type WrappedStatus =
@@ -169,6 +182,7 @@ export interface JournalEntry {
   complaint_note: string | null;
   analysis_status: AnalysisStatus;
   analysis_observations: AnalysisObservations | null;
+  analysis_interpretation: PhotoAnalysisInterpretation | null;
   analysis_summary: string | null;
   analysis_model: string | null;
   analysis_version: string | null;
@@ -259,18 +273,6 @@ export interface JournalEventFilters {
   from?: string;
   to?: string;
   acknowledged?: boolean;
-}
-
-export interface JournalInsight {
-  id: string;
-  kind: InsightKind;
-  summary: string | null;
-  supporting_data: Record<string, unknown> | null;
-  related_entry_ids: string[] | null;
-  severity: EventSeverity;
-  generated_at: string;
-  seen_at: string | null;
-  dismissed_at: string | null;
 }
 
 export interface DayDetail {

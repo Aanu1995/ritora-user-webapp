@@ -141,6 +141,17 @@ describe("Skin Journal frontend quality guardrails", () => {
     expect(hooks).not.toContain("useUpsertForDate");
   });
 
+  it("does not render raw simplification schedule snapshots as JSON", () => {
+    const simplificationPage = readSource(
+      join(process.cwd(), "src/app/(app)/journal/simplification/[id]/page.tsx"),
+    );
+
+    expect(simplificationPage).not.toContain(
+      "JSON.stringify(data.original_schedule_snapshot",
+    );
+    expect(simplificationPage).toContain("SimplificationSnapshotSummary");
+  });
+
   it("does not route selected calendar days into the today-only upload flow", () => {
     const dayPage = readSource(
       join(process.cwd(), "src/app/(app)/journal/days/[date]/page.tsx"),
@@ -150,10 +161,11 @@ describe("Skin Journal frontend quality guardrails", () => {
     );
 
     expect(dayPage).not.toContain("/journal/upload?date=");
-    expect(dayPage).toContain("buildJournalUploadHref()");
+    expect(dayPage).not.toContain("buildJournalUploadHref");
+    expect(dayPage).toContain("useJournalProfileGate");
     expect(dayPage).toContain("JournalUploadMode.Edit");
     expect(journalPage).not.toContain("editTodayPhoto");
-    expect(journalPage).toContain("router.push(buildJournalUploadHref())");
+    expect(journalPage).toContain("openTodayUpload()");
   });
 
   it("guards AI-generated compare concern labels before translation lookup", () => {

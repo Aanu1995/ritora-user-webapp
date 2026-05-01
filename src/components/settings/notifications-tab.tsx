@@ -40,6 +40,7 @@ const notificationPreferencesSchema = z.object({
   reaction_alerts_enabled: z.boolean(),
   simplification_alerts_enabled: z.boolean(),
   insight_alerts_enabled: z.boolean(),
+  ai_polished_insights_enabled: z.boolean(),
   wrapped_alerts_enabled: z.boolean(),
   photo_tutorial_completed: z.boolean(),
 });
@@ -292,6 +293,18 @@ function NotificationPreferencesForm({
                     persistPatch(
                       { ...values, insight_alerts_enabled: checked },
                       { insight_alerts_enabled: checked },
+                    );
+                  }}
+                />
+                <NotificationSwitch
+                  label={t("aiRefinedInsightsBody")}
+                  checked={values.ai_polished_insights_enabled}
+                  disabled={isSaving}
+                  onCheckedChange={(checked) => {
+                    form.setFieldValue("ai_polished_insights_enabled", checked);
+                    persistPatch(
+                      { ...values, ai_polished_insights_enabled: checked },
+                      { ai_polished_insights_enabled: checked },
                     );
                   }}
                 />

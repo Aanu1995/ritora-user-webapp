@@ -47,6 +47,23 @@ describe('ConfirmDialog', () => {
     ).toBeInTheDocument();
   });
 
+  it('keeps a viewport margin on narrow mobile screens by default', () => {
+    renderWithSwedish(
+      <ConfirmDialog
+        open
+        onOpenChange={jest.fn()}
+        title="Lägg till produkt först"
+        confirmLabel="Öppna hyllan"
+        onConfirm={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('alertdialog')).toHaveClass(
+      'w-[calc(100vw-2rem)]',
+      'max-w-md',
+    );
+  });
+
   it('passes content sizing overrides to the dialog surface', () => {
     renderWithSwedish(
       <ConfirmDialog

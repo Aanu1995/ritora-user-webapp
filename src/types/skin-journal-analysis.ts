@@ -82,3 +82,43 @@ export interface AnalysisObservations {
   should_flag_for_doctor: boolean;
   doctor_flag_reason?: string;
 }
+
+export type PhotoAnalysisInterpretationCode =
+  | "retake_needed"
+  | "urgent_review"
+  | "professional_review"
+  | "barrier_support"
+  | "acne_progress_timing"
+  | "hyperpigmentation_tracking"
+  | "retinoid_irritation_context"
+  | "stable_baseline";
+
+export type PhotoAnalysisInterpretationSeverity =
+  | "info"
+  | "warning"
+  | "critical";
+
+export type PhotoAnalysisEvidenceGrade = "strong" | "moderate" | "limited";
+
+export interface PhotoAnalysisSourceCitation {
+  id: string;
+  title_key: string;
+  organization: string;
+  summary_key: string;
+  url: string;
+  evidence_grade: PhotoAnalysisEvidenceGrade;
+  last_verified: string;
+}
+
+export interface PhotoAnalysisInterpretation {
+  version: "1.0";
+  code: PhotoAnalysisInterpretationCode;
+  severity: PhotoAnalysisInterpretationSeverity;
+  summary_key: string;
+  summary_values: Record<string, string | number>;
+  guidance_keys: string[];
+  caveat_keys: string[];
+  source_ids: string[];
+  sources: PhotoAnalysisSourceCitation[];
+  generated_at: string;
+}

@@ -11,9 +11,13 @@ import {
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { PageHeader } from '@/components/app/page-header';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { RetryPanel } from '@/components/ui/retry-panel';
+import { AppRoute } from '@/constants/app-routes';
 import { useIsLgDesktop } from '@/hooks/use-is-lg-desktop';
 import { useSchedule } from '@/hooks/use-schedule';
+import { useShelfStats } from '@/hooks/use-shelf';
+import { useShelfDateContext } from '@/hooks/use-shelf-time-zone';
 import { useScheduleUiStore } from '@/stores/schedule-ui-store';
 import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 import {
@@ -48,11 +52,14 @@ export function SchedulePage() {
   const t = useTranslations('schedule');
   const tCommon = useTranslations('common');
   const { data, isLoading, isError, refetch } = useSchedule();
+  const shelfDateContext = useShelfDateContext();
+  const shelfStats = useShelfStats(shelfDateContext);
   const isDesktop = useIsLgDesktop();
   const pathname = usePathname();
   const router = useRouter();
   const [isEditorDismissSuppressed, setIsEditorDismissSuppressed] =
     useState(false);
+  const [productRequiredOpen, setProductRequiredOpen] = useState(false);
   const dismissSuppressionTimeoutRef = useRef<number | null>(null);
 
   const editingSlotId = useScheduleUiStore((s) => s.editingSlotId);
@@ -129,6 +136,18 @@ export function SchedulePage() {
 
   const closeEditorGuarded = () => requestLeave(() => closeEditor());
   const closeAddSlotGuarded = () => requestLeave(() => closeAddSlotDialog());
+  const hasKnownNoShelfProducts =
+    !shelfStats.isLoading &&
+    !shelfStats.isError &&
+    (shelfStats.data?.all ?? 0) === 0;
+  const requireProductBeforeSchedule = (next: () => void) => {
+    if (hasKnownNoShelfProducts) {
+      setProductRequiredOpen(true);
+      return;
+    }
+
+    next();
+  };
   const suppressEditorDismissTemporarily = useCallback(() => {
     setIsEditorDismissSuppressed(true);
 
@@ -142,12 +161,20 @@ export function SchedulePage() {
     }, PRODUCT_PICKER_DISMISS_GUARD_MS);
   }, []);
   const openEveryDayDialog = () =>
-    openAddSlotDialog({ presetMode: AddSlotPresetMode.EveryDay });
+    requireProductBeforeSchedule(() =>
+      openAddSlotDialog({ presetMode: AddSlotPresetMode.EveryDay }),
+    );
   const openSingleDayDialog = (day: DayOfWeek) =>
-    openAddSlotDialog({
-      day,
-      presetMode: AddSlotPresetMode.Single,
-    });
+    requireProductBeforeSchedule(() =>
+      openAddSlotDialog({
+        day,
+        presetMode: AddSlotPresetMode.Single,
+      }),
+    );
+  const enterBuildFromScratchGuarded = () =>
+    requireProductBeforeSchedule(enterBuildFromScratch);
+  const openEditorGuarded = (slotId: string) =>
+    requireProductBeforeSchedule(() => openEditor(slotId));
   const addSlotDialogKey = `${addSlotDialog.presetMode ?? AddSlotPresetMode.Single}-${addSlotDialog.preselectDay ?? 'none'}`;
 
   useEffect(() => {
@@ -178,7 +205,9 @@ export function SchedulePage() {
             title={tCommon('error')}
             description={t('save.errorGeneric')}
             actionLabel={tCommon('retry')}
-            onAction={() => void refetch()}
+            onAction={() => {
+              void refetch();
+            }}
           />
         </div>
       </div>
@@ -200,10 +229,10 @@ export function SchedulePage() {
         <SchedulePageContent
           buildFromScratch={buildFromScratch}
           groupedSlots={grouped}
-          onEnterBuildFromScratch={enterBuildFromScratch}
+          onEnterBuildFromScratch={enterBuildFromScratchGuarded}
           onOpenEveryDayDialog={openEveryDayDialog}
           onOpenSingleDayDialog={openSingleDayDialog}
-          onOpenSlotEditor={openEditor}
+          onOpenSlotEditor={openEditorGuarded}
           orderedDays={orderedDays}
           scheduleTimeZone={scheduleTimeZone}
           slots={slots}
@@ -313,6 +342,18 @@ export function SchedulePage() {
           />
         </>
       ) : null}
+
+      <ConfirmDialog
+        open={productRequiredOpen}
+        onOpenChange={setProductRequiredOpen}
+        title={t('prerequisites.product.title')}
+        description={t('prerequisites.product.body')}
+        confirmLabel={t('prerequisites.product.cta')}
+        onConfirm={() => {
+          setProductRequiredOpen(false);
+          router.push(AppRoute.Shelf);
+        }}
+      />
     </>
   );
 }

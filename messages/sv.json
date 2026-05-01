@@ -1296,6 +1296,14 @@
       "cta": "Lägg till din första produkt",
       "filtered": "Inga produkter matchar ditt nuvarande filter."
     },
+    "prerequisites": {
+      "profile": {
+        "title": "Färdigställ din hudprofil först",
+        "body": "Ritora behöver din hudprofil innan produktdetaljer kan användas säkert i rutiner, analys eller förslag.",
+        "cta": "Öppna hudprofil",
+        "loadError": "Vi kan inte nå din hudprofil just nu. Kontrollera anslutningen och försök igen."
+      }
+    },
     "errors": {
       "retry": "Försök igen",
       "loadShelfTitle": "Vi kunde inte läsa din hylla",
@@ -1919,6 +1927,13 @@
       "headline": "Bygg din veckorutin",
       "body": "Lägg till en tid för alla dagar, eller bygg varje dag separat."
     },
+    "prerequisites": {
+      "product": {
+        "title": "Lägg till en produkt först",
+        "body": "Rutiner schemalägger produkterna på din hylla. Lägg till en för att komma igång.",
+        "cta": "Lägg till produkt"
+      }
+    },
     "days": {
       "mon": "Måndag",
       "tue": "Tisdag",
@@ -2134,6 +2149,14 @@
     "eyebrow": "Din hudresa",
     "fab": "Lägg till dagens foto",
     "exportForDermatologist": "Exportera för hudläkare",
+    "prerequisites": {
+      "profile": {
+        "title": "Slutför din hudprofil först",
+        "body": "Ritora behöver din hudprofil innan foton, avstämningar och hudprogress kan analyseras säkert.",
+        "cta": "Öppna hudprofil",
+        "loadError": "Vi kan inte nå din hudprofil just nu. Kontrollera anslutningen och försök igen."
+      }
+    },
     "tabs": {
       "calendar": "Kalender",
       "photos": "Foton",
@@ -2243,7 +2266,90 @@
       },
       "disclaimer": "Inte en medicinsk diagnos. Ritora är beslutsstöd. Kontakta en hudläkare för medicinska frågor.",
       "indicators": "Indikatorer",
-      "comparedToPrevious": "Jämfört med tidigare"
+      "comparedToPrevious": "Jämfört med tidigare",
+      "interpretation": {
+        "retakeNeeded": {
+          "summary": "Det här fotot är inte tillräckligt tydligt för en pålitlig läsning.",
+          "guidance": "Ta gärna ett nytt foto idag om du kan. Använd naturligt ljus, centrera ansiktet och undvik filter eller smink."
+        },
+        "urgentReview": {
+          "summary": "Ritora såg synliga tecken som kan behöva snabb medicinsk bedömning.",
+          "guidance": "Om du har svullnad, svårt att andas, nässelutslag som sprider sig snabbt, förändringar runt ögonen eller känner dig sjuk, sök vård nu."
+        },
+        "professionalReview": {
+          "summary": "Den här posten har synliga tecken som kan vara värda att visa för vården om de fortsätter eller känns obehagliga.",
+          "guidance": "Fortsätt följa lugnt, men överväg att kontakta en hudläkare om mönstret fortsätter, sprider sig eller gör ont."
+        },
+        "barrierSupport": {
+          "summary": "Din hudbarriär kan behöva en lugnare rutin just nu.",
+          "guidance": "Det här mönstret passar ett tillfälle för mildare stöd. Håll rutinen enkel, undvik nya aktiva ingredienser och följ om rodnad eller stramhet lugnar sig."
+        },
+        "acneProgressTiming": {
+          "summary": "Ditt utbrottsmönster bedöms bäst över flera veckor, inte från ett enda foto.",
+          "guidance": "Se dagens bild som en datapunkt. Trenden blir mer användbar när Ritora kan jämföra poster över en längre period."
+        },
+        "hyperpigmentationTracking": {
+          "summary": "Mörka märken och ojämn hudton behöver följas över längre tid.",
+          "guidance": "Använd konsekvent dagsljus och logga solskyddskontext när du följer detta. Förändringar kan gå långsamt, så Ritora läser det som en trend snarare än ett resultat från en dag."
+        },
+        "retinoidIrritationContext": {
+          "summary": "Det här ser ut som ett tillfälle att vara försiktig med en ny retinoid eller retinolprodukt.",
+          "guidance": "Om detta följde en ny retinoidförändring, håll rutinen mild och följ om fjällning, stramhet eller rodnad lugnar sig innan du lägger till något nytt."
+        },
+        "stableBaseline": {
+          "summary": "Dagens bild ser ut som en användbar baslinje för framtida jämförelse.",
+          "guidance": "Fortsätt använda liknande ljus och inramning så kan Ritora jämföra förändringar mer rättvist över tid."
+        },
+        "caveats": {
+          "notDiagnosis": "Detta är inte en diagnos. Ritora använder synliga signaler för att stödja uppföljning och reflektion.",
+          "qualityLimited": "Låg fotokvalitet kan dölja eller förstärka synliga förändringar.",
+          "progressNeedsTime": "Hudförändringar kan gå långsamt, så enskilda dagsförändringar bör läsas med omsorg."
+        }
+      },
+      "sources": {
+        "label": "Grundade källor",
+        "lastVerified": "Verifierad {date}",
+        "aad_skin_photo_quality": {
+          "title": "Så tar du hudfoton",
+          "summary": "AAD förklarar att bra ljus, fokus och tydlig inramning hjälper foton att visa färg och textur korrekt."
+        },
+        "aad_acne_treatment_timing": {
+          "title": "Tidsram för akneförändring",
+          "summary": "AAD förklarar att akneförbättring vanligen bedöms över veckor med konsekvent vård."
+        },
+        "aad_dark_spots_skin_tones": {
+          "title": "Mörka märken och ojämn hudton",
+          "summary": "AAD beskriver hur mörka märken kan blekna långsamt och varför solskydd är viktigt när de följs."
+        },
+        "aad_skin_of_color": {
+          "title": "Vägledning för hud med mer pigment",
+          "summary": "AAD tar upp hur akne och mörka märken kan synas annorlunda på djupare hudtoner."
+        },
+        "aad_retinoid_retinol_guidance": {
+          "title": "Vägledning om retinoid och retinol",
+          "summary": "AAD förklarar hur retinoidprodukter introduceras och varför irritationskontext är viktig."
+        },
+        "aad_contact_dermatitis_symptoms": {
+          "title": "Tecken på kontakteksem",
+          "summary": "AAD beskriver tecken som kan uppstå när huden reagerar på något den har rört vid."
+        },
+        "aad_contact_dermatitis_patch_testing": {
+          "title": "Lapptest vid återkommande utslag",
+          "summary": "AAD förklarar att vården kan använda lapptest för att undersöka återkommande utslagsmönster."
+        },
+        "aad_hives_emergency": {
+          "title": "När nässelutslag behöver snabb vård",
+          "summary": "AAD lyfter symtom som svullnad eller andningsbesvär som skäl att söka snabb hjälp."
+        },
+        "aad_dry_skin_relief": {
+          "title": "Torr hud och barriärstöd",
+          "summary": "AAD rekommenderar mild hudvård när huden är torr, irriterad eller obekväm."
+        },
+        "mayo_acne_treatment_timing": {
+          "title": "Tidsram för akneförändring",
+          "summary": "Mayo Clinic beskriver att akneförändring ofta bedöms över veckor, inte från en enda dag."
+        }
+      }
     },
     "severity": {
       "none": "Ingen",
@@ -2294,6 +2400,7 @@
       "sweat_no": "Nej",
       "sweat_yes": "Ja",
       "cycleLabel": "Cykeldag",
+      "cycleFromProfileBadge": "från hudprofil",
       "cycle_not_on": "Inte i cykel",
       "cycle_day_1_3": "Dag 1–3",
       "cycle_day_4_7": "Dag 4–7",
@@ -2354,20 +2461,20 @@
       "photoLabel": "Foto",
       "dropZoneTitle": "Tryck för att välja ett foto",
       "dropZoneDesc": "Eller dra och släpp · JPG, PNG, HEIC, WebP upp till 10 MB",
-      "noWebcam": "Ingen webbkamera i webbläsaren. Ett foto i naturligt ljus ger bästa AI-signal.",
+      "noWebcam": "Ett foto i naturligt ljus gör det enklare att jämföra dag för dag.",
       "unsupportedPhotoType": "Välj ett JPG-, PNG-, HEIC- eller WebP-foto.",
       "photoTooLarge": "Välj ett foto under 10 MB.",
       "replace": "Ersätt",
       "crop": "Beskär kvadrat",
       "remove": "Ta bort",
-      "fileMeta": "{name} · {size} · {kind}",
+      "fileMeta": "{name} · {size}",
       "processedKind": "WebP efter uppladdning · EXIF borttaget",
       "photoPreviewAlt": "Valt journalfoto",
       "currentPhotoAlt": "Nuvarande journalfoto för {date}",
       "currentPhotoBadge": "Nuvarande foto",
       "currentPhotoHint": "Välj ett nytt foto bara om du vill ersätta dagens sparade foto.",
       "cropBadge": "Beskuren 1:1",
-      "photoProcessingConsent": "Jag samtycker till att Ritora behandlar detta hudprogressionsfoto för AI-analys. Fotot krypteras i vila, EXIF tas bort och AI-förfrågan innehåller inte mitt namn, min e-post eller mitt användar-id.",
+      "photoProcessingConsent": "Jag samtycker till analys av detta foto.",
       "preRoutine": "Tagit före dagens produkter (före rutin)",
       "nextStepHint": "Din avstämning finns i nästa steg. Du kan också spara endast fotot och lägga till betyg senare.",
       "savePhotoOnly": "Spara endast foto",
@@ -2441,8 +2548,9 @@
       "loadingMore": "Laddar fler foton"
     },
     "insightsTab": {
-      "subtitle": "Trender och korrelationer från dina avstämningar och AI-observationer.",
+      "subtitle": "Förslag i vanligt språk från dina foton, avstämningar och betrodda hudkällor.",
       "kinds": {
+        "onboarding_progress": "Progress",
         "trend": "Trend",
         "correlation": "Korrelation",
         "effectiveness": "Effektivitet",
@@ -2450,12 +2558,221 @@
         "daily": "Daglig insikt",
         "weekly": "Veckosammanfattning",
         "monthly": "Månadssammanfattning",
-        "reaction_recovery": "Återhämtning"
+        "reaction_recovery": "Återhämtning",
+        "photo_quality_drift": "Fotokvalitet",
+        "face_zone_pattern": "Ansiktszon",
+        "cycle": "Cykelmönster",
+        "ai_summary": "AI sammanfattning",
+        "ai_pattern": "AI mönster"
+      },
+      "severity": {
+        "info": "Info",
+        "warning": "Bevaka",
+        "critical": "Viktigt"
       },
       "showHow": "Visa mig hur",
       "dismiss": "Avfärda",
       "exportHistory": "Exportera hudhistorik",
       "notNow": "Inte nu",
+      "refresh": "Sök efter uppdateringar",
+      "refreshing": "Uppdaterar",
+      "trendsTitle": "Trendöversikt",
+      "generatedLine": "Skapad {date}",
+      "basedOnLine": "Baserat på {start} till {end}",
+      "windows": {
+        "all": "Alla",
+        "week": "Denna vecka",
+        "month": "Denna månad"
+      },
+      "directions": {
+        "improved": "minskat",
+        "increased": "ökat"
+      },
+      "locations": {
+        "forehead": "pannan",
+        "left_cheek": "vänster kind",
+        "right_cheek": "höger kind",
+        "chin": "hakan",
+        "nose": "näsan",
+        "under_eyes": "under ögonen",
+        "jawline": "käklinjen",
+        "upper_lip": "överläppen",
+        "temples": "tinningarna",
+        "neck": "halsen"
+      },
+      "cycle": {
+        "day_1_3": "dag 1 till 3",
+        "day_4_7": "dag 4 till 7",
+        "late_cycle": "sen cykel",
+        "not_on": "inte mens"
+      },
+      "factors": {
+        "highStress": "Dagar med hög stress",
+        "travelled": "Resdagar",
+        "stress_today": "stress"
+      },
+      "metric": {
+        "previous": "{value} tidigare",
+        "sampleCount": "{count, plural, one {# post} other {# poster}}",
+        "units": {
+          "entries": "poster",
+          "rating": "betyg"
+        }
+      },
+      "progress": {
+        "title": "{count, plural, one {# journalpost} other {# journalposter}} spårade",
+        "next": "{count, plural, one {# post till} other {# poster till}} innan nästa insikt låses upp",
+        "ready": "Din data är redo för rikare förslag.",
+        "generating": "Ritora förbereder nya insiktsförslag från din senaste journaldata."
+      },
+      "headlines": {
+        "onboarding_progress": "{count} poster loggade. Nästa insikt låses upp vid {nextUnlock}.",
+        "daily": "Dagens journalpost är redo att granskas.",
+        "weekly": "{entriesCount} nya poster räcker för en första mönsterkontroll.",
+        "trend": "{concern} har {direction} i dina senaste poster.",
+        "monthly": "Din månad har {entriesCount} poster och {photosCount} foton.",
+        "reaction_recovery": "Din hud ser lugnare ut efter {days} spårade dagar.",
+        "referral": "{referralCount} nya poster behöver en närmare säkerhetsgranskning.",
+        "effectiveness": "{concern} har {direction} efter en produktändring.",
+        "face_zone_pattern": "{concern} syns oftast runt {location}.",
+        "photo_quality_drift": "{poorCount} nya foton behöver bättre ljus för analysen.",
+        "correlation": "{factor} syns tillsammans med förändringar i {concern}.",
+        "cycle": "{concern} ser högre ut runt {phase}.",
+        "ai_summary": "Ritora hittade ett kort mönster över {entriesCount} poster.",
+        "ai_pattern": "{factor} kan vara värt att följa i din journal."
+      },
+      "blocks": {
+        "unknown": "Nytt insiktsformat",
+        "unknownSource": "Källdetaljer är inte tillgängliga än.",
+        "onboarding_progress": {
+          "text": "Fortsätt lägga till dagliga foton och avstämningar. Förslagsmotorn blir mer användbar när din personliga baslinje växer."
+        },
+        "daily": {
+          "analysis": "Detta använder din senaste sparade post från {date} och analysstatusen: {status}."
+        },
+        "weekly": {
+          "recap": "Ritora granskade {entriesCount} nya poster. {reactionCount} hade måttliga eller starkare reaktionssignaler."
+        },
+        "trend": {
+          "explanation": "Ditt värde för {concern} har {direction} jämfört med tidigare poster i detta fönster."
+        },
+        "monthly": {
+          "recap": "Denna månad innehåller {entriesCount} journalposter och {photosCount} foton."
+        },
+        "reaction_recovery": {
+          "text": "Reaktionssignaler minskade över {days} spårade dagar. Fortsätt med milda, enkla rutiner medan huden lugnar sig."
+        },
+        "referral": {
+          "text": "{referralCount} av de senaste 7 posterna visade måttliga eller starkare reaktionssignaler, eller upprepade flaggor för läkarkontroll."
+        },
+        "effectiveness": {
+          "text": "Efter en produktändring rörde sig {concern} tillräckligt för att vara värt att följa. Det är en korrelation, inte bevis.",
+          "marker": "Produktändring"
+        },
+        "face_zone_pattern": {
+          "text": "Den återkommande zonen är {location}. Det kan hjälpa dig jämföra foton utan att gå igenom varje post."
+        },
+        "photo_quality_drift": {
+          "text": "{poorCount} nya foton hade svagt ljus eller flaggades för omtagning. Naturligt dagsljus ger analysen en tydligare bild."
+        },
+        "correlation": {
+          "text": "{factor} syns tillsammans med en förändring i {concern}. Se detta som en ledtråd att följa, inte en slutsats."
+        },
+        "cycle": {
+          "text": "Dina poster tyder på ett möjligt cykelmönster runt {phase}. Säkerheten växer när fler cykler loggas."
+        },
+        "ai_summary": {
+          "text": "Denna sammanfattning kopplar ihop de starkaste nya mönstren till ett förslag i vanligt språk."
+        },
+        "ai_pattern": {
+          "text": "Ritora noterade {factor} i poster som kan vara värda att följa närmare."
+        }
+      },
+      "evidenceGrade": {
+        "strong": "Starkt stöd",
+        "moderate": "Måttligt stöd",
+        "limited": "Begränsat stöd",
+        "anecdotal": "Endast dina loggar",
+        "basis": {
+          "trend": "baserat på en personlig trend över {windowDays} dagar",
+          "reaction_recovery": "baserat på reaktions- och återhämtningsmarkörer",
+          "referral": "baserat på upprepade säkerhetsflaggor",
+          "effectiveness": "baserat på ett fönster efter produktändring",
+          "ownLogs": "endast baserat på dina journalposter",
+          "cycle": "baserat på cykelmarkörer i din journal"
+        }
+      },
+      "actions": {
+        "viewEntries": "Visa poster",
+        "openCompare": "Öppna jämförelse",
+        "openExport": "Exportera hudhistorik",
+        "openTodayUpload": "Lägg till dagens foto",
+        "openProduct": "Öppna produkt",
+        "openSettings": "Öppna inställningar"
+      },
+      "disclaimers": {
+        "medical": "Ritora ställer ingen diagnos. Om symtom känns svåra, sprider sig snabbt eller innefattar svullnad eller andningsbesvär, sök vård.",
+        "correlation": "Detta är ett mönster i dina poster, inte bevis för att en sak fick en annan att hända."
+      },
+      "ai": {
+        "chip": "AI förfinad",
+        "chipStrong": "AI insikt",
+        "whyThis": "Varför detta?",
+        "whyThisTitle": "Varför Ritora säger detta",
+        "whyThisBody": "Här visas fakta, källor och skapandedetaljer bakom förslaget.",
+        "trigger": "Utlösare",
+        "model": "Modell",
+        "promptVersion": "Promptversion",
+        "cache": "Cache",
+        "notUsed": "Inte använd",
+        "cacheHit": "träff",
+        "cacheMiss": "miss",
+        "sources": "Källor",
+        "provenance": "Texten förfinades av AI med endast fakta och granskade källor som visas här."
+      },
+      "kb": {
+        "lastVerified": "Verifierad {date}",
+        "derm_6_8_week_acne_window": {
+          "title": "Tidshorisont för aknebehandling",
+          "summary": "AAD beskriver att aknevård tar tid och att synlig förändring oftast bedöms över flera veckor."
+        },
+        "derm_acne_types": {
+          "title": "Typer av utbrott",
+          "summary": "AAD förklarar vanliga aknetyper och varför mönster i ansiktet kan spela roll."
+        },
+        "derm_hives_emergency": {
+          "title": "När nässelutslag kräver akut vård",
+          "summary": "AAD lyfter symtom som bör få snabb medicinsk uppmärksamhet."
+        },
+        "derm_dry_skin_relief": {
+          "title": "Lindring vid torr hud",
+          "summary": "AAD rekommenderar milt barriärstöd när huden känns torr eller irriterad."
+        },
+        "derm_contact_dermatitis_patch_testing": {
+          "title": "Kontakteksem och lapptest",
+          "summary": "AAD beskriver lapptest som ett sätt för kliniker att undersöka återkommande utslagsliknande reaktioner."
+        },
+        "derm_skin_of_color_acne": {
+          "title": "Hudton och akne",
+          "summary": "AAD noterar att akne och mörka märken kan se olika ut mellan hudtoner."
+        },
+        "derm_retinoid_retinol_guidance": {
+          "title": "Vägledning om retinoid och retinol",
+          "summary": "AAD förklarar hur retinoider används och varför irritation bör följas noggrant."
+        },
+        "derm_hormonal_acne_therapy": {
+          "title": "Hormonell aknebehandling",
+          "summary": "AAD beskriver hormonella mönster som kan påverka akne hos vissa personer."
+        },
+        "pubmed_niacinamide_review": {
+          "title": "Översikt om niacinamid",
+          "summary": "En PubMed-indexerad översikt sammanfattar evidens för topikal niacinamid i hudvård."
+        },
+        "pubmed_menstrual_cycle_acne": {
+          "title": "Studie om menscykel och akne",
+          "summary": "En PubMed-indexerad studie beskriver hur aknemönster kan ändras över menscykeln."
+        }
+      },
       "charts": {
         "trendTitle": "Allvarlighetsgrad över tid",
         "reactionsTitle": "Reaktionsfrekvens · veckovis",
@@ -2563,7 +2880,12 @@
         "pausedSubtitle": "Om en schemakopia sparades {date} visas den nedan.",
         "pausedAmTitle": "FM (pausad)",
         "pausedPmTitle": "EM (pausad)",
-        "noSnapshot": "Inget schema var aktivt när förenklingen startade."
+        "noSnapshot": "Inget schema var aktivt när förenklingen startade.",
+        "unsupportedSnapshot": "En schemakopia sparades, men detaljerna kunde inte visas säkert.",
+        "snapshotSlotsLabel": "Rutintider",
+        "snapshotStepsLabel": "Rutinsteg",
+        "snapshotCapturedLabel": "Sparad",
+        "snapshotCapturedUnknown": "Okänt"
       }
     },
     "events": {
@@ -2643,6 +2965,7 @@
     "autoSimplifyNote": "När av får du fortfarande en varning, men din rutin ändras aldrig automatiskt.",
     "insightsTitle": "Insikter & Wrapped",
     "insightAlertsBody": "Insiktsaviseringar",
+    "aiRefinedInsightsBody": "Använd AI förfinad text och AI skapade insiktskort",
     "wrappedAlertsBody": "Wrapped-klar-aviseringar"
   },
   "notificationsPage": {

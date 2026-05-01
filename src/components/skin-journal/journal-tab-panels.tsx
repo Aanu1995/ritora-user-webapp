@@ -3,15 +3,10 @@
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { TabsContent } from "@/components/ui/tabs";
-import {
-  CheckInRadarChart,
-  ConcernTrendChart,
-  ReactionFrequencyChart,
-} from "@/components/skin-journal/charts";
 import { Chip } from "@/components/skin-journal/chip";
 import { DayDetailPanel } from "@/components/skin-journal/day-detail";
-import { DoctorReferralCard } from "@/components/skin-journal/doctor-referral-card";
-import { InsightCard } from "@/components/skin-journal/insight-card";
+import { JournalEmptyState } from "@/components/skin-journal/journal-empty-state";
+import { InsightsPanel } from "@/components/skin-journal/insights/insights-panel";
 import { JournalCalendar } from "@/components/skin-journal/journal-calendar";
 import { PhotoGrid } from "@/components/skin-journal/photo-grid";
 import { WrappedList } from "@/components/skin-journal/wrapped-list";
@@ -21,20 +16,13 @@ import {
   type DayDetail,
   type JournalEntry,
   type JournalInsight,
+  type JournalInsightsMeta,
+  type InsightWindow,
   type PhotoFilterId,
   type PhotoFilterOption,
   type PhotoMonthItem,
   type Wrapped,
 } from "@/types/skin-journal";
-
-interface JournalEmptyStateProps {
-  icon: string;
-  title: string;
-  body: string;
-  cta?: string;
-  onCta?: () => void;
-  tone?: "accent" | "ai" | "secondary";
-}
 
 interface JournalTabPanelsProps {
   photos: JournalEntry[];
@@ -46,6 +34,12 @@ interface JournalTabPanelsProps {
   photoFilters: PhotoFilterOption[];
   selectedPhotoFilter: PhotoFilterId;
   insights: JournalInsight[];
+  insightsMeta: JournalInsightsMeta | null;
+  insightsLoading: boolean;
+  insightsWindow: InsightWindow;
+  onInsightsWindowChange: (window: InsightWindow) => void;
+  onRefreshInsights: () => void;
+  isRefreshingInsights: boolean;
   wrapped: Wrapped[];
   calendarData: CalendarPayload | undefined;
   calendarLoading: boolean;
@@ -59,52 +53,16 @@ interface JournalTabPanelsProps {
   onSelectMonth: (month: string) => void;
   onSelectDate: (date: string) => void;
   onOpenUpload?: () => void;
-  onOpenCompare: () => void;
+  onOpenCompare: (fromDate?: string, toDate?: string) => void;
   onOpenExport: () => void;
+  onOpenInsightEntries: (entryIds: string[]) => void;
+  onOpenProduct: (productId: string) => void;
+  onOpenSettings: (tab: string) => void;
   onPhotoFilterChange: (filter: PhotoFilterId) => void;
   onEditEntry?: (entry: JournalEntry) => void;
   onRetryAnalysis?: (entry: JournalEntry) => void;
   onReplacePhoto?: (entry: JournalEntry) => void;
   onDismissInsight: (id: string) => void;
-}
-
-function emptyStateToneClass(tone: JournalEmptyStateProps["tone"]): string {
-  if (tone === "ai") {
-    return "bg-[color:var(--ai-bg)]";
-  }
-
-  if (tone === "secondary") {
-    return "bg-secondary-soft";
-  }
-
-  return "bg-accent-soft";
-}
-
-function JournalEmptyState({
-  icon,
-  title,
-  body,
-  cta,
-  onCta,
-  tone = "accent",
-}: JournalEmptyStateProps) {
-  return (
-    <div className="rounded-2xl border border-border bg-surface px-6 py-16 text-center">
-      <div
-        aria-hidden
-        className={`mx-auto grid h-24 w-24 place-items-center rounded-3xl text-[40px] leading-none ${emptyStateToneClass(tone)}`}
-      >
-        {icon}
-      </div>
-      <h3 className="mt-4 font-display text-lg font-bold">{title}</h3>
-      <p className="mx-auto mt-1.5 max-w-md text-sm text-muted">{body}</p>
-      {cta && onCta ? (
-        <Button className="mt-4" onClick={onCta}>
-          {cta}
-        </Button>
-      ) : null}
-    </div>
-  );
 }
 
 export function JournalTabPanels({
@@ -117,6 +75,12 @@ export function JournalTabPanels({
   photoFilters,
   selectedPhotoFilter,
   insights,
+  insightsMeta,
+  insightsLoading,
+  insightsWindow,
+  onInsightsWindowChange,
+  onRefreshInsights,
+  isRefreshingInsights,
   wrapped,
   calendarData,
   calendarLoading,
@@ -132,6 +96,9 @@ export function JournalTabPanels({
   onOpenUpload,
   onOpenCompare,
   onOpenExport,
+  onOpenInsightEntries,
+  onOpenProduct,
+  onOpenSettings,
   onPhotoFilterChange,
   onEditEntry,
   onRetryAnalysis,
@@ -141,13 +108,7 @@ export function JournalTabPanels({
   const tEmpty = useTranslations("journal.empty");
   const tPhotosTab = useTranslations("journal.photos");
   const tConcerns = useTranslations("journal.concerns");
-  const tInsights = useTranslations("journal.insightsTab");
   const tWrapped = useTranslations("journal.wrapped");
-
-  const referralInsight = insights.find((insight) => insight.kind === "referral");
-  const otherInsights = insights.filter(
-    (insight) => insight.kind !== "referral",
-  );
 
   const visiblePhotoFilters =
     photoFilters.length > 0
@@ -249,7 +210,7 @@ export function JournalTabPanels({
               </div>
               <Button
                 size="sm"
-                onClick={onOpenCompare}
+                onClick={() => onOpenCompare()}
                 className="w-full sm:w-auto"
               >
                 {tPhotosTab("compareCta")}
@@ -272,39 +233,24 @@ export function JournalTabPanels({
       </TabsContent>
 
       <TabsContent value="insights" className="mt-4">
-        <p className="mb-3 text-sm text-muted">{tInsights("subtitle")}</p>
-        {totalPhotoCount === 0 ? (
-          <JournalEmptyState
-            icon="✨"
-            title={tInsights("empty.title")}
-            body={tInsights("empty.body")}
-            tone="ai"
-          />
-        ) : (
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <ConcernTrendChart entries={photos} />
-              <ReactionFrequencyChart entries={photos} />
-              <CheckInRadarChart entries={photos} />
-            </div>
-            <div className="space-y-3">
-              {referralInsight ? (
-                <DoctorReferralCard
-                  insight={referralInsight}
-                  onDismiss={() => onDismissInsight(referralInsight.id)}
-                  onExport={onOpenExport}
-                />
-              ) : null}
-              {otherInsights.map((insight) => (
-                <InsightCard
-                  key={insight.id}
-                  insight={insight}
-                  onDismiss={() => onDismissInsight(insight.id)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+        <InsightsPanel
+          photos={photos}
+          totalPhotoCount={totalPhotoCount}
+          insights={insights}
+          insightsMeta={insightsMeta}
+          insightsLoading={insightsLoading}
+          insightsWindow={insightsWindow}
+          onInsightsWindowChange={onInsightsWindowChange}
+          onRefreshInsights={onRefreshInsights}
+          isRefreshingInsights={isRefreshingInsights}
+          onOpenUpload={onOpenUpload}
+          onOpenCompare={onOpenCompare}
+          onOpenExport={onOpenExport}
+          onOpenEntries={onOpenInsightEntries}
+          onOpenProduct={onOpenProduct}
+          onOpenSettings={onOpenSettings}
+          onDismissInsight={onDismissInsight}
+        />
       </TabsContent>
 
       <TabsContent value="wrapped" className="mt-4">

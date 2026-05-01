@@ -1296,6 +1296,14 @@
       "cta": "Add your first product",
       "filtered": "No products match your current filter."
     },
+    "prerequisites": {
+      "profile": {
+        "title": "Finish your skin profile first",
+        "body": "Ritora needs your skin profile before product details can safely shape routines, analysis, or suggestions.",
+        "cta": "Open skin profile",
+        "loadError": "We couldn't reach your skin profile right now. Check your connection and try again."
+      }
+    },
     "errors": {
       "retry": "Try again",
       "loadShelfTitle": "We couldn't load your shelf",
@@ -1919,6 +1927,13 @@
       "headline": "Build your weekly rhythm",
       "body": "Apply one time to all days, or build each day separately."
     },
+    "prerequisites": {
+      "product": {
+        "title": "Add a product first",
+        "body": "Routines schedule the products on your shelf. Add one to get started.",
+        "cta": "Add product"
+      }
+    },
     "days": {
       "mon": "Monday",
       "tue": "Tuesday",
@@ -2134,6 +2149,14 @@
     "eyebrow": "Your skin journey",
     "fab": "Add today's photo",
     "exportForDermatologist": "Export for dermatologist",
+    "prerequisites": {
+      "profile": {
+        "title": "Finish your skin profile first",
+        "body": "Ritora needs your skin profile before it can safely analyse photos, check-ins, and skin progress.",
+        "cta": "Open skin profile",
+        "loadError": "We couldn't reach your skin profile right now. Check your connection and try again."
+      }
+    },
     "tabs": {
       "calendar": "Calendar",
       "photos": "Photos",
@@ -2243,7 +2266,90 @@
       },
       "disclaimer": "Not a medical diagnosis. Ritora is decision support. Consult a dermatologist for medical concerns.",
       "indicators": "Indicators",
-      "comparedToPrevious": "Compared to previous"
+      "comparedToPrevious": "Compared to previous",
+      "interpretation": {
+        "retakeNeeded": {
+          "summary": "This photo is not clear enough for a reliable reading.",
+          "guidance": "Try another photo today if you can. Use natural light, keep your face centered, and avoid filters or makeup."
+        },
+        "urgentReview": {
+          "summary": "Ritora noticed visible signs that may need urgent medical attention.",
+          "guidance": "If you have swelling, trouble breathing, fast spreading hives, eye area changes, or feel unwell, seek medical care now."
+        },
+        "professionalReview": {
+          "summary": "This entry has visible signs worth reviewing with a clinician if they persist or feel uncomfortable.",
+          "guidance": "Keep tracking calmly, but consider contacting a dermatologist if the pattern continues, spreads, or feels painful."
+        },
+        "barrierSupport": {
+          "summary": "Your skin barrier may need a calmer routine right now.",
+          "guidance": "This pattern fits a gentle support moment. Keep the routine simple, avoid adding new actives, and watch whether redness or tightness settles."
+        },
+        "acneProgressTiming": {
+          "summary": "Your breakout pattern is best judged across several weeks, not one photo.",
+          "guidance": "Use today as one data point. The trend becomes more useful when Ritora can compare entries across a longer window."
+        },
+        "hyperpigmentationTracking": {
+          "summary": "Dark marks and uneven tone need a longer tracking window.",
+          "guidance": "Use consistent daylight and sunscreen context when logging. These changes can be slow, so Ritora will read this as a trend rather than a one day result."
+        },
+        "retinoidIrritationContext": {
+          "summary": "This looks like a moment to be careful with a new retinoid or retinol product.",
+          "guidance": "If this followed a recent retinoid change, keep the routine gentle and watch whether peeling, tightness, or redness settles before adding anything new."
+        },
+        "stableBaseline": {
+          "summary": "Today looks like a useful baseline for future comparison.",
+          "guidance": "Keep using similar lighting and framing so Ritora can compare changes more fairly over time."
+        },
+        "caveats": {
+          "notDiagnosis": "This is not a diagnosis. Ritora uses visible signals to support tracking and reflection.",
+          "qualityLimited": "Low photo quality can hide or exaggerate visible changes.",
+          "progressNeedsTime": "Skin progress can move slowly, so single day changes should be read with care."
+        }
+      },
+      "sources": {
+        "label": "Grounded sources",
+        "lastVerified": "Verified {date}",
+        "aad_skin_photo_quality": {
+          "title": "How to take skin photos",
+          "summary": "AAD explains that good lighting, focus, and clear framing help photos show color and texture accurately."
+        },
+        "aad_acne_treatment_timing": {
+          "title": "Acne progress timing",
+          "summary": "AAD explains that acne improvement is usually judged across weeks of consistent care."
+        },
+        "aad_dark_spots_skin_tones": {
+          "title": "Dark spots and uneven tone",
+          "summary": "AAD describes how dark marks can fade slowly and why sunscreen matters when tracking them."
+        },
+        "aad_skin_of_color": {
+          "title": "Skin of color guidance",
+          "summary": "AAD covers how acne and dark marks may show differently across deeper skin tones."
+        },
+        "aad_retinoid_retinol_guidance": {
+          "title": "Retinoid and retinol guidance",
+          "summary": "AAD explains how retinoid products are introduced and why irritation context matters."
+        },
+        "aad_contact_dermatitis_symptoms": {
+          "title": "Contact dermatitis signs",
+          "summary": "AAD describes signs that can appear when skin reacts to something that touched it."
+        },
+        "aad_contact_dermatitis_patch_testing": {
+          "title": "Patch testing for repeated rashes",
+          "summary": "AAD explains that clinicians may use patch testing to investigate repeated rash patterns."
+        },
+        "aad_hives_emergency": {
+          "title": "When hives need urgent care",
+          "summary": "AAD highlights symptoms such as swelling or breathing trouble as reasons to seek urgent help."
+        },
+        "aad_dry_skin_relief": {
+          "title": "Dry skin and barrier support",
+          "summary": "AAD recommends gentle care when skin is dry, irritated, or uncomfortable."
+        },
+        "mayo_acne_treatment_timing": {
+          "title": "Acne progress timing",
+          "summary": "Mayo Clinic notes that acne care is usually judged over weeks, not from one day alone."
+        }
+      }
     },
     "severity": {
       "none": "None",
@@ -2294,6 +2400,7 @@
       "sweat_no": "No",
       "sweat_yes": "Yes",
       "cycleLabel": "Period day",
+      "cycleFromProfileBadge": "from skin profile",
       "cycle_not_on": "Not on period",
       "cycle_day_1_3": "Day 1–3",
       "cycle_day_4_7": "Day 4–7",
@@ -2354,20 +2461,20 @@
       "photoLabel": "Photo",
       "dropZoneTitle": "Tap to choose a photo",
       "dropZoneDesc": "Or drag and drop · JPG, PNG, HEIC, WebP up to 10 MB",
-      "noWebcam": "No camera in the browser. A photo taken in natural light gives the best AI signal.",
+      "noWebcam": "A photo taken in natural light makes day-to-day comparison cleaner.",
       "unsupportedPhotoType": "Choose a JPG, PNG, HEIC, or WebP photo.",
       "photoTooLarge": "Choose a photo under 10 MB.",
       "replace": "Replace",
       "crop": "Crop to square",
       "remove": "Remove",
-      "fileMeta": "{name} · {size} · {kind}",
+      "fileMeta": "{name} · {size}",
       "processedKind": "WebP after upload · EXIF stripped",
       "photoPreviewAlt": "Selected journal photo",
       "currentPhotoAlt": "Current journal photo for {date}",
       "currentPhotoBadge": "Current photo",
       "currentPhotoHint": "Choose a new photo only if you want to replace today's saved photo.",
       "cropBadge": "Cropped 1:1",
-      "photoProcessingConsent": "I consent to Ritora processing this skin-progress photo for AI analysis. The photo is encrypted at rest, EXIF is stripped, and the AI request does not include my name, email, or user id.",
+      "photoProcessingConsent": "I consent to analysis of this photo.",
       "preRoutine": "Taken before today's products (pre-routine)",
       "nextStepHint": "Your check-in is on the next step. You can also save just the photo and add ratings later.",
       "savePhotoOnly": "Save photo only",
@@ -2441,8 +2548,9 @@
       "loadingMore": "Loading more photos"
     },
     "insightsTab": {
-      "subtitle": "Trends and correlations from your check-ins and AI observations.",
+      "subtitle": "Plain language suggestions from your photos, check-ins, and trusted dermatology sources.",
       "kinds": {
+        "onboarding_progress": "Progress",
         "trend": "Trend",
         "correlation": "Correlation",
         "effectiveness": "Effectiveness",
@@ -2450,12 +2558,221 @@
         "daily": "Daily insight",
         "weekly": "Weekly summary",
         "monthly": "Monthly summary",
-        "reaction_recovery": "Recovery"
+        "reaction_recovery": "Recovery",
+        "photo_quality_drift": "Photo quality",
+        "face_zone_pattern": "Face zone pattern",
+        "cycle": "Cycle pattern",
+        "ai_summary": "AI summary",
+        "ai_pattern": "AI pattern"
+      },
+      "severity": {
+        "info": "Info",
+        "warning": "Watch",
+        "critical": "Important"
       },
       "showHow": "Show me how",
       "dismiss": "Dismiss",
       "exportHistory": "Export skin history",
       "notNow": "Not now",
+      "refresh": "Check for updates",
+      "refreshing": "Refreshing",
+      "trendsTitle": "Trend deck",
+      "generatedLine": "Generated {date}",
+      "basedOnLine": "Based on {start} to {end}",
+      "windows": {
+        "all": "All",
+        "week": "This week",
+        "month": "This month"
+      },
+      "directions": {
+        "improved": "eased",
+        "increased": "increased"
+      },
+      "locations": {
+        "forehead": "forehead",
+        "left_cheek": "left cheek",
+        "right_cheek": "right cheek",
+        "chin": "chin",
+        "nose": "nose",
+        "under_eyes": "under eyes",
+        "jawline": "jawline",
+        "upper_lip": "upper lip",
+        "temples": "temples",
+        "neck": "neck"
+      },
+      "cycle": {
+        "day_1_3": "days 1 to 3",
+        "day_4_7": "days 4 to 7",
+        "late_cycle": "late cycle",
+        "not_on": "not on period"
+      },
+      "factors": {
+        "highStress": "High stress days",
+        "travelled": "Travel days",
+        "stress_today": "stress"
+      },
+      "metric": {
+        "previous": "{value} before",
+        "sampleCount": "{count, plural, one {# entry} other {# entries}}",
+        "units": {
+          "entries": "entries",
+          "rating": "rating"
+        }
+      },
+      "progress": {
+        "title": "{count, plural, one {# journal entry} other {# journal entries}} tracked",
+        "next": "{count, plural, one {# more entry} other {# more entries}} until the next insight unlocks",
+        "ready": "Your data is ready for richer insight suggestions.",
+        "generating": "Ritora is preparing new insight suggestions from your latest journal data."
+      },
+      "headlines": {
+        "onboarding_progress": "{count} entries logged. Your next insight unlocks at {nextUnlock}.",
+        "daily": "Today’s journal entry is ready to review.",
+        "weekly": "{entriesCount} recent entries are enough for a first pattern check.",
+        "trend": "{concern} has {direction} in your recent entries.",
+        "monthly": "Your month has {entriesCount} entries and {photosCount} photos.",
+        "reaction_recovery": "Your skin looks calmer after {days} tracked days.",
+        "referral": "{referralCount} recent entries need a closer safety review.",
+        "effectiveness": "{concern} {direction} after a product change.",
+        "face_zone_pattern": "{concern} appears most often around your {location}.",
+        "photo_quality_drift": "{poorCount} recent photos need better light for analysis.",
+        "correlation": "{factor} appears alongside changes in {concern}.",
+        "cycle": "{concern} looks higher around {phase}.",
+        "ai_summary": "Ritora found a short pattern across {entriesCount} entries.",
+        "ai_pattern": "{factor} may be worth watching in your journal."
+      },
+      "blocks": {
+        "unknown": "New insight format",
+        "unknownSource": "Source details are not available yet.",
+        "onboarding_progress": {
+          "text": "Keep adding daily photos and check-ins. The suggestion engine gets more useful as your personal baseline grows."
+        },
+        "daily": {
+          "analysis": "This uses your latest saved entry from {date} and its analysis status: {status}."
+        },
+        "weekly": {
+          "recap": "Ritora reviewed {entriesCount} recent entries. {reactionCount} had moderate or stronger reaction signals."
+        },
+        "trend": {
+          "explanation": "Your {concern} rating has {direction} compared with your earlier entries in this window."
+        },
+        "monthly": {
+          "recap": "This month includes {entriesCount} journal entries and {photosCount} photos."
+        },
+        "reaction_recovery": {
+          "text": "Reaction signals eased across {days} tracked days. Keep using gentle, simple routines while the skin settles."
+        },
+        "referral": {
+          "text": "{referralCount} of the last 7 entries showed moderate or stronger reaction signals, or repeated doctor review flags."
+        },
+        "effectiveness": {
+          "text": "After a product change, {concern} moved enough to be worth watching. This is a correlation, not proof.",
+          "marker": "Product change"
+        },
+        "face_zone_pattern": {
+          "text": "The repeated zone is your {location}. This can help you compare photos without scanning every entry."
+        },
+        "photo_quality_drift": {
+          "text": "{poorCount} recent photos had low light or retake flags. Natural daylight gives the analysis a clearer view."
+        },
+        "correlation": {
+          "text": "{factor} appears alongside a change in {concern}. Treat this as a clue to watch, not a conclusion."
+        },
+        "cycle": {
+          "text": "Your entries suggest a possible cycle pattern around {phase}. Confidence grows when more cycles are logged."
+        },
+        "ai_summary": {
+          "text": "This summary connects the strongest recent patterns into one plain language suggestion."
+        },
+        "ai_pattern": {
+          "text": "Ritora noticed {factor} in entries that may deserve closer tracking."
+        }
+      },
+      "evidenceGrade": {
+        "strong": "Strong evidence",
+        "moderate": "Moderate evidence",
+        "limited": "Limited evidence",
+        "anecdotal": "Your logs only",
+        "basis": {
+          "trend": "based on a {windowDays} day personal trend",
+          "reaction_recovery": "based on reaction and recovery markers",
+          "referral": "based on repeated safety flags",
+          "effectiveness": "based on a product change window",
+          "ownLogs": "based only on your journal entries",
+          "cycle": "based on cycle markers in your journal"
+        }
+      },
+      "actions": {
+        "viewEntries": "View entries",
+        "openCompare": "Open compare",
+        "openExport": "Export skin history",
+        "openTodayUpload": "Add today's photo",
+        "openProduct": "Open product",
+        "openSettings": "Open settings"
+      },
+      "disclaimers": {
+        "medical": "Ritora is not making a diagnosis. If symptoms feel severe, spread quickly, or include swelling or breathing trouble, seek medical care.",
+        "correlation": "This is a pattern in your entries, not proof that one thing made another happen."
+      },
+      "ai": {
+        "chip": "AI refined",
+        "chipStrong": "AI insight",
+        "whyThis": "Why this?",
+        "whyThisTitle": "Why Ritora is saying this",
+        "whyThisBody": "This shows the facts, sources, and generation details behind the suggestion.",
+        "trigger": "Trigger",
+        "model": "Model",
+        "promptVersion": "Prompt version",
+        "cache": "Cache",
+        "notUsed": "Not used",
+        "cacheHit": "hit",
+        "cacheMiss": "miss",
+        "sources": "Sources",
+        "provenance": "Wording was refined by AI using only the facts and vetted sources shown here."
+      },
+      "kb": {
+        "lastVerified": "Verified {date}",
+        "derm_6_8_week_acne_window": {
+          "title": "Acne treatment timing",
+          "summary": "AAD guidance explains that acne care takes time and visible change is usually judged across weeks."
+        },
+        "derm_acne_types": {
+          "title": "Types of breakouts",
+          "summary": "AAD explains common acne types and why patterns across the face can matter."
+        },
+        "derm_hives_emergency": {
+          "title": "When hives need urgent care",
+          "summary": "AAD highlights symptoms that deserve urgent medical attention."
+        },
+        "derm_dry_skin_relief": {
+          "title": "Dry skin relief",
+          "summary": "AAD recommends gentle barrier support when skin feels dry or irritated."
+        },
+        "derm_contact_dermatitis_patch_testing": {
+          "title": "Contact dermatitis and patch testing",
+          "summary": "AAD describes patch testing as a way clinicians investigate repeated rash-like reactions."
+        },
+        "derm_skin_of_color_acne": {
+          "title": "Skin of color and acne",
+          "summary": "AAD notes that acne and dark spots can appear differently across skin tones."
+        },
+        "derm_retinoid_retinol_guidance": {
+          "title": "Retinoid and retinol guidance",
+          "summary": "AAD explains how retinoids are used and why irritation should be watched carefully."
+        },
+        "derm_hormonal_acne_therapy": {
+          "title": "Hormonal acne therapy",
+          "summary": "AAD discusses hormonal patterns that can affect acne for some people."
+        },
+        "pubmed_niacinamide_review": {
+          "title": "Niacinamide review",
+          "summary": "A PubMed indexed review summarizes evidence on topical niacinamide in skin care."
+        },
+        "pubmed_menstrual_cycle_acne": {
+          "title": "Menstrual cycle acne study",
+          "summary": "A PubMed indexed study describes acne pattern changes across the menstrual cycle."
+        }
+      },
       "charts": {
         "trendTitle": "Concern severity over time",
         "reactionsTitle": "Reaction frequency · weekly",
@@ -2563,7 +2880,12 @@
         "pausedSubtitle": "If a schedule snapshot was captured on {date}, it appears below.",
         "pausedAmTitle": "AM (paused)",
         "pausedPmTitle": "PM (paused)",
-        "noSnapshot": "No schedule was active when this simplification started."
+        "noSnapshot": "No schedule was active when this simplification started.",
+        "unsupportedSnapshot": "A schedule snapshot was captured, but its details could not be displayed safely.",
+        "snapshotSlotsLabel": "Routine slots",
+        "snapshotStepsLabel": "Routine steps",
+        "snapshotCapturedLabel": "Captured",
+        "snapshotCapturedUnknown": "Unknown"
       }
     },
     "events": {
@@ -2643,6 +2965,7 @@
     "autoSimplifyNote": "When off, you'll still get an alert but your routine is never changed automatically.",
     "insightsTitle": "Insights & Wrapped",
     "insightAlertsBody": "Insight notifications",
+    "aiRefinedInsightsBody": "Use AI refined wording and AI sourced insight cards",
     "wrappedAlertsBody": "Wrapped ready notifications"
   },
   "notificationsPage": {

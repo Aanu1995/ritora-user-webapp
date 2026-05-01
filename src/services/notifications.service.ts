@@ -52,6 +52,8 @@ function normalizeNotificationPreferences(
 ): NotificationPreferences {
   return {
     ...preferences,
+    ai_polished_insights_enabled:
+      preferences.ai_polished_insights_enabled ?? true,
     photo_reminder_local_time: normalizeReminderTime(
       preferences.photo_reminder_local_time,
     ),

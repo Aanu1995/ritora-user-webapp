@@ -81,7 +81,7 @@ export const NAV_ITEMS: NavItem[] = [
     labelKey: "skinJournal",
     descriptionKey: "skinJournalDescription",
     group: NavGroup.Main,
-    status: NavItemStatus.Planned,
+    status: NavItemStatus.Live,
   },
   {
     route: AppRoute.SmartPicks,
@@ -113,7 +113,7 @@ export const NAV_ITEMS: NavItem[] = [
     labelKey: "notifications",
     descriptionKey: "notificationsDescription",
     group: NavGroup.Account,
-    status: NavItemStatus.Planned,
+    status: NavItemStatus.Live,
   },
   {
     route: AppRoute.Settings,

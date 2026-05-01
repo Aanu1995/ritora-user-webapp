@@ -54,6 +54,7 @@ export interface NotificationPreferences {
   reaction_alerts_enabled: boolean;
   simplification_alerts_enabled: boolean;
   insight_alerts_enabled: boolean;
+  ai_polished_insights_enabled: boolean;
   wrapped_alerts_enabled: boolean;
   photo_tutorial_completed: boolean;
 }
@@ -65,6 +66,7 @@ export interface UpdatePreferencesPayload {
   reaction_alerts_enabled?: boolean;
   simplification_alerts_enabled?: boolean;
   insight_alerts_enabled?: boolean;
+  ai_polished_insights_enabled?: boolean;
   wrapped_alerts_enabled?: boolean;
   photo_tutorial_completed?: boolean;
 }

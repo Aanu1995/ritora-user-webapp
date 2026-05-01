@@ -22,6 +22,7 @@ import {
   listPhotoDates,
   listPhotos,
   listEvents,
+  listInsights,
   updateEntry,
   upsertToday,
 } from '@/services/skin-journal.service';
@@ -165,6 +166,23 @@ describe('skin-journal.service', () => {
 
     expect(getRequest).toHaveBeenCalledWith(
       '/skin-journal/events?kind=reaction_detected&from=2026-04-01&to=2026-04-30&acknowledged=false',
+    );
+  });
+
+  it('loads structured insight envelopes with window and locale query params', async () => {
+    (getRequest as jest.Mock).mockResolvedValue({
+      insights: [],
+      meta: {
+        total_entries: 14,
+        entries_until_next_insight: 16,
+        last_generated_at: '2026-05-01T09:00:00.000Z',
+      },
+    });
+
+    await listInsights({ window: 'month', locale: 'sv' });
+
+    expect(getRequest).toHaveBeenCalledWith(
+      '/skin-journal/insights?window=month&locale=sv',
     );
   });
 

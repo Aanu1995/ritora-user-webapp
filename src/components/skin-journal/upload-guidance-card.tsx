@@ -37,8 +37,8 @@ export function UploadGuidanceCard({
       : "grid";
   const tipsGridClass = `${tipsDisplay} ${tipsBase}`;
   const subtitleClass = collapsed
-    ? "mt-2 hidden text-[11px] text-muted lg:block"
-    : "mt-2 text-[11px] text-muted";
+    ? "mt-0.5 hidden text-xs text-muted lg:block"
+    : "mt-0.5 text-xs text-muted";
   const containerClass = isVertical
     ? "flex h-full flex-col rounded-2xl border border-border bg-surface-muted p-3"
     : "rounded-2xl border border-border bg-surface-muted p-3";
@@ -73,10 +73,10 @@ export function UploadGuidanceCard({
               {emoji}
             </div>
             <div className="min-w-0">
-              <p className="text-[13px] font-bold leading-tight">
+              <p className="text-sm font-bold leading-tight">
                 {tTips(`${key}.title`)}
               </p>
-              <p className="mt-0.5 text-xs leading-[1.5] text-muted">
+              <p className="mt-0.5 text-[13px] leading-[1.5] text-muted">
                 {tTips(`${key}.body`)}
               </p>
             </div>

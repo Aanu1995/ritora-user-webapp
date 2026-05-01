@@ -187,8 +187,12 @@ export function DailyCheckInForm({
 
                 {showCycle ? (
                   <>
-                    <p className="mb-2 mt-5 text-sm text-muted">
-                      {tCtx("cycleLabel")}
+                    <p className="mb-2 mt-5 flex flex-wrap items-center gap-2 text-sm text-muted">
+                      <span>{tCtx("cycleLabel")}</span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-ai-bg px-2 py-0.5 text-[10px] font-semibold text-ai-fg">
+                        <span aria-hidden>🔒</span>
+                        {tCtx("cycleFromProfileBadge")}
+                      </span>
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {CYCLE_MARKERS.map((c) => (

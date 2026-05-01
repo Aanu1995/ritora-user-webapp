@@ -14,6 +14,7 @@ import { JournalCompareSkeleton } from "@/components/skin-journal/journal-loadin
 import { formatJournalShortDate } from "@/components/skin-journal/journal-date";
 import { PhotoDatePicker } from "@/components/skin-journal/photo-date-picker";
 import { safeDynamicTranslation } from "@/components/skin-journal/safe-translation";
+import { useJournalUiStore } from "@/stores/journal-ui-store";
 import type { CompareResponse } from "@/types/skin-journal";
 
 type CompareDeltaBullet = CompareResponse["delta"]["bullets"][number];
@@ -60,9 +61,11 @@ export default function JournalComparePage() {
   const tConcerns = useTranslations("journal.concerns");
   const tSeverity = useTranslations("journal.severity");
   const locale = useLocale();
+  const compareFrom = useJournalUiStore((state) => state.compareFrom);
+  const compareTo = useJournalUiStore((state) => state.compareTo);
 
-  const [fromDraft, setFrom] = useState<string | null>(null);
-  const [toDraft, setTo] = useState<string | null>(null);
+  const [fromDraft, setFrom] = useState<string | null>(compareFrom);
+  const [toDraft, setTo] = useState<string | null>(compareTo);
   const { data: photoDateIndex, isLoading: photoDatesLoading } =
     usePhotoDates();
   const sortedPhotoDates = [...(photoDateIndex?.dates ?? [])].sort((a, b) =>
@@ -70,7 +73,9 @@ export default function JournalComparePage() {
   );
   const hasEnoughPhotoDates = sortedPhotoDates.length >= 2;
   const photoDateSet = new Set(sortedPhotoDates.map((item) => item.date));
-  const defaultTo = hasEnoughPhotoDates ? (sortedPhotoDates[0]?.date ?? null) : null;
+  const defaultTo = hasEnoughPhotoDates
+    ? (sortedPhotoDates[0]?.date ?? null)
+    : null;
   const defaultFrom = hasEnoughPhotoDates
     ? (sortedPhotoDates.find((item) => item.date !== defaultTo)?.date ?? null)
     : null;

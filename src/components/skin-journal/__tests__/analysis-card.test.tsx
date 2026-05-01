@@ -1,7 +1,10 @@
 import { screen } from "@testing-library/react";
 import { renderWithProviders } from "@/test/utils";
 import { AnalysisCard } from "../analysis-card";
-import type { AnalysisObservations } from "@/types/skin-journal";
+import type {
+  AnalysisObservations,
+  PhotoAnalysisInterpretation,
+} from "@/types/skin-journal";
 
 function observations(
   overrides: Partial<AnalysisObservations> = {},
@@ -41,6 +44,74 @@ function observations(
 }
 
 describe("AnalysisCard", () => {
+  const interpretation: PhotoAnalysisInterpretation = {
+    version: "1.0",
+    code: "barrier_support",
+    severity: "warning",
+    summary_key: "journal.analysis.interpretation.barrierSupport.summary",
+    summary_values: {},
+    guidance_keys: ["journal.analysis.interpretation.barrierSupport.guidance"],
+    caveat_keys: ["journal.analysis.interpretation.caveats.notDiagnosis"],
+    source_ids: ["aad_dry_skin_relief"],
+    sources: [
+      {
+        id: "aad_dry_skin_relief",
+        title_key: "journal.analysis.sources.aad_dry_skin_relief.title",
+        summary_key: "journal.analysis.sources.aad_dry_skin_relief.summary",
+        organization: "American Academy of Dermatology",
+        url: "https://www.aad.org/public/everyday-care/skin-care-basics/dry/dermatologists-tips-relieve-dry-skin",
+        evidence_grade: "moderate",
+        last_verified: "2026-05-01",
+      },
+    ],
+    generated_at: "2026-05-01T08:00:00.000Z",
+  };
+
+  it("renders source-backed app interpretation before raw AI wording", () => {
+    renderWithProviders(
+      <AnalysisCard
+        observations={observations({
+          user_visible_message: "RAW AI COPY SHOULD NOT BE PRIMARY",
+          overall_assessment: "RAW AI ASSESSMENT",
+        })}
+        interpretation={interpretation}
+      />,
+    );
+
+    expect(
+      screen.getByText(/your skin barrier may need a calmer routine/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/RAW AI COPY SHOULD NOT BE PRIMARY/i),
+    ).not.toBeInTheDocument();
+    const source = screen.getByRole("link", {
+      name: /american academy of dermatology/i,
+    });
+    expect(source).toHaveAttribute("target", "_blank");
+    expect(source).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  it("falls back to controlled app wording when interpretation is absent", () => {
+    renderWithProviders(
+      <AnalysisCard
+        observations={observations({
+          user_visible_message: "RAW AI COPY SHOULD NOT BE SHOWN",
+          overall_assessment: "RAW AI ASSESSMENT SHOULD NOT BE SHOWN",
+        })}
+      />,
+    );
+
+    expect(
+      screen.getByText(/useful baseline for future comparison/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/RAW AI COPY SHOULD NOT BE SHOWN/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/RAW AI ASSESSMENT SHOULD NOT BE SHOWN/i),
+    ).not.toBeInTheDocument();
+  });
+
   it("shows controlled retake guidance when photo quality is not reliable", () => {
     renderWithProviders(
       <AnalysisCard

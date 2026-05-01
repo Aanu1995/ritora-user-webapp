@@ -219,7 +219,10 @@ export function DayDetailPanel({
       )}
 
       {entry.analysis_observations ? (
-        <AnalysisCard observations={entry.analysis_observations} />
+        <AnalysisCard
+          observations={entry.analysis_observations}
+          interpretation={entry.analysis_interpretation}
+        />
       ) : status === "failed" ? (
         <div className="rounded-2xl border border-[color:var(--warning-border)] bg-warning-soft p-4">
           <div className="flex items-start gap-2.5">

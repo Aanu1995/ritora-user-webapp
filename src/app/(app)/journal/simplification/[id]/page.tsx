@@ -10,6 +10,7 @@ import { AppRoute } from "@/constants/app-routes";
 import { BackButton } from "@/components/skin-journal/back-button";
 import { JournalSimplificationSkeleton } from "@/components/skin-journal/journal-loading-skeletons";
 import { formatJournalShortDate } from "@/components/skin-journal/journal-date";
+import { SimplificationSnapshotSummary } from "@/components/skin-journal/simplification-snapshot-summary";
 import {
   useAcknowledgeSimplification,
   useSimplification,
@@ -117,9 +118,9 @@ export default function SimplificationDetailPage({
             {t("pausedSubtitle", { date: triggerDate })}
           </p>
           {hasScheduleSnapshot ? (
-            <pre className="mt-3 max-h-72 overflow-auto rounded-xl bg-surface-muted p-3 text-xs leading-relaxed text-muted">
-              {JSON.stringify(data.original_schedule_snapshot, null, 2)}
-            </pre>
+            <SimplificationSnapshotSummary
+              snapshot={data.original_schedule_snapshot}
+            />
           ) : (
             <div className="mt-3 rounded-xl border border-border bg-surface-muted p-3 text-sm text-muted">
               {t("noSnapshot")}

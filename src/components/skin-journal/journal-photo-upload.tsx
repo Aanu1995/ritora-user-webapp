@@ -116,7 +116,7 @@ export function JournalPhotoUpload({
 
       {photo && previewUrl ? (
         <div>
-          <div className="relative aspect-square w-full max-w-[320px] overflow-hidden rounded-2xl border border-border">
+          <div className="relative aspect-square mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl border border-border">
             <Image
               src={previewUrl}
               alt={t("photoPreviewAlt")}
@@ -176,7 +176,7 @@ export function JournalPhotoUpload({
         </div>
       ) : existingPhotoUrl ? (
         <div>
-          <div className="relative aspect-square w-full max-w-[320px] overflow-hidden rounded-2xl border border-border">
+          <div className="relative aspect-square mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl border border-border">
             <Image
               src={existingPhotoUrl}
               alt={existingPhotoAlt ?? t("photoPreviewAlt")}
@@ -216,7 +216,7 @@ export function JournalPhotoUpload({
           type="button"
           variant="ghost"
           onClick={() => inputRef.current?.click()}
-          className="group flex aspect-square h-auto w-full max-w-[320px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border-strong bg-surface-muted p-4 text-center transition hover:border-accent hover:bg-surface"
+          className="group flex aspect-square h-auto mx-auto w-full max-w-[420px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border-strong bg-surface-muted p-4 text-center transition hover:border-accent hover:bg-surface"
         >
           <div
             aria-hidden

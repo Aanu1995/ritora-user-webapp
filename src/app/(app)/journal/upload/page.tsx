@@ -34,6 +34,7 @@ import {
   useTodayEntry,
   useUpsertToday,
 } from "@/hooks/use-skin-journal";
+import { useSkinProfile } from "@/hooks/use-skin-profile";
 import type { JournalEntry, UpsertEntryPayload } from "@/types/skin-journal";
 
 type Step = "photo" | "checkin";
@@ -79,6 +80,8 @@ export default function JournalUploadPage() {
   const [checkInValidationAttempted, setCheckInValidationAttempted] =
     useState(false);
   const { data: todayPayload } = useTodayEntry();
+  const { data: skinProfile } = useSkinProfile();
+  const showCycleQuestion = skinProfile?.sexAtBirth === "female";
   const entry = todayPayload?.entry ?? null;
   const date = resolveCanonicalTodayDate(todayPayload?.date, todayYmd());
   const requestedMode = searchParams.get("mode");
@@ -116,12 +119,18 @@ export default function JournalUploadPage() {
   };
 
   const isPhotoProcessingBlocked = photo !== null && !photoProcessingConsent;
-  const canSubmitPhotoStep = isEditMode
+  const canSavePhotoStep = isEditMode
     ? Boolean(editableEntry || photo)
     : Boolean(photo);
+  const canContinueToCheckIn = isEditMode
+    ? Boolean(editableEntry || photo)
+    : true;
 
   const handleSave = (savePhotoOnly: boolean) => {
-    if (!canSubmitPhotoStep) {
+    if (savePhotoOnly && !canSavePhotoStep) {
+      return;
+    }
+    if (isPhotoProcessingBlocked) {
       return;
     }
     if (!savePhotoOnly) {
@@ -179,7 +188,7 @@ export default function JournalUploadPage() {
       <div className="mx-auto mt-3 max-w-5xl space-y-4">
         {step === "photo" ? (
           <div>
-            <div className="grid grid-cols-1 gap-16 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
+            <div className="grid grid-cols-1 gap-16 lg:mx-auto lg:w-fit lg:grid-cols-[440px_420px]">
               <UploadGuidanceCard layout="vertical" />
               <JournalPhotoUpload
                 photo={photo}
@@ -206,7 +215,7 @@ export default function JournalUploadPage() {
                   variant="outline"
                   onClick={() => handleSave(true)}
                   disabled={
-                    isPending || !canSubmitPhotoStep || isPhotoProcessingBlocked
+                    isPending || !canSavePhotoStep || isPhotoProcessingBlocked
                   }
                 >
                   {isPending ? (
@@ -219,7 +228,7 @@ export default function JournalUploadPage() {
                   size="sm"
                   onClick={() => setStep("checkin")}
                   disabled={
-                    isPending || !canSubmitPhotoStep || isPhotoProcessingBlocked
+                    isPending || !canContinueToCheckIn || isPhotoProcessingBlocked
                   }
                 >
                   {t("continueToCheckIn")}
@@ -239,6 +248,7 @@ export default function JournalUploadPage() {
               key={editableEntry?.id ?? "new-entry"}
               value={checkIn}
               onChange={handleCheckInChange}
+              showCycle={showCycleQuestion}
             />
 
             {shouldShowCheckInValidation ? (

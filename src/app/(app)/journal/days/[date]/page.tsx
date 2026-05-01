@@ -2,17 +2,14 @@
 
 import { use } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/app/page-header";
 import { AppRoute } from "@/constants/app-routes";
 import { useDay, useRetryAnalysis } from "@/hooks/use-skin-journal";
 import { BackButton } from "@/components/skin-journal/back-button";
 import { DayDetailPanel } from "@/components/skin-journal/day-detail";
 import { formatJournalLongDate } from "@/components/skin-journal/journal-date";
-import {
-  JournalUploadMode,
-  buildJournalUploadHref,
-} from "@/components/skin-journal/journal-navigation";
+import { JournalUploadMode } from "@/components/skin-journal/journal-navigation";
+import { useJournalProfileGate } from "@/components/skin-journal/use-journal-profile-gate";
 
 function todayYmd(): string {
   const now = new Date();
@@ -29,16 +26,14 @@ export default function JournalDayPage({
   const { date } = use(params);
   const t = useTranslations("journal.dayDetail");
   const locale = useLocale();
-  const router = useRouter();
+  const { openTodayUpload, profileGateDialog } = useJournalProfileGate();
   const { data, isLoading } = useDay(date);
   const retryAnalysis = useRetryAnalysis();
   const formattedDate = formatJournalLongDate(date, locale);
 
   const today = todayYmd();
   const isToday = date === today;
-  const openTodayUpload = () => router.push(buildJournalUploadHref());
-  const openTodayEdit = () =>
-    router.push(buildJournalUploadHref({ mode: JournalUploadMode.Edit }));
+  const openTodayEdit = () => openTodayUpload(JournalUploadMode.Edit);
 
   return (
     <div>
@@ -64,6 +59,7 @@ export default function JournalDayPage({
           onReplacePhoto={isToday ? openTodayEdit : undefined}
         />
       </div>
+      {profileGateDialog}
     </div>
   );
 }

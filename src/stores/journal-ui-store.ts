@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import type { InsightWindow } from "@/types/skin-journal";
 
 export type JournalTab = "calendar" | "photos" | "insights" | "wrapped";
 
@@ -14,6 +15,8 @@ interface JournalUiState {
   compareFrom: string | null;
   compareTo: string | null;
   setCompareDates: (from: string | null, to: string | null) => void;
+  insightsWindow: InsightWindow;
+  setInsightsWindow: (window: InsightWindow) => void;
 }
 
 export const useJournalUiStore = create<JournalUiState>((set) => ({
@@ -26,4 +29,6 @@ export const useJournalUiStore = create<JournalUiState>((set) => ({
   compareFrom: null,
   compareTo: null,
   setCompareDates: (from, to) => set({ compareFrom: from, compareTo: to }),
+  insightsWindow: "all",
+  setInsightsWindow: (window) => set({ insightsWindow: window }),
 }));

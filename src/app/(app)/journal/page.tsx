@@ -33,10 +33,8 @@ import { ReactionDetectedModal } from "@/components/skin-journal/reaction-detect
 import { DermatologistExportModal } from "@/components/skin-journal/dermatologist-export-modal";
 import { JournalTabPanels } from "@/components/skin-journal/journal-tab-panels";
 import { resolveCanonicalTodayDate } from "@/components/skin-journal/journal-date";
-import {
-  JournalUploadMode,
-  buildJournalUploadHref,
-} from "@/components/skin-journal/journal-navigation";
+import { JournalUploadMode } from "@/components/skin-journal/journal-navigation";
+import { useJournalProfileGate } from "@/components/skin-journal/use-journal-profile-gate";
 import { PhotoFilterStaticId, type PhotoFilterId } from "@/types/skin-journal";
 
 function formatLocalYmd(date: Date): string {
@@ -59,6 +57,7 @@ export default function JournalPage() {
   const t = useTranslations("journal");
   const tReaction = useTranslations("journal.reaction");
   const router = useRouter();
+  const { openTodayUpload, profileGateDialog } = useJournalProfileGate();
 
   const todayInfo = useMemo(() => todayLocal(), []);
 
@@ -66,6 +65,9 @@ export default function JournalPage() {
   const setTab = useJournalUiStore((s) => s.setCurrentTab);
   const selectedDate = useJournalUiStore((s) => s.selectedDate);
   const setSelectedDate = useJournalUiStore((s) => s.setSelectedDate);
+  const insightsWindow = useJournalUiStore((s) => s.insightsWindow);
+  const setInsightsWindow = useJournalUiStore((s) => s.setInsightsWindow);
+  const setCompareDates = useJournalUiStore((s) => s.setCompareDates);
   const { data: todayPayload } = useTodayEntry();
   const todayDate = resolveCanonicalTodayDate(todayPayload?.date, todayInfo.ymd);
   const effectiveSelectedDate = selectedDate ?? todayDate;
@@ -96,7 +98,16 @@ export default function JournalPage() {
   );
   const { data: photoFilterIndex } = usePhotoFilters();
   const { data: photoDateIndex } = usePhotoDates();
-  const { data: insights = [] } = useInsights();
+  const {
+    data: insightsPayload,
+    isLoading: insightsLoading,
+    isFetching: insightsFetching,
+    refetch: refetchInsights,
+  } = useInsights({
+    window: insightsWindow,
+    locale,
+  });
+  const insights = insightsPayload?.insights ?? [];
   const { data: wrapped = [] } = useWrappedList();
 
   const startSimplification = useStartSimplification();
@@ -125,6 +136,7 @@ export default function JournalPage() {
     useState<string | null>(null);
 
   const todayEntry = todayPayload?.entry ?? null;
+  const hasTodayEntry = Boolean(todayEntry);
   const reactionEntry =
     todayEntry?.has_reaction && todayEntry.analysis_observations
       ? todayEntry
@@ -168,6 +180,45 @@ export default function JournalPage() {
     setDismissedReactionEntryId(reactionEntry.id);
   };
 
+  const handleOpenCompare = (fromDate?: string, toDate?: string) => {
+    if (fromDate && toDate) {
+      setCompareDates(fromDate, toDate);
+    }
+    router.push(`${AppRoute.Journal}/compare`);
+  };
+
+  const handleOpenInsightEntries = (entryIds: string[]) => {
+    const photoDateByEntryId = new Map(
+      photoDateIndex?.dates.map((item) => [item.entry_id, item.date]) ?? [],
+    );
+    const photoByEntryId = new Map(
+      photos.map((photo) => [photo.id, photo.entry_date]),
+    );
+    const date = entryIds
+      .map((entryId) => photoDateByEntryId.get(entryId) ?? photoByEntryId.get(entryId))
+      .find((entryDate): entryDate is string => !!entryDate);
+
+    if (!date) {
+      return;
+    }
+
+    const [nextYear, nextMonthNum] = date
+      .split("-")
+      .map((part) => parseInt(part, 10));
+    setYear(nextYear);
+    setMonthNum(nextMonthNum);
+    setSelectedDate(date);
+    setTab("calendar");
+  };
+
+  const handleOpenSettings = (settingsTab: string) => {
+    router.push(
+      settingsTab === "notifications"
+        ? `${AppRoute.Settings}/notifications`
+        : AppRoute.Settings,
+    );
+  };
+
   return (
     <div>
       <PageHeader
@@ -189,7 +240,8 @@ export default function JournalPage() {
             </Button>
             <Button
               size="sm"
-              onClick={() => router.push(buildJournalUploadHref())}
+              onClick={() => openTodayUpload()}
+              disabled={hasTodayEntry}
               aria-label={t("fab")}
             >
               <Plus className="h-3.5 w-3.5" />
@@ -261,6 +313,14 @@ export default function JournalPage() {
           photoFilters={photoFilterIndex?.filters ?? []}
           selectedPhotoFilter={selectedPhotoFilter}
           insights={insights}
+          insightsMeta={insightsPayload?.meta ?? null}
+          insightsLoading={insightsLoading}
+          insightsWindow={insightsWindow}
+          onInsightsWindowChange={setInsightsWindow}
+          onRefreshInsights={() => {
+            void refetchInsights();
+          }}
+          isRefreshingInsights={insightsFetching && !insightsLoading}
           wrapped={wrapped}
           calendarData={calendarData}
           calendarLoading={calendarLoading}
@@ -274,19 +334,21 @@ export default function JournalPage() {
           onSelectMonth={handleSelectMonth}
           onSelectDate={setSelectedDate}
           onOpenUpload={
-            canUploadForSelectedDate
-              ? () => router.push(buildJournalUploadHref())
+            canUploadForSelectedDate && !hasTodayEntry
+              ? () => openTodayUpload()
               : undefined
           }
-          onOpenCompare={() => router.push(`${AppRoute.Journal}/compare`)}
+          onOpenCompare={handleOpenCompare}
           onOpenExport={() => setExportModalOpen(true)}
+          onOpenInsightEntries={handleOpenInsightEntries}
+          onOpenProduct={(productId) =>
+            router.push(`${AppRoute.Shelf}/${productId}`)
+          }
+          onOpenSettings={handleOpenSettings}
           onPhotoFilterChange={setSelectedPhotoFilter}
           onEditEntry={
             canUploadForSelectedDate
-              ? () =>
-                  router.push(
-                    buildJournalUploadHref({ mode: JournalUploadMode.Edit }),
-                  )
+              ? () => openTodayUpload(JournalUploadMode.Edit)
               : undefined
           }
           onRetryAnalysis={
@@ -294,10 +356,7 @@ export default function JournalPage() {
           }
           onReplacePhoto={
             canUploadForSelectedDate
-              ? () =>
-                  router.push(
-                    buildJournalUploadHref({ mode: JournalUploadMode.Edit }),
-                  )
+              ? () => openTodayUpload(JournalUploadMode.Edit)
               : undefined
           }
           onDismissInsight={(id) => dismissInsight.mutate(id)}
@@ -328,6 +387,7 @@ export default function JournalPage() {
         />
       ) : null}
 
+      {profileGateDialog}
     </div>
   );
 }
