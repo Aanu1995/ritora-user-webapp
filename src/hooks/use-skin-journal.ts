@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
@@ -24,8 +25,10 @@ import {
   getSimplification,
   getTodayEntry,
   listEvents,
+  listPhotoFilters,
   listInsights,
   listMonthEntries,
+  listPhotoDates,
   listPhotos,
   listWrapped,
   markInsightSeen,
@@ -34,17 +37,22 @@ import {
   updateEntry,
   upsertToday,
 } from "@/services/skin-journal.service";
-import type {
-  AnalysisStatus,
-  CalendarPayload,
-  DayDetail,
-  JournalEventFilters,
-  JournalExportJob,
-  UpsertEntryPayload,
+import {
+  PhotoFilterStaticId,
+  type AnalysisStatus,
+  type CalendarPayload,
+  type DayDetail,
+  type JournalEventFilters,
+  type JournalExportJob,
+  type PhotoDateIndex,
+  type PhotoFilterId,
+  type PhotoFilterIndex,
+  type UpsertEntryPayload,
 } from "@/types/skin-journal";
 
 const EMPTY_EVENT_FILTERS: JournalEventFilters = {};
 const JOURNAL_ANALYSIS_POLL_INTERVAL_MS = 5000;
+const JOURNAL_PHOTO_PAGE_SIZE = 24;
 const ACTIVE_ANALYSIS_STATUSES = new Set<AnalysisStatus>([
   "pending",
   "queued",
@@ -116,12 +124,42 @@ export function useMonthEntries(month: string) {
 export function usePhotos(filters: {
   from?: string;
   to?: string;
-  hasReaction?: boolean;
-}) {
+  filter?: PhotoFilterId;
+}, options: { enabled?: boolean } = {}) {
   const enabled = useAuthEnabled();
-  return useQuery({
-    queryKey: [QueryKey.SkinJournalPhotos, filters],
-    queryFn: () => listPhotos(filters),
+  const normalizedFilters = {
+    ...filters,
+    filter:
+      filters.filter === PhotoFilterStaticId.All ? undefined : filters.filter,
+  };
+  return useInfiniteQuery({
+    queryKey: [QueryKey.SkinJournalPhotos, normalizedFilters],
+    queryFn: ({ pageParam }) =>
+      listPhotos({
+        ...normalizedFilters,
+        limit: JOURNAL_PHOTO_PAGE_SIZE,
+        cursor: pageParam,
+    }),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    enabled: enabled && options.enabled !== false,
+  });
+}
+
+export function usePhotoFilters(filters: { from?: string; to?: string } = {}) {
+  const enabled = useAuthEnabled();
+  return useQuery<PhotoFilterIndex>({
+    queryKey: [QueryKey.SkinJournalPhotoFilters, filters],
+    queryFn: () => listPhotoFilters(filters),
+    enabled,
+  });
+}
+
+export function usePhotoDates(filters: { from?: string; to?: string } = {}) {
+  const enabled = useAuthEnabled();
+  return useQuery<PhotoDateIndex>({
+    queryKey: [QueryKey.SkinJournalPhotoDates, filters],
+    queryFn: () => listPhotoDates(filters),
     enabled,
   });
 }
@@ -132,6 +170,8 @@ function invalidateAll(qc: ReturnType<typeof useQueryClient>) {
   void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalDay] });
   void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalEntries] });
   void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalPhotos] });
+  void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalPhotoFilters] });
+  void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalPhotoDates] });
   void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalStats] });
   void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalEvents] });
   void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalInsights] });
@@ -172,12 +212,16 @@ export function useRetryAnalysis() {
   });
 }
 
-export function useCompareDays(from: string | null, to: string | null) {
+export function useCompareDays(
+  from: string | null,
+  to: string | null,
+  options: { enabled?: boolean } = {},
+) {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalCompare, from, to],
     queryFn: () => compareDays(from as string, to as string),
-    enabled: enabled && !!from && !!to,
+    enabled: enabled && options.enabled !== false && !!from && !!to,
   });
 }
 

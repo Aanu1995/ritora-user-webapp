@@ -2,11 +2,17 @@ import { cn } from "@/lib/utils";
 
 interface NavBadgeProps {
   count: number;
+  ariaLabel: string;
   className?: string;
   max?: number;
 }
 
-export function NavBadge({ count, max = 99, className }: NavBadgeProps) {
+export function NavBadge({
+  count,
+  ariaLabel,
+  max = 99,
+  className,
+}: NavBadgeProps) {
   if (count <= 0) return null;
   const display = count > max ? `${max}+` : String(count);
   return (
@@ -15,7 +21,7 @@ export function NavBadge({ count, max = 99, className }: NavBadgeProps) {
         "ml-auto inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-danger px-1.5 text-[11px] font-bold leading-none text-white",
         className,
       )}
-      aria-label={`${count} unread`}
+      aria-label={ariaLabel}
     >
       {display}
     </span>

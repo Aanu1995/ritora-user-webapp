@@ -65,7 +65,6 @@ export function DayDetailPanel({
 }: DayDetailPanelProps) {
   const locale = useLocale();
   const t = useTranslations("journal.dayDetail");
-  const tAngles = useTranslations("journal.upload.angles");
   const tConcerns = useTranslations("journal.concerns");
   const tFeels = useTranslations("journal.feels");
   const tCtx = useTranslations("journal.context");
@@ -168,6 +167,10 @@ export function DayDetailPanel({
             <span className="inline-flex items-center gap-1 rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[color:var(--warning)]">
               {t("statusFailed")}
             </span>
+          ) : status === "needs_review" ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[color:var(--warning)]">
+              {t("statusNeedsReview")}
+            </span>
           ) : status === "skipped" ? (
             <span className="inline-flex items-center gap-1 rounded-full bg-surface-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
               {t("noPhotoTag")}
@@ -193,16 +196,12 @@ export function DayDetailPanel({
             <PhotoFrame
               url={entry.photo_url}
               alt={t("photoAlt", { date })}
-              tag={tAngles(entry.angle)}
               aspect="square"
             />
           </div>
           <div className="mx-auto w-full max-w-md px-4 pb-6 sm:px-6 sm:pb-8">
             <p className="text-xs text-muted">
-              {entry.angle === "head_on"
-                ? tAngles("head_on")
-                : tAngles(entry.angle)}
-              {entry.is_pre_routine ? ` · ${t("preRoutineTag")}` : ""}
+              {entry.is_pre_routine ? t("preRoutineTag") : t("photoSavedTag")}
             </p>
           </div>
         </div>

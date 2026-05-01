@@ -24,7 +24,7 @@ function MobileNavList({
 }: {
   items: NavItem[];
   pathname: string;
-  t: (key: string) => string;
+  t: ReturnType<typeof useTranslations>;
   onClose: () => void;
   badgeCounts: NavBadgeCounts;
 }) {
@@ -52,7 +52,10 @@ function MobileNavList({
             >
               <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
               <span className="flex-1">{t(`items.${item.labelKey}`)}</span>
-              <NavBadge count={badgeCount} />
+              <NavBadge
+                count={badgeCount}
+                ariaLabel={t("badgeLabel", { count: badgeCount })}
+              />
             </GuardedLink>
           </li>
         );

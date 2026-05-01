@@ -63,13 +63,39 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     analysis_status: "completed",
     analysis_observations: null,
     analysis_summary: null,
+    analysis_model: null,
+    analysis_version: null,
+    analysis_prompt_version: null,
+    analysis_started_at: null,
     analysis_completed_at: "2026-04-30T08:00:00.000Z",
+    analysis_duration_ms: null,
+    analysis_input_image_count: null,
+    analysis_input_tokens: null,
+    analysis_output_tokens: null,
+    analysis_total_tokens: null,
+    analysis_estimated_cost_usd: null,
     analysis_retry_count: 0,
     has_reaction: false,
     created_at: "2026-04-30T08:00:00.000Z",
     updated_at: "2026-04-30T08:00:00.000Z",
     ...overrides,
   };
+}
+
+function selectPhoto(container: HTMLElement): File {
+  const file = new File(["photo"], "today.jpg", { type: "image/jpeg" });
+  const fileInput = container.querySelector<HTMLInputElement>(
+    'input[type="file"]',
+  );
+
+  expect(fileInput).not.toBeNull();
+  fireEvent.change(fileInput as HTMLInputElement, {
+    target: { files: [file] },
+  });
+  fireEvent.click(
+    screen.getByRole("checkbox", { name: /processing this skin-progress/i }),
+  );
+  return file;
 }
 
 describe("JournalUploadPage edit actions", () => {
@@ -145,7 +171,8 @@ describe("JournalUploadPage edit actions", () => {
   it("does not show a skip check-in action inside the check-in step", () => {
     mockSearchParams = new URLSearchParams();
 
-    renderWithProviders(<JournalUploadPage />);
+    const { container } = renderWithProviders(<JournalUploadPage />);
+    selectPhoto(container);
 
     fireEvent.click(
       screen.getByRole("button", { name: /continue to check-in/i }),
@@ -159,7 +186,8 @@ describe("JournalUploadPage edit actions", () => {
   it("validates required check-in fields before saving check-in data", () => {
     mockSearchParams = new URLSearchParams();
 
-    renderWithProviders(<JournalUploadPage />);
+    const { container } = renderWithProviders(<JournalUploadPage />);
+    selectPhoto(container);
 
     fireEvent.click(
       screen.getByRole("button", { name: /continue to check-in/i }),
@@ -189,18 +217,7 @@ describe("JournalUploadPage edit actions", () => {
   it("still lets users save only a selected photo before check-ins", () => {
     mockSearchParams = new URLSearchParams();
     const { container } = renderWithProviders(<JournalUploadPage />);
-    const file = new File(["photo"], "today.jpg", { type: "image/jpeg" });
-    const fileInput = container.querySelector<HTMLInputElement>(
-      'input[type="file"]',
-    );
-
-    expect(fileInput).not.toBeNull();
-    fireEvent.change(fileInput as HTMLInputElement, {
-      target: { files: [file] },
-    });
-    fireEvent.click(
-      screen.getByRole("checkbox", { name: /processing this skin-progress/i }),
-    );
+    const file = selectPhoto(container);
     fireEvent.click(
       screen.getByRole("button", { name: /save photo only/i }),
     );

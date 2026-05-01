@@ -41,4 +41,27 @@ describe('JournalCalendar', () => {
 
     expect(onSelectDate).toHaveBeenCalledWith('2026-04-10');
   });
+
+  it('can disable non-photo days for photo-only pickers', () => {
+    const onSelectDate = jest.fn();
+
+    renderWithProviders(
+      <JournalCalendar
+        payload={APRIL_PAYLOAD}
+        selectedDate="2026-04-10"
+        todayLocalDate="2026-04-29"
+        onSelectDate={onSelectDate}
+        onChangeMonth={jest.fn()}
+        monthLabel="April 2026"
+        selectableDates={new Set(['2026-04-10'])}
+        disableUnavailableDates
+      />,
+    );
+
+    const nonPhotoDay = screen.getByRole('button', { name: '2026-04-11' });
+    expect(nonPhotoDay).toBeDisabled();
+
+    fireEvent.click(nonPhotoDay);
+    expect(onSelectDate).not.toHaveBeenCalledWith('2026-04-11');
+  });
 });

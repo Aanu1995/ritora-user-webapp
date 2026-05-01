@@ -6,19 +6,24 @@ import {
   postRequest,
 } from "@/lib/api";
 import { ApiPath } from "@/constants/api-paths";
-import type {
-  CalendarPayload,
-  CompareResponse,
-  DayDetail,
-  JournalEntry,
-  JournalEvent,
-  JournalEventFilters,
-  JournalExportJob,
-  JournalInsight,
-  JournalStats,
-  Wrapped,
-  SimplificationEvent,
-  UpsertEntryPayload,
+import {
+  PhotoFilterStaticId,
+  type CalendarPayload,
+  type CompareResponse,
+  type DayDetail,
+  type JournalEntry,
+  type JournalEvent,
+  type JournalEventFilters,
+  type JournalExportJob,
+  type JournalInsight,
+  type JournalStats,
+  type PhotoDateIndex,
+  type PhotoFilterId,
+  type PhotoFilterIndex,
+  type PhotoPage,
+  type Wrapped,
+  type SimplificationEvent,
+  type UpsertEntryPayload,
 } from "@/types/skin-journal";
 
 function buildEntryFormData(
@@ -66,15 +71,51 @@ export async function listMonthEntries(month: string): Promise<JournalEntry[]> {
 export async function listPhotos(filters: {
   from?: string;
   to?: string;
-  hasReaction?: boolean;
-}): Promise<JournalEntry[]> {
+  filter?: PhotoFilterId;
+  limit?: number;
+  cursor?: string | null;
+}): Promise<PhotoPage> {
   const params = new URLSearchParams();
   if (filters.from) params.append("from", filters.from);
   if (filters.to) params.append("to", filters.to);
-  if (filters.hasReaction) params.append("hasReaction", "true");
+  if (filters.filter && filters.filter !== PhotoFilterStaticId.All) {
+    params.append("filter", filters.filter);
+  }
+  if (filters.limit) params.append("limit", String(filters.limit));
+  if (filters.cursor) params.append("cursor", filters.cursor);
   const qs = params.toString();
   return getRequest(
     qs ? `${ApiPath.SkinJournalPhotos}?${qs}` : ApiPath.SkinJournalPhotos,
+  );
+}
+
+export async function listPhotoFilters(filters: {
+  from?: string;
+  to?: string;
+} = {}): Promise<PhotoFilterIndex> {
+  const params = new URLSearchParams();
+  if (filters.from) params.append("from", filters.from);
+  if (filters.to) params.append("to", filters.to);
+  const qs = params.toString();
+  return getRequest(
+    qs
+      ? `${ApiPath.SkinJournalPhotoFilters}?${qs}`
+      : ApiPath.SkinJournalPhotoFilters,
+  );
+}
+
+export async function listPhotoDates(filters: {
+  from?: string;
+  to?: string;
+} = {}): Promise<PhotoDateIndex> {
+  const params = new URLSearchParams();
+  if (filters.from) params.append("from", filters.from);
+  if (filters.to) params.append("to", filters.to);
+  const qs = params.toString();
+  return getRequest(
+    qs
+      ? `${ApiPath.SkinJournalPhotoDates}?${qs}`
+      : ApiPath.SkinJournalPhotoDates,
   );
 }
 

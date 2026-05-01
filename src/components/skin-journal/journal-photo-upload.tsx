@@ -11,16 +11,17 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ANGLE_VALUES, type Angle } from "@/types/skin-journal";
 import { Chip } from "./chip";
+import {
+  JournalPhotoValidationMessage,
+  validateJournalPhotoFile,
+} from "./journal-photo-upload-validation";
 
 interface JournalPhotoUploadProps {
   photo: File | null;
   existingPhotoUrl?: string | null;
   existingPhotoAlt?: string;
   onPhotoChange: (photo: File | null) => void;
-  angle: Angle;
-  onAngleChange: (angle: Angle) => void;
   isPreRoutine: boolean;
   onPreRoutineChange: (next: boolean) => void;
   photoProcessingConsent?: boolean;
@@ -39,18 +40,17 @@ export function JournalPhotoUpload({
   existingPhotoUrl,
   existingPhotoAlt,
   onPhotoChange,
-  angle,
-  onAngleChange,
   isPreRoutine,
   onPreRoutineChange,
   photoProcessingConsent = false,
   onPhotoProcessingConsentChange,
 }: JournalPhotoUploadProps) {
   const t = useTranslations("journal.upload");
-  const tAngles = useTranslations("journal.upload.angles");
   const inputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [fileError, setFileError] =
+    useState<JournalPhotoValidationMessage | null>(null);
 
   const handleFile = (file: File | null) => {
     if (previewUrlRef.current) {
@@ -59,11 +59,23 @@ export function JournalPhotoUpload({
     }
 
     if (file) {
+      const validationError = validateJournalPhotoFile(file);
+      if (validationError) {
+        setPreviewUrl(null);
+        setFileError(validationError);
+        if (inputRef.current) {
+          inputRef.current.value = "";
+        }
+        onPhotoChange(null);
+        return;
+      }
       const nextPreviewUrl = URL.createObjectURL(file);
       previewUrlRef.current = nextPreviewUrl;
       setPreviewUrl(nextPreviewUrl);
+      setFileError(null);
     } else {
       setPreviewUrl(null);
+      setFileError(null);
       if (inputRef.current) {
         inputRef.current.value = "";
       }
@@ -219,6 +231,12 @@ export function JournalPhotoUpload({
 
       <p className="mt-2 text-xs text-muted">{t("noWebcam")}</p>
 
+      {fileError ? (
+        <p className="mt-2 text-xs font-semibold text-danger">
+          {t(fileError)}
+        </p>
+      ) : null}
+
       {photo ? (
         <label className="mt-4 flex items-center gap-2 rounded-xl border border-border bg-surface-muted p-3 text-sm leading-relaxed">
           <Checkbox
@@ -230,22 +248,6 @@ export function JournalPhotoUpload({
           <span>{t("photoProcessingConsent")}</span>
         </label>
       ) : null}
-
-      <p className="mb-1.5 mt-4 block text-xs font-semibold">
-        {t("angleLabel")}
-      </p>
-      <div className="flex flex-wrap gap-1.5">
-        {ANGLE_VALUES.map((a: Angle) => (
-          <Chip
-            key={a}
-            asButton
-            selected={angle === a}
-            onClick={() => onAngleChange(a)}
-          >
-            {tAngles(a)}
-          </Chip>
-        ))}
-      </div>
 
       <label className="mt-4 flex items-center gap-2 text-sm">
         <Checkbox

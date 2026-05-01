@@ -75,6 +75,8 @@ export const ApiPath = {
   SkinJournalCalendar: `${SKIN_JOURNAL_BASE}/calendar`,
   SkinJournalEntries: `${SKIN_JOURNAL_BASE}/entries`,
   SkinJournalPhotos: `${SKIN_JOURNAL_BASE}/photos`,
+  SkinJournalPhotoFilters: `${SKIN_JOURNAL_BASE}/photo-filters`,
+  SkinJournalPhotoDates: `${SKIN_JOURNAL_BASE}/photo-dates`,
   SkinJournalDay: (date: string) => `${SKIN_JOURNAL_BASE}/days/${date}`,
   SkinJournalEntry: (id: string) => `${SKIN_JOURNAL_BASE}/entries/${id}`,
   SkinJournalEntryRetry: (id: string) =>

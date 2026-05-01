@@ -34,11 +34,7 @@ import {
   useTodayEntry,
   useUpsertToday,
 } from "@/hooks/use-skin-journal";
-import type {
-  Angle,
-  JournalEntry,
-  UpsertEntryPayload,
-} from "@/types/skin-journal";
+import type { JournalEntry, UpsertEntryPayload } from "@/types/skin-journal";
 
 type Step = "photo" | "checkin";
 
@@ -75,7 +71,6 @@ export default function JournalUploadPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoProcessingConsent, setPhotoProcessingConsent] = useState(false);
-  const [angleDraft, setAngleDraft] = useState<Angle | null>(null);
   const [isPreRoutineDraft, setIsPreRoutineDraft] = useState<boolean | null>(
     null,
   );
@@ -96,7 +91,6 @@ export default function JournalUploadPage() {
   const deleteEntry = useDeleteEntry();
   const isPending = upsertToday.isPending;
   const isDeleting = deleteEntry.isPending;
-  const angle = angleDraft ?? editableEntry?.angle ?? "head_on";
   const isPreRoutine =
     isPreRoutineDraft ?? editableEntry?.is_pre_routine ?? true;
   const checkIn =
@@ -127,6 +121,9 @@ export default function JournalUploadPage() {
     : Boolean(photo);
 
   const handleSave = (savePhotoOnly: boolean) => {
+    if (!canSubmitPhotoStep) {
+      return;
+    }
     if (!savePhotoOnly) {
       const nextValidation = validateCheckInForSave(checkIn);
       if (!nextValidation.valid) {
@@ -136,7 +133,6 @@ export default function JournalUploadPage() {
     }
 
     const baseUpload: UpsertEntryPayload = {
-      angle,
       is_pre_routine: isPreRoutine,
       skip_check_in: savePhotoOnly ? true : undefined,
       photo_processing_consent: photo ? photoProcessingConsent : undefined,
@@ -190,8 +186,6 @@ export default function JournalUploadPage() {
                 existingPhotoUrl={editableEntry?.photo_url}
                 existingPhotoAlt={t("currentPhotoAlt", { date })}
                 onPhotoChange={handlePhotoChange}
-                angle={angle}
-                onAngleChange={setAngleDraft}
                 isPreRoutine={isPreRoutine}
                 onPreRoutineChange={setIsPreRoutineDraft}
                 photoProcessingConsent={photoProcessingConsent}
@@ -224,7 +218,9 @@ export default function JournalUploadPage() {
                 <Button
                   size="sm"
                   onClick={() => setStep("checkin")}
-                  disabled={isPending || isPhotoProcessingBlocked}
+                  disabled={
+                    isPending || !canSubmitPhotoStep || isPhotoProcessingBlocked
+                  }
                 >
                   {t("continueToCheckIn")}
                 </Button>

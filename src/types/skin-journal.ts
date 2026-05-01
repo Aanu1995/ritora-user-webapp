@@ -1,10 +1,15 @@
-export type Angle = "head_on" | "left_profile" | "right_profile";
+import type {
+  AnalysisConcern,
+  AnalysisObservations,
+} from "./skin-journal-analysis";
 
-export const ANGLE_VALUES: Angle[] = [
-  "head_on",
-  "left_profile",
-  "right_profile",
-];
+export type {
+  AnalysisConcern,
+  AnalysisObservations,
+  ReactionSeverity,
+} from "./skin-journal-analysis";
+
+export type Angle = "head_on" | "left_profile" | "right_profile";
 
 export type AnalysisStatus =
   | "pending"
@@ -100,7 +105,20 @@ export type WrappedStatus =
   | "ready"
   | "failed";
 
-export type ReactionSeverity = "none" | "mild" | "moderate" | "severe";
+export enum PhotoFilterKind {
+  All = "all",
+  Reaction = "reaction",
+  Concern = "concern",
+}
+
+export enum PhotoFilterStaticId {
+  All = "all",
+  Reaction = "reaction",
+}
+
+export type PhotoFilterId =
+  | PhotoFilterStaticId
+  | `${PhotoFilterKind.Concern}:${AnalysisConcern}`;
 
 export type ConcernKey =
   | "oiliness"
@@ -129,37 +147,6 @@ export interface RecentChange {
   note?: string | null;
 }
 
-export interface AnalysisObservations {
-  schema_version: "1.0";
-  model_version: string;
-  image_quality: {
-    face_detected: boolean;
-    lighting_quality: "poor" | "fair" | "good" | "excellent";
-    framing_quality: "poor" | "fair" | "good" | "excellent";
-    blur_detected: boolean;
-    issues: string[];
-  };
-  detected_concerns: Array<{
-    concern: string;
-    severity: "mild" | "moderate" | "severe";
-    locations: string[];
-    confidence: number;
-  }>;
-  reaction_signals: {
-    reaction_detected: boolean;
-    reaction_severity: ReactionSeverity;
-    indicators: string[];
-    confidence: number;
-  };
-  barrier_signs: {
-    barrier_compromise: boolean;
-    indicators: string[];
-  };
-  overall_assessment: string;
-  should_flag_for_doctor: boolean;
-  doctor_flag_reason?: string;
-}
-
 export interface JournalEntry {
   id: string;
   entry_date: string;
@@ -183,7 +170,17 @@ export interface JournalEntry {
   analysis_status: AnalysisStatus;
   analysis_observations: AnalysisObservations | null;
   analysis_summary: string | null;
+  analysis_model: string | null;
+  analysis_version: string | null;
+  analysis_prompt_version: string | null;
+  analysis_started_at: string | null;
   analysis_completed_at: string | null;
+  analysis_duration_ms: number | null;
+  analysis_input_image_count: number | null;
+  analysis_input_tokens: number | null;
+  analysis_output_tokens: number | null;
+  analysis_total_tokens: number | null;
+  analysis_estimated_cost_usd: number | null;
   analysis_retry_count: number;
   has_reaction: boolean;
   created_at: string;
@@ -212,6 +209,39 @@ export interface CalendarDay {
 export interface CalendarPayload {
   month: string;
   days: CalendarDay[];
+}
+
+export interface PhotoDateItem {
+  date: string;
+  entry_id: string;
+  analysis_status: AnalysisStatus;
+  has_reaction: boolean;
+}
+
+export interface PhotoMonthItem {
+  month: string;
+  photo_count: number;
+}
+
+export interface PhotoDateIndex {
+  dates: PhotoDateItem[];
+  months: PhotoMonthItem[];
+}
+
+export interface PhotoFilterOption {
+  id: PhotoFilterId;
+  kind: PhotoFilterKind;
+  value: AnalysisConcern | null;
+  count: number;
+}
+
+export interface PhotoFilterIndex {
+  filters: PhotoFilterOption[];
+}
+
+export interface PhotoPage {
+  items: JournalEntry[];
+  nextCursor: string | null;
 }
 
 export interface JournalEvent {
@@ -300,14 +330,20 @@ export interface CompareResponse {
   to: JournalEntry | null;
   delta: {
     bullets: Array<{
-      text: string;
+      code:
+        | "rating_improved"
+        | "rating_worsened"
+        | "reaction_cleared"
+        | "no_major_change";
       tone: "good" | "warn" | "neutral";
+      concern?: ConcernKey;
+      from_rating?: number;
+      to_rating?: number;
     }>;
   };
 }
 
 export interface UpsertEntryPayload {
-  angle?: Angle;
   concern_focus?: string[];
   is_pre_routine?: boolean;
   ratings?: Ratings;

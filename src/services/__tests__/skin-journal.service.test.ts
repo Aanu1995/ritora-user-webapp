@@ -18,6 +18,9 @@ import {
   deleteEntry,
   getJournalExport,
   getCalendar,
+  listPhotoFilters,
+  listPhotoDates,
+  listPhotos,
   listEvents,
   updateEntry,
   upsertToday,
@@ -32,7 +35,6 @@ describe('skin-journal.service', () => {
 
     await upsertToday(
       {
-        angle: 'head_on',
         is_pre_routine: true,
         skip_check_in: true,
         photo_processing_consent: true,
@@ -46,6 +48,7 @@ describe('skin-journal.service', () => {
     );
     const body = (postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
     expect(body.get('photo')).toBe(photo);
+    expect(body.has('angle')).toBe(false);
     expect(body.get('skip_check_in')).toBe('true');
     expect(body.get('photo_processing_consent')).toBe('true');
   });
@@ -84,6 +87,70 @@ describe('skin-journal.service', () => {
     const result = await getCalendar('2026-04');
 
     expect(result).toEqual({ month: '2026-04', days: [] });
+  });
+
+  it('loads the lightweight photo-date index without media URLs', async () => {
+    (getRequest as jest.Mock).mockResolvedValue({
+      dates: [
+        {
+          date: '2026-04-10',
+          entry_id: 'entry-1',
+          analysis_status: 'completed',
+          has_reaction: false,
+        },
+      ],
+      months: [{ month: '2026-04', photo_count: 1 }],
+    });
+
+    const result = await listPhotoDates({
+      from: '2025-01-01',
+      to: '2026-04-30',
+    });
+
+    expect(getRequest).toHaveBeenCalledWith(
+      '/skin-journal/photo-dates?from=2025-01-01&to=2026-04-30',
+    );
+    expect(result.dates[0]).not.toHaveProperty('photo_url');
+  });
+
+  it('loads backend-generated photo filter facets without media URLs', async () => {
+    (getRequest as jest.Mock).mockResolvedValue({
+      filters: [
+        { id: 'all', kind: 'all', value: null, count: 4 },
+        { id: 'concern:acne', kind: 'concern', value: 'acne', count: 2 },
+      ],
+    });
+
+    const result = await listPhotoFilters();
+
+    expect(getRequest).toHaveBeenCalledWith('/skin-journal/photo-filters');
+    expect(result.filters[0]).not.toHaveProperty('photo_url');
+  });
+
+  it('passes the selected photo filter to the backend photos endpoint', async () => {
+    (getRequest as jest.Mock).mockResolvedValue({
+      items: [],
+      nextCursor: null,
+    });
+
+    await listPhotos({ filter: 'concern:acne' });
+
+    expect(getRequest).toHaveBeenCalledWith(
+      '/skin-journal/photos?filter=concern%3Aacne',
+    );
+  });
+
+  it('passes photo pagination cursor and limit to the backend photos endpoint', async () => {
+    (getRequest as jest.Mock).mockResolvedValue({
+      items: [],
+      nextCursor: null,
+    });
+
+    await listPhotos({ limit: 24, cursor: 'cursor-1' });
+
+    expect(getRequest).toHaveBeenCalledWith(
+      '/skin-journal/photos?limit=24&cursor=cursor-1',
+    );
   });
 
   it('passes event filters to the journal events endpoint', async () => {

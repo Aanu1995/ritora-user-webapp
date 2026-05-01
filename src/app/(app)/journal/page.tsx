@@ -19,6 +19,8 @@ import {
   useDismissInsight,
   useInsights,
   useJournalStats,
+  usePhotoDates,
+  usePhotoFilters,
   usePhotos,
   useWrappedList,
   useRetryAnalysis,
@@ -26,7 +28,7 @@ import {
   useTodayEntry,
 } from "@/hooks/use-skin-journal";
 import { StatStrip } from "@/components/skin-journal/stat-strip";
-import { SimplificationBanner } from "@/components/skin-journal/simplification-banner";
+import { JournalAlertButton } from "@/components/skin-journal/journal-alert-button";
 import { ReactionDetectedModal } from "@/components/skin-journal/reaction-detected-modal";
 import { DermatologistExportModal } from "@/components/skin-journal/dermatologist-export-modal";
 import { JournalTabPanels } from "@/components/skin-journal/journal-tab-panels";
@@ -35,6 +37,7 @@ import {
   JournalUploadMode,
   buildJournalUploadHref,
 } from "@/components/skin-journal/journal-navigation";
+import { PhotoFilterStaticId, type PhotoFilterId } from "@/types/skin-journal";
 
 function formatLocalYmd(date: Date): string {
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -70,6 +73,9 @@ export default function JournalPage() {
 
   const [year, setYear] = useState(todayInfo.year);
   const [monthNum, setMonthNum] = useState(todayInfo.month);
+  const [selectedPhotoFilter, setSelectedPhotoFilter] =
+    useState<PhotoFilterId>(PhotoFilterStaticId.All);
+  const isPhotoFilterActive = selectedPhotoFilter !== PhotoFilterStaticId.All;
   const monthString = `${year}-${String(monthNum).padStart(2, "0")}`;
   const monthLabel = new Intl.DateTimeFormat(locale, {
     month: "long",
@@ -81,13 +87,38 @@ export default function JournalPage() {
   const { data: stats } = useJournalStats();
   const { data: dayDetail, isLoading: dayLoading } =
     useDay(effectiveSelectedDate);
-  const { data: photos = [] } = usePhotos({});
+  const photosQuery = usePhotos({});
+  const filteredPhotosQuery = usePhotos(
+    {
+      filter: selectedPhotoFilter,
+    },
+    { enabled: isPhotoFilterActive },
+  );
+  const { data: photoFilterIndex } = usePhotoFilters();
+  const { data: photoDateIndex } = usePhotoDates();
   const { data: insights = [] } = useInsights();
   const { data: wrapped = [] } = useWrappedList();
 
   const startSimplification = useStartSimplification();
   const dismissInsight = useDismissInsight();
   const retryAnalysis = useRetryAnalysis();
+  const photos = useMemo(
+    () => photosQuery.data?.pages.flatMap((page) => page.items) ?? [],
+    [photosQuery.data],
+  );
+  const filteredPhotos = useMemo(
+    () =>
+      isPhotoFilterActive
+        ? (filteredPhotosQuery.data?.pages.flatMap((page) => page.items) ?? [])
+        : photos,
+    [filteredPhotosQuery.data, isPhotoFilterActive, photos],
+  );
+  const totalPhotoCount =
+    photoFilterIndex?.filters.find(
+      (filter) => filter.id === PhotoFilterStaticId.All,
+    )?.count ??
+    photoDateIndex?.dates.length ??
+    photos.length;
 
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [dismissedReactionEntryId, setDismissedReactionEntryId] =
@@ -119,6 +150,14 @@ export default function JournalPage() {
     setYear(nextYear);
   };
 
+  const handleSelectMonth = (nextMonth: string) => {
+    const [nextYear, nextMonthNum] = nextMonth
+      .split("-")
+      .map((part) => parseInt(part, 10));
+    setYear(nextYear);
+    setMonthNum(nextMonthNum);
+  };
+
   const handleSimplify = () => {
     if (!reactionEntry) return;
     startSimplification.mutate({
@@ -136,6 +175,7 @@ export default function JournalPage() {
         subtitle={t("subtitle")}
         action={
           <div className="flex items-center gap-2">
+            <JournalAlertButton />
             <Button
               variant="outline"
               size="sm"
@@ -164,11 +204,6 @@ export default function JournalPage() {
         onValueChange={(v) => setTab(v as typeof tab)}
       >
         <div className="sticky top-[88px] z-[5] bg-background pt-2 backdrop-blur supports-[backdrop-filter]:bg-background/85">
-          <div className="pointer-events-none absolute inset-x-0 top-2 z-30 px-4 sm:px-6 lg:px-0">
-            <div className="pointer-events-auto mx-auto max-w-7xl">
-              <SimplificationBanner />
-            </div>
-          </div>
           <div className="mx-auto max-w-7xl pb-3">
             <StatStrip stats={stats} />
           </div>
@@ -177,9 +212,9 @@ export default function JournalPage() {
               <TabsTrigger value="calendar">{t("tabs.calendar")}</TabsTrigger>
               <TabsTrigger value="photos">
                 {t("tabs.photos")}
-                {photos.length ? (
+                {totalPhotoCount ? (
                   <span className="ml-1.5 rounded-full bg-surface-muted px-1.5 py-0.5 text-[10px] font-bold text-muted">
-                    {photos.length}
+                    {totalPhotoCount}
                   </span>
                 ) : null}
               </TabsTrigger>
@@ -205,16 +240,38 @@ export default function JournalPage() {
 
         <JournalTabPanels
           photos={photos}
+          filteredPhotos={filteredPhotos}
+          totalPhotoCount={totalPhotoCount}
+          hasMoreFilteredPhotos={
+            isPhotoFilterActive
+              ? filteredPhotosQuery.hasNextPage
+              : photosQuery.hasNextPage
+          }
+          isFetchingMoreFilteredPhotos={
+            isPhotoFilterActive
+              ? filteredPhotosQuery.isFetchingNextPage
+              : photosQuery.isFetchingNextPage
+          }
+          onLoadMoreFilteredPhotos={() => {
+            void (isPhotoFilterActive
+              ? filteredPhotosQuery
+              : photosQuery
+            ).fetchNextPage();
+          }}
+          photoFilters={photoFilterIndex?.filters ?? []}
+          selectedPhotoFilter={selectedPhotoFilter}
           insights={insights}
           wrapped={wrapped}
           calendarData={calendarData}
           calendarLoading={calendarLoading}
+          trackedMonths={photoDateIndex?.months ?? []}
           dayDetail={dayDetail ?? null}
           dayLoading={dayLoading}
           selectedDate={effectiveSelectedDate}
           todayLocalDate={todayDate}
           monthLabel={monthLabel}
           onChangeMonth={handleChangeMonth}
+          onSelectMonth={handleSelectMonth}
           onSelectDate={setSelectedDate}
           onOpenUpload={
             canUploadForSelectedDate
@@ -223,6 +280,7 @@ export default function JournalPage() {
           }
           onOpenCompare={() => router.push(`${AppRoute.Journal}/compare`)}
           onOpenExport={() => setExportModalOpen(true)}
+          onPhotoFilterChange={setSelectedPhotoFilter}
           onEditEntry={
             canUploadForSelectedDate
               ? () =>
@@ -232,9 +290,7 @@ export default function JournalPage() {
               : undefined
           }
           onRetryAnalysis={
-            canUploadForSelectedDate
-              ? (entry) => retryAnalysis.mutate(entry.id)
-              : undefined
+            (entry) => retryAnalysis.mutate(entry.id)
           }
           onReplacePhoto={
             canUploadForSelectedDate

@@ -19,6 +19,10 @@ interface JournalCalendarProps {
   todayLocalDate: string;
   onChangeMonth: (delta: -1 | 1) => void;
   monthLabel: string;
+  selectableDates?: ReadonlySet<string>;
+  disableUnavailableDates?: boolean;
+  monthOptions?: Array<{ month: string; photo_count: number }>;
+  onSelectMonth?: (month: string) => void;
 }
 
 const STATE_BORDER: Record<CalendarDay["state"], string> = {
@@ -75,6 +79,10 @@ export function JournalCalendar({
   todayLocalDate,
   onChangeMonth,
   monthLabel,
+  selectableDates,
+  disableUnavailableDates = false,
+  monthOptions = [],
+  onSelectMonth,
 }: JournalCalendarProps) {
   const t = useTranslations("journal.calendar");
 
@@ -93,8 +101,27 @@ export function JournalCalendar({
   return (
     <div className="rounded-[14px] border border-border bg-surface p-4">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="text-sm font-bold">{monthLabel}</p>
-        <div className="flex gap-1">
+        <div className="min-w-0">
+          <p className="text-sm font-bold">{monthLabel}</p>
+          {monthOptions.length > 0 && onSelectMonth ? (
+            <select
+              aria-label={t("selectTrackedMonth")}
+              value={payload?.month ?? ""}
+              onChange={(event) => onSelectMonth(event.target.value)}
+              className="mt-1 h-7 max-w-full rounded-lg border border-border bg-surface px-2 text-xs text-muted outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+            >
+              {monthOptions.map((option) => (
+                <option key={option.month} value={option.month}>
+                  {t("trackedMonthLabel", {
+                    month: option.month,
+                    count: option.photo_count,
+                  })}
+                </option>
+              ))}
+            </select>
+          ) : null}
+        </div>
+        <div className="flex shrink-0 gap-1">
           <button
             type="button"
             aria-label={t("previous")}
@@ -155,6 +182,10 @@ export function JournalCalendar({
           const day = cell.inMonth ? dayMap.get(cell.date) : null;
           const state: CalendarDay["state"] = day?.state ?? "no_entry";
           const isOutside = !cell.inMonth;
+          const isUnavailable =
+            disableUnavailableDates &&
+            (!selectableDates || !selectableDates.has(cell.date));
+          const isDisabled = isOutside || isUnavailable;
           const isToday = cell.date === todayLocalDate;
           const isSelected = cell.date === selectedDate;
           const dateNum = parseInt(cell.date.slice(8), 10);
@@ -169,11 +200,13 @@ export function JournalCalendar({
             <button
               type="button"
               key={cell.date}
-              disabled={isOutside}
-              onClick={() => !isOutside && onSelectDate(cell.date)}
+              disabled={isDisabled}
+              onClick={() => !isDisabled && onSelectDate(cell.date)}
               className={cn(
                 baseClass,
                 outsideClass,
+                isUnavailable &&
+                  "cursor-not-allowed opacity-40 hover:bg-background",
                 isToday && !isSelected && "ring-2 ring-accent-strong",
                 isSelected &&
                   "ring-2 ring-accent-strong border-accent bg-accent-soft",

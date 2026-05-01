@@ -27,7 +27,17 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     analysis_status: "failed",
     analysis_observations: null,
     analysis_summary: null,
+    analysis_model: null,
+    analysis_version: null,
+    analysis_prompt_version: null,
+    analysis_started_at: null,
     analysis_completed_at: null,
+    analysis_duration_ms: null,
+    analysis_input_image_count: null,
+    analysis_input_tokens: null,
+    analysis_output_tokens: null,
+    analysis_total_tokens: null,
+    analysis_estimated_cost_usd: null,
     analysis_retry_count: 1,
     has_reaction: false,
     created_at: "2026-04-29T00:00:00.000Z",
@@ -93,6 +103,22 @@ describe("DayDetailPanel journal-day edit lock", () => {
     expect(
       screen.getByRole("button", { name: /retry analysis/i }),
     ).toBeInTheDocument();
+  });
+
+  it("labels retake-needed analysis as needs review", () => {
+    renderWithProviders(
+      <DayDetailPanel
+        detail={dayDetail(
+          journalEntry({
+            entry_date: "2026-04-30",
+            analysis_status: "needs_review",
+          }),
+        )}
+        isToday
+      />,
+    );
+
+    expect(screen.getByText(/needs review/i)).toBeInTheDocument();
   });
 
   it("does not offer adding a photo for a past empty day", () => {

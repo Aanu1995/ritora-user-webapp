@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Sparkles } from "lucide-react";
+import { AlertTriangle, Sparkles } from "lucide-react";
 import type { AnalysisObservations } from "@/types/skin-journal";
 import { Chip } from "./chip";
 import { FaceZoneOverlay } from "./face-zone-overlay";
@@ -24,10 +24,20 @@ export function AnalysisCard({ observations }: AnalysisCardProps) {
   const t = useTranslations("journal.analysis");
   const tConcerns = useTranslations("journal.concerns");
   const tQuality = useTranslations("journal.analysis");
+  const tSafetyReasons = useTranslations("journal.analysis.safetyReasons");
   const tSeverity = useTranslations("journal.severity");
 
   const lighting = observations.image_quality.lighting_quality;
   const framing = observations.image_quality.framing_quality;
+  const needsRetake =
+    observations.image_quality.needs_retake === true ||
+    observations.image_quality.face_detected === false;
+  const safetyReasons = observations.safety_flags?.reasons ?? [];
+  const hasSafetyEscalation =
+    observations.should_flag_for_doctor ||
+    observations.safety_flags?.urgent_review_recommended === true ||
+    observations.safety_flags?.doctor_follow_up_recommended === true ||
+    safetyReasons.length > 0;
 
   return (
     <div
@@ -58,8 +68,43 @@ export function AnalysisCard({ observations }: AnalysisCardProps) {
       </div>
 
       <p className="mb-3 text-sm leading-relaxed text-muted">
-        {observations.overall_assessment}
+        {observations.user_visible_message ?? observations.overall_assessment}
       </p>
+
+      {needsRetake ? (
+        <div className="mb-3 rounded-xl border border-[color:var(--warning-border)] bg-warning-soft p-3">
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--warning)]" />
+            <div>
+              <p className="text-sm font-semibold">{t("retakeTitle")}</p>
+              <p className="mt-0.5 text-sm text-muted">{t("retakeBody")}</p>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {hasSafetyEscalation ? (
+        <div className="mb-3 rounded-xl border border-danger/30 bg-danger/10 p-3">
+          <div className="flex items-start gap-2">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-danger" />
+            <div>
+              <p className="text-sm font-semibold text-danger">
+                {t("safetyTitle")}
+              </p>
+              <p className="mt-0.5 text-sm text-muted">{t("safetyBody")}</p>
+              {safetyReasons.length > 0 ? (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {safetyReasons.map((reason) => (
+                    <Chip key={reason} variant="danger" selected>
+                      {tSafetyReasons(reason)}
+                    </Chip>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <FaceZoneOverlay

@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { TabsContent } from "@/components/ui/tabs";
@@ -16,12 +15,16 @@ import { InsightCard } from "@/components/skin-journal/insight-card";
 import { JournalCalendar } from "@/components/skin-journal/journal-calendar";
 import { PhotoGrid } from "@/components/skin-journal/photo-grid";
 import { WrappedList } from "@/components/skin-journal/wrapped-list";
-import type {
-  CalendarPayload,
-  DayDetail,
-  JournalEntry,
-  JournalInsight,
-  Wrapped,
+import {
+  PhotoFilterKind,
+  type CalendarPayload,
+  type DayDetail,
+  type JournalEntry,
+  type JournalInsight,
+  type PhotoFilterId,
+  type PhotoFilterOption,
+  type PhotoMonthItem,
+  type Wrapped,
 } from "@/types/skin-journal";
 
 interface JournalEmptyStateProps {
@@ -35,20 +38,30 @@ interface JournalEmptyStateProps {
 
 interface JournalTabPanelsProps {
   photos: JournalEntry[];
+  filteredPhotos: JournalEntry[];
+  totalPhotoCount: number;
+  hasMoreFilteredPhotos: boolean;
+  isFetchingMoreFilteredPhotos: boolean;
+  onLoadMoreFilteredPhotos: () => void;
+  photoFilters: PhotoFilterOption[];
+  selectedPhotoFilter: PhotoFilterId;
   insights: JournalInsight[];
   wrapped: Wrapped[];
   calendarData: CalendarPayload | undefined;
   calendarLoading: boolean;
+  trackedMonths: PhotoMonthItem[];
   dayDetail: DayDetail | null;
   dayLoading: boolean;
   selectedDate: string;
   todayLocalDate: string;
   monthLabel: string;
   onChangeMonth: (delta: -1 | 1) => void;
+  onSelectMonth: (month: string) => void;
   onSelectDate: (date: string) => void;
   onOpenUpload?: () => void;
   onOpenCompare: () => void;
   onOpenExport: () => void;
+  onPhotoFilterChange: (filter: PhotoFilterId) => void;
   onEditEntry?: (entry: JournalEntry) => void;
   onRetryAnalysis?: (entry: JournalEntry) => void;
   onReplacePhoto?: (entry: JournalEntry) => void;
@@ -94,66 +107,32 @@ function JournalEmptyState({
   );
 }
 
-type PhotoFilter =
-  | "all"
-  | "reaction"
-  | "acne"
-  | "redness"
-  | "head_on"
-  | "last30";
-
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
-
-function applyPhotoFilter(
-  entries: JournalEntry[],
-  filter: PhotoFilter,
-): JournalEntry[] {
-  switch (filter) {
-    case "reaction":
-      return entries.filter((entry) => entry.has_reaction);
-    case "acne":
-      return entries.filter((entry) =>
-        entry.analysis_observations?.detected_concerns?.some(
-          (concern) => concern.concern === "acne",
-        ),
-      );
-    case "redness":
-      return entries.filter((entry) =>
-        entry.analysis_observations?.detected_concerns?.some(
-          (concern) => concern.concern === "redness_inflammation",
-        ),
-      );
-    case "head_on":
-      return entries.filter((entry) => entry.angle === "head_on");
-    case "last30": {
-      const cutoff = Date.now() - 30 * MS_PER_DAY;
-      return entries.filter((entry) => {
-        const time = new Date(`${entry.entry_date}T00:00:00Z`).getTime();
-        return Number.isFinite(time) && time >= cutoff;
-      });
-    }
-    case "all":
-    default:
-      return entries;
-  }
-}
-
 export function JournalTabPanels({
   photos,
+  filteredPhotos,
+  totalPhotoCount,
+  hasMoreFilteredPhotos,
+  isFetchingMoreFilteredPhotos,
+  onLoadMoreFilteredPhotos,
+  photoFilters,
+  selectedPhotoFilter,
   insights,
   wrapped,
   calendarData,
   calendarLoading,
+  trackedMonths,
   dayDetail,
   dayLoading,
   selectedDate,
   todayLocalDate,
   monthLabel,
   onChangeMonth,
+  onSelectMonth,
   onSelectDate,
   onOpenUpload,
   onOpenCompare,
   onOpenExport,
+  onPhotoFilterChange,
   onEditEntry,
   onRetryAnalysis,
   onReplacePhoto,
@@ -161,33 +140,31 @@ export function JournalTabPanels({
 }: JournalTabPanelsProps) {
   const tEmpty = useTranslations("journal.empty");
   const tPhotosTab = useTranslations("journal.photos");
+  const tConcerns = useTranslations("journal.concerns");
   const tInsights = useTranslations("journal.insightsTab");
   const tWrapped = useTranslations("journal.wrapped");
-
-  const [photoFilter, setPhotoFilter] = useState<PhotoFilter>("all");
-  const filteredPhotos = useMemo(
-    () => applyPhotoFilter(photos, photoFilter),
-    [photos, photoFilter],
-  );
 
   const referralInsight = insights.find((insight) => insight.kind === "referral");
   const otherInsights = insights.filter(
     (insight) => insight.kind !== "referral",
   );
 
-  const photoFilters: { key: PhotoFilter; labelKey: string }[] = [
-    { key: "all", labelKey: "filtersAll" },
-    { key: "reaction", labelKey: "filterReaction" },
-    { key: "acne", labelKey: "filterAcne" },
-    { key: "redness", labelKey: "filterRedness" },
-    { key: "head_on", labelKey: "filterAngleHeadOn" },
-    { key: "last30", labelKey: "filterLast30" },
-  ];
+  const visiblePhotoFilters =
+    photoFilters.length > 0
+      ? photoFilters
+      : [
+          {
+            id: "all" as PhotoFilterId,
+            kind: PhotoFilterKind.All,
+            value: null,
+            count: totalPhotoCount,
+          },
+        ];
 
   return (
     <div className="mx-auto max-w-7xl">
       <TabsContent value="calendar" className="relative mt-4">
-        {photos.length === 0 && !calendarLoading ? (
+        {totalPhotoCount === 0 && !calendarLoading ? (
           <JournalEmptyState
             icon="📸"
             title={tEmpty("title")}
@@ -206,6 +183,8 @@ export function JournalTabPanels({
                 todayLocalDate={todayLocalDate}
                 onChangeMonth={onChangeMonth}
                 monthLabel={monthLabel}
+                monthOptions={trackedMonths}
+                onSelectMonth={onSelectMonth}
               />
             </div>
             <div className="min-h-0 lg:overflow-y-auto lg:pr-2">
@@ -224,7 +203,7 @@ export function JournalTabPanels({
       </TabsContent>
 
       <TabsContent value="photos" className="mt-4">
-        {photos.length === 0 ? (
+        {totalPhotoCount === 0 ? (
           <JournalEmptyState
             icon="📸"
             title={tPhotosTab("emptyTitle")}
@@ -236,19 +215,34 @@ export function JournalTabPanels({
           <>
             <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
               <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 [scrollbar-width:none] sm:flex-wrap [&::-webkit-scrollbar]:hidden">
-                {photoFilters.map((filter) => {
-                  const isSelected = photoFilter === filter.key;
+                {visiblePhotoFilters.map((filter) => {
+                  const isSelected = selectedPhotoFilter === filter.id;
+                  const label =
+                    filter.kind === PhotoFilterKind.All
+                      ? tPhotosTab("filtersAll")
+                      : filter.kind === PhotoFilterKind.Reaction
+                        ? tPhotosTab("filterReaction")
+                        : tPhotosTab("filterConcern", {
+                            concern: filter.value
+                              ? tConcerns(filter.value)
+                              : tPhotosTab("unknownConcern"),
+                          });
                   return (
                     <Chip
-                      key={filter.key}
+                      key={filter.id}
                       asButton
                       selected={isSelected}
                       variant={
-                        filter.key === "all" && isSelected ? "accent" : undefined
+                        filter.kind === PhotoFilterKind.All && isSelected
+                          ? "accent"
+                          : undefined
                       }
-                      onClick={() => setPhotoFilter(filter.key)}
+                      onClick={() => onPhotoFilterChange(filter.id)}
                     >
-                      {tPhotosTab(filter.labelKey)}
+                      <span>{label}</span>
+                      <span className="ml-1 rounded-full bg-surface-muted px-1 text-[10px] text-muted">
+                        {filter.count}
+                      </span>
                     </Chip>
                   );
                 })}
@@ -266,7 +260,12 @@ export function JournalTabPanels({
                 {tPhotosTab("noFilterMatches")}
               </div>
             ) : (
-              <PhotoGrid entries={filteredPhotos} />
+              <PhotoGrid
+                entries={filteredPhotos}
+                hasNextPage={hasMoreFilteredPhotos}
+                isFetchingNextPage={isFetchingMoreFilteredPhotos}
+                onLoadMore={onLoadMoreFilteredPhotos}
+              />
             )}
           </>
         )}
@@ -274,7 +273,7 @@ export function JournalTabPanels({
 
       <TabsContent value="insights" className="mt-4">
         <p className="mb-3 text-sm text-muted">{tInsights("subtitle")}</p>
-        {photos.length === 0 ? (
+        {totalPhotoCount === 0 ? (
           <JournalEmptyState
             icon="✨"
             title={tInsights("empty.title")}

@@ -21,8 +21,6 @@ describe('JournalPhotoUpload', () => {
       <JournalPhotoUpload
         photo={new File(['face'], 'face.jpg', { type: 'image/jpeg' })}
         onPhotoChange={jest.fn()}
-        angle="head_on"
-        onAngleChange={jest.fn()}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
         photoProcessingConsent={false}
@@ -48,8 +46,6 @@ describe('JournalPhotoUpload', () => {
         existingPhotoUrl="https://example.com/current.webp"
         existingPhotoAlt="Current journal photo"
         onPhotoChange={jest.fn()}
-        angle="head_on"
-        onAngleChange={jest.fn()}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
       />,
@@ -74,8 +70,6 @@ describe('JournalPhotoUpload', () => {
       <JournalPhotoUpload
         photo={null}
         onPhotoChange={onPhotoChange}
-        angle="head_on"
-        onAngleChange={jest.fn()}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
       />,
@@ -94,8 +88,6 @@ describe('JournalPhotoUpload', () => {
       <JournalPhotoUpload
         photo={file}
         onPhotoChange={onPhotoChange}
-        angle="head_on"
-        onAngleChange={jest.fn()}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
       />,
@@ -105,8 +97,6 @@ describe('JournalPhotoUpload', () => {
       <JournalPhotoUpload
         photo={null}
         onPhotoChange={onPhotoChange}
-        angle="head_on"
-        onAngleChange={jest.fn()}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
       />,
@@ -117,5 +107,46 @@ describe('JournalPhotoUpload', () => {
         'blob:skin-journal-photo',
       ),
     );
+  });
+
+  it('does not render angle selection controls in the photo flow', () => {
+    renderWithProviders(
+      <JournalPhotoUpload
+        photo={null}
+        onPhotoChange={jest.fn()}
+        isPreRoutine
+        onPreRoutineChange={jest.fn()}
+      />,
+    );
+
+    expect(screen.queryByText(/angle/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /head-on/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('validates selected photo type before creating a preview', () => {
+    const onPhotoChange = jest.fn();
+    const invalidFile = new File(['not-a-photo'], 'notes.txt', {
+      type: 'text/plain',
+    });
+
+    renderWithProviders(
+      <JournalPhotoUpload
+        photo={null}
+        onPhotoChange={onPhotoChange}
+        isPreRoutine
+        onPreRoutineChange={jest.fn()}
+      />,
+    );
+
+    const input = document.querySelector('input[type="file"]');
+    fireEvent.change(input as HTMLInputElement, {
+      target: { files: [invalidFile] },
+    });
+
+    expect(screen.getByText(/choose a jpg/i)).toBeInTheDocument();
+    expect(URL.createObjectURL).not.toHaveBeenCalled();
+    expect(onPhotoChange).toHaveBeenCalledWith(null);
   });
 });
