@@ -267,7 +267,7 @@ export function JournalPhotoUpload({
         <span>{t("preRoutine")}</span>
       </label>
 
-      {photo && previewUrl ? (
+      {photo && previewUrl && cropOpen ? (
         <PhotoCropDialog
           open={cropOpen}
           photo={photo}

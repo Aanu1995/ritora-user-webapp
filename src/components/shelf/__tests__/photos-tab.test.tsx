@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/utils';
 import { ApiError } from '@/lib/api-error';
@@ -355,5 +355,49 @@ describe('PhotosTab', () => {
         }),
       );
     });
+  });
+
+  it('ignores extraction callbacks after unmount', async () => {
+    const user = userEvent.setup();
+    const onResolved = jest.fn();
+    let resolveExtraction: ((value: ResolvedLookup) => void) | null = null;
+    const mutate = jest.fn(
+      (
+        _input: { images: File[]; heroImageIndex: number },
+        options?: { onSuccess?: (value: ResolvedLookup | null) => void },
+      ) => {
+        resolveExtraction = (value) => options?.onSuccess?.(value);
+      },
+    );
+
+    mockUseExtractProductFromImages.mockReturnValue({
+      mutate,
+      isPending: false,
+    });
+
+    const { container, unmount } = renderWithProviders(
+      <PhotosTab onResolved={onResolved} />,
+    );
+
+    await user.upload(
+      getProductInput(container),
+      new File(['product'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+    await user.upload(
+      getLabelInput(container),
+      new File(['label'], 'label.jpg', { type: 'image/jpeg' }),
+    );
+    await user.click(
+      screen.getByRole('button', { name: /extract from photos/i }),
+    );
+
+    unmount();
+
+    await act(async () => {
+      resolveExtraction?.(RESOLVED_RESULT);
+      await Promise.resolve();
+    });
+
+    expect(onResolved).not.toHaveBeenCalled();
   });
 });

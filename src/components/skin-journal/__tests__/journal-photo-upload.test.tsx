@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { renderWithProviders } from '@/test/utils';
@@ -330,5 +330,61 @@ describe('JournalPhotoUpload', () => {
         }),
       ),
     );
+  });
+
+  it('ignores an in-flight crop result after the uploader unmounts', async () => {
+    const user = userEvent.setup();
+    const onPhotoChange = jest.fn();
+    const originalFile = new File(['wide-face'], 'wide-face.jpg', {
+      type: 'image/jpeg',
+    });
+    const croppedFile = new File(['cropped-face'], 'wide-face-cropped.webp', {
+      type: 'image/webp',
+    });
+    let resolveCrop!: (file: File) => void;
+    jest.mocked(cropImageFileToSquare).mockImplementation(
+      () =>
+        new Promise<File>((resolve) => {
+          resolveCrop = resolve;
+        }),
+    );
+
+    function TestUploader() {
+      const [photo, setPhoto] = useState<File | null>(null);
+      const handlePhotoChange = (nextPhoto: File | null) => {
+        onPhotoChange(nextPhoto);
+        setPhoto(nextPhoto);
+      };
+
+      return (
+        <JournalPhotoUpload
+          photo={photo}
+          onPhotoChange={handlePhotoChange}
+          isPreRoutine
+          onPreRoutineChange={jest.fn()}
+        />
+      );
+    }
+
+    const { unmount } = renderWithProviders(<TestUploader />);
+
+    const input = document.querySelector('input[type="file"]');
+    fireEvent.change(input as HTMLInputElement, {
+      target: { files: [originalFile] },
+    });
+
+    await user.click(screen.getByRole('button', { name: /crop photo/i }));
+    await user.click(screen.getByRole('button', { name: /^apply$/i }));
+
+    unmount();
+
+    await act(async () => {
+      resolveCrop(croppedFile);
+      await Promise.resolve();
+    });
+
+    expect(onPhotoChange).toHaveBeenCalledTimes(1);
+    const [selectedPhoto] = onPhotoChange.mock.calls[0] as [File];
+    expect(selectedPhoto.name).toBe(originalFile.name);
   });
 });

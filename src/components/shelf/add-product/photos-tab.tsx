@@ -100,10 +100,14 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
   const [state, setState] = useState<ExtractionState>('idle');
   const productPhotoRef = useRef<PhotoItem | null>(null);
   const labelPhotosRef = useRef<PhotoItem[]>([]);
+  const isMountedRef = useRef(true);
   const extractProductFromImages = useExtractProductFromImages();
 
   useEffect(() => {
+    isMountedRef.current = true;
+
     return () => {
+      isMountedRef.current = false;
       revokePhotoPreview(productPhotoRef.current);
       labelPhotosRef.current.forEach((photo) => {
         revokePhotoPreview(photo);
@@ -202,6 +206,9 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
       },
       {
         onSuccess: (resolved) => {
+          if (!isMountedRef.current) {
+            return;
+          }
           if (!resolved) {
             setState('error');
             toast.error(t('errorTitle'), {
@@ -217,6 +224,9 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
           onResolved(resolved);
         },
         onError: (error) => {
+          if (!isMountedRef.current) {
+            return;
+          }
           const isServiceDown = isServiceUnavailableError(error);
           setState(isServiceDown ? 'serviceUnavailable' : 'error');
           toast.error(

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  useEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -68,6 +69,8 @@ export function PhotoCropDialog({
     width: number;
     height: number;
   } | null>(null);
+  const isMountedRef = useRef(false);
+  const cropRunIdRef = useRef(0);
   const dragRef = useRef<{
     pointerId: number;
     startX: number;
@@ -75,6 +78,15 @@ export function PhotoCropDialog({
     startOffsetX: number;
     startOffsetY: number;
   } | null>(null);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
+      isMountedRef.current = false;
+      cropRunIdRef.current += 1;
+    };
+  }, []);
 
   const updateCrop = (key: keyof CropSettings, value: string) => {
     const nextValue = Number(value);
@@ -86,17 +98,32 @@ export function PhotoCropDialog({
   };
 
   const handleApply = () => {
+    const cropRunId = cropRunIdRef.current + 1;
+    cropRunIdRef.current = cropRunId;
     setIsCropping(true);
     setHasCropError(false);
+
+    const isCurrentCropRun = () =>
+      isMountedRef.current && cropRunIdRef.current === cropRunId;
+
     cropImageFileToSquare(photo, previewUrl, crop)
       .then((croppedPhoto) => {
+        if (!isCurrentCropRun()) {
+          return;
+        }
         onApply(croppedPhoto);
         onOpenChange(false);
       })
       .catch(() => {
+        if (!isCurrentCropRun()) {
+          return;
+        }
         setHasCropError(true);
       })
       .finally(() => {
+        if (!isCurrentCropRun()) {
+          return;
+        }
         setIsCropping(false);
       });
   };

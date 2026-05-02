@@ -54,7 +54,16 @@ export function useAutoLoadMore({
         }
 
         requestInFlightRef.current = true;
-        void onLoadMoreRef.current();
+        try {
+          const loadMoreResult = onLoadMoreRef.current();
+          if (loadMoreResult) {
+            void loadMoreResult.catch(() => {
+              requestInFlightRef.current = false;
+            });
+          }
+        } catch {
+          requestInFlightRef.current = false;
+        }
       },
       { rootMargin },
     );
