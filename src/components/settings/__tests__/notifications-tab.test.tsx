@@ -147,4 +147,55 @@ describe("NotificationsTab", () => {
       ),
     ).toBe(true);
   });
+
+  it("persists each alert preference independently", async () => {
+    renderWithProviders(<NotificationsTab />);
+
+    await user.click(
+      screen.getByRole("switch", {
+        name: "Notify me when AI flags a possible reaction",
+      }),
+    );
+    await user.click(
+      screen.getByRole("switch", {
+        name: "Auto-simplify routine on moderate/severe reactions",
+      }),
+    );
+    await user.click(
+      screen.getByRole("switch", {
+        name: "Insight notifications",
+      }),
+    );
+    await user.click(
+      screen.getByRole("switch", {
+        name: "Use AI refined wording and AI sourced insight cards",
+      }),
+    );
+    await user.click(
+      screen.getByRole("switch", {
+        name: "Wrapped ready notifications",
+      }),
+    );
+
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { reaction_alerts_enabled: false },
+      expect.any(Object),
+    );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { simplification_alerts_enabled: false },
+      expect.any(Object),
+    );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { insight_alerts_enabled: false },
+      expect.any(Object),
+    );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { ai_polished_insights_enabled: false },
+      expect.any(Object),
+    );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { wrapped_alerts_enabled: false },
+      expect.any(Object),
+    );
+  });
 });

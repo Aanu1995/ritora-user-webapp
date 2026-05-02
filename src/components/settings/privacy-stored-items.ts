@@ -2,6 +2,16 @@ import type { SkinProfile } from "@/types/skin-profile";
 
 export type StoredDataItem = { label: string; value: string | null };
 
+function formatStoredList<T>(
+  values: T[] | undefined,
+  format: (value: T) => string,
+): string | null {
+  if (!values || values.length === 0) {
+    return null;
+  }
+  return values.map(format).join(", ");
+}
+
 export function buildHealthStoredItems(
   profile: SkinProfile,
   tOptions: (key: string) => string,
@@ -14,28 +24,21 @@ export function buildHealthStoredItems(
     },
     {
       label: tConsent("storedConditions"),
-      value:
-        profile.safetyContext?.conditions
-          ?.map((condition) => tOptions(condition))
-          .join(", ") ?? null,
+      value: formatStoredList(profile.safetyContext?.conditions, tOptions),
     },
     {
       label: tConsent("storedMedications"),
-      value:
-        profile.safetyContext?.medications
-          ?.map((medication) => tOptions(medication))
-          .join(", ") ?? null,
+      value: formatStoredList(profile.safetyContext?.medications, tOptions),
     },
     {
       label: tConsent("storedRecentProcedures"),
-      value:
-        profile.safetyContext?.recent_procedures
-          ?.map((procedure) =>
-            procedure.performed_at
-              ? `${tOptions(procedure.type)} (${procedure.performed_at})`
-              : tOptions(procedure.type),
-          )
-          .join(", ") ?? null,
+      value: formatStoredList(
+        profile.safetyContext?.recent_procedures,
+        (procedure) =>
+          procedure.performed_at
+            ? `${tOptions(procedure.type)} (${procedure.performed_at})`
+            : tOptions(procedure.type),
+      ),
     },
     {
       label: tConsent("storedDermatologistCare"),

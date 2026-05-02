@@ -99,7 +99,9 @@ export default function JournalUploadPage() {
   const checkIn =
     checkInDraft ??
     (editableEntry ? entryToCheckIn(editableEntry) : EMPTY_CHECK_IN);
-  const checkInValidation = validateCheckInForSave(checkIn);
+  const checkInValidation = validateCheckInForSave(checkIn, {
+    requireCycleMarker: showCycleQuestion,
+  });
   const shouldShowCheckInValidation =
     checkInValidationAttempted && !checkInValidation.valid;
 
@@ -112,7 +114,9 @@ export default function JournalUploadPage() {
     setCheckInDraft(nextCheckIn);
     if (
       checkInValidationAttempted &&
-      validateCheckInForSave(nextCheckIn).valid
+      validateCheckInForSave(nextCheckIn, {
+        requireCycleMarker: showCycleQuestion,
+      }).valid
     ) {
       setCheckInValidationAttempted(false);
     }
@@ -134,7 +138,9 @@ export default function JournalUploadPage() {
       return;
     }
     if (!savePhotoOnly) {
-      const nextValidation = validateCheckInForSave(checkIn);
+      const nextValidation = validateCheckInForSave(checkIn, {
+        requireCycleMarker: showCycleQuestion,
+      });
       if (!nextValidation.valid) {
         setCheckInValidationAttempted(true);
         return;

@@ -15,14 +15,28 @@ import {
 } from '@/lib/api';
 import {
   createJournalExport,
+  acknowledgeEvent,
+  acknowledgeSimplification,
   deleteEntry,
+  dismissInsight,
+  getActiveSimplification,
   getJournalExport,
   getCalendar,
+  getDay,
+  getJournalStats,
+  getSimplification,
+  getTodayEntry,
+  getWrapped,
   listPhotoFilters,
   listPhotoDates,
   listPhotos,
   listEvents,
   listInsights,
+  listMonthEntries,
+  listWrapped,
+  markInsightSeen,
+  retryAnalysis,
+  startSimplification,
   updateEntry,
   upsertToday,
 } from '@/services/skin-journal.service';
@@ -192,5 +206,75 @@ describe('skin-journal.service', () => {
     await deleteEntry('entry-1');
 
     expect(deleteRequest).toHaveBeenCalledWith('/skin-journal/entries/entry-1');
+  });
+
+  it('covers read endpoints that return journal details and status', async () => {
+    (getRequest as jest.Mock).mockResolvedValue({});
+
+    await getTodayEntry();
+    await getDay('2026-05-02');
+    await listMonthEntries('2026-05');
+    await listWrapped();
+    await getWrapped('wrapped-1');
+    await getActiveSimplification();
+    await getSimplification('simplification-1');
+    await getJournalStats();
+
+    expect(getRequest).toHaveBeenCalledWith('/skin-journal/today');
+    expect(getRequest).toHaveBeenCalledWith('/skin-journal/days/2026-05-02');
+    expect(getRequest).toHaveBeenCalledWith(
+      '/skin-journal/entries?month=2026-05',
+    );
+    expect(getRequest).toHaveBeenCalledWith('/skin-journal/wrapped');
+    expect(getRequest).toHaveBeenCalledWith('/skin-journal/wrapped/wrapped-1');
+    expect(getRequest).toHaveBeenCalledWith(
+      '/skin-journal/simplification/active',
+    );
+    expect(getRequest).toHaveBeenCalledWith(
+      '/skin-journal/simplification/simplification-1',
+    );
+    expect(getRequest).toHaveBeenCalledWith('/skin-journal/stats');
+  });
+
+  it('covers event, insight, analysis, and simplification command endpoints', async () => {
+    (postRequest as jest.Mock).mockResolvedValue({});
+
+    await retryAnalysis('entry-1');
+    await acknowledgeEvent('event-1');
+    await dismissInsight('insight-1');
+    await markInsightSeen('insight-1');
+    await startSimplification({
+      triggered_by_event_id: 'event-1',
+      reason: 'possible irritation',
+    });
+    await acknowledgeSimplification('simplification-1');
+
+    expect(postRequest).toHaveBeenCalledWith(
+      '/skin-journal/entries/entry-1/analyze/retry',
+      {},
+    );
+    expect(postRequest).toHaveBeenCalledWith(
+      '/skin-journal/events/event-1/acknowledge',
+      {},
+    );
+    expect(postRequest).toHaveBeenCalledWith(
+      '/skin-journal/insights/insight-1/dismiss',
+      {},
+    );
+    expect(postRequest).toHaveBeenCalledWith(
+      '/skin-journal/insights/insight-1/seen',
+      {},
+    );
+    expect(postRequest).toHaveBeenCalledWith(
+      '/skin-journal/simplification/start',
+      {
+        triggered_by_event_id: 'event-1',
+        reason: 'possible irritation',
+      },
+    );
+    expect(postRequest).toHaveBeenCalledWith(
+      '/skin-journal/simplification/simplification-1/acknowledge',
+      {},
+    );
   });
 });

@@ -8,6 +8,7 @@ const mockDeleteEntryMutate = jest.fn();
 const mockUpsertTodayMutate = jest.fn();
 let mockSearchParams = new URLSearchParams();
 let mockTodayPayload: DayDetail | null = null;
+let mockSkinProfilePayload: { sexAtBirth?: string } | undefined;
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -24,6 +25,10 @@ jest.mock("@/hooks/use-skin-journal", () => ({
     mutate: mockDeleteEntryMutate,
     isPending: false,
   }),
+}));
+
+jest.mock("@/hooks/use-skin-profile", () => ({
+  useSkinProfile: () => ({ data: mockSkinProfilePayload }),
 }));
 
 import JournalUploadPage from "@/app/(app)/journal/upload/page";
@@ -94,12 +99,12 @@ function selectPhoto(container: HTMLElement): File {
     target: { files: [file] },
   });
   fireEvent.click(
-    screen.getByRole("checkbox", { name: /processing this skin-progress/i }),
+    screen.getByRole("checkbox", { name: /analysis of this photo/i }),
   );
   return file;
 }
 
-function completeCheckIn() {
+function completeCheckIn({ includeCycle = false } = {}) {
   fireEvent.click(screen.getByRole("button", { name: "Good" }));
 
   for (const concern of [
@@ -118,7 +123,9 @@ function completeCheckIn() {
   fireEvent.click(screen.getByRole("button", { name: "Low" }));
   fireEvent.click(screen.getByRole("button", { name: "Brief" }));
   fireEvent.click(screen.getByRole("button", { name: "No" }));
-  fireEvent.click(screen.getByRole("button", { name: "Don't track" }));
+  if (includeCycle) {
+    fireEvent.click(screen.getByRole("button", { name: "Don't track" }));
+  }
 }
 
 describe("JournalUploadPage edit actions", () => {
@@ -128,6 +135,7 @@ describe("JournalUploadPage edit actions", () => {
     mockDeleteEntryMutate.mockReset();
     mockUpsertTodayMutate.mockReset();
     mockSearchParams = new URLSearchParams("mode=edit");
+    mockSkinProfilePayload = undefined;
     mockTodayPayload = {
       date: "2026-04-30",
       entry: journalEntry(),
@@ -278,10 +286,45 @@ describe("JournalUploadPage edit actions", () => {
           stress_today: "low",
           sun_exposure_today: "brief",
           sweat_exercise_today: false,
-          cycle_marker: "dont_track",
         }),
         photo: null,
       },
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
+    );
+  });
+
+  it("requires cycle marker only when the skin profile makes the cycle field visible", () => {
+    mockSearchParams = new URLSearchParams();
+    mockSkinProfilePayload = { sexAtBirth: "female" };
+    mockTodayPayload = {
+      date: "2026-04-30",
+      entry: null,
+      events: [],
+      insights: [],
+    };
+
+    renderWithProviders(<JournalUploadPage />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /continue to check-in/i }),
+    );
+    completeCheckIn();
+    fireEvent.click(screen.getByRole("button", { name: /save entry/i }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      /complete the check-in/i,
+    );
+    expect(mockUpsertTodayMutate).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Don't track" }));
+    fireEvent.click(screen.getByRole("button", { name: /save entry/i }));
+
+    expect(mockUpsertTodayMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payload: expect.objectContaining({
+          cycle_marker: "dont_track",
+        }),
+      }),
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
   });

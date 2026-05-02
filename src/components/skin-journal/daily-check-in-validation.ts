@@ -44,6 +44,10 @@ export interface CheckInValidationResult {
   missing: CheckInRequiredField[];
 }
 
+interface CheckInValidationOptions {
+  requireCycleMarker?: boolean;
+}
+
 const VALID_RATINGS = [1, 2, 3, 4, 5] as const;
 const MAX_COMPLAINT_NOTE_LENGTH = 2000;
 
@@ -133,8 +137,13 @@ const requiredCheckInSchema = z.object({
 
 export function validateCheckInForSave(
   value: CheckInFormValue,
+  options: CheckInValidationOptions = {},
 ): CheckInValidationResult {
-  const parsed = requiredCheckInSchema.safeParse(value);
+  const requireCycleMarker = options.requireCycleMarker ?? true;
+  const valueForValidation = requireCycleMarker
+    ? value
+    : { ...value, cycle_marker: "dont_track" };
+  const parsed = requiredCheckInSchema.safeParse(valueForValidation);
   if (parsed.success) {
     return { valid: true, missing: [] };
   }
@@ -158,7 +167,7 @@ export function validateCheckInForSave(
   if (value.sweat_exercise_today === undefined) {
     missing.push("sweat_exercise_today");
   }
-  if (!value.cycle_marker) {
+  if (requireCycleMarker && !value.cycle_marker) {
     missing.push("cycle_marker");
   }
 

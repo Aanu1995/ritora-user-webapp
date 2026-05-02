@@ -134,6 +134,8 @@ describe("DayDetailPanel journal-day edit lock", () => {
     expect(
       screen.queryByRole("button", { name: /add photo/i }),
     ).not.toBeInTheDocument();
-    expect(screen.getByText(/read-only/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/entries can only be added on the day itself/i),
+    ).toBeInTheDocument();
   });
 });
