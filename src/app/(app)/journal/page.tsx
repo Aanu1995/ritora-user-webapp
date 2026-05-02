@@ -255,7 +255,7 @@ export default function JournalPage() {
         value={tab}
         onValueChange={(v) => setTab(v as typeof tab)}
       >
-        <div className="sticky top-[88px] z-[5] bg-background pt-2 backdrop-blur supports-[backdrop-filter]:bg-background/85">
+        <div className="sticky top-[88px] z-[5] -mx-4 bg-background px-4 pt-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="mx-auto max-w-7xl pb-3">
             <StatStrip stats={stats} />
           </div>

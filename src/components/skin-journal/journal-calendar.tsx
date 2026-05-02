@@ -6,6 +6,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { buildBackendUrl } from "@/lib/media-url";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type {
   CalendarDay,
   CalendarPayload,
@@ -97,28 +104,37 @@ export function JournalCalendar({
   );
   const cells = buildMonthDays(year, monthNum);
   const showSkeletonGrid = isLoading && !payload;
+  const visibleMonth = payload?.month ?? "";
+  const todayMonth = todayLocalDate.slice(0, 7);
+  const canNavigateNext = visibleMonth < todayMonth;
 
   return (
-    <div className="rounded-[14px] border border-border bg-surface p-4">
+    <div className="rounded-[14px] border border-border bg-surface p-4 lg:flex lg:h-full lg:flex-col">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-bold">{monthLabel}</p>
           {monthOptions.length > 0 && onSelectMonth ? (
-            <select
-              aria-label={t("selectTrackedMonth")}
+            <Select
               value={payload?.month ?? ""}
-              onChange={(event) => onSelectMonth(event.target.value)}
-              className="mt-1 h-7 max-w-full rounded-lg border border-border bg-surface px-2 text-xs text-muted outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+              onValueChange={onSelectMonth}
             >
-              {monthOptions.map((option) => (
-                <option key={option.month} value={option.month}>
-                  {t("trackedMonthLabel", {
-                    month: option.month,
-                    count: option.photo_count,
-                  })}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger
+                aria-label={t("selectTrackedMonth")}
+                className="mt-1 h-7 max-w-full gap-1.5 rounded-lg border-border bg-surface px-2 py-0 text-xs text-muted [&>svg]:h-3.5 [&>svg]:w-3.5"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {monthOptions.map((option) => (
+                  <SelectItem key={option.month} value={option.month}>
+                    {t("trackedMonthLabel", {
+                      month: option.month,
+                      count: option.photo_count,
+                    })}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           ) : null}
         </div>
         <div className="flex shrink-0 gap-1">
@@ -133,8 +149,15 @@ export function JournalCalendar({
           <button
             type="button"
             aria-label={t("next")}
-            onClick={() => onChangeMonth(1)}
-            className="grid h-7 w-7 cursor-pointer place-items-center rounded-lg border border-border-strong bg-surface text-xs hover:bg-surface-muted"
+            disabled={!canNavigateNext}
+            onClick={() => {
+              if (canNavigateNext) {
+                onChangeMonth(1);
+              }
+            }}
+            className={cn(
+              "grid h-7 w-7 cursor-pointer place-items-center rounded-lg border border-border-strong bg-surface text-xs hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-surface",
+            )}
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -185,7 +208,8 @@ export function JournalCalendar({
           const isUnavailable =
             disableUnavailableDates &&
             (!selectableDates || !selectableDates.has(cell.date));
-          const isDisabled = isOutside || isUnavailable;
+          const isFuture = cell.date > todayLocalDate;
+          const isDisabled = isOutside || isUnavailable || isFuture;
           const isToday = cell.date === todayLocalDate;
           const isSelected = cell.date === selectedDate;
           const dateNum = parseInt(cell.date.slice(8), 10);
@@ -205,7 +229,7 @@ export function JournalCalendar({
               className={cn(
                 baseClass,
                 outsideClass,
-                isUnavailable &&
+                (isUnavailable || isFuture) &&
                   "cursor-not-allowed opacity-40 hover:bg-background",
                 isToday && !isSelected && "ring-2 ring-accent-strong",
                 isSelected &&

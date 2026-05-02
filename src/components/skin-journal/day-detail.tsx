@@ -90,7 +90,7 @@ export function DayDetailPanel({
 
   if (!entry) {
     return (
-      <div className="space-y-3">
+      <div className="flex flex-col rounded-2xl border border-border bg-surface-muted p-6 lg:h-full">
         <div>
           <p className="text-sm text-muted">
             {t("meta", {
@@ -102,8 +102,8 @@ export function DayDetailPanel({
             {t("noEntry")}
           </h3>
         </div>
-        <div className="rounded-2xl border border-border bg-surface-muted p-6 text-center">
-          <Camera className="mx-auto h-10 w-10 text-muted" />
+        <div className="flex flex-1 flex-col items-center justify-center text-center">
+          <Camera className="h-10 w-10 text-muted" />
           <p className="mt-3 text-sm font-semibold">
             {canModifyEntry ? t("noEntryBody") : t("lockedNoEntryBody")}
           </p>

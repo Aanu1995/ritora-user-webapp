@@ -64,4 +64,58 @@ describe('JournalCalendar', () => {
     fireEvent.click(nonPhotoDay);
     expect(onSelectDate).not.toHaveBeenCalledWith('2026-04-11');
   });
+
+  it('disables future dates while keeping past dates and today selectable', () => {
+    const onSelectDate = jest.fn();
+
+    renderWithProviders(
+      <JournalCalendar
+        payload={APRIL_PAYLOAD}
+        selectedDate="2026-04-10"
+        todayLocalDate="2026-04-10"
+        onSelectDate={onSelectDate}
+        onChangeMonth={jest.fn()}
+        monthLabel="April 2026"
+      />,
+    );
+
+    const pastDay = screen.getByRole('button', { name: '2026-04-09' });
+    const today = screen.getByRole('button', { name: '2026-04-10' });
+    const futureDay = screen.getByRole('button', { name: '2026-04-11' });
+
+    expect(pastDay).not.toBeDisabled();
+    expect(today).not.toBeDisabled();
+    expect(futureDay).toBeDisabled();
+
+    fireEvent.click(pastDay);
+    fireEvent.click(today);
+    fireEvent.click(futureDay);
+
+    expect(onSelectDate).toHaveBeenCalledWith('2026-04-09');
+    expect(onSelectDate).toHaveBeenCalledWith('2026-04-10');
+    expect(onSelectDate).not.toHaveBeenCalledWith('2026-04-11');
+  });
+
+  it('disables next-month navigation when the visible month is the current month', () => {
+    const onChangeMonth = jest.fn();
+
+    renderWithProviders(
+      <JournalCalendar
+        payload={APRIL_PAYLOAD}
+        selectedDate="2026-04-10"
+        todayLocalDate="2026-04-10"
+        onSelectDate={jest.fn()}
+        onChangeMonth={onChangeMonth}
+        monthLabel="April 2026"
+      />,
+    );
+
+    const nextMonth = screen.getByRole('button', { name: /next month/i });
+
+    expect(nextMonth).toBeDisabled();
+
+    fireEvent.click(nextMonth);
+
+    expect(onChangeMonth).not.toHaveBeenCalled();
+  });
 });

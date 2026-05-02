@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { PhotoCropDialog } from "@/components/skin-journal/photo-crop-dialog";
 import { Chip } from "./chip";
 import {
   JournalPhotoValidationMessage,
@@ -48,7 +49,9 @@ export function JournalPhotoUpload({
   const t = useTranslations("journal.upload");
   const inputRef = useRef<HTMLInputElement>(null);
   const previewUrlRef = useRef<string | null>(null);
+  const previewFileRef = useRef<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [cropOpen, setCropOpen] = useState(false);
   const [fileError, setFileError] =
     useState<JournalPhotoValidationMessage | null>(null);
 
@@ -56,6 +59,7 @@ export function JournalPhotoUpload({
     if (previewUrlRef.current) {
       URL.revokeObjectURL(previewUrlRef.current);
       previewUrlRef.current = null;
+      previewFileRef.current = null;
     }
 
     if (file) {
@@ -67,10 +71,12 @@ export function JournalPhotoUpload({
           inputRef.current.value = "";
         }
         onPhotoChange(null);
+        setCropOpen(false);
         return;
       }
       const nextPreviewUrl = URL.createObjectURL(file);
       previewUrlRef.current = nextPreviewUrl;
+      previewFileRef.current = file;
       setPreviewUrl(nextPreviewUrl);
       setFileError(null);
     } else {
@@ -79,6 +85,7 @@ export function JournalPhotoUpload({
       if (inputRef.current) {
         inputRef.current.value = "";
       }
+      setCropOpen(false);
     }
     onPhotoChange(file);
   };
@@ -88,6 +95,7 @@ export function JournalPhotoUpload({
       if (previewUrlRef.current) {
         URL.revokeObjectURL(previewUrlRef.current);
         previewUrlRef.current = null;
+        previewFileRef.current = null;
       }
     };
   }, []);
@@ -99,6 +107,7 @@ export function JournalPhotoUpload({
 
     URL.revokeObjectURL(previewUrlRef.current);
     previewUrlRef.current = null;
+    previewFileRef.current = null;
   }, [photo]);
 
   return (
@@ -149,6 +158,7 @@ export function JournalPhotoUpload({
                 variant="outline"
                 size="sm"
                 className="bg-surface/90 backdrop-blur"
+                onClick={() => setCropOpen(true)}
                 type="button"
               >
                 <ScissorsLineDashed className="h-3.5 w-3.5" />
@@ -256,6 +266,16 @@ export function JournalPhotoUpload({
         />
         <span>{t("preRoutine")}</span>
       </label>
+
+      {photo && previewUrl ? (
+        <PhotoCropDialog
+          open={cropOpen}
+          photo={photo}
+          previewUrl={previewUrl}
+          onOpenChange={setCropOpen}
+          onApply={handleFile}
+        />
+      ) : null}
     </div>
   );
 }

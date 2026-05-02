@@ -1,9 +1,17 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { renderWithProviders } from '@/test/utils';
+import { cropImageFileToSquare } from '@/components/skin-journal/crop-image-file';
 import { JournalPhotoUpload } from '../journal-photo-upload';
+
+jest.mock('@/components/skin-journal/crop-image-file', () => ({
+  cropImageFileToSquare: jest.fn(),
+}));
 
 describe('JournalPhotoUpload', () => {
   beforeEach(() => {
+    jest.mocked(cropImageFileToSquare).mockReset();
     Object.defineProperty(URL, 'createObjectURL', {
       configurable: true,
       value: jest.fn(() => 'blob:skin-journal-photo'),
@@ -28,9 +36,7 @@ describe('JournalPhotoUpload', () => {
       />,
     );
 
-    const checkbox = screen.getByRole('checkbox', {
-      name: /encrypted at rest/i,
-    });
+    const checkbox = screen.getByRole('checkbox', { name: /analysis/i });
 
     expect(checkbox).not.toBeChecked();
 
@@ -148,5 +154,181 @@ describe('JournalPhotoUpload', () => {
     expect(screen.getByText(/choose a jpg/i)).toBeInTheDocument();
     expect(URL.createObjectURL).not.toHaveBeenCalled();
     expect(onPhotoChange).toHaveBeenCalledWith(null);
+  });
+
+  it('lets the user crop a selected photo before upload', async () => {
+    const user = userEvent.setup();
+    const onPhotoChange = jest.fn();
+    const originalFile = new File(['wide-face'], 'wide-face.jpg', {
+      type: 'image/jpeg',
+    });
+    const croppedFile = new File(['cropped-face'], 'wide-face-cropped.webp', {
+      type: 'image/webp',
+    });
+    jest.mocked(cropImageFileToSquare).mockResolvedValue(croppedFile);
+
+    function TestUploader() {
+      const [photo, setPhoto] = useState<File | null>(null);
+      const handlePhotoChange = (nextPhoto: File | null) => {
+        onPhotoChange(nextPhoto);
+        setPhoto(nextPhoto);
+      };
+
+      return (
+        <JournalPhotoUpload
+          photo={photo}
+          onPhotoChange={handlePhotoChange}
+          isPreRoutine
+          onPreRoutineChange={jest.fn()}
+        />
+      );
+    }
+
+    renderWithProviders(<TestUploader />);
+
+    const input = document.querySelector('input[type="file"]');
+    fireEvent.change(input as HTMLInputElement, {
+      target: { files: [originalFile] },
+    });
+
+    await user.click(screen.getByRole('button', { name: /crop photo/i }));
+
+    expect(
+      screen.getByRole('heading', { name: /crop photo/i }),
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText(/zoom/i), {
+      target: { value: '1.5' },
+    });
+    fireEvent.change(screen.getByLabelText(/move left or right/i), {
+      target: { value: '20' },
+    });
+
+    await user.click(screen.getByRole('button', { name: /^apply$/i }));
+
+    await waitFor(() =>
+      expect(cropImageFileToSquare).toHaveBeenCalledWith(
+        originalFile,
+        'blob:skin-journal-photo',
+        expect.objectContaining({
+          zoom: 1.5,
+          offsetX: 20,
+        }),
+      ),
+    );
+    expect(onPhotoChange).toHaveBeenLastCalledWith(croppedFile);
+  });
+
+  it('lets the user drag the crop preview to reposition the photo', async () => {
+    const user = userEvent.setup();
+    const onPhotoChange = jest.fn();
+    const originalFile = new File(['wide-face'], 'wide-face.jpg', {
+      type: 'image/jpeg',
+    });
+    const croppedFile = new File(['cropped-face'], 'wide-face-cropped.webp', {
+      type: 'image/webp',
+    });
+    jest.mocked(cropImageFileToSquare).mockResolvedValue(croppedFile);
+
+    function TestUploader() {
+      const [photo, setPhoto] = useState<File | null>(null);
+      const handlePhotoChange = (nextPhoto: File | null) => {
+        onPhotoChange(nextPhoto);
+        setPhoto(nextPhoto);
+      };
+
+      return (
+        <JournalPhotoUpload
+          photo={photo}
+          onPhotoChange={handlePhotoChange}
+          isPreRoutine
+          onPreRoutineChange={jest.fn()}
+        />
+      );
+    }
+
+    renderWithProviders(<TestUploader />);
+
+    const input = document.querySelector('input[type="file"]');
+    fireEvent.change(input as HTMLInputElement, {
+      target: { files: [originalFile] },
+    });
+
+    await user.click(screen.getByRole('button', { name: /crop photo/i }));
+
+    const dragSurface = screen.getByLabelText(/drag photo to adjust crop/i);
+    fireEvent.pointerDown(dragSurface, {
+      clientX: 50,
+      clientY: 50,
+      pointerId: 1,
+    });
+    fireEvent.pointerMove(dragSurface, {
+      clientX: 90,
+      clientY: 30,
+      pointerId: 1,
+    });
+    fireEvent.pointerUp(dragSurface, { pointerId: 1 });
+
+    await user.click(screen.getByRole('button', { name: /^apply$/i }));
+
+    await waitFor(() =>
+      expect(cropImageFileToSquare).toHaveBeenCalledWith(
+        originalFile,
+        'blob:skin-journal-photo',
+        expect.objectContaining({
+          offsetX: 20,
+          offsetY: -10,
+        }),
+      ),
+    );
+  });
+
+  it('lets the user zoom the crop preview directly', async () => {
+    const user = userEvent.setup();
+    const originalFile = new File(['wide-face'], 'wide-face.jpg', {
+      type: 'image/jpeg',
+    });
+    const croppedFile = new File(['cropped-face'], 'wide-face-cropped.webp', {
+      type: 'image/webp',
+    });
+    jest.mocked(cropImageFileToSquare).mockResolvedValue(croppedFile);
+
+    function TestUploader() {
+      const [photo, setPhoto] = useState<File | null>(null);
+
+      return (
+        <JournalPhotoUpload
+          photo={photo}
+          onPhotoChange={setPhoto}
+          isPreRoutine
+          onPreRoutineChange={jest.fn()}
+        />
+      );
+    }
+
+    renderWithProviders(<TestUploader />);
+
+    const input = document.querySelector('input[type="file"]');
+    fireEvent.change(input as HTMLInputElement, {
+      target: { files: [originalFile] },
+    });
+
+    await user.click(screen.getByRole('button', { name: /crop photo/i }));
+
+    fireEvent.wheel(screen.getByLabelText(/drag photo to adjust crop/i), {
+      deltaY: -120,
+    });
+
+    await user.click(screen.getByRole('button', { name: /^apply$/i }));
+
+    await waitFor(() =>
+      expect(cropImageFileToSquare).toHaveBeenCalledWith(
+        originalFile,
+        'blob:skin-journal-photo',
+        expect.objectContaining({
+          zoom: 1.1,
+        }),
+      ),
+    );
   });
 });
