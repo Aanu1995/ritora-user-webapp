@@ -302,6 +302,11 @@
     "signingIn": "Loggar in...",
     "creatingAccount": "Skapar konto...",
     "loading": "Laddar...",
+    "continueWithGoogle": "Fortsätt med Google",
+    "continueWithApple": "Fortsätt med Apple",
+    "orContinueWithEmail": "eller fortsätt med e-post",
+    "openingGoogle": "Öppnar Google…",
+    "openingApple": "Öppnar Apple…",
     "errors": {
       "invalidCredentials": "Fel e-post eller lösenord. Försök igen.",
       "emailInUse": "Ett konto med denna e-post finns redan. Försök logga in istället.",

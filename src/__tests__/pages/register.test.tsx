@@ -23,6 +23,10 @@ jest.mock('@/hooks/use-auth', () => ({
   useRegister: () => mockRegisterReturn,
 }));
 
+jest.mock('@/lib/browser-navigation', () => ({
+  navigateToUrl: jest.fn(),
+}));
+
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: mockPush,

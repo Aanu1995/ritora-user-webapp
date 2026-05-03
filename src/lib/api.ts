@@ -14,6 +14,7 @@ export const API_BASE_URL =
 const ABSOLUTE_HTTP_URL_PATTERN = /^https?:\/\//i;
 const CREDENTIALLED_AUTH_PATHS = new Set<string>([
   ApiPath.AuthLogin,
+  ApiPath.AuthGoogle,
   ApiPath.AuthRegister,
   ApiPath.AuthRefresh,
   ApiPath.AuthLogout,
@@ -270,6 +271,7 @@ apiClient.interceptors.response.use(
 
     const unauthenticatedPaths = new Set<string>([
       ApiPath.AuthLogin,
+      ApiPath.AuthGoogle,
       ApiPath.AuthRegister,
       ApiPath.AuthRefresh,
       ApiPath.AuthForgotPassword,

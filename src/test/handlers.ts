@@ -43,6 +43,13 @@ export const handlers = [
     );
   }),
 
+  http.post(`${API}/auth/google`, () => {
+    return HttpResponse.json({
+      accessToken: "mock-access-token",
+      user: mockUser,
+    });
+  }),
+
   http.post(`${API}/auth/refresh`, () => {
     return HttpResponse.json({ accessToken: "mock-refreshed-token" });
   }),

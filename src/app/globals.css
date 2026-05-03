@@ -26,6 +26,18 @@
   --radius-card: 1.5rem;
   --radius-pill: 9999px;
 
+  /* Google "Sign in with Google" brand tokens — light variant.
+     Per developers.google.com/identity/branding-guidelines. Do NOT recolor. */
+  --google-fill: #ffffff;
+  --google-stroke: #747775;
+  --google-text: #1f1f1f;
+
+  /* Apple "Sign in with Apple" brand tokens — light variant.
+     Apple HIG "black button" — black on light backgrounds. */
+  --apple-fill: #000000;
+  --apple-stroke: transparent;
+  --apple-text: #ffffff;
+
   /* Daypart tokens — morning (sunrise), noon (sun), evening (moon).
      Used for time-of-day icons, slot accents, and note callouts. */
   --daypart-morning-bg: #fef3c7;
@@ -87,6 +99,14 @@
     --shadow-hero: 0 32px 90px rgba(0, 0, 0, 0.4);
     --shadow-ring: 0 0 0 3px rgba(111, 195, 141, 0.2);
 
+    --google-fill: #131314;
+    --google-stroke: #8e918f;
+    --google-text: #e3e3e3;
+
+    --apple-fill: #000000;
+    --apple-stroke: rgba(255, 255, 255, 0.18);
+    --apple-text: #ffffff;
+
     --daypart-morning-bg: rgba(251, 191, 36, 0.16);
     --daypart-morning-fg: #fcd34d;
     --daypart-morning-border: rgba(251, 191, 36, 0.32);
@@ -146,6 +166,14 @@
   --radius-card: 1.5rem;
   --radius-pill: 9999px;
 
+  --google-fill: #ffffff;
+  --google-stroke: #747775;
+  --google-text: #1f1f1f;
+
+  --apple-fill: #000000;
+  --apple-stroke: transparent;
+  --apple-text: #ffffff;
+
   --daypart-morning-bg: #fef3c7;
   --daypart-morning-fg: #92400e;
   --daypart-morning-border: rgba(217, 119, 6, 0.22);
@@ -201,6 +229,14 @@
   --shadow-soft: 0 24px 70px rgba(0, 0, 0, 0.32);
   --shadow-hero: 0 32px 90px rgba(0, 0, 0, 0.4);
   --shadow-ring: 0 0 0 3px rgba(111, 195, 141, 0.2);
+
+  --google-fill: #131314;
+  --google-stroke: #8e918f;
+  --google-text: #e3e3e3;
+
+  --apple-fill: #000000;
+  --apple-stroke: rgba(255, 255, 255, 0.18);
+  --apple-text: #ffffff;
 
   --daypart-morning-bg: rgba(251, 191, 36, 0.16);
   --daypart-morning-fg: #fcd34d;

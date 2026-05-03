@@ -1,4 +1,5 @@
 jest.mock('@/lib/api', () => ({
+  API_BASE_URL: 'http://localhost:3001/api/v1',
   getRequest: jest.fn(),
   patchRequest: jest.fn(),
   postRequest: jest.fn(),
@@ -9,7 +10,9 @@ import { getRequest, patchRequest, postRequest } from '@/lib/api';
 import {
   forgotPassword,
   getActiveSessions,
+  getAppleOAuthStartUrl,
   getCurrentUser,
+  getGoogleOAuthStartUrl,
   login,
   logout,
   logoutAll,
@@ -40,6 +43,30 @@ describe('auth.service', () => {
       password: 'pass',
     });
     expect(result).toEqual(mockResponse);
+  });
+
+  it('getGoogleOAuthStartUrl builds backend redirect URL with consent context', () => {
+    const result = getGoogleOAuthStartUrl({
+      preferredLanguage: 'sv',
+      termsAccepted: true,
+      privacyPolicyAccepted: true,
+    });
+
+    expect(result).toBe(
+      'http://localhost:3001/api/v1/auth/google?language=sv&termsAccepted=true&privacyPolicyAccepted=true',
+    );
+  });
+
+  it('getAppleOAuthStartUrl builds backend redirect URL with consent context', () => {
+    const result = getAppleOAuthStartUrl({
+      preferredLanguage: 'sv',
+      termsAccepted: true,
+      privacyPolicyAccepted: true,
+    });
+
+    expect(result).toBe(
+      'http://localhost:3001/api/v1/auth/apple?language=sv&termsAccepted=true&privacyPolicyAccepted=true',
+    );
   });
 
   it('register calls postRequest with register path', async () => {

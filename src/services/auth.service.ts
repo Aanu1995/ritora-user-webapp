@@ -1,4 +1,4 @@
-import { getRequest, patchRequest, postRequest } from '@/lib/api';
+import { API_BASE_URL, getRequest, patchRequest, postRequest } from '@/lib/api';
 import { ApiPath } from '@/constants/api-paths';
 import type {
   AuthResponse,
@@ -17,6 +17,44 @@ import type {
 
 export async function login(data: LoginInput): Promise<AuthResponse> {
   return postRequest<AuthResponse>(ApiPath.AuthLogin, data);
+}
+
+export function getGoogleOAuthStartUrl(data: {
+  preferredLanguage: string;
+  termsAccepted?: boolean;
+  privacyPolicyAccepted?: boolean;
+}): string {
+  return getOAuthStartUrl(ApiPath.AuthGoogle, data);
+}
+
+export function getAppleOAuthStartUrl(data: {
+  preferredLanguage: string;
+  termsAccepted?: boolean;
+  privacyPolicyAccepted?: boolean;
+}): string {
+  return getOAuthStartUrl(ApiPath.AuthApple, data);
+}
+
+function getOAuthStartUrl(
+  path: string,
+  data: {
+    preferredLanguage: string;
+    termsAccepted?: boolean;
+    privacyPolicyAccepted?: boolean;
+  },
+): string {
+  const normalizedBaseUrl = API_BASE_URL.replace(/\/$/, '');
+  const url = new URL(`${normalizedBaseUrl}${path}`);
+  url.searchParams.set('language', data.preferredLanguage);
+  url.searchParams.set(
+    'termsAccepted',
+    data.termsAccepted === true ? 'true' : 'false',
+  );
+  url.searchParams.set(
+    'privacyPolicyAccepted',
+    data.privacyPolicyAccepted === true ? 'true' : 'false',
+  );
+  return url.toString();
 }
 
 export async function register(data: RegisterInput): Promise<RegisterResponse> {

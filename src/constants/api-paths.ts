@@ -18,6 +18,8 @@ const buildScheduleSlotPath = (id: string) => `${SCHEDULE_SLOTS_BASE}/${id}`;
 
 export const ApiPath = {
   AuthLogin: `${AUTH_BASE}/login`,
+  AuthGoogle: `${AUTH_BASE}/google`,
+  AuthApple: `${AUTH_BASE}/apple`,
   AuthRegister: `${AUTH_BASE}/register`,
   AuthRefresh: `${AUTH_BASE}/refresh`,
   AuthLogout: `${AUTH_BASE}/logout`,

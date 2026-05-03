@@ -302,6 +302,11 @@
     "signingIn": "Signing in...",
     "creatingAccount": "Creating account...",
     "loading": "Loading...",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "orContinueWithEmail": "or continue with email",
+    "openingGoogle": "Opening Google…",
+    "openingApple": "Opening Apple…",
     "errors": {
       "invalidCredentials": "The email or password is incorrect. Please try again.",
       "emailInUse": "An account with this email already exists. Try logging in instead.",

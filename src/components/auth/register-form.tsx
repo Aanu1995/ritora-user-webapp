@@ -4,7 +4,10 @@ import { useForm } from '@tanstack/react-form';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useState } from 'react';
+import { AppleSignInButton } from '@/components/auth/apple-sign-in-button';
+import { AuthDivider } from '@/components/auth/auth-divider';
 import { ConsentCheckbox } from '@/components/auth/consent-checkbox';
+import { GoogleSignInButton } from '@/components/auth/google-sign-in-button';
 import { PasswordInputField } from '@/components/auth/password-input-field';
 import { TextInputField } from '@/components/auth/text-input-field';
 import { Button } from '@/components/ui/button';
@@ -13,7 +16,12 @@ import { AppRoute } from '@/constants/app-routes';
 import { useRegister } from '@/hooks/use-auth';
 import { normalizeLocale } from '@/i18n/config';
 import { getRegisterSubmitError } from '@/lib/auth-submit-errors';
+import { navigateToUrl } from '@/lib/browser-navigation';
 import { firstFieldError } from '@/lib/form-errors';
+import {
+  getAppleOAuthStartUrl,
+  getGoogleOAuthStartUrl,
+} from '@/services/auth.service';
 import {
   clearSubmitErrors,
   executeMutation,
@@ -45,6 +53,8 @@ export function RegisterForm() {
   const registerUser = useRegister();
   const [showPassword, setShowPassword] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
+  const [isGoogleRedirecting, setIsGoogleRedirecting] = useState(false);
+  const [isAppleRedirecting, setIsAppleRedirecting] = useState(false);
 
   const form = useForm({
     defaultValues: DEFAULT_VALUES,
@@ -78,6 +88,28 @@ export function RegisterForm() {
       setSubmittedEmail(value.email);
     },
   });
+
+  const handleGoogleSignUp = (values: RegisterValues) => {
+    setIsGoogleRedirecting(true);
+    navigateToUrl(
+      getGoogleOAuthStartUrl({
+        preferredLanguage: locale,
+        termsAccepted: values.termsAccepted,
+        privacyPolicyAccepted: values.privacyPolicyAccepted,
+      }),
+    );
+  };
+
+  const handleAppleSignUp = (values: RegisterValues) => {
+    setIsAppleRedirecting(true);
+    navigateToUrl(
+      getAppleOAuthStartUrl({
+        preferredLanguage: locale,
+        termsAccepted: values.termsAccepted,
+        privacyPolicyAccepted: values.privacyPolicyAccepted,
+      }),
+    );
+  };
 
   if (submittedEmail) {
     return (
@@ -126,15 +158,54 @@ export function RegisterForm() {
         <p className="text-sm text-muted">{t('signUpSubtitle')}</p>
       </div>
 
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          void form.handleSubmit();
-        }}
-        className="mt-8 space-y-5"
-        noValidate
-      >
+      <div className="mt-8 space-y-5">
+        <form.Subscribe
+          selector={(state) => ({
+            isSubmitting: state.isSubmitting,
+            values: state.values,
+          })}
+        >
+          {({ isSubmitting, values }) => (
+            <div className="flex flex-col gap-3">
+              <GoogleSignInButton
+                isDisabled={
+                  isSubmitting ||
+                  registerUser.isPending ||
+                  isGoogleRedirecting ||
+                  isAppleRedirecting ||
+                  !values.termsAccepted ||
+                  !values.privacyPolicyAccepted
+                }
+                isLoading={isGoogleRedirecting}
+                onClick={() => handleGoogleSignUp(values)}
+              />
+              <AppleSignInButton
+                isDisabled={
+                  isSubmitting ||
+                  registerUser.isPending ||
+                  isGoogleRedirecting ||
+                  isAppleRedirecting ||
+                  !values.termsAccepted ||
+                  !values.privacyPolicyAccepted
+                }
+                isLoading={isAppleRedirecting}
+                onClick={() => handleAppleSignUp(values)}
+              />
+            </div>
+          )}
+        </form.Subscribe>
+
+        <AuthDivider label={t('orContinueWithEmail')} />
+
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            void form.handleSubmit();
+          }}
+          className="space-y-5"
+          noValidate
+        >
         <div className="grid gap-4 sm:grid-cols-2">
           <form.Field name="firstName">
             {(field) => (
@@ -304,6 +375,7 @@ export function RegisterForm() {
           {({ canSubmit, isSubmitting, termsAccepted, privacyPolicyAccepted }) => (
             <Button
               type="submit"
+              size="lg"
               disabled={
                 !canSubmit ||
                 isSubmitting ||
@@ -334,7 +406,8 @@ export function RegisterForm() {
             {t('signIn')}
           </Link>
         </p>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
