@@ -154,6 +154,8 @@ export function RegisterForm() {
       </div>
 
       <div className="mt-8 space-y-5">
+        <AuthLegalDisclosure />
+
         <form.Subscribe selector={(state) => state.isSubmitting}>
           {(isSubmitting) => (
             <div className="flex flex-col gap-3">
@@ -334,8 +336,6 @@ export function RegisterForm() {
               </Button>
             )}
           </form.Subscribe>
-
-          <AuthLegalDisclosure />
 
           <p className="text-center text-sm text-muted">
             {t("hasAccount")}{" "}

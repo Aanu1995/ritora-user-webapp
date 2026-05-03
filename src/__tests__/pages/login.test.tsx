@@ -217,6 +217,36 @@ describe('LoginPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('passes implicit consent context when starting Google OAuth', async () => {
+    renderWithProviders(<LoginPage />);
+
+    await user.click(
+      screen.getByRole('button', { name: /continue with google/i }),
+    );
+
+    expect(navigateToUrl).toHaveBeenCalledWith(
+      expect.stringContaining('termsAccepted=true'),
+    );
+    expect(navigateToUrl).toHaveBeenCalledWith(
+      expect.stringContaining('privacyPolicyAccepted=true'),
+    );
+  });
+
+  it('passes implicit consent context when starting Apple OAuth', async () => {
+    renderWithProviders(<LoginPage />);
+
+    await user.click(
+      screen.getByRole('button', { name: /continue with apple/i }),
+    );
+
+    expect(navigateToUrl).toHaveBeenCalledWith(
+      expect.stringContaining('termsAccepted=true'),
+    );
+    expect(navigateToUrl).toHaveBeenCalledWith(
+      expect.stringContaining('privacyPolicyAccepted=true'),
+    );
+  });
+
   it('has link to register', () => {
     renderWithProviders(<LoginPage />);
     expect(

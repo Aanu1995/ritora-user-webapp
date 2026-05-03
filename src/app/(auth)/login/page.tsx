@@ -89,6 +89,8 @@ export default function LoginPage() {
     navigateToUrl(
       getGoogleOAuthStartUrl({
         preferredLanguage: currentLocale,
+        termsAccepted: true,
+        privacyPolicyAccepted: true,
       }),
     );
   };
@@ -98,6 +100,8 @@ export default function LoginPage() {
     navigateToUrl(
       getAppleOAuthStartUrl({
         preferredLanguage: currentLocale,
+        termsAccepted: true,
+        privacyPolicyAccepted: true,
       }),
     );
   };
@@ -139,6 +143,8 @@ export default function LoginPage() {
       </div>
 
       <div className="mt-8 space-y-5">
+        <AuthLegalDisclosure />
+
         <form.Subscribe selector={(state) => state.isSubmitting}>
           {(isSubmitting) => (
             <div className="flex flex-col gap-3">
@@ -282,8 +288,6 @@ export default function LoginPage() {
             )}
           </form.Subscribe>
         ) : null}
-
-        <AuthLegalDisclosure />
 
         <p className="text-center text-sm text-muted">
           {t('noAccount')}{' '}

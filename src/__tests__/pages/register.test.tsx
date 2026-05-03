@@ -109,15 +109,36 @@ describe('RegisterPage', () => {
     });
   });
 
-  it('shows the clickwrap disclosure beneath the auth options', () => {
+  it('shows the clickwrap disclosure above the auth options', () => {
     renderWithProviders(<RegisterPage />);
     // Pattern A — implicit consent. The submit button is not gated by
-    // checkboxes; the disclosure below the form covers ToS / Privacy
-    // acceptance via the user's affirmative action of clicking submit.
+    // checkboxes; the disclosure shown before auth actions covers ToS /
+    // Privacy acceptance via the user's affirmative action of continuing.
     expect(
       screen.getByText(/by continuing, you agree to our/i),
     ).toBeInTheDocument();
     expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+  });
+
+  it('places the clickwrap disclosure before social signup buttons that record consent', () => {
+    renderWithProviders(<RegisterPage />);
+
+    const disclosure = screen.getByText(/by continuing, you agree to our/i);
+    const googleButton = screen.getByRole('button', {
+      name: /continue with google/i,
+    });
+    const appleButton = screen.getByRole('button', {
+      name: /continue with apple/i,
+    });
+
+    expect(
+      disclosure.compareDocumentPosition(googleButton) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      disclosure.compareDocumentPosition(appleButton) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
   });
 
   it('submits with all required fields and implicit consent', async () => {
