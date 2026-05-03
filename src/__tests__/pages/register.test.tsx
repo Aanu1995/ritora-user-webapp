@@ -109,21 +109,21 @@ describe('RegisterPage', () => {
     });
   });
 
-  it('submit button is disabled without consent', () => {
+  it('shows the clickwrap disclosure beneath the auth options', () => {
     renderWithProviders(<RegisterPage />);
+    // Pattern A — implicit consent. The submit button is not gated by
+    // checkboxes; the disclosure below the form covers ToS / Privacy
+    // acceptance via the user's affirmative action of clicking submit.
     expect(
-      screen.getByRole('button', { name: /create account/i }),
-    ).toBeDisabled();
+      screen.getByText(/by continuing, you agree to our/i),
+    ).toBeInTheDocument();
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
   });
 
-  it('submits with all fields filled and consent given', async () => {
+  it('submits with all required fields and implicit consent', async () => {
     renderWithProviders(<RegisterPage />);
 
     fillRegistrationForm();
-
-    const checkboxes = screen.getAllByRole('checkbox');
-    await user.click(checkboxes[0]); // terms
-    await user.click(checkboxes[1]); // privacy
 
     await user.click(
       screen.getByRole('button', { name: /create account/i }),
@@ -155,10 +155,6 @@ describe('RegisterPage', () => {
     renderWithProviders(<RegisterPage />);
 
     fillRegistrationForm();
-
-    const checkboxes = screen.getAllByRole('checkbox');
-    await user.click(checkboxes[0]);
-    await user.click(checkboxes[1]);
 
     await user.click(
       screen.getByRole('button', { name: /create account/i }),
@@ -210,10 +206,6 @@ describe('RegisterPage', () => {
     renderWithProviders(<RegisterPage />);
 
     fillRegistrationForm();
-
-    const checkboxes = screen.getAllByRole('checkbox');
-    await user.click(checkboxes[0]);
-    await user.click(checkboxes[1]);
 
     await user.click(
       screen.getByRole('button', { name: /create account/i }),

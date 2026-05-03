@@ -8,6 +8,7 @@ import { useRef, useState } from 'react';
 import { z } from 'zod';
 import { AppleSignInButton } from '@/components/auth/apple-sign-in-button';
 import { AuthDivider } from '@/components/auth/auth-divider';
+import { AuthLegalDisclosure } from '@/components/auth/auth-legal-disclosure';
 import { GoogleSignInButton } from '@/components/auth/google-sign-in-button';
 import { PasswordInputField } from '@/components/auth/password-input-field';
 import { TextInputField } from '@/components/auth/text-input-field';
@@ -281,6 +282,8 @@ export default function LoginPage() {
             )}
           </form.Subscribe>
         ) : null}
+
+        <AuthLegalDisclosure />
 
         <p className="text-center text-sm text-muted">
           {t('noAccount')}{' '}

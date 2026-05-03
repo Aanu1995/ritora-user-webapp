@@ -15,8 +15,6 @@ export const registerSchema = z
       .min(1, 'validation.passwordRequired')
       .regex(passwordPattern, 'validation.passwordPattern'),
     confirmPassword: z.string().min(1, 'validation.passwordRequired'),
-    termsAccepted: z.boolean(),
-    privacyPolicyAccepted: z.boolean(),
   })
   .superRefine((value, ctx) => {
     if (
@@ -28,22 +26,6 @@ export const registerSchema = z
         code: z.ZodIssueCode.custom,
         path: ['confirmPassword'],
         message: 'validation.passwordMismatch',
-      });
-    }
-
-    if (!value.termsAccepted) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['termsAccepted'],
-        message: 'validation.termsRequired',
-      });
-    }
-
-    if (!value.privacyPolicyAccepted) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['privacyPolicyAccepted'],
-        message: 'validation.privacyRequired',
       });
     }
   });
