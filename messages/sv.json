@@ -2048,6 +2048,8 @@
       "productMissing": "Saknad produkt — välj igen",
       "notesPlaceholder": "Anteckningar (valfritt)",
       "optionalLabel": "Valfritt steg",
+      "specialistLockedLabel": "Låst av specialist",
+      "specialistLockedHint": "När den är ikryssad behandlar AI-förslagsmotorn detta steg som oföränderligt. Det tas aldrig bort, ordnas om eller ersätts.",
       "delete": "Ta bort steg",
       "dragHandle": "Dra för att ordna om"
     },
@@ -2968,12 +2970,14 @@
     },
     "validation": {
       "invalidReminderTime": "Ange en giltig påminnelsetid.",
-      "invalidChannels": "Välj giltiga aviseringskanaler."
+      "invalidChannels": "Välj giltiga aviseringskanaler.",
+      "invalidLeadTime": "Ledtid måste vara mellan 30 minuter och 12 timmar.",
+      "invalidQuietHours": "Tysta timmar måste använda 24-timmarsformat som 22:30."
     },
     "photoReminderTitle": "Fotopåminnelse",
     "photoReminderBody": "Daglig uppmaning att lägga till dagens foto",
     "reminderTime": "Påminnelsetid",
-    "reminderTimeNote": "Skickas i din tidszon · {timeZone}",
+    "reminderTimeNote": "Tiden är i din tidszon · {timeZone}",
     "channels": "Kanaler",
     "channelInApp": "I appen",
     "channelEmail": "E-post",
@@ -2985,7 +2989,25 @@
     "insightsTitle": "Insikter & Wrapped",
     "insightAlertsBody": "Insiktsaviseringar",
     "aiRefinedInsightsBody": "Använd AI förfinad text och AI skapade insiktskort",
-    "wrappedAlertsBody": "Wrapped-klar-aviseringar"
+    "wrappedAlertsBody": "Wrapped-klar-aviseringar",
+    "newPill": "Nytt",
+    "todaysSuggestionTitle": "Dagens förslag",
+    "todaysSuggestionBody": "Tre påminnelser kopplade till varje schemalagd plats. Tillsammans håller de din rutin på rätt spår utan att bli stökiga.",
+    "suggestionReadyTitle": "Förslag redo",
+    "suggestionReadyBody": "När en plats förslag blir synligt, din ledtid före schemalagd tid.",
+    "slotStartTitle": "Plats startar",
+    "slotStartBody": "Vid schemalagd tid, så att du kommer ihåg att applicera din rutin.",
+    "recordingReminderTitle": "Inspelningspåminnelse",
+    "recordingReminderBody": "30 minuter efter platsen om ingen registrering. Tyst på natten, försöker igen vid nästa plats nästa morgon.",
+    "leadTimeLabel": "Ledtid före varje plats",
+    "leadTimeOption": "{minutes, plural, =60 {1 timme} =120 {2 timmar} =180 {3 timmar} =240 {4 timmar} =360 {6 timmar} =480 {8 timmar} =720 {12 timmar} other {# minuter}}",
+    "leadTimeNote": "Används av alla tre påminnelsetyper. Intervall 30 minuter till 12 timmar.",
+    "quietHoursTitle": "Tysta timmar",
+    "quietHoursBody": "Pausa icke-brådskande påminnelser inom det här fönstret. Reaktionsvarningar kommer alltid igenom.",
+    "quietHoursActive": "Tysta timmar aktiva",
+    "from": "Från",
+    "to": "till",
+    "quietHoursTzNote": "Tider visas i din tidszon · {timeZone}"
   },
   "notificationsPage": {
     "eyebrow": "Inkorg",
@@ -3041,7 +3063,320 @@
       "export_ready": {
         "title": "Din export är klar",
         "body": "Tryck för att ladda ner."
+      },
+      "suggestion_ready": {
+        "title": "Ditt förslag är klart",
+        "body": "Tryck för att granska stegen innan du applicerar."
+      },
+      "slot_start": {
+        "title": "Dags att starta din rutin",
+        "body": "Din plats just öppnade. Markera varje steg när du gör det."
+      },
+      "recording_reminder": {
+        "title": "Hur gick din rutin?",
+        "body": "Registrera vad du applicerade så att resten av dagen vet vad det ska bygga på."
       }
     }
+  },
+  "todaysSuggestion": {
+    "page": {
+      "title": "Dagens förslag",
+      "history": "Historik",
+      "loading": "Laddar dagens plan",
+      "errorTitle": "Vi kunde inte ladda dagens plan",
+      "error": "Något gick fel när vi laddade dina förslag. Du kan försöka igen.",
+      "retry": "Försök igen",
+      "worthConsidering": "Värt att överväga",
+      "nextSlotTomorrow": "imorgon"
+    },
+    "lockedDay": {
+      "leadTitle": "Förslag kommer ett par timmar innan varje slot",
+      "leadBody": "Din rutin förbereds i bakgrunden utifrån gårdagens foto, din hylla och din hudprofil. Den visas här när synlighetsfönstret öppnas.",
+      "notifyTitle": "Du får en notis när det är klart",
+      "notifyBody": "Vi skickar en notis när varje slot blir synligt, igen vid den schemalagda tiden, och en påminnelse om att registrera. Hantera allt i <link>Notifikationer</link>."
+    },
+    "section": {
+      "morning": "Morgon",
+      "noon": "Mitt på dagen",
+      "evening": "Kväll"
+    },
+    "summary": {
+      "applied": "{count, plural, one {# applicerad} other {# applicerade}}",
+      "ready": "{count, plural, one {# redo} other {# redo}}",
+      "locked": "{count, plural, one {# låst} other {# låsta}}",
+      "uvIndex": "UV {index}",
+      "photoNudge": "Foto loggat idag",
+      "logPhoto": "Logga foto",
+      "photoLoggedAt": "Foto loggat {time}",
+      "notifications": "{count, plural, one {# avisering} other {# aviseringar}}",
+      "adherence": "{percent}% följsamhet"
+    },
+    "modeBadge": {
+      "ai": "AI",
+      "manual": "Manuellt",
+      "mixed": "Blandat"
+    },
+    "provenance": {
+      "specialistLocked": "Låst av specialist",
+      "yourRoutine": "Din rutin",
+      "aiAdded": "Tillagt av AI"
+    },
+    "slot": {
+      "stepCount": "{count, plural, one {# steg} other {# steg}}",
+      "ready": "Redo",
+      "generating": "Förbereds",
+      "failed": "Behöver nytt försök",
+      "missed": "Missad",
+      "applied": "Applicerad",
+      "appliedSummary": "{count} av {total} applicerade",
+      "awaitingRecord": "Väntar på registrering",
+      "simplified": "Förenklad",
+      "specialist": "Specialist",
+      "morningLabel": "Morgonrutin",
+      "noonLabel": "Påminnelse mitt på dagen",
+      "eveningLabel": "Kvällsrutin",
+      "availableAt": "Tillgänglig {time}",
+      "unlocksIn": "Låser upp om {eta}.",
+      "unlocksInRich": "Låser upp om <strong>{eta}</strong>.",
+      "lockedExplainer": "Vi visar förslag ett par timmar innan slotet så de speglar ditt senaste foto, sömn och incheckning.",
+      "generatingExplainer": "Ritora förbereder denna plats med ditt senaste schema, din hylla, hudprofil och senaste registreringar.",
+      "failedExplainer": "Detta förslag kunde inte förberedas. Det förblir synligt så att problemet inte försvinner från dagen.",
+      "missedExplainer": "Denna plats passerade utan en sparad appliceringsregistrering. Du kan fortfarande registrera eller redigera den från Historik efter idag.",
+      "whyThisRoutine": "Varför denna rutin",
+      "markAsApplied": "Markera som applicerad",
+      "recordWhatIApplied": "Registrera vad jag applicerade",
+      "customise": "Anpassa",
+      "more": "Mer",
+      "edit": "Redigera",
+      "recordedMatchesSuggestion": "Matchar förslaget."
+    },
+    "reactionBanner": {
+      "title": "Möjlig reaktion på dagens foto",
+      "paused": "Pausat medan det lugnar sig: {names}",
+      "viewPhoto": "Visa foto",
+      "resetRoutine": "Använd min vanliga rutin"
+    },
+    "gapRecommendation": {
+      "title": "Överväg att lägga till {ingredient}",
+      "browse": "Bläddra alternativ",
+      "saveToWishlist": "Spara i önskelistan",
+      "dismiss": "Inte nu"
+    },
+    "recordSheet": {
+      "recordTitle": "Registrera vad du applicerade",
+      "editTitle": "Redigera applicering",
+      "recordSubtitle": "Plats kl. {time}, {count} föreslagna steg",
+      "editSubtitle": "Plats kl. {time}. Ursprungligen registrerad {firstRecordedAt}.",
+      "appliedAt": "Applicerad kl.",
+      "rowSuggestedTag": "Föreslaget",
+      "rowActionApplied": "Markera applicerad",
+      "rowActionSkipped": "Markera överhoppad",
+      "rowActionSubstituted": "Markera ersatt",
+      "addProduct": {
+        "title": "Lägg till en produkt jag använde",
+        "body": "Sök i din hylla eller skriv ett namn"
+      },
+      "notesLabel": "Anteckningar (valfritt)",
+      "notesPlaceholder": "Något Ritora bör komma ihåg? Till exempel att det stack lite på kinden.",
+      "editReasonLabel": "Varför redigerar du? (valfritt)",
+      "editReasonPlaceholder": "Hjälper AI att lära sig. Till exempel slut på produkten eller fel produkt tidigare.",
+      "saveRecord": "Spara registrering",
+      "saveChanges": "Spara ändringar",
+      "discard": "Förkasta ändringar",
+      "recordLegal": "Du kan redigera detta när som helst. Varje ändring tidsstämplas.",
+      "editLegal": "Originalregistrering bevarad. {count, plural, one {# tidigare version sparad.} other {# tidigare versioner sparade.}}",
+      "editHistory": {
+        "willMarkAsEdited": "Denna registrering kommer markeras som Redigerad",
+        "firstSavedAt": "Först sparad {time} av dig",
+        "versionsAreKept": "Varje tidigare version sparas, så vi rekommenderar aldrig något baserat på en ändrad registrering."
+      }
+    },
+    "detailDrawer": {
+      "eyebrow": "Varför denna rutin",
+      "title": "{daypart}, {time}",
+      "description": "Resonemanget bakom dagens föreslagna rutin.",
+      "generatedAt": "Genererad {time}",
+      "aiModel": "Modell {model}",
+      "daypart": {
+        "morning": "Morgon",
+        "noon": "Mitt på dagen",
+        "evening": "Kväll"
+      },
+      "sections": {
+        "intent": "Vad jag försöker göra",
+        "whyEach": "Varför varje steg",
+        "whatISkipped": "Vad jag hoppade över idag och varför",
+        "inputs": "Vad detta använde"
+      },
+      "noRationale": "Inget resonemang sparat för detta förslag.",
+      "markApplied": "Markera som applicerad",
+      "customise": "Anpassa innan du applicerar",
+      "generateAlternatives": "Generera alternativ"
+    },
+    "empty": {
+      "skinProfile": {
+        "title": "Berätta först om din hud",
+        "body": "Vi behöver din hudtyp, dina bekymmer och ditt mål innan vi kan föreslå något säkert. Det tar cirka tre minuter.",
+        "cta": "Starta hudprofil",
+        "privacy": "Krypterad i vila. Endast Ritoras egen AI-förslagsmotor läser den."
+      },
+      "shelf": {
+        "title": "Lägg till några produkter på din hylla",
+        "body": "Förslag använder bara produkter du faktiskt äger. Ta ett foto av flaskan och dess etikett, så hämtar Ritora varumärke, ingredienser och hur den används.",
+        "cta": "Lägg till en produkt",
+        "note": "Du kan lägga till så många du vill. Aktiva, slutförda och önskelista räknas alla."
+      },
+      "schedule": {
+        "title": "Bygg ditt veckorytm",
+        "body": "Berätta för Ritora när du brukar göra din morgon- och kvällsrutin. Förslag visas bara inför varje schemalagd plats.",
+        "ctaEveryDay": "Tillämpa en gång på varje dag",
+        "ctaScratch": "Bygg från grunden",
+        "note": "Du kan ändra tider när som helst från Schema."
+      },
+      "recoverable": {
+        "title": "Inget schemalagt just nu",
+        "body": "Din nästa plats idag är kl. {nextSlotLabel}. Medan du väntar, logga ett foto så att AI har färska data när det genererar.",
+        "ctaPhoto": "Lägg till dagens foto",
+        "ctaAddSlot": "Lägg till en plats"
+      }
+    }
+  },
+  "history": {
+    "page": {
+      "title": "Historik",
+      "subtitle": "Tidigare förslag och vad du faktiskt applicerade. Redigera vilken registrering som helst när som helst.",
+      "export": "Exportera",
+      "loading": "Laddar historik",
+      "errorTitle": "Vi kunde inte ladda historik",
+      "error": "Något gick fel när vi laddade din historik. Du kan försöka igen.",
+      "retry": "Försök igen"
+    },
+    "filters": {
+      "last7d": "Senaste 7 dagarna",
+      "last30d": "30 dagar",
+      "custom": "Anpassat",
+      "from": "Från",
+      "to": "Till",
+      "apply": "Använd",
+      "clear": "Rensa",
+      "rangeInvalid": "Slutdatum måste vara samma eller efter startdatum.",
+      "morning": "Morgon",
+      "evening": "Kväll",
+      "applied": "Applicerad",
+      "skipped": "Överhoppad",
+      "edited": "Redigerad"
+    },
+    "summary": {
+      "appliedOf": "{applied} av {total} applicerade",
+      "adherence": "{percent}% följsamhet"
+    },
+    "dayCard": {
+      "mood": "Sinnesstämning {score} av 5",
+      "hydration": {
+        "up": "Hydrering upp",
+        "flat": "Hydrering stabil",
+        "down": "Hydrering ner"
+      },
+      "mildRedness": "Lätt rodnad",
+      "daypart": {
+        "morning": "Morgon",
+        "noon": "Mitt på dagen",
+        "evening": "Kväll"
+      },
+      "status": {
+        "applied": "Applicerad",
+        "partial": "Delvis",
+        "skipped": "Överhoppad",
+        "simplified": "Förenklad",
+        "missed": "Missad",
+        "edited": "Redigerad"
+      }
+    },
+    "day": {
+      "loading": "Laddar dagens registrering",
+      "errorTitle": "Vi kunde inte ladda denna dag",
+      "error": "Något gick fel när vi laddade denna dag. Du kan försöka igen.",
+      "retry": "Försök igen",
+      "backLabel": "All historik",
+      "subtitle": "{slots} platser, {applied} av {total} applicerade",
+      "viewPhoto": "Visa foto",
+      "export": "Exportera",
+      "appliedSummary": "{applied} av {total} applicerade",
+      "daypart": {
+        "morning": "Morgon",
+        "noon": "Mitt på dagen",
+        "evening": "Kväll"
+      },
+      "compare": {
+        "suggested": "Föreslaget",
+        "applied": "Applicerat",
+        "suggestedPlaceholder": "Detalj laddas från dagens registrering.",
+        "appliedPlaceholder": "Detalj laddas från dagens registrering.",
+        "noSuggested": "Inga föreslagna steg returnerades för denna plats.",
+        "noApplied": "Ingen appliceringsregistrering har sparats för denna plats."
+      },
+      "appliedStatus": {
+        "applied": "Applicerad",
+        "skipped": "Överhoppad",
+        "substituted": "Ersatt"
+      },
+      "itemSource": {
+        "recommended": "Rekommenderat steg",
+        "added_shelf": "Tillagd från hyllan",
+        "added_off_shelf": "Tillagd utanför hyllan"
+      },
+      "substitutedFor": "Ersatte {product}",
+      "outcomeNote": "Utfallsinsikter använder vad du faktiskt applicerade, inte vad som föreslogs.",
+      "editRecord": "Redigera registrering"
+    },
+    "empty": {
+      "title": "Inget i historiken än",
+      "body": "Tidigare förslag och vad du applicerade visas här när en dag är klar. Redigera registreringar när som helst.",
+      "cta": "Öppna Dagens förslag"
+    },
+    "popovers": {
+      "overview": {
+        "aria": "Vad som visas i historiken",
+        "title": "Vad som visas här",
+        "rows": {
+          "compare": {
+            "title": "Föreslaget bredvid applicerat",
+            "body": "Varje tidigare plats visar rutinen vi föreslog bredvid den du faktiskt applicerade, så att du kan se mönster över tid."
+          },
+          "editAnytime": {
+            "title": "Redigera en registrering när som helst",
+            "body": "Glömde att registrera igår? Lägg till det nu. Använde du en annan produkt än du loggade? Ändra det. Varje ändring tidsstämplas och originalet bevaras."
+          },
+          "insights": {
+            "title": "Insikter och följsamhet",
+            "body": "Med några veckors registreringar lyfter Ritora fram mönster som produkter du regelbundet hoppar över och hur din hud reagerar."
+          }
+        }
+      },
+      "qa": {
+        "aria": "Vanliga frågor",
+        "title": "Vanliga frågor",
+        "losingData": {
+          "q": "Förlorar jag data om jag redigerar en registrering?",
+          "a": "Nej. Vi behåller varje tidigare version, så framtida förslag förlitar sig aldrig tyst på en ändrad registrering."
+        },
+        "whenItShows": {
+          "q": "När visas dagens förslag här?",
+          "a": "När kalenderdatumet rullar över i din tidszon. Tills dess stannar idag på sidan Dagens förslag."
+        },
+        "export": {
+          "q": "Kan jag exportera min historik?",
+          "a": "Ja, med Exportera-knappen. Lämna den till en hudläkare eller spara en kopia."
+        }
+      }
+    },
+    "patternNotice": {
+      "title": "Mönster märkt",
+      "body": "Din följsamhet är {percent}% under denna period. Vill du att jag anpassar nästa veckas plan baserat på vad du faktiskt applicerar mest?"
+    }
+  },
+  "validation": {
+    "invalidLeadTime": "Ledtid måste vara mellan 30 minuter och 12 timmar.",
+    "invalidQuietHours": "Tysta timmar måste använda 24-timmarsformat som 22:30."
   }
 }

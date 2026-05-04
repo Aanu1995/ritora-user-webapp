@@ -40,6 +40,13 @@ function preferences(
     ai_polished_insights_enabled: true,
     wrapped_alerts_enabled: true,
     photo_tutorial_completed: false,
+    suggestion_ready_enabled: true,
+    slot_start_enabled: true,
+    recording_reminder_enabled: true,
+    suggestion_lead_time_minutes: 120,
+    quiet_hours_enabled: false,
+    quiet_hours_start: "22:30",
+    quiet_hours_end: "06:30",
     ...overrides,
   };
 }

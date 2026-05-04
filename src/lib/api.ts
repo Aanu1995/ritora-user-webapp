@@ -1,15 +1,15 @@
 import axios, {
   type AxiosRequestConfig,
   type InternalAxiosRequestConfig,
-} from 'axios';
-import { ApiPath } from '@/constants/api-paths';
-import { getPreferredLocale } from '@/i18n/config';
-import { ApiError, toApiErrorBody } from '@/lib/api-error';
-import { getBrowserTimeZone } from '@/lib/time-zone';
-import type { RefreshResponse } from '@/types/auth';
+} from "axios";
+import { ApiPath } from "@/constants/api-paths";
+import { getPreferredLocale } from "@/i18n/config";
+import { ApiError, toApiErrorBody } from "@/lib/api-error";
+import { getBrowserTimeZone } from "@/lib/time-zone";
+import type { RefreshResponse } from "@/types/auth";
 
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api/v1';
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1";
 
 const ABSOLUTE_HTTP_URL_PATTERN = /^https?:\/\//i;
 const CREDENTIALLED_AUTH_PATHS = new Set<string>([
@@ -26,7 +26,7 @@ const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   withCredentials: true,
 });
@@ -46,15 +46,15 @@ function isLoopbackHttpUrl(url: string): boolean {
     const parsedUrl = new URL(url);
     const host = parsedUrl.hostname.toLowerCase();
 
-    if (parsedUrl.protocol !== 'http:') {
+    if (parsedUrl.protocol !== "http:") {
       return false;
     }
 
     return (
-      host === 'localhost' ||
-      host === '127.0.0.1' ||
-      host === '::1' ||
-      host === '[::1]'
+      host === "localhost" ||
+      host === "127.0.0.1" ||
+      host === "::1" ||
+      host === "[::1]"
     );
   } catch {
     return false;
@@ -72,7 +72,7 @@ function getAllowedApiOrigin(baseURL?: string): string | null {
     }
   }
 
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     return window.location.origin;
   }
 
@@ -94,7 +94,7 @@ function resolveConfiguredRequestUrl(
       return new URL(url, effectiveBaseURL).toString();
     }
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       return new URL(url, window.location.origin).toString();
     }
 
@@ -111,8 +111,8 @@ function normalizeRequestPath(url: string | undefined): string | undefined {
 
   try {
     const pathname = new URL(url, API_BASE_URL).pathname;
-    return pathname.startsWith('/api/v1')
-      ? pathname.slice('/api/v1'.length)
+    return pathname.startsWith("/api/v1")
+      ? pathname.slice("/api/v1".length)
       : pathname;
   } catch {
     return url;
@@ -131,10 +131,8 @@ export function setUnauthorizedHandler(handler: (() => void) | null) {
   unauthorizedHandler = handler;
 }
 
-export function isDevSelfReferentialApiBase(
-  currentOrigin?: string,
-): boolean {
-  if (process.env.NODE_ENV !== 'development') {
+export function isDevSelfReferentialApiBase(currentOrigin?: string): boolean {
+  if (process.env.NODE_ENV !== "development") {
     return false;
   }
 
@@ -143,7 +141,8 @@ export function isDevSelfReferentialApiBase(
   }
 
   const browserOrigin =
-    currentOrigin ?? (typeof window !== 'undefined' ? window.location.origin : undefined);
+    currentOrigin ??
+    (typeof window !== "undefined" ? window.location.origin : undefined);
 
   if (!browserOrigin) {
     return false;
@@ -165,8 +164,8 @@ export function warnIfDevApiTargetsFrontend(): void {
 
   console.warn(
     `[Ritora] NEXT_PUBLIC_API_URL (${API_BASE_URL}) matches the frontend dev origin. ` +
-      'This usually means the Next dev server switched onto the backend port and is calling itself. ' +
-      'Free port 3000 or update NEXT_PUBLIC_API_URL to the backend origin before retrying auth requests.',
+      "This usually means the Next dev server switched onto the backend port and is calling itself. " +
+      "Free port 3000 or update NEXT_PUBLIC_API_URL to the backend origin before retrying auth requests.",
   );
 }
 
@@ -197,7 +196,7 @@ export function isSecureApiRequestUrl(
   url: string | undefined,
   baseURL?: string,
 ): boolean {
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== "production") {
     return true;
   }
 
@@ -212,7 +211,7 @@ export function isSecureApiRequestUrl(
   }
 
   try {
-    return new URL(resolvedUrl).protocol === 'https:';
+    return new URL(resolvedUrl).protocol === "https:";
   } catch {
     return false;
   }
@@ -233,18 +232,19 @@ export function applyRequestContext(
   config: InternalAxiosRequestConfig,
 ): InternalAxiosRequestConfig {
   if (!isAllowedApiRequestUrl(config.url, config.baseURL)) {
-    throw new ApiError('Blocked request to unexpected API origin');
+    throw new ApiError("Blocked request to unexpected API origin");
   }
 
   if (!isSecureApiRequestUrl(config.url, config.baseURL)) {
-    throw new ApiError('Blocked insecure API transport in production');
+    throw new ApiError("Blocked insecure API transport in production");
   }
 
   config.headers = config.headers ?? {};
-  config.headers['Accept-Language'] = getPreferredLocale();
+  config.headers["Accept-Language"] = getPreferredLocale();
   const browserTimeZone = getBrowserTimeZone();
   if (browserTimeZone) {
-    config.headers['x-timezone'] = browserTimeZone;
+    config.headers["x-timezone"] = browserTimeZone;
+    config.headers["x-time-zone"] = browserTimeZone;
   }
   config.withCredentials = shouldSendCredentialCookies(
     config.url,

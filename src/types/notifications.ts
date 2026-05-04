@@ -6,7 +6,14 @@ export type NotificationKind =
   | "insight_ready"
   | "wrapped_ready"
   | "analysis_failed"
-  | "export_ready";
+  | "export_ready"
+  | "suggestion_ready"
+  | "slot_start"
+  | "recording_reminder";
+
+export const SUGGESTION_LEAD_TIME_MIN_MINUTES = 30;
+export const SUGGESTION_LEAD_TIME_MAX_MINUTES = 720;
+export const SUGGESTION_LEAD_TIME_DEFAULT_MINUTES = 120;
 
 export type NotificationSeverity = "info" | "warning" | "critical";
 
@@ -57,6 +64,13 @@ export interface NotificationPreferences {
   ai_polished_insights_enabled: boolean;
   wrapped_alerts_enabled: boolean;
   photo_tutorial_completed: boolean;
+  suggestion_ready_enabled: boolean;
+  slot_start_enabled: boolean;
+  recording_reminder_enabled: boolean;
+  suggestion_lead_time_minutes: number;
+  quiet_hours_enabled: boolean;
+  quiet_hours_start: string;
+  quiet_hours_end: string;
 }
 
 export interface UpdatePreferencesPayload {
@@ -69,4 +83,11 @@ export interface UpdatePreferencesPayload {
   ai_polished_insights_enabled?: boolean;
   wrapped_alerts_enabled?: boolean;
   photo_tutorial_completed?: boolean;
+  suggestion_ready_enabled?: boolean;
+  slot_start_enabled?: boolean;
+  recording_reminder_enabled?: boolean;
+  suggestion_lead_time_minutes?: number;
+  quiet_hours_enabled?: boolean;
+  quiet_hours_start?: string;
+  quiet_hours_end?: string;
 }

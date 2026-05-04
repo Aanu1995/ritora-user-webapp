@@ -2048,6 +2048,8 @@
       "productMissing": "Missing product — pick again",
       "notesPlaceholder": "Notes (optional)",
       "optionalLabel": "Optional step",
+      "specialistLockedLabel": "Locked by specialist",
+      "specialistLockedHint": "When checked, AI suggestion engine treats this step as immutable. It will never be removed, reordered, or replaced.",
       "delete": "Remove step",
       "dragHandle": "Drag to reorder"
     },
@@ -2968,12 +2970,14 @@
     },
     "validation": {
       "invalidReminderTime": "Enter a valid reminder time.",
-      "invalidChannels": "Choose valid notification channels."
+      "invalidChannels": "Choose valid notification channels.",
+      "invalidLeadTime": "Lead time must be between 30 minutes and 12 hours.",
+      "invalidQuietHours": "Quiet hours must use a 24-hour format like 22:30."
     },
     "photoReminderTitle": "Photo reminder",
     "photoReminderBody": "Daily prompt to add today's photo",
     "reminderTime": "Reminder time",
-    "reminderTimeNote": "Sent in your timezone · {timeZone}",
+    "reminderTimeNote": "Time is in your timezone · {timeZone}",
     "channels": "Channels",
     "channelInApp": "In-app",
     "channelEmail": "Email",
@@ -2985,7 +2989,25 @@
     "insightsTitle": "Insights & Wrapped",
     "insightAlertsBody": "Insight notifications",
     "aiRefinedInsightsBody": "Use AI refined wording and AI sourced insight cards",
-    "wrappedAlertsBody": "Wrapped ready notifications"
+    "wrappedAlertsBody": "Wrapped ready notifications",
+    "newPill": "New",
+    "todaysSuggestionTitle": "Today's Suggestion",
+    "todaysSuggestionBody": "Three reminder kinds tied to each scheduled slot. Together they keep your routine on track without becoming noisy.",
+    "suggestionReadyTitle": "Suggestion ready",
+    "suggestionReadyBody": "When a slot's suggestion becomes visible, your lead time before the scheduled time.",
+    "slotStartTitle": "Slot start",
+    "slotStartBody": "At the scheduled time, so you remember to apply your routine.",
+    "recordingReminderTitle": "Recording reminder",
+    "recordingReminderBody": "30 minutes after the slot if no record yet. Quiet at night, retried at the next slot the following morning.",
+    "leadTimeLabel": "Lead time before each slot",
+    "leadTimeOption": "{minutes, plural, =60 {1 hour} =120 {2 hours} =180 {3 hours} =240 {4 hours} =360 {6 hours} =480 {8 hours} =720 {12 hours} other {# minutes}}",
+    "leadTimeNote": "Used by all three reminder kinds. Range 30 minutes to 12 hours.",
+    "quietHoursTitle": "Quiet hours",
+    "quietHoursBody": "Hold non urgent reminders inside this window. Reaction alerts always come through.",
+    "quietHoursActive": "Quiet hours active",
+    "from": "From",
+    "to": "to",
+    "quietHoursTzNote": "Times are in your time zone · {timeZone}"
   },
   "notificationsPage": {
     "eyebrow": "Inbox",
@@ -3041,7 +3063,320 @@
       "export_ready": {
         "title": "Your export is ready",
         "body": "Tap to download."
+      },
+      "suggestion_ready": {
+        "title": "Your suggestion is ready",
+        "body": "Tap to review the steps before you apply."
+      },
+      "slot_start": {
+        "title": "Time to start your routine",
+        "body": "Your slot just opened. Mark each step as you go."
+      },
+      "recording_reminder": {
+        "title": "How did your routine go?",
+        "body": "Record what you applied so the rest of today knows what to build on."
       }
     }
+  },
+  "todaysSuggestion": {
+    "page": {
+      "title": "Today's Suggestion",
+      "history": "History",
+      "loading": "Loading today's plan",
+      "errorTitle": "We could not load today's plan",
+      "error": "Something went wrong loading your suggestions. You can try again.",
+      "retry": "Try again",
+      "worthConsidering": "Worth considering",
+      "nextSlotTomorrow": "tomorrow"
+    },
+    "lockedDay": {
+      "leadTitle": "Suggestions arrive a couple of hours before each slot",
+      "leadBody": "Your routine is being prepared in the background using last night's photo, your shelf, and your skin profile. It will appear here once the visibility window opens.",
+      "notifyTitle": "You will get a heads up when it is ready",
+      "notifyBody": "We send a notification when each slot becomes visible, again at the scheduled time, and a recording reminder. Manage all of this in <link>Notifications</link>."
+    },
+    "section": {
+      "morning": "Morning",
+      "noon": "Mid-day",
+      "evening": "Evening"
+    },
+    "summary": {
+      "applied": "{count, plural, one {# applied} other {# applied}}",
+      "ready": "{count, plural, one {# ready} other {# ready}}",
+      "locked": "{count, plural, one {# locked} other {# locked}}",
+      "uvIndex": "UV {index}",
+      "photoNudge": "Photo logged today",
+      "logPhoto": "Log photo",
+      "photoLoggedAt": "Photo logged at {time}",
+      "notifications": "{count, plural, one {# notification} other {# notifications}}",
+      "adherence": "{percent}% adherence"
+    },
+    "modeBadge": {
+      "ai": "AI",
+      "manual": "Manual",
+      "mixed": "Mixed"
+    },
+    "provenance": {
+      "specialistLocked": "Locked by specialist",
+      "yourRoutine": "Your routine",
+      "aiAdded": "Added by AI"
+    },
+    "slot": {
+      "stepCount": "{count, plural, one {# step} other {# steps}}",
+      "ready": "Ready",
+      "generating": "Preparing",
+      "failed": "Needs retry",
+      "missed": "Missed",
+      "applied": "Applied",
+      "appliedSummary": "{count} of {total} applied",
+      "awaitingRecord": "Awaiting record",
+      "simplified": "Simplified",
+      "specialist": "Specialist",
+      "morningLabel": "Morning routine",
+      "noonLabel": "Mid-day reminder",
+      "eveningLabel": "Evening routine",
+      "availableAt": "Available {time}",
+      "unlocksIn": "Unlocks in {eta}.",
+      "unlocksInRich": "Unlocks in <strong>{eta}</strong>.",
+      "lockedExplainer": "We only show suggestions a couple of hours before the slot so they reflect your latest photo, sleep, and check-in.",
+      "generatingExplainer": "Ritora is preparing this slot with your latest schedule, shelf, skin profile, and recent records.",
+      "failedExplainer": "This suggestion could not be prepared. It stays visible so the issue does not disappear from the day.",
+      "missedExplainer": "This slot passed without a saved application record. You can still record or edit it from History after today.",
+      "whyThisRoutine": "Why this routine",
+      "markAsApplied": "Mark as applied",
+      "recordWhatIApplied": "Record what I applied",
+      "customise": "Customise",
+      "more": "More",
+      "edit": "Edit",
+      "recordedMatchesSuggestion": "Matches the suggestion."
+    },
+    "reactionBanner": {
+      "title": "Possible reaction in this morning's photo",
+      "paused": "Paused while it settles: {names}",
+      "viewPhoto": "View photo",
+      "resetRoutine": "Use my normal routine"
+    },
+    "gapRecommendation": {
+      "title": "Consider adding a {ingredient}",
+      "browse": "Browse options",
+      "saveToWishlist": "Save to wishlist",
+      "dismiss": "Not now"
+    },
+    "recordSheet": {
+      "recordTitle": "Record what you applied",
+      "editTitle": "Edit application",
+      "recordSubtitle": "Slot at {time}, {count} suggested steps",
+      "editSubtitle": "Slot at {time}. Originally recorded {firstRecordedAt}.",
+      "appliedAt": "Applied at",
+      "rowSuggestedTag": "Suggested",
+      "rowActionApplied": "Mark applied",
+      "rowActionSkipped": "Mark skipped",
+      "rowActionSubstituted": "Mark substituted",
+      "addProduct": {
+        "title": "Add a product I used",
+        "body": "Search your shelf or type a name"
+      },
+      "notesLabel": "Notes (optional)",
+      "notesPlaceholder": "Anything Ritora should remember? For example, it stung a little near the cheek.",
+      "editReasonLabel": "Why are you editing? (optional)",
+      "editReasonPlaceholder": "Helpful so AI can learn. For example, ran out of product, or wrong product earlier.",
+      "saveRecord": "Save record",
+      "saveChanges": "Save changes",
+      "discard": "Discard changes",
+      "recordLegal": "You can edit this anytime. Every change is timestamped.",
+      "editLegal": "Original record kept. {count, plural, one {# prior version stored.} other {# prior versions stored.}}",
+      "editHistory": {
+        "willMarkAsEdited": "This record will be marked as Edited",
+        "firstSavedAt": "First saved {time} by you",
+        "versionsAreKept": "Every prior version is kept, so we never recommend something based on a changed record."
+      }
+    },
+    "detailDrawer": {
+      "eyebrow": "Why this routine",
+      "title": "{daypart}, {time}",
+      "description": "Reasoning behind today's suggested routine.",
+      "generatedAt": "Generated {time}",
+      "aiModel": "Model {model}",
+      "daypart": {
+        "morning": "Morning",
+        "noon": "Mid-day",
+        "evening": "Evening"
+      },
+      "sections": {
+        "intent": "What I am trying to do",
+        "whyEach": "Why each step",
+        "whatISkipped": "What I skipped today and why",
+        "inputs": "What this used"
+      },
+      "noRationale": "No rationale captured for this suggestion.",
+      "markApplied": "Mark as applied",
+      "customise": "Customise this before applying",
+      "generateAlternatives": "Generate alternatives"
+    },
+    "empty": {
+      "skinProfile": {
+        "title": "Tell us about your skin first",
+        "body": "We need your skin type, concerns, and goal before we can suggest anything safely. The setup takes about three minutes.",
+        "cta": "Start skin profile",
+        "privacy": "Encrypted at rest. Only Ritora's own AI suggestion engine reads it."
+      },
+      "shelf": {
+        "title": "Add a few products to your shelf",
+        "body": "Suggestions only use products you actually own. Take a photo of the bottle and its label, and Ritora pulls the brand, ingredients, and how to use it.",
+        "cta": "Add a product",
+        "note": "You can add as many as you want. Active, finished, and wishlist all count."
+      },
+      "schedule": {
+        "title": "Build your weekly rhythm",
+        "body": "Tell Ritora when you usually do your morning and evening routine. Suggestions only appear ahead of each scheduled slot.",
+        "ctaEveryDay": "Apply one time to every day",
+        "ctaScratch": "Build from scratch",
+        "note": "You can change times anytime from Schedule."
+      },
+      "recoverable": {
+        "title": "Nothing scheduled for now",
+        "body": "Your next slot today is at {nextSlotLabel}. While you wait, log a photo so the AI has fresh data when it generates.",
+        "ctaPhoto": "Add today's photo",
+        "ctaAddSlot": "Add a slot"
+      }
+    }
+  },
+  "history": {
+    "page": {
+      "title": "History",
+      "subtitle": "Past suggestions and what you actually applied. Edit any record anytime.",
+      "export": "Export",
+      "loading": "Loading history",
+      "errorTitle": "We could not load history",
+      "error": "Something went wrong loading your history. You can try again.",
+      "retry": "Try again"
+    },
+    "filters": {
+      "last7d": "Last 7 days",
+      "last30d": "30 days",
+      "custom": "Custom",
+      "from": "From",
+      "to": "To",
+      "apply": "Apply",
+      "clear": "Clear",
+      "rangeInvalid": "End date must be on or after the start date.",
+      "morning": "Morning",
+      "evening": "Evening",
+      "applied": "Applied",
+      "skipped": "Skipped",
+      "edited": "Edited"
+    },
+    "summary": {
+      "appliedOf": "{applied} of {total} applied",
+      "adherence": "{percent}% adherence"
+    },
+    "dayCard": {
+      "mood": "Mood {score} of 5",
+      "hydration": {
+        "up": "Hydration up",
+        "flat": "Hydration steady",
+        "down": "Hydration down"
+      },
+      "mildRedness": "Mild redness",
+      "daypart": {
+        "morning": "Morning",
+        "noon": "Mid-day",
+        "evening": "Evening"
+      },
+      "status": {
+        "applied": "Applied",
+        "partial": "Partial",
+        "skipped": "Skipped",
+        "simplified": "Simplified",
+        "missed": "Missed",
+        "edited": "Edited"
+      }
+    },
+    "day": {
+      "loading": "Loading the day's record",
+      "errorTitle": "We could not load this day",
+      "error": "Something went wrong loading this day. You can try again.",
+      "retry": "Try again",
+      "backLabel": "All history",
+      "subtitle": "{slots} slots, {applied} of {total} applied",
+      "viewPhoto": "View photo",
+      "export": "Export",
+      "appliedSummary": "{applied} of {total} applied",
+      "daypart": {
+        "morning": "Morning",
+        "noon": "Mid-day",
+        "evening": "Evening"
+      },
+      "compare": {
+        "suggested": "Suggested",
+        "applied": "Applied",
+        "suggestedPlaceholder": "Detail loading from the day's record.",
+        "appliedPlaceholder": "Detail loading from the day's record.",
+        "noSuggested": "No suggested steps were returned for this slot.",
+        "noApplied": "No application record has been saved for this slot."
+      },
+      "appliedStatus": {
+        "applied": "Applied",
+        "skipped": "Skipped",
+        "substituted": "Substituted"
+      },
+      "itemSource": {
+        "recommended": "Recommended step",
+        "added_shelf": "Added from shelf",
+        "added_off_shelf": "Added off-shelf"
+      },
+      "substitutedFor": "Substituted for {product}",
+      "outcomeNote": "Outcome insights use what you actually applied, not what was suggested.",
+      "editRecord": "Edit record"
+    },
+    "empty": {
+      "title": "Nothing in history yet",
+      "body": "Past suggestions and what you applied appear here once a day completes. Edit any record anytime.",
+      "cta": "Open Today's Suggestion"
+    },
+    "popovers": {
+      "overview": {
+        "aria": "What appears in history",
+        "title": "What appears here",
+        "rows": {
+          "compare": {
+            "title": "Suggested next to applied",
+            "body": "Each past slot shows the routine we suggested next to the one you actually applied, so you can spot patterns over time."
+          },
+          "editAnytime": {
+            "title": "Edit a record anytime",
+            "body": "Forgot to record yesterday? Add it now. Used a different product than you logged? Change it. Every edit is timestamped and the original is kept."
+          },
+          "insights": {
+            "title": "Insights and adherence",
+            "body": "With a few weeks of records, Ritora highlights patterns like products you regularly skip and how your skin responds."
+          }
+        }
+      },
+      "qa": {
+        "aria": "Common questions",
+        "title": "Common questions",
+        "losingData": {
+          "q": "Will I lose data if I edit a record?",
+          "a": "No. We keep every prior version, so future suggestions never silently rely on a changed record."
+        },
+        "whenItShows": {
+          "q": "When does today's suggestion show up here?",
+          "a": "When the calendar date rolls over in your time zone. Until then, today stays on the Today's Suggestion page."
+        },
+        "export": {
+          "q": "Can I export my history?",
+          "a": "Yes, with the Export button. Hand it to a dermatologist or keep a copy."
+        }
+      }
+    },
+    "patternNotice": {
+      "title": "Pattern noticed",
+      "body": "Your adherence is at {percent}% across this period. Want me to adapt next week's plan based on what you actually apply most?"
+    }
+  },
+  "validation": {
+    "invalidLeadTime": "Lead time must be between 30 minutes and 12 hours.",
+    "invalidQuietHours": "Quiet hours must use a 24-hour format like 22:30."
   }
 }

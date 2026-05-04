@@ -1,0 +1,76 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Bookmark, PackagePlus, Search, X } from "lucide-react";
+import type { SuggestionGapRecommendation } from "@/types/suggestions";
+
+type Props = {
+  recommendation: SuggestionGapRecommendation;
+  onBrowse?: () => void;
+  onSaveToWishlist?: () => void;
+  onDismiss?: () => void;
+};
+
+/**
+ * Mockup 04: end-of-day gap recommendation banner. The AI proposes a
+ * product the user does not yet have on shelf that would meaningfully
+ * support their primary skin goal.
+ */
+export function GapRecommendationBanner({
+  recommendation,
+  onBrowse,
+  onSaveToWishlist,
+  onDismiss,
+}: Props) {
+  const t = useTranslations("todaysSuggestion.gapRecommendation");
+
+  return (
+    <aside
+      className="flex items-start gap-3 rounded-2xl border border-[color:var(--ai-border)] bg-[color:var(--ai-soft)] px-4 py-3.5"
+    >
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-[color:var(--ai-bg)] text-[color:var(--ai-strong)]">
+        <PackagePlus className="h-4 w-4" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold text-[color:var(--ai-fg)]">
+          {t("title", { ingredient: recommendation.ingredientOrCategory })}
+        </p>
+        <p className="mt-0.5 text-[12.5px] leading-snug text-muted">
+          {recommendation.reason}
+        </p>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {onBrowse ? (
+            <button
+              type="button"
+              onClick={onBrowse}
+              className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-xs font-semibold text-accent-strong transition hover:bg-accent-soft/80"
+            >
+              <Search className="h-3 w-3" />
+              {t("browse")}
+            </button>
+          ) : null}
+          {onSaveToWishlist ? (
+            <button
+              type="button"
+              onClick={onSaveToWishlist}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-foreground transition hover:bg-surface-muted"
+            >
+              <Bookmark className="h-3 w-3" />
+              {t("saveToWishlist")}
+            </button>
+          ) : null}
+          {onDismiss ? (
+            <button
+              type="button"
+              onClick={onDismiss}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-medium text-muted transition hover:bg-surface-muted"
+            >
+              <X className="h-3 w-3" />
+              {t("dismiss")}
+            </button>
+          ) : null}
+        </div>
+      </div>
+    </aside>
+  );
+}

@@ -17,6 +17,7 @@ export function stepsFromEntity(entitySteps: RoutineStep[]): RoutineStepInput[] 
       customLabel: step.customLabel,
       notes: step.notes,
       optional: step.optional,
+      isSpecialistLocked: step.isSpecialistLocked,
     }));
 }
 
@@ -85,6 +86,7 @@ export function createRoutineStepInput(
     customLabel: null,
     notes: null,
     optional: false,
+    isSpecialistLocked: false,
   };
 }
 

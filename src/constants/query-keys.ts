@@ -30,4 +30,10 @@ export enum QueryKey {
   SkinJournalExport = "skin-journal-export",
   Notifications = "notifications",
   NotificationPreferences = "notification-preferences",
+  SuggestionsToday = "suggestions-today",
+  Suggestion = "suggestion",
+  SuggestionsHistory = "suggestions-history",
+  SuggestionsHistoryDay = "suggestions-history-day",
+  ApplicationLog = "application-log",
+  ApplicationLogVersions = "application-log-versions",
 }

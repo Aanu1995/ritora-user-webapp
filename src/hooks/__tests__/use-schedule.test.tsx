@@ -80,6 +80,7 @@ function createSlot(id: string, dayOfWeek: DayOfWeek): ScheduleSlot {
         customLabel: null,
         notes: null,
         optional: false,
+        isSpecialistLocked: false,
         product: null,
         createdAt: '2026-04-17T00:00:00.000Z',
         updatedAt: '2026-04-17T00:00:00.000Z',

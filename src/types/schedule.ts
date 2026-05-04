@@ -91,6 +91,7 @@ export type RoutineStep = {
   customLabel: string | null;
   notes: string | null;
   optional: boolean;
+  isSpecialistLocked: boolean;
   product: RoutineStepProductSummary | null;
   createdAt: string;
   updatedAt: string;
@@ -158,6 +159,7 @@ export type RoutineStepInput = {
   customLabel?: string | null;
   notes?: string | null;
   optional?: boolean;
+  isSpecialistLocked?: boolean;
 };
 
 export type UpsertRoutineStepsPayload = {

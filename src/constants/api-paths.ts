@@ -10,6 +10,9 @@ const INGREDIENTS_BASE = "/ingredients";
 const SKIN_JOURNAL_BASE = "/skin-journal";
 const NOTIFICATIONS_BASE = "/notifications";
 const APP_BASE = "/app";
+const SUGGESTIONS_BASE = "/suggestions";
+const APPLICATION_LOGS_BASE = "/application-logs";
+const SUGGESTIONS_HISTORY_BASE = "/suggestions/history";
 
 const buildInventoryProductPath = (id: string) =>
   `${INVENTORY_PRODUCTS_BASE}/${id}`;
@@ -108,4 +111,23 @@ export const ApiPath = {
   NotificationRead: (id: string) => `${NOTIFICATIONS_BASE}/${id}/read`,
   NotificationsReadAll: `${NOTIFICATIONS_BASE}/read-all`,
   NotificationPreferences: `${NOTIFICATIONS_BASE}/preferences`,
+
+  /** Today's Suggestion page payload (current calendar date in user TZ). */
+  SuggestionsToday: `${SUGGESTIONS_BASE}/today`,
+  /** Re-run AI generation for a slot's suggestion right now. */
+  SuggestionRegenerate: (id: string) =>
+    `${SUGGESTIONS_BASE}/${id}/regenerate`,
+  /** Single suggestion detail (used by the "Why this routine" drawer). */
+  Suggestion: (id: string) => `${SUGGESTIONS_BASE}/${id}`,
+  /** Date-grouped history list. */
+  SuggestionsHistory: SUGGESTIONS_HISTORY_BASE,
+  /** Single past day, full suggested-vs-applied detail. */
+  SuggestionsHistoryDay: (date: string) => `${SUGGESTIONS_HISTORY_BASE}/${date}`,
+
+  /** Record what the user actually applied for a suggestion (or ad-hoc). */
+  ApplicationLogs: APPLICATION_LOGS_BASE,
+  /** Edit, fetch, or list versions of a single application record. */
+  ApplicationLog: (id: string) => `${APPLICATION_LOGS_BASE}/${id}`,
+  ApplicationLogVersions: (id: string) =>
+    `${APPLICATION_LOGS_BASE}/${id}/versions`,
 } as const;

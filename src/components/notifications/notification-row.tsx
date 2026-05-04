@@ -56,6 +56,24 @@ const KIND_STYLES: Record<
     bg: "bg-accent-soft",
     fg: "text-accent-strong",
   },
+  // Today's Suggestion notification kinds. Match the icons used in the
+  // Today's Suggestion mockups: ✨ for AI suggestion ready, ▶ for slot
+  // start, 📝 for the recording reminder.
+  suggestion_ready: {
+    emoji: "✨",
+    bg: "bg-[color:var(--ai-bg)]",
+    fg: "text-[color:var(--ai-fg)]",
+  },
+  slot_start: {
+    emoji: "▶",
+    bg: "bg-accent-soft",
+    fg: "text-accent-strong",
+  },
+  recording_reminder: {
+    emoji: "📝",
+    bg: "bg-[color:var(--note-cool-bg)]",
+    fg: "text-[color:var(--note-cool-fg)]",
+  },
 };
 
 function formatRelative(date: string, locale: string): string {

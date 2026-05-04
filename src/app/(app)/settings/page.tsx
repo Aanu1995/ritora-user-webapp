@@ -40,7 +40,7 @@ function SettingsTabs() {
         <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>
         <div
           data-testid="settings-tab-indicator-rail"
-          className="mx-auto mt-6 max-w-2xl border-b border-border"
+          className="mx-auto mt-6 w-full border-b border-border lg:w-[65%]"
         >
           <div
             data-testid="settings-tab-scroll-region"
@@ -68,27 +68,27 @@ function SettingsTabs() {
       </div>
 
       <TabsContent value={SettingsTab.Account}>
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto w-full lg:w-[65%]">
           <AccountTab />
         </div>
       </TabsContent>
       <TabsContent value={SettingsTab.Appearance}>
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto w-full lg:w-[65%]">
           <AppearanceTab />
         </div>
       </TabsContent>
       <TabsContent value={SettingsTab.Language}>
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto w-full lg:w-[65%]">
           <LanguageTab />
         </div>
       </TabsContent>
       <TabsContent value={SettingsTab.Notifications}>
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto w-full lg:w-[65%]">
           <NotificationsTab />
         </div>
       </TabsContent>
       <TabsContent value={SettingsTab.Privacy}>
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto w-full lg:w-[65%]">
           <PrivacyTab />
         </div>
       </TabsContent>

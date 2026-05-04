@@ -223,6 +223,25 @@ function RoutineStepRowComponent({
             />
             {t('step.optionalLabel')}
           </label>
+
+          {/* Specialist-locked checkbox */}
+          <label
+            className="flex items-center gap-2 text-[11px] text-muted"
+            title={t('step.specialistLockedHint')}
+          >
+            <input
+              type="checkbox"
+              checked={step.isSpecialistLocked ?? false}
+              onChange={(e) =>
+                onChange(index, {
+                  ...step,
+                  isSpecialistLocked: e.target.checked,
+                })
+              }
+              className="h-3.5 w-3.5 rounded border-border"
+            />
+            {t('step.specialistLockedLabel')}
+          </label>
         </div>
 
         <button
