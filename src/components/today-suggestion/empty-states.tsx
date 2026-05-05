@@ -13,6 +13,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 /**
@@ -117,29 +118,32 @@ export function NoCurrentSlotEmptyState({
 }) {
   const t = useTranslations("todaysSuggestion.empty.recoverable");
   return (
-    <div className="rounded-3xl border border-dashed border-border bg-surface-muted px-5 py-8 text-center">
-      <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-accent-soft text-accent-strong">
-        <MoonStar className="h-5 w-5" />
+    <div className="rounded-2xl border border-border bg-surface px-6 py-16 text-center">
+      <div
+        aria-hidden
+        className="mx-auto grid h-24 w-24 place-items-center rounded-3xl bg-accent-soft text-accent-strong"
+      >
+        <MoonStar className="h-9 w-9" />
       </div>
-      <h2 className="text-base font-bold">{t("title")}</h2>
-      <p className="mx-auto mt-1.5 max-w-[380px] text-[13px] leading-relaxed text-muted">
+      <h2 className="mt-4 font-display text-lg font-bold text-foreground">
+        {t("title")}
+      </h2>
+      <p className="mx-auto mt-1.5 max-w-md text-sm text-muted">
         {t("body", { nextSlotLabel })}
       </p>
-      <div className="mt-3 flex flex-wrap justify-center gap-1.5">
-        <Link
-          href="/journal/upload"
-          className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--accent)] px-3.5 py-1.5 text-xs font-semibold text-white transition hover:bg-[color:var(--accent-strong)]"
-        >
-          <Camera className="h-3.5 w-3.5" />
-          {t("ctaPhoto")}
-        </Link>
-        <Link
-          href="/schedule"
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3.5 py-1.5 text-xs font-medium text-foreground transition hover:bg-surface-muted"
-        >
-          <CalendarPlus className="h-3.5 w-3.5" />
-          {t("ctaAddSlot")}
-        </Link>
+      <div className="mt-4 flex flex-wrap justify-center gap-1.5">
+        <Button asChild>
+          <Link href="/journal/upload">
+            <Camera className="h-3.5 w-3.5" />
+            {t("ctaPhoto")}
+          </Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link href="/schedule">
+            <CalendarPlus className="h-3.5 w-3.5" />
+            {t("ctaAddSlot")}
+          </Link>
+        </Button>
       </div>
     </div>
   );

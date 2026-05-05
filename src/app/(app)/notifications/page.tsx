@@ -49,8 +49,9 @@ export default function NotificationsPage() {
           <div className="flex flex-wrap justify-end gap-2">
             {unread.length > 0 ? (
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
+                aria-label={t("markAllRead")}
                 disabled={markAll.isPending}
                 onClick={() => markAll.mutate()}
               >
@@ -58,16 +59,25 @@ export default function NotificationsPage() {
                   <LoadingIndicator size="sm" label={t("markingAllRead")} />
                 ) : (
                   <>
-                    <CheckCheck aria-hidden className="h-4 w-4" />
-                    {t("markAllRead")}
+                    <CheckCheck aria-hidden className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">
+                      {t("markAllRead")}
+                    </span>
                   </>
                 )}
               </Button>
             ) : null}
-            <Button asChild variant="ghost" size="sm">
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              aria-label={t("preferencesAction")}
+            >
               <Link href={NOTIFICATION_SETTINGS_ROUTE}>
-                <Settings2 aria-hidden className="h-4 w-4" />
-                {t("preferencesAction")}
+                <Settings2 aria-hidden className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">
+                  {t("preferencesAction")}
+                </span>
               </Link>
             </Button>
           </div>

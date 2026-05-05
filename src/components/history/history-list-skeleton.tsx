@@ -1,38 +1,54 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
+/**
+ * Mirrors the History list page once data has loaded so the swap is visually
+ * smooth. Lays out the summary pills and a stack of day cards, each with a
+ * vibe tile, date heading, day chips, and a list of slot rows that match
+ * `HistoryDayCard`.
+ */
 export function HistoryListSkeleton() {
   return (
-    <div className="mt-2 space-y-3" aria-hidden="true">
-      <div className="flex flex-wrap gap-1.5">
-        <Skeleton className="h-8 w-28 rounded-full" />
-        <Skeleton className="h-8 w-24 rounded-full" />
-        <Skeleton className="h-8 w-32 rounded-full" />
+    <div className="mt-2" aria-hidden="true">
+      <div className="mb-3 flex flex-wrap gap-1.5">
+        <Skeleton className="h-7 w-28 rounded-full" />
+        <Skeleton className="h-7 w-24 rounded-full" />
       </div>
+
       {[0, 1, 2].map((day) => (
-        <div
-          key={day}
-          className="rounded-3xl border border-border bg-surface p-4 shadow-[var(--shadow-soft)]"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <Skeleton className="h-4 w-36 rounded-full" />
-              <Skeleton className="mt-2 h-3 w-24 rounded-full" />
-            </div>
-            <Skeleton className="h-10 w-10 rounded-xl" />
-          </div>
-          <div className="mt-4 space-y-3">
-            {[0, 1].map((slot) => (
-              <div key={slot} className="flex items-center gap-3">
-                <Skeleton className="h-9 w-9 rounded-xl" />
-                <div className="min-w-0 flex-1">
-                  <Skeleton className="h-3 w-28 rounded-full" />
-                  <Skeleton className="mt-2 h-2.5 w-2/3 rounded-full" />
-                </div>
-                <Skeleton className="h-6 w-16 rounded-full" />
+        <article key={day} className="mb-6">
+          <header className="mb-2.5 flex items-center gap-3">
+            <Skeleton className="h-14 w-14 shrink-0 rounded-2xl" />
+            <div className="min-w-0 flex-1">
+              <Skeleton className="h-4 w-40 max-w-full rounded-full" />
+              <div className="mt-1.5 flex flex-wrap gap-2">
+                <Skeleton className="h-3 w-16 rounded-full" />
+                <Skeleton className="h-3 w-20 rounded-full" />
+                <Skeleton className="h-3 w-14 rounded-full" />
               </div>
+            </div>
+          </header>
+
+          <ol className="overflow-hidden rounded-3xl border border-border bg-surface shadow-[var(--shadow-soft)]">
+            {[0, 1].map((slot) => (
+              <li
+                key={slot}
+                className={
+                  slot > 0
+                    ? "flex items-center gap-3 border-t border-border px-4 py-3.5"
+                    : "flex items-center gap-3 px-4 py-3.5"
+                }
+              >
+                <Skeleton className="h-9 w-9 shrink-0 rounded-xl" />
+                <div className="min-w-0 flex-1">
+                  <Skeleton className="h-3.5 w-32 rounded-full" />
+                  <Skeleton className="mt-2 h-3 w-3/4 rounded-full" />
+                </div>
+                <Skeleton className="h-6 w-16 shrink-0 rounded-full" />
+                <Skeleton className="h-4 w-4 shrink-0 rounded-full" />
+              </li>
             ))}
-          </div>
-        </div>
+          </ol>
+        </article>
       ))}
     </div>
   );
