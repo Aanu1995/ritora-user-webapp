@@ -5,6 +5,10 @@ import { Check, Clock4, Save } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ApplicationAddProductPanel } from "@/components/today-suggestion/application-add-product-panel";
 import {
+  buildEditApplicationPayload,
+  buildRecordApplicationPayload,
+} from "@/components/today-suggestion/record-application-payload";
+import {
   addOffShelfApplicationRecordRow,
   addShelfApplicationRecordRow,
   applicationRecordSheetKey,
@@ -34,14 +38,10 @@ import {
   useRecordApplication,
 } from "@/hooks/use-application-tracking";
 import {
-  buildLocalDateTimeIso,
   formatIsoTime12h,
   formatSlotTime12h,
 } from "@/lib/suggestion-daypart";
-import type {
-  ApplicationLog,
-  ApplicationLogItemInput,
-} from "@/types/application-tracking";
+import type { ApplicationLog } from "@/types/application-tracking";
 import type { SuggestionInstance } from "@/types/suggestions";
 
 type Props = {
@@ -92,37 +92,11 @@ function RecordApplicationSheetForm({
   });
 
   function submitApplication(value: ApplicationRecordFormValues) {
-    const items: ApplicationLogItemInput[] = value.items.map((row) => ({
-      stepOrder: row.stepOrder,
-      suggestionStepId: row.suggestionStepId,
-      inventoryProductId: row.inventoryProductId,
-      substitutedWithProductId: row.substitutedWithProductId,
-      productBrand: row.productBrand,
-      productName: row.productName,
-      stepLabel: row.stepLabel,
-      status: row.status,
-      isAdHoc: row.isAdHoc,
-      adHocBrand: row.adHocBrand,
-      adHocName: row.adHocName,
-      notes: row.notes,
-      substitutionReason: row.substitutionReason,
-      appliedAt: row.appliedAt,
-    }));
-    const appliedAt = buildLocalDateTimeIso(
-      suggestion.targetDate,
-      value.appliedTime,
-    );
-
     if (mode.kind === "edit") {
       editMutation.mutate(
         {
           id: mode.existingLog.id,
-          payload: {
-            appliedAt,
-            generalNotes: value.generalNotes.trim() || null,
-            editReason: value.editReason.trim() || null,
-            items,
-          },
+          payload: buildEditApplicationPayload(suggestion, value),
         },
         { onSuccess: (log) => saveDone(log, onSaved, onOpenChange) },
       );
@@ -130,15 +104,7 @@ function RecordApplicationSheetForm({
     }
 
     recordMutation.mutate(
-      {
-        suggestionInstanceId: suggestion.id,
-        slotId: suggestion.slotId ?? undefined,
-        targetDate: suggestion.targetDate,
-        targetTime: suggestion.targetTime,
-        appliedAt,
-        generalNotes: value.generalNotes.trim() || null,
-        items,
-      },
+      buildRecordApplicationPayload(mode.slot, suggestion, value),
       { onSuccess: (log) => saveDone(log, onSaved, onOpenChange) },
     );
   }

@@ -1,15 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Bell, CircleSlash, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
+import { buildSkippedApplicationPayload } from "@/components/today-suggestion/record-application-payload";
 import { useRecordApplication } from "@/hooks/use-application-tracking";
 import { useSnoozeRecordingReminder } from "@/hooks/use-suggestions";
-import {
-  buildLocalDateTimeIso,
-  formatSlotTime12h,
-} from "@/lib/suggestion-daypart";
+import { formatSlotTime12h } from "@/lib/suggestion-daypart";
 import type { TodaysSuggestionSlot } from "@/types/suggestions";
 
 type Props = {
@@ -21,40 +18,21 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
   const t = useTranslations("todaysSuggestion.reminderBanner");
   const recordMutation = useRecordApplication();
   const snoozeMutation = useSnoozeRecordingReminder();
-  const now = useCurrentTimeMs();
   const slot = slots.find(
     (candidate) =>
       candidate.suggestion &&
       !candidate.recording &&
-      isSnoozeExpired(candidate.recordingReminderSnoozedUntil, now) &&
+      candidate.recordingReminderSnoozedUntil === null &&
       (candidate.status === "recordable" || candidate.status === "missed"),
   );
 
   if (!slot?.suggestion) return null;
   const suggestion = slot.suggestion;
-
-  const skippedPayload = {
-    suggestionInstanceId: suggestion.id,
-    slotId: slot.slotId,
-    targetDate: suggestion.targetDate,
-    targetTime: suggestion.targetTime,
-    appliedAt: buildLocalDateTimeIso(
-      suggestion.targetDate,
-      suggestion.targetTime.slice(0, 5),
-    ),
-    generalNotes: t("skippedNote"),
-    items: suggestion.steps.map((step) => ({
-      stepOrder: step.stepOrder,
-      suggestionStepId: step.id,
-      inventoryProductId: step.inventoryProductId,
-      productBrand: step.product?.brand ?? step.productBrand,
-      productName: step.product?.name ?? step.productName,
-      stepLabel: step.stepLabel,
-      status: "skipped" as const,
-      isAdHoc: false,
-      notes: t("skippedItemNote"),
-    })),
-  };
+  const skippedPayload = buildSkippedApplicationPayload(
+    slot,
+    t("skippedNote"),
+    t("skippedItemNote"),
+  );
 
   return (
     <div className="mb-4 rounded-3xl border border-[color:var(--note-cool-border)] bg-[color:var(--note-cool-bg)] px-4 py-3.5">
@@ -81,7 +59,9 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
             <button
               type="button"
               disabled={recordMutation.isPending}
-              onClick={() => recordMutation.mutate(skippedPayload)}
+              onClick={() => {
+                if (skippedPayload) recordMutation.mutate(skippedPayload);
+              }}
               className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-foreground disabled:opacity-60"
             >
               {recordMutation.isPending ? (
@@ -113,25 +93,4 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
       </div>
     </div>
   );
-}
-
-function useCurrentTimeMs(): number | null {
-  const [now, setNow] = useState<number | null>(null);
-
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      setNow(Date.now());
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
-  }, []);
-
-  return now;
-}
-
-function isSnoozeExpired(value: string | null, now: number | null): boolean {
-  if (!value) return true;
-  if (now === null) return false;
-  const timestamp = new Date(value).getTime();
-  return !Number.isFinite(timestamp) || timestamp <= now;
 }
