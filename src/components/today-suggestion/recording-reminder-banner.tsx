@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Bell, CircleSlash, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
@@ -20,7 +21,7 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
   const t = useTranslations("todaysSuggestion.reminderBanner");
   const recordMutation = useRecordApplication();
   const snoozeMutation = useSnoozeRecordingReminder();
-  const now = Date.now();
+  const now = useCurrentTimeMs();
   const slot = slots.find(
     (candidate) =>
       candidate.suggestion &&
@@ -114,8 +115,23 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
   );
 }
 
-function isSnoozeExpired(value: string | null, now: number): boolean {
+function useCurrentTimeMs(): number | null {
+  const [now, setNow] = useState<number | null>(null);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setNow(Date.now());
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
+  return now;
+}
+
+function isSnoozeExpired(value: string | null, now: number | null): boolean {
   if (!value) return true;
+  if (now === null) return false;
   const timestamp = new Date(value).getTime();
   return !Number.isFinite(timestamp) || timestamp <= now;
 }
