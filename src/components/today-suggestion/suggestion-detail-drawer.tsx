@@ -2,6 +2,7 @@
 
 import {
   Camera,
+  BookOpenCheck,
   Check,
   CheckCircle2,
   CheckSquare,
@@ -9,6 +10,7 @@ import {
   CloudSun,
   Cpu,
   Database,
+  ExternalLink,
   MessageSquareQuote,
   Pause,
   Package,
@@ -176,6 +178,41 @@ export function SuggestionDetailDrawer({
                           </strong>{" "}
                           {input.detail}
                         </span>
+                      </li>
+                    ))}
+                  </ul>
+                </RationaleBlock>
+              ) : null}
+
+              {suggestion.evidenceSources.length > 0 ? (
+                <RationaleBlock
+                  icon={<BookOpenCheck className="h-3 w-3" />}
+                  label={t("sections.evidence")}
+                >
+                  <ul className="flex flex-col gap-2">
+                    {suggestion.evidenceSources.map((source) => (
+                      <li
+                        key={source.id}
+                        className="rounded-xl border border-border bg-surface px-3 py-2.5 text-[13px] leading-snug"
+                      >
+                        <a
+                          href={source.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-start gap-1.5 font-semibold text-foreground underline-offset-2 hover:underline"
+                        >
+                          <span>{source.title}</span>
+                          <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 text-muted" />
+                        </a>
+                        <p className="mt-0.5 text-[12px] font-medium text-muted">
+                          {source.organization} -{" "}
+                          {t("evidenceReviewed", {
+                            date: source.reviewedAt,
+                          })}
+                        </p>
+                        <p className="mt-1 text-[12.5px] text-muted">
+                          {source.summary}
+                        </p>
                       </li>
                     ))}
                   </ul>

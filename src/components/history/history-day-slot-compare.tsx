@@ -3,6 +3,7 @@
 import {
   CheckCheck,
   CircleSlash,
+  Clock4,
   Pencil,
   Repeat2,
   Sparkles,
@@ -15,7 +16,10 @@ import {
 import { SuggestionDaypartIcon } from "@/components/today-suggestion/daypart-icon";
 import { SuggestionStepRow } from "@/components/today-suggestion/step-row";
 import { Button } from "@/components/ui/button";
-import { formatSlotTime12h } from "@/lib/suggestion-daypart";
+import {
+  formatIsoTime12h,
+  formatSlotTime12h,
+} from "@/lib/suggestion-daypart";
 import { cn } from "@/lib/utils";
 import type {
   ApplicationLog,
@@ -23,6 +27,7 @@ import type {
 } from "@/types/application-tracking";
 import type {
   SuggestionHistorySlotSummary,
+  SuggestionInstance,
   SuggestionStep,
   TodaysSuggestionSlot,
 } from "@/types/suggestions";
@@ -32,11 +37,13 @@ export function HistoryDaySlotCompare({
   date,
   tSummary,
   onEdit,
+  onShowDetail,
 }: {
   slot: SuggestionHistorySlotSummary;
   date: string;
   tSummary: ReturnType<typeof useTranslations>;
   onEdit: (slot: TodaysSuggestionSlot, log: ApplicationLog) => void;
+  onShowDetail?: (suggestion: SuggestionInstance) => void;
 }) {
   const t = useTranslations("history.day");
   const suggestionSteps = [...(slot.suggestion?.steps ?? [])].sort(
@@ -46,6 +53,7 @@ export function HistoryDaySlotCompare({
     (a, b) => a.stepOrder - b.stepOrder,
   );
   const applicationLog = slot.applicationLog ?? null;
+  const detailSuggestion = slot.suggestion ?? null;
   const editableSlot =
     slot.suggestion && applicationLog
       ? toTodaysSlot(date, slot, applicationLog)
@@ -102,7 +110,10 @@ export function HistoryDaySlotCompare({
             <ol className="flex flex-col gap-2">
               {appliedItems.map((item) => (
                 <li key={item.id}>
-                  <AppliedItemRow item={item} />
+                  <AppliedItemRow
+                    item={item}
+                    fallbackAppliedAt={applicationLog?.appliedAt ?? null}
+                  />
                 </li>
               ))}
             </ol>
@@ -112,18 +123,35 @@ export function HistoryDaySlotCompare({
         </CompareColumn>
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-3">
-        <span className="text-xs text-muted">{t("outcomeNote")}</span>
-        {slot.applicationLogId && editableSlot && applicationLog ? (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onEdit(editableSlot, applicationLog)}
-          >
-            <Pencil className="h-3.5 w-3.5" />
-            {t("editRecord")}
-          </Button>
-        ) : null}
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1">
+          <p className="text-xs text-muted">{t("outcomeNote")}</p>
+          <p className="text-[11.5px] font-medium text-muted">
+            {t("aiSawContext")}
+          </p>
+        </div>
+        <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+          {detailSuggestion && onShowDetail ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onShowDetail(detailSuggestion)}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              {t("whyThisRoutine")}
+            </Button>
+          ) : null}
+          {slot.applicationLogId && editableSlot && applicationLog ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(editableSlot, applicationLog)}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              {t("editRecord")}
+            </Button>
+          ) : null}
+        </div>
       </div>
     </article>
   );
@@ -171,9 +199,16 @@ function EditedPill({
   );
 }
 
-function AppliedItemRow({ item }: { item: ApplicationLogItem }) {
+function AppliedItemRow({
+  item,
+  fallbackAppliedAt,
+}: {
+  item: ApplicationLogItem;
+  fallbackAppliedAt: string | null;
+}) {
   const t = useTranslations("history.day");
   const source = item.itemSource ?? "recommended";
+  const appliedAt = item.appliedAt ?? fallbackAppliedAt;
   const productName =
     item.substitutedWithProduct?.name ??
     item.product?.name ??
@@ -236,6 +271,12 @@ function AppliedItemRow({ item }: { item: ApplicationLogItem }) {
           <span className="inline-flex items-center rounded-full border border-border bg-surface px-2 py-0.5 text-[10.5px] font-medium text-muted">
             {t(`itemSource.${source}`)}
           </span>
+          {item.status !== "skipped" && appliedAt ? (
+            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-2 py-0.5 text-[10.5px] font-medium text-muted">
+              <Clock4 className="h-3 w-3" />
+              {t("itemAppliedAt", { time: formatIsoTime12h(appliedAt) })}
+            </span>
+          ) : null}
         </div>
         {item.status === "substituted" && substitutedOriginal ? (
           <p className="mt-1 text-[11.5px] leading-snug text-muted">
@@ -301,6 +342,7 @@ function toTodaysSlot(
     slotNotes: null,
     routineStepCount: slot.totalSteps,
     specialistLockedStepCount: countSpecialistLocked(suggestion.steps),
+    specialist: null,
     visibleAt: suggestion.visibleAt,
     status: log.hasBeenEdited ? "edited" : "recorded",
     slotStartsAt: buildLocalIso(date, slot.slotTime),
@@ -315,6 +357,8 @@ function toTodaysSlot(
       appliedCount: slot.appliedCount,
       totalItems: log.items.length,
     },
+    recordingReminderSnoozedUntil: null,
+    applicationLog: log,
     isVisible: true,
     suggestion,
   };

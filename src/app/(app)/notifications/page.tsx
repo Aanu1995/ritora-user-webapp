@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { CheckCheck, Settings2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
+import { NOTIFICATION_SETTINGS_ROUTE } from "@/constants/app-routes";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { useAutoLoadMore } from "@/hooks/use-auto-load-more";
@@ -27,7 +29,8 @@ export default function NotificationsPage() {
   const hasLoadMoreError = Boolean(notifications.isFetchNextPageError);
   const canLoadMore = Boolean(notifications.hasNextPage);
   const loadMoreSentinelRef = useAutoLoadMore({
-    enabled: !notifications.isPending && !hasLoadError && hasItems && !hasLoadMoreError,
+    enabled:
+      !notifications.isPending && !hasLoadError && hasItems && !hasLoadMoreError,
     hasNextPage: canLoadMore,
     isFetchingNextPage: notifications.isFetchingNextPage,
     onLoadMore: () => {
@@ -43,20 +46,31 @@ export default function NotificationsPage() {
         title={t("title")}
         subtitle={t("subtitle")}
         action={
-          unread.length > 0 ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={markAll.isPending}
-              onClick={() => markAll.mutate()}
-            >
-              {markAll.isPending ? (
-                <LoadingIndicator size="sm" label={t("markingAllRead")} />
-              ) : (
-                t("markAllRead")
-              )}
+          <div className="flex flex-wrap justify-end gap-2">
+            {unread.length > 0 ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={markAll.isPending}
+                onClick={() => markAll.mutate()}
+              >
+                {markAll.isPending ? (
+                  <LoadingIndicator size="sm" label={t("markingAllRead")} />
+                ) : (
+                  <>
+                    <CheckCheck aria-hidden className="h-4 w-4" />
+                    {t("markAllRead")}
+                  </>
+                )}
+              </Button>
+            ) : null}
+            <Button asChild variant="ghost" size="sm">
+              <Link href={NOTIFICATION_SETTINGS_ROUTE}>
+                <Settings2 aria-hidden className="h-4 w-4" />
+                {t("preferencesAction")}
+              </Link>
             </Button>
-          ) : null
+          </div>
         }
       />
 
@@ -88,7 +102,7 @@ export default function NotificationsPage() {
                 {t("emptyBody")}
               </p>
               <Link
-                href="/settings?tab=notifications"
+                href={NOTIFICATION_SETTINGS_ROUTE}
                 className="mt-4 inline-block text-sm font-semibold text-accent-strong underline-offset-2 hover:underline"
               >
                 {t("managePreferences")}
@@ -103,8 +117,11 @@ export default function NotificationsPage() {
                   {t("unreadHeading")} · {unreadCount}
                 </p>
                 <div className="space-y-1">
-                  {unread.map((n) => (
-                    <NotificationRow key={n.id} notification={n} />
+                  {unread.map((notification) => (
+                    <NotificationRow
+                      key={notification.id}
+                      notification={notification}
+                    />
                   ))}
                 </div>
               </>
@@ -115,8 +132,11 @@ export default function NotificationsPage() {
                   {t("readHeading")} · {read.length}
                 </p>
                 <div>
-                  {read.map((n) => (
-                    <NotificationRow key={n.id} notification={n} />
+                  {read.map((notification) => (
+                    <NotificationRow
+                      key={notification.id}
+                      notification={notification}
+                    />
                   ))}
                 </div>
               </>

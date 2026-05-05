@@ -11,7 +11,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import { AppRoute } from "@/constants/app-routes";
+import { AppRoute, NOTIFICATION_SETTINGS_ROUTE } from "@/constants/app-routes";
 import { useJournalUiStore } from "@/stores/journal-ui-store";
 import {
   useCalendar,
@@ -214,7 +214,7 @@ export default function JournalPage() {
   const handleOpenSettings = (settingsTab: string) => {
     router.push(
       settingsTab === "notifications"
-        ? `${AppRoute.Settings}/notifications`
+        ? NOTIFICATION_SETTINGS_ROUTE
         : AppRoute.Settings,
     );
   };

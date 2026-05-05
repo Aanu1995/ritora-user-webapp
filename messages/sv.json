@@ -1668,9 +1668,7 @@
           "Massera mjukt i cirklar på fuktig hud.",
           "Skölj noga med ljummet vatten."
         ],
-        "cautions": [
-          "Undvik ögonpartiet."
-        ]
+        "cautions": ["Undvik ögonpartiet."]
       },
       "toner": {
         "steps": [
@@ -1747,14 +1745,10 @@
           "Knacka mjukt med ringfingret runt ögonbenet.",
           "Dra eller sträck inte ut den tunna huden kring ögonen."
         ],
-        "cautions": [
-          "Undvik att få produkten i ögat."
-        ]
+        "cautions": ["Undvik att få produkten i ögat."]
       },
       "lip-care": {
-        "steps": [
-          "Applicera ett tunt lager efter behov under dagen."
-        ],
+        "steps": ["Applicera ett tunt lager efter behov under dagen."],
         "cautions": []
       },
       "treatment": {
@@ -1762,9 +1756,7 @@
           "Följ förpackningens instruktioner.",
           "Applicera endast på det berörda området."
         ],
-        "cautions": [
-          "Testa på en liten yta innan första användning."
-        ]
+        "cautions": ["Testa på en liten yta innan första användning."]
       },
       "other": {
         "steps": [],
@@ -1784,10 +1776,10 @@
       "main": "Huvud",
       "more": "Mer",
       "account": "Konto"
-  },
-  "soonBadge": "Snart",
-  "badgeLabel": "{count, plural, one {# sak behöver uppmärksamhet} other {# saker behöver uppmärksamhet}}",
-  "items": {
+    },
+    "soonBadge": "Snart",
+    "badgeLabel": "{count, plural, one {# sak behöver uppmärksamhet} other {# saker behöver uppmärksamhet}}",
+    "items": {
       "home": "Hem",
       "skinProfile": "Hudprofil",
       "shelf": "Hylla",
@@ -2023,6 +2015,16 @@
       "notesPlaceholderAI": "t.ex. Huden känns stram idag, var försiktig med aktiva.",
       "notesEmpty": "Inga anteckningar ännu. Det du lägger till följer med rutinen.",
       "notesCounter": "{current} / {max}",
+      "specialist": {
+        "title": "Specialistrutin",
+        "body": "Använd detta när en dermatolog, hudterapeut eller klinik har gett instruktioner för denna tid.",
+        "providerName": "Specialistens namn",
+        "clinicName": "Klinik",
+        "activeSince": "Aktiv sedan",
+        "safetyNotes": "Säkerhetsanteckningar från specialist",
+        "safetyNotesPlaceholder": "t.ex. Behåll tretinoin måndag/torsdag. Lägg inte till peeling runt detta steg.",
+        "privacyHint": "Lägg bara till detaljer du vill att Ritora ska använda för att skydda specialistlåsta steg."
+      },
       "stepsLabel": "Steg",
       "stepsDescription": "Din rutin i appliceringsordning. Rengöringar först, SPF sist. Dra för att ändra ordning.",
       "stepsCount": "{current} / {max}",
@@ -2048,8 +2050,9 @@
       "productMissing": "Saknad produkt — välj igen",
       "notesPlaceholder": "Anteckningar (valfritt)",
       "optionalLabel": "Valfritt steg",
-      "specialistLockedLabel": "Låst av specialist",
-      "specialistLockedHint": "När den är ikryssad behandlar AI-förslagsmotorn detta steg som oföränderligt. Det tas aldrig bort, ordnas om eller ersätts.",
+      "optionalHint": "Att hoppa över räknas inte som missad rutin.",
+      "specialistLockedLabel": "Ordinerat av min specialist",
+      "specialistLockedHint": "AI behåller steget exakt som du satt det. Ingen omordning, ersättning eller borttagning.",
       "delete": "Ta bort steg",
       "dragHandle": "Dra för att ordna om"
     },
@@ -2108,6 +2111,10 @@
       "customLabelRequired": "Anpassad etikett krävs.",
       "customLabelMax": "Anpassad etikett är för lång.",
       "slotNotesMax": "Anteckningarna är för långa.",
+      "specialistProviderNameMax": "Specialistens namn är för långt.",
+      "specialistClinicNameMax": "Kliniknamnet är för långt.",
+      "specialistActiveSinceFormat": "Använd ett giltigt datum i formatet ÅÅÅÅ-MM-DD.",
+      "specialistSafetyNotesMax": "Specialistens säkerhetsanteckningar är för långa.",
       "stepNotesMax": "Steganteckningarna är för långa.",
       "productsNotOwned": "Endast produkter från din hylla kan läggas till.",
       "maxSteps": "Du kan bara ha upp till 10 steg."
@@ -3012,7 +3019,7 @@
   "notificationsPage": {
     "eyebrow": "Inkorg",
     "title": "Aviseringar",
-    "subtitle": "Reaktioner, insikter, fotopåminnelser och din Skin Wrapped, samlat på en plats.",
+    "subtitle": "Förslag, påminnelser, reaktioner, insikter och din Skin Wrapped, samlat på en plats.",
     "markAllRead": "Markera alla som lästa",
     "markingAllRead": "Markerar alla som lästa",
     "unreadHeading": "Olästa",
@@ -3023,8 +3030,10 @@
     "emptyTitle": "Lugnt här just nu",
     "emptyBody": "När något behöver din uppmärksamhet, som en möjlig reaktion, en ny insikt eller din månatliga Skin Wrapped, dyker det upp här.",
     "managePreferences": "Hantera aviseringar",
+    "preferencesAction": "Preferenser",
     "loadingMore": "Laddar fler",
     "sourceSkinJournal": "Hudjournal",
+    "sourceTodaysSuggestion": "Dagens förslag",
     "errors": {
       "loadTitle": "Vi kunde inte ladda aviseringar",
       "loadBody": "Försök igen. Dina aviseringsinställningar och journaldata är oförändrade.",
@@ -3087,7 +3096,10 @@
       "error": "Något gick fel när vi laddade dina förslag. Du kan försöka igen.",
       "retry": "Försök igen",
       "worthConsidering": "Värt att överväga",
-      "nextSlotTomorrow": "imorgon"
+      "nextSlotTomorrow": "imorgon",
+      "normalRoutineRestored": "Vanlig rutin återställd för kommande förslag.",
+      "gapSaved": "Sparat i dagens önskelista.",
+      "gapDismissed": "Rekommendationen dold tills vidare."
     },
     "lockedDay": {
       "leadTitle": "Förslag kommer ett par timmar innan varje slot",
@@ -3148,11 +3160,24 @@
       "customise": "Anpassa",
       "more": "Mer",
       "edit": "Redigera",
-      "recordedMatchesSuggestion": "Matchar förslaget."
+      "edited": "Redigerad",
+      "appliedAt": "Applicerad kl. {time}",
+      "recordedActualItems": "Registrerad från din appliceringslogg.",
+      "recordedMatchesSuggestion": "Matchar förslaget.",
+      "recordedItem": {
+        "applied": "Applicerad",
+        "skipped": "Överhoppad",
+        "substituted": "Ersatt",
+        "insteadOf": "I stället för {name}",
+        "unknownProduct": "Produkt"
+      }
     },
     "reactionBanner": {
       "title": "Möjlig reaktion på dagens foto",
       "paused": "Pausat medan det lugnar sig: {names}",
+      "confidence": "{percent}% säkerhet",
+      "photosUntilClear": "{count, plural, =0 {Kriterier uppfyllda} one {# foto kvar} other {# foton kvar}}",
+      "clearCriteria": "Kriterier för barriäråterhämtning",
       "viewPhoto": "Visa foto",
       "resetRoutine": "Använd min vanliga rutin"
     },
@@ -3160,6 +3185,7 @@
       "title": "Överväg att lägga till {ingredient}",
       "browse": "Bläddra alternativ",
       "saveToWishlist": "Spara i önskelistan",
+      "saved": "Sparad",
       "dismiss": "Inte nu"
     },
     "recordSheet": {
@@ -3169,12 +3195,38 @@
       "editSubtitle": "Plats kl. {time}. Ursprungligen registrerad {firstRecordedAt}.",
       "appliedAt": "Applicerad kl.",
       "rowSuggestedTag": "Föreslaget",
+      "rowAddedTag": "Tillagd av dig",
       "rowActionApplied": "Markera applicerad",
       "rowActionSkipped": "Markera överhoppad",
       "rowActionSubstituted": "Markera ersatt",
+      "rowActionRemove": "Ta bort produkt",
+      "rowNotesPlaceholder": "Anteckning",
       "addProduct": {
         "title": "Lägg till en produkt jag använde",
-        "body": "Sök i din hylla eller skriv ett namn"
+        "body": "Sök i din hylla eller skriv ett namn",
+        "panelTitle": "Lägg till vad du faktiskt använde",
+        "panelBody": "Välj en aktiv hyllprodukt eller lägg till en engångsprodukt utanför hyllan.",
+        "close": "Stäng lägg till produkt",
+        "offShelfTitle": "Produkt utanför hyllan",
+        "brandPlaceholder": "Märke",
+        "namePlaceholder": "Produktnamn",
+        "addOffShelf": "Lägg till utanför hyllan"
+      },
+      "productPicker": {
+        "searchPlaceholder": "Sök hyllprodukter",
+        "loading": "Laddar produkter",
+        "empty": "Inga matchande hyllprodukter.",
+        "statusActive": "Aktiv",
+        "statusArchived": "Arkiverad",
+        "statusFinished": "Slut"
+      },
+      "substitution": {
+        "chooseProduct": "Vad använde du i stället?",
+        "selected": "Ersatt med {name}",
+        "selectedShelf": "vald hyllprodukt",
+        "offShelfBrand": "Märke utanför hyllan",
+        "offShelfName": "Produkt utanför hyllan",
+        "reasonPlaceholder": "Varför ersatte du? Till exempel irritation, slut produkt eller konsistens."
       },
       "notesLabel": "Anteckningar (valfritt)",
       "notesPlaceholder": "Något Ritora bör komma ihåg? Till exempel att det stack lite på kinden.",
@@ -3188,8 +3240,22 @@
       "editHistory": {
         "willMarkAsEdited": "Denna registrering kommer markeras som Redigerad",
         "firstSavedAt": "Först sparad {time} av dig",
-        "versionsAreKept": "Varje tidigare version sparas, så vi rekommenderar aldrig något baserat på en ändrad registrering."
+        "versionsAreKept": "Varje tidigare version sparas, så vi rekommenderar aldrig något baserat på en ändrad registrering.",
+        "versionListTitle": "Versionshistorik",
+        "loadingVersions": "Laddar sparade versioner",
+        "versionLabel": "Version {version}",
+        "initialSave": "Första sparningen",
+        "noVersions": "Inga sparade tidigare versioner än."
       }
+    },
+    "reminderBanner": {
+      "title": "Registrera din rutin kl. {time}",
+      "body": "Den här platsen är redo att loggas. Det du faktiskt gjorde gör eftermiddagens och kvällens förslag mer träffsäkra.",
+      "recordNow": "Registrera morgonen nu",
+      "skippedToday": "Överhoppad idag",
+      "remindLater": "Påminn mig senare",
+      "skippedNote": "Markerad som överhoppad från Dagens förslag.",
+      "skippedItemNote": "Överhoppad idag."
     },
     "detailDrawer": {
       "eyebrow": "Varför denna rutin",
@@ -3206,8 +3272,10 @@
         "intent": "Vad jag försöker göra",
         "whyEach": "Varför varje steg",
         "whatISkipped": "Vad jag hoppade över idag och varför",
-        "inputs": "Vad detta använde"
+        "inputs": "Vad detta använde",
+        "evidence": "Betrodd evidens"
       },
+      "evidenceReviewed": "granskad {date}",
       "noRationale": "Inget resonemang sparat för detta förslag.",
       "markApplied": "Markera som applicerad",
       "customise": "Anpassa innan du applicerar",
@@ -3249,7 +3317,11 @@
       "loading": "Laddar historik",
       "errorTitle": "Vi kunde inte ladda historik",
       "error": "Något gick fel när vi laddade din historik. Du kan försöka igen.",
-      "retry": "Försök igen"
+      "retry": "Försök igen",
+      "exportError": "Vi kunde inte exportera din historik. Försök igen.",
+      "loadMore": "Ladda mer",
+      "loadingMore": "Laddar mer",
+      "loadMoreError": "Vi kunde inte ladda mer historik."
     },
     "filters": {
       "last7d": "Senaste 7 dagarna",
@@ -3261,13 +3333,21 @@
       "clear": "Rensa",
       "rangeInvalid": "Slutdatum måste vara samma eller efter startdatum.",
       "morning": "Morgon",
+      "noon": "Mitt på dagen",
       "evening": "Kväll",
+      "ai": "AI",
+      "manual": "Manuell",
+      "mixed": "Blandad",
       "applied": "Applicerad",
+      "partial": "Delvis",
       "skipped": "Överhoppad",
+      "simplified": "Förenklad",
+      "missed": "Missad",
       "edited": "Redigerad"
     },
     "summary": {
       "appliedOf": "{applied} av {total} applicerade",
+      "edited": "{count} redigerade",
       "adherence": "{percent}% följsamhet"
     },
     "dayCard": {
@@ -3327,6 +3407,9 @@
       },
       "substitutedFor": "Ersatte {product}",
       "outcomeNote": "Utfallsinsikter använder vad du faktiskt applicerade, inte vad som föreslogs.",
+      "aiSawContext": "Detta är samma registrering som AI:n såg när den lärde sig av dagen.",
+      "itemAppliedAt": "Applicerad {time}",
+      "whyThisRoutine": "Varför denna rutin",
       "editRecord": "Redigera registrering"
     },
     "empty": {

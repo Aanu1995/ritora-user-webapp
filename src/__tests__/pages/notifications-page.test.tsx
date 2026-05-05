@@ -1,6 +1,7 @@
-import { screen } from '@testing-library/react';
-import { renderWithProviders } from '@/test/utils';
-import type { InAppNotification } from '@/types/notifications';
+import { screen } from "@testing-library/react";
+import { renderWithProviders } from "@/test/utils";
+import { NOTIFICATION_SETTINGS_ROUTE } from "@/constants/app-routes";
+import type { InAppNotification } from "@/types/notifications";
 
 const mockFetchNextPage = jest.fn();
 const mockMarkAll = jest.fn();
@@ -18,7 +19,7 @@ function installIntersectionObserverMock() {
 
   class MockIntersectionObserver {
     readonly root = null;
-    readonly rootMargin = '0px';
+    readonly rootMargin = "0px";
     readonly thresholds = [0];
     private readonly instance: MockIntersectionObserverInstance;
 
@@ -42,7 +43,7 @@ function installIntersectionObserverMock() {
     takeRecords = () => [];
   }
 
-  Object.defineProperty(window, 'IntersectionObserver', {
+  Object.defineProperty(window, "IntersectionObserver", {
     writable: true,
     configurable: true,
     value: MockIntersectionObserver,
@@ -53,7 +54,7 @@ function triggerIntersection(testId: string) {
   const target = screen.getByTestId(testId);
   const observer = intersectionObservers.at(-1);
   if (!observer) {
-    throw new Error('No IntersectionObserver instance was registered.');
+    throw new Error("No IntersectionObserver instance was registered.");
   }
 
   observer.callback(
@@ -72,32 +73,40 @@ function triggerIntersection(testId: string) {
   );
 }
 
-function notification(id: string, readAt: string | null): InAppNotification {
+let mockUnreadNotifications: InAppNotification[] = [];
+let mockReadNotifications: InAppNotification[] = [];
+let mockUnreadCount = 0;
+
+function notification(
+  id: string,
+  readAt: string | null,
+  kind: InAppNotification["kind"] = "photo_reminder",
+): InAppNotification {
   return {
     id,
-    kind: 'photo_reminder',
-    title_key: 'skinJournal.notifications.photoReminder.title',
-    body_key: 'skinJournal.notifications.photoReminder.body',
-    severity: 'info',
+    kind,
+    title_key: "skinJournal.notifications.photoReminder.title",
+    body_key: "skinJournal.notifications.photoReminder.body",
+    severity: "info",
     payload: null,
-    deep_link: '/journal/upload',
+    deep_link: "/journal/upload",
     read_at: readAt,
-    created_at: '2026-04-29T08:00:00.000Z',
+    created_at: "2026-04-29T08:00:00.000Z",
   };
 }
 
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: jest.fn(),
   }),
 }));
 
-jest.mock('@/hooks/use-notifications', () => ({
+jest.mock("@/hooks/use-notifications", () => ({
   useNotifications: () => ({
     data: {
-      unread: [notification('unread-1', null)],
-      read: [notification('read-1', '2026-04-29T09:00:00.000Z')],
-      unread_count: 2,
+      unread: mockUnreadNotifications,
+      read: mockReadNotifications,
+      unread_count: mockUnreadCount,
     },
     isPending: false,
     isError: false,
@@ -117,27 +126,55 @@ jest.mock('@/hooks/use-notifications', () => ({
   }),
 }));
 
-import NotificationsPage from '@/app/(app)/notifications/page';
+import NotificationsPage from "@/app/(app)/notifications/page";
 
-describe('NotificationsPage', () => {
+describe("NotificationsPage", () => {
   beforeEach(() => {
     installIntersectionObserverMock();
+    mockUnreadNotifications = [notification("unread-1", null)];
+    mockReadNotifications = [
+      notification("read-1", "2026-04-29T09:00:00.000Z"),
+    ];
+    mockUnreadCount = 2;
     mockFetchNextPage.mockReset();
     mockMarkAll.mockReset();
   });
 
-  it('auto-loads the next notifications cursor page when the sentinel enters view', () => {
+  it("auto-loads the next notifications cursor page when the sentinel enters view", () => {
     renderWithProviders(<NotificationsPage />);
 
-    triggerIntersection('notifications-auto-load-sentinel');
+    triggerIntersection("notifications-auto-load-sentinel");
 
     expect(mockFetchNextPage).toHaveBeenCalled();
   });
 
-  it('renders unread and read buckets from paginated API data', () => {
+  it("renders unread and read buckets from paginated API data", () => {
     renderWithProviders(<NotificationsPage />);
 
     expect(screen.getByText(/unread · 2/i)).toBeInTheDocument();
     expect(screen.getByText(/read · 1/i)).toBeInTheDocument();
+  });
+
+  it("labels Today's Suggestion notifications with the suggestion source", () => {
+    mockUnreadNotifications = [
+      notification("suggestion-1", null, "suggestion_ready"),
+    ];
+    mockReadNotifications = [];
+    mockUnreadCount = 1;
+
+    renderWithProviders(<NotificationsPage />);
+
+    expect(screen.getByText(/today's suggestion/i)).toBeInTheDocument();
+    expect(screen.queryByText(/^skin journal$/i)).not.toBeInTheDocument();
+  });
+
+  it("renders the notification preferences action in the populated header", () => {
+    renderWithProviders(<NotificationsPage />);
+
+    const preferencesLink = screen.getByRole("link", {
+      name: /preferences/i,
+    });
+
+    expect(preferencesLink).toHaveAttribute("href", NOTIFICATION_SETTINGS_ROUTE);
   });
 });

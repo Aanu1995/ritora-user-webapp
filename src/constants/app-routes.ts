@@ -23,6 +23,8 @@ export enum AppRoute {
   Cookies = '/cookies',
 }
 
+export const NOTIFICATION_SETTINGS_ROUTE = `${AppRoute.Settings}?tab=notifications`;
+
 export const PROTECTED_APP_ROUTES = [
   AppRoute.PostLogin,
   AppRoute.Dashboard,

@@ -1,18 +1,22 @@
-import { scheduleEditorFormSchema } from '@/lib/schedule-schemas';
-import { SlotMode, StepLabel } from '@/types/schedule';
+import { scheduleEditorFormSchema } from "@/lib/schedule-schemas";
+import { SlotMode, StepLabel } from "@/types/schedule";
 
-describe('scheduleEditorFormSchema', () => {
-  it('emits namespace-relative custom label validation keys', () => {
+describe("scheduleEditorFormSchema", () => {
+  it("emits namespace-relative custom label validation keys", () => {
     const result = scheduleEditorFormSchema.safeParse({
-      slotTime: '08:00',
+      slotTime: "08:00",
       mode: SlotMode.Manual,
-      slotNotes: '',
+      slotNotes: "",
+      specialistProviderName: "",
+      specialistClinicName: "",
+      specialistActiveSince: "",
+      specialistSafetyNotes: "",
       steps: [
         {
           stepOrder: 0,
           inventoryProductId: null,
           stepLabel: StepLabel.Custom,
-          customLabel: '   ',
+          customLabel: "   ",
           notes: null,
         },
       ],
@@ -24,7 +28,7 @@ describe('scheduleEditorFormSchema', () => {
     }
 
     expect(result.error.issues[0]?.message).toBe(
-      'validation.customLabelRequired',
+      "validation.customLabelRequired",
     );
   });
 });

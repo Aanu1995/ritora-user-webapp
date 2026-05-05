@@ -60,10 +60,35 @@ export type SuggestionStepChip = {
   text: string;
 };
 
+export enum SuggestionEvidenceSourceId {
+  AadSunscreenSelection = "aad_sunscreen_selection",
+  AadRetinoidRetinol = "aad_retinoid_retinol",
+  AadAcneTreatment = "aad_acne_treatment",
+  FdaAhaSunSensitivity = "fda_aha_sun_sensitivity",
+  MayoDrySkinCare = "mayo_dry_skin_care",
+  DermNetTopicalRetinoids = "dermnet_topical_retinoids",
+}
+
+export type SuggestionEvidenceType =
+  | "dermatology_association"
+  | "regulatory_guidance"
+  | "clinical_reference";
+
+export type SuggestionEvidenceSource = {
+  id: SuggestionEvidenceSourceId;
+  title: string;
+  organization: string;
+  url: string;
+  evidenceType: SuggestionEvidenceType;
+  summary: string;
+  reviewedAt: string;
+};
+
 export type SuggestionSafetyFlag = {
   severity: "info" | "warning" | "critical";
   message: string;
   ingredientSlugs: string[];
+  sourceIds: SuggestionEvidenceSourceId[];
 };
 
 export type SuggestionGapRecommendation = {
@@ -71,7 +96,11 @@ export type SuggestionGapRecommendation = {
   reason: string;
   budgetTier: "starter" | "mid" | "premium" | null;
   goalAlignment: string | null;
+  sourceIds: SuggestionEvidenceSourceId[];
+  userAction?: SuggestionGapActionKind | null;
 };
+
+export type SuggestionGapActionKind = "saved" | "dismissed";
 
 /**
  * Multi-paragraph AI rationale shown in the "Why this routine" drawer.
@@ -137,6 +166,7 @@ export type SuggestionInstance = {
   gapRecommendations: SuggestionGapRecommendation[];
   safetyFlags: SuggestionSafetyFlag[];
   inputTrace: Record<string, unknown> | null;
+  evidenceSources: SuggestionEvidenceSource[];
   steps: SuggestionStep[];
   /** Linked application log id when the user has recorded what they applied. */
   applicationLogId: string | null;
@@ -182,9 +212,27 @@ export type TodaysSuggestionWeatherSummary = {
 
 export type TodaysSuggestionReactionAlert = {
   detectedAt: string;
+  simplificationId: string | null;
+  canUseNormalRoutine: boolean;
   photoEntryId: string;
+  severity: string | null;
+  confidence: number | null;
   summary: string;
   pausedActiveNames: string[];
+  affectedZones: string[];
+  indicators: string[];
+  concernKeys: string[];
+  barrierConcern: boolean;
+  photosUntilClear: number;
+  clearCriteria: string[];
+};
+
+export type TodaysSuggestionSpecialist = {
+  lockedStepCount: number;
+  providerName: string | null;
+  clinicName: string | null;
+  activeSince: string | null;
+  safetyNetMessage: string | null;
 };
 
 export type TodaysSuggestionSlot = {
@@ -195,6 +243,7 @@ export type TodaysSuggestionSlot = {
   slotNotes: string | null;
   routineStepCount: number;
   specialistLockedStepCount: number;
+  specialist: TodaysSuggestionSpecialist | null;
   visibleAt: string;
   status:
     | "locked"
@@ -210,6 +259,8 @@ export type TodaysSuggestionSlot = {
   recordableAt: string;
   expiresAt: string;
   recording: TodaysSuggestionRecording | null;
+  recordingReminderSnoozedUntil: string | null;
+  applicationLog: ApplicationLog | null;
   /** Server-computed: when the slot is locked. */
   isVisible: boolean;
   /** Once the suggestion is generated, this is populated. Null while locked. */
@@ -263,6 +314,7 @@ export type SuggestionHistoryListResponse = {
   nextCursor: string | null;
   totalApplied: number;
   totalSlots: number;
+  totalEdited: number;
   adherencePercent: number | null;
 };
 
@@ -271,11 +323,46 @@ export type SuggestionHistoryListQuery = {
   fromDate?: string;
   toDate?: string;
   daypart?: SuggestionDaypart;
+  mode?: SuggestionMode;
   status?: "applied" | "partial" | "skipped" | "simplified" | "missed";
   hasBeenEdited?: boolean;
   cursor?: string;
+  limit?: number;
 };
 
 export type RegenerateSuggestionPayload = {
-  reason?: "user_requested" | "schedule_change" | "reaction_detected";
+  reason?:
+    | "user_requested"
+    | "schedule_change"
+    | "reaction_detected"
+    | "normal_routine_requested";
+};
+
+export type NormalRoutineOverrideResponse = {
+  targetDate: string;
+  expiresAt: string;
+  reactionEntryId: string | null;
+};
+
+export type RecordSuggestionGapActionPayload = {
+  suggestionInstanceId: string;
+  ingredientOrCategory: string;
+  action: SuggestionGapActionKind;
+};
+
+export type SuggestionGapActionResponse = {
+  suggestionInstanceId: string;
+  ingredientOrCategory: string;
+  normalizedKey: string;
+  action: SuggestionGapActionKind;
+};
+
+export type SnoozeRecordingReminderPayload = {
+  suggestionInstanceId: string;
+  minutes?: number;
+};
+
+export type RecordingReminderSnoozeResponse = {
+  suggestionInstanceId: string;
+  snoozedUntil: string;
 };

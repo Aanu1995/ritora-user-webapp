@@ -10,11 +10,15 @@ import { HistoryDayDetailSkeleton } from "@/components/history/history-day-detai
 import { HistoryDaySlotCompare } from "@/components/history/history-day-slot-compare";
 import { BackButton } from "@/components/skin-journal/back-button";
 import { RecordApplicationSheet } from "@/components/today-suggestion/record-application-sheet";
+import { SuggestionDetailDrawer } from "@/components/today-suggestion/suggestion-detail-drawer";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { useSuggestionHistoryDay } from "@/hooks/use-suggestions";
 import type { ApplicationLog } from "@/types/application-tracking";
-import type { TodaysSuggestionSlot } from "@/types/suggestions";
+import type {
+  SuggestionInstance,
+  TodaysSuggestionSlot,
+} from "@/types/suggestions";
 
 export default function HistoryDayPage() {
   const params = useParams<{ date: string }>();
@@ -25,6 +29,9 @@ export default function HistoryDayPage() {
     slot: TodaysSuggestionSlot;
     log: ApplicationLog;
   } | null>(null);
+  const [detailTarget, setDetailTarget] = useState<SuggestionInstance | null>(
+    null,
+  );
 
   const backButton = <BackButton href="/history" label={t("backLabel")} />;
 
@@ -88,6 +95,7 @@ export default function HistoryDayPage() {
                 onEdit={(targetSlot, log) =>
                   setEditTarget({ slot: targetSlot, log })
                 }
+                onShowDetail={setDetailTarget}
               />
             </li>
           ))}
@@ -110,6 +118,13 @@ export default function HistoryDayPage() {
           setEditTarget(null);
           void day.refetch();
         }}
+      />
+      <SuggestionDetailDrawer
+        open={detailTarget !== null}
+        onOpenChange={(open) => {
+          if (!open) setDetailTarget(null);
+        }}
+        suggestion={detailTarget}
       />
     </div>
   );

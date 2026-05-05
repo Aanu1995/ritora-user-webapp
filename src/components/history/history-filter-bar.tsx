@@ -4,10 +4,14 @@ import {
   Calendar,
   CalendarRange,
   Check,
+  Circle,
   CircleSlash,
+  Clock3,
   Moon,
   Pencil,
+  Sparkles,
   Sun,
+  UserRound,
 } from "lucide-react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -26,83 +30,105 @@ type Props = {
   onChange: (next: SuggestionHistoryListQuery) => void;
 };
 
+const DAYPART_FILTERS = [
+  { value: "morning", labelKey: "morning", Icon: Sun },
+  { value: "noon", labelKey: "noon", Icon: Clock3 },
+  { value: "evening", labelKey: "evening", Icon: Moon },
+] as const;
+
+const STATUS_FILTERS = [
+  { value: "applied", labelKey: "applied", Icon: Check },
+  { value: "partial", labelKey: "partial", Icon: Circle },
+  { value: "skipped", labelKey: "skipped", Icon: CircleSlash },
+  { value: "simplified", labelKey: "simplified", Icon: Sparkles },
+  { value: "missed", labelKey: "missed", Icon: CircleSlash },
+] as const;
+
+const MODE_FILTERS = [
+  { value: "ai", labelKey: "ai", Icon: Sparkles },
+  { value: "manual", labelKey: "manual", Icon: UserRound },
+  { value: "mixed", labelKey: "mixed", Icon: Circle },
+] as const;
+
 export function HistoryFilterBar({ value, onChange }: Props) {
   const t = useTranslations("history.filters");
+  const update = (next: SuggestionHistoryListQuery) =>
+    onChange({ ...next, cursor: undefined });
   return (
     <div className="mb-3 flex flex-wrap items-center gap-1.5">
       <FilterChip
         active={value.range === "7d" || !value.range}
-        onClick={() => onChange({ ...value, range: "7d" })}
+        onClick={() => update({ ...value, range: "7d" })}
       >
         <CalendarRange className="h-3 w-3 text-muted" />
         {t("last7d")}
       </FilterChip>
       <FilterChip
         active={value.range === "30d"}
-        onClick={() => onChange({ ...value, range: "30d" })}
+        onClick={() => update({ ...value, range: "30d" })}
       >
         <CalendarRange className="h-3 w-3 text-muted" />
         {t("last30d")}
       </FilterChip>
-      <CustomRangePicker value={value} onChange={onChange} />
+      <CustomRangePicker value={value} onChange={update} />
 
       <Divider />
 
-      <FilterChip
-        active={value.daypart === "morning"}
-        onClick={() =>
-          onChange({
-            ...value,
-            daypart: value.daypart === "morning" ? undefined : "morning",
-          })
-        }
-      >
-        <Sun className="h-3 w-3 text-muted" />
-        {t("morning")}
-      </FilterChip>
-      <FilterChip
-        active={value.daypart === "evening"}
-        onClick={() =>
-          onChange({
-            ...value,
-            daypart: value.daypart === "evening" ? undefined : "evening",
-          })
-        }
-      >
-        <Moon className="h-3 w-3 text-muted" />
-        {t("evening")}
-      </FilterChip>
+      {DAYPART_FILTERS.map(({ value: daypart, labelKey, Icon }) => (
+        <FilterChip
+          key={daypart}
+          active={value.daypart === daypart}
+          onClick={() =>
+            update({
+              ...value,
+              daypart: value.daypart === daypart ? undefined : daypart,
+            })
+          }
+        >
+          <Icon className="h-3 w-3 text-muted" />
+          {t(labelKey)}
+        </FilterChip>
+      ))}
 
       <Divider />
 
-      <FilterChip
-        active={value.status === "applied"}
-        onClick={() =>
-          onChange({
-            ...value,
-            status: value.status === "applied" ? undefined : "applied",
-          })
-        }
-      >
-        <Check className="h-3 w-3 text-muted" />
-        {t("applied")}
-      </FilterChip>
-      <FilterChip
-        active={value.status === "skipped"}
-        onClick={() =>
-          onChange({
-            ...value,
-            status: value.status === "skipped" ? undefined : "skipped",
-          })
-        }
-      >
-        <CircleSlash className="h-3 w-3 text-muted" />
-        {t("skipped")}
-      </FilterChip>
+      {MODE_FILTERS.map(({ value: mode, labelKey, Icon }) => (
+        <FilterChip
+          key={mode}
+          active={value.mode === mode}
+          onClick={() =>
+            update({
+              ...value,
+              mode: value.mode === mode ? undefined : mode,
+            })
+          }
+        >
+          <Icon className="h-3 w-3 text-muted" />
+          {t(labelKey)}
+        </FilterChip>
+      ))}
+
+      <Divider />
+
+      {STATUS_FILTERS.map(({ value: status, labelKey, Icon }) => (
+        <FilterChip
+          key={status}
+          active={value.status === status}
+          onClick={() =>
+            update({
+              ...value,
+              status: value.status === status ? undefined : status,
+            })
+          }
+        >
+          <Icon className="h-3 w-3 text-muted" />
+          {t(labelKey)}
+        </FilterChip>
+      ))}
       <FilterChip
         active={value.hasBeenEdited === true}
         onClick={() =>
-          onChange({
+          update({
             ...value,
             hasBeenEdited: value.hasBeenEdited === true ? undefined : true,
           })

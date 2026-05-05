@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useMarkNotificationRead } from "@/hooks/use-notifications";
-import type { InAppNotification } from "@/types/notifications";
+import type { InAppNotification, NotificationKind } from "@/types/notifications";
 
 interface NotificationRowProps {
   notification: InAppNotification;
@@ -56,9 +56,6 @@ const KIND_STYLES: Record<
     bg: "bg-accent-soft",
     fg: "text-accent-strong",
   },
-  // Today's Suggestion notification kinds. Match the icons used in the
-  // Today's Suggestion mockups: ✨ for AI suggestion ready, ▶ for slot
-  // start, 📝 for the recording reminder.
   suggestion_ready: {
     emoji: "✨",
     bg: "bg-[color:var(--ai-bg)]",
@@ -75,6 +72,27 @@ const KIND_STYLES: Record<
     fg: "text-[color:var(--note-cool-fg)]",
   },
 };
+
+enum NotificationSourceMessageKey {
+  SkinJournal = "sourceSkinJournal",
+  TodaysSuggestion = "sourceTodaysSuggestion",
+}
+
+const TODAY_SUGGESTION_NOTIFICATION_KINDS = new Set<NotificationKind>([
+  "suggestion_ready",
+  "slot_start",
+  "recording_reminder",
+]);
+
+function getNotificationSourceMessageKey(
+  kind: NotificationKind,
+): NotificationSourceMessageKey {
+  if (TODAY_SUGGESTION_NOTIFICATION_KINDS.has(kind)) {
+    return NotificationSourceMessageKey.TodaysSuggestion;
+  }
+
+  return NotificationSourceMessageKey.SkinJournal;
+}
 
 function formatRelative(date: string, locale: string): string {
   const diffSeconds = Math.round(
@@ -111,6 +129,7 @@ export function NotificationRow({ notification }: NotificationRowProps) {
   const markRead = useMarkNotificationRead();
   const styles = KIND_STYLES[notification.kind];
   const deepLink = normalizeDeepLink(notification.deep_link);
+  const sourceMessageKey = getNotificationSourceMessageKey(notification.kind);
 
   const isUnread = !notification.read_at;
 
@@ -150,7 +169,7 @@ export function NotificationRow({ notification }: NotificationRowProps) {
         </p>
         <p className="mt-1.5 text-xs text-muted">
           {formatRelative(notification.created_at, locale)} ·{" "}
-          {t("sourceSkinJournal")}
+          {t(sourceMessageKey)}
         </p>
       </div>
       {deepLink ? (

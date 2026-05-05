@@ -114,15 +114,23 @@ export const ApiPath = {
 
   /** Today's Suggestion page payload (current calendar date in user TZ). */
   SuggestionsToday: `${SUGGESTIONS_BASE}/today`,
+  /** Persist a same-day reaction override so future slots use normal context. */
+  SuggestionsTodayNormalRoutine: `${SUGGESTIONS_BASE}/today/reaction/normal-routine`,
+  /** Persist "remind me later" for recording reminders. */
+  SuggestionsTodayReminderLater: `${SUGGESTIONS_BASE}/today/reminders/later`,
+  /** Persist save/dismiss actions for suggestion gap cards. */
+  SuggestionGapActions: `${SUGGESTIONS_BASE}/gap-actions`,
   /** Re-run AI generation for a slot's suggestion right now. */
-  SuggestionRegenerate: (id: string) =>
-    `${SUGGESTIONS_BASE}/${id}/regenerate`,
+  SuggestionRegenerate: (id: string) => `${SUGGESTIONS_BASE}/${id}/regenerate`,
   /** Single suggestion detail (used by the "Why this routine" drawer). */
   Suggestion: (id: string) => `${SUGGESTIONS_BASE}/${id}`,
   /** Date-grouped history list. */
   SuggestionsHistory: SUGGESTIONS_HISTORY_BASE,
+  /** CSV export for every history row matching the active filters. */
+  SuggestionsHistoryExport: `${SUGGESTIONS_HISTORY_BASE}/export`,
   /** Single past day, full suggested-vs-applied detail. */
-  SuggestionsHistoryDay: (date: string) => `${SUGGESTIONS_HISTORY_BASE}/${date}`,
+  SuggestionsHistoryDay: (date: string) =>
+    `${SUGGESTIONS_HISTORY_BASE}/${date}`,
 
   /** Record what the user actually applied for a suggestion (or ad-hoc). */
   ApplicationLogs: APPLICATION_LOGS_BASE,

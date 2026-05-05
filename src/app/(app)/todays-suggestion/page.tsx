@@ -4,38 +4,40 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Bell, History, MoonStar, Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { DaySummaryPills } from "@/components/today-suggestion/day-summary-pills";
 import { NoCurrentSlotEmptyState } from "@/components/today-suggestion/empty-states";
-import { GapRecommendationBanner } from "@/components/today-suggestion/gap-recommendation-banner";
 import { ReactionBanner } from "@/components/today-suggestion/reaction-banner";
 import { RecordApplicationSheet } from "@/components/today-suggestion/record-application-sheet";
+import { RecordingReminderBanner } from "@/components/today-suggestion/recording-reminder-banner";
 import { SuggestionDetailDrawer } from "@/components/today-suggestion/suggestion-detail-drawer";
 import { SuggestionSlotCard } from "@/components/today-suggestion/slot-card";
+import { TodayGapRecommendationSection } from "@/components/today-suggestion/today-gap-recommendation-section";
+import { regenerateSimplifiedSuggestions } from "@/components/today-suggestion/today-normal-routine";
 import { TodaysSuggestionSkeleton } from "@/components/today-suggestion/todays-suggestion-skeleton";
 import { useApplicationLog } from "@/hooks/use-application-tracking";
 import { useAuthStore } from "@/stores/auth-store";
-import { useTodaysSuggestion } from "@/hooks/use-suggestions";
+import {
+  useNormalRoutineToday,
+  useRegenerateSuggestion,
+  useTodaysSuggestion,
+} from "@/hooks/use-suggestions";
+import { NOTIFICATION_SETTINGS_ROUTE } from "@/constants/app-routes";
 import type {
   SuggestionDaypart,
+  SuggestionGapRecommendation,
   SuggestionInstance,
   TodaysSuggestionSlot,
 } from "@/types/suggestions";
 
-/**
- * Today's Suggestion page. Drives the AI-powered, schedule-anchored
- * skincare suggestions feature. Renders one of:
- *  - Loading skeleton (initial query in flight)
- *  - Empty states (skin profile, shelf, or schedule missing) — highest
- *    priority blocker only
- *  - Reaction banner + slot timeline grouped by daypart, with the gap
- *    recommendation card at the bottom of the day when present
- */
 export default function TodaysSuggestionPage() {
   const t = useTranslations("todaysSuggestion.page");
   const todaysSuggestion = useTodaysSuggestion();
+  const normalRoutine = useNormalRoutineToday();
+  const regenerateSuggestion = useRegenerateSuggestion();
   const userTimeZone = useAuthStore((s) => s.user?.timeZone) ?? "UTC";
 
   const [now, setNow] = useState(() => new Date());
@@ -157,8 +159,39 @@ export default function TodaysSuggestionPage() {
 
       <div className="mx-auto w-full lg:w-[70%]">
         {data.reactionAlert ? (
-          <ReactionBanner alert={data.reactionAlert} />
+          <ReactionBanner
+            alert={data.reactionAlert}
+            isResetting={
+              normalRoutine.isPending ||
+              regenerateSuggestion.isPending
+            }
+            onResetToNormalRoutine={
+              data.reactionAlert.canUseNormalRoutine
+                ? () => {
+                    normalRoutine.mutate(undefined, {
+                      onSuccess: () => {
+                        regenerateSimplifiedSuggestions(data.slots, (id) =>
+                          regenerateSuggestion.mutate({
+                            id,
+                            payload: {
+                              reason: "normal_routine_requested",
+                            },
+                          }),
+                        );
+                        void todaysSuggestion.refetch();
+                        toast.success(t("normalRoutineRestored"));
+                      },
+                    });
+                  }
+                : undefined
+            }
+          />
         ) : null}
+
+        <RecordingReminderBanner
+          slots={data.slots}
+          onRecord={(target) => setRecordSlot(target)}
+        />
 
         <DaySummaryPills data={data} />
 
@@ -185,6 +218,7 @@ export default function TodaysSuggestionPage() {
                           ? setDetailSuggestion(target.suggestion)
                           : undefined
                       }
+                      onCustomize={(target) => setRecordSlot(target)}
                     />
                   </li>
                 ))}
@@ -193,20 +227,9 @@ export default function TodaysSuggestionPage() {
           );
         })}
 
-        {(() => {
-          const firstReady = data.slots.find(
-            (slot) => slot.suggestion?.gapRecommendations.length,
-          );
-          const recommendation =
-            firstReady?.suggestion?.gapRecommendations[0] ?? null;
-          if (!recommendation) return null;
-          return (
-            <div className="mt-6">
-              <SectionLabel>{t("worthConsidering")}</SectionLabel>
-              <GapRecommendationBanner recommendation={recommendation} />
-            </div>
-          );
-        })()}
+        <TodayGapRecommendationSection
+          {...firstGapRecommendation(data.slots)}
+        />
       </div>
 
       <RecordApplicationSheet
@@ -279,7 +302,7 @@ function LockedDayBanners() {
             {t.rich("notifyBody", {
               link: (chunks) => (
                 <Link
-                  href="/notifications"
+                  href={NOTIFICATION_SETTINGS_ROUTE}
                   className="font-semibold text-[color:var(--ai-fg)]"
                 >
                   {chunks}
@@ -313,14 +336,6 @@ function SectionGroup({
   );
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mb-2 ml-1 inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.1em] text-muted">
-      {children}
-    </p>
-  );
-}
-
 function groupSlotsByDaypart(slots: TodaysSuggestionSlot[]) {
   const grouped: Record<SuggestionDaypart, TodaysSuggestionSlot[]> = {
     morning: [],
@@ -334,6 +349,19 @@ function groupSlotsByDaypart(slots: TodaysSuggestionSlot[]) {
     grouped[daypart].sort((a, b) => a.slotTime.localeCompare(b.slotTime));
   }
   return grouped;
+}
+
+function firstGapRecommendation(slots: TodaysSuggestionSlot[]): {
+  suggestionId: string | null;
+  recommendation: SuggestionGapRecommendation | null;
+} {
+  const suggestion = slots.find(
+    (slot) => slot.suggestion?.gapRecommendations.length,
+  )?.suggestion;
+  return {
+    suggestionId: suggestion?.id ?? null,
+    recommendation: suggestion?.gapRecommendations[0] ?? null,
+  };
 }
 
 function buildHeadline(

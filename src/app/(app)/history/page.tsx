@@ -1,22 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Lightbulb } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { HistoryDayCard } from "@/components/history/history-day-card";
 import { HistoryEmptyState } from "@/components/history/history-empty-state";
+import { HistoryExportButton } from "@/components/history/history-export-button";
 import { HistoryFilterBar } from "@/components/history/history-filter-bar";
 import { HistoryHeaderPopovers } from "@/components/history/header-popovers";
 import { HistoryListSkeleton } from "@/components/history/history-list-skeleton";
+import { HistorySummaryStrip } from "@/components/history/history-summary-strip";
 import { useSuggestionHistory } from "@/hooks/use-suggestions";
 import type { SuggestionHistoryListQuery } from "@/types/suggestions";
 
 export default function HistoryPage() {
   const t = useTranslations("history.page");
-  const tSummary = useTranslations("history.summary");
   const [query, setQuery] = useState<SuggestionHistoryListQuery>({
     range: "7d",
   });
@@ -25,10 +26,10 @@ export default function HistoryPage() {
 
   const headerAction = (
     <div className="flex shrink-0 gap-1.5">
-      <Button variant="outline" size="sm" aria-label={t("export")}>
-        <Download className="h-3.5 w-3.5" />
-        <span className="hidden sm:inline">{t("export")}</span>
-      </Button>
+      <HistoryExportButton
+        query={query}
+        disabled={!data || data.days.length === 0}
+      />
       <HistoryHeaderPopovers />
     </div>
   );
@@ -68,11 +69,11 @@ export default function HistoryPage() {
           <HistoryEmptyState />
         ) : (
           <>
-            <SummaryStrip
+            <HistorySummaryStrip
               applied={data.totalApplied}
+              edited={data.totalEdited}
               total={data.totalSlots}
               adherencePercent={data.adherencePercent}
-              tSummary={tSummary}
             />
 
             <div className="mt-3">
@@ -81,37 +82,35 @@ export default function HistoryPage() {
               ))}
             </div>
 
+            {history.hasNextPage || history.isFetchingNextPage ? (
+              <div className="mt-4 flex justify-center">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={history.isFetchingNextPage}
+                  onClick={() => {
+                    void history.fetchNextPage();
+                  }}
+                >
+                  {history.isFetchingNextPage
+                    ? t("loadingMore")
+                    : t("loadMore")}
+                </Button>
+              </div>
+            ) : null}
+
+            {history.isFetchNextPageError ? (
+              <p className="mt-2 text-center text-sm text-danger" role="alert">
+                {t("loadMoreError")}
+              </p>
+            ) : null}
+
             {data.adherencePercent !== null ? (
               <PatternNoticeCard percent={data.adherencePercent} />
             ) : null}
           </>
         )}
       </div>
-    </div>
-  );
-}
-
-function SummaryStrip({
-  applied,
-  total,
-  adherencePercent,
-  tSummary,
-}: {
-  applied: number;
-  total: number;
-  adherencePercent: number | null;
-  tSummary: ReturnType<typeof useTranslations>;
-}) {
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      <span className="inline-flex items-center gap-1.5 rounded-full border border-[color:rgba(47,122,82,0.28)] bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent-strong">
-        {tSummary("appliedOf", { applied, total })}
-      </span>
-      {adherencePercent !== null ? (
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-medium text-foreground">
-          {tSummary("adherence", { percent: adherencePercent })}
-        </span>
-      ) : null}
     </div>
   );
 }

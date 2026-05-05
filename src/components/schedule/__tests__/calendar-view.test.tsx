@@ -1,23 +1,23 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import { NextIntlClientProvider } from 'next-intl';
-import enMessages from '../../../../messages/en.json';
-import { ApiError } from '@/lib/api-error';
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { NextIntlClientProvider } from "next-intl";
+import enMessages from "../../../../messages/en.json";
+import { ApiError } from "@/lib/api-error";
 import {
   DayOfWeek,
   ScheduleApiErrorCode,
   SlotMode,
   StepLabel,
   type ScheduleSlot,
-} from '@/types/schedule';
-import { useMoveSlot } from '@/hooks/use-schedule';
-import { toast } from 'sonner';
-import { CalendarView } from '../calendar-view';
+} from "@/types/schedule";
+import { useMoveSlot } from "@/hooks/use-schedule";
+import { toast } from "sonner";
+import { CalendarView } from "../calendar-view";
 
 let mockDndContextProps: Record<string, (...args: unknown[]) => void> = {};
 let mockMoveSlotMutate = jest.fn();
 
-jest.mock('@dnd-kit/core', () => {
-  const React = jest.requireActual('react');
+jest.mock("@dnd-kit/core", () => {
+  const React = jest.requireActual("react");
 
   return {
     DndContext: ({
@@ -27,16 +27,23 @@ jest.mock('@dnd-kit/core', () => {
       children: React.ReactNode;
       [key: string]: unknown;
     }) => {
-      mockDndContextProps = props as Record<string, (...args: unknown[]) => void>;
-      return React.createElement('div', { 'data-testid': 'dnd-context' }, children);
+      mockDndContextProps = props as Record<
+        string,
+        (...args: unknown[]) => void
+      >;
+      return React.createElement(
+        "div",
+        { "data-testid": "dnd-context" },
+        children,
+      );
     },
     DragOverlay: ({ children }: { children: React.ReactNode }) =>
-      React.createElement('div', { 'data-testid': 'drag-overlay' }, children),
+      React.createElement("div", { "data-testid": "drag-overlay" }, children),
     KeyboardSensor: jest.fn(),
     PointerSensor: jest.fn(),
     closestCenter: jest.fn(),
     useDraggable: jest.fn(({ id }: { id: string }) => ({
-      attributes: { 'data-draggable-id': id },
+      attributes: { "data-draggable-id": id },
       listeners: { onPointerDown: jest.fn() },
       setNodeRef: jest.fn(),
       isDragging: false,
@@ -50,11 +57,11 @@ jest.mock('@dnd-kit/core', () => {
   };
 });
 
-jest.mock('@/hooks/use-schedule', () => ({
+jest.mock("@/hooks/use-schedule", () => ({
   useMoveSlot: jest.fn(),
 }));
 
-jest.mock('sonner', () => ({
+jest.mock("sonner", () => ({
   toast: {
     error: jest.fn(),
     success: jest.fn(),
@@ -76,6 +83,10 @@ function createSlot(
     slotTime,
     mode,
     slotNotes: null,
+    specialistProviderName: null,
+    specialistClinicName: null,
+    specialistActiveSince: null,
+    specialistSafetyNotes: null,
     steps:
       mode === SlotMode.Manual
         ? [
@@ -89,13 +100,13 @@ function createSlot(
               optional: false,
               isSpecialistLocked: false,
               product: null,
-              createdAt: '2026-04-17T00:00:00.000Z',
-              updatedAt: '2026-04-17T00:00:00.000Z',
+              createdAt: "2026-04-17T00:00:00.000Z",
+              updatedAt: "2026-04-17T00:00:00.000Z",
             },
           ]
         : [],
-    createdAt: '2026-04-17T00:00:00.000Z',
-    updatedAt: '2026-04-17T00:00:00.000Z',
+    createdAt: "2026-04-17T00:00:00.000Z",
+    updatedAt: "2026-04-17T00:00:00.000Z",
   };
 }
 
@@ -116,7 +127,7 @@ function renderCalendar(
   );
 }
 
-describe('CalendarView', () => {
+describe("CalendarView", () => {
   beforeEach(() => {
     mockDndContextProps = {};
     mockMoveSlotMutate = jest.fn();
@@ -125,29 +136,36 @@ describe('CalendarView', () => {
     mockToast.success.mockReset();
   });
 
-  it('orders days from today, groups slots, and opens add/slot actions', () => {
+  it("orders days from today, groups slots, and opens add/slot actions", () => {
     const onAddTime = jest.fn();
     const onSlotClick = jest.fn();
-    const evening = createSlot('slot-evening', DayOfWeek.Wed, '21:00', SlotMode.AI);
-    const morning = createSlot('slot-morning', DayOfWeek.Wed, '08:00');
+    const evening = createSlot(
+      "slot-evening",
+      DayOfWeek.Wed,
+      "21:00",
+      SlotMode.AI,
+    );
+    const morning = createSlot("slot-morning", DayOfWeek.Wed, "08:00");
 
     renderCalendar([evening, morning], { onAddTime, onSlotClick });
 
-    expect(screen.getByText('Drag any slot to another day')).toBeInTheDocument();
-    expect(screen.getByText('Wed')).toBeInTheDocument();
+    expect(
+      screen.getByText("Drag any slot to another day"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Wed")).toBeInTheDocument();
     expect(screen.getByText(/Today/)).toBeInTheDocument();
     expect(screen.getByText(/# step/)).toBeInTheDocument();
-    expect(screen.getByText('AI')).toBeInTheDocument();
+    expect(screen.getByText("AI")).toBeInTheDocument();
 
-    fireEvent.click(screen.getAllByRole('button', { name: 'Add' })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: "Add" })[0]);
     expect(onAddTime).toHaveBeenCalledWith(DayOfWeek.Wed);
 
-    fireEvent.click(screen.getByRole('button', { name: '08:00' }));
-    expect(onSlotClick).toHaveBeenCalledWith('slot-morning');
+    fireEvent.click(screen.getByRole("button", { name: "08:00" }));
+    expect(onSlotClick).toHaveBeenCalledWith("slot-morning");
   });
 
-  it('moves a dragged slot to another day and shows success feedback', () => {
-    const slot = createSlot('slot-1', DayOfWeek.Wed, '08:00');
+  it("moves a dragged slot to another day and shows success feedback", () => {
+    const slot = createSlot("slot-1", DayOfWeek.Wed, "08:00");
 
     renderCalendar([slot]);
 
@@ -156,7 +174,7 @@ describe('CalendarView', () => {
         active: { data: { current: { slot } } },
       });
     });
-    expect(screen.getByTestId('drag-overlay')).toHaveTextContent('08:00');
+    expect(screen.getByTestId("drag-overlay")).toHaveTextContent("08:00");
 
     act(() => {
       mockDndContextProps.onDragEnd({
@@ -167,8 +185,8 @@ describe('CalendarView', () => {
 
     expect(mockMoveSlotMutate).toHaveBeenCalledWith(
       {
-        id: 'slot-1',
-        payload: { toDay: DayOfWeek.Fri, toTime: '08:00' },
+        id: "slot-1",
+        payload: { toDay: DayOfWeek.Fri, toTime: "08:00" },
       },
       expect.objectContaining({
         onError: expect.any(Function),
@@ -180,11 +198,11 @@ describe('CalendarView', () => {
       onSuccess: () => void;
     };
     options.onSuccess();
-    expect(mockToast.success).toHaveBeenCalledWith('Saved');
+    expect(mockToast.success).toHaveBeenCalledWith("Saved");
   });
 
-  it('does not move when a drop has no destination or stays on the same day', () => {
-    const slot = createSlot('slot-1', DayOfWeek.Wed, '08:00');
+  it("does not move when a drop has no destination or stays on the same day", () => {
+    const slot = createSlot("slot-1", DayOfWeek.Wed, "08:00");
 
     renderCalendar([slot]);
 
@@ -203,8 +221,8 @@ describe('CalendarView', () => {
     expect(mockMoveSlotMutate).not.toHaveBeenCalled();
   });
 
-  it('shows conflict-specific and generic move errors', () => {
-    const slot = createSlot('slot-1', DayOfWeek.Wed, '08:00');
+  it("shows conflict-specific and generic move errors", () => {
+    const slot = createSlot("slot-1", DayOfWeek.Wed, "08:00");
 
     renderCalendar([slot]);
 
@@ -219,14 +237,14 @@ describe('CalendarView', () => {
       onError: (error: unknown) => void;
     };
     options.onError(
-      new ApiError('Conflict', {
+      new ApiError("Conflict", {
         body: { code: ScheduleApiErrorCode.MoveConflict },
       }),
     );
-    options.onError(new Error('Nope'));
+    options.onError(new Error("Nope"));
 
     expect(mockToast.error).toHaveBeenCalledWith(
-      'A slot already exists at the destination.',
+      "A slot already exists at the destination.",
     );
     expect(mockToast.error).toHaveBeenCalledWith("Couldn't save. Try again.");
   });

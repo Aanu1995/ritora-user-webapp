@@ -5,6 +5,7 @@ jest.mock("@/lib/api", () => ({
 
 import { getRequest, postRequest } from "@/lib/api";
 import {
+  exportSuggestionHistoryCsv,
   getSuggestion,
   getSuggestionHistory,
   getSuggestionHistoryDay,
@@ -55,13 +56,42 @@ describe("suggestions.service", () => {
       fromDate: "2026-04-01",
       toDate: "2026-04-29",
       daypart: "morning",
+      mode: "mixed",
       status: "partial",
       hasBeenEdited: true,
       cursor: "cursor-1",
+      limit: 12,
     });
 
     expect(mockGetRequest).toHaveBeenCalledWith(
-      "/suggestions/history?range=custom&from=2026-04-01&to=2026-04-29&daypart=morning&status=partial&edited=true&cursor=cursor-1",
+      "/suggestions/history?range=custom&from=2026-04-01&to=2026-04-29&daypart=morning&mode=mixed&status=partial&edited=true&cursor=cursor-1&limit=12",
+    );
+  });
+
+  it("exports all matching history filters without frontend pagination params", async () => {
+    const blob = new Blob(["Date\n"], { type: "text/csv" });
+    mockGetRequest.mockResolvedValue(blob);
+
+    await expect(
+      exportSuggestionHistoryCsv({
+        range: "custom",
+        fromDate: "2026-04-01",
+        toDate: "2026-04-29",
+        daypart: "morning",
+        mode: "mixed",
+        status: "partial",
+        hasBeenEdited: true,
+        cursor: "cursor-1",
+        limit: 12,
+      }),
+    ).resolves.toBe(blob);
+
+    expect(mockGetRequest).toHaveBeenCalledWith(
+      "/suggestions/history/export?range=custom&from=2026-04-01&to=2026-04-29&daypart=morning&mode=mixed&status=partial&edited=true",
+      {
+        headers: { Accept: "text/csv" },
+        responseType: "blob",
+      },
     );
   });
 

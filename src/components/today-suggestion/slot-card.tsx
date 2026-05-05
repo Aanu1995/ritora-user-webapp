@@ -4,7 +4,6 @@ import {
   Check,
   CircleCheck,
   Ellipsis,
-  Pencil,
   Sparkles,
   SlidersHorizontal,
 } from "lucide-react";
@@ -21,6 +20,7 @@ import {
   SlotProcessingCard,
 } from "@/components/today-suggestion/slot-state-card";
 import { SuggestionStepRow } from "@/components/today-suggestion/step-row";
+import { RecordedSlotCard } from "@/components/today-suggestion/recorded-slot-card";
 import type { TodaysSuggestionSlot } from "@/types/suggestions";
 
 type Props = {
@@ -31,6 +31,8 @@ type Props = {
   onEdit?: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   /** Open the suggestion detail drawer ("Why this routine"). */
   onShowDetail?: (slot: TodaysSuggestionSlot) => void;
+  /** Open the editable application sheet before applying. */
+  onCustomize?: (slot: TodaysSuggestionSlot) => void;
 };
 
 /**
@@ -54,6 +56,7 @@ export function SuggestionSlotCard({
   onRecord,
   onEdit,
   onShowDetail,
+  onCustomize,
 }: Props) {
   const t = useTranslations("todaysSuggestion.slot");
 
@@ -164,7 +167,7 @@ export function SuggestionSlotCard({
         </button>
         <button
           type="button"
-          onClick={() => onShowDetail?.(slot)}
+          onClick={() => onCustomize?.(slot)}
           className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted"
           aria-label={t("customise")}
         >
@@ -172,6 +175,7 @@ export function SuggestionSlotCard({
         </button>
         <button
           type="button"
+          onClick={() => onShowDetail?.(slot)}
           className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted"
           aria-label={t("more")}
         >
@@ -231,77 +235,5 @@ function RationaleCard({
         ) : null}
       </p>
     </div>
-  );
-}
-
-function RecordedSlotCard({
-  slot,
-  applicationLogId,
-  onEdit,
-}: {
-  slot: TodaysSuggestionSlot;
-  applicationLogId: string;
-  onEdit?: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
-}) {
-  const t = useTranslations("todaysSuggestion.slot");
-  const suggestion = slot.suggestion!;
-
-  const stepsByOrder = [...suggestion.steps].sort(
-    (a, b) => a.stepOrder - b.stepOrder,
-  );
-
-  return (
-    <article
-      className={cn(
-        "rounded-3xl border p-4 shadow-[var(--shadow-soft)]",
-        "border-[color:rgba(47,122,82,0.22)] bg-[color:color-mix(in_srgb,var(--surface)_88%,var(--accent-soft))]",
-      )}
-    >
-      <header className="mb-3 flex items-start gap-3">
-        <SuggestionDaypartIcon daypart={suggestion.daypart} />
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-base font-bold leading-tight text-foreground">
-            {formatSlotTime12h(slot.slotTime)}
-          </p>
-          <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted">
-            {t("appliedSummary", {
-              count: stepsByOrder.length,
-              total: stepsByOrder.length,
-            })}
-          </p>
-        </div>
-        <div className="flex flex-wrap justify-end gap-1.5">
-          <SuggestionStatusPill
-            variant="applied"
-            icon={<Check className="h-3 w-3" />}
-          >
-            {t("applied")}
-          </SuggestionStatusPill>
-          <SuggestionModeBadge mode={suggestion.mode} />
-        </div>
-      </header>
-
-      <ul className="flex flex-col gap-2">
-        {stepsByOrder.map((step) => (
-          <li key={step.id}>
-            <SuggestionStepRow step={step} compactApplied />
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-3.5 flex items-center justify-between">
-        <span className="text-xs text-muted">
-          {t("recordedMatchesSuggestion")}
-        </span>
-        <button
-          type="button"
-          onClick={() => onEdit?.(slot, applicationLogId)}
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-foreground transition hover:bg-surface-muted"
-        >
-          <Pencil className="h-3.5 w-3.5" />
-          {t("edit")}
-        </button>
-      </div>
-    </article>
   );
 }

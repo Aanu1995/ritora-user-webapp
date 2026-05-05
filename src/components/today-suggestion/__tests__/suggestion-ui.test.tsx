@@ -1,0 +1,696 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { renderWithProviders } from "@/test/utils";
+import { SuggestionDetailDrawer } from "@/components/today-suggestion/suggestion-detail-drawer";
+import { RecordApplicationSheet } from "@/components/today-suggestion/record-application-sheet";
+import { SuggestionSlotCard } from "@/components/today-suggestion/slot-card";
+import { SuggestionStepRow } from "@/components/today-suggestion/step-row";
+import { GapRecommendationBanner } from "@/components/today-suggestion/gap-recommendation-banner";
+import {
+  DayAdherencePill,
+  DaySummaryPills,
+} from "@/components/today-suggestion/day-summary-pills";
+import { RecordingReminderBanner } from "@/components/today-suggestion/recording-reminder-banner";
+import { TodayGapRecommendationSection } from "@/components/today-suggestion/today-gap-recommendation-section";
+import type { ApplicationLog } from "@/types/application-tracking";
+import {
+  SuggestionEvidenceSourceId,
+  type SuggestionInstance,
+  type SuggestionStep,
+  type TodaysSuggestionResponse,
+  type TodaysSuggestionSlot,
+} from "@/types/suggestions";
+
+const mockRegenerateMutate = jest.fn();
+const mockGapActionMutate = jest.fn();
+const mockRecordApplicationMutate = jest.fn();
+const mockRouterPush = jest.fn();
+const mockSnoozeMutate = jest.fn();
+const mockTodayEntry = jest.fn();
+const mockApplicationLogVersions = jest.fn();
+
+jest.mock("@/hooks/use-suggestions", () => ({
+  useRegenerateSuggestion: () => ({
+    mutate: mockRegenerateMutate,
+    isPending: false,
+  }),
+  useRecordSuggestionGapAction: () => ({
+    mutate: mockGapActionMutate,
+    isPending: false,
+  }),
+  useSnoozeRecordingReminder: () => ({
+    mutate: mockSnoozeMutate,
+    isPending: false,
+  }),
+}));
+
+jest.mock("@/hooks/use-application-tracking", () => ({
+  useEditApplication: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+  }),
+  useRecordApplication: () => ({
+    mutate: mockRecordApplicationMutate,
+    isPending: false,
+  }),
+  useApplicationLogVersions: () => mockApplicationLogVersions(),
+}));
+
+jest.mock("@/hooks/use-skin-journal", () => ({
+  useTodayEntry: () => mockTodayEntry(),
+}));
+
+jest.mock("@/hooks/use-shelf", () => ({
+  useShelfProducts: () => ({ data: [], isLoading: false }),
+}));
+
+jest.mock("@/hooks/use-shelf-time-zone", () => ({
+  useShelfDateContext: () => ({ timeZone: "UTC" }),
+}));
+
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockRouterPush,
+  }),
+}));
+
+afterEach(() => {
+  jest.clearAllMocks();
+  mockTodayEntry.mockReturnValue({ data: { entry: null } });
+  mockApplicationLogVersions.mockReturnValue({ data: [], isLoading: false });
+});
+
+describe("today suggestion UI contract", () => {
+  beforeEach(() => {
+    mockTodayEntry.mockReturnValue({ data: { entry: null } });
+    mockApplicationLogVersions.mockReturnValue({ data: [], isLoading: false });
+  });
+
+  it("renders AI model, trusted evidence, and regenerate action in the drawer", async () => {
+    const user = userEvent.setup();
+    const suggestion = suggestionInstance({
+      explanation: {
+        headline: "Barrier support today.",
+        body: ["Use a simple routine because the last photo showed dryness."],
+        perStepReasons: [
+          { stepOrder: 0, reason: "Cleanser removes sunscreen residue." },
+        ],
+        skipped: [{ name: "Retinol serum", reason: "Hold during dryness." }],
+        inputs: [
+          { label: "Skin profile", detail: "Sensitive and dryness-prone." },
+          { label: "Shelf", detail: "Four active products scored." },
+          { label: "Photo record", detail: "Dryness was detected." },
+          { label: "Application record", detail: "Retinol used yesterday." },
+          { label: "Weather", detail: "UV 3." },
+          { label: "Other", detail: "No extra notes." },
+        ],
+      },
+      evidenceSources: [
+        {
+          id: SuggestionEvidenceSourceId.AadSunscreenSelection,
+          title: "How to select a sunscreen",
+          organization: "American Academy of Dermatology",
+          url: "https://www.aad.org/public/everyday-care/sun-protection/shade-clothing-sunscreen/how-to-select-sunscreen",
+          evidenceType: "dermatology_association",
+          summary: "Use broad-spectrum SPF 30 or higher.",
+          reviewedAt: "2026-05-04",
+        },
+      ],
+    });
+
+    renderWithProviders(
+      <SuggestionDetailDrawer
+        open
+        onOpenChange={jest.fn()}
+        suggestion={suggestion}
+      />,
+    );
+
+    expect(screen.getByText(/Model gpt-4.1-mini/i)).toBeInTheDocument();
+    expect(screen.getByText(/Trusted evidence/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /sunscreen/i })).toHaveAttribute(
+      "href",
+      expect.stringContaining("aad.org"),
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: /generate alternatives/i }),
+    );
+    expect(mockRegenerateMutate).toHaveBeenCalledWith({
+      id: "suggestion-1",
+      payload: { reason: "user_requested" },
+    });
+  });
+
+  it("shows persisted gap save state instead of a local-only wishlist action", () => {
+    renderWithProviders(
+      <GapRecommendationBanner
+        recommendation={{
+          ingredientOrCategory: "Vitamin C serum",
+          reason: "Supports the brightening goal.",
+          budgetTier: "mid",
+          goalAlignment: "Brightening",
+          sourceIds: [],
+          userAction: "saved",
+        }}
+        onSaveToWishlist={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Saved")).toBeInTheDocument();
+  });
+
+  it("renders locked, processing, ready, and recorded slot states", async () => {
+    const user = userEvent.setup();
+    const onRecord = jest.fn();
+    const onEdit = jest.fn();
+    const onShowDetail = jest.fn();
+
+    const { rerender } = renderWithProviders(
+      <SuggestionSlotCard
+        slot={slot({ isVisible: false, suggestion: null })}
+        onRecord={onRecord}
+      />,
+    );
+    expect(screen.getByText(/Available/i)).toBeInTheDocument();
+
+    rerender(
+      <SuggestionSlotCard
+        slot={slot({
+          status: "failed",
+          suggestion: suggestionInstance({ generationStatus: "failed" }),
+        })}
+      />,
+    );
+    expect(screen.getByText(/Needs retry/i)).toBeInTheDocument();
+
+    rerender(
+      <SuggestionSlotCard
+        slot={slot({ suggestion: suggestionInstance() })}
+        onRecord={onRecord}
+        onShowDetail={onShowDetail}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: /mark as applied/i }));
+    await user.click(screen.getByRole("button", { name: /why this routine/i }));
+    expect(onRecord).toHaveBeenCalled();
+    expect(onShowDetail).toHaveBeenCalled();
+
+    rerender(
+      <SuggestionSlotCard
+        slot={slot({
+          status: "recorded",
+          recording: {
+            applicationLogId: "log-1",
+            appliedAt: "2026-05-04T08:05:00.000Z",
+            hasBeenEdited: false,
+            editCount: 0,
+            lastEditedAt: null,
+            appliedCount: 1,
+            totalItems: 1,
+          },
+          suggestion: suggestionInstance({ applicationLogId: "log-1" }),
+        })}
+        onEdit={onEdit}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /edit/i }));
+    expect(onEdit).toHaveBeenCalledWith(
+      expect.objectContaining({ slotId: "slot-1" }),
+      "log-1",
+    );
+  });
+
+  it("renders actual application log items on recorded Today cards", () => {
+    renderWithProviders(
+      <SuggestionSlotCard
+        slot={slot({
+          status: "edited",
+          recording: {
+            applicationLogId: "log-1",
+            appliedAt: "2026-05-04T08:05:00.000Z",
+            hasBeenEdited: true,
+            editCount: 1,
+            lastEditedAt: "2026-05-04T09:00:00.000Z",
+            appliedCount: 1,
+            totalItems: 3,
+          },
+          applicationLog: applicationLog(),
+          suggestion: suggestionInstance({ applicationLogId: "log-1" }),
+        })}
+      />,
+    );
+
+    expect(screen.getByText(/Applied at/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Recovery Balm/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Used gentler product/i)).toBeInTheDocument();
+    expect(screen.getByText(/Skipped/i)).toBeInTheDocument();
+    expect(screen.getByText(/Edited/i)).toBeInTheDocument();
+  });
+
+  it("keeps ad-hoc products visible when editing a recorded application", () => {
+    mockApplicationLogVersions.mockReturnValue({
+      isLoading: false,
+      data: [
+        {
+          id: "version-1",
+          applicationLogId: "log-1",
+          version: 1,
+          editedAt: "2026-05-04T08:05:00.000Z",
+          editedByUserId: "user-1",
+          editReason: null,
+          snapshot: {
+            version: 1,
+            applied_at: "2026-05-04T08:05:00.000Z",
+            general_notes: "Original save",
+            items: [],
+            edited_at: "2026-05-04T08:05:00.000Z",
+            edited_by_user_id: "user-1",
+            edit_reason: null,
+          },
+        },
+        {
+          id: "version-2",
+          applicationLogId: "log-1",
+          version: 2,
+          editedAt: "2026-05-04T09:00:00.000Z",
+          editedByUserId: "user-1",
+          editReason: "Corrected a substitution.",
+          snapshot: {
+            version: 2,
+            applied_at: "2026-05-04T08:05:00.000Z",
+            general_notes: "Skin felt dry today.",
+            items: [],
+            edited_at: "2026-05-04T09:00:00.000Z",
+            edited_by_user_id: "user-1",
+            edit_reason: "Corrected a substitution.",
+          },
+        },
+      ],
+    });
+
+    renderWithProviders(
+      <RecordApplicationSheet
+        open
+        onOpenChange={jest.fn()}
+        mode={{
+          kind: "edit",
+          slot: slot({ suggestion: suggestionInstance() }),
+          existingLog: applicationLog(),
+        }}
+      />,
+    );
+
+    expect(screen.getByDisplayValue("Plain Lab")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Recovery Balm")).toBeInTheDocument();
+    expect(screen.getByDisplayValue(/Used gentler product/i)).toBeInTheDocument();
+    expect(screen.getByText(/Version 1/i)).toBeInTheDocument();
+    expect(screen.getByText(/Version 2/i)).toBeInTheDocument();
+    expect(screen.getByText(/Corrected a substitution/i)).toBeInTheDocument();
+  });
+
+  it("covers step row provenance, fallback labels, and compact applied rendering", () => {
+    const { rerender } = render(
+      <SuggestionStepRow step={suggestionStep({ provenance: "ai_added" })} />,
+    );
+    expect(screen.getByText(/Ava Lab/i)).toBeInTheDocument();
+    expect(screen.getByText(/selected for hydration/i)).toBeInTheDocument();
+
+    rerender(
+      <SuggestionStepRow
+        step={suggestionStep({
+          id: "locked",
+          product: null,
+          productBrand: null,
+          productName: null,
+          customLabel: "Specialist cream",
+          provenance: "specialist_locked",
+        })}
+      />,
+    );
+    expect(screen.getByText(/Specialist cream/i)).toBeInTheDocument();
+
+    rerender(
+      <SuggestionStepRow
+        compactApplied
+        step={suggestionStep({
+          id: "fallback",
+          stepLabel: "sun-protection",
+          product: null,
+          productBrand: null,
+          productName: null,
+          customLabel: null,
+          provenance: "user_routine",
+        })}
+      />,
+    );
+    expect(screen.getByText(/sun protection/i)).toBeInTheDocument();
+  });
+
+  it("summarizes today's visible, locked, weather, photo, and adherence states", () => {
+    renderWithProviders(
+      <>
+        <DaySummaryPills
+          data={todaysResponse({
+            weatherSummary: {
+              conditionLabel: "Cloudy",
+              temperatureCelsius: 19.4,
+              uvIndex: 3,
+              humidity: 60,
+            },
+            slots: [
+              slot({
+                slotId: "recorded",
+                suggestion: suggestionInstance({ applicationLogId: "log-1" }),
+              }),
+              slot({
+                slotId: "ready",
+                suggestion: suggestionInstance({ id: "suggestion-2" }),
+              }),
+              slot({ slotId: "locked", isVisible: false, suggestion: null }),
+            ],
+          })}
+        />
+        <DayAdherencePill percent={83} />
+        <DayAdherencePill percent={null} />
+      </>,
+    );
+
+    expect(screen.getByText(/applied/)).toBeInTheDocument();
+    expect(screen.getByText(/ready/)).toBeInTheDocument();
+    expect(screen.getByText(/locked/)).toBeInTheDocument();
+    expect(screen.getByText("Cloudy, 19°C, UV 3")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /log photo/i })).toHaveAttribute(
+      "href",
+      "/journal/upload",
+    );
+    expect(screen.getByText("83% adherence")).toBeInTheDocument();
+  });
+
+  it("records reminder actions without using local-only state", async () => {
+    const user = userEvent.setup();
+    const onRecord = jest.fn();
+    renderWithProviders(
+      <RecordingReminderBanner
+        slots={[slot({ status: "recordable" })]}
+        onRecord={onRecord}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /record morning now/i }));
+    expect(onRecord).toHaveBeenCalledWith(
+      expect.objectContaining({ slotId: "slot-1" }),
+    );
+
+    await user.click(screen.getByRole("button", { name: /skipped today/i }));
+    expect(mockRecordApplicationMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        suggestionInstanceId: "suggestion-1",
+        generalNotes: "Marked skipped from Today's Suggestion reminder.",
+        items: [
+          expect.objectContaining({
+            suggestionStepId: "step-1",
+            status: "skipped",
+          }),
+        ],
+      }),
+    );
+
+    await user.click(screen.getByRole("button", { name: /remind me later/i }));
+    expect(mockSnoozeMutate).toHaveBeenCalledWith({
+      suggestionInstanceId: "suggestion-1",
+      minutes: 60,
+    });
+  });
+
+  it("wires gap recommendation browse, save, and dismiss actions", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <TodayGapRecommendationSection
+        suggestionId="suggestion-1"
+        recommendation={{
+          ingredientOrCategory: "Vitamin C serum",
+          reason: "Supports the brightening goal.",
+          budgetTier: "mid",
+          goalAlignment: "Brightening",
+          sourceIds: [],
+          userAction: null,
+        }}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /browse options/i }));
+    expect(mockRouterPush).toHaveBeenCalledWith(
+      "/smart-picks?focus=Vitamin%20C%20serum",
+    );
+
+    await user.click(screen.getByRole("button", { name: /save to wishlist/i }));
+    await user.click(screen.getByRole("button", { name: /not now/i }));
+    expect(mockGapActionMutate).toHaveBeenNthCalledWith(
+      1,
+      {
+        suggestionInstanceId: "suggestion-1",
+        ingredientOrCategory: "Vitamin C serum",
+        action: "saved",
+      },
+      expect.any(Object),
+    );
+    expect(mockGapActionMutate).toHaveBeenNthCalledWith(
+      2,
+      {
+        suggestionInstanceId: "suggestion-1",
+        ingredientOrCategory: "Vitamin C serum",
+        action: "dismissed",
+      },
+      expect.any(Object),
+    );
+  });
+});
+
+function todaysResponse(
+  partial: Partial<TodaysSuggestionResponse> = {},
+): TodaysSuggestionResponse {
+  return {
+    date: "2026-05-04",
+    timeZone: "UTC",
+    generatedAt: "2026-05-04T06:00:00.000Z",
+    leadTimeMinutes: 120,
+    summary: {
+      total: 0,
+      locked: 0,
+      upcoming: 0,
+      ready: 0,
+      recordable: 0,
+      recorded: 0,
+      edited: 0,
+      failed: 0,
+    },
+    weatherSummary: null,
+    slots: [],
+    reactionAlert: null,
+    ...partial,
+  };
+}
+
+function slot(partial: Partial<TodaysSuggestionSlot> = {}): TodaysSuggestionSlot {
+  return {
+    slotId: "slot-1",
+    daypart: "morning",
+    slotTime: "08:00",
+    mode: "ai",
+    slotNotes: null,
+    routineStepCount: 1,
+    specialistLockedStepCount: 0,
+    specialist: null,
+    visibleAt: "2026-05-04T06:00:00.000Z",
+    status: "ready",
+    slotStartsAt: "2026-05-04T08:00:00.000Z",
+    recordableAt: "2026-05-04T08:30:00.000Z",
+    expiresAt: "2026-05-04T23:59:00.000Z",
+    recording: null,
+    recordingReminderSnoozedUntil: null,
+    applicationLog: null,
+    isVisible: true,
+    suggestion: suggestionInstance(),
+    ...partial,
+  };
+}
+
+function applicationLog(): ApplicationLog {
+  return {
+    id: "log-1",
+    suggestionInstanceId: "suggestion-1",
+    slotId: "slot-1",
+    targetDate: "2026-05-04",
+    targetTime: "08:00",
+    daypart: "morning",
+    appliedAt: "2026-05-04T08:05:00.000Z",
+    generalNotes: "Skin felt dry today.",
+    editReason: "Corrected a substitution.",
+    editCount: 1,
+    hasBeenEdited: true,
+    firstRecordedAt: "2026-05-04T08:05:00.000Z",
+    lastEditedAt: "2026-05-04T09:00:00.000Z",
+    createdAt: "2026-05-04T08:05:00.000Z",
+    updatedAt: "2026-05-04T09:00:00.000Z",
+    items: [
+      {
+        id: "item-1",
+        stepOrder: 0,
+        suggestionStepId: "step-1",
+        inventoryProductId: "product-1",
+        substitutedWithProductId: null,
+        productBrand: "Ava Lab",
+        productName: "Barrier Serum",
+        stepLabel: "serum",
+        status: "skipped",
+        isAdHoc: false,
+        itemSource: "recommended",
+        adHocBrand: null,
+        adHocName: null,
+        notes: "Skin felt warm.",
+        substitutionReason: null,
+        recommendedSnapshot: null,
+        appliedSnapshot: null,
+        appliedAt: null,
+        product: null,
+        substitutedWithProduct: null,
+      },
+      {
+        id: "item-2",
+        stepOrder: 1,
+        suggestionStepId: "step-2",
+        inventoryProductId: "product-2",
+        substitutedWithProductId: "product-3",
+        productBrand: "Ava Lab",
+        productName: "Retinol Serum",
+        stepLabel: "serum",
+        status: "substituted",
+        isAdHoc: false,
+        itemSource: "recommended",
+        adHocBrand: null,
+        adHocName: null,
+        notes: null,
+        substitutionReason: "Used gentler product",
+        recommendedSnapshot: null,
+        appliedSnapshot: {
+          product_id: "product-3",
+          brand: "Plain Lab",
+          name: "Recovery Balm",
+          step_label: "moisturizer",
+        },
+        appliedAt: null,
+        product: null,
+        substitutedWithProduct: {
+          id: "product-3",
+          brand: "Plain Lab",
+          name: "Recovery Balm",
+          category: "moisturizer",
+          imageUrl: null,
+          status: "active",
+        },
+      },
+      {
+        id: "item-3",
+        stepOrder: 2,
+        suggestionStepId: null,
+        inventoryProductId: null,
+        substitutedWithProductId: null,
+        productBrand: "Plain Lab",
+        productName: "Recovery Balm",
+        stepLabel: "moisturizer",
+        status: "applied",
+        isAdHoc: true,
+        itemSource: "added_off_shelf",
+        adHocBrand: "Plain Lab",
+        adHocName: "Recovery Balm",
+        notes: null,
+        substitutionReason: null,
+        recommendedSnapshot: null,
+        appliedSnapshot: {
+          product_id: null,
+          brand: "Plain Lab",
+          name: "Recovery Balm",
+          step_label: "moisturizer",
+        },
+        appliedAt: null,
+        product: null,
+        substitutedWithProduct: null,
+      },
+    ],
+  };
+}
+
+function suggestionInstance(
+  partial: Partial<SuggestionInstance> = {},
+): SuggestionInstance {
+  return {
+    id: "suggestion-1",
+    slotId: "slot-1",
+    targetDate: "2026-05-04",
+    targetTime: "08:00",
+    daypart: "morning",
+    mode: "ai",
+    generationStatus: "ready",
+    visibleAt: "2026-05-04T06:00:00.000Z",
+    generatedAt: "2026-05-04T06:05:00.000Z",
+    aiModel: "gpt-4.1-mini",
+    aiPromptVersion: "2026-05-03.v1",
+    hasReactionSignal: false,
+    simplifiedForReaction: false,
+    rationaleHeadline: "Keep the routine light.",
+    explanation: {
+      headline: "Keep the routine light.",
+      body: ["A short morning routine fits today's shelf and schedule."],
+      perStepReasons: [],
+      skipped: [],
+      inputs: [],
+    },
+    gapRecommendations: [],
+    safetyFlags: [],
+    inputTrace: null,
+    evidenceSources: [],
+    steps: [suggestionStep()],
+    applicationLogId: null,
+    createdAt: "2026-05-04T06:00:00.000Z",
+    updatedAt: "2026-05-04T06:00:00.000Z",
+    ...partial,
+  };
+}
+
+function suggestionStep(partial: Partial<SuggestionStep> = {}): SuggestionStep {
+  return {
+    id: "step-1",
+    stepOrder: 0,
+    routineStepId: null,
+    inventoryProductId: "product-1",
+    productBrand: "Ava Lab",
+    productName: "Barrier Serum",
+    stepLabel: "serum",
+    customLabel: null,
+    applicationMethod: "fingertips",
+    quantity: "pea-size",
+    waitAfterMinutes: 5,
+    explanation: "Selected for hydration.",
+    provenance: "ai_added",
+    chips: [{ tone: "ai", text: "Added by AI" }],
+    safetyWarnings: [
+      {
+        severity: "info",
+        message: "Patch test if sensitive.",
+        ingredientSlugs: ["humectant"],
+        sourceIds: [SuggestionEvidenceSourceId.MayoDrySkinCare],
+      },
+    ],
+    product: {
+      id: "product-1",
+      brand: "Ava Lab",
+      name: "Barrier Serum",
+      category: "serum",
+      imageUrl: null,
+      status: "active",
+    },
+    ...partial,
+  };
+}

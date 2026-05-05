@@ -1668,9 +1668,7 @@
           "Massage gently onto damp skin in circular motions.",
           "Rinse thoroughly with lukewarm water."
         ],
-        "cautions": [
-          "Avoid the eye area."
-        ]
+        "cautions": ["Avoid the eye area."]
       },
       "toner": {
         "steps": [
@@ -1725,10 +1723,7 @@
           "Leave on for the time printed on the packaging.",
           "Rinse thoroughly with lukewarm water."
         ],
-        "cautions": [
-          "Patch-test before first use.",
-          "Avoid the eye area."
-        ]
+        "cautions": ["Patch-test before first use.", "Avoid the eye area."]
       },
       "exfoliant": {
         "steps": [
@@ -1747,14 +1742,10 @@
           "Use the ring finger to tap gently around the orbital bone.",
           "Avoid pulling or dragging the thin eye-area skin."
         ],
-        "cautions": [
-          "Keep product out of the eye itself."
-        ]
+        "cautions": ["Keep product out of the eye itself."]
       },
       "lip-care": {
-        "steps": [
-          "Apply a thin layer as needed throughout the day."
-        ],
+        "steps": ["Apply a thin layer as needed throughout the day."],
         "cautions": []
       },
       "treatment": {
@@ -1762,9 +1753,7 @@
           "Follow the directions on the packaging.",
           "Apply to the target area only."
         ],
-        "cautions": [
-          "Patch-test before first use."
-        ]
+        "cautions": ["Patch-test before first use."]
       },
       "other": {
         "steps": [],
@@ -1784,10 +1773,10 @@
       "main": "Main",
       "more": "More",
       "account": "Account"
-  },
-  "soonBadge": "Soon",
-  "badgeLabel": "{count, plural, one {# item needs attention} other {# items need attention}}",
-  "items": {
+    },
+    "soonBadge": "Soon",
+    "badgeLabel": "{count, plural, one {# item needs attention} other {# items need attention}}",
+    "items": {
       "home": "Home",
       "skinProfile": "Skin Profile",
       "shelf": "Shelf",
@@ -2023,6 +2012,16 @@
       "notesPlaceholderAI": "e.g. Skin feels tight today, go gentle on actives.",
       "notesEmpty": "No notes yet. Anything you add here travels with the routine.",
       "notesCounter": "{current} / {max}",
+      "specialist": {
+        "title": "Specialist routine",
+        "body": "Use this when a dermatologist, esthetician, or clinic gave instructions for this slot.",
+        "providerName": "Specialist name",
+        "clinicName": "Clinic",
+        "activeSince": "Active since",
+        "safetyNotes": "Specialist safety notes",
+        "safetyNotesPlaceholder": "e.g. Keep tretinoin on Monday/Thursday only. Do not add exfoliants around this step.",
+        "privacyHint": "Only add details you want Ritora to use when protecting specialist-locked steps."
+      },
       "stepsLabel": "Steps",
       "stepsDescription": "Your routine in application order. Cleansers first, SPF last. Drag to reorder.",
       "stepsCount": "{current} / {max}",
@@ -2048,8 +2047,9 @@
       "productMissing": "Missing product — pick again",
       "notesPlaceholder": "Notes (optional)",
       "optionalLabel": "Optional step",
-      "specialistLockedLabel": "Locked by specialist",
-      "specialistLockedHint": "When checked, AI suggestion engine treats this step as immutable. It will never be removed, reordered, or replaced.",
+      "optionalHint": "Skipping this won't be flagged as a missed routine.",
+      "specialistLockedLabel": "Prescribed by my specialist",
+      "specialistLockedHint": "AI keeps this step exactly as you set it. No reordering, swapping, or removing.",
       "delete": "Remove step",
       "dragHandle": "Drag to reorder"
     },
@@ -2108,6 +2108,10 @@
       "customLabelRequired": "Custom label is required.",
       "customLabelMax": "Custom label is too long.",
       "slotNotesMax": "Notes are too long.",
+      "specialistProviderNameMax": "Specialist name is too long.",
+      "specialistClinicNameMax": "Clinic name is too long.",
+      "specialistActiveSinceFormat": "Use a valid YYYY-MM-DD date.",
+      "specialistSafetyNotesMax": "Specialist safety notes are too long.",
       "stepNotesMax": "Step notes are too long.",
       "productsNotOwned": "Only products from your shelf can be added.",
       "maxSteps": "You can only have up to 10 steps."
@@ -3012,7 +3016,7 @@
   "notificationsPage": {
     "eyebrow": "Inbox",
     "title": "Notifications",
-    "subtitle": "Reactions, insights, photo reminders, and your Skin Wrapped, all in one place.",
+    "subtitle": "Suggestions, reminders, reactions, insights, and your Skin Wrapped, all in one place.",
     "markAllRead": "Mark all read",
     "markingAllRead": "Marking all read",
     "unreadHeading": "Unread",
@@ -3023,8 +3027,10 @@
     "emptyTitle": "All quiet for now",
     "emptyBody": "When something needs your attention, like a possible reaction, a new insight, or your monthly Skin Wrapped, it will show up here.",
     "managePreferences": "Manage notification preferences",
+    "preferencesAction": "Preferences",
     "loadingMore": "Loading more",
     "sourceSkinJournal": "Skin Journal",
+    "sourceTodaysSuggestion": "Today's Suggestion",
     "errors": {
       "loadTitle": "We couldn't load notifications",
       "loadBody": "Please try again. Your notification preferences and journal data are unchanged.",
@@ -3087,7 +3093,10 @@
       "error": "Something went wrong loading your suggestions. You can try again.",
       "retry": "Try again",
       "worthConsidering": "Worth considering",
-      "nextSlotTomorrow": "tomorrow"
+      "nextSlotTomorrow": "tomorrow",
+      "normalRoutineRestored": "Normal routine restored for future suggestions.",
+      "gapSaved": "Saved to your Today wishlist.",
+      "gapDismissed": "Recommendation dismissed for now."
     },
     "lockedDay": {
       "leadTitle": "Suggestions arrive a couple of hours before each slot",
@@ -3148,11 +3157,24 @@
       "customise": "Customise",
       "more": "More",
       "edit": "Edit",
-      "recordedMatchesSuggestion": "Matches the suggestion."
+      "edited": "Edited",
+      "appliedAt": "Applied at {time}",
+      "recordedActualItems": "Recorded from your application log.",
+      "recordedMatchesSuggestion": "Matches the suggestion.",
+      "recordedItem": {
+        "applied": "Applied",
+        "skipped": "Skipped",
+        "substituted": "Substituted",
+        "insteadOf": "Instead of {name}",
+        "unknownProduct": "Product"
+      }
     },
     "reactionBanner": {
       "title": "Possible reaction in this morning's photo",
       "paused": "Paused while it settles: {names}",
+      "confidence": "{percent}% confidence",
+      "photosUntilClear": "{count, plural, =0 {Clear criteria met} one {# more photo to clear} other {# more photos to clear}}",
+      "clearCriteria": "Barrier-clear criteria",
       "viewPhoto": "View photo",
       "resetRoutine": "Use my normal routine"
     },
@@ -3160,6 +3182,7 @@
       "title": "Consider adding a {ingredient}",
       "browse": "Browse options",
       "saveToWishlist": "Save to wishlist",
+      "saved": "Saved",
       "dismiss": "Not now"
     },
     "recordSheet": {
@@ -3169,12 +3192,38 @@
       "editSubtitle": "Slot at {time}. Originally recorded {firstRecordedAt}.",
       "appliedAt": "Applied at",
       "rowSuggestedTag": "Suggested",
+      "rowAddedTag": "Added by you",
       "rowActionApplied": "Mark applied",
       "rowActionSkipped": "Mark skipped",
       "rowActionSubstituted": "Mark substituted",
+      "rowActionRemove": "Remove product",
+      "rowNotesPlaceholder": "Item note",
       "addProduct": {
         "title": "Add a product I used",
-        "body": "Search your shelf or type a name"
+        "body": "Search your shelf or type a name",
+        "panelTitle": "Add what you actually used",
+        "panelBody": "Choose an active shelf product or add a one-time off-shelf item.",
+        "close": "Close add product",
+        "offShelfTitle": "Off-shelf product",
+        "brandPlaceholder": "Brand",
+        "namePlaceholder": "Product name",
+        "addOffShelf": "Add off-shelf"
+      },
+      "productPicker": {
+        "searchPlaceholder": "Search shelf products",
+        "loading": "Loading products",
+        "empty": "No matching shelf products.",
+        "statusActive": "Active",
+        "statusArchived": "Archived",
+        "statusFinished": "Finished"
+      },
+      "substitution": {
+        "chooseProduct": "What did you use instead?",
+        "selected": "Substituted with {name}",
+        "selectedShelf": "selected shelf product",
+        "offShelfBrand": "Off-shelf brand",
+        "offShelfName": "Off-shelf product",
+        "reasonPlaceholder": "Why did you substitute? For example, irritation, finished product, or texture."
       },
       "notesLabel": "Notes (optional)",
       "notesPlaceholder": "Anything Ritora should remember? For example, it stung a little near the cheek.",
@@ -3188,8 +3237,22 @@
       "editHistory": {
         "willMarkAsEdited": "This record will be marked as Edited",
         "firstSavedAt": "First saved {time} by you",
-        "versionsAreKept": "Every prior version is kept, so we never recommend something based on a changed record."
+        "versionsAreKept": "Every prior version is kept, so we never recommend something based on a changed record.",
+        "versionListTitle": "Version history",
+        "loadingVersions": "Loading saved versions",
+        "versionLabel": "Version {version}",
+        "initialSave": "Original save",
+        "noVersions": "No saved prior versions yet."
       }
+    },
+    "reminderBanner": {
+      "title": "Record your {time} routine",
+      "body": "This slot is ready to log. Recording what actually happened keeps afternoon and evening suggestions accurate.",
+      "recordNow": "Record morning now",
+      "skippedToday": "Skipped today",
+      "remindLater": "Remind me later",
+      "skippedNote": "Marked skipped from Today's Suggestion reminder.",
+      "skippedItemNote": "Skipped today."
     },
     "detailDrawer": {
       "eyebrow": "Why this routine",
@@ -3206,8 +3269,10 @@
         "intent": "What I am trying to do",
         "whyEach": "Why each step",
         "whatISkipped": "What I skipped today and why",
-        "inputs": "What this used"
+        "inputs": "What this used",
+        "evidence": "Trusted evidence"
       },
+      "evidenceReviewed": "reviewed {date}",
       "noRationale": "No rationale captured for this suggestion.",
       "markApplied": "Mark as applied",
       "customise": "Customise this before applying",
@@ -3249,7 +3314,11 @@
       "loading": "Loading history",
       "errorTitle": "We could not load history",
       "error": "Something went wrong loading your history. You can try again.",
-      "retry": "Try again"
+      "retry": "Try again",
+      "exportError": "We couldn't export your history. Try again.",
+      "loadMore": "Load more",
+      "loadingMore": "Loading more",
+      "loadMoreError": "We couldn't load more history."
     },
     "filters": {
       "last7d": "Last 7 days",
@@ -3261,13 +3330,21 @@
       "clear": "Clear",
       "rangeInvalid": "End date must be on or after the start date.",
       "morning": "Morning",
+      "noon": "Mid-day",
       "evening": "Evening",
+      "ai": "AI",
+      "manual": "Manual",
+      "mixed": "Mixed",
       "applied": "Applied",
+      "partial": "Partial",
       "skipped": "Skipped",
+      "simplified": "Simplified",
+      "missed": "Missed",
       "edited": "Edited"
     },
     "summary": {
       "appliedOf": "{applied} of {total} applied",
+      "edited": "{count} edited",
       "adherence": "{percent}% adherence"
     },
     "dayCard": {
@@ -3327,6 +3404,9 @@
       },
       "substitutedFor": "Substituted for {product}",
       "outcomeNote": "Outcome insights use what you actually applied, not what was suggested.",
+      "aiSawContext": "This is the same record your AI saw when learning from this day.",
+      "itemAppliedAt": "Applied {time}",
+      "whyThisRoutine": "Why this routine",
       "editRecord": "Edit record"
     },
     "empty": {

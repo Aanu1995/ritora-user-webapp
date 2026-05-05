@@ -13,27 +13,51 @@ import type {
 const applicationTimePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
 const nullableText = z.string().nullable();
 
+const applicationRecordItemSchema = z
+  .object({
+    stepOrder: z.number().int().min(0),
+    suggestionStepId: nullableText,
+    inventoryProductId: nullableText,
+    productBrand: nullableText,
+    productName: nullableText,
+    stepLabel: nullableText,
+    status: z.enum(APPLICATION_ITEM_STATUSES),
+    substitutedWithProductId: nullableText,
+    substitutionReason: nullableText,
+    isAdHoc: z.boolean(),
+    adHocBrand: nullableText,
+    adHocName: nullableText,
+    notes: nullableText,
+    appliedAt: nullableText,
+  })
+  .superRefine((row, ctx) => {
+    if (row.isAdHoc && (!row.adHocBrand?.trim() || !row.adHocName?.trim())) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["adHocName"],
+        message: "validation.offShelfProductRequired",
+      });
+    }
+    if (
+      row.status === "substituted" &&
+      !row.substitutedWithProductId &&
+      !(row.isAdHoc && row.adHocBrand?.trim() && row.adHocName?.trim())
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["substitutedWithProductId"],
+        message: "validation.substituteRequired",
+      });
+    }
+  });
+
 export const applicationRecordFormSchema = z.object({
   appliedTime: z
     .string()
     .regex(applicationTimePattern, "validation.invalidAppliedTime"),
   generalNotes: z.string().max(1000, "validation.notesTooLong"),
   editReason: z.string().max(500, "validation.editReasonTooLong"),
-  items: z
-    .array(
-      z.object({
-        stepOrder: z.number().int().min(0),
-        suggestionStepId: nullableText,
-        inventoryProductId: nullableText,
-        productBrand: nullableText,
-        productName: nullableText,
-        stepLabel: nullableText,
-        status: z.enum(APPLICATION_ITEM_STATUSES),
-        substitutedWithProductId: nullableText,
-        notes: nullableText,
-      }),
-    )
-    .min(1, "validation.itemsRequired"),
+  items: z.array(applicationRecordItemSchema).min(1, "validation.itemsRequired"),
 });
 
 export type ApplicationRecordFormValues = z.infer<
@@ -51,7 +75,6 @@ export function buildApplicationRecordDefaultValues(
   const items =
     mode.kind === "edit"
       ? mode.existingLog.items
-          .filter((item) => !item.isAdHoc)
           .map((item) => ({
             stepOrder: item.stepOrder,
             suggestionStepId: item.suggestionStepId,
@@ -61,7 +84,12 @@ export function buildApplicationRecordDefaultValues(
             stepLabel: item.stepLabel,
             status: item.status,
             substitutedWithProductId: item.substitutedWithProductId,
+            substitutionReason: item.substitutionReason,
+            isAdHoc: item.isAdHoc,
+            adHocBrand: item.adHocBrand,
+            adHocName: item.adHocName,
             notes: item.notes,
+            appliedAt: item.appliedAt,
           }))
       : suggestion.steps.map((step) => ({
           stepOrder: step.stepOrder,
@@ -72,7 +100,12 @@ export function buildApplicationRecordDefaultValues(
           stepLabel: step.stepLabel,
           status: "applied" as const,
           substitutedWithProductId: null,
+          substitutionReason: null,
+          isAdHoc: false,
+          adHocBrand: null,
+          adHocName: null,
           notes: null,
+          appliedAt: null,
         }));
 
   return {
@@ -81,6 +114,16 @@ export function buildApplicationRecordDefaultValues(
     editReason: "",
     items,
   };
+}
+
+export function updateApplicationRecordRow(
+  rows: ApplicationRecordFormValues["items"],
+  stepOrder: number,
+  patch: Partial<ApplicationRecordFormValues["items"][number]>,
+): ApplicationRecordFormValues["items"] {
+  return rows.map((row) =>
+    row.stepOrder === stepOrder ? { ...row, ...patch } : row,
+  );
 }
 
 export function updateApplicationRecordRowStatus(
@@ -95,9 +138,73 @@ export function updateApplicationRecordRowStatus(
           status,
           substitutedWithProductId:
             status === "substituted" ? row.substitutedWithProductId : null,
+          substitutionReason:
+            status === "substituted" ? row.substitutionReason : null,
         }
       : row,
   );
+}
+
+export function addShelfApplicationRecordRow(
+  rows: ApplicationRecordFormValues["items"],
+  product: {
+    id: string;
+    brand: string;
+    name: string;
+    category: string;
+  },
+): ApplicationRecordFormValues["items"] {
+  return [
+    ...rows,
+    {
+      stepOrder: nextStepOrder(rows),
+      suggestionStepId: null,
+      inventoryProductId: product.id,
+      productBrand: product.brand,
+      productName: product.name,
+      stepLabel: product.category,
+      status: "applied",
+      substitutedWithProductId: null,
+      substitutionReason: null,
+      isAdHoc: false,
+      adHocBrand: null,
+      adHocName: null,
+      notes: null,
+      appliedAt: null,
+    },
+  ];
+}
+
+export function addOffShelfApplicationRecordRow(
+  rows: ApplicationRecordFormValues["items"],
+  input: { brand: string; name: string },
+): ApplicationRecordFormValues["items"] {
+  return [
+    ...rows,
+    {
+      stepOrder: nextStepOrder(rows),
+      suggestionStepId: null,
+      inventoryProductId: null,
+      productBrand: input.brand,
+      productName: input.name,
+      stepLabel: null,
+      status: "applied",
+      substitutedWithProductId: null,
+      substitutionReason: null,
+      isAdHoc: true,
+      adHocBrand: input.brand,
+      adHocName: input.name,
+      notes: null,
+      appliedAt: null,
+    },
+  ];
+}
+
+export function removeApplicationRecordRow(
+  rows: ApplicationRecordFormValues["items"],
+  stepOrder: number,
+): ApplicationRecordFormValues["items"] {
+  return rows.filter((row) => row.stepOrder !== stepOrder);
 }
 
 export function applicationRecordSheetKey(
@@ -112,4 +219,8 @@ function initialAppliedTime(mode: ApplicationRecordSheetMode): string {
   return mode.existingLog.appliedAt
     ? formatLocalTimeInput(new Date(mode.existingLog.appliedAt))
     : formatLocalTimeInput();
+}
+
+function nextStepOrder(rows: ApplicationRecordFormValues["items"]): number {
+  return rows.reduce((max, row) => Math.max(max, row.stepOrder), -1) + 1;
 }

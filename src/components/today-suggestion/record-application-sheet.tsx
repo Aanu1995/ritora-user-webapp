@@ -1,12 +1,17 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { Check, ChevronRight, Clock4, PlusCircle, Save } from "lucide-react";
+import { Check, Clock4, Save } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { ApplicationAddProductPanel } from "@/components/today-suggestion/application-add-product-panel";
 import {
+  addOffShelfApplicationRecordRow,
+  addShelfApplicationRecordRow,
   applicationRecordSheetKey,
   applicationRecordFormSchema,
   buildApplicationRecordDefaultValues,
+  removeApplicationRecordRow,
+  updateApplicationRecordRow,
   updateApplicationRecordRowStatus,
   type ApplicationRecordFormValues,
   type ApplicationRecordSheetMode,
@@ -24,6 +29,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
+  useApplicationLogVersions,
   useEditApplication,
   useRecordApplication,
 } from "@/hooks/use-application-tracking";
@@ -32,7 +38,10 @@ import {
   formatIsoTime12h,
   formatSlotTime12h,
 } from "@/lib/suggestion-daypart";
-import type { ApplicationLog, ApplicationLogItemInput } from "@/types/application-tracking";
+import type {
+  ApplicationLog,
+  ApplicationLogItemInput,
+} from "@/types/application-tracking";
 import type { SuggestionInstance } from "@/types/suggestions";
 
 type Props = {
@@ -66,6 +75,9 @@ function RecordApplicationSheetForm({
   const recordMutation = useRecordApplication();
   const editMutation = useEditApplication();
   const isEdit = mode.kind === "edit";
+  const versions = useApplicationLogVersions(
+    mode.kind === "edit" ? mode.existingLog.id : null,
+  );
   const isSaving = recordMutation.isPending || editMutation.isPending;
 
   const form = useForm({
@@ -89,8 +101,12 @@ function RecordApplicationSheetForm({
       productName: row.productName,
       stepLabel: row.stepLabel,
       status: row.status,
-      isAdHoc: false,
+      isAdHoc: row.isAdHoc,
+      adHocBrand: row.adHocBrand,
+      adHocName: row.adHocName,
       notes: row.notes,
+      substitutionReason: row.substitutionReason,
+      appliedAt: row.appliedAt,
     }));
     const appliedAt = buildLocalDateTimeIso(
       suggestion.targetDate,
@@ -167,7 +183,9 @@ function RecordApplicationSheetForm({
             {mode.kind === "edit" ? (
               <ApplicationEditHistoryFooter
                 existingLog={mode.existingLog}
+                isLoadingVersions={versions.isLoading}
                 t={t}
+                versions={versions.data ?? []}
               />
             ) : null}
 
@@ -209,6 +227,28 @@ function RecordApplicationSheetForm({
                           ),
                         )
                       }
+                      onPatch={(patch) =>
+                        form.setFieldValue(
+                          "items",
+                          updateApplicationRecordRow(
+                            items,
+                            row.stepOrder,
+                            patch,
+                          ),
+                        )
+                      }
+                      onRemove={
+                        row.suggestionStepId
+                          ? undefined
+                          : () =>
+                              form.setFieldValue(
+                                "items",
+                                removeApplicationRecordRow(
+                                  items,
+                                  row.stepOrder,
+                                ),
+                              )
+                      }
                       t={t}
                     />
                   ))}
@@ -216,22 +256,25 @@ function RecordApplicationSheetForm({
               )}
             </form.Subscribe>
 
-            <button
-              type="button"
-              disabled={isSaving}
-              className="mt-3 flex w-full items-center gap-3 rounded-2xl border border-dashed border-[color:var(--border-strong)] bg-transparent p-3.5 text-left transition hover:bg-surface-muted disabled:opacity-60"
-            >
-              <PlusCircle className="h-4 w-4 text-accent-strong" />
-              <span className="flex-1">
-                <span className="block text-sm font-semibold text-accent-strong">
-                  {t("addProduct.title")}
-                </span>
-                <span className="mt-0.5 block text-xs text-muted">
-                  {t("addProduct.body")}
-                </span>
-              </span>
-              <ChevronRight className="h-4 w-4 text-muted" />
-            </button>
+            <form.Subscribe selector={(state) => state.values.items}>
+              {(items) => (
+                <ApplicationAddProductPanel
+                  disabled={isSaving}
+                  onAddShelfProduct={(product) =>
+                    form.setFieldValue(
+                      "items",
+                      addShelfApplicationRecordRow(items, product),
+                    )
+                  }
+                  onAddOffShelfProduct={(input) =>
+                    form.setFieldValue(
+                      "items",
+                      addOffShelfApplicationRecordRow(items, input),
+                    )
+                  }
+                />
+              )}
+            </form.Subscribe>
 
             <form.Field name="generalNotes">
               {(field) => (

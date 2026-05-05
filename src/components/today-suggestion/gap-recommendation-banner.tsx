@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Bookmark, PackagePlus, Search, X } from "lucide-react";
+import { Bookmark, Check, Loader2, PackagePlus, Search, X } from "lucide-react";
 import type { SuggestionGapRecommendation } from "@/types/suggestions";
 
 type Props = {
@@ -9,6 +9,8 @@ type Props = {
   onBrowse?: () => void;
   onSaveToWishlist?: () => void;
   onDismiss?: () => void;
+  isSaving?: boolean;
+  isDismissing?: boolean;
 };
 
 /**
@@ -21,6 +23,8 @@ export function GapRecommendationBanner({
   onBrowse,
   onSaveToWishlist,
   onDismiss,
+  isSaving = false,
+  isDismissing = false,
 }: Props) {
   const t = useTranslations("todaysSuggestion.gapRecommendation");
 
@@ -53,19 +57,33 @@ export function GapRecommendationBanner({
             <button
               type="button"
               onClick={onSaveToWishlist}
+              disabled={isSaving || recommendation.userAction === "saved"}
               className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-foreground transition hover:bg-surface-muted"
             >
-              <Bookmark className="h-3 w-3" />
-              {t("saveToWishlist")}
+              {isSaving ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : recommendation.userAction === "saved" ? (
+                <Check className="h-3 w-3" />
+              ) : (
+                <Bookmark className="h-3 w-3" />
+              )}
+              {recommendation.userAction === "saved"
+                ? t("saved")
+                : t("saveToWishlist")}
             </button>
           ) : null}
           {onDismiss ? (
             <button
               type="button"
               onClick={onDismiss}
+              disabled={isDismissing}
               className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-medium text-muted transition hover:bg-surface-muted"
             >
-              <X className="h-3 w-3" />
+              {isDismissing ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <X className="h-3 w-3" />
+              )}
               {t("dismiss")}
             </button>
           ) : null}
