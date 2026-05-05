@@ -2,8 +2,8 @@
 
 import {
   Calendar,
-  CalendarRange,
   Check,
+  ChevronDown,
   Circle,
   CircleSlash,
   Clock3,
@@ -56,113 +56,48 @@ export function HistoryFilterBar({ value, onChange }: Props) {
     onChange({ ...next, cursor: undefined });
   return (
     <div className="mb-3 flex flex-wrap items-center gap-1.5">
-      <FilterChip
-        active={value.range === "7d" || !value.range}
-        onClick={() => update({ ...value, range: "7d" })}
-      >
-        <CalendarRange className="h-3 w-3 text-muted" />
-        {t("last7d")}
-      </FilterChip>
-      <FilterChip
-        active={value.range === "30d"}
-        onClick={() => update({ ...value, range: "30d" })}
-      >
-        <CalendarRange className="h-3 w-3 text-muted" />
-        {t("last30d")}
-      </FilterChip>
-      <CustomRangePicker value={value} onChange={update} />
+      <RangeDropdown value={value} onChange={update} />
 
       <Divider />
 
-      {DAYPART_FILTERS.map(({ value: daypart, labelKey, Icon }) => (
-        <FilterChip
-          key={daypart}
-          active={value.daypart === daypart}
-          onClick={() =>
-            update({
-              ...value,
-              daypart: value.daypart === daypart ? undefined : daypart,
-            })
-          }
-        >
-          <Icon className="h-3 w-3 text-muted" />
-          {t(labelKey)}
-        </FilterChip>
-      ))}
+      <DaypartDropdown value={value} onChange={update} />
 
       <Divider />
 
-      {MODE_FILTERS.map(({ value: mode, labelKey, Icon }) => (
-        <FilterChip
-          key={mode}
-          active={value.mode === mode}
-          onClick={() =>
-            update({
-              ...value,
-              mode: value.mode === mode ? undefined : mode,
-            })
-          }
-        >
-          <Icon className="h-3 w-3 text-muted" />
-          {t(labelKey)}
-        </FilterChip>
-      ))}
+      <ModeDropdown value={value} onChange={update} />
 
       <Divider />
 
-      {STATUS_FILTERS.map(({ value: status, labelKey, Icon }) => (
-        <FilterChip
-          key={status}
-          active={value.status === status}
-          onClick={() =>
-            update({
-              ...value,
-              status: value.status === status ? undefined : status,
-            })
-          }
-        >
-          <Icon className="h-3 w-3 text-muted" />
-          {t(labelKey)}
-        </FilterChip>
-      ))}
-      <FilterChip
-        active={value.hasBeenEdited === true}
+      <StatusDropdown value={value} onChange={update} />
+
+      <button
+        type="button"
+        aria-pressed={value.hasBeenEdited === true}
         onClick={() =>
           update({
             ...value,
-            hasBeenEdited: value.hasBeenEdited === true ? undefined : true,
+            hasBeenEdited:
+              value.hasBeenEdited === true ? undefined : true,
           })
         }
+        className={cn(
+          "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium",
+          value.hasBeenEdited === true
+            ? "border-[color:var(--accent)] bg-accent-soft text-accent-strong"
+            : "border-border bg-surface text-foreground hover:bg-surface-muted",
+        )}
       >
-        <Pencil className="h-3 w-3 text-muted" />
+        <Pencil
+          className={cn(
+            "h-3 w-3",
+            value.hasBeenEdited === true
+              ? "text-accent-strong"
+              : "text-muted",
+          )}
+        />
         {t("edited")}
-      </FilterChip>
+      </button>
     </div>
-  );
-}
-
-function FilterChip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium",
-        active
-          ? "border-[color:var(--accent)] bg-accent-soft text-accent-strong"
-          : "border-border bg-surface text-foreground hover:bg-surface-muted",
-      )}
-    >
-      {children}
-    </button>
   );
 }
 
@@ -171,15 +106,21 @@ function Divider() {
 }
 
 /**
- * Custom range chip + popover. Clicking the chip opens a popover with two
- * date inputs (from + to). Local draft state lets the user adjust both
- * dates before applying so the list does not refetch on each keystroke.
+ * Range dropdown. One pill trigger that opens a popover containing the three
+ * range options as a single list: Last 7 days, Last 30 days, Custom range.
+ * Choosing a preset applies immediately and closes. Choosing Custom expands
+ * the From/To date editor inline; the new range only applies when the user
+ * clicks Apply.
  *
- * Validation: `to` must be on or after `from`. The Apply button stays
- * disabled until both fields are filled and valid. Clearing resets the
- * range back to `7d`, the default.
+ * Validation: `to` must be on or after `from`, and both must be on or
+ * before today. Clear resets back to the 7d default.
  */
-function CustomRangePicker({
+/**
+ * Daypart dropdown. Single pill trigger with placeholder "Daypart" when no
+ * selection is active. Picking an option applies and closes; "All dayparts"
+ * clears the filter.
+ */
+function DaypartDropdown({
   value,
   onChange,
 }: {
@@ -188,20 +129,299 @@ function CustomRangePicker({
 }) {
   const t = useTranslations("history.filters");
   const [open, setOpen] = useState(false);
+  const active = value.daypart ?? null;
+
+  const triggerLabel = active ? t(active) : t("daypart");
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-label={t("daypart")}
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium",
+            active
+              ? "border-[color:var(--accent)] bg-accent-soft text-accent-strong"
+              : "border-border bg-surface text-foreground hover:bg-surface-muted",
+          )}
+        >
+          {(() => {
+            const Icon =
+              DAYPART_FILTERS.find((d) => d.value === active)?.Icon ?? Clock3;
+            return (
+              <Icon
+                className={cn(
+                  "h-3 w-3",
+                  active ? "text-accent-strong" : "text-muted",
+                )}
+              />
+            );
+          })()}
+          {triggerLabel}
+          <ChevronDown
+            className={cn(
+              "h-3 w-3",
+              active ? "text-accent-strong" : "text-muted",
+            )}
+          />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-[220px] p-1">
+        <div className="flex flex-col">
+          {active ? (
+            <button
+              type="button"
+              onClick={() => {
+                onChange({ ...value, daypart: undefined });
+                setOpen(false);
+              }}
+              className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition hover:bg-surface-muted"
+            >
+              <span className="font-medium text-muted">{t("daypart_all")}</span>
+            </button>
+          ) : null}
+          {DAYPART_FILTERS.map(({ value: daypart, labelKey, Icon }) => {
+            const isActive = active === daypart;
+            return (
+              <button
+                key={daypart}
+                type="button"
+                onClick={() => {
+                  onChange({ ...value, daypart });
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition",
+                  isActive
+                    ? "bg-accent-soft text-accent-strong"
+                    : "hover:bg-surface-muted",
+                )}
+              >
+                <span className="inline-flex items-center gap-2 font-medium">
+                  <Icon className="h-3.5 w-3.5 text-muted" />
+                  {t(labelKey)}
+                </span>
+                {isActive ? <Check className="h-4 w-4" /> : null}
+              </button>
+            );
+          })}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+/**
+ * Status dropdown. Folds the five status options plus the "Edited" boolean
+ * into one menu since they are all "what happened with this slot" filters.
+ * Picking Edited toggles `hasBeenEdited=true` and clears `status`; picking
+ * any real status clears `hasBeenEdited`. Neutral placeholder until selected.
+ */
+function StatusDropdown({
+  value,
+  onChange,
+}: {
+  value: SuggestionHistoryListQuery;
+  onChange: (next: SuggestionHistoryListQuery) => void;
+}) {
+  const t = useTranslations("history.filters");
+  const [open, setOpen] = useState(false);
+  const activeKey = value.status ?? null;
+
+  const triggerLabel = activeKey ? t(activeKey) : t("status");
+  const TriggerIcon =
+    STATUS_FILTERS.find((s) => s.value === activeKey)?.Icon ?? Check;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-label={t("status")}
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium",
+            activeKey
+              ? "border-[color:var(--accent)] bg-accent-soft text-accent-strong"
+              : "border-border bg-surface text-foreground hover:bg-surface-muted",
+          )}
+        >
+          <TriggerIcon
+            className={cn(
+              "h-3 w-3",
+              activeKey ? "text-accent-strong" : "text-muted",
+            )}
+          />
+          {triggerLabel}
+          <ChevronDown
+            className={cn(
+              "h-3 w-3",
+              activeKey ? "text-accent-strong" : "text-muted",
+            )}
+          />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-[220px] p-1">
+        <div className="flex flex-col">
+          {activeKey ? (
+            <button
+              type="button"
+              onClick={() => {
+                onChange({ ...value, status: undefined });
+                setOpen(false);
+              }}
+              className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition hover:bg-surface-muted"
+            >
+              <span className="font-medium text-muted">{t("status_all")}</span>
+            </button>
+          ) : null}
+          {STATUS_FILTERS.map(({ value: status, labelKey, Icon }) => {
+            const isActive = activeKey === status;
+            return (
+              <button
+                key={status}
+                type="button"
+                onClick={() => {
+                  onChange({ ...value, status });
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition",
+                  isActive
+                    ? "bg-accent-soft text-accent-strong"
+                    : "hover:bg-surface-muted",
+                )}
+              >
+                <span className="inline-flex items-center gap-2 font-medium">
+                  <Icon className="h-3.5 w-3.5 text-muted" />
+                  {t(labelKey)}
+                </span>
+                {isActive ? <Check className="h-4 w-4" /> : null}
+              </button>
+            );
+          })}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+/**
+ * Routine-type dropdown. Same pattern as DaypartDropdown: neutral placeholder
+ * pill until a value is picked, "Show all" appears in the menu only once
+ * something is actively selected so the user can clear back to no selection.
+ */
+function ModeDropdown({
+  value,
+  onChange,
+}: {
+  value: SuggestionHistoryListQuery;
+  onChange: (next: SuggestionHistoryListQuery) => void;
+}) {
+  const t = useTranslations("history.filters");
+  const [open, setOpen] = useState(false);
+  const active = value.mode ?? null;
+
+  const triggerLabel = active ? t(active) : t("mode");
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-label={t("mode")}
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium",
+            active
+              ? "border-[color:var(--accent)] bg-accent-soft text-accent-strong"
+              : "border-border bg-surface text-foreground hover:bg-surface-muted",
+          )}
+        >
+          {(() => {
+            const Icon =
+              MODE_FILTERS.find((m) => m.value === active)?.Icon ?? Sparkles;
+            return (
+              <Icon
+                className={cn(
+                  "h-3 w-3",
+                  active ? "text-accent-strong" : "text-muted",
+                )}
+              />
+            );
+          })()}
+          {triggerLabel}
+          <ChevronDown
+            className={cn(
+              "h-3 w-3",
+              active ? "text-accent-strong" : "text-muted",
+            )}
+          />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-[220px] p-1">
+        <div className="flex flex-col">
+          {active ? (
+            <button
+              type="button"
+              onClick={() => {
+                onChange({ ...value, mode: undefined });
+                setOpen(false);
+              }}
+              className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition hover:bg-surface-muted"
+            >
+              <span className="font-medium text-muted">{t("mode_all")}</span>
+            </button>
+          ) : null}
+          {MODE_FILTERS.map(({ value: mode, labelKey, Icon }) => {
+            const isActive = active === mode;
+            return (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => {
+                  onChange({ ...value, mode });
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition",
+                  isActive
+                    ? "bg-accent-soft text-accent-strong"
+                    : "hover:bg-surface-muted",
+                )}
+              >
+                <span className="inline-flex items-center gap-2 font-medium">
+                  <Icon className="h-3.5 w-3.5 text-muted" />
+                  {t(labelKey)}
+                </span>
+                {isActive ? <Check className="h-4 w-4" /> : null}
+              </button>
+            );
+          })}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function RangeDropdown({
+  value,
+  onChange,
+}: {
+  value: SuggestionHistoryListQuery;
+  onChange: (next: SuggestionHistoryListQuery) => void;
+}) {
+  const t = useTranslations("history.filters");
+  const [open, setOpen] = useState(false);
+  const [view, setView] = useState<"presets" | "custom">("presets");
   const [fromDraft, setFromDraft] = useState(value.fromDate ?? "");
   const [toDraft, setToDraft] = useState(value.toDate ?? "");
 
-  // History is a record of past days, so future dates are not selectable
-  // here. We pass the same `today` into both pickers (which disables
-  // future days in the calendar UI) and gate the Apply button so a typed
-  // value can never sneak through.
   const today = new Date();
-  // Build a YYYY-MM-DD in the user's local time zone for plain string
-  // comparison with the draft values.
   const todayIso = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
-  const isActive =
-    value.range === "custom" &&
+  const activeRange = value.range ?? "7d";
+  const isCustomActive =
+    activeRange === "custom" &&
     Boolean(value.fromDate) &&
     Boolean(value.toDate);
 
@@ -212,9 +432,20 @@ function CustomRangePicker({
     fromDraft <= todayIso &&
     toDraft <= todayIso;
 
-  const labelText = isActive
+  const triggerLabel = isCustomActive
     ? `${formatShortDate(value.fromDate!)} – ${formatShortDate(value.toDate!)}`
-    : t("custom");
+    : activeRange === "30d"
+      ? t("last30d")
+      : t("last7d");
+
+  const PRESETS: ReadonlyArray<{
+    key: "7d" | "30d" | "custom";
+    label: string;
+  }> = [
+    { key: "7d", label: t("last7d") },
+    { key: "30d", label: t("last30d") },
+    { key: "custom", label: t("custom") },
+  ];
 
   return (
     <Popover
@@ -224,89 +455,131 @@ function CustomRangePicker({
         if (nextOpen) {
           setFromDraft(value.fromDate ?? "");
           setToDraft(value.toDate ?? "");
+          setView(activeRange === "custom" ? "custom" : "presets");
         }
       }}
     >
       <PopoverTrigger asChild>
         <button
           type="button"
+          aria-label={t("range")}
           className={cn(
             "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium",
-            isActive
-              ? "border-[color:var(--accent)] bg-accent-soft text-accent-strong"
-              : "border-border bg-surface text-foreground hover:bg-surface-muted",
+            "border-border bg-surface text-foreground hover:bg-surface-muted",
+            isCustomActive &&
+              "border-[color:var(--accent)] bg-accent-soft text-accent-strong",
           )}
         >
           <Calendar className="h-3 w-3 text-muted" />
-          {labelText}
+          {triggerLabel}
+          <ChevronDown className="h-3 w-3 text-muted" />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-[300px] p-3">
-        <div className="space-y-2">
-          <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted">
-              {t("from")}
-            </label>
-            <DatePicker
-              value={fromDraft}
-              onChange={setFromDraft}
-              ariaLabel={t("from")}
-              allowClear
-              maxDate={today}
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted">
-              {t("to")}
-            </label>
-            <DatePicker
-              value={toDraft}
-              onChange={setToDraft}
-              ariaLabel={t("to")}
-              allowClear
-              maxDate={today}
-            />
-          </div>
-          {fromDraft && toDraft && fromDraft > toDraft ? (
-            <p className="text-xs text-danger">{t("rangeInvalid")}</p>
+      <PopoverContent align="start" className="w-[260px] p-1">
+        <div className="flex flex-col">
+          {PRESETS.map((preset) => {
+            const isActive =
+              preset.key === "custom"
+                ? isCustomActive
+                : activeRange === preset.key && !isCustomActive;
+            return (
+              <button
+                key={preset.key}
+                type="button"
+                onClick={() => {
+                  if (preset.key === "custom") {
+                    setView("custom");
+                    return;
+                  }
+                  onChange({
+                    ...value,
+                    range: preset.key,
+                    fromDate: undefined,
+                    toDate: undefined,
+                  });
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition",
+                  isActive
+                    ? "bg-accent-soft text-accent-strong"
+                    : "hover:bg-surface-muted",
+                )}
+              >
+                <span className="font-medium">{preset.label}</span>
+                {isActive ? <Check className="h-4 w-4" /> : null}
+              </button>
+            );
+          })}
+
+          {view === "custom" ? (
+            <div className="mt-2 space-y-2 border-t border-border px-2 pt-3 pb-2">
+              <div>
+                <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted">
+                  {t("from")}
+                </label>
+                <DatePicker
+                  value={fromDraft}
+                  onChange={setFromDraft}
+                  ariaLabel={t("from")}
+                  allowClear
+                  maxDate={today}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted">
+                  {t("to")}
+                </label>
+                <DatePicker
+                  value={toDraft}
+                  onChange={setToDraft}
+                  ariaLabel={t("to")}
+                  allowClear
+                  maxDate={today}
+                />
+              </div>
+              {fromDraft && toDraft && fromDraft > toDraft ? (
+                <p className="text-xs text-danger">{t("rangeInvalid")}</p>
+              ) : null}
+              <div className="flex items-center justify-between gap-2 pt-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setFromDraft("");
+                    setToDraft("");
+                    onChange({
+                      ...value,
+                      range: "7d",
+                      fromDate: undefined,
+                      toDate: undefined,
+                    });
+                    setOpen(false);
+                  }}
+                >
+                  {t("clear")}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={!isValidDraft}
+                  onClick={() => {
+                    if (!isValidDraft) return;
+                    onChange({
+                      ...value,
+                      range: "custom",
+                      fromDate: fromDraft,
+                      toDate: toDraft,
+                    });
+                    setOpen(false);
+                  }}
+                >
+                  {t("apply")}
+                </Button>
+              </div>
+            </div>
           ) : null}
-          <div className="flex items-center justify-between gap-2 pt-1">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setFromDraft("");
-                setToDraft("");
-                onChange({
-                  ...value,
-                  range: "7d",
-                  fromDate: undefined,
-                  toDate: undefined,
-                });
-                setOpen(false);
-              }}
-            >
-              {t("clear")}
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              disabled={!isValidDraft}
-              onClick={() => {
-                if (!isValidDraft) return;
-                onChange({
-                  ...value,
-                  range: "custom",
-                  fromDate: fromDraft,
-                  toDate: toDraft,
-                });
-                setOpen(false);
-              }}
-            >
-              {t("apply")}
-            </Button>
-          </div>
         </div>
       </PopoverContent>
     </Popover>

@@ -160,7 +160,7 @@ export function SuggestionSlotCard({
         <button
           type="button"
           onClick={() => onRecord?.(slot)}
-          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-[color:var(--accent)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[color:var(--accent-strong)]"
+          className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full bg-[color:var(--accent)] px-3.5 text-xs font-semibold text-white transition hover:bg-[color:var(--accent-strong)] sm:h-11 sm:px-5 sm:text-sm"
         >
           <Check className="h-4 w-4" />
           {isAwaitingRecord ? t("recordWhatIApplied") : t("markAsApplied")}
@@ -168,7 +168,7 @@ export function SuggestionSlotCard({
         <button
           type="button"
           onClick={() => onCustomize?.(slot)}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted sm:h-11 sm:w-11"
           aria-label={t("customise")}
         >
           <SlidersHorizontal className="h-4 w-4" />
@@ -176,7 +176,7 @@ export function SuggestionSlotCard({
         <button
           type="button"
           onClick={() => onShowDetail?.(slot)}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted sm:h-11 sm:w-11"
           aria-label={t("more")}
         >
           <Ellipsis className="h-4 w-4" />

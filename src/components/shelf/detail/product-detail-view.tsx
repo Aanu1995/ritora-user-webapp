@@ -207,7 +207,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
         actionClassName="flex flex-wrap items-center justify-end gap-2"
         actions={
           <>
-          <Button asChild size="sm">
+          <Button asChild size="sm" className="w-7 px-0 sm:w-auto sm:px-4">
             <Link
               href={`${productDetailPath}/edit`}
               aria-label={tEdit('title')}
@@ -226,6 +226,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
               isArchived ? t('actions.unarchive') : t('actions.archive')
             }
             disabled={isMutating}
+            className="w-7 px-0 sm:w-auto sm:px-4"
           >
             <Archive className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">
@@ -239,6 +240,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
             onClick={handleFinish}
             aria-label={t('actions.markFinished')}
             disabled={isMutating}
+            className="w-7 px-0 sm:w-auto sm:px-4"
           >
             <Check className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">
@@ -250,7 +252,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
             size="sm"
             onClick={() => setDeleteOpen(true)}
             aria-label={t('actions.delete')}
-            className="bg-danger/10 text-danger shadow-none hover:bg-danger/15"
+            className="w-7 bg-danger/10 px-0 text-danger shadow-none hover:bg-danger/15 sm:w-auto sm:px-4"
             disabled={isMutating}
           >
             <Trash2 className="h-3.5 w-3.5" />

@@ -76,7 +76,13 @@ export default function TodaysSuggestionPage() {
   );
   const headerAction = (
     <div className="flex shrink-0 gap-1.5">
-      <Button asChild variant="outline" size="sm" aria-label={t("history")}>
+      <Button
+        asChild
+        variant="outline"
+        size="sm"
+        aria-label={t("history")}
+        className="w-7 px-0 sm:w-auto sm:px-4"
+      >
         <Link href="/history">
           <History className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">{t("history")}</span>

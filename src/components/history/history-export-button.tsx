@@ -42,6 +42,7 @@ export function HistoryExportButton({
       aria-label={t("export")}
       disabled={!canExport}
       onClick={handleExport}
+      className="w-7 px-0 sm:w-auto sm:px-4"
     >
       {isExporting ? (
         <LoadingIndicator size="sm" />

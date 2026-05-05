@@ -18,11 +18,11 @@ const buttonVariants = cva(
         link: 'rounded-none px-0 py-0 text-accent-strong shadow-none hover:underline',
       },
       size: {
-        sm: 'h-8 px-3 text-xs',
-        md: 'h-10 px-4 text-sm',
-        lg: 'h-12 px-6 text-base',
-        xl: 'h-14 px-8 text-base',
-        icon: 'h-10 w-10',
+        sm: 'h-7 px-2.5 text-[11px] sm:h-9 sm:px-4 sm:text-sm',
+        md: 'h-9 px-3.5 text-xs sm:h-11 sm:px-5 sm:text-sm',
+        lg: 'h-10 px-4 text-sm sm:h-[3.25rem] sm:px-7 sm:text-base',
+        xl: 'h-11 px-5 text-sm sm:h-[3.75rem] sm:px-9 sm:text-base',
+        icon: 'h-9 w-9 sm:h-11 sm:w-11',
       },
     },
     defaultVariants: {

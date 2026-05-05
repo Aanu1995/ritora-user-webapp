@@ -54,6 +54,7 @@ export default function NotificationsPage() {
                 aria-label={t("markAllRead")}
                 disabled={markAll.isPending}
                 onClick={() => markAll.mutate()}
+                className="w-7 px-0 sm:w-auto sm:px-4"
               >
                 {markAll.isPending ? (
                   <LoadingIndicator size="sm" label={t("markingAllRead")} />
@@ -72,6 +73,7 @@ export default function NotificationsPage() {
               variant="outline"
               size="sm"
               aria-label={t("preferencesAction")}
+              className="w-7 px-0 sm:w-auto sm:px-4"
             >
               <Link href={NOTIFICATION_SETTINGS_ROUTE}>
                 <Settings2 aria-hidden className="h-3.5 w-3.5" />

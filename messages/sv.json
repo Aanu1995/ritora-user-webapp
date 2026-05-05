@@ -3324,9 +3324,16 @@
       "loadMoreError": "Vi kunde inte ladda mer historik."
     },
     "filters": {
+      "range": "Datumintervall",
+      "daypart": "Tid på dagen",
+      "daypart_all": "Visa alla tider",
+      "mode": "Rutintyp",
+      "mode_all": "Visa alla typer",
+      "status": "Status",
+      "status_all": "Visa alla statusar",
       "last7d": "Senaste 7 dagarna",
-      "last30d": "30 dagar",
-      "custom": "Anpassat",
+      "last30d": "Senaste 30 dagarna",
+      "custom": "Anpassat intervall",
       "from": "Från",
       "to": "Till",
       "apply": "Använd",

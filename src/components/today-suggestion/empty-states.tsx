@@ -39,13 +39,12 @@ export function NoSkinProfileEmptyState() {
       <p className="mx-auto mt-1.5 max-w-[340px] text-[13px] leading-relaxed text-muted">
         {t("body")}
       </p>
-      <Link
-        href="/skin-profile"
-        className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[color:var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[color:var(--accent-strong)]"
-      >
-        <Play className="h-3.5 w-3.5" />
-        {t("cta")}
-      </Link>
+      <Button asChild className="mt-3">
+        <Link href="/skin-profile">
+          <Play className="h-3.5 w-3.5" />
+          {t("cta")}
+        </Link>
+      </Button>
       <p className="mt-2.5 text-[11px] text-muted">{t("privacy")}</p>
     </div>
   );
@@ -62,13 +61,12 @@ export function NoShelfEmptyState() {
       <p className="mx-auto mt-1.5 max-w-[340px] text-[13px] leading-relaxed text-muted">
         {t("body")}
       </p>
-      <Link
-        href="/shelf/new"
-        className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[color:var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[color:var(--accent-strong)]"
-      >
-        <Plus className="h-3.5 w-3.5" />
-        {t("cta")}
-      </Link>
+      <Button asChild className="mt-3">
+        <Link href="/shelf/new">
+          <Plus className="h-3.5 w-3.5" />
+          {t("cta")}
+        </Link>
+      </Button>
       <p className="mt-2.5 text-[11px] leading-snug text-muted">{t("note")}</p>
     </div>
   );
@@ -86,20 +84,18 @@ export function NoScheduleEmptyState() {
         {t("body")}
       </p>
       <div className="mt-3 flex flex-col items-stretch gap-1.5">
-        <Link
-          href="/schedule?preset=every_day"
-          className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[color:var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[color:var(--accent-strong)]"
-        >
-          <Zap className="h-3.5 w-3.5" />
-          {t("ctaEveryDay")}
-        </Link>
-        <Link
-          href="/schedule"
-          className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground transition hover:bg-surface-muted"
-        >
-          <CalendarPlus className="h-3.5 w-3.5" />
-          {t("ctaScratch")}
-        </Link>
+        <Button asChild>
+          <Link href="/schedule?preset=every_day">
+            <Zap className="h-3.5 w-3.5" />
+            {t("ctaEveryDay")}
+          </Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link href="/schedule">
+            <CalendarPlus className="h-3.5 w-3.5" />
+            {t("ctaScratch")}
+          </Link>
+        </Button>
       </div>
       <p className="mt-2.5 text-[11px] text-muted">{t("note")}</p>
     </div>

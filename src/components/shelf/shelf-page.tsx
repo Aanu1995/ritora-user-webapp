@@ -240,6 +240,7 @@ export function ShelfPage() {
               size="sm"
               onClick={handleAddProduct}
               aria-label={t("actions.add")}
+              className="w-7 px-0 sm:w-auto sm:px-4"
             >
               <Plus className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{t("actions.add")}</span>

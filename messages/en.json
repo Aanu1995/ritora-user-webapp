@@ -3321,9 +3321,16 @@
       "loadMoreError": "We couldn't load more history."
     },
     "filters": {
+      "range": "Date range",
+      "daypart": "Time of day",
+      "daypart_all": "Show all times",
+      "mode": "Routine type",
+      "mode_all": "Show all types",
+      "status": "Status",
+      "status_all": "Show all statuses",
       "last7d": "Last 7 days",
-      "last30d": "30 days",
-      "custom": "Custom",
+      "last30d": "Last 30 days",
+      "custom": "Custom range",
       "from": "From",
       "to": "To",
       "apply": "Apply",

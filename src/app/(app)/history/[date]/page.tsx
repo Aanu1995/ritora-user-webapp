@@ -74,7 +74,13 @@ export default function HistoryDayPage() {
         leading={backButton}
         action={
           data.photoEntryId ? (
-            <Button variant="outline" size="sm" asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              asChild
+              aria-label={t("viewPhoto")}
+              className="w-7 px-0 sm:w-auto sm:px-4"
+            >
               <Link href={`/journal/days/${data.date}`}>
                 <ImageIcon className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">{t("viewPhoto")}</span>

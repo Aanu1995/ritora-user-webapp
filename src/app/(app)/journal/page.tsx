@@ -232,6 +232,7 @@ export default function JournalPage() {
               size="sm"
               onClick={() => setExportModalOpen(true)}
               aria-label={t("exportForDermatologist")}
+              className="w-7 px-0 sm:w-auto sm:px-4"
             >
               <Download className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">
@@ -243,6 +244,7 @@ export default function JournalPage() {
               onClick={() => openTodayUpload()}
               disabled={hasTodayEntry}
               aria-label={t("fab")}
+              className="w-7 px-0 sm:w-auto sm:px-4"
             >
               <Plus className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{t("fab")}</span>

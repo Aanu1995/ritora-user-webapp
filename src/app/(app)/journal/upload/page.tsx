@@ -176,7 +176,7 @@ export default function JournalUploadPage() {
               aria-label={t("deleteToday")}
               onClick={() => setDeleteDialogOpen(true)}
               disabled={isDeleting}
-              className="text-danger hover:bg-danger/5"
+              className="w-7 px-0 text-danger hover:bg-danger/5 sm:w-auto sm:px-4"
             >
               {isDeleting ? (
                 <LoadingIndicator size="sm" label={t("deleting")} />

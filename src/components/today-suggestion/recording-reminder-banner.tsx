@@ -51,7 +51,7 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
             <button
               type="button"
               onClick={() => onRecord(slot)}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--accent)] px-3 py-1.5 text-xs font-semibold text-white"
+              className="inline-flex h-7 items-center gap-1.5 rounded-full bg-[color:var(--accent)] px-2.5 text-[11px] font-semibold text-white sm:h-9 sm:px-4 sm:text-sm"
             >
               <Check className="h-3.5 w-3.5" />
               {t("recordNow")}
@@ -62,7 +62,7 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
               onClick={() => {
                 if (skippedPayload) recordMutation.mutate(skippedPayload);
               }}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-foreground disabled:opacity-60"
+              className="inline-flex h-7 items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 text-[11px] font-semibold text-foreground disabled:opacity-60 sm:h-9 sm:px-4 sm:text-sm"
             >
               {recordMutation.isPending ? (
                 <LoadingIndicator size="sm" />
@@ -80,7 +80,7 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
                   minutes: 60,
                 })
               }
-              className="inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold text-muted hover:bg-surface"
+              className="inline-flex h-7 items-center rounded-full px-2.5 text-[11px] font-semibold text-muted hover:bg-surface sm:h-9 sm:px-4 sm:text-sm"
             >
               {snoozeMutation.isPending ? (
                 <LoadingIndicator size="sm" />
