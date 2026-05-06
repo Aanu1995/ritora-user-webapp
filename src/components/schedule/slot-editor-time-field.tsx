@@ -40,7 +40,7 @@ export function SlotEditorTimeField({
           invalid={Boolean(errorText)}
           ariaLabel={t("addDialog.timeLabel")}
           ariaDescribedBy={errorText ? `${name}-error` : undefined}
-          className="inline-flex h-9 w-auto min-w-[120px] gap-1.5 rounded-lg border border-border bg-surface-muted/60 px-3 py-1.5 text-lg font-bold transition hover:border-accent hover:bg-surface-muted focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/30"
+          className="inline-flex h-9 w-auto min-w-[120px] gap-1.5 rounded-lg border border-border bg-surface-muted/60 px-3 py-1.5 text-lg font-bold transition hover:border-accent hover:bg-accent-soft focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/30"
         />
         <span className="text-[11px] text-muted">
           {t("editor.timeEditHint")}

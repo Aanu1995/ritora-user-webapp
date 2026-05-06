@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, Moon, MoonStar, Sun } from "lucide-react";
+import { Bell, Moon, MoonStar, Sun, Sunrise } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { NOTIFICATION_SETTINGS_ROUTE } from "@/constants/app-routes";
 import type { SuggestionDaypart } from "@/types/suggestions";
@@ -57,7 +57,8 @@ export function SectionGroup({
   children: React.ReactNode;
 }) {
   const t = useTranslations("todaysSuggestion.section");
-  const Icon = daypart === "evening" ? Moon : Sun;
+  const Icon =
+    daypart === "evening" ? Moon : daypart === "morning" ? Sunrise : Sun;
   return (
     <section className="mt-6">
       <p className="mb-2 ml-1 inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.1em] text-muted">

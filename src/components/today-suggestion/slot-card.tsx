@@ -4,8 +4,8 @@ import {
   Check,
   CircleCheck,
   Ellipsis,
-  Sparkles,
   SlidersHorizontal,
+  Sparkles,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -25,38 +25,18 @@ import type { TodaysSuggestionSlot } from "@/types/suggestions";
 
 type Props = {
   slot: TodaysSuggestionSlot;
-  /** Open the recording sheet. Provided by the page so a single sheet instance is shared. */
   onRecord?: (slot: TodaysSuggestionSlot) => void;
-  /** Open the edit sheet for an already-recorded application. */
   onEdit?: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
-  /** Open the suggestion detail drawer ("Why this routine"). */
   onShowDetail?: (slot: TodaysSuggestionSlot) => void;
-  /** Open the editable application sheet before applying. */
-  onCustomize?: (slot: TodaysSuggestionSlot) => void;
+  onCustomise?: (slot: TodaysSuggestionSlot) => void;
 };
 
-/**
- * The Today's Suggestion slot card. Renders one of four visual states based
- * on the slot's lifecycle:
- *
- *  1. Locked — the visibility window has not opened yet. Muted card, lock
- *     icon, countdown.
- *  2. Ready — generated and visible, not yet recorded. Full content with
- *     primary "Mark as applied" CTA.
- *  3. Recorded — user has logged what they applied. Compact card with the
- *     applied list and an Edit link.
- *  4. Awaiting record — slot time has passed, no record yet. Highlighted
- *     in cool tones to nudge the user to record.
- *
- * Specialist-only slots (every step locked by specialist, no AI additions)
- * surface a Specialist pill alongside the mode badge.
- */
 export function SuggestionSlotCard({
   slot,
   onRecord,
   onEdit,
   onShowDetail,
-  onCustomize,
+  onCustomise,
 }: Props) {
   const t = useTranslations("todaysSuggestion.slot");
 
@@ -82,6 +62,8 @@ export function SuggestionSlotCard({
   const stepsByOrder = [...suggestion.steps].sort(
     (a, b) => a.stepOrder - b.stepOrder,
   );
+  const rationale = buildSlotRationale(suggestion);
+  const routineLabel = t(daypartRoutineLabelKey(suggestion.daypart));
 
   if (isRecorded) {
     return (
@@ -110,6 +92,8 @@ export function SuggestionSlotCard({
             {formatSlotTime12h(slot.slotTime)}
           </p>
           <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted">
+            <span>{routineLabel}</span>
+            <span aria-hidden="true"> · </span>
             {t("stepCount", { count: suggestion.steps.length })}
           </p>
         </div>
@@ -140,9 +124,10 @@ export function SuggestionSlotCard({
         </div>
       </header>
 
-      {suggestion.rationaleHeadline ? (
+      {rationale ? (
         <RationaleCard
-          headline={suggestion.rationaleHeadline}
+          headline={rationale.headline}
+          body={rationale.body}
           onShowDetail={onShowDetail ? () => onShowDetail(slot) : undefined}
           tone={isSpecialistOnly ? "specialist" : "ai"}
         />
@@ -167,8 +152,8 @@ export function SuggestionSlotCard({
         </button>
         <button
           type="button"
-          onClick={() => onCustomize?.(slot)}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface-muted text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-11 sm:w-11"
+          onClick={() => onCustomise?.(slot)}
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-11 sm:w-11"
           aria-label={t("customise")}
         >
           <SlidersHorizontal className="h-4 w-4" />
@@ -176,7 +161,7 @@ export function SuggestionSlotCard({
         <button
           type="button"
           onClick={() => onShowDetail?.(slot)}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface-muted text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-11 sm:w-11"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-11 sm:w-11"
           aria-label={t("more")}
         >
           <Ellipsis className="h-4 w-4" />
@@ -188,10 +173,12 @@ export function SuggestionSlotCard({
 
 function RationaleCard({
   headline,
+  body,
   onShowDetail,
   tone,
 }: {
   headline: string;
+  body: string | null;
   onShowDetail?: () => void;
   tone: "ai" | "specialist";
 }) {
@@ -215,7 +202,8 @@ function RationaleCard({
         )}
       />
       <p className="min-w-0 flex-1">
-        {headline}
+        <strong>{headline}</strong>
+        {body ? <> {body}</> : null}
         {onShowDetail ? (
           <>
             {" "}
@@ -236,4 +224,36 @@ function RationaleCard({
       </p>
     </div>
   );
+}
+
+function buildSlotRationale(
+  suggestion: TodaysSuggestionSlot["suggestion"],
+): { headline: string; body: string | null } | null {
+  if (!suggestion) return null;
+  const headline =
+    cleanRationaleText(suggestion.rationaleHeadline) ??
+    cleanRationaleText(suggestion.explanation?.headline);
+  const firstBody = cleanRationaleText(suggestion.explanation?.body[0]);
+
+  if (!headline && !firstBody) return null;
+  if (!headline) {
+    return { headline: firstBody!, body: null };
+  }
+  return {
+    headline,
+    body: firstBody && firstBody !== headline ? firstBody : null,
+  };
+}
+
+function cleanRationaleText(value: string | null | undefined): string | null {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : null;
+}
+
+function daypartRoutineLabelKey(
+  daypart: TodaysSuggestionSlot["daypart"],
+): "morningLabel" | "noonLabel" | "eveningLabel" {
+  if (daypart === "noon") return "noonLabel";
+  if (daypart === "evening") return "eveningLabel";
+  return "morningLabel";
 }

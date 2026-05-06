@@ -224,7 +224,6 @@ export function ShelfPage() {
 
   return (
     <div className={`mx-auto max-w-360 ${wrapperPadding} ${wrapperLayout}`}>
-      {/* Sticky composite header — title + subtitle + action, then filter bar */}
       <div className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 pb-3 pt-4 backdrop-blur sm:-mx-6 sm:px-6 sm:pt-6 lg:-mx-8 lg:px-8">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0 flex-1">

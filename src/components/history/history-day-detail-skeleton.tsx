@@ -1,10 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-/**
- * Mirrors the History day detail page so the swap to real content is smooth.
- * Shows two compare cards, each with a header and the suggested-vs-applied
- * two-column grid that `HistoryDaySlotCompare` renders.
- */
 export function HistoryDayDetailSkeleton() {
   return (
     <div className="mx-auto w-full lg:w-[70%]" aria-hidden="true">

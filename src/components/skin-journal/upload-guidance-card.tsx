@@ -40,8 +40,8 @@ export function UploadGuidanceCard({
     ? "mt-0.5 hidden text-xs text-muted lg:block"
     : "mt-0.5 text-xs text-muted";
   const containerClass = isVertical
-    ? "flex h-full flex-col rounded-2xl border border-border bg-surface-muted p-3"
-    : "rounded-2xl border border-border bg-surface-muted p-3";
+    ? "flex h-full flex-col rounded-2xl border border-[color:var(--border-strong)] bg-accent-soft/30 p-3"
+    : "rounded-2xl border border-[color:var(--border-strong)] bg-accent-soft/30 p-3";
 
   return (
     <div className={containerClass}>

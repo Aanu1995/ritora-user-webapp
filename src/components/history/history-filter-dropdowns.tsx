@@ -103,7 +103,7 @@ function FilterMenu<TValue extends string>({
             "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium",
             active
               ? "border-[color:var(--accent)] bg-accent-soft text-accent-strong"
-              : "border-border bg-surface text-foreground hover:bg-surface-muted",
+              : "border-border bg-surface text-foreground hover:bg-accent-soft",
           )}
         >
           <TriggerIcon
@@ -130,7 +130,7 @@ function FilterMenu<TValue extends string>({
                 onClear();
                 setOpen(false);
               }}
-              className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition hover:bg-surface-muted"
+              className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition hover:bg-accent-soft"
             >
               <span className="font-medium text-muted">{t(allKey)}</span>
             </button>
@@ -149,7 +149,7 @@ function FilterMenu<TValue extends string>({
                   "flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition",
                   isActive
                     ? "bg-accent-soft text-accent-strong"
-                    : "hover:bg-surface-muted",
+                    : "hover:bg-accent-soft",
                 )}
               >
                 <span className="inline-flex items-center gap-2 font-medium">

@@ -47,7 +47,6 @@ export function AppleSignInButton({
         <LoadingIndicator label={resolvedLoadingLabel} size="sm" />
       ) : (
         <>
-          {/* margin-top correction — the Apple silhouette's optical center sits below its geometric center */}
           <AppleLogo className="-mt-0.5 h-[18px] w-[18px] shrink-0" />
           <span>{resolvedLabel}</span>
         </>

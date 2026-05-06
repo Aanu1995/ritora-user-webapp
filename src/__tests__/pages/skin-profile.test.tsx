@@ -299,6 +299,32 @@ describe("SkinProfilePage", () => {
     expect(screen.getAllByText(/edit/i).length).toBeGreaterThan(0);
   });
 
+  it("renders saved free-text option values without missing-message crashes", () => {
+    mockSkinProfileReturn = {
+      data: {
+        ...completeProfile,
+        currentConcerns: ["post-breakout marks"],
+        primaryGoal: "calm redness while improving texture slowly",
+        routinePreferences: {
+          ...completeProfile.routinePreferences,
+          pace: "slow",
+        },
+      },
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: createRefetchMock(),
+    };
+
+    renderWithProviders(<SkinProfilePage />);
+
+    expect(screen.getByText("Post-breakout marks")).toBeInTheDocument();
+    expect(
+      screen.getByText("Calm redness while improving texture slowly"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Slow")).toBeInTheDocument();
+  });
+
   it.each([
     "/skin-profile/medical-safety",
     "/skin-profile/reactions",

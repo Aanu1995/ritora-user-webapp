@@ -115,7 +115,6 @@ export function ProductCard({
           </div>
         )}
 
-        {/* Status dot */}
         <span
           className={cn(
             'absolute right-3 top-3 h-2.5 w-2.5 rounded-full ring-[3px] ring-surface',
@@ -124,7 +123,6 @@ export function ProductCard({
           aria-hidden
         />
 
-        {/* Checkbox */}
         <button
           type="button"
           role="checkbox"
@@ -142,12 +140,10 @@ export function ProductCard({
           <Check className="h-3.5 w-3.5" strokeWidth={3} />
         </button>
 
-        {/* Category badge */}
         <span className="absolute bottom-4 left-3 rounded-full bg-surface/90 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-foreground">
           {categoryLabel}
         </span>
 
-        {/* Shelf-life progress bar */}
         <div className="absolute inset-x-0 bottom-0 h-[3px] bg-foreground/10">
           <div
             className={cn('h-full transition-[width]', STATE_BAR_CLASS[life.state])}

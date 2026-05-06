@@ -94,7 +94,7 @@ export function ProductPhotoSection({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="flex aspect-[4/5] w-full max-w-60 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-surface-muted/40 px-4 text-center text-muted transition hover:border-border-strong hover:bg-surface-muted/70"
+          className="flex aspect-[4/5] w-full max-w-60 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-surface-muted/40 px-4 text-center text-muted transition hover:border-border-strong hover:bg-accent-soft"
         >
           <ImagePlus className="h-8 w-8" />
           <span className="text-sm font-medium text-foreground">
@@ -193,7 +193,7 @@ export function LabelPhotosSection({
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
-            className="flex aspect-[4/5] w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-border bg-surface-muted/40 px-2 text-center text-muted transition hover:border-border-strong hover:bg-surface-muted/70"
+            className="flex aspect-[4/5] w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-border bg-surface-muted/40 px-2 text-center text-muted transition hover:border-border-strong hover:bg-accent-soft"
           >
             <ImagePlus className="h-5 w-5" />
             <span className="text-[11px] font-medium leading-tight text-foreground">

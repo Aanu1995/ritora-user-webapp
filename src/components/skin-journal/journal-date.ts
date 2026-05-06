@@ -15,10 +15,6 @@ function parseYmdAsLocal(ymd: string): Date | null {
   return new Date(year, month - 1, day);
 }
 
-/**
- * Mockup-style short date: "Apr 26" when the date is in the current year,
- * "Apr 26, 2025" when the year differs from the current year.
- */
 export function formatJournalShortDate(
   ymd: string | null | undefined,
   locale: string,
@@ -35,9 +31,6 @@ export function formatJournalShortDate(
   }).format(date);
 }
 
-/**
- * Mockup-style long date: "Tue · Apr 28, 2026" (always includes the year).
- */
 export function formatJournalLongDate(
   ymd: string | null | undefined,
   locale: string,

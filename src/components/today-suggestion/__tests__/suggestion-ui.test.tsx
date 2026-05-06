@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "@/test/utils";
 import { SuggestionDetailDrawer } from "@/components/today-suggestion/suggestion-detail-drawer";
@@ -18,6 +18,8 @@ import {
   toRoutineBreakEndsAt,
 } from "@/components/today-suggestion/routine-break-validation";
 import { TodayGapRecommendationSection } from "@/components/today-suggestion/today-gap-recommendation-section";
+import { updateApplicationRecordRowStatus } from "@/components/today-suggestion/record-application-form";
+import { buildRecordApplicationPayload } from "@/components/today-suggestion/record-application-payload";
 import type { ApplicationLog } from "@/types/application-tracking";
 import {
   SuggestionEvidenceSourceId,
@@ -33,7 +35,6 @@ const mockRecordApplicationMutate = jest.fn();
 const mockRouterPush = jest.fn();
 const mockSnoozeMutate = jest.fn();
 const mockTodayEntry = jest.fn();
-const mockApplicationLogVersions = jest.fn();
 
 jest.mock("@/hooks/use-suggestions", () => ({
   useRegenerateSuggestion: () => ({
@@ -59,7 +60,6 @@ jest.mock("@/hooks/use-application-tracking", () => ({
     mutate: mockRecordApplicationMutate,
     isPending: false,
   }),
-  useApplicationLogVersions: () => mockApplicationLogVersions(),
 }));
 
 jest.mock("@/hooks/use-skin-journal", () => ({
@@ -83,16 +83,14 @@ jest.mock("next/navigation", () => ({
 afterEach(() => {
   jest.clearAllMocks();
   mockTodayEntry.mockReturnValue({ data: { entry: null } });
-  mockApplicationLogVersions.mockReturnValue({ data: [], isLoading: false });
 });
 
 describe("today suggestion UI contract", () => {
   beforeEach(() => {
     mockTodayEntry.mockReturnValue({ data: { entry: null } });
-    mockApplicationLogVersions.mockReturnValue({ data: [], isLoading: false });
   });
 
-  it("renders AI model, trusted evidence, and regenerate action in the drawer", async () => {
+  it("renders routine reasoning sections, trusted evidence, and regenerate action in the drawer", async () => {
     const user = userEvent.setup();
     const suggestion = suggestionInstance({
       explanation: {
@@ -132,12 +130,31 @@ describe("today suggestion UI contract", () => {
       />,
     );
 
-    expect(screen.getByText(/Model gpt-4.1-mini/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Model gpt-4.1-mini/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/What I am trying to do/i)).toBeInTheDocument();
+    expect(screen.getByText(/Why each step/i)).toBeInTheDocument();
+    expect(screen.getByText(/Ava Lab Barrier Serum/i)).toBeInTheDocument();
     expect(screen.getByText(/Trusted evidence/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /sunscreen/i })).toHaveAttribute(
       "href",
       expect.stringContaining("aad.org"),
     );
+    expect(
+      screen.getByTestId("suggestion-detail-scroll-body"),
+    ).toContainElement(
+      screen.getByRole("button", { name: /generate alternatives/i }),
+    );
+    expect(
+      screen.getByRole("button", { name: /mark as applied/i }),
+    ).toHaveClass("bg-[color:var(--accent)]");
+    expect(
+      screen.getByRole("button", {
+        name: /customise this before applying/i,
+      }),
+    ).toHaveClass("border");
+    expect(
+      screen.getByRole("button", { name: /generate alternatives/i }),
+    ).toHaveClass("border");
 
     await user.click(
       screen.getByRole("button", { name: /generate alternatives/i }),
@@ -146,6 +163,28 @@ describe("today suggestion UI contract", () => {
       id: "suggestion-1",
       payload: { reason: "user_requested" },
     });
+  });
+
+  it("uses step explanations as why-each-step drawer fallback", () => {
+    renderWithProviders(
+      <SuggestionDetailDrawer
+        open
+        onOpenChange={jest.fn()}
+        suggestion={suggestionInstance({
+          explanation: {
+            headline: "Keep the routine light.",
+            body: [],
+            perStepReasons: [],
+            skipped: [],
+            inputs: [],
+          },
+        })}
+      />,
+    );
+
+    expect(screen.getByText(/What I am trying to do/i)).toBeInTheDocument();
+    expect(screen.getByText(/Why each step/i)).toBeInTheDocument();
+    expect(screen.getByText(/Selected for hydration/i)).toBeInTheDocument();
   });
 
   it("shows persisted gap save state instead of a local-only wishlist action", () => {
@@ -171,6 +210,7 @@ describe("today suggestion UI contract", () => {
     const onRecord = jest.fn();
     const onEdit = jest.fn();
     const onShowDetail = jest.fn();
+    const onCustomise = jest.fn();
 
     const { rerender } = renderWithProviders(
       <SuggestionSlotCard
@@ -195,11 +235,15 @@ describe("today suggestion UI contract", () => {
         slot={slot({ suggestion: suggestionInstance() })}
         onRecord={onRecord}
         onShowDetail={onShowDetail}
+        onCustomise={onCustomise}
       />,
     );
     await user.click(screen.getByRole("button", { name: /mark as applied/i }));
+    await user.click(screen.getByRole("button", { name: /customise/i }));
     await user.click(screen.getByRole("button", { name: /why this routine/i }));
+    expect(screen.getAllByText(/Morning routine/i).length).toBeGreaterThan(0);
     expect(onRecord).toHaveBeenCalled();
+    expect(onCustomise).toHaveBeenCalled();
     expect(onShowDetail).toHaveBeenCalled();
 
     rerender(
@@ -228,6 +272,32 @@ describe("today suggestion UI contract", () => {
     );
   });
 
+  it("shows the why-this-routine card from explanation copy when headline is missing", () => {
+    renderWithProviders(
+      <SuggestionSlotCard
+        slot={slot({
+          suggestion: suggestionInstance({
+            rationaleHeadline: null,
+            explanation: {
+              headline: "Brighten and protect today.",
+              body: ["Last night's photo showed mild dryness."],
+              perStepReasons: [],
+              skipped: [],
+              inputs: [],
+            },
+          }),
+        })}
+        onShowDetail={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/Brighten and protect today/i)).toBeInTheDocument();
+    expect(screen.getByText(/Last night's photo/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /why this routine/i }),
+    ).toBeInTheDocument();
+  });
+
   it("renders actual application log items on recorded Today cards", () => {
     renderWithProviders(
       <SuggestionSlotCard
@@ -248,11 +318,24 @@ describe("today suggestion UI contract", () => {
       />,
     );
 
-    expect(screen.getByText(/Applied at/i)).toBeInTheDocument();
+    expect(screen.getByText(/Applied 10:05 AM · 1 of 3/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Recorded 10:05 AM/i).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/application log/i)).not.toBeInTheDocument();
     expect(screen.getAllByText(/Recovery Balm/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Skin felt warm/i)).toBeInTheDocument();
     expect(screen.getByText(/Used gentler product/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Instead of Ava Lab Retinol Serum/i),
+    ).toBeInTheDocument();
     expect(screen.getByText(/Skipped/i)).toBeInTheDocument();
-    expect(screen.getByText(/Edited/i)).toBeInTheDocument();
+    expect(screen.getByText(/Edited at 11:00 AM/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Substituted Ava Lab Retinol Serum with Plain Lab Recovery Balm/i,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText(/Edited/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByTestId("recorded-item-marker")).toHaveLength(3);
   });
 
   it("renders routine break resume and change-date actions", async () => {
@@ -309,6 +392,32 @@ describe("today suggestion UI contract", () => {
     });
   });
 
+  it("centers the record sheet on desktop while keeping mobile bottom-sheet behavior", () => {
+    renderWithProviders(
+      <RecordApplicationSheet
+        open
+        onOpenChange={jest.fn()}
+        mode={{
+          kind: "record",
+          slot: slot({ suggestion: suggestionInstance() }),
+        }}
+      />,
+    );
+
+    const dialog = screen.getByRole("dialog", {
+      name: /record what you applied/i,
+    });
+
+    expect(dialog).toHaveClass("bottom-0");
+    expect(dialog).toHaveClass("sm:left-1/2");
+    expect(dialog).toHaveClass("sm:top-1/2");
+    expect(dialog).toHaveClass("sm:bottom-auto");
+    expect(dialog).toHaveClass("sm:right-auto");
+    expect(dialog).toHaveClass("sm:-translate-x-1/2");
+    expect(dialog).toHaveClass("sm:-translate-y-1/2");
+    expect(screen.getByLabelText(/applied at/i)).not.toHaveFocus();
+  });
+
   it("validates routine break resume dates before converting to API payloads", () => {
     jest.useFakeTimers().setSystemTime(new Date("2026-05-06T08:00:00.000Z"));
     try {
@@ -330,46 +439,6 @@ describe("today suggestion UI contract", () => {
   });
 
   it("keeps ad-hoc products visible when editing a recorded application", () => {
-    mockApplicationLogVersions.mockReturnValue({
-      isLoading: false,
-      data: [
-        {
-          id: "version-1",
-          applicationLogId: "log-1",
-          version: 1,
-          editedAt: "2026-05-04T08:05:00.000Z",
-          editedByUserId: "user-1",
-          editReason: null,
-          snapshot: {
-            version: 1,
-            applied_at: "2026-05-04T08:05:00.000Z",
-            general_notes: "Original save",
-            items: [],
-            edited_at: "2026-05-04T08:05:00.000Z",
-            edited_by_user_id: "user-1",
-            edit_reason: null,
-          },
-        },
-        {
-          id: "version-2",
-          applicationLogId: "log-1",
-          version: 2,
-          editedAt: "2026-05-04T09:00:00.000Z",
-          editedByUserId: "user-1",
-          editReason: "Corrected a substitution.",
-          snapshot: {
-            version: 2,
-            applied_at: "2026-05-04T08:05:00.000Z",
-            general_notes: "Skin felt dry today.",
-            items: [],
-            edited_at: "2026-05-04T09:00:00.000Z",
-            edited_by_user_id: "user-1",
-            edit_reason: "Corrected a substitution.",
-          },
-        },
-      ],
-    });
-
     renderWithProviders(
       <RecordApplicationSheet
         open
@@ -387,9 +456,138 @@ describe("today suggestion UI contract", () => {
     expect(
       screen.getByDisplayValue(/Used gentler product/i),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Version 1/i)).toBeInTheDocument();
-    expect(screen.getByText(/Version 2/i)).toBeInTheDocument();
-    expect(screen.getByText(/Corrected a substitution/i)).toBeInTheDocument();
+    const warningCard = screen.getByTestId("application-edit-history-warning");
+    expect(warningCard).toHaveTextContent(/This record will be marked as/i);
+    expect(within(warningCard).getByText("Edited")).toHaveClass("uppercase");
+    expect(warningCard).toHaveTextContent(/First saved 10:05 AM by you/i);
+    expect(screen.queryByText(/Version history/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Version 1/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Version 2/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Original record kept/i)).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /save changes/i })).toHaveClass(
+      "bg-[color:var(--accent)]",
+    );
+    expect(
+      screen.getByRole("button", { name: /discard changes/i }),
+    ).toHaveClass("border");
+  });
+
+  it("clears stale off-shelf substitution data when a suggested row is no longer substituted", () => {
+    const rows = [
+      {
+        stepOrder: 0,
+        suggestionStepId: "step-1",
+        inventoryProductId: "product-1",
+        productBrand: "Ava Lab",
+        productName: "Barrier Serum",
+        stepLabel: "serum",
+        status: "substituted" as const,
+        substitutedWithProductId: null,
+        substitutionReason: "Used a travel product",
+        isAdHoc: true,
+        adHocBrand: "Travel Brand",
+        adHocName: "Travel Cream",
+        notes: null,
+        appliedAt: null,
+      },
+      {
+        stepOrder: 1,
+        suggestionStepId: null,
+        inventoryProductId: null,
+        productBrand: "Plain Lab",
+        productName: "Recovery Balm",
+        stepLabel: null,
+        status: "applied" as const,
+        substitutedWithProductId: null,
+        substitutionReason: null,
+        isAdHoc: true,
+        adHocBrand: "Plain Lab",
+        adHocName: "Recovery Balm",
+        notes: null,
+        appliedAt: null,
+      },
+    ];
+
+    expect(updateApplicationRecordRowStatus(rows, 0, "applied")).toEqual([
+      expect.objectContaining({
+        stepOrder: 0,
+        status: "applied",
+        isAdHoc: false,
+        adHocBrand: null,
+        adHocName: null,
+        substitutionReason: null,
+      }),
+      expect.objectContaining({
+        stepOrder: 1,
+        isAdHoc: true,
+        adHocBrand: "Plain Lab",
+        adHocName: "Recovery Balm",
+      }),
+    ]);
+  });
+
+  it("normalizes stale substitution fields before sending application payloads", () => {
+    const suggestion = suggestionInstance();
+    const payload = buildRecordApplicationPayload(
+      slot({ suggestion }),
+      suggestion,
+      {
+        appliedTime: "08:05",
+        generalNotes: "",
+        editReason: "",
+        items: [
+          {
+            stepOrder: 0,
+            suggestionStepId: "step-1",
+            inventoryProductId: "product-1",
+            productBrand: "Ava Lab",
+            productName: "Barrier Serum",
+            stepLabel: "serum",
+            status: "applied",
+            substitutedWithProductId: "product-2",
+            substitutionReason: "Stale reason",
+            isAdHoc: true,
+            adHocBrand: "Travel Brand",
+            adHocName: "Travel Cream",
+            notes: null,
+            appliedAt: null,
+          },
+          {
+            stepOrder: 1,
+            suggestionStepId: null,
+            inventoryProductId: null,
+            productBrand: "Plain Lab",
+            productName: "Recovery Balm",
+            stepLabel: null,
+            status: "applied",
+            substitutedWithProductId: null,
+            substitutionReason: null,
+            isAdHoc: true,
+            adHocBrand: "Plain Lab",
+            adHocName: "Recovery Balm",
+            notes: null,
+            appliedAt: null,
+          },
+        ],
+      },
+    );
+
+    expect(payload.items).toEqual([
+      expect.objectContaining({
+        status: "applied",
+        substitutedWithProductId: null,
+        substitutionReason: null,
+        isAdHoc: false,
+        adHocBrand: null,
+        adHocName: null,
+      }),
+      expect.objectContaining({
+        status: "applied",
+        isAdHoc: true,
+        adHocBrand: "Plain Lab",
+        adHocName: "Recovery Balm",
+      }),
+    ]);
   });
 
   it("covers step row provenance, fallback labels, and compact applied rendering", () => {

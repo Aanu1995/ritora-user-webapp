@@ -180,7 +180,7 @@ function PhotoUploadPreview({
       type="button"
       onClick={() => fileInputRef.current?.click()}
       disabled={photoUpload.isUploading}
-      className="flex aspect-[4/5] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-surface-muted/40 px-4 text-center text-muted transition hover:border-border-strong hover:bg-surface-muted/70 disabled:cursor-not-allowed disabled:opacity-60"
+      className="flex aspect-[4/5] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-surface-muted/40 px-4 text-center text-muted transition hover:border-border-strong hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-60"
     >
       <ImagePlus className="h-8 w-8" />
       <span className="text-sm font-medium text-foreground">

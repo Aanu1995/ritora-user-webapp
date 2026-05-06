@@ -1,9 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-/**
- * Mirrors the schedule day-grouped layout: timezone strip + view toggle,
- * then a stack of day cards each with a day header and 1–2 time-slot rows.
- */
 export function ScheduleSkeleton() {
   return (
     <div className="mt-6 space-y-3">

@@ -115,7 +115,7 @@ export function BirthdayPicker({
       .join(' ') || undefined;
 
   const fieldClass =
-    'h-11 w-full rounded-xl border border-border bg-surface px-3 text-center text-sm text-foreground transition placeholder:text-muted hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong disabled:opacity-60';
+    'h-11 w-full rounded-xl border border-border bg-surface px-3 text-center text-sm text-foreground transition placeholder:text-muted hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong disabled:opacity-60';
 
   return (
     <fieldset

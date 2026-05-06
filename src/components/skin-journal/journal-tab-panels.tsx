@@ -201,7 +201,7 @@ export function JournalTabPanels({
                       onClick={() => onPhotoFilterChange(filter.id)}
                     >
                       <span>{label}</span>
-                      <span className="ml-1 rounded-full bg-surface-muted px-1 text-[10px] text-muted">
+                      <span className="ml-1 rounded-full bg-accent-soft px-1 text-[10px] text-accent-strong">
                         {filter.count}
                       </span>
                     </Chip>
@@ -217,7 +217,7 @@ export function JournalTabPanels({
               </Button>
             </div>
             {filteredPhotos.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-border bg-surface-muted p-8 text-center text-sm text-muted">
+              <div className="rounded-2xl border border-dashed border-[color:var(--border-strong)] bg-accent-soft/30 p-8 text-center text-sm text-muted">
                 {tPhotosTab("noFilterMatches")}
               </div>
             ) : (

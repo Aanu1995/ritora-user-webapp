@@ -140,6 +140,18 @@ export function updateApplicationRecordRowStatus(
             status === "substituted" ? row.substitutedWithProductId : null,
           substitutionReason:
             status === "substituted" ? row.substitutionReason : null,
+          isAdHoc:
+            status === "substituted" || !row.suggestionStepId
+              ? row.isAdHoc
+              : false,
+          adHocBrand:
+            status === "substituted" || !row.suggestionStepId
+              ? row.adHocBrand
+              : null,
+          adHocName:
+            status === "substituted" || !row.suggestionStepId
+              ? row.adHocName
+              : null,
         }
       : row,
   );

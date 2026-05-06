@@ -66,7 +66,7 @@ export function RangeDropdown({ value, onChange }: Props) {
           aria-label={t("range")}
           className={cn(
             "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium",
-            "border-border bg-surface text-foreground hover:bg-surface-muted",
+            "border-border bg-surface text-foreground hover:bg-accent-soft",
             isCustomActive &&
               "border-[color:var(--accent)] bg-accent-soft text-accent-strong",
           )}
@@ -153,7 +153,7 @@ function PresetButton({
         "flex items-center justify-between rounded-xl px-3 py-2.5 text-sm transition",
         isActive
           ? "bg-accent-soft text-accent-strong"
-          : "hover:bg-surface-muted",
+          : "hover:bg-accent-soft",
       )}
     >
       <span className="font-medium">{label}</span>

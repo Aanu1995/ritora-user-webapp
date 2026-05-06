@@ -1,15 +1,3 @@
-/**
- * Domain model for AI-powered, schedule-anchored skincare suggestions.
- *
- * Drives the Today's Suggestion page, the Why-this-routine drawer, the gap
- * recommendation banner, the reaction banner, and the suggestion-history view.
- *
- * Each ScheduleSlot can have at most one non-superseded suggestion per
- * calendar date. The suggestion becomes visible to the user
- * `lead_time_minutes` before its scheduled time and stays open all day so
- * the user can record what they actually applied.
- */
-
 import type { ApplicationLog } from "@/types/application-tracking";
 
 export type SuggestionDaypart = "morning" | "noon" | "evening";
@@ -26,12 +14,6 @@ export const SUGGESTION_MODES: readonly SuggestionMode[] = [
   "mixed",
 ];
 
-/**
- * Lifecycle of a single suggestion instance.
- *
- * `pending` (created, not yet visible) -> `generating` (worker running) ->
- * `ready` (user can view + apply) -> `failed` or `superseded` (regenerated).
- */
 export type SuggestionGenerationStatus =
   | "pending"
   | "generating"
@@ -39,10 +21,6 @@ export type SuggestionGenerationStatus =
   | "failed"
   | "superseded";
 
-/**
- * Where a step came from. Drives the chip rendered on each step row in the
- * mockup: `Locked by specialist`, `Your routine`, or `Added by AI`.
- */
 export type SuggestionStepProvenance =
   | "specialist_locked"
   | "user_routine"
@@ -102,15 +80,6 @@ export type SuggestionGapRecommendation = {
 
 export type SuggestionGapActionKind = "saved" | "dismissed";
 
-/**
- * Multi-paragraph AI rationale shown in the "Why this routine" drawer.
- *
- * - `headline` is a one-line summary
- * - `body` is multiple paragraphs explaining the strategy
- * - `perStepReasons` explains each chosen step
- * - `skipped` lists products held back today and why
- * - `inputs` is the trace of what the AI used (skin profile, shelf, photos, etc.)
- */
 export type SuggestionExplanation = {
   headline: string;
   body: string[];
@@ -168,17 +137,11 @@ export type SuggestionInstance = {
   inputTrace: Record<string, unknown> | null;
   evidenceSources: SuggestionEvidenceSource[];
   steps: SuggestionStep[];
-  /** Linked application log id when the user has recorded what they applied. */
   applicationLogId: string | null;
   createdAt: string;
   updatedAt: string;
 };
 
-/**
- * Today's Suggestion page payload. The backend already knows the user's
- * time zone. Slots are returned in chronological order. Past-day slots
- * are filtered out server-side and live on the History page instead.
- */
 export type TodaysSuggestionResponse = {
   date: string; // YYYY-MM-DD in user TZ
   timeZone: string;
@@ -186,11 +149,8 @@ export type TodaysSuggestionResponse = {
   leadTimeMinutes: number;
   summary: TodaysSuggestionSummary;
   weatherSummary: TodaysSuggestionWeatherSummary | null;
-  /** May include locked slots whose visibility window has not yet opened. */
   slots: TodaysSuggestionSlot[];
-  /** Active reaction signal for today, if any. */
   reactionAlert: TodaysSuggestionReactionAlert | null;
-  /** Active routine break; while set, no new slots are generated. */
   routineBreak: RoutineBreak | null;
 };
 
@@ -287,9 +247,7 @@ export type TodaysSuggestionSlot = {
   recording: TodaysSuggestionRecording | null;
   recordingReminderSnoozedUntil: string | null;
   applicationLog: ApplicationLog | null;
-  /** Server-computed: when the slot is locked. */
   isVisible: boolean;
-  /** Once the suggestion is generated, this is populated. Null while locked. */
   suggestion: SuggestionInstance | null;
 };
 
@@ -303,11 +261,6 @@ export type TodaysSuggestionRecording = {
   totalItems: number;
 };
 
-/**
- * History page payload. Date-grouped: the outer object is one entry per
- * past day with at least one suggestion that was actually provided.
- * Suggestions and their applied counterparts are joined here.
- */
 export type SuggestionHistoryDay = {
   date: string;
   weatherSummary: TodaysSuggestionWeatherSummary | null;
@@ -336,7 +289,6 @@ export type SuggestionHistorySlotSummary = {
 
 export type SuggestionHistoryListResponse = {
   days: SuggestionHistoryDay[];
-  /** ISO date or null when no more pages. */
   nextCursor: string | null;
   totalApplied: number;
   totalSlots: number;

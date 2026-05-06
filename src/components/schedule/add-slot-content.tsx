@@ -133,7 +133,7 @@ export function AddSlotContent({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md p-1.5 text-muted transition hover:bg-surface-muted"
+            className="rounded-md p-1.5 text-muted transition hover:bg-accent-soft"
             aria-label={tCommon('close')}
           >
             <X className="h-4 w-4" />

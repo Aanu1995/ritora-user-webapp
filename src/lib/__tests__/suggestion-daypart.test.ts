@@ -20,7 +20,7 @@ describe("suggestion-daypart utilities", () => {
     expect(suggestionDaypartToScheduleDaypart("evening")).toBe("evening");
   });
 
-  it("formats slot and ISO times for the mockup labels", () => {
+  it("formats slot and ISO times for display labels", () => {
     expect(formatSlotTime12h("00:05")).toBe("12:05 AM");
     expect(formatSlotTime12h("12:30:00")).toBe("12:30 PM");
     expect(formatSlotTime12h("20:15")).toBe("8:15 PM");

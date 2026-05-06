@@ -1,3 +1,5 @@
+import type { Locale } from '@/i18n/config';
+
 export enum AnalysisSeverity {
   Low = 'low',
   Medium = 'medium',
@@ -41,7 +43,6 @@ export enum IngredientCategory {
   ChemicalSpf = 'chemical-spf',
 }
 
-/** Educational payload per matched active — focus-mode only. */
 export type AnalysisActive = {
   slug: string;
   displayName: string;
@@ -83,13 +84,6 @@ export type LayeringStep = {
   reason: string;
 };
 
-/**
- * Unified analysis response. Mode discriminates:
- *   - `focus`: `actives` populated, other arrays empty. Used by the
- *     product-detail educational panel.
- *   - `multi`: `conflicts` / `overlaps` / `layeringOrder` populated,
- *     `actives` empty. Future primitive for Today's Suggestion.
- */
 export type AnalysisResult = {
   mode: AnalysisMode;
   status: AnalysisStatus;
@@ -115,4 +109,3 @@ export type AnalyzeProductsInput =
       language?: Locale;
       withExplanations?: boolean;
     };
-import type { Locale } from '@/i18n/config';

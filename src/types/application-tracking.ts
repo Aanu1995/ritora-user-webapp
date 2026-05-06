@@ -1,11 +1,3 @@
-/**
- * Application tracking types. An ApplicationLog is the record of what the
- * user actually applied for a given suggestion or ad-hoc slot. Records are
- * editable forever; every edit creates a new ApplicationLogVersion and never
- * overwrites the prior version. The `Edited` pill in the mockup is driven
- * by `hasBeenEdited`.
- */
-
 export type ApplicationItemStatus = "applied" | "skipped" | "substituted";
 export const APPLICATION_ITEM_STATUSES: readonly ApplicationItemStatus[] = [
   "applied",
@@ -47,7 +39,6 @@ export type ApplicationLogItem = {
   recommendedSnapshot: ApplicationItemProductSnapshot | null;
   appliedSnapshot: ApplicationItemProductSnapshot | null;
   appliedAt: string | null;
-  /** Hydrated when a real shelf product is referenced. */
   product: ApplicationProductSummary | null;
   substitutedWithProduct: ApplicationProductSummary | null;
 };
@@ -137,11 +128,6 @@ export type ApplicationLogItemInput = {
   appliedAt?: string | null;
 };
 
-/**
- * Payload to record what the user actually applied for a given suggestion.
- * If `suggestionInstanceId` is omitted, the log is treated as ad-hoc and
- * scoped to a slot + date instead.
- */
 export type RecordApplicationPayload = {
   suggestionInstanceId?: string;
   slotId?: string;

@@ -7,11 +7,6 @@ import {
   NavItemStatus,
 } from '@/constants/nav-config';
 
-/**
- * Shows the "coming soon" Main-group features on the Dashboard so the home
- * surface always signals what Ritora is building toward next, even when the
- * only live widget is the routine check.
- */
 export function UpcomingFeatures() {
   const t = useTranslations('dashboard');
   const tComingSoon = useTranslations('comingSoon');

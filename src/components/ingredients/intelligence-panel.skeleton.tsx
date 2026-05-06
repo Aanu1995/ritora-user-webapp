@@ -1,10 +1,5 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-/**
- * Mirrors the IntelligencePanel layout: heading row + safety-score card with
- * a circular score and label, then a stack of finding cards each with an icon
- * tile and 1–2 lines of supporting copy.
- */
 export function IntelligencePanelSkeleton() {
   return (
     <div

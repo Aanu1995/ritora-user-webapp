@@ -35,7 +35,7 @@ export function PhotoGrid({
 
   if (entries.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-border bg-surface-muted p-8 text-center text-sm text-muted">
+      <div className="rounded-2xl border border-dashed border-[color:var(--border-strong)] bg-accent-soft/30 p-8 text-center text-sm text-muted">
         {t("empty")}
       </div>
     );

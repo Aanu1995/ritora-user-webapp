@@ -1,28 +1,19 @@
 "use client";
 
-import {
-  Check,
-  CircleSlash,
-  Clock4,
-  Info,
-  Package,
-  Pencil,
-  Repeat2,
-  Trash2,
-} from "lucide-react";
+import { Check, CircleSlash, Package, Repeat2, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
   ApplicationProductPicker,
   type ApplicationSelectableProduct,
 } from "@/components/today-suggestion/application-product-picker";
-import { LoadingIndicator } from "@/components/ui/loading-indicator";
-import { formatIsoTime12h } from "@/lib/suggestion-daypart";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import type {
-  ApplicationItemStatus,
-  ApplicationLog,
-  ApplicationLogVersion,
-} from "@/types/application-tracking";
+import type { ApplicationItemStatus } from "@/types/application-tracking";
 
 export type ApplicationRecordRowState = {
   stepOrder: number;
@@ -43,6 +34,7 @@ export type ApplicationRecordRowState = {
 
 export function ApplicationRecordRow({
   row,
+  imageUrl = null,
   disabled = false,
   onChangeStatus,
   onPatch,
@@ -50,6 +42,7 @@ export function ApplicationRecordRow({
   t,
 }: {
   row: ApplicationRecordRowState;
+  imageUrl?: string | null;
   disabled?: boolean;
   onChangeStatus: (status: ApplicationItemStatus) => void;
   onPatch: (patch: Partial<ApplicationRecordRowState>) => void;
@@ -61,68 +54,84 @@ export function ApplicationRecordRow({
     : row.isAdHoc && row.status === "substituted"
       ? [row.adHocBrand, row.adHocName].filter(Boolean).join(" ")
       : null;
+  const productLabel = row.productName ?? row.adHocName ?? row.stepLabel ?? "";
   return (
     <li className="border-b border-border py-3 last:border-b-0">
-      <div className="flex items-start gap-3">
-        <div className="grid h-12 w-10 shrink-0 place-items-center rounded-md border border-border bg-surface">
-          <Package className="h-4 w-4 text-muted" aria-hidden />
-        </div>
-        <div className="min-w-0 flex-1">
-          {row.productBrand ? (
-            <div className="text-[10px] font-bold uppercase tracking-wider text-muted">
-              {row.productBrand}
+      <TooltipProvider delayDuration={150}>
+        <div className="flex items-start gap-3">
+          <ProductImageTile
+            imageUrl={imageUrl}
+            label={productLabel}
+            stepOrder={row.stepOrder}
+          />
+          <div className="min-w-0 flex-1">
+            {row.productBrand ? (
+              <div className="text-[10px] font-bold uppercase tracking-wider text-muted">
+                {row.productBrand}
+              </div>
+            ) : null}
+            <div className="text-sm font-semibold leading-tight text-foreground">
+              {row.productName ?? row.stepLabel ?? row.adHocName ?? ""}
             </div>
-          ) : null}
-          <div className="text-sm font-semibold leading-tight text-foreground">
-            {row.productName ?? row.stepLabel ?? row.adHocName ?? ""}
+            <div className="mt-0.5 text-xs text-muted">
+              {row.suggestionStepId ? t("rowSuggestedTag") : t("rowAddedTag")}
+            </div>
           </div>
-          <div className="mt-0.5 text-xs text-muted">
-            {row.suggestionStepId ? t("rowSuggestedTag") : t("rowAddedTag")}
+          <div className="flex shrink-0 gap-1">
+            <RecordActionTooltip label={t("tooltips.applied")}>
+              <RecordActionButton
+                aria-label={t("rowActionApplied")}
+                active={row.status === "applied"}
+                disabled={disabled}
+                onClick={() => onChangeStatus("applied")}
+                tone="applied"
+              >
+                <Check className="h-3.5 w-3.5" />
+              </RecordActionButton>
+            </RecordActionTooltip>
+            <RecordActionTooltip label={t("tooltips.skipped")}>
+              <RecordActionButton
+                aria-label={t("rowActionSkipped")}
+                active={row.status === "skipped"}
+                disabled={disabled}
+                onClick={() => onChangeStatus("skipped")}
+                tone="skipped"
+              >
+                <CircleSlash className="h-3.5 w-3.5" />
+              </RecordActionButton>
+            </RecordActionTooltip>
+            <RecordActionTooltip label={t("tooltips.substituted")}>
+              <RecordActionButton
+                aria-label={t("rowActionSubstituted")}
+                active={row.status === "substituted"}
+                disabled={disabled}
+                onClick={() => onChangeStatus("substituted")}
+                tone="substituted"
+              >
+                <Repeat2 className="h-3.5 w-3.5" />
+              </RecordActionButton>
+            </RecordActionTooltip>
+            {onRemove ? (
+              <RecordActionTooltip label={t("tooltips.remove")}>
+                <button
+                  type="button"
+                  aria-label={t("rowActionRemove")}
+                  disabled={disabled}
+                  onClick={onRemove}
+                  className={cn(
+                    "grid h-8 w-8 place-items-center rounded-lg border border-[color:rgba(179,38,30,0.28)] bg-danger-soft text-[color:var(--danger)] transition hover:bg-[color:rgba(179,38,30,0.18)]",
+                    disabled && "cursor-not-allowed opacity-60",
+                  )}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </RecordActionTooltip>
+            ) : null}
           </div>
         </div>
-        <div className="flex shrink-0 gap-1">
-          <RecordActionButton
-            aria-label={t("rowActionApplied")}
-            active={row.status === "applied"}
-            disabled={disabled}
-            onClick={() => onChangeStatus("applied")}
-            tone="applied"
-          >
-            <Check className="h-3.5 w-3.5" />
-          </RecordActionButton>
-          <RecordActionButton
-            aria-label={t("rowActionSkipped")}
-            active={row.status === "skipped"}
-            disabled={disabled}
-            onClick={() => onChangeStatus("skipped")}
-            tone="skipped"
-          >
-            <CircleSlash className="h-3.5 w-3.5" />
-          </RecordActionButton>
-          <RecordActionButton
-            aria-label={t("rowActionSubstituted")}
-            active={row.status === "substituted"}
-            disabled={disabled}
-            onClick={() => onChangeStatus("substituted")}
-            tone="substituted"
-          >
-            <Repeat2 className="h-3.5 w-3.5" />
-          </RecordActionButton>
-          {onRemove ? (
-            <RecordActionButton
-              aria-label={t("rowActionRemove")}
-              active={false}
-              disabled={disabled}
-              onClick={onRemove}
-              tone="skipped"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </RecordActionButton>
-          ) : null}
-        </div>
-      </div>
+      </TooltipProvider>
       {row.status === "substituted" ? (
-        <div className="mt-3 space-y-2 rounded-2xl bg-surface-muted p-3">
+        <div className="mt-3 space-y-2 rounded-2xl border border-[color:rgba(47,122,82,0.22)] bg-accent-soft/40 p-3">
           <p className="text-xs font-semibold text-foreground">
             {selectedSubstitute
               ? t("substitution.selected", { name: selectedSubstitute })
@@ -144,7 +153,7 @@ export function ApplicationRecordRow({
               }
               disabled={disabled}
               placeholder={t("substitution.offShelfBrand")}
-              className="h-10 rounded-xl border border-border bg-surface px-3 text-sm text-foreground"
+              className="h-10 rounded-xl border border-[color:var(--border-strong)] bg-surface px-3 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
             />
             <input
               value={row.adHocName ?? ""}
@@ -157,7 +166,7 @@ export function ApplicationRecordRow({
               }
               disabled={disabled}
               placeholder={t("substitution.offShelfName")}
-              className="h-10 rounded-xl border border-border bg-surface px-3 text-sm text-foreground"
+              className="h-10 rounded-xl border border-[color:var(--border-strong)] bg-surface px-3 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
             />
           </div>
           <textarea
@@ -168,7 +177,7 @@ export function ApplicationRecordRow({
             }
             disabled={disabled}
             placeholder={t("substitution.reasonPlaceholder")}
-            className="w-full resize-y rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground"
+            className="w-full resize-y rounded-xl border border-[color:var(--border-strong)] bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
           />
         </div>
       ) : null}
@@ -184,7 +193,7 @@ export function ApplicationRecordRow({
             }
             disabled={disabled}
             placeholder={t("substitution.offShelfBrand")}
-            className="h-10 rounded-xl border border-border bg-surface-muted px-3 text-sm text-foreground"
+            className="h-10 rounded-xl border border-[color:var(--border-strong)] bg-surface px-3 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
           />
           <input
             value={row.adHocName ?? ""}
@@ -196,7 +205,7 @@ export function ApplicationRecordRow({
             }
             disabled={disabled}
             placeholder={t("substitution.offShelfName")}
-            className="h-10 rounded-xl border border-border bg-surface-muted px-3 text-sm text-foreground"
+            className="h-10 rounded-xl border border-[color:var(--border-strong)] bg-surface px-3 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
           />
         </div>
       ) : null}
@@ -205,9 +214,93 @@ export function ApplicationRecordRow({
         onChange={(event) => onPatch({ notes: event.target.value })}
         disabled={disabled}
         placeholder={t("rowNotesPlaceholder")}
-        className="mt-2 h-9 w-full rounded-xl border border-border bg-surface-muted px-3 text-xs text-foreground"
+        className="mt-2 h-9 w-full rounded-xl border border-[color:var(--border-strong)] bg-surface px-3 text-xs text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
       />
     </li>
+  );
+}
+
+function RecordActionTooltip({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent sideOffset={6}>{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+const PRODUCT_TILE_GRADIENTS: ReadonlyArray<{
+  from: string;
+  to: string;
+  fg: string;
+}> = [
+  {
+    from: "var(--accent-soft)",
+    to: "var(--accent-glow)",
+    fg: "var(--accent-strong)",
+  },
+  {
+    from: "var(--secondary-soft)",
+    to: "var(--accent-soft)",
+    fg: "var(--secondary)",
+  },
+  {
+    from: "var(--accent-soft)",
+    to: "var(--surface-muted)",
+    fg: "var(--accent-strong)",
+  },
+  {
+    from: "var(--note-cool-bg)",
+    to: "var(--accent-soft)",
+    fg: "var(--note-cool-fg)",
+  },
+  { from: "var(--ai-soft)", to: "var(--accent-soft)", fg: "var(--ai-fg)" },
+  {
+    from: "var(--accent-glow)",
+    to: "var(--surface)",
+    fg: "var(--accent-strong)",
+  },
+];
+
+function ProductImageTile({
+  imageUrl,
+  label,
+  stepOrder,
+}: {
+  imageUrl: string | null;
+  label: string;
+  stepOrder: number;
+}) {
+  if (imageUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={imageUrl}
+        alt={label || ""}
+        className="h-12 w-10 shrink-0 rounded-md border border-border bg-surface object-cover"
+      />
+    );
+  }
+  const seed = (stepOrder + 1) * 17 + label.length * 31;
+  const palette = PRODUCT_TILE_GRADIENTS[seed % PRODUCT_TILE_GRADIENTS.length]!;
+  const initial = label.trim().charAt(0).toUpperCase();
+  return (
+    <div
+      aria-hidden
+      className="grid h-12 w-10 shrink-0 place-items-center rounded-md border border-border text-[12px] font-bold"
+      style={{
+        background: `linear-gradient(160deg, ${palette.from}, ${palette.to})`,
+        color: palette.fg,
+      }}
+    >
+      {initial || <Package className="h-4 w-4" />}
+    </div>
   );
 }
 
@@ -221,80 +314,6 @@ function onSelectSubstitute(
     adHocBrand: null,
     adHocName: null,
   });
-}
-
-export function ApplicationEditHistoryFooter({
-  existingLog,
-  isLoadingVersions,
-  t,
-  versions,
-}: {
-  existingLog: ApplicationLog;
-  isLoadingVersions: boolean;
-  t: ReturnType<typeof useTranslations>;
-  versions: ApplicationLogVersion[];
-}) {
-  return (
-    <div className="mb-3 flex flex-col gap-1.5 rounded-2xl border border-[color:rgba(184,84,10,0.3)] bg-warning-soft px-3.5 py-3 text-xs text-[color:var(--note-warm-fg)]">
-      <div className="flex items-center gap-2 font-semibold">
-        <Pencil className="h-3 w-3" />
-        {t("editHistory.willMarkAsEdited")}
-      </div>
-      <div className="flex items-center gap-2">
-        <Clock4 className="h-3 w-3" />
-        {t("editHistory.firstSavedAt", {
-          time: formatIsoTime12h(existingLog.firstRecordedAt),
-        })}
-      </div>
-      <div className="flex items-start gap-2">
-        <Info className="mt-0.5 h-3 w-3" />
-        {t("editHistory.versionsAreKept")}
-      </div>
-      <div className="mt-2 border-t border-[color:rgba(184,84,10,0.18)] pt-2">
-        <p className="mb-1.5 text-[11px] font-bold uppercase tracking-wide">
-          {t("editHistory.versionListTitle")}
-        </p>
-        {isLoadingVersions ? (
-          <div className="flex items-center gap-2">
-            <LoadingIndicator size="sm" />
-            <span>{t("editHistory.loadingVersions")}</span>
-          </div>
-        ) : versions.length > 0 ? (
-          <ol className="flex flex-col gap-1.5">
-            {versions.map((version) => (
-              <ApplicationVersionRow
-                key={version.id}
-                version={version}
-                t={t}
-              />
-            ))}
-          </ol>
-        ) : (
-          <p>{t("editHistory.noVersions")}</p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function ApplicationVersionRow({
-  t,
-  version,
-}: {
-  t: ReturnType<typeof useTranslations>;
-  version: ApplicationLogVersion;
-}) {
-  return (
-    <li className="rounded-xl bg-surface/70 px-2.5 py-2 text-[11.5px]">
-      <div className="flex items-center justify-between gap-2 font-semibold">
-        <span>{t("editHistory.versionLabel", { version: version.version })}</span>
-        <span>{formatIsoTime12h(version.editedAt)}</span>
-      </div>
-      <p className="mt-0.5 leading-snug">
-        {version.editReason?.trim() || t("editHistory.initialSave")}
-      </p>
-    </li>
-  );
 }
 
 function RecordActionButton({
@@ -312,17 +331,17 @@ function RecordActionButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "grid h-8 w-8 place-items-center rounded-lg border bg-surface text-muted transition",
+        "grid h-8 w-8 place-items-center rounded-lg border border-[color:var(--border-strong)] bg-surface text-muted transition",
         active &&
           tone === "applied" &&
           "border-[color:var(--accent)] bg-[color:var(--accent)] text-white",
         active &&
           tone === "skipped" &&
-          "border-[color:var(--border-strong)] bg-surface-muted text-foreground",
+          "border-[color:var(--accent-strong)] bg-accent-soft text-accent-strong",
         active &&
           tone === "substituted" &&
-          "border-[color:var(--note-warm-border)] bg-[color:var(--note-warm-bg)] text-[color:var(--note-warm-fg)]",
-        !active && "border-border hover:bg-surface-muted",
+          "border-[color:var(--note-cool-border)] bg-[color:var(--note-cool-bg)] text-[color:var(--note-cool-fg)]",
+        !active && "hover:bg-accent-soft hover:text-accent-strong",
         rest.disabled && "cursor-not-allowed opacity-60",
       )}
       {...rest}

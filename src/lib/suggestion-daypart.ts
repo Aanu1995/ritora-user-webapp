@@ -1,12 +1,6 @@
 import type { Daypart } from "@/types/schedule";
 import type { SuggestionDaypart } from "@/types/suggestions";
 
-/**
- * SuggestionDaypart uses 'noon' for midday slots while the existing schedule
- * Daypart uses 'afternoon' for the same midday window. They map to the same
- * CSS daypart-noon tokens. Keeping the naming distinct in the suggestion
- * domain (per the mockup) but reusing the icon machinery.
- */
 export function suggestionDaypartToScheduleDaypart(
   daypart: SuggestionDaypart,
 ): Daypart {
@@ -14,10 +8,6 @@ export function suggestionDaypartToScheduleDaypart(
   return daypart;
 }
 
-/**
- * Format a HH:MM[:SS] slot time into a user-facing label like "8:30 AM".
- * Mockups use 12-hour with no leading zero on the hour.
- */
 export function formatSlotTime12h(slotTime: string): string {
   const [hourStr = "0", minuteStr = "00"] = slotTime.split(":");
   const hour = Number.parseInt(hourStr, 10);
@@ -55,11 +45,6 @@ export function buildLocalDateTimeIso(date: string, time: string): string {
   return localDate.toISOString();
 }
 
-/**
- * Phrase the lead time gap as the mockup does: "Available 6:30 AM" /
- * "Unlocks in 1h 0m". The relative version is used inside locked cards;
- * the absolute version is used on the badge.
- */
 export function formatRelativeUntil(targetIso: string): string {
   const diffMs = new Date(targetIso).getTime() - Date.now();
   if (diffMs <= 0) return "Now";

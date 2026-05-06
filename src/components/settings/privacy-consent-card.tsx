@@ -202,7 +202,7 @@ export function ConsentCard({
               <button
                 type="button"
                 onClick={() => setStoredOpen((value) => !value)}
-                className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-foreground hover:bg-surface-muted"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent-soft"
               >
                 {storedOpen ? (
                   <ChevronUp className="h-3.5 w-3.5" />
@@ -214,7 +214,7 @@ export function ConsentCard({
               <button
                 type="button"
                 onClick={() => setLogOpen((value) => !value)}
-                className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-foreground hover:bg-surface-muted"
+                className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-foreground hover:bg-accent-soft"
               >
                 {logOpen ? (
                   <ChevronUp className="h-3.5 w-3.5" />

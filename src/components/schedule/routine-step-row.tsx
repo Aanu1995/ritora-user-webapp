@@ -78,7 +78,7 @@ function RoutineStepRowComponent({
           type="button"
           aria-label={t('step.dragHandle')}
           style={{ touchAction: 'none' }}
-          className="mt-1 cursor-grab rounded-md p-1 text-muted hover:bg-surface-muted hover:text-foreground active:cursor-grabbing active:text-foreground"
+          className="mt-1 cursor-grab rounded-md p-1 text-muted hover:bg-accent-soft hover:text-foreground active:cursor-grabbing active:text-foreground"
           {...attributes}
           {...listeners}
         >
@@ -90,7 +90,6 @@ function RoutineStepRowComponent({
         </div>
 
         <div className="min-w-0 flex-1 space-y-2">
-          {/* Step label */}
           <Select
             value={step.stepLabel}
             onValueChange={(value) => {
@@ -141,7 +140,6 @@ function RoutineStepRowComponent({
             </>
           ) : null}
 
-          {/* Product picker — hidden for Custom steps (non-product actions). */}
           {step.stepLabel !== StepLabel.Custom ? (
             <button
               type="button"
@@ -197,7 +195,6 @@ function RoutineStepRowComponent({
             </button>
           ) : null}
 
-          {/* Notes */}
           <input
             type="text"
             value={step.notes ?? ''}
@@ -258,7 +255,7 @@ function RoutineStepRowComponent({
           type="button"
           onClick={() => onRemove(index)}
           aria-label={t('step.delete')}
-          className="mt-1 rounded-md p-1 text-muted transition hover:bg-surface-muted hover:text-red-600"
+          className="mt-1 rounded-md p-1 text-muted transition hover:bg-accent-soft hover:text-red-600"
         >
           <Trash2 className="h-4 w-4" aria-hidden />
         </button>

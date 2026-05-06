@@ -12,10 +12,6 @@ type Props = {
   isResetting?: boolean;
 };
 
-/**
- * Mockup 05: top banner that explains a possible reaction has been detected
- * in today's photo and the routine has been simplified to barrier mode.
- */
 export function ReactionBanner({
   alert,
   onResetToNormalRoutine,
@@ -89,7 +85,7 @@ export function ReactionBanner({
               type="button"
               onClick={onResetToNormalRoutine}
               disabled={isResetting}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface-muted px-2.5 py-1 text-xs font-semibold text-foreground transition hover:bg-accent-soft hover:text-accent-strong"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface px-2.5 py-1 text-xs font-semibold text-foreground transition hover:bg-accent-soft hover:text-accent-strong"
             >
               {isResetting ? (
                 <LoadingIndicator size="sm" />

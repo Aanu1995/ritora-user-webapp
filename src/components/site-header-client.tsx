@@ -129,7 +129,7 @@ export function SiteHeaderClient({
             aria-expanded={open}
             aria-controls={panelId}
             onClick={() => setOpen((value) => !value)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border-strong)] bg-surface-muted text-foreground transition hover:bg-accent-soft hover:text-accent-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden"
           >
             {open ? (
               <X className="h-5 w-5" aria-hidden="true" />
@@ -140,7 +140,6 @@ export function SiteHeaderClient({
         </div>
       </div>
 
-      {/* Mobile dropdown panel */}
       <div
         id={panelId}
         role="dialog"

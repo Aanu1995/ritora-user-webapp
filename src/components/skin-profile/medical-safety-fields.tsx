@@ -34,7 +34,7 @@ function FieldHeader({ question, why }: { question: string; why: string }) {
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="cursor-pointer rounded-full border border-dashed border-border-strong px-2.5 py-0.5 text-[11px] text-muted hover:bg-surface-muted"
+            className="cursor-pointer rounded-full border border-dashed border-border-strong px-2.5 py-0.5 text-[11px] text-muted hover:bg-accent-soft"
           >
             ? {t("whyWeAsk")}
           </button>

@@ -36,11 +36,6 @@ import type {
   SuggestionHistorySlotSummary,
 } from "@/types/suggestions";
 
-/**
- * One day card on the History list page (mockup 15). Renders the day
- * header (date, mood, hydration trend, weather, reaction signal) plus a
- * stack of slot rows. Each row links to the day-detail view at /history/[date].
- */
 export function HistoryDayCard({ day }: { day: SuggestionHistoryDay }) {
   const t = useTranslations("history.dayCard");
   return (
@@ -155,25 +150,6 @@ function SlotStatusPills({ slot }: { slot: SuggestionHistorySlotSummary }) {
   );
 }
 
-/**
- * Curated set of "vibe" tiles. Each tuple holds:
- *   [icon, gradient-from-token, gradient-to-token, foreground-token]
- *
- * The day card picks one deterministically from the date so the same
- * day always renders the same icon (avoids jitter on refetch) but each
- * day in the list visually stands apart.
- */
-/**
- * Day-level vibe icons. Audited against the rest of the product so each
- * entry is exclusive to the History day tile:
- *  - Slot rows use Sun, Sunrise, Moon (excluded)
- *  - AI features use Sparkles + the `--ai-*` colour tokens (BOTH excluded
- *    here: no AI-shaped icon and no AI gradient)
- *  - Stars excluded too because it reads as the same "AI sparkle" family
- *  - Hydration trend uses Droplet (so plural Droplets is excluded)
- *  - Insights use Lightbulb, doctor referral uses Stethoscope, edits use
- *    Pencil, etc. (all excluded)
- */
 const DAY_VIBES: ReadonlyArray<{
   icon: LucideIcon;
   from: string;
@@ -260,12 +236,6 @@ const DAY_VIBES: ReadonlyArray<{
   },
 ];
 
-/**
- * Stable hash of a YYYY-MM-DD string. Sums character codes; using a
- * tiny djb2 variant would also work. The output is mapped into the
- * vibe palette so consecutive days do not collide as long as the
- * palette length and increment are coprime (12 here).
- */
 function pickDayVibe(date: string): (typeof DAY_VIBES)[number] {
   let hash = 0;
   for (let i = 0; i < date.length; i += 1) {
@@ -275,8 +245,6 @@ function pickDayVibe(date: string): (typeof DAY_VIBES)[number] {
 }
 
 function DayPhotoTile({ day }: { day: SuggestionHistoryDay }) {
-  // If a reaction was flagged we override the vibe with a warning tone so
-  // the user notices that day at a glance from the list view.
   if (day.reactionFlagged) {
     return (
       <span

@@ -80,6 +80,15 @@ export default function TodaysSuggestionPage() {
   const closeRecord = () => setRecordSlot(null);
   const closeEdit = () => setEditSlot(null);
   const closeDetail = () => setDetailSuggestion(null);
+  const openRecordForSuggestion = (suggestion: SuggestionInstance | null) => {
+    if (!suggestion || !data) return;
+    const slot = data.slots.find(
+      (item) => item.suggestion?.id === suggestion.id,
+    );
+    if (!slot) return;
+    setDetailSuggestion(null);
+    setRecordSlot(slot);
+  };
   const showRoutineBreakError = (error: unknown) => {
     toast.error(getApiErrorMessage(error) ?? t("routineBreakActionFailed"));
   };
@@ -204,7 +213,6 @@ export default function TodaysSuggestionPage() {
 
   const routineBreak = data.routineBreak;
 
-  // Compose the daily timeline. Banners sit before the first daypart group.
   return (
     <div>
       <PageHeader
@@ -246,8 +254,7 @@ export default function TodaysSuggestionPage() {
           <ReactionBanner
             alert={data.reactionAlert}
             isResetting={
-              normalRoutine.isPending ||
-              regenerateSuggestion.isPending
+              normalRoutine.isPending || regenerateSuggestion.isPending
             }
             onResetToNormalRoutine={
               data.reactionAlert.canUseNormalRoutine
@@ -304,7 +311,7 @@ export default function TodaysSuggestionPage() {
                           ? setDetailSuggestion(target.suggestion)
                           : undefined
                       }
-                      onCustomize={(target) => setRecordSlot(target)}
+                      onCustomise={(target) => setRecordSlot(target)}
                     />
                   </li>
                 ))}
@@ -345,14 +352,10 @@ export default function TodaysSuggestionPage() {
         onOpenChange={(open) => (open ? null : closeDetail())}
         suggestion={detailSuggestion}
         onMarkApplied={() => {
-          if (!detailSuggestion) return;
-          const slot = data.slots.find(
-            (s) => s.suggestion?.id === detailSuggestion.id,
-          );
-          if (slot) {
-            setDetailSuggestion(null);
-            setRecordSlot(slot);
-          }
+          openRecordForSuggestion(detailSuggestion);
+        }}
+        onCustomise={() => {
+          openRecordForSuggestion(detailSuggestion);
         }}
       />
 

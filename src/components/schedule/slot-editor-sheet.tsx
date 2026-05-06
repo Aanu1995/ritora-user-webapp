@@ -22,11 +22,6 @@ type SlotEditorSheetProps = {
   suppressAutoClose?: boolean;
 };
 
-/**
- * Mobile-only wrapper that presents the slot editor as a bottom sheet.
- * On desktop the SchedulePage renders <SlotEditorContent /> inline in a
- * right-hand split-pane column instead of using this component.
- */
 export function SlotEditorSheet({
   slot,
   open,

@@ -53,7 +53,7 @@ export function ApplicationProductPicker({ disabled, onSelect }: Props) {
           onChange={(event) => setSearch(event.target.value)}
           disabled={disabled}
           placeholder={t("searchPlaceholder")}
-          className="h-10 w-full rounded-xl border border-border bg-surface-muted pl-9 pr-3 text-sm text-foreground"
+          className="h-10 w-full rounded-xl border border-[color:var(--border-strong)] bg-surface pl-9 pr-3 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
         />
       </label>
       <div className="mt-2 max-h-52 overflow-y-auto">
@@ -116,7 +116,7 @@ function statusLabelKey(
 function ProductThumb({ product }: { product: ShelfProduct }) {
   const imageUrl = product.identity.imageUrls?.[0] ?? null;
   return (
-    <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg bg-surface-muted text-xs text-muted">
+    <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-accent-soft/40 text-xs font-bold text-accent-strong">
       {imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={imageUrl} alt="" className="h-full w-full object-cover" />

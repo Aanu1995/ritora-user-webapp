@@ -74,7 +74,7 @@ export function TimeZoneSelect({
           aria-haspopup="listbox"
           aria-expanded={open}
           className={cn(
-            'flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-surface px-3 text-left text-sm outline-none transition hover:bg-surface-muted focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-not-allowed disabled:opacity-50',
+            'flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-surface px-3 text-left text-sm outline-none transition hover:bg-accent-soft focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-not-allowed disabled:opacity-50',
             !selected && 'text-muted',
             className,
           )}

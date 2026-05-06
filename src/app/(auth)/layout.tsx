@@ -15,8 +15,6 @@ export default function AuthLayout({
           aria-hidden="true"
           className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-[radial-gradient(ellipse_at_top,var(--color-accent-glow),transparent_60%)]"
         />
-        {/* Brand wordmark — fixed top-left, stays put as the card scrolls.
-            Doubles as the "back to home" affordance, so a separate link is unnecessary. */}
         <Link
           href={AppRoute.Home}
           className="animate-fade-in fixed top-5 left-5 z-20 inline-flex items-center gap-2.5 text-base font-semibold tracking-tight text-foreground sm:top-6 sm:left-6"

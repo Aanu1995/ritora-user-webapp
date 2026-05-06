@@ -24,8 +24,6 @@ import {
 type ProductPickerContentProps = {
   onSelect: (product: RoutineStepProductSummary) => void;
   onClose: () => void;
-  /** Render a visible close X in the header. Inline panels need one; Sheets
-   * already show their own built-in close. */
   showCloseButton?: boolean;
 };
 
@@ -79,7 +77,7 @@ export function ProductPickerContent({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md p-1.5 text-muted transition hover:bg-surface-muted"
+            className="rounded-md p-1.5 text-muted transition hover:bg-accent-soft"
             aria-label={tCommon('close')}
           >
             <X className="h-4 w-4" />

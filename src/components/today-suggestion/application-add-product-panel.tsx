@@ -32,7 +32,7 @@ export function ApplicationAddProductPanel({
         type="button"
         disabled={disabled}
         onClick={() => setOpen(true)}
-        className="mt-3 flex w-full items-center gap-3 rounded-2xl border border-dashed border-[color:var(--border-strong)] bg-transparent p-3.5 text-left transition hover:bg-surface-muted disabled:opacity-60"
+        className="mt-3 flex w-full items-center gap-3 rounded-2xl border border-dashed border-[color:var(--border-strong)] bg-transparent p-3.5 text-left transition hover:bg-accent-soft disabled:opacity-60"
       >
         <PlusCircle className="h-4 w-4 text-accent-strong" />
         <span className="flex-1">
@@ -46,7 +46,7 @@ export function ApplicationAddProductPanel({
   }
 
   return (
-    <div className="mt-3 rounded-3xl border border-border bg-surface-muted p-3.5">
+    <div className="mt-3 rounded-3xl border border-[color:var(--border-strong)] bg-accent-soft/30 p-3.5">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-foreground">
@@ -80,14 +80,14 @@ export function ApplicationAddProductPanel({
             onChange={(event) => setBrand(event.target.value)}
             disabled={disabled}
             placeholder={t("brandPlaceholder")}
-            className="h-10 rounded-xl border border-border bg-surface-muted px-3 text-sm text-foreground"
+            className="h-10 rounded-xl border border-[color:var(--border-strong)] bg-surface px-3 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
           />
           <input
             value={name}
             onChange={(event) => setName(event.target.value)}
             disabled={disabled}
             placeholder={t("namePlaceholder")}
-            className="h-10 rounded-xl border border-border bg-surface-muted px-3 text-sm text-foreground"
+            className="h-10 rounded-xl border border-[color:var(--border-strong)] bg-surface px-3 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
           />
         </div>
         <Button

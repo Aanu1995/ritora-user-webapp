@@ -216,9 +216,6 @@ export function SchedulePage() {
 
   return (
     <>
-      {/* Main column. When the desktop panel opens, pad-right to free space
-          for the fixed aside — content and sticky header re-flow, not overlap.
-          Doubles when the product picker is also open (editor + picker). */}
       <div
         className={cn(
           'transition-[padding] duration-300 ease-in-out',
@@ -242,10 +239,6 @@ export function SchedulePage() {
         />
       </div>
 
-      {/* Fixed right panel, flush to the viewport edge, full height. Slides in
-          from the right with translate-x; no overlay, no blur, no rounded edges.
-          When the product picker is also open, this panel shifts left by one
-          panel-width so the picker can sit flush against the viewport edge. */}
       {isDesktop ? (
         <aside
           aria-hidden={!panelOpen}
@@ -279,9 +272,6 @@ export function SchedulePage() {
         </aside>
       ) : null}
 
-      {/* Inline product picker panel on desktop. Slides in from the right, sits
-          flush to the viewport edge; the slot-editor aside shifts left one
-          panel-width so both panels fit on the right side without overlay. */}
       {isDesktop ? (
         <aside
           aria-hidden={!desktopPickerOpen}
@@ -303,8 +293,6 @@ export function SchedulePage() {
         </aside>
       ) : null}
 
-      {/* Mobile-only bottom sheets. Not mounted on desktop so only one
-          form instance exists at a time. */}
       {!isDesktop ? (
         <>
           <AddSlotDialog

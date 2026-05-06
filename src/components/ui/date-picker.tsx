@@ -17,9 +17,7 @@ type Props = {
   ariaLabel?: string;
   allowClear?: boolean;
   className?: string;
-  /** Earliest selectable date, inclusive. Days before are disabled. */
   minDate?: Date;
-  /** Latest selectable date, inclusive. Days after are disabled. */
   maxDate?: Date;
 };
 
@@ -27,10 +25,6 @@ function parseValue(value: string): Date | undefined {
   return toShelfCalendarSelectionDate(value);
 }
 
-/**
- * Build the matcher react-day-picker uses to disable days outside the
- * configured range. Returning undefined keeps every day selectable.
- */
 function buildDisabledMatcher(
   minDate: Date | undefined,
   maxDate: Date | undefined,
@@ -67,7 +61,7 @@ export function DatePicker({
           disabled={disabled}
           aria-label={ariaLabel ?? resolvedPlaceholder}
           className={cn(
-            'inline-flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-surface px-3 text-left text-sm transition hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong disabled:opacity-60',
+            'inline-flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-surface px-3 text-left text-sm transition hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong disabled:opacity-60',
             !selected && 'text-muted',
             className,
           )}

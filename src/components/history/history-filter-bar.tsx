@@ -60,7 +60,7 @@ function EditedToggle({
         "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium",
         isActive
           ? "border-[color:var(--accent)] bg-accent-soft text-accent-strong"
-          : "border-border bg-surface text-foreground hover:bg-surface-muted",
+          : "border-border bg-surface text-foreground hover:bg-accent-soft",
       )}
     >
       <Pencil

@@ -29,6 +29,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { SuggestionModeBadge } from "@/components/today-suggestion/mode-badge";
+import {
+  buildIntent,
+  buildStepReasonRows,
+} from "@/components/today-suggestion/suggestion-detail-copy";
 import { useRegenerateSuggestion } from "@/hooks/use-suggestions";
 import { formatIsoTime12h, formatSlotTime12h } from "@/lib/suggestion-daypart";
 import type { SuggestionInstance } from "@/types/suggestions";
@@ -41,14 +45,6 @@ type Props = {
   onCustomise?: () => void;
 };
 
-/**
- * Drawer surfaced from any slot card via "Why this routine →". Mirrors
- * mockup 10. Shows the AI rationale, per-step reasoning, what was held
- * back today, and the inputs trace (skin profile, shelf, photos, etc.).
- *
- * The "Generate alternatives" CTA hits the regenerate endpoint which
- * supersedes the current suggestion and produces a new one.
- */
 export function SuggestionDetailDrawer({
   open,
   onOpenChange,
@@ -62,6 +58,16 @@ export function SuggestionDetailDrawer({
   if (!suggestion) return null;
 
   const explanation = suggestion.explanation;
+  const intent = buildIntent(suggestion);
+  const stepReasons = buildStepReasonRows(suggestion);
+  const skipped = explanation?.skipped ?? [];
+  const inputs = explanation?.inputs ?? [];
+  const hasRationaleContent =
+    intent !== null ||
+    stepReasons.length > 0 ||
+    skipped.length > 0 ||
+    inputs.length > 0 ||
+    suggestion.evidenceSources.length > 0;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -90,12 +96,6 @@ export function SuggestionDetailDrawer({
                   })}
                 </span>
               ) : null}
-              {suggestion.aiModel ? (
-                <span className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-2 py-0.5 text-[10.5px] font-medium text-muted">
-                  <Cpu className="h-2.5 w-2.5" />
-                  {t("aiModel", { model: suggestion.aiModel })}
-                </span>
-              ) : null}
             </div>
           </div>
           <SheetDescription className="sr-only">
@@ -103,46 +103,71 @@ export function SuggestionDetailDrawer({
           </SheetDescription>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-5 py-4">
-          {explanation ? (
+        <div
+          data-testid="suggestion-detail-scroll-body"
+          className="flex-1 overflow-y-auto px-5 py-4"
+        >
+          {hasRationaleContent ? (
             <>
-              <RationaleBlock
-                icon={<MessageSquareQuote className="h-3 w-3" />}
-                label={t("sections.intent")}
-              >
-                {explanation.body.map((paragraph, index) => (
-                  <p key={index} className="mb-2 last:mb-0">
-                    {paragraph}
-                  </p>
-                ))}
-              </RationaleBlock>
+              {intent ? (
+                <RationaleBlock
+                  icon={<MessageSquareQuote className="h-3 w-3" />}
+                  label={t("sections.intent")}
+                >
+                  {intent.body.length > 0 ? (
+                    <>
+                      <p className="mb-2 last:mb-0">
+                        <strong>{intent.headline}</strong> {intent.body[0]}
+                      </p>
+                      {intent.body.slice(1).map((paragraph, index) => (
+                        <p key={index} className="mb-2 last:mb-0">
+                          {paragraph}
+                        </p>
+                      ))}
+                    </>
+                  ) : (
+                    <p>
+                      <strong>{intent.headline}</strong>
+                    </p>
+                  )}
+                </RationaleBlock>
+              ) : null}
 
-              {explanation.perStepReasons.length > 0 ? (
+              {stepReasons.length > 0 ? (
                 <RationaleBlock
                   icon={<CheckCircle2 className="h-3 w-3" />}
                   label={t("sections.whyEach")}
                 >
                   <ul className="flex flex-col gap-2">
-                    {explanation.perStepReasons.map((row) => (
+                    {stepReasons.map((row) => (
                       <li
                         key={row.stepOrder}
                         className="flex items-start gap-2.5 rounded-xl bg-surface-muted px-3 py-2.5 text-[13px] leading-snug"
                       >
                         <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--accent)]" />
-                        <span>{row.reason}</span>
+                        <span>
+                          {row.name ? (
+                            <>
+                              <strong className="text-foreground">
+                                {row.name}.
+                              </strong>{" "}
+                            </>
+                          ) : null}
+                          {row.reason}
+                        </span>
                       </li>
                     ))}
                   </ul>
                 </RationaleBlock>
               ) : null}
 
-              {explanation.skipped.length > 0 ? (
+              {skipped.length > 0 ? (
                 <RationaleBlock
                   icon={<XCircle className="h-3 w-3" />}
                   label={t("sections.whatISkipped")}
                 >
                   <ul className="flex flex-col gap-2">
-                    {explanation.skipped.map((row, index) => (
+                    {skipped.map((row, index) => (
                       <li
                         key={`${row.name}-${index}`}
                         className="flex items-start gap-2.5 rounded-xl border border-dashed border-[color:var(--border-strong)] px-3 py-2.5 text-[13px] leading-snug"
@@ -160,13 +185,13 @@ export function SuggestionDetailDrawer({
                 </RationaleBlock>
               ) : null}
 
-              {explanation.inputs.length > 0 ? (
+              {inputs.length > 0 ? (
                 <RationaleBlock
                   icon={<Database className="h-3 w-3" />}
                   label={t("sections.inputs")}
                 >
                   <ul className="flex flex-col gap-2">
-                    {explanation.inputs.map((input) => (
+                    {inputs.map((input) => (
                       <li
                         key={input.label}
                         className="flex items-start gap-2.5 rounded-xl bg-surface-muted px-3 py-2.5 text-[13px] leading-snug"
@@ -224,42 +249,47 @@ export function SuggestionDetailDrawer({
               {t("noRationale")}
             </p>
           )}
-        </div>
 
-        <footer className="flex flex-col gap-2 border-t border-border px-5 pb-5 pt-3.5">
-          <Button onClick={onMarkApplied} className="w-full">
-            <Check className="h-4 w-4" />
-            {t("markApplied")}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={onCustomise}
-            className="w-full font-medium"
-          >
-            <SlidersHorizontal className="h-4 w-4" />
-            {t("customise")}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={() =>
-              regenerate.mutate({
-                id: suggestion.id,
-                payload: { reason: "user_requested" },
-              })
-            }
-            disabled={regenerate.isPending}
-            className="w-full font-medium"
-          >
-            {regenerate.isPending ? (
-              <LoadingIndicator size="sm" />
-            ) : (
-              <>
-                <RefreshCw className="h-4 w-4" />
-                {t("generateAlternatives")}
-              </>
-            )}
-          </Button>
-        </footer>
+          <div className="mt-5 flex flex-col gap-2 border-t border-border pb-1 pt-3.5">
+            <Button
+              onClick={onMarkApplied}
+              disabled={!onMarkApplied}
+              className="w-full border border-[color:var(--accent)] bg-[color:var(--accent)] text-white shadow-none hover:bg-[color:var(--accent-strong)] hover:opacity-100"
+            >
+              <Check className="h-4 w-4" />
+              {t("markApplied")}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={onCustomise}
+              disabled={!onCustomise}
+              className="w-full font-medium shadow-none"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              {t("customise")}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() =>
+                regenerate.mutate({
+                  id: suggestion.id,
+                  payload: { reason: "user_requested" },
+                })
+              }
+              disabled={regenerate.isPending}
+              className="w-full font-medium shadow-none"
+            >
+              {regenerate.isPending ? (
+                <LoadingIndicator size="sm" />
+              ) : (
+                <>
+                  <RefreshCw className="h-4 w-4" />
+                  {t("generateAlternatives")}
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
       </SheetContent>
     </Sheet>
   );

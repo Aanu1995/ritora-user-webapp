@@ -73,22 +73,32 @@ export function buildSkippedApplicationPayload(
 function toApplicationLogItemInputs(
   rows: ApplicationRecordFormValues["items"],
 ): ApplicationLogItemInput[] {
-  return rows.map((row) => ({
-    stepOrder: row.stepOrder,
-    suggestionStepId: row.suggestionStepId,
-    inventoryProductId: row.inventoryProductId,
-    substitutedWithProductId: row.substitutedWithProductId,
-    productBrand: row.productBrand,
-    productName: row.productName,
-    stepLabel: row.stepLabel,
-    status: row.status,
-    isAdHoc: row.isAdHoc,
-    adHocBrand: row.adHocBrand,
-    adHocName: row.adHocName,
-    notes: row.notes,
-    substitutionReason: row.substitutionReason,
-    appliedAt: row.appliedAt,
-  }));
+  return rows.map((row) => {
+    const isSubstituted = row.status === "substituted";
+    const isAddedRow = !row.suggestionStepId;
+    const isAdHoc = isAddedRow ? row.isAdHoc : isSubstituted && row.isAdHoc;
+
+    return {
+      stepOrder: row.stepOrder,
+      suggestionStepId: row.suggestionStepId,
+      inventoryProductId: row.inventoryProductId,
+      substitutedWithProductId: isSubstituted
+        ? isAdHoc
+          ? null
+          : row.substitutedWithProductId
+        : null,
+      productBrand: row.productBrand,
+      productName: row.productName,
+      stepLabel: row.stepLabel,
+      status: row.status,
+      isAdHoc,
+      adHocBrand: isAdHoc ? row.adHocBrand : null,
+      adHocName: isAdHoc ? row.adHocName : null,
+      notes: row.notes,
+      substitutionReason: isSubstituted ? row.substitutionReason : null,
+      appliedAt: row.appliedAt,
+    };
+  });
 }
 
 function buildAppliedAt(

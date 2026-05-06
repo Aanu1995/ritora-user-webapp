@@ -3,7 +3,9 @@
 import { useForm } from "@tanstack/react-form";
 import { Check, Clock4, Save } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { ApplicationAddProductPanel } from "@/components/today-suggestion/application-add-product-panel";
+import { ApplicationEditHistoryFooter } from "@/components/today-suggestion/application-edit-history-warning";
 import {
   buildEditApplicationPayload,
   buildRecordApplicationPayload,
@@ -21,9 +23,10 @@ import {
   type ApplicationRecordSheetMode,
 } from "@/components/today-suggestion/record-application-form";
 import {
-  ApplicationEditHistoryFooter,
-  ApplicationRecordRow,
-} from "@/components/today-suggestion/record-application-sheet-row";
+  AppliedTimePicker,
+  formatTargetDate,
+} from "@/components/today-suggestion/record-application-sheet-helpers";
+import { ApplicationRecordRow } from "@/components/today-suggestion/record-application-sheet-row";
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import {
@@ -33,14 +36,10 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import {
-  useApplicationLogVersions,
   useEditApplication,
   useRecordApplication,
 } from "@/hooks/use-application-tracking";
-import {
-  formatIsoTime12h,
-  formatSlotTime12h,
-} from "@/lib/suggestion-daypart";
+import { formatIsoTime12h, formatSlotTime12h } from "@/lib/suggestion-daypart";
 import type { ApplicationLog } from "@/types/application-tracking";
 import type { SuggestionInstance } from "@/types/suggestions";
 
@@ -70,15 +69,28 @@ function RecordApplicationSheetForm({
   mode,
   onSaved,
   suggestion,
-}: Props & { mode: ApplicationRecordSheetMode; suggestion: SuggestionInstance }) {
+}: Props & {
+  mode: ApplicationRecordSheetMode;
+  suggestion: SuggestionInstance;
+}) {
   const t = useTranslations("todaysSuggestion.recordSheet");
   const recordMutation = useRecordApplication();
   const editMutation = useEditApplication();
   const isEdit = mode.kind === "edit";
-  const versions = useApplicationLogVersions(
-    mode.kind === "edit" ? mode.existingLog.id : null,
-  );
   const isSaving = recordMutation.isPending || editMutation.isPending;
+
+  const imagesByStepOrder = useMemo(() => {
+    const map = new Map<number, string | null>();
+    for (const step of suggestion.steps) {
+      map.set(step.stepOrder, step.product?.imageUrl ?? null);
+    }
+    return map;
+  }, [suggestion.steps]);
+
+  const formattedTargetDate = useMemo(
+    () => formatTargetDate(suggestion.targetDate),
+    [suggestion.targetDate],
+  );
 
   const form = useForm({
     defaultValues: buildApplicationRecordDefaultValues(mode, suggestion),
@@ -113,7 +125,10 @@ function RecordApplicationSheetForm({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="bottom"
-        className="flex max-h-[92vh] flex-col rounded-t-3xl border-t border-border p-0 sm:mx-auto sm:max-w-[540px] sm:rounded-3xl"
+        className="flex max-h-[92vh] flex-col rounded-t-3xl border-t border-border p-0 sm:bottom-auto sm:left-1/2 sm:right-auto sm:top-1/2 sm:w-[min(540px,calc(100vw-2rem))] sm:max-w-[540px] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-3xl sm:border"
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+        }}
       >
         <form
           className="flex min-h-0 flex-1 flex-col"
@@ -149,27 +164,24 @@ function RecordApplicationSheetForm({
             {mode.kind === "edit" ? (
               <ApplicationEditHistoryFooter
                 existingLog={mode.existingLog}
-                isLoadingVersions={versions.isLoading}
                 t={t}
-                versions={versions.data ?? []}
               />
             ) : null}
 
             <form.Field name="appliedTime">
               {(field) => (
-                <div className="mt-1 flex items-center gap-2">
+                <div className="mt-1 flex flex-wrap items-center gap-2">
                   <Clock4 className="h-3.5 w-3.5 text-muted" />
                   <span className="text-xs text-muted">{t("appliedAt")}</span>
-                  <input
-                    type="time"
+                  <AppliedTimePicker
                     value={field.state.value}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    onBlur={field.handleBlur}
                     disabled={isSaving}
-                    className="rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs font-semibold text-foreground"
+                    onChange={(next) => field.handleChange(next)}
+                    onBlur={field.handleBlur}
+                    ariaLabel={t("appliedAt")}
                   />
                   <span className="ml-auto text-xs text-muted">
-                    {suggestion.targetDate}
+                    {formattedTargetDate}
                   </span>
                 </div>
               )}
@@ -182,6 +194,7 @@ function RecordApplicationSheetForm({
                     <ApplicationRecordRow
                       key={row.stepOrder}
                       row={row}
+                      imageUrl={imagesByStepOrder.get(row.stepOrder) ?? null}
                       disabled={isSaving}
                       onChangeStatus={(status) =>
                         form.setFieldValue(
@@ -255,7 +268,7 @@ function RecordApplicationSheetForm({
                     onBlur={field.handleBlur}
                     disabled={isSaving}
                     placeholder={t("notesPlaceholder")}
-                    className="mt-1.5 w-full resize-y rounded-2xl border border-border bg-surface-muted px-3 py-2.5 text-sm text-foreground"
+                    className="mt-1.5 w-full resize-y rounded-2xl border border-[color:var(--border-strong)] bg-surface px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                   />
                 </div>
               )}
@@ -277,7 +290,7 @@ function RecordApplicationSheetForm({
                       onBlur={field.handleBlur}
                       disabled={isSaving}
                       placeholder={t("editReasonPlaceholder")}
-                      className="mt-1.5 w-full resize-y rounded-2xl border border-border bg-surface-muted px-3 py-2.5 text-sm text-foreground"
+                      className="mt-1.5 w-full resize-y rounded-2xl border border-[color:var(--border-strong)] bg-surface px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                     />
                   </div>
                 )}
@@ -285,13 +298,13 @@ function RecordApplicationSheetForm({
             ) : null}
           </div>
 
-          <footer className="flex flex-col gap-2 border-t border-border px-5 pb-5 pt-3.5">
+          <footer className="flex flex-col gap-2 border-t border-border px-5 pb-8 pt-4">
             <form.Subscribe selector={(state) => state.canSubmit}>
               {(canSubmit) => (
                 <Button
                   type="submit"
                   disabled={isSaving || !canSubmit}
-                  className="w-full"
+                  className="w-full border border-[color:var(--accent)] bg-[color:var(--accent)] text-white shadow-none hover:bg-[color:var(--accent-strong)] hover:opacity-100"
                 >
                   {isSaving ? (
                     <LoadingIndicator size="sm" />
@@ -311,19 +324,19 @@ function RecordApplicationSheetForm({
             {isEdit ? (
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={isSaving}
-                className="w-full"
+                className="w-full bg-transparent font-medium shadow-none hover:bg-surface-muted hover:text-foreground"
               >
                 {t("discard")}
               </Button>
             ) : null}
-            <p className="text-center text-[11px] leading-snug text-muted">
-              {mode.kind === "edit"
-                ? t("editLegal", { count: mode.existingLog.editCount })
-                : t("recordLegal")}
-            </p>
+            {!isEdit ? (
+              <p className="text-center text-[11px] leading-snug text-muted">
+                {t("recordLegal")}
+              </p>
+            ) : null}
           </footer>
         </form>
       </SheetContent>

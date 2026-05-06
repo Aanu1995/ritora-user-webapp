@@ -5,13 +5,6 @@ import { History as HistoryIcon, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
-/**
- * Empty state for the History page. Mirrors the typography contract used by
- * the Journal and Shelf empty states already shipped: a large rounded icon
- * tile in accent-soft, an `h2` in font-display + bold, a muted paragraph
- * at text-sm, and the canonical `<Button>` (default variant: bg-foreground)
- * so the call-to-action colour matches every other empty state in the app.
- */
 export function HistoryEmptyState() {
   const t = useTranslations("history.empty");
   return (

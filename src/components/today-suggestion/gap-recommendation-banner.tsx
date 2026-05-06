@@ -13,11 +13,6 @@ type Props = {
   isDismissing?: boolean;
 };
 
-/**
- * Mockup 04: end-of-day gap recommendation banner. The AI proposes a
- * product the user does not yet have on shelf that would meaningfully
- * support their primary skin goal.
- */
 export function GapRecommendationBanner({
   recommendation,
   onBrowse,
@@ -58,7 +53,7 @@ export function GapRecommendationBanner({
               type="button"
               onClick={onSaveToWishlist}
               disabled={isSaving || recommendation.userAction === "saved"}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface-muted px-2.5 py-1 text-xs font-semibold text-foreground transition hover:bg-accent-soft hover:text-accent-strong"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface px-2.5 py-1 text-xs font-semibold text-foreground transition hover:bg-accent-soft hover:text-accent-strong"
             >
               {isSaving ? (
                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -77,7 +72,7 @@ export function GapRecommendationBanner({
               type="button"
               onClick={onDismiss}
               disabled={isDismissing}
-              className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface-muted px-2.5 py-1 text-xs font-medium text-muted transition hover:bg-accent-soft hover:text-accent-strong"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface px-2.5 py-1 text-xs font-medium text-muted transition hover:bg-accent-soft hover:text-accent-strong"
             >
               {isDismissing ? (
                 <Loader2 className="h-3 w-3 animate-spin" />

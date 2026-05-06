@@ -5,11 +5,6 @@ import { CircleHelp, Info, Layers, Lightbulb, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
-/**
- * Two icon buttons next to Export on the History page header. Mockup
- * 14, 15, 16: clicking opens a small popover with overview content or
- * common questions. Closing on outside-click and Escape.
- */
 export function HistoryHeaderPopovers() {
   const t = useTranslations("history.popovers");
   const [openPopover, setOpenPopover] = useState<"overview" | "qa" | null>(null);
@@ -79,7 +74,7 @@ function PopoverButton({
       aria-expanded={active}
       aria-label={ariaLabel}
       className={cn(
-        "grid h-7 w-7 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface-muted text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-9 sm:w-9",
+        "grid h-7 w-7 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-9 sm:w-9",
         active &&
           "border-[color:var(--accent)] bg-accent-soft text-accent-strong hover:bg-accent-soft",
       )}

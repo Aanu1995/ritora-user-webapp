@@ -54,7 +54,7 @@ export function RoutineBreakBanner({
   const [minimumResumeDate] = useState(getMinimumRoutineBreakResumeDate);
 
   return (
-    <section className="relative mb-4 overflow-hidden rounded-[24px] border border-[color:var(--border-strong)] bg-surface-muted shadow-soft">
+    <section className="relative mb-4 overflow-hidden rounded-[24px] border border-[color:var(--border-strong)] bg-surface shadow-soft">
       <span
         aria-hidden
         className="pointer-events-none absolute -right-12 -top-16 h-48 w-48 rounded-full bg-[radial-gradient(circle,_var(--accent-glow)_0%,_transparent_70%)]"
@@ -159,22 +159,14 @@ export function RoutineBreakBanner({
   );
 }
 
-/**
- * Decorative botanical motif anchored top-right of the banner. A small
- * cluster of stylised leaves in sage tones — abstract, theme-safe (only
- * uses `--accent-strong` with opacity variations), and quiet enough to
- * never compete with the text content. Positioned `-z-0` behind the
- * relative content above.
- */
 function RoutineBreakLeaves() {
   return (
     <svg
       aria-hidden
       viewBox="0 0 160 120"
       fill="none"
-      className="pointer-events-none absolute -right-2 -top-3 h-28 w-40 sm:-right-1 sm:-top-2 sm:h-32 sm:w-48"
+      className="pointer-events-none absolute hidden sm:block sm:-right-1 sm:-top-2 sm:h-32 sm:w-48"
     >
-      {/* Large back leaf */}
       <g
         transform="translate(96 18) rotate(28)"
         opacity="0.18"
@@ -190,7 +182,6 @@ function RoutineBreakLeaves() {
         />
       </g>
 
-      {/* Mid leaf */}
       <g
         transform="translate(72 8) rotate(-12)"
         opacity="0.32"
@@ -206,7 +197,6 @@ function RoutineBreakLeaves() {
         />
       </g>
 
-      {/* Front sprig: small leaf + stem */}
       <g
         transform="translate(108 56) rotate(54)"
         opacity="0.55"
@@ -222,7 +212,6 @@ function RoutineBreakLeaves() {
         />
       </g>
 
-      {/* Tiny berries */}
       <circle cx="142" cy="40" r="2.2" fill="var(--accent-strong)" opacity="0.5" />
       <circle cx="148" cy="48" r="1.6" fill="var(--accent-strong)" opacity="0.35" />
     </svg>

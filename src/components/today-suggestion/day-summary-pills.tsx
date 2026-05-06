@@ -1,8 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Check, Lock, Sparkles, ThermometerSun, TrendingUp } from "lucide-react";
+import {
+  Camera,
+  Check,
+  Lock,
+  Sparkles,
+  ThermometerSun,
+  TrendingUp,
+} from "lucide-react";
+import { useTodayEntry } from "@/hooks/use-skin-journal";
 import { cn } from "@/lib/utils";
+import { formatIsoTime12h } from "@/lib/suggestion-daypart";
 import type {
   TodaysSuggestionResponse,
   TodaysSuggestionWeatherSummary,
@@ -12,12 +22,10 @@ type Props = {
   data: TodaysSuggestionResponse;
 };
 
-/**
- * The horizontal strip of pills directly under the page header. Reads at a
- * glance what state the day is in. Counts derive from the slot list.
- */
 export function DaySummaryPills({ data }: Props) {
   const t = useTranslations("todaysSuggestion.summary");
+  const todayEntry = useTodayEntry();
+  const entry = todayEntry.data?.entry ?? null;
 
   const counts = data.slots.reduce(
     (acc, slot) => {
@@ -56,7 +64,32 @@ export function DaySummaryPills({ data }: Props) {
         </Pill>
       ) : null}
       <WeatherPill weather={data.weatherSummary} />
+      {entry?.has_photo ? (
+        <Pill tone="neutral" icon={<Camera className="h-3 w-3 text-muted" />}>
+          {t("photoLoggedAt", { time: formatIsoTime12h(entry.created_at) })}
+        </Pill>
+      ) : (
+        <PillLink
+          href="/journal/upload"
+          tone="neutral"
+          icon={<Camera className="h-3 w-3 text-muted" />}
+        >
+          {t("logPhoto")}
+        </PillLink>
+      )}
     </div>
+  );
+}
+
+function pillClassName(tone: "neutral" | "success" | "ready" | "locked") {
+  return cn(
+    "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
+    tone === "neutral" && "border-border bg-surface text-foreground",
+    tone === "success" &&
+      "border-[color:rgba(47,122,82,0.28)] bg-accent-soft text-accent-strong",
+    tone === "ready" &&
+      "border-[color:var(--note-cool-border)] bg-[color:var(--note-cool-bg)] text-[color:var(--note-cool-fg)]",
+    tone === "locked" && "border-border bg-surface-muted text-muted",
   );
 }
 
@@ -70,20 +103,32 @@ function Pill({
   children: React.ReactNode;
 }) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium",
-        tone === "neutral" && "border-border bg-surface text-foreground",
-        tone === "success" &&
-          "border-[color:rgba(47,122,82,0.28)] bg-accent-soft text-accent-strong",
-        tone === "ready" &&
-          "border-[color:var(--note-cool-border)] bg-[color:var(--note-cool-bg)] text-[color:var(--note-cool-fg)]",
-        tone === "locked" && "border-border bg-surface-muted text-muted",
-      )}
-    >
+    <span className={pillClassName(tone)}>
       {icon}
       {children}
     </span>
+  );
+}
+
+function PillLink({
+  href,
+  tone,
+  icon,
+  children,
+}: {
+  href: string;
+  tone: "neutral" | "success" | "ready" | "locked";
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className={cn(pillClassName(tone), "hover:bg-accent-soft")}
+    >
+      {icon}
+      {children}
+    </Link>
   );
 }
 
@@ -106,7 +151,10 @@ function WeatherPill({
   if (parts.length === 0) return null;
 
   return (
-    <Pill tone="neutral" icon={<ThermometerSun className="h-3 w-3 text-muted" />}>
+    <Pill
+      tone="neutral"
+      icon={<ThermometerSun className="h-3 w-3 text-muted" />}
+    >
       {parts.join(", ")}
     </Pill>
   );

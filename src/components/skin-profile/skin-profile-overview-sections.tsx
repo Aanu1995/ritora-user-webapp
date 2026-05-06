@@ -7,6 +7,10 @@ import type { MouseEvent, ReactNode } from "react";
 import { AppRoute } from "@/constants/app-routes";
 import { saveCurrentAppScrollPosition } from "@/lib/app-scroll-restoration";
 import type { SkinProfile } from "@/types/skin-profile";
+import {
+  compactStrings,
+  translateOptionValue,
+} from "./skin-profile-overview-format";
 
 export function CompletenessCard({ value }: { value: number }) {
   const t = useTranslations("skinProfile.overview");
@@ -116,7 +120,7 @@ function EnumTagList({ values }: { values: string[] }) {
           key={`${v}-${index}`}
           className="rounded-full bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent-strong"
         >
-          {t(`options.${v}`)}
+          {translateOptionValue(t, v)}
         </span>
       ))}
     </div>
@@ -134,7 +138,7 @@ function EnumValue({ value }: { value: string | null }) {
 
   return (
     <span className="text-sm font-medium text-foreground">
-      {t(`options.${value}`)}
+      {translateOptionValue(t, value)}
     </span>
   );
 }
@@ -169,10 +173,6 @@ function BooleanTag({
   );
 }
 
-const compactStrings = (
-  values: Array<string | null | undefined>,
-): string[] => values.filter((value): value is string => Boolean(value));
-
 function isPlainLeftClick(event: MouseEvent<HTMLAnchorElement>): boolean {
   return (
     event.button === 0 &&
@@ -194,8 +194,8 @@ export function EssentialsSection({
   const tOverview = useTranslations("skinProfile.overview");
   const aboutParts = compactStrings([
     profile.dateOfBirth,
-    profile.sexAtBirth ? t(`options.${profile.sexAtBirth}`) : null,
-    profile.ethnicity ? t(`options.${profile.ethnicity}`) : null,
+    profile.sexAtBirth ? translateOptionValue(t, profile.sexAtBirth) : null,
+    profile.ethnicity ? translateOptionValue(t, profile.ethnicity) : null,
   ]);
   const sunValues = compactStrings([
     profile.skinBehavior?.pih_tendency,
@@ -382,7 +382,7 @@ export function OptionalCard({
             }}
             className={
               filled
-                ? "rounded-full border border-border-strong bg-surface px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-surface-muted"
+                ? "rounded-full border border-border-strong bg-surface px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-accent-soft"
                 : "rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-white shadow-soft hover:bg-accent-strong"
             }
           >

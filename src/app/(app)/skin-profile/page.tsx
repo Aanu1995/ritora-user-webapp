@@ -143,7 +143,7 @@ export default function SkinProfilePage() {
               type="button"
               aria-label={t("steps.back")}
               onClick={() => requestLeave(closeEditStep)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-surface-muted"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-accent-soft"
             >
               <ArrowLeft className="h-4 w-4" />
             </button>

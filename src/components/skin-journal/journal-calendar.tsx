@@ -33,8 +33,8 @@ interface JournalCalendarProps {
 }
 
 const STATE_BORDER: Record<CalendarDay["state"], string> = {
-  no_entry: "border border-dashed border-border bg-background hover:bg-surface-muted",
-  entry_no_photo: "border border-border bg-surface-muted hover:bg-surface",
+  no_entry: "border border-dashed border-border bg-background hover:bg-accent-soft",
+  entry_no_photo: "border border-[color:var(--border-strong)] bg-accent-soft/30 hover:bg-surface",
   pending: "border border-[color:var(--warning-border)] bg-surface",
   completed:
     "border border-[color:var(--accent-soft)] bg-surface hover:border-accent",
@@ -142,7 +142,7 @@ export function JournalCalendar({
             type="button"
             aria-label={t("previous")}
             onClick={() => onChangeMonth(-1)}
-            className="grid h-7 w-7 cursor-pointer place-items-center rounded-lg border border-border-strong bg-surface text-xs hover:bg-surface-muted"
+            className="grid h-7 w-7 cursor-pointer place-items-center rounded-lg border border-border-strong bg-surface text-xs hover:bg-accent-soft"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -156,7 +156,7 @@ export function JournalCalendar({
               }
             }}
             className={cn(
-              "grid h-7 w-7 cursor-pointer place-items-center rounded-lg border border-border-strong bg-surface text-xs hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-surface",
+              "grid h-7 w-7 cursor-pointer place-items-center rounded-lg border border-border-strong bg-surface text-xs hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-surface",
             )}
           >
             <ChevronRight className="h-4 w-4" />

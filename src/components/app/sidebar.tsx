@@ -69,7 +69,6 @@ export function Sidebar() {
 
   return (
     <aside className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col border-r border-border bg-surface">
-      {/* Logo — fixed, never scrolls */}
       <div className="flex h-16 shrink-0 items-center px-6">
         <GuardedLink href={AppRoute.Dashboard} className="flex items-center gap-3">
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
@@ -81,7 +80,6 @@ export function Sidebar() {
         </GuardedLink>
       </div>
 
-      {/* Nav — scrollable independently */}
       <nav className="flex flex-1 flex-col overflow-y-auto px-6 pb-4">
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>

@@ -1,10 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-/**
- * Mirrors the loaded Today's Suggestion page so the swap to real content is
- * smooth. Lays out the summary pills row and the morning + evening slot
- * sections, with each card matching the size of a real `SuggestionSlotCard`.
- */
 export function TodaysSuggestionSkeleton() {
   return (
     <div className="mx-auto w-full lg:w-[70%]" aria-hidden="true">

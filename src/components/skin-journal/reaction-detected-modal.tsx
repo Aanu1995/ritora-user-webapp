@@ -69,7 +69,7 @@ export function ReactionDetectedModal({
           </div>
         </AlertDialogHeader>
 
-        <div className="mt-3 rounded-xl border border-border bg-surface-muted px-3.5 py-3">
+        <div className="mt-3 rounded-xl border border-[color:var(--border-strong)] bg-accent-soft/30 px-3.5 py-3">
           <p className="mb-1.5 text-xs text-muted">{t("indicatorsTitle")}</p>
           <div className="flex flex-wrap gap-1.5">
             {indicators.map((ind) => (

@@ -18,11 +18,6 @@ type AddSlotDialogProps = {
   onCreated?: () => void;
 };
 
-/**
- * Mobile-only wrapper that presents the "Add slot" form as a bottom sheet.
- * On desktop the SchedulePage renders <AddSlotContent /> inline in the
- * right-hand split-pane column instead of using this component.
- */
 export function AddSlotDialog({
   open,
   presetMode,

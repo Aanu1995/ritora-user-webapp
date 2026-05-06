@@ -62,7 +62,7 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
               onClick={() => {
                 if (skippedPayload) recordMutation.mutate(skippedPayload);
               }}
-              className="inline-flex h-7 items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface-muted px-2.5 text-[11px] font-semibold text-foreground disabled:opacity-60 hover:bg-accent-soft hover:text-accent-strong sm:h-9 sm:px-4 sm:text-sm"
+              className="inline-flex h-7 items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface px-2.5 text-[11px] font-semibold text-foreground disabled:opacity-60 hover:bg-accent-soft hover:text-accent-strong sm:h-9 sm:px-4 sm:text-sm"
             >
               {recordMutation.isPending ? (
                 <LoadingIndicator size="sm" />

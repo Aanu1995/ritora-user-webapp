@@ -90,7 +90,7 @@ export function DayDetailPanel({
 
   if (!entry) {
     return (
-      <div className="flex flex-col rounded-2xl border border-border bg-surface-muted p-6 lg:h-full">
+      <div className="flex flex-col rounded-2xl border border-[color:var(--border-strong)] bg-accent-soft/30 p-6 lg:h-full">
         <div>
           <p className="text-sm text-muted">
             {t("meta", {
@@ -172,7 +172,7 @@ export function DayDetailPanel({
               {t("statusNeedsReview")}
             </span>
           ) : status === "skipped" ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-surface-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted">
+            <span className="inline-flex items-center gap-1 rounded-full bg-accent-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-strong">
               {t("noPhotoTag")}
             </span>
           ) : null}
@@ -206,7 +206,7 @@ export function DayDetailPanel({
           </div>
         </div>
       ) : (
-        <div className="rounded-2xl border border-border bg-surface-muted p-5 text-center">
+        <div className="rounded-2xl border border-[color:var(--border-strong)] bg-accent-soft/30 p-5 text-center">
           <Camera className="mx-auto h-9 w-9 text-muted" />
           <p className="mt-2 text-sm font-semibold">{t("noPhotoTitle")}</p>
           <p className="mt-1 text-sm text-muted">{t("noPhotoBody")}</p>

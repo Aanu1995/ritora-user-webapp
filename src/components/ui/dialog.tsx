@@ -1,36 +1,51 @@
 'use client';
 
-import * as React from 'react';
-import * as DialogPrimitive from '@radix-ui/react-dialog';
+import {
+  Close as DialogClosePrimitive,
+  Content as DialogContentPrimitive,
+  Description as DialogDescriptionPrimitive,
+  Overlay as DialogOverlayPrimitive,
+  Portal as DialogPortalPrimitive,
+  Root as DialogRoot,
+  Title as DialogTitlePrimitive,
+  Trigger as DialogTriggerPrimitive,
+} from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import {
+  forwardRef,
+  type ComponentProps,
+  type ComponentPropsWithoutRef,
+  type ElementRef,
+  type HTMLAttributes,
+} from 'react';
 import { cn } from '@/lib/utils';
 
-function Dialog(props: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
+function Dialog(props: ComponentProps<typeof DialogRoot>) {
+  return <DialogRoot data-slot="dialog" {...props} />;
 }
 
 function DialogTrigger(
-  props: React.ComponentProps<typeof DialogPrimitive.Trigger>,
+  props: ComponentProps<typeof DialogTriggerPrimitive>,
 ) {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
+  return <DialogTriggerPrimitive data-slot="dialog-trigger" {...props} />;
 }
 
 function DialogPortal(
-  props: React.ComponentProps<typeof DialogPrimitive.Portal>,
+  props: ComponentProps<typeof DialogPortalPrimitive>,
 ) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
+  return <DialogPortalPrimitive data-slot="dialog-portal" {...props} />;
 }
 
-function DialogClose(props: React.ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
+function DialogClose(props: ComponentProps<typeof DialogClosePrimitive>) {
+  return <DialogClosePrimitive data-slot="dialog-close" {...props} />;
 }
 
-const DialogOverlay = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
+const DialogOverlay = forwardRef<
+  ElementRef<typeof DialogOverlayPrimitive>,
+  ComponentPropsWithoutRef<typeof DialogOverlayPrimitive>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Overlay
+  <DialogOverlayPrimitive
     ref={ref}
     className={cn(
       'fixed inset-0 z-[70] bg-foreground/30 backdrop-blur-sm',
@@ -41,11 +56,11 @@ const DialogOverlay = React.forwardRef<
     {...props}
   />
 ));
-DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
+DialogOverlay.displayName = DialogOverlayPrimitive.displayName;
 
-const DialogContent = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+const DialogContent = forwardRef<
+  ElementRef<typeof DialogContentPrimitive>,
+  ComponentPropsWithoutRef<typeof DialogContentPrimitive> & {
     showClose?: boolean;
   }
 >(({ className, children, showClose = true, ...props }, ref) => {
@@ -54,7 +69,7 @@ const DialogContent = React.forwardRef<
   return (
     <DialogPortal>
       <DialogOverlay />
-      <DialogPrimitive.Content
+      <DialogContentPrimitive
         ref={ref}
         className={cn(
           'fixed left-1/2 top-1/2 z-[71] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-border bg-surface p-6 text-foreground shadow-[var(--shadow-hero)]',
@@ -67,28 +82,28 @@ const DialogContent = React.forwardRef<
       >
         {children}
         {showClose ? (
-          <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-1 text-muted hover:bg-surface-muted hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/30">
+          <DialogClosePrimitive className="absolute right-4 top-4 rounded-full p-1 text-muted hover:bg-accent-soft hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/30">
             <X className="h-4 w-4" />
             <span className="sr-only">{t('close')}</span>
-          </DialogPrimitive.Close>
+          </DialogClosePrimitive>
         ) : null}
-      </DialogPrimitive.Content>
+      </DialogContentPrimitive>
     </DialogPortal>
   );
 });
-DialogContent.displayName = DialogPrimitive.Content.displayName;
+DialogContent.displayName = DialogContentPrimitive.displayName;
 
 function DialogHeader({
   className,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('flex flex-col gap-2', className)} {...props} />;
 }
 
 function DialogFooter({
   className,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
@@ -100,29 +115,29 @@ function DialogFooter({
   );
 }
 
-const DialogTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
+const DialogTitle = forwardRef<
+  ElementRef<typeof DialogTitlePrimitive>,
+  ComponentPropsWithoutRef<typeof DialogTitlePrimitive>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
+  <DialogTitlePrimitive
     ref={ref}
     className={cn('font-display text-lg font-bold tracking-tight', className)}
     {...props}
   />
 ));
-DialogTitle.displayName = DialogPrimitive.Title.displayName;
+DialogTitle.displayName = DialogTitlePrimitive.displayName;
 
-const DialogDescription = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
+const DialogDescription = forwardRef<
+  ElementRef<typeof DialogDescriptionPrimitive>,
+  ComponentPropsWithoutRef<typeof DialogDescriptionPrimitive>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description
+  <DialogDescriptionPrimitive
     ref={ref}
     className={cn('text-sm leading-relaxed text-muted', className)}
     {...props}
   />
 ));
-DialogDescription.displayName = DialogPrimitive.Description.displayName;
+DialogDescription.displayName = DialogDescriptionPrimitive.displayName;
 
 export {
   Dialog,

@@ -28,7 +28,6 @@ export function RoutineCycleIllustration({
 
       <rect width="480" height="320" rx="28" fill="url(#routine-bg)" />
 
-      {/* Big cycle ring */}
       <circle
         cx="240"
         cy="160"
@@ -40,7 +39,6 @@ export function RoutineCycleIllustration({
         fill="none"
       />
 
-      {/* Center card — "Your shelf" */}
       <g>
         <rect
           x="180"
@@ -59,7 +57,6 @@ export function RoutineCycleIllustration({
         <rect x="236" y="172" width="48" height="16" rx="4" fill="var(--color-accent)" opacity="0.15" />
       </g>
 
-      {/* AM node — sun */}
       <g transform="translate(104 160)">
         <circle r="38" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1.5" />
         <circle r="16" fill="var(--color-accent)" opacity="0.25" />
@@ -76,7 +73,6 @@ export function RoutineCycleIllustration({
         </g>
       </g>
 
-      {/* PM node — moon */}
       <g transform="translate(376 160)">
         <circle r="38" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1.5" />
         <path
@@ -88,7 +84,6 @@ export function RoutineCycleIllustration({
         <circle cx="-16" cy="-18" r="1" fill="var(--color-accent)" opacity="0.6" />
       </g>
 
-      {/* AM → center arrow */}
       <g>
         <path
           d="M148 150 Q168 132 188 130"
@@ -107,7 +102,6 @@ export function RoutineCycleIllustration({
         />
       </g>
 
-      {/* center → PM arrow */}
       <g>
         <path
           d="M296 200 Q320 214 336 178"
@@ -126,7 +120,6 @@ export function RoutineCycleIllustration({
         />
       </g>
 
-      {/* PM → AM (night to next morning) arrow */}
       <g>
         <path
           d="M376 212 Q240 300 104 212"
@@ -139,7 +132,6 @@ export function RoutineCycleIllustration({
         />
       </g>
 
-      {/* AM label */}
       <g transform="translate(104 226)">
         <rect x="-22" y="0" width="44" height="20" rx="10" fill="var(--color-foreground)" />
         <text
@@ -155,7 +147,6 @@ export function RoutineCycleIllustration({
         </text>
       </g>
 
-      {/* PM label */}
       <g transform="translate(376 226)">
         <rect x="-22" y="0" width="44" height="20" rx="10" fill="var(--color-foreground)" />
         <text
@@ -171,7 +162,6 @@ export function RoutineCycleIllustration({
         </text>
       </g>
 
-      {/* Decorative leaf left bottom */}
       <path
         d="M34 268 Q20 240 42 220 Q64 240 58 272 Q46 286 34 268 Z"
         fill="var(--color-accent)"
@@ -184,7 +174,6 @@ export function RoutineCycleIllustration({
         strokeLinecap="round"
       />
 
-      {/* Small sparkle top */}
       <path
         d="M240 42 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2 Z"
         fill="var(--color-accent-strong)"

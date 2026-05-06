@@ -3,13 +3,6 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import type { SuggestionMode } from "@/types/suggestions";
 
-/**
- * Slot-level mode badge shown in the slot card header. Mirrors the mockups:
- *  - AI: violet AI tones
- *  - Manual: neutral surface-muted
- *  - Mixed: AI tones with the same shape (used when a manual slot has any
- *    AI-added steps around its locked ones)
- */
 export function SuggestionModeBadge({ mode }: { mode: SuggestionMode }) {
   const t = useTranslations("todaysSuggestion.modeBadge");
 
@@ -56,11 +49,6 @@ export function SuggestionModeBadge({ mode }: { mode: SuggestionMode }) {
   );
 }
 
-/**
- * Slot status pill shown next to the mode badge: Ready / Applied / Edited /
- * Skipped / Locked / Awaiting record. Single source of truth so the colours
- * stay consistent across Today and History.
- */
 export type SuggestionStatusPillVariant =
   | "ready"
   | "applied"
@@ -111,12 +99,6 @@ const STATUS_VARIANT_CLASSES: Record<SuggestionStatusPillVariant, string> = {
     "border-[color:rgba(47,122,82,0.32)] bg-accent-soft text-accent-strong",
 };
 
-/**
- * Per-step provenance chip. The mockup distinguishes:
- *  - Locked by specialist (key icon, accent)
- *  - Your routine (neutral)
- *  - Added by AI (violet accent dot)
- */
 export function SuggestionProvenanceChip({
   provenance,
 }: {

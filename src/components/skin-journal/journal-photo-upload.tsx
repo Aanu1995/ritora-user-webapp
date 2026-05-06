@@ -226,7 +226,7 @@ export function JournalPhotoUpload({
           type="button"
           variant="ghost"
           onClick={() => inputRef.current?.click()}
-          className="group flex aspect-square h-auto mx-auto w-full max-w-[420px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border-strong bg-surface-muted p-4 text-center transition hover:border-accent hover:bg-surface"
+          className="group flex aspect-square h-auto mx-auto w-full max-w-[420px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[color:var(--border-strong)] bg-accent-soft/30 p-4 text-center transition hover:border-accent hover:bg-accent-soft/60"
         >
           <div
             aria-hidden
@@ -248,7 +248,7 @@ export function JournalPhotoUpload({
       ) : null}
 
       {photo ? (
-        <label className="mt-4 flex items-center gap-2 rounded-xl border border-border bg-surface-muted p-3 text-sm leading-relaxed">
+        <label className="mt-4 flex items-center gap-2 rounded-xl border border-[color:var(--border-strong)] bg-accent-soft/30 p-3 text-sm leading-relaxed">
           <Checkbox
             checked={photoProcessingConsent}
             onCheckedChange={(checked) =>

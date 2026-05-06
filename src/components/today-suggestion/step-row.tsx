@@ -4,28 +4,14 @@ import Image from "next/image";
 import { TriangleAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SuggestionProvenanceChip } from "@/components/today-suggestion/mode-badge";
+import { productCategoryEmoji } from "@/components/today-suggestion/product-category-icon";
 import type { SuggestionStep } from "@/types/suggestions";
 
 type Props = {
   step: SuggestionStep;
-  /**
-   * When true, the step is shown in its compact "applied" form, used in
-   * recorded slot cards on Today and in the suggested-vs-applied history
-   * compare. Hides the rationale and meta and shows a checkmark instead of
-   * the order number.
-   */
   compactApplied?: boolean;
 };
 
-/**
- * One row in a slot card's step list. Visual breakdown matches the mockup:
- *  - Numbered badge (or check when compactApplied)
- *  - Product image (or category illustration)
- *  - Brand uppercase + product name
- *  - Meta line: application method · quantity · wait
- *  - Reason chip(s): provenance + AI reason or specialist note
- *  - Optional safety warning chip
- */
 export function SuggestionStepRow({ step, compactApplied = false }: Props) {
   const provenance = step.provenance;
   const productImage = step.product?.imageUrl ?? null;
@@ -35,11 +21,16 @@ export function SuggestionStepRow({ step, compactApplied = false }: Props) {
       data-step-provenance={provenance}
       className={cn(
         "flex items-start gap-3 rounded-2xl border p-2.5",
-        provenance === "specialist_locked" &&
-          "border-[color:rgba(47,122,82,0.32)] bg-[color:var(--accent-soft)]/60",
-        provenance === "ai_added" &&
-          "border-[color:var(--ai-border)] bg-[color:var(--ai-soft)]",
-        provenance === "user_routine" && "border-transparent bg-surface-muted",
+        compactApplied
+          ? "border-transparent bg-[color:color-mix(in_srgb,var(--surface-muted)_70%,var(--accent-soft))]"
+          : [
+              provenance === "specialist_locked" &&
+                "border-[color:rgba(47,122,82,0.32)] bg-[color:var(--accent-soft)]/60",
+              provenance === "ai_added" &&
+                "border-[color:var(--ai-border)] bg-[color:var(--ai-soft)]",
+              provenance === "user_routine" &&
+                "border-transparent bg-surface-muted",
+            ],
       )}
     >
       <StepLeading step={step} compactApplied={compactApplied} />
@@ -54,7 +45,7 @@ export function SuggestionStepRow({ step, compactApplied = false }: Props) {
             className="h-full w-full object-cover"
           />
         ) : (
-          <span aria-hidden>{categoryEmoji(step.stepLabel)}</span>
+          <span aria-hidden>{productCategoryEmoji(step.stepLabel)}</span>
         )}
       </div>
 
@@ -181,31 +172,4 @@ function StepMeta({ step }: { step: SuggestionStep }) {
 
 function stepLabelLabel(stepLabel: string): string {
   return stepLabel.replace(/-/g, " ");
-}
-
-function categoryEmoji(stepLabel: string): string {
-  switch (stepLabel) {
-    case "cleanser":
-      return "🧴";
-    case "toner":
-    case "essence":
-      return "💧";
-    case "serum":
-    case "treatment":
-      return "🧪";
-    case "moisturizer":
-      return "🧴";
-    case "sun-protection":
-      return "☀️";
-    case "exfoliant":
-      return "💎";
-    case "mask":
-      return "🪷";
-    case "eye-care":
-      return "👁";
-    case "lip-care":
-      return "💋";
-    default:
-      return "✦";
-  }
 }

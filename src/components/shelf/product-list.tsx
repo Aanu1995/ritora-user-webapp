@@ -105,12 +105,11 @@ function ProductListRow({
       }}
       className={cn(
         'group flex cursor-pointer items-center gap-4 px-3 py-3 transition',
-        'hover:bg-surface-muted',
+        'hover:bg-accent-soft',
         'focus-visible:bg-surface-muted focus-visible:outline-none',
         isSelected && 'bg-accent-soft/60 hover:bg-accent-soft/70',
       )}
     >
-      {/* Checkbox */}
       <button
         type="button"
         role="checkbox"
@@ -128,7 +127,6 @@ function ProductListRow({
         <Check className="h-3 w-3" strokeWidth={3} />
       </button>
 
-      {/* Thumbnail */}
       <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-surface-muted">
         {imageUrl ? (
           <Image
@@ -147,7 +145,6 @@ function ProductListRow({
         )}
       </div>
 
-      {/* Identity */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span
@@ -169,7 +166,6 @@ function ProductListRow({
         </p>
       </div>
 
-      {/* Meta tokens */}
       <div className="hidden items-center gap-3 text-xs text-muted sm:flex">
         {life.state === ShelfLifeState.Unopened ? (
           <span className="inline-flex items-center gap-1">

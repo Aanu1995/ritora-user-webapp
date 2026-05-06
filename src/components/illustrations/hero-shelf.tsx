@@ -38,14 +38,11 @@ export function HeroShelfIllustration({
         </linearGradient>
       </defs>
 
-      {/* Background */}
       <rect width="520" height="440" rx="32" fill="url(#hero-bg-gradient)" />
 
-      {/* Soft sun disc */}
       <circle cx="420" cy="110" r="72" fill="var(--color-accent-glow)" opacity="0.65" />
       <circle cx="420" cy="110" r="46" fill="var(--color-accent-glow)" opacity="0.9" />
 
-      {/* Background leaves */}
       <g opacity="0.55">
         <path
           d="M64 96 Q46 60 84 34 Q112 70 98 110 Q82 134 64 96 Z"
@@ -71,15 +68,11 @@ export function HeroShelfIllustration({
         />
       </g>
 
-      {/* Shelf plate */}
       <rect x="48" y="338" width="424" height="14" rx="7" fill="var(--color-foreground)" opacity="0.12" />
       <rect x="48" y="338" width="424" height="5" rx="2.5" fill="var(--color-foreground)" opacity="0.18" />
 
-      {/* Bottle A — tall serum / dropper */}
       <g>
-        {/* Shadow */}
         <ellipse cx="130" cy="344" rx="52" ry="5" fill="var(--color-foreground)" opacity="0.12" />
-        {/* Body */}
         <rect
           x="94"
           y="170"
@@ -90,23 +83,18 @@ export function HeroShelfIllustration({
           stroke="var(--color-border)"
           strokeWidth="1.5"
         />
-        {/* Label */}
         <rect x="104" y="218" width="52" height="74" rx="6" fill="var(--color-accent)" opacity="0.18" />
         <rect x="110" y="232" width="40" height="4" rx="2" fill="var(--color-accent-strong)" />
         <rect x="110" y="244" width="32" height="3" rx="1.5" fill="var(--color-accent-strong)" opacity="0.7" />
         <rect x="110" y="254" width="36" height="3" rx="1.5" fill="var(--color-accent-strong)" opacity="0.7" />
         <rect x="110" y="272" width="22" height="4" rx="2" fill="var(--color-accent-strong)" />
-        {/* Neck */}
         <rect x="112" y="150" width="36" height="24" rx="4" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1.5" />
-        {/* Dropper cap */}
         <rect x="118" y="118" width="24" height="34" rx="5" fill="var(--color-accent-strong)" />
         <rect x="122" y="108" width="16" height="14" rx="3" fill="var(--color-accent)" />
       </g>
 
-      {/* Bottle B — wide moisturizer jar */}
       <g>
         <ellipse cx="260" cy="344" rx="66" ry="5" fill="var(--color-foreground)" opacity="0.14" />
-        {/* Body */}
         <rect
           x="200"
           y="210"
@@ -117,13 +105,11 @@ export function HeroShelfIllustration({
           stroke="var(--color-border)"
           strokeWidth="1.5"
         />
-        {/* Glossy highlight */}
         <path
           d="M212 226 Q216 220 224 220 L232 220 Q220 260 232 318 Q224 322 216 322 Q206 280 212 226 Z"
           fill="var(--color-surface)"
           opacity="0.22"
         />
-        {/* Label card */}
         <rect x="218" y="248" width="84" height="58" rx="8" fill="var(--color-surface)" />
         <rect x="230" y="262" width="40" height="4" rx="2" fill="var(--color-accent-strong)" />
         <rect x="230" y="274" width="60" height="3" rx="1.5" fill="var(--color-muted)" />
@@ -136,30 +122,24 @@ export function HeroShelfIllustration({
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {/* Lid */}
         <rect x="194" y="186" width="132" height="28" rx="8" fill="var(--color-foreground)" opacity="0.85" />
         <rect x="198" y="190" width="124" height="4" rx="2" fill="var(--color-surface)" opacity="0.35" />
       </g>
 
-      {/* Bottle C — cleanser pump */}
       <g>
         <ellipse cx="390" cy="344" rx="48" ry="5" fill="var(--color-foreground)" opacity="0.12" />
-        {/* Body */}
         <path
           d="M354 338 L354 200 Q354 186 368 186 L412 186 Q426 186 426 200 L426 338 Z"
           fill="url(#hero-bottle-c)"
           stroke="var(--color-border)"
           strokeWidth="1.5"
         />
-        {/* Label */}
         <rect x="362" y="228" width="56" height="70" rx="6" fill="var(--color-secondary-glow)" opacity="0.9" />
         <rect x="370" y="244" width="40" height="4" rx="2" fill="#b4633b" />
         <rect x="370" y="256" width="32" height="3" rx="1.5" fill="#b4633b" opacity="0.7" />
         <rect x="370" y="266" width="36" height="3" rx="1.5" fill="#b4633b" opacity="0.7" />
         <rect x="370" y="282" width="22" height="4" rx="2" fill="#b4633b" />
-        {/* Neck */}
         <rect x="378" y="166" width="24" height="22" rx="3" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1.5" />
-        {/* Pump */}
         <path
           d="M388 132 Q372 132 372 148 Q372 160 388 162 L388 168 L378 168 L378 172 L402 172 L402 168 L392 168 L392 162 Q408 158 408 146 Q408 132 388 132 Z"
           fill="var(--color-foreground)"
@@ -167,7 +147,6 @@ export function HeroShelfIllustration({
         />
       </g>
 
-      {/* Foreground leaf decorations */}
       <g opacity="0.9">
         <path
           d="M58 256 Q34 232 52 200 Q82 212 82 250 Q70 272 58 256 Z"
@@ -190,7 +169,6 @@ export function HeroShelfIllustration({
         <circle cx="468" cy="60" r="3" fill="var(--color-accent-strong)" />
       </g>
 
-      {/* Sparkle accents */}
       <g fill="var(--color-accent)">
         <path d="M148 92 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2 Z" />
         <path d="M342 120 l1.5 4 l4 1.5 l-4 1.5 l-1.5 4 l-1.5 -4 l-4 -1.5 l4 -1.5 Z" opacity="0.8" />

@@ -37,11 +37,6 @@ export const routineBreakResumeDefaultValues: RoutineBreakResumeValues = {
   endsAt: "",
 };
 
-/**
- * Convert a `YYYY-MM-DD` value (the user's chosen resume date) into an ISO
- * timestamp at midnight local time. The break resumes at the start of that
- * date in the user's time zone.
- */
 export function toRoutineBreakEndsAt(value: string): string | null {
   if (!value || !DATE_PATTERN.test(value)) return null;
   const [year, month, day] = value.split("-").map(Number);
@@ -49,11 +44,6 @@ export function toRoutineBreakEndsAt(value: string): string | null {
   return localMidnight.toISOString();
 }
 
-/**
- * Convert an ISO timestamp from the API back into a `YYYY-MM-DD` value the
- * `DatePicker` component understands. Empty string when the break has no
- * scheduled resume date.
- */
 export function toRoutineBreakDatePickerValue(value: string | null): string {
   if (!value) return "";
   const date = new Date(value);

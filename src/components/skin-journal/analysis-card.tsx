@@ -112,7 +112,7 @@ function AnalysisSourceLink({
       href={source.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-start justify-between gap-3 rounded-xl border border-border bg-surface-muted p-3 text-sm transition hover:border-accent/50"
+      className="flex items-start justify-between gap-3 rounded-xl border border-[color:var(--border-strong)] bg-accent-soft/30 p-3 text-sm transition hover:border-accent/50"
     >
       <span>
         <span className="block font-semibold text-foreground">

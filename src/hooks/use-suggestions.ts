@@ -37,11 +37,6 @@ import type {
   UpdateRoutineBreakPayload,
 } from "@/types/suggestions";
 
-/**
- * One-minute refetch on Today: a slot's `isVisible` flag flips from false
- * to true at the visibility boundary (default 2 hours before slot time).
- * Window-focus refetch keeps it fresh when the user returns to the tab.
- */
 const TODAYS_SUGGESTION_REFETCH_INTERVAL_MS = 60_000;
 
 const EMPTY_HISTORY_RESPONSE: SuggestionHistoryListResponse = {

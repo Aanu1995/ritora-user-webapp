@@ -108,7 +108,6 @@ export default async function Home() {
       <div className="relative min-h-screen overflow-hidden">
         <SiteHeader />
         <main>
-        {/* HERO — text + real landscape shelfie photo, photo stretches to text column height */}
         <section className="mx-auto w-full max-w-7xl px-5 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-24 lg:px-8 lg:pt-32 lg:pb-32">
           <div className="grid items-stretch gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
             <div className="animate-fade-up flex flex-col justify-center space-y-8">
@@ -157,7 +156,6 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Hero photo — landscape 4:3 on mobile, stretches to text height on desktop */}
             <div className="animate-fade-up-delay-1 relative flex w-full items-stretch">
               <div
                 aria-hidden="true"
@@ -175,7 +173,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* PROBLEM — cards only, no photo */}
         <section
           id="problem"
           className="mx-auto w-full max-w-7xl scroll-mt-24 px-5 py-14 sm:scroll-mt-28 sm:px-6 sm:py-20 lg:px-8 lg:py-24"
@@ -219,7 +216,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* PRIVACY — full-width centred header + 2x2 grid that fills the page */}
         <section
           id="privacy"
           className="mx-auto w-full max-w-7xl scroll-mt-24 px-5 py-20 sm:scroll-mt-28 sm:px-6 sm:py-24 lg:px-8 lg:py-28"
@@ -261,7 +257,6 @@ export default async function Home() {
           </ul>
         </section>
 
-        {/* HOW IT WORKS — text + RoutineCycleIllustration beside it */}
         <section
           id="how-it-works"
           className="mx-auto w-full max-w-7xl scroll-mt-24 px-5 py-14 sm:scroll-mt-28 sm:px-6 sm:py-20 lg:px-8 lg:py-24"
@@ -316,7 +311,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* FEATURES — text + IngredientCheckIllustration, then card grid */}
         <section
           id="features"
           className="mx-auto w-full max-w-7xl scroll-mt-24 px-5 py-14 sm:scroll-mt-28 sm:px-6 sm:py-20 lg:px-8 lg:py-24"
@@ -368,7 +362,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* DIFFERENTIATORS — icon-led rows only, no photo */}
         <section
           id="differentiators"
           className="mx-auto w-full max-w-7xl scroll-mt-24 px-5 py-14 sm:scroll-mt-28 sm:px-6 sm:py-20 lg:px-8 lg:py-24"
@@ -406,7 +399,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* FAQ */}
         <section
           id="faq"
           className="mx-auto w-full max-w-5xl scroll-mt-24 px-5 py-14 sm:scroll-mt-28 sm:px-6 sm:py-20 lg:px-8 lg:py-24"
@@ -443,7 +435,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* FINAL CTA — text and buttons only, no photo */}
         <section
           id="cta"
           className="mx-auto w-full max-w-7xl scroll-mt-24 px-5 pb-24 sm:scroll-mt-28 sm:px-6 sm:pb-28 lg:px-8 lg:pb-32"

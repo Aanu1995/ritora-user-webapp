@@ -16,18 +16,6 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-/**
- * Three blocking states for the Today's Suggestion page. The page renders
- * the highest-priority blocker only:
- *  1. No skin profile -> can't suggest anything
- *  2. No shelf products -> nothing to suggest from
- *  3. No schedule slots -> nothing to anchor a suggestion to
- *
- * Button labels are taken verbatim from the live shelf, schedule, and
- * skin-profile entry points so they match the real flows the user can
- * complete from this page.
- */
-
 export function NoSkinProfileEmptyState() {
   const t = useTranslations("todaysSuggestion.empty.skinProfile");
   return (
@@ -102,11 +90,6 @@ export function NoScheduleEmptyState() {
   );
 }
 
-/**
- * Recoverable empty: today happens to have no slot for the current daypart
- * yet. The suggestion engine has nothing to render right now, but tomorrow
- * is fine. Encourages the user to log today's photo while they wait.
- */
 export function NoCurrentSlotEmptyState({
   nextSlotLabel,
 }: {

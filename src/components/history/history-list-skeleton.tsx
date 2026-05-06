@@ -1,11 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-/**
- * Mirrors the History list page once data has loaded so the swap is visually
- * smooth. Lays out the summary pills and a stack of day cards, each with a
- * vibe tile, date heading, day chips, and a list of slot rows that match
- * `HistoryDayCard`.
- */
 export function HistoryListSkeleton() {
   return (
     <div className="mt-2" aria-hidden="true">

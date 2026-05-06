@@ -1,9 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-/**
- * Mirrors the dashboard layout: optional alert + nudge card, then the
- * upcoming-features eyebrow and 3-column card grid.
- */
 export function DashboardSkeleton() {
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-4">

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
+import { Skeleton } from "@/components/ui/skeleton";
 import { HistoryDayCard } from "@/components/history/history-day-card";
 import { HistoryEmptyState } from "@/components/history/history-empty-state";
 import { HistoryExportButton } from "@/components/history/history-export-button";
@@ -13,6 +14,7 @@ import { HistoryFilterBar } from "@/components/history/history-filter-bar";
 import { HistoryHeaderPopovers } from "@/components/history/header-popovers";
 import { HistoryListSkeleton } from "@/components/history/history-list-skeleton";
 import { HistorySummaryStrip } from "@/components/history/history-summary-strip";
+import { useAutoLoadMore } from "@/hooks/use-auto-load-more";
 import { useSuggestionHistory } from "@/hooks/use-suggestions";
 import type { SuggestionHistoryListQuery } from "@/types/suggestions";
 
@@ -23,6 +25,20 @@ export default function HistoryPage() {
   });
   const history = useSuggestionHistory(query);
   const data = history.data;
+  const hasItems = Boolean(data?.days.length);
+  const hasLoadMoreError = Boolean(history.isFetchNextPageError);
+  const canLoadMore = Boolean(history.hasNextPage);
+  const loadMoreSentinelRef = useAutoLoadMore({
+    enabled:
+      !history.isLoading && !history.isError && hasItems && !hasLoadMoreError,
+    hasNextPage: canLoadMore,
+    isFetchingNextPage: history.isFetchingNextPage,
+    onLoadMore: () => {
+      void history.fetchNextPage();
+    },
+  });
+  const showAutoLoadState =
+    canLoadMore || history.isFetchingNextPage || hasLoadMoreError;
 
   const headerAction = (
     <div className="flex shrink-0 gap-1.5">
@@ -42,13 +58,6 @@ export default function HistoryPage() {
         action={headerAction}
       />
 
-      {/*
-        Content under the header is constrained to 70% of the available width
-        on desktop so the day cards stay tight and readable. The header itself
-        keeps its full width because it lives in the parent shell.
-        Filter bar sits sticky just below the header so it stays visible while
-        the day cards scroll.
-      */}
       <div className="mx-auto w-full lg:w-[70%]">
         <div className="sticky top-[88px] z-[5] -mx-4 bg-background px-4 py-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <HistoryFilterBar value={query} onChange={setQuery} />
@@ -82,27 +91,33 @@ export default function HistoryPage() {
               ))}
             </div>
 
-            {history.hasNextPage || history.isFetchingNextPage ? (
-              <div className="mt-4 flex justify-center">
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={history.isFetchingNextPage}
-                  onClick={() => {
-                    void history.fetchNextPage();
-                  }}
-                >
-                  {history.isFetchingNextPage
-                    ? t("loadingMore")
-                    : t("loadMore")}
-                </Button>
+            {showAutoLoadState ? (
+              <div className="mt-4 flex flex-col items-center gap-2">
+                {hasLoadMoreError ? (
+                  <>
+                    <p className="text-center text-sm text-danger" role="alert">
+                      {t("loadMoreError")}
+                    </p>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => {
+                        void history.fetchNextPage();
+                      }}
+                    >
+                      {t("retry")}
+                    </Button>
+                  </>
+                ) : history.isFetchingNextPage ? (
+                  <HistoryLoadMoreSkeleton />
+                ) : null}
+                <div
+                  ref={loadMoreSentinelRef}
+                  data-testid="history-auto-load-sentinel"
+                  aria-hidden="true"
+                  className="h-px w-full"
+                />
               </div>
-            ) : null}
-
-            {history.isFetchNextPageError ? (
-              <p className="mt-2 text-center text-sm text-danger" role="alert">
-                {t("loadMoreError")}
-              </p>
             ) : null}
 
             {data.adherencePercent !== null ? (
@@ -110,6 +125,24 @@ export default function HistoryPage() {
             ) : null}
           </>
         )}
+      </div>
+    </div>
+  );
+}
+
+function HistoryLoadMoreSkeleton() {
+  return (
+    <div
+      aria-hidden="true"
+      className="flex w-full flex-col gap-2 rounded-3xl border border-border bg-surface px-4 py-3 shadow-[var(--shadow-soft)]"
+    >
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-9 w-9 shrink-0 rounded-xl" />
+        <div className="min-w-0 flex-1">
+          <Skeleton className="h-3.5 w-36 rounded-full" />
+          <Skeleton className="mt-2 h-3 w-3/4 rounded-full" />
+        </div>
+        <Skeleton className="h-6 w-16 shrink-0 rounded-full" />
       </div>
     </div>
   );
