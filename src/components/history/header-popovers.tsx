@@ -79,7 +79,7 @@ function PopoverButton({
       aria-expanded={active}
       aria-label={ariaLabel}
       className={cn(
-        "grid h-7 w-7 place-items-center rounded-full border border-border bg-surface text-foreground transition hover:bg-surface-muted sm:h-9 sm:w-9",
+        "grid h-7 w-7 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface-muted text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-9 sm:w-9",
         active &&
           "border-[color:var(--accent)] bg-accent-soft text-accent-strong hover:bg-accent-soft",
       )}

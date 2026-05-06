@@ -6,20 +6,28 @@ import {
   useNormalRoutineToday,
   useRecordSuggestionGapAction,
   useRegenerateSuggestion,
+  useResumeRoutineBreak,
   useSnoozeRecordingReminder,
+  useStartRoutineBreak,
   useSuggestion,
   useSuggestionHistory,
   useSuggestionHistoryDay,
+  useRoutineBreak,
+  useUpdateRoutineBreak,
   useTodaysSuggestion,
 } from "@/hooks/use-suggestions";
 import {
+  getRoutineBreak,
   getSuggestion,
   getSuggestionHistory,
   getSuggestionHistoryDay,
   getTodaysSuggestion,
   recordSuggestionGapAction,
   regenerateSuggestion,
+  resumeRoutineBreak,
   snoozeRecordingReminder,
+  startRoutineBreak,
+  updateRoutineBreak,
   useNormalRoutineForToday,
 } from "@/services/suggestions.service";
 import type {
@@ -34,8 +42,12 @@ jest.mock("@/hooks/use-auth-enabled", () => ({
 
 jest.mock("@/services/suggestions.service", () => ({
   getTodaysSuggestion: jest.fn(),
+  getRoutineBreak: jest.fn(),
   getSuggestion: jest.fn(),
   regenerateSuggestion: jest.fn(),
+  startRoutineBreak: jest.fn(),
+  resumeRoutineBreak: jest.fn(),
+  updateRoutineBreak: jest.fn(),
   useNormalRoutineForToday: jest.fn(),
   recordSuggestionGapAction: jest.fn(),
   snoozeRecordingReminder: jest.fn(),
@@ -46,6 +58,9 @@ jest.mock("@/services/suggestions.service", () => ({
 const mockGetToday = getTodaysSuggestion as jest.MockedFunction<
   typeof getTodaysSuggestion
 >;
+const mockGetRoutineBreak = getRoutineBreak as jest.MockedFunction<
+  typeof getRoutineBreak
+>;
 const mockGetSuggestion = getSuggestion as jest.MockedFunction<
   typeof getSuggestion
 >;
@@ -54,6 +69,15 @@ const mockRegenerate = regenerateSuggestion as jest.MockedFunction<
 >;
 const mockUseNormalRoutine = useNormalRoutineForToday as jest.MockedFunction<
   typeof useNormalRoutineForToday
+>;
+const mockStartRoutineBreak = startRoutineBreak as jest.MockedFunction<
+  typeof startRoutineBreak
+>;
+const mockResumeRoutineBreak = resumeRoutineBreak as jest.MockedFunction<
+  typeof resumeRoutineBreak
+>;
+const mockUpdateRoutineBreak = updateRoutineBreak as jest.MockedFunction<
+  typeof updateRoutineBreak
 >;
 const mockRecordGapAction = recordSuggestionGapAction as jest.MockedFunction<
   typeof recordSuggestionGapAction
@@ -156,6 +180,32 @@ describe("suggestion hooks", () => {
     await waitFor(() => expect(mockSnoozeReminder).toHaveBeenCalled());
   });
 
+  it("fetches and mutates routine break state", async () => {
+    mockGetRoutineBreak.mockResolvedValue({ routineBreak: null });
+    mockStartRoutineBreak.mockResolvedValue({ routineBreak: null });
+    mockResumeRoutineBreak.mockResolvedValue({ routineBreak: null });
+    mockUpdateRoutineBreak.mockResolvedValue({ routineBreak: null });
+
+    const state = renderHookWithProviders(() => useRoutineBreak());
+    await waitFor(() => expect(state.result.current.isSuccess).toBe(true));
+    expect(mockGetRoutineBreak).toHaveBeenCalled();
+
+    const start = renderHookWithProviders(() => useStartRoutineBreak());
+    start.result.current.mutate({
+      endsAt: "2026-05-07T08:00:00.000Z",
+      reason: "Travel",
+    });
+    await waitFor(() => expect(mockStartRoutineBreak).toHaveBeenCalled());
+
+    const resume = renderHookWithProviders(() => useResumeRoutineBreak());
+    resume.result.current.mutate();
+    await waitFor(() => expect(mockResumeRoutineBreak).toHaveBeenCalled());
+
+    const update = renderHookWithProviders(() => useUpdateRoutineBreak());
+    update.result.current.mutate({ id: "break-1", payload: { endsAt: null } });
+    await waitFor(() => expect(mockUpdateRoutineBreak).toHaveBeenCalled());
+  });
+
   it("passes backend history cursors through infinite pagination helpers", () => {
     expect(
       getNextSuggestionHistoryPageParam({
@@ -214,6 +264,7 @@ function todayResponse(): TodaysSuggestionResponse {
     weatherSummary: null,
     slots: [],
     reactionAlert: null,
+    routineBreak: null,
   };
 }
 

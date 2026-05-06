@@ -2,6 +2,7 @@
 
 import {
   keepPreviousData,
+  type QueryClient,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -14,19 +15,26 @@ import {
   getSuggestionHistory,
   getSuggestionHistoryDay,
   getTodaysSuggestion,
+  getRoutineBreak,
   recordSuggestionGapAction,
   regenerateSuggestion,
+  resumeRoutineBreak,
   snoozeRecordingReminder,
+  startRoutineBreak,
+  updateRoutineBreak,
   useNormalRoutineForToday,
 } from "@/services/suggestions.service";
 import type {
   RecordSuggestionGapActionPayload,
   RegenerateSuggestionPayload,
   SnoozeRecordingReminderPayload,
+  RoutineBreakState,
   SuggestionHistoryDay,
   SuggestionHistoryListQuery,
   SuggestionHistoryListResponse,
+  StartRoutineBreakPayload,
   TodaysSuggestionResponse,
+  UpdateRoutineBreakPayload,
 } from "@/types/suggestions";
 
 /**
@@ -96,6 +104,46 @@ export function useNormalRoutineToday() {
   });
 }
 
+export function useRoutineBreak() {
+  const isEnabled = useAuthEnabled();
+  return useQuery<RoutineBreakState>({
+    queryKey: [QueryKey.SuggestionBreak],
+    queryFn: getRoutineBreak,
+    enabled: isEnabled,
+  });
+}
+
+export function useStartRoutineBreak() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: StartRoutineBreakPayload) =>
+      startRoutineBreak(payload),
+    onSuccess: () => invalidateRoutineBreakQueries(queryClient),
+  });
+}
+
+export function useResumeRoutineBreak() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: resumeRoutineBreak,
+    onSuccess: () => invalidateRoutineBreakQueries(queryClient),
+  });
+}
+
+export function useUpdateRoutineBreak() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: UpdateRoutineBreakPayload;
+    }) => updateRoutineBreak(id, payload),
+    onSuccess: () => invalidateRoutineBreakQueries(queryClient),
+  });
+}
+
 export function useRecordSuggestionGapAction() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -107,6 +155,11 @@ export function useRecordSuggestionGapAction() {
       });
     },
   });
+}
+
+function invalidateRoutineBreakQueries(queryClient: QueryClient) {
+  void queryClient.invalidateQueries({ queryKey: [QueryKey.SuggestionBreak] });
+  void queryClient.invalidateQueries({ queryKey: [QueryKey.SuggestionsToday] });
 }
 
 export function useSnoozeRecordingReminder() {

@@ -120,6 +120,12 @@ export const ApiPath = {
   SuggestionsTodayReminderLater: `${SUGGESTIONS_BASE}/today/reminders/later`,
   /** Persist save/dismiss actions for suggestion gap cards. */
   SuggestionGapActions: `${SUGGESTIONS_BASE}/gap-actions`,
+  /** Current routine break state. */
+  SuggestionsBreak: `${SUGGESTIONS_BASE}/break`,
+  /** Resume an active routine break immediately. */
+  SuggestionsBreakResume: `${SUGGESTIONS_BASE}/break/resume`,
+  /** Update an existing routine break. */
+  SuggestionBreak: (id: string) => `${SUGGESTIONS_BASE}/break/${id}`,
   /** Re-run AI generation for a slot's suggestion right now. */
   SuggestionRegenerate: (id: string) => `${SUGGESTIONS_BASE}/${id}/regenerate`,
   /** Single suggestion detail (used by the "Why this routine" drawer). */

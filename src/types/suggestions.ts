@@ -190,6 +190,32 @@ export type TodaysSuggestionResponse = {
   slots: TodaysSuggestionSlot[];
   /** Active reaction signal for today, if any. */
   reactionAlert: TodaysSuggestionReactionAlert | null;
+  /** Active routine break; while set, no new slots are generated. */
+  routineBreak: RoutineBreak | null;
+};
+
+export type RoutineBreakStatus = "active" | "upcoming";
+
+export type RoutineBreak = {
+  id: string;
+  status: RoutineBreakStatus;
+  startedAt: string;
+  endsAt: string | null;
+  canResumeNow: boolean;
+  message: string;
+};
+
+export type RoutineBreakState = {
+  routineBreak: RoutineBreak | null;
+};
+
+export type StartRoutineBreakPayload = {
+  endsAt?: string | null;
+  reason?: string | null;
+};
+
+export type UpdateRoutineBreakPayload = {
+  endsAt?: string | null;
 };
 
 export type TodaysSuggestionSummary = {

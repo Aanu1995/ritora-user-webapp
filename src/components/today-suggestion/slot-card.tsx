@@ -168,7 +168,7 @@ export function SuggestionSlotCard({
         <button
           type="button"
           onClick={() => onCustomize?.(slot)}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted sm:h-11 sm:w-11"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface-muted text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-11 sm:w-11"
           aria-label={t("customise")}
         >
           <SlidersHorizontal className="h-4 w-4" />
@@ -176,7 +176,7 @@ export function SuggestionSlotCard({
         <button
           type="button"
           onClick={() => onShowDetail?.(slot)}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted sm:h-11 sm:w-11"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface-muted text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-11 sm:w-11"
           aria-label={t("more")}
         >
           <Ellipsis className="h-4 w-4" />

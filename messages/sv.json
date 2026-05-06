@@ -3091,6 +3091,7 @@
     "page": {
       "title": "Dagens förslag",
       "history": "Historik",
+      "takeBreak": "Ta en paus",
       "loading": "Laddar dagens plan",
       "errorTitle": "Vi kunde inte ladda dagens plan",
       "error": "Något gick fel när vi laddade dina förslag. Du kan försöka igen.",
@@ -3098,8 +3099,40 @@
       "worthConsidering": "Värt att överväga",
       "nextSlotTomorrow": "imorgon",
       "normalRoutineRestored": "Vanlig rutin återställd för kommande förslag.",
+      "routineBreakStarted": "Rutinen pausad. Inga nya förslag skapas förrän du återupptar.",
+      "routineBreakResumed": "Rutinen har återupptagits. Förslag visas när varje slot närmar sig.",
+      "routineBreakResumeUpdated": "Återupptagningsdatum uppdaterat.",
+      "routineBreakActionFailed": "Vi kunde inte uppdatera din rutinpaus. Försök igen.",
       "gapSaved": "Sparat i dagens önskelista.",
       "gapDismissed": "Rekommendationen dold tills vidare."
+    },
+    "routineBreak": {
+      "statusLabel": "Pausad",
+      "title": "Du har en rutinpaus",
+      "body": "Ritora behåller ditt schema, pausar nya förslag och stoppar rutinpåminnelser tills du återupptar.",
+      "resumeOn": "Planerad återstart: {date}",
+      "resumeIndefinite": "Pausad tills du återupptar",
+      "resumeDateLabel": "Återupptagningsdatum",
+      "saveResumeDate": "Spara datum",
+      "resumeNow": "Återuppta rutin",
+      "changeResumeDate": "Ändra",
+      "cancelEdit": "Avbryt",
+      "validation": {
+        "resumeDateInvalid": "Välj ett giltigt datum.",
+        "resumeDatePast": "Välj ett framtida datum."
+      }
+    },
+    "routineBreakStart": {
+      "title": "Ta en rutinpaus",
+      "body": "Ditt schema finns kvar, men Ritora pausar nya förslag, rutinpåminnelser och missade rutiner.",
+      "resumeDateLabel": "Återupptagningsdatum",
+      "resumeDateHint": "Valfritt. Lämna tomt för att pausa tills du återupptar manuellt.",
+      "cancel": "Avbryt",
+      "start": "Starta paus",
+      "validation": {
+        "resumeDateInvalid": "Välj ett giltigt datum.",
+        "resumeDatePast": "Välj ett framtida datum."
+      }
     },
     "lockedDay": {
       "leadTitle": "Förslag kommer ett par timmar innan varje slot",

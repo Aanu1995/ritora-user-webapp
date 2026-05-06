@@ -98,7 +98,7 @@ export function RecordedSlotCard({ slot, applicationLogId, onEdit }: Props) {
         <button
           type="button"
           onClick={() => onEdit?.(slot, applicationLogId)}
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-foreground transition hover:bg-surface-muted"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface-muted px-3 py-1.5 text-xs font-medium text-foreground transition hover:bg-accent-soft hover:text-accent-strong"
         >
           <Pencil className="h-3.5 w-3.5" />
           {t("edit")}

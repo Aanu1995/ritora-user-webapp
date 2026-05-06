@@ -1,18 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useTranslations } from "next-intl";
-import {
-  Camera,
-  Check,
-  Lock,
-  Sparkles,
-  ThermometerSun,
-  TrendingUp,
-} from "lucide-react";
+import { Check, Lock, Sparkles, ThermometerSun, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTodayEntry } from "@/hooks/use-skin-journal";
-import { useAuthStore } from "@/stores/auth-store";
 import type {
   TodaysSuggestionResponse,
   TodaysSuggestionWeatherSummary,
@@ -28,10 +18,6 @@ type Props = {
  */
 export function DaySummaryPills({ data }: Props) {
   const t = useTranslations("todaysSuggestion.summary");
-  const todayEntry = useTodayEntry();
-  const userTimeZone = useAuthStore((s) => s.user?.timeZone) ?? "UTC";
-  const entry = todayEntry.data?.entry ?? null;
-  const hasPhoto = Boolean(entry?.has_photo);
 
   const counts = data.slots.reduce(
     (acc, slot) => {
@@ -70,35 +56,8 @@ export function DaySummaryPills({ data }: Props) {
         </Pill>
       ) : null}
       <WeatherPill weather={data.weatherSummary} />
-      {hasPhoto && entry ? (
-        <Pill tone="success" icon={<Camera className="h-3 w-3" />}>
-          {t("photoLoggedAt", {
-            time: formatTime(entry.created_at, userTimeZone),
-          })}
-        </Pill>
-      ) : (
-        <Link
-          href="/journal/upload"
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-medium text-foreground transition hover:bg-surface-muted"
-        >
-          <Camera className="h-3 w-3 text-muted" />
-          {t("logPhoto")}
-        </Link>
-      )}
     </div>
   );
-}
-
-function formatTime(iso: string, timeZone: string): string {
-  try {
-    return new Intl.DateTimeFormat(undefined, {
-      hour: "numeric",
-      minute: "2-digit",
-      timeZone,
-    }).format(new Date(iso));
-  } catch {
-    return iso;
-  }
 }
 
 function Pill({

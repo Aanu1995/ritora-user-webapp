@@ -89,7 +89,7 @@ export function ReactionBanner({
               type="button"
               onClick={onResetToNormalRoutine}
               disabled={isResetting}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-semibold text-foreground transition hover:bg-surface-muted"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface-muted px-2.5 py-1 text-xs font-semibold text-foreground transition hover:bg-accent-soft hover:text-accent-strong"
             >
               {isResetting ? (
                 <LoadingIndicator size="sm" />

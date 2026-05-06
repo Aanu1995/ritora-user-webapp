@@ -31,6 +31,7 @@ export enum QueryKey {
   Notifications = "notifications",
   NotificationPreferences = "notification-preferences",
   SuggestionsToday = "suggestions-today",
+  SuggestionBreak = "suggestion-break",
   Suggestion = "suggestion",
   SuggestionsHistory = "suggestions-history",
   SuggestionsHistoryDay = "suggestions-history-day",

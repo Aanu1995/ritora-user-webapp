@@ -3088,6 +3088,7 @@
     "page": {
       "title": "Today's Suggestion",
       "history": "History",
+      "takeBreak": "Take a break",
       "loading": "Loading today's plan",
       "errorTitle": "We could not load today's plan",
       "error": "Something went wrong loading your suggestions. You can try again.",
@@ -3095,8 +3096,40 @@
       "worthConsidering": "Worth considering",
       "nextSlotTomorrow": "tomorrow",
       "normalRoutineRestored": "Normal routine restored for future suggestions.",
+      "routineBreakStarted": "Routine paused. No new suggestions will be generated until you resume.",
+      "routineBreakResumed": "Routine resumed. Suggestions will appear when each slot approaches.",
+      "routineBreakResumeUpdated": "Resume date updated.",
+      "routineBreakActionFailed": "We couldn't update your routine break. Please try again.",
       "gapSaved": "Saved to your Today wishlist.",
       "gapDismissed": "Recommendation dismissed for now."
+    },
+    "routineBreak": {
+      "statusLabel": "On a break",
+      "title": "You're on a routine break",
+      "body": "Ritora will keep your schedule intact, pause new suggestions, and stop routine reminders until you resume.",
+      "resumeOn": "Planned resume: {date}",
+      "resumeIndefinite": "Paused until you resume",
+      "resumeDateLabel": "Resume date",
+      "saveResumeDate": "Save resume date",
+      "resumeNow": "Resume routine",
+      "changeResumeDate": "Change",
+      "cancelEdit": "Cancel",
+      "validation": {
+        "resumeDateInvalid": "Choose a valid resume date.",
+        "resumeDatePast": "Choose a future resume date."
+      }
+    },
+    "routineBreakStart": {
+      "title": "Take a routine break",
+      "body": "Your schedule stays intact, but Ritora will pause new suggestions, routine reminders, and missed-routine backfill.",
+      "resumeDateLabel": "Resume date",
+      "resumeDateHint": "Optional. Leave blank to pause until you resume manually.",
+      "cancel": "Cancel",
+      "start": "Start break",
+      "validation": {
+        "resumeDateInvalid": "Choose a valid resume date.",
+        "resumeDatePast": "Choose a future resume date."
+      }
     },
     "lockedDay": {
       "leadTitle": "Suggestions arrive a couple of hours before each slot",

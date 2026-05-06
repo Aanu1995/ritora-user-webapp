@@ -1,19 +1,27 @@
 jest.mock("@/lib/api", () => ({
   getRequest: jest.fn(),
+  patchRequest: jest.fn(),
   postRequest: jest.fn(),
 }));
 
-import { getRequest, postRequest } from "@/lib/api";
+import { getRequest, patchRequest, postRequest } from "@/lib/api";
 import {
   exportSuggestionHistoryCsv,
+  getRoutineBreak,
   getSuggestion,
   getSuggestionHistory,
   getSuggestionHistoryDay,
   getTodaysSuggestion,
   regenerateSuggestion,
+  resumeRoutineBreak,
+  startRoutineBreak,
+  updateRoutineBreak,
 } from "@/services/suggestions.service";
 
 const mockGetRequest = getRequest as jest.MockedFunction<typeof getRequest>;
+const mockPatchRequest = patchRequest as jest.MockedFunction<
+  typeof patchRequest
+>;
 const mockPostRequest = postRequest as jest.MockedFunction<typeof postRequest>;
 
 afterEach(() => {
@@ -27,6 +35,34 @@ describe("suggestions.service", () => {
     await getTodaysSuggestion();
 
     expect(mockGetRequest).toHaveBeenCalledWith("/suggestions/today");
+  });
+
+  it("calls routine break endpoints", async () => {
+    mockGetRequest.mockResolvedValue({ routineBreak: null });
+    mockPostRequest.mockResolvedValue({ routineBreak: null });
+    mockPatchRequest.mockResolvedValue({ routineBreak: null });
+
+    await getRoutineBreak();
+    await startRoutineBreak({
+      endsAt: "2026-05-07T08:00:00.000Z",
+      reason: "Travel",
+    });
+    await resumeRoutineBreak();
+    await updateRoutineBreak("break-1", { endsAt: null });
+
+    expect(mockGetRequest).toHaveBeenCalledWith("/suggestions/break");
+    expect(mockPostRequest).toHaveBeenCalledWith("/suggestions/break", {
+      endsAt: "2026-05-07T08:00:00.000Z",
+      reason: "Travel",
+    });
+    expect(mockPostRequest).toHaveBeenCalledWith(
+      "/suggestions/break/resume",
+      {},
+    );
+    expect(mockPatchRequest).toHaveBeenCalledWith(
+      "/suggestions/break/break-1",
+      { endsAt: null },
+    );
   });
 
   it("fetches a single suggestion detail", async () => {

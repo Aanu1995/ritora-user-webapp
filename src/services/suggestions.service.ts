@@ -1,4 +1,4 @@
-import { getRequest, postRequest } from "@/lib/api";
+import { getRequest, patchRequest, postRequest } from "@/lib/api";
 import { ApiPath } from "@/constants/api-paths";
 import type {
   NormalRoutineOverrideResponse,
@@ -6,12 +6,15 @@ import type {
   RecordSuggestionGapActionPayload,
   RegenerateSuggestionPayload,
   SnoozeRecordingReminderPayload,
+  RoutineBreakState,
   SuggestionGapActionResponse,
   SuggestionHistoryDay,
   SuggestionHistoryListQuery,
   SuggestionHistoryListResponse,
   SuggestionInstance,
+  StartRoutineBreakPayload,
   TodaysSuggestionResponse,
+  UpdateRoutineBreakPayload,
 } from "@/types/suggestions";
 
 export async function getTodaysSuggestion(): Promise<TodaysSuggestionResponse> {
@@ -46,6 +49,27 @@ export async function recordSuggestionGapAction(
     ApiPath.SuggestionGapActions,
     payload,
   );
+}
+
+export async function getRoutineBreak(): Promise<RoutineBreakState> {
+  return getRequest<RoutineBreakState>(ApiPath.SuggestionsBreak);
+}
+
+export async function startRoutineBreak(
+  payload: StartRoutineBreakPayload = {},
+): Promise<RoutineBreakState> {
+  return postRequest<RoutineBreakState>(ApiPath.SuggestionsBreak, payload);
+}
+
+export async function resumeRoutineBreak(): Promise<RoutineBreakState> {
+  return postRequest<RoutineBreakState>(ApiPath.SuggestionsBreakResume, {});
+}
+
+export async function updateRoutineBreak(
+  id: string,
+  payload: UpdateRoutineBreakPayload,
+): Promise<RoutineBreakState> {
+  return patchRequest<RoutineBreakState>(ApiPath.SuggestionBreak(id), payload);
 }
 
 export async function snoozeRecordingReminder(

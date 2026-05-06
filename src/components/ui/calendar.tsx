@@ -26,10 +26,10 @@ function Calendar({
         caption_label: 'text-sm font-semibold',
         nav: 'absolute inset-x-0 flex items-center justify-between px-1',
         button_previous: cn(
-          'inline-flex h-7 w-7 items-center justify-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted hover:text-foreground',
+          'inline-flex h-7 w-7 items-center justify-center rounded-full border border-[color:var(--border-strong)] bg-surface-muted text-foreground transition hover:bg-accent-soft hover:text-accent-strong',
         ),
         button_next: cn(
-          'inline-flex h-7 w-7 items-center justify-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted hover:text-foreground',
+          'inline-flex h-7 w-7 items-center justify-center rounded-full border border-[color:var(--border-strong)] bg-surface-muted text-foreground transition hover:bg-accent-soft hover:text-accent-strong',
         ),
         month_grid: 'border-collapse',
         weekdays: 'flex',

@@ -11,6 +11,12 @@ import {
   DaySummaryPills,
 } from "@/components/today-suggestion/day-summary-pills";
 import { RecordingReminderBanner } from "@/components/today-suggestion/recording-reminder-banner";
+import { RoutineBreakBanner } from "@/components/today-suggestion/routine-break-banner";
+import { RoutineBreakStartDialog } from "@/components/today-suggestion/routine-break-start-dialog";
+import {
+  routineBreakResumeSchema,
+  toRoutineBreakEndsAt,
+} from "@/components/today-suggestion/routine-break-validation";
 import { TodayGapRecommendationSection } from "@/components/today-suggestion/today-gap-recommendation-section";
 import type { ApplicationLog } from "@/types/application-tracking";
 import {
@@ -249,6 +255,80 @@ describe("today suggestion UI contract", () => {
     expect(screen.getByText(/Edited/i)).toBeInTheDocument();
   });
 
+  it("renders routine break resume and change-date actions", async () => {
+    const user = userEvent.setup();
+    const onResume = jest.fn();
+    const onUpdateEndsAt = jest.fn();
+
+    renderWithProviders(
+      <RoutineBreakBanner
+        routineBreak={{
+          id: "break-1",
+          status: "active",
+          startedAt: "2026-05-06T08:00:00.000Z",
+          endsAt: "2026-05-08T08:00:00.000Z",
+          canResumeNow: true,
+          message:
+            "Your routine is paused. Ritora will not generate new skincare suggestions until you resume.",
+        }}
+        isResuming={false}
+        isUpdating={false}
+        onResume={onResume}
+        onUpdateEndsAt={onUpdateEndsAt}
+      />,
+    );
+
+    expect(screen.getByText(/routine break/i)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /resume routine/i }));
+    expect(onResume).toHaveBeenCalledTimes(1);
+
+    await user.click(screen.getByRole("button", { name: /save resume date/i }));
+
+    expect(onUpdateEndsAt).toHaveBeenCalledWith({
+      endsAt: expect.any(String),
+    });
+  });
+
+  it("submits the start routine break dialog", async () => {
+    const user = userEvent.setup();
+    const onStart = jest.fn();
+
+    renderWithProviders(
+      <RoutineBreakStartDialog
+        open
+        isStarting={false}
+        onOpenChange={jest.fn()}
+        onStart={onStart}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /start break/i }));
+
+    expect(onStart).toHaveBeenCalledWith({
+      endsAt: null,
+    });
+  });
+
+  it("validates routine break resume dates before converting to API payloads", () => {
+    jest.useFakeTimers().setSystemTime(new Date("2026-05-06T08:00:00.000Z"));
+    try {
+      expect(
+        routineBreakResumeSchema.safeParse({ endsAt: "2026-05-05" }).success,
+      ).toBe(false);
+      expect(
+        routineBreakResumeSchema.safeParse({ endsAt: "2026-05-07" }).success,
+      ).toBe(true);
+      expect(
+        routineBreakResumeSchema.safeParse({ endsAt: "2026-05-07T10:30" })
+          .success,
+      ).toBe(false);
+      expect(toRoutineBreakEndsAt("2026-05-07")).toEqual(expect.any(String));
+      expect(toRoutineBreakEndsAt("2026-05-07T10:30")).toBeNull();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   it("keeps ad-hoc products visible when editing a recorded application", () => {
     mockApplicationLogVersions.mockReturnValue({
       isLoading: false,
@@ -304,7 +384,9 @@ describe("today suggestion UI contract", () => {
 
     expect(screen.getByDisplayValue("Plain Lab")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Recovery Balm")).toBeInTheDocument();
-    expect(screen.getByDisplayValue(/Used gentler product/i)).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue(/Used gentler product/i),
+    ).toBeInTheDocument();
     expect(screen.getByText(/Version 1/i)).toBeInTheDocument();
     expect(screen.getByText(/Version 2/i)).toBeInTheDocument();
     expect(screen.getByText(/Corrected a substitution/i)).toBeInTheDocument();
@@ -398,7 +480,9 @@ describe("today suggestion UI contract", () => {
       />,
     );
 
-    await user.click(screen.getByRole("button", { name: /record morning now/i }));
+    await user.click(
+      screen.getByRole("button", { name: /record morning now/i }),
+    );
     expect(onRecord).toHaveBeenCalledWith(
       expect.objectContaining({ slotId: "slot-1" }),
     );
@@ -489,11 +573,14 @@ function todaysResponse(
     weatherSummary: null,
     slots: [],
     reactionAlert: null,
+    routineBreak: null,
     ...partial,
   };
 }
 
-function slot(partial: Partial<TodaysSuggestionSlot> = {}): TodaysSuggestionSlot {
+function slot(
+  partial: Partial<TodaysSuggestionSlot> = {},
+): TodaysSuggestionSlot {
   return {
     slotId: "slot-1",
     daypart: "morning",

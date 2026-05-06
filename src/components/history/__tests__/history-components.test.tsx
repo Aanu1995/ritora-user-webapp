@@ -188,9 +188,12 @@ describe("history suggestion components", () => {
 
     expect(screen.getByText(/May 1/i)).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /30 days/i }));
-    await user.click(screen.getByRole("button", { name: /morning/i }));
-    await user.click(screen.getByRole("button", { name: /mixed/i }));
+    await user.click(screen.getByRole("button", { name: /date range/i }));
+    await user.click(await screen.findByRole("button", { name: /30 days/i }));
+    await user.click(screen.getByRole("button", { name: /time of day/i }));
+    await user.click(await screen.findByRole("button", { name: /morning/i }));
+    await user.click(screen.getByRole("button", { name: /routine type/i }));
+    await user.click(await screen.findByRole("button", { name: /mixed/i }));
     await user.click(screen.getByRole("button", { name: /edited/i }));
 
     expect(onChange).toHaveBeenNthCalledWith(
