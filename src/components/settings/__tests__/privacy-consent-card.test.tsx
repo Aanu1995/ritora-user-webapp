@@ -93,4 +93,37 @@ describe("ConsentCard", () => {
 
     expect(screen.getByRole("button", { name: /coming soon/i })).toBeDisabled();
   });
+
+  it("supports consent-specific action labels", async () => {
+    const onGrant = jest.fn();
+    const onRevoke = jest.fn();
+
+    const { rerender } = renderWithProviders(
+      <ConsentCard
+        title="AI suggestions"
+        description="Use AI for routine suggestions"
+        active={false}
+        grantLabel="Allow AI suggestions"
+        onGrant={onGrant}
+      />,
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: /allow ai suggestions/i }),
+    );
+    expect(onGrant).toHaveBeenCalledTimes(1);
+
+    rerender(
+      <ConsentCard
+        title="AI suggestions"
+        description="Use AI for routine suggestions"
+        active
+        revokeLabel="Revoke"
+        onRevoke={onRevoke}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: /^revoke$/i }));
+    expect(onRevoke).toHaveBeenCalledTimes(1);
+  });
 });

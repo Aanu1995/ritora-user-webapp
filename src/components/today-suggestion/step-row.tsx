@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { TriangleAlert } from "lucide-react";
+import { MessageSquareText, TriangleAlert } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { SuggestionProvenanceChip } from "@/components/today-suggestion/mode-badge";
 import { productCategoryEmoji } from "@/components/today-suggestion/product-category-icon";
@@ -13,14 +14,49 @@ type Props = {
 };
 
 export function SuggestionStepRow({ step, compactApplied = false }: Props) {
+  const t = useTranslations("todaysSuggestion.step");
   const provenance = step.provenance;
   const productImage = step.product?.imageUrl ?? null;
+
+  const details = !compactApplied ? (
+    <>
+      <StepMeta step={step} />
+      {step.routineNote ? (
+        <div className="mt-2 flex gap-1.5 rounded-xl border border-border/70 bg-surface/70 px-2.5 py-2 text-[11.5px] leading-relaxed text-muted">
+          <MessageSquareText
+            className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--accent)]"
+            aria-hidden
+          />
+          <p>
+            <span className="font-semibold text-foreground">
+              {t("routineNote")}
+            </span>{" "}
+            {step.routineNote}
+          </p>
+        </div>
+      ) : null}
+      <div className="mt-2 flex flex-wrap gap-1">
+        <SuggestionProvenanceChip provenance={provenance} />
+        {step.explanation ? (
+          <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10.5px] text-muted">
+            {step.explanation}
+          </span>
+        ) : null}
+        {step.safetyWarnings.length > 0 ? (
+          <span className="inline-flex items-center gap-1 rounded-full border border-[color:rgba(184,84,10,0.3)] bg-warning-soft px-2 py-0.5 text-[10.5px] font-medium text-[color:var(--note-warm-fg)]">
+            <TriangleAlert className="h-2.5 w-2.5" />
+            {step.safetyWarnings[0]?.message}
+          </span>
+        ) : null}
+      </div>
+    </>
+  ) : null;
 
   return (
     <div
       data-step-provenance={provenance}
       className={cn(
-        "flex items-start gap-3 rounded-2xl border p-2.5",
+        "flex flex-wrap items-start gap-3 rounded-2xl border p-2.5",
         compactApplied
           ? "border-transparent bg-[color:color-mix(in_srgb,var(--surface-muted)_70%,var(--accent-soft))]"
           : [
@@ -67,25 +103,16 @@ export function SuggestionStepRow({ step, compactApplied = false }: Props) {
             stepLabelLabel(step.stepLabel)}
         </div>
 
-        {!compactApplied ? <StepMeta step={step} /> : null}
-
-        {!compactApplied ? (
-          <div className="mt-2 flex flex-wrap gap-1">
-            <SuggestionProvenanceChip provenance={provenance} />
-            {step.explanation ? (
-              <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10.5px] text-muted">
-                {step.explanation}
-              </span>
-            ) : null}
-            {step.safetyWarnings.length > 0 ? (
-              <span className="inline-flex items-center gap-1 rounded-full border border-[color:rgba(184,84,10,0.3)] bg-warning-soft px-2 py-0.5 text-[10.5px] font-medium text-[color:var(--note-warm-fg)]">
-                <TriangleAlert className="h-2.5 w-2.5" />
-                {step.safetyWarnings[0]?.message}
-              </span>
-            ) : null}
-          </div>
-        ) : null}
+        {/* Details inline beside the image — desktop only. */}
+        {details ? <div className="hidden sm:block">{details}</div> : null}
       </div>
+
+      {/* Mobile-only full-width details. The parent uses `flex-wrap`, so this
+          `basis-full` child wraps onto a new line below the title row and
+          uses the full width of the card. Hidden on desktop. */}
+      {details ? (
+        <div className="mt-1 basis-full sm:hidden">{details}</div>
+      ) : null}
     </div>
   );
 }

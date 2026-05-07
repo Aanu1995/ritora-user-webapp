@@ -92,8 +92,15 @@ export function HistoryDayCard({ day }: { day: SuggestionHistoryDay }) {
               <SuggestionDaypartIcon daypart={slot.daypart} />
               <div className="min-w-0 flex-1">
                 <span className="block text-sm font-semibold text-foreground">
-                  {t(`daypart.${slot.daypart}`)},{" "}
-                  {formatSlotTime12h(slot.slotTime)}
+                  {slot.requestSource === "on_demand"
+                    ? t("onDemandLabel", {
+                        intent: slot.onDemandIntent
+                          ? t(`onDemandIntent.${slot.onDemandIntent}`)
+                          : t("onDemandIntent.other"),
+                      })
+                    : `${t(`daypart.${slot.daypart}`)}, ${formatSlotTime12h(
+                        slot.slotTime,
+                      )}`}
                 </span>
                 <p className="mt-0.5 line-clamp-2 text-xs text-muted">
                   {slot.summaryLine}

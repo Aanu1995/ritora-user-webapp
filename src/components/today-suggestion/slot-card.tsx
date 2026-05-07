@@ -4,7 +4,6 @@ import {
   Check,
   CircleCheck,
   Ellipsis,
-  SlidersHorizontal,
   Sparkles,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -28,7 +27,7 @@ type Props = {
   onRecord?: (slot: TodaysSuggestionSlot) => void;
   onEdit?: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail?: (slot: TodaysSuggestionSlot) => void;
-  onCustomise?: (slot: TodaysSuggestionSlot) => void;
+  personalizationOff?: boolean;
 };
 
 export function SuggestionSlotCard({
@@ -36,7 +35,7 @@ export function SuggestionSlotCard({
   onRecord,
   onEdit,
   onShowDetail,
-  onCustomise,
+  personalizationOff = false,
 }: Props) {
   const t = useTranslations("todaysSuggestion.slot");
 
@@ -85,44 +84,51 @@ export function SuggestionSlotCard({
         isAwaitingRecord && "border-[color:var(--note-cool-border)]",
       )}
     >
-      <header className="mb-3 flex items-start gap-3">
-        <SuggestionDaypartIcon daypart={suggestion.daypart} />
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-base font-bold leading-tight text-foreground">
+      <header className="mb-3">
+        <div className="flex items-start gap-3">
+          <SuggestionDaypartIcon daypart={suggestion.daypart} />
+          <p className="min-w-0 flex-1 font-display text-base font-bold leading-tight text-foreground">
             {formatSlotTime12h(slot.slotTime)}
           </p>
-          <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted">
-            <span>{routineLabel}</span>
-            <span aria-hidden="true"> · </span>
-            {t("stepCount", { count: suggestion.steps.length })}
-          </p>
+          <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+            {isAwaitingRecord ? (
+              <SuggestionStatusPill variant="awaiting">
+                {t("awaitingRecord")}
+              </SuggestionStatusPill>
+            ) : (
+              <SuggestionStatusPill
+                variant="ready"
+                icon={<CircleCheck className="h-3 w-3" />}
+              >
+                {t("ready")}
+              </SuggestionStatusPill>
+            )}
+            {suggestion.simplifiedForReaction ? (
+              <SuggestionStatusPill variant="simplified">
+                {t("simplified")}
+              </SuggestionStatusPill>
+            ) : null}
+            {isSpecialistOnly ? (
+              <SuggestionStatusPill variant="specialist">
+                {t("specialist")}
+              </SuggestionStatusPill>
+            ) : null}
+            {personalizationOff ? (
+              <SuggestionStatusPill variant="basic">
+                {t("basicSuggestion")}
+              </SuggestionStatusPill>
+            ) : null}
+            <SuggestionModeBadge mode={suggestion.mode} />
+          </div>
         </div>
-        <div className="flex flex-wrap justify-end gap-1.5">
-          {isAwaitingRecord ? (
-            <SuggestionStatusPill variant="awaiting">
-              {t("awaitingRecord")}
-            </SuggestionStatusPill>
-          ) : (
-            <SuggestionStatusPill
-              variant="ready"
-              icon={<CircleCheck className="h-3 w-3" />}
-            >
-              {t("ready")}
-            </SuggestionStatusPill>
-          )}
-          {suggestion.simplifiedForReaction ? (
-            <SuggestionStatusPill variant="simplified">
-              {t("simplified")}
-            </SuggestionStatusPill>
-          ) : null}
-          {isSpecialistOnly ? (
-            <SuggestionStatusPill variant="specialist">
-              {t("specialist")}
-            </SuggestionStatusPill>
-          ) : null}
-          <SuggestionModeBadge mode={suggestion.mode} />
-        </div>
+        <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted">
+          <span>{routineLabel}</span>
+          <span aria-hidden="true"> · </span>
+          {t("stepCount", { count: suggestion.steps.length })}
+        </p>
       </header>
+
+      {personalizationOff ? <PersonalizationOffNotice /> : null}
 
       {rationale ? (
         <RationaleCard
@@ -150,24 +156,30 @@ export function SuggestionSlotCard({
           <Check className="h-4 w-4" />
           {isAwaitingRecord ? t("recordWhatIApplied") : t("markAsApplied")}
         </button>
-        <button
-          type="button"
-          onClick={() => onCustomise?.(slot)}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-11 sm:w-11"
-          aria-label={t("customise")}
-        >
-          <SlidersHorizontal className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => onShowDetail?.(slot)}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-11 sm:w-11"
-          aria-label={t("more")}
-        >
-          <Ellipsis className="h-4 w-4" />
-        </button>
+        {onShowDetail ? (
+          <button
+            type="button"
+            onClick={() => onShowDetail(slot)}
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-11 sm:w-11"
+            aria-label={t("whyThisRoutine")}
+          >
+            <Ellipsis className="h-4 w-4" />
+          </button>
+        ) : null}
       </div>
     </article>
+  );
+}
+
+function PersonalizationOffNotice() {
+  const t = useTranslations("todaysSuggestion.slot");
+  return (
+    <div className="mb-3 rounded-2xl border border-[color:var(--ai-border)] bg-[color:var(--ai-soft)] px-3 py-2 text-xs leading-relaxed text-muted">
+      <span className="font-semibold text-foreground">
+        {t("personalizationOffTitle")}
+      </span>{" "}
+      {t("personalizationOffBody")}
+    </div>
   );
 }
 

@@ -27,7 +27,7 @@ export function AppearanceTab() {
   } = useAppPreferences();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 sm:space-y-8">
       <SettingsSection
         title={t("appearance.themeTitle")}
         description={t("appearance.themeDescription")}

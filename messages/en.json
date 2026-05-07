@@ -952,6 +952,10 @@
       "notGranted": "Not granted",
       "activeCount": "{count} active",
       "encrypted": "Encrypted",
+      "aiSuggestionLabel": "AI suggestion processing",
+      "aiSuggestionDesc": "Allows Ritora to use AI for scheduled and quick suggestions. Sensitive profile or journal context is only used when the matching consent is also active.",
+      "grantAiSuggestion": "Allow AI suggestions",
+      "revokeAiSuggestion": "Revoke",
       "healthLabel": "Health context processing",
       "healthDesc": "Pregnancy, conditions, medications, recent procedures, dermatologist care.",
       "locationLabel": "Location processing",
@@ -1009,6 +1013,7 @@
       "storedCycleRelated": "Cycle-related breakouts",
       "storedHormonalContraception": "Hormonal contraception",
       "storedMenopause": "Menopause-related changes",
+      "storedAiSuggestionProcessing": "AI suggestion processing",
       "loadingLog": "Loading access log...",
       "noAccessLog": "No audit entries yet.",
       "accessEventDataAccessed": "Data accessed",
@@ -1988,6 +1993,20 @@
       "ai": "AI",
       "aiShort": "AI",
       "aiDescription": "Smart picks"
+    },
+    "aiConsentNudge": {
+      "title": "Personalized routines, made for your skin",
+      "body": "Turn on AI suggestions and Ritora will tailor each scheduled routine to your skin profile, shelf, and recent journal entries.",
+      "benefits": {
+        "matchProfile": "Routines that match your goals and tolerances",
+        "adaptToShelf": "Adapts to the products you actually own",
+        "revokeAnytime": "You stay in control. Turn it off anytime in Settings."
+      },
+      "privacy": "Your data stays encrypted and is never sold.",
+      "action": "Allow AI suggestions",
+      "dismiss": "Maybe later",
+      "saved": "AI suggestions enabled.",
+      "error": "We couldn't save that consent. Please try again."
     },
     "addDialog": {
       "titleSingle": "Add time",
@@ -3009,14 +3028,14 @@
     "wrappedAlertsBody": "Wrapped ready notifications",
     "newPill": "New",
     "todaysSuggestionTitle": "Today's Suggestion",
-    "todaysSuggestionBody": "Three reminder kinds tied to each scheduled slot. Together they keep your routine on track without becoming noisy.",
+    "todaysSuggestionBody": "Three reminder kinds tied to each scheduled suggestion. Together they keep your routine on track without becoming noisy.",
     "suggestionReadyTitle": "Suggestion ready",
-    "suggestionReadyBody": "When a slot's suggestion becomes visible, your lead time before the scheduled time.",
-    "slotStartTitle": "Slot start",
+    "suggestionReadyBody": "When a suggestion becomes visible, your lead time before the scheduled time.",
+    "slotStartTitle": "Routine time",
     "slotStartBody": "At the scheduled time, so you remember to apply your routine.",
     "recordingReminderTitle": "Recording reminder",
-    "recordingReminderBody": "30 minutes after the slot if no record yet. Quiet at night, retried at the next slot the following morning.",
-    "leadTimeLabel": "Lead time before each slot",
+    "recordingReminderBody": "30 minutes after a routine time if no record exists yet. Quiet at night, retried the following morning.",
+    "leadTimeLabel": "Lead time before each suggestion",
     "leadTimeOption": "{minutes, plural, =60 {1 hour} =120 {2 hours} =180 {3 hours} =240 {4 hours} =360 {6 hours} =480 {8 hours} =720 {12 hours} other {# minutes}}",
     "leadTimeNote": "Used by all three reminder kinds. Range 30 minutes to 12 hours.",
     "quietHoursTitle": "Quiet hours",
@@ -3089,7 +3108,7 @@
       },
       "slot_start": {
         "title": "Time to start your routine",
-        "body": "Your slot just opened. Mark each step as you go."
+        "body": "Your routine is ready. Mark each step as you go."
       },
       "recording_reminder": {
         "title": "How did your routine go?",
@@ -3110,11 +3129,37 @@
       "nextSlotTomorrow": "tomorrow",
       "normalRoutineRestored": "Normal routine restored for future suggestions.",
       "routineBreakStarted": "Routine paused. No new suggestions will be generated until you resume.",
-      "routineBreakResumed": "Routine resumed. Suggestions will appear when each slot approaches.",
+      "routineBreakResumed": "Routine resumed. Suggestions will appear when each routine time approaches.",
       "routineBreakResumeUpdated": "Resume date updated.",
       "routineBreakActionFailed": "We couldn't update your routine break. Please try again.",
+      "quickSuggestion": "Quick suggestion",
+      "quickSuggestionQueued": "Quick suggestion is being prepared.",
+      "quickSuggestionFailed": "We couldn't start that suggestion. Please try again.",
+      "quickSuggestionConsentRequired": "Allow AI suggestions before requesting a quick suggestion.",
+      "aiConsentGranted": "AI suggestions enabled.",
+      "aiConsentFailed": "We couldn't save that consent. Please try again.",
       "gapSaved": "Saved to your Today wishlist.",
       "gapDismissed": "Recommendation dismissed for now."
+    },
+    "aiConsentDialog": {
+      "title": "Allow AI suggestions",
+      "body": "Quick suggestions use AI to read your shelf, schedule, skin profile, journals, and past application history. Sensitive profile or journal context is only used when the matching consent is also active.",
+      "controlTitle": "You stay in control",
+      "controlBody": "You can revoke this anytime in Settings → Privacy. Ritora keeps these requests encrypted and does not use raw journal photos for suggestions.",
+      "cancel": "Not now",
+      "confirm": "Allow AI suggestions"
+    },
+    "aiConsentCard": {
+      "title": "Personalized routines, made for your skin",
+      "body": "Turn on AI suggestions and Ritora will tailor each one to your skin profile, shelf, and recent journal entries. Without this, suggestions still arrive but stay basic.",
+      "benefits": {
+        "matchProfile": "Routines that match your goals and tolerances",
+        "adaptToShelf": "Adapts to the products you actually own",
+        "revokeAnytime": "You stay in control. Turn it off anytime in Settings."
+      },
+      "privacy": "Your data stays encrypted and is never sold.",
+      "grant": "Allow AI suggestions",
+      "dismiss": "Maybe later"
     },
     "routineBreak": {
       "statusLabel": "On a break",
@@ -3144,11 +3189,50 @@
         "resumeDatePast": "Choose a future resume date."
       }
     },
+    "onDemandDialog": {
+      "title": "Quick suggestion",
+      "body": "Tell Ritora what is happening right now. It will use your shelf and recent records.",
+      "intentLabel": "What is happening?",
+      "intensityLabel": "How much do you want to do?",
+      "noteLabel": "Short note (optional)",
+      "notePlaceholder": "For example, just came back sweaty and want a quick reset.",
+      "cancel": "Cancel",
+      "submit": "Generate suggestion",
+      "noteTooLong": "Keep this under 280 characters.",
+      "intensity": {
+        "minimal": "Minimal",
+        "minimalDescription": "Just the essentials",
+        "standard": "Standard",
+        "standardDescription": "Full mini-routine"
+      }
+    },
+    "onDemand": {
+      "sectionTitle": "Quick suggestions",
+      "label": "On-demand",
+      "newRequest": "New",
+      "retry": "Try again",
+      "retrying": "Retrying...",
+      "qualityTitle": "Product data is limited",
+      "intent": {
+        "post_workout": "After workout",
+        "post_sun": "After sun",
+        "post_swim": "After swimming",
+        "travel_refresh": "Travel refresh",
+        "quick_refresh": "Quick refresh",
+        "event_prep": "Event prep",
+        "post_makeup_or_shower": "After makeup or shower",
+        "other": "Other"
+      }
+    },
     "lockedDay": {
-      "leadTitle": "Suggestions arrive a couple of hours before each slot",
-      "leadBody": "Your routine is being prepared in the background using last night's photo, your shelf, and your skin profile. It will appear here once the visibility window opens.",
-      "notifyTitle": "You will get a heads up when it is ready",
-      "notifyBody": "We send a notification when each slot becomes visible, again at the scheduled time, and a recording reminder. Manage all of this in <link>Notifications</link>."
+      "title": "How suggestions arrive",
+      "body": "Each routine is prepared shortly before it arrives, using your latest photo, shelf, and skin profile.",
+      "leadFact": "Visible {leadTime} before each suggestion arrives.",
+      "notifyFact": "We notify you when ready and at the scheduled time. Manage in <link>Notifications</link>.",
+      "leadTimeHour": "{count} hour",
+      "leadTimeHours": "{count} hours",
+      "leadTimeMinute": "{count} minute",
+      "leadTimeMinutes": "{count} minutes"
     },
     "section": {
       "morning": "Morning",
@@ -3176,6 +3260,9 @@
       "yourRoutine": "Your routine",
       "aiAdded": "Added by AI"
     },
+    "step": {
+      "routineNote": "Routine note:"
+    },
     "slot": {
       "stepCount": "{count, plural, one {# step} other {# steps}}",
       "ready": "Ready",
@@ -3187,20 +3274,22 @@
       "awaitingRecord": "Awaiting record",
       "simplified": "Simplified",
       "specialist": "Specialist",
+      "basicSuggestion": "Basic suggestion",
+      "personalizationOffTitle": "Personalization is off.",
+      "personalizationOffBody": "This suggestion avoids profile, journal, and history context until AI suggestion consent is granted.",
       "morningLabel": "Morning routine",
       "noonLabel": "Mid-day reminder",
       "eveningLabel": "Evening routine",
       "availableAt": "Available {time}",
       "unlocksIn": "Unlocks in {eta}.",
       "unlocksInRich": "Unlocks in <strong>{eta}</strong>.",
-      "lockedExplainer": "We only show suggestions a couple of hours before the slot so they reflect your latest photo, sleep, and check-in.",
-      "generatingExplainer": "Ritora is preparing this slot with your latest schedule, shelf, skin profile, and recent records.",
+      "lockedExplainer": "We only show suggestions when your configured arrival window opens so they reflect your latest photo, sleep, and check-in.",
+      "generatingExplainer": "Ritora is preparing this suggestion with your latest schedule, shelf, skin profile, and recent records.",
       "failedExplainer": "This suggestion could not be prepared. It stays visible so the issue does not disappear from the day.",
-      "missedExplainer": "This slot passed without a saved application record. You can still record or edit it from History after today.",
+      "missedExplainer": "This suggestion passed without a saved application record. You can still record or edit it from History after today.",
       "whyThisRoutine": "Why this routine",
       "markAsApplied": "Mark as applied",
       "recordWhatIApplied": "Record what I applied",
-      "customise": "Customise",
       "more": "More",
       "edit": "Edit",
       "edited": "Edited",
@@ -3239,8 +3328,8 @@
     "recordSheet": {
       "recordTitle": "Record what you applied",
       "editTitle": "Edit application",
-      "recordSubtitle": "Slot at {time}, {count} suggested steps",
-      "editSubtitle": "Slot at {time}. Originally recorded {firstRecordedAt}.",
+      "recordSubtitle": "Suggestion at {time}, {count} suggested steps",
+      "editSubtitle": "Suggestion at {time}. Originally recorded {firstRecordedAt}.",
       "appliedAt": "Applied at",
       "rowSuggestedTag": "Suggested",
       "rowAddedTag": "Added by you",
@@ -3299,7 +3388,7 @@
     },
     "reminderBanner": {
       "title": "Record your {time} routine",
-      "body": "This slot is ready to log. Recording what actually happened keeps afternoon and evening suggestions accurate.",
+      "body": "This suggestion is ready to log. Recording what actually happened keeps afternoon and evening suggestions accurate.",
       "recordNow": "Record morning now",
       "skippedToday": "Skipped today",
       "remindLater": "Remind me later",
@@ -3327,8 +3416,7 @@
       "evidenceReviewed": "reviewed {date}",
       "noRationale": "No rationale captured for this suggestion.",
       "markApplied": "Mark as applied",
-      "customise": "Customise this before applying",
-      "generateAlternatives": "Generate alternatives"
+      "tryAnotherSuggestion": "Try another suggestion"
     },
     "empty": {
       "skinProfile": {
@@ -3345,16 +3433,16 @@
       },
       "schedule": {
         "title": "Build your weekly rhythm",
-        "body": "Tell Ritora when you usually do your morning and evening routine. Suggestions only appear ahead of each scheduled slot.",
+        "body": "Tell Ritora when you usually do your morning and evening routine. Suggestions only appear ahead of each scheduled routine time.",
         "ctaEveryDay": "Apply one time to every day",
         "ctaScratch": "Build from scratch",
         "note": "You can change times anytime from Schedule."
       },
       "recoverable": {
         "title": "Nothing scheduled for now",
-        "body": "Your next slot today is at {nextSlotLabel}. While you wait, log a photo so the AI has fresh data when it generates.",
+        "body": "Your next routine time today is {nextSlotLabel}. While you wait, log a photo so the AI has fresh data when it generates.",
         "ctaPhoto": "Add today's photo",
-        "ctaAddSlot": "Add a slot"
+        "ctaAddSlot": "Add routine time"
       }
     }
   },
@@ -3378,6 +3466,8 @@
       "daypart_all": "Show all times",
       "mode": "Routine type",
       "mode_all": "Show all types",
+      "source": "Source",
+      "source_all": "Show all sources",
       "status": "Status",
       "status_all": "Show all statuses",
       "last7d": "Last 7 days",
@@ -3394,6 +3484,8 @@
       "ai": "AI",
       "manual": "Manual",
       "mixed": "Mixed",
+      "scheduled": "Scheduled",
+      "on_demand": "On-demand",
       "applied": "Applied",
       "partial": "Partial",
       "skipped": "Skipped",
@@ -3418,6 +3510,17 @@
         "morning": "Morning",
         "noon": "Mid-day",
         "evening": "Evening"
+      },
+      "onDemandLabel": "On-demand · {intent}",
+      "onDemandIntent": {
+        "post_workout": "After workout",
+        "post_sun": "After sun",
+        "post_swim": "After swimming",
+        "travel_refresh": "Travel refresh",
+        "quick_refresh": "Quick refresh",
+        "event_prep": "Event prep",
+        "post_makeup_or_shower": "After makeup or shower",
+        "other": "Other"
       },
       "status": {
         "applied": "Applied",

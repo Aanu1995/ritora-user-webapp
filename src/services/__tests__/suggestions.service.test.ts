@@ -6,15 +6,19 @@ jest.mock("@/lib/api", () => ({
 
 import { getRequest, patchRequest, postRequest } from "@/lib/api";
 import {
+  createOnDemandSuggestion,
   exportSuggestionHistoryCsv,
   getRoutineBreak,
   getSuggestion,
+  getSuggestionAiConsent,
   getSuggestionHistory,
   getSuggestionHistoryDay,
   getTodaysSuggestion,
   regenerateSuggestion,
+  retryOnDemandSuggestion,
   resumeRoutineBreak,
   startRoutineBreak,
+  updateSuggestionAiConsent,
   updateRoutineBreak,
 } from "@/services/suggestions.service";
 
@@ -73,6 +77,60 @@ describe("suggestions.service", () => {
     expect(mockGetRequest).toHaveBeenCalledWith("/suggestions/suggestion-1");
   });
 
+  it("queues an on-demand suggestion", async () => {
+    mockPostRequest.mockResolvedValue({ id: "suggestion-on-demand-1" });
+
+    await createOnDemandSuggestion({
+      intent: "post_workout",
+      intensity: "minimal",
+      note: "Back from training.",
+      requestId: "quick-20260506",
+    });
+
+    expect(mockPostRequest).toHaveBeenCalledWith("/suggestions/on-demand", {
+      intent: "post_workout",
+      intensity: "minimal",
+      note: "Back from training.",
+      requestId: "quick-20260506",
+    });
+  });
+
+  it("reads and updates AI suggestion consent", async () => {
+    mockGetRequest.mockResolvedValue({
+      granted: false,
+      grantedAt: null,
+      canReadSensitiveContext: false,
+      blockedReason: "ai_suggestion_processing_consent_missing",
+      activeSensitiveConsentTypes: [],
+    });
+    mockPostRequest.mockResolvedValue({
+      granted: true,
+      grantedAt: "2026-05-07T09:00:00.000Z",
+      canReadSensitiveContext: false,
+      blockedReason: "sensitive_recommendation_context_consent_missing",
+      activeSensitiveConsentTypes: [],
+    });
+
+    await getSuggestionAiConsent();
+    await updateSuggestionAiConsent({ granted: true });
+
+    expect(mockGetRequest).toHaveBeenCalledWith("/suggestions/ai-consent");
+    expect(mockPostRequest).toHaveBeenCalledWith("/suggestions/ai-consent", {
+      granted: true,
+    });
+  });
+
+  it("retries a failed on-demand suggestion", async () => {
+    mockPostRequest.mockResolvedValue({ id: "suggestion-on-demand-1" });
+
+    await retryOnDemandSuggestion("suggestion-on-demand-1");
+
+    expect(mockPostRequest).toHaveBeenCalledWith(
+      "/suggestions/on-demand/suggestion-on-demand-1/retry",
+      {},
+    );
+  });
+
   it("regenerates a suggestion with an explicit reason", async () => {
     mockPostRequest.mockResolvedValue({ id: "suggestion-2" });
 
@@ -93,6 +151,7 @@ describe("suggestions.service", () => {
       toDate: "2026-04-29",
       daypart: "morning",
       mode: "mixed",
+      requestSource: "on_demand",
       status: "partial",
       hasBeenEdited: true,
       cursor: "cursor-1",
@@ -100,7 +159,7 @@ describe("suggestions.service", () => {
     });
 
     expect(mockGetRequest).toHaveBeenCalledWith(
-      "/suggestions/history?range=custom&from=2026-04-01&to=2026-04-29&daypart=morning&mode=mixed&status=partial&edited=true&cursor=cursor-1&limit=12",
+      "/suggestions/history?range=custom&from=2026-04-01&to=2026-04-29&daypart=morning&mode=mixed&requestSource=on_demand&status=partial&edited=true&cursor=cursor-1&limit=12",
     );
   });
 
@@ -115,6 +174,7 @@ describe("suggestions.service", () => {
         toDate: "2026-04-29",
         daypart: "morning",
         mode: "mixed",
+        requestSource: "on_demand",
         status: "partial",
         hasBeenEdited: true,
         cursor: "cursor-1",
@@ -123,7 +183,7 @@ describe("suggestions.service", () => {
     ).resolves.toBe(blob);
 
     expect(mockGetRequest).toHaveBeenCalledWith(
-      "/suggestions/history/export?range=custom&from=2026-04-01&to=2026-04-29&daypart=morning&mode=mixed&status=partial&edited=true",
+      "/suggestions/history/export?range=custom&from=2026-04-01&to=2026-04-29&daypart=morning&mode=mixed&requestSource=on_demand&status=partial&edited=true",
       {
         headers: { Accept: "text/csv" },
         responseType: "blob",

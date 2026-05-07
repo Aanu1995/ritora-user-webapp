@@ -44,6 +44,17 @@ jest.mock('@/hooks/use-schedule', () => ({
   }),
 }));
 
+jest.mock('@/hooks/use-suggestions', () => ({
+  useSuggestionAiConsent: () => ({
+    data: { granted: true, grantedAt: '2026-05-07T09:00:00.000Z' },
+    isLoading: false,
+  }),
+  useUpdateSuggestionAiConsent: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+  }),
+}));
+
 describe('AddSlotDialog', () => {
   it('renders localized sheet copy instead of hardcoded English', () => {
     render(

@@ -1,12 +1,14 @@
 import { getRequest, patchRequest, postRequest } from "@/lib/api";
 import { ApiPath } from "@/constants/api-paths";
 import type {
+  CreateOnDemandSuggestionPayload,
   NormalRoutineOverrideResponse,
   RecordingReminderSnoozeResponse,
   RecordSuggestionGapActionPayload,
   RegenerateSuggestionPayload,
   SnoozeRecordingReminderPayload,
   RoutineBreakState,
+  SuggestionAiConsent,
   SuggestionGapActionResponse,
   SuggestionHistoryDay,
   SuggestionHistoryListQuery,
@@ -14,6 +16,7 @@ import type {
   SuggestionInstance,
   StartRoutineBreakPayload,
   TodaysSuggestionResponse,
+  UpdateSuggestionAiConsentPayload,
   UpdateRoutineBreakPayload,
 } from "@/types/suggestions";
 
@@ -23,6 +26,31 @@ export async function getTodaysSuggestion(): Promise<TodaysSuggestionResponse> {
 
 export async function getSuggestion(id: string): Promise<SuggestionInstance> {
   return getRequest<SuggestionInstance>(ApiPath.Suggestion(id));
+}
+
+export async function createOnDemandSuggestion(
+  payload: CreateOnDemandSuggestionPayload,
+): Promise<SuggestionInstance> {
+  return postRequest<SuggestionInstance>(ApiPath.SuggestionsOnDemand, payload);
+}
+
+export async function getSuggestionAiConsent(): Promise<SuggestionAiConsent> {
+  return getRequest<SuggestionAiConsent>(ApiPath.SuggestionsAiConsent);
+}
+
+export async function updateSuggestionAiConsent(
+  payload: UpdateSuggestionAiConsentPayload,
+): Promise<SuggestionAiConsent> {
+  return postRequest<SuggestionAiConsent>(
+    ApiPath.SuggestionsAiConsent,
+    payload,
+  );
+}
+
+export async function retryOnDemandSuggestion(
+  id: string,
+): Promise<SuggestionInstance> {
+  return postRequest<SuggestionInstance>(ApiPath.SuggestionOnDemandRetry(id), {});
 }
 
 export async function regenerateSuggestion(
@@ -112,6 +140,7 @@ function buildSuggestionHistoryPath(
   if (query.toDate) params.set("to", query.toDate);
   if (query.daypart) params.set("daypart", query.daypart);
   if (query.mode) params.set("mode", query.mode);
+  if (query.requestSource) params.set("requestSource", query.requestSource);
   if (query.status) params.set("status", query.status);
   if (query.hasBeenEdited !== undefined) {
     params.set("edited", String(query.hasBeenEdited));

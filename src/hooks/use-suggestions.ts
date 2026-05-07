@@ -11,7 +11,9 @@ import {
 import { QueryKey } from "@/constants/query-keys";
 import { useAuthEnabled } from "@/hooks/use-auth-enabled";
 import {
+  createOnDemandSuggestion,
   getSuggestion,
+  getSuggestionAiConsent,
   getSuggestionHistory,
   getSuggestionHistoryDay,
   getTodaysSuggestion,
@@ -19,25 +21,31 @@ import {
   recordSuggestionGapAction,
   regenerateSuggestion,
   resumeRoutineBreak,
+  retryOnDemandSuggestion,
   snoozeRecordingReminder,
   startRoutineBreak,
+  updateSuggestionAiConsent,
   updateRoutineBreak,
   useNormalRoutineForToday,
 } from "@/services/suggestions.service";
 import type {
+  CreateOnDemandSuggestionPayload,
   RecordSuggestionGapActionPayload,
   RegenerateSuggestionPayload,
   SnoozeRecordingReminderPayload,
   RoutineBreakState,
+  SuggestionAiConsent,
   SuggestionHistoryDay,
   SuggestionHistoryListQuery,
   SuggestionHistoryListResponse,
   StartRoutineBreakPayload,
   TodaysSuggestionResponse,
+  UpdateSuggestionAiConsentPayload,
   UpdateRoutineBreakPayload,
 } from "@/types/suggestions";
 
 const TODAYS_SUGGESTION_REFETCH_INTERVAL_MS = 60_000;
+const TODAYS_SUGGESTION_ACTIVE_REFETCH_INTERVAL_MS = 5_000;
 
 const EMPTY_HISTORY_RESPONSE: SuggestionHistoryListResponse = {
   days: [],
@@ -55,8 +63,33 @@ export function useTodaysSuggestion() {
     queryFn: getTodaysSuggestion,
     enabled: isEnabled,
     refetchOnWindowFocus: true,
-    refetchInterval: TODAYS_SUGGESTION_REFETCH_INTERVAL_MS,
+    refetchInterval: (query) =>
+      getTodaysSuggestionRefetchInterval(query.state.data),
   });
+}
+
+export function getTodaysSuggestionRefetchInterval(
+  data: TodaysSuggestionResponse | undefined,
+): number {
+  return hasGeneratingSuggestion(data)
+    ? TODAYS_SUGGESTION_ACTIVE_REFETCH_INTERVAL_MS
+    : TODAYS_SUGGESTION_REFETCH_INTERVAL_MS;
+}
+
+function hasGeneratingSuggestion(
+  data: TodaysSuggestionResponse | undefined,
+): boolean {
+  if (!data) return false;
+  return (
+    data.onDemandSuggestions.some(
+      (suggestion) => suggestion.status === "generating",
+    ) ||
+    data.slots.some(
+      (slot) =>
+        slot.status === "generating" ||
+        slot.suggestion?.generationStatus === "generating",
+    )
+  );
 }
 
 export function useSuggestion(id: string | null | undefined) {
@@ -78,6 +111,59 @@ export function useRegenerateSuggestion() {
       id: string;
       payload?: RegenerateSuggestionPayload;
     }) => regenerateSuggestion(id, payload),
+    onSuccess: (suggestion) => {
+      queryClient.setQueryData([QueryKey.Suggestion, suggestion.id], suggestion);
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.SuggestionsToday],
+      });
+    },
+  });
+}
+
+export function useCreateOnDemandSuggestion() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: CreateOnDemandSuggestionPayload) =>
+      createOnDemandSuggestion(payload),
+    onSuccess: (suggestion) => {
+      queryClient.setQueryData([QueryKey.Suggestion, suggestion.id], suggestion);
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.SuggestionsToday],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.SuggestionsHistory],
+      });
+    },
+  });
+}
+
+export function useSuggestionAiConsent() {
+  const isEnabled = useAuthEnabled();
+  return useQuery<SuggestionAiConsent>({
+    queryKey: [QueryKey.SuggestionAiConsent],
+    queryFn: getSuggestionAiConsent,
+    enabled: isEnabled,
+  });
+}
+
+export function useUpdateSuggestionAiConsent() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: UpdateSuggestionAiConsentPayload) =>
+      updateSuggestionAiConsent(payload),
+    onSuccess: (consent) => {
+      queryClient.setQueryData([QueryKey.SuggestionAiConsent], consent);
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.SuggestionsToday],
+      });
+    },
+  });
+}
+
+export function useRetryOnDemandSuggestion() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => retryOnDemandSuggestion(id),
     onSuccess: (suggestion) => {
       queryClient.setQueryData([QueryKey.Suggestion, suggestion.id], suggestion);
       void queryClient.invalidateQueries({

@@ -194,6 +194,8 @@ describe("history suggestion components", () => {
     await user.click(await screen.findByRole("button", { name: /morning/i }));
     await user.click(screen.getByRole("button", { name: /routine type/i }));
     await user.click(await screen.findByRole("button", { name: /mixed/i }));
+    await user.click(screen.getByRole("button", { name: /source/i }));
+    await user.click(await screen.findByRole("button", { name: /on-demand/i }));
     await user.click(screen.getByRole("button", { name: /edited/i }));
 
     expect(onChange).toHaveBeenNthCalledWith(
@@ -210,6 +212,10 @@ describe("history suggestion components", () => {
     );
     expect(onChange).toHaveBeenNthCalledWith(
       4,
+      expect.objectContaining({ requestSource: "on_demand" }),
+    );
+    expect(onChange).toHaveBeenNthCalledWith(
+      5,
       expect.objectContaining({ hasBeenEdited: true }),
     );
   });
@@ -306,6 +312,8 @@ function historySlot(
     slotId: "slot-1",
     suggestionId: "suggestion-1",
     applicationLogId: "log-1",
+    requestSource: "scheduled",
+    onDemandIntent: null,
     daypart: "morning",
     slotTime: "08:00",
     mode: "ai",
@@ -326,6 +334,8 @@ function suggestionInstance(
   return {
     id: "suggestion-1",
     slotId: "slot-1",
+    requestSource: "scheduled",
+    requestContext: null,
     targetDate: "2026-05-03",
     targetTime: "08:00",
     daypart: "morning",
@@ -343,6 +353,12 @@ function suggestionInstance(
     safetyFlags: [],
     inputTrace: null,
     evidenceSources: [],
+    productDataQuality: {
+      verifiedCount: 0,
+      partialCount: 0,
+      insufficientCount: 0,
+      warnings: [],
+    },
     steps: [
       suggestionStep(),
       suggestionStep({
@@ -383,6 +399,7 @@ function suggestionStep(partial: Partial<SuggestionStep> = {}): SuggestionStep {
     provenance: "ai_added",
     chips: [],
     safetyWarnings: [],
+    routineNote: null,
     product: {
       id: "product-1",
       brand: "Ava Lab",

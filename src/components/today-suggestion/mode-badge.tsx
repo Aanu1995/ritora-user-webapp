@@ -57,7 +57,8 @@ export type SuggestionStatusPillVariant =
   | "locked"
   | "awaiting"
   | "simplified"
-  | "specialist";
+  | "specialist"
+  | "basic";
 
 export function SuggestionStatusPill({
   variant,
@@ -97,6 +98,8 @@ const STATUS_VARIANT_CLASSES: Record<SuggestionStatusPillVariant, string> = {
     "border-[color:rgba(179,38,30,0.3)] bg-danger-soft text-[color:var(--danger)]",
   specialist:
     "border-[color:rgba(47,122,82,0.32)] bg-accent-soft text-accent-strong",
+  basic:
+    "border-[color:var(--ai-border)] bg-[color:var(--ai-soft)] text-[color:var(--ai-fg)]",
 };
 
 export function SuggestionProvenanceChip({

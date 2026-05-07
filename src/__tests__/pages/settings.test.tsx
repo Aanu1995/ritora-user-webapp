@@ -10,6 +10,7 @@ const mockLogoutAllMutate = jest.fn();
 const mockUpdateProfileMutate = jest.fn();
 const mockUpdatePreferredLanguageMutate = jest.fn();
 const mockUpdateTimeZoneMutate = jest.fn();
+const mockUpdateAiConsentMutate = jest.fn();
 const mockRouterRefresh = jest.fn();
 
 jest.mock("next/navigation", () => ({
@@ -39,6 +40,37 @@ jest.mock("@/hooks/use-auth", () => ({
   }),
   useUpdateTimeZone: () => ({
     mutate: mockUpdateTimeZoneMutate,
+    isPending: false,
+  }),
+}));
+
+jest.mock("@/hooks/use-skin-profile", () => ({
+  useSkinProfile: () => ({ data: null }),
+  useSkinProfileAccessLogs: () => ({ data: [], isLoading: false }),
+  useUpdateSkinProfile: () => ({ mutate: jest.fn(), isPending: false }),
+  useDeleteSkinProfileHealthContext: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+  }),
+  useDeleteSkinProfileHormonalContext: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+  }),
+}));
+
+jest.mock("@/hooks/use-suggestions", () => ({
+  useSuggestionAiConsent: () => ({
+    data: {
+      granted: false,
+      grantedAt: null,
+      canReadSensitiveContext: false,
+      blockedReason: "ai_suggestion_processing_consent_missing",
+      activeSensitiveConsentTypes: [],
+    },
+    isLoading: false,
+  }),
+  useUpdateSuggestionAiConsent: () => ({
+    mutate: mockUpdateAiConsentMutate,
     isPending: false,
   }),
 }));
@@ -306,6 +338,22 @@ describe("SettingsPage", () => {
         onSuccess: expect.any(Function),
         onError: expect.any(Function),
       }),
+    );
+  });
+
+  it("lets users grant AI suggestion consent from Privacy settings", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(screen.getByRole("tab", { name: /privacy/i }));
+    expect(screen.getByText("AI suggestion processing")).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /allow ai suggestions/i }),
+    );
+
+    expect(mockUpdateAiConsentMutate).toHaveBeenCalledWith(
+      { granted: true },
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
   });
 });

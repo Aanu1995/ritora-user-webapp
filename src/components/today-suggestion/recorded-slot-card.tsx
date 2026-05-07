@@ -1,14 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import {
-  Check,
-  CircleSlash,
-  Clock4,
-  Info,
-  Pencil,
-  Repeat2,
-} from "lucide-react";
+import { Check, CircleSlash, Info, Pencil, Repeat2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatIsoTime12h, formatSlotTime12h } from "@/lib/suggestion-daypart";
 import { cn } from "@/lib/utils";
@@ -49,45 +42,39 @@ export function RecordedSlotCard({ slot, applicationLogId, onEdit }: Props) {
         "border-[color:rgba(47,122,82,0.22)] bg-[color:color-mix(in_srgb,var(--surface)_88%,var(--accent-soft))]",
       )}
     >
-      <header className="mb-3 flex items-start gap-3">
-        <SuggestionDaypartIcon daypart={suggestion.daypart} />
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-base font-bold leading-tight text-foreground">
+      <header className="mb-3">
+        <div className="flex items-start gap-3">
+          <SuggestionDaypartIcon daypart={suggestion.daypart} />
+          <p className="min-w-0 flex-1 font-display text-base font-bold leading-tight text-foreground">
             {formatSlotTime12h(slot.slotTime)}
           </p>
-          <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted">
-            {appliedTime
-              ? t("recordedSummary", {
-                  time: appliedTime,
-                  count: appliedCount,
-                  total: totalItems,
-                })
-              : t("appliedSummary", {
-                  count: appliedCount,
-                  total: totalItems,
-                })}
-          </p>
-          {appliedTime ? (
-            <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted">
-              <Clock4 className="h-3 w-3" />
-              {t("recordedAt", { time: appliedTime })}
-            </p>
-          ) : null}
-        </div>
-        <div className="flex flex-wrap justify-end gap-1.5">
-          <SuggestionStatusPill
-            variant="applied"
-            icon={<Check className="h-3 w-3" />}
-          >
-            {t("applied")}
-          </SuggestionStatusPill>
-          {slot.recording?.hasBeenEdited ? (
-            <SuggestionStatusPill variant="edited">
-              {t("edited")}
+          <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+            <SuggestionStatusPill
+              variant="applied"
+              icon={<Check className="h-3 w-3" />}
+            >
+              {t("applied")}
             </SuggestionStatusPill>
-          ) : null}
-          <SuggestionModeBadge mode={suggestion.mode} />
+            {slot.recording?.hasBeenEdited ? (
+              <SuggestionStatusPill variant="edited">
+                {t("edited")}
+              </SuggestionStatusPill>
+            ) : null}
+            <SuggestionModeBadge mode={suggestion.mode} />
+          </div>
         </div>
+        <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted">
+          {appliedTime
+            ? t("recordedSummary", {
+                time: appliedTime,
+                count: appliedCount,
+                total: totalItems,
+              })
+            : t("appliedSummary", {
+                count: appliedCount,
+                total: totalItems,
+              })}
+        </p>
       </header>
 
       {items.length > 0 ? (

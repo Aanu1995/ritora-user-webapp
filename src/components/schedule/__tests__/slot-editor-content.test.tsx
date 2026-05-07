@@ -16,6 +16,8 @@ const mockUpdateSlot = jest.fn();
 const mockDeleteSlot = jest.fn();
 const mockUpsertSteps = jest.fn();
 const mockReleaseGuard = jest.fn();
+const mockUpdateAiConsentMutate = jest.fn();
+let mockAiConsentGranted = false;
 
 jest.mock("@/hooks/use-schedule", () => ({
   useUpdateSlot: () => ({
@@ -28,6 +30,27 @@ jest.mock("@/hooks/use-schedule", () => ({
   }),
   useUpsertSteps: () => ({
     mutate: mockUpsertSteps,
+    isPending: false,
+  }),
+}));
+
+jest.mock("@/hooks/use-suggestions", () => ({
+  useSuggestionAiConsent: () => ({
+    data: {
+      granted: mockAiConsentGranted,
+      grantedAt: mockAiConsentGranted
+        ? "2026-05-07T09:00:00.000Z"
+        : null,
+      canReadSensitiveContext: false,
+      blockedReason: mockAiConsentGranted
+        ? "sensitive_recommendation_context_consent_missing"
+        : "ai_suggestion_processing_consent_missing",
+      activeSensitiveConsentTypes: [],
+    },
+    isLoading: false,
+  }),
+  useUpdateSuggestionAiConsent: () => ({
+    mutate: mockUpdateAiConsentMutate,
     isPending: false,
   }),
 }));
@@ -70,6 +93,7 @@ function createSlot(overrides: Partial<ScheduleSlot> = {}): ScheduleSlot {
 describe("SlotEditorContent", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockAiConsentGranted = false;
   });
 
   it("maps duplicate save errors to the time field inline", async () => {
@@ -233,5 +257,24 @@ describe("SlotEditorContent", () => {
         expect.any(Object),
       );
     });
+  });
+
+  it("offers AI suggestion consent while editing AI schedule slots", () => {
+    renderWithProviders(
+      <SlotEditorContent slot={createSlot()} onClose={jest.fn()} />,
+    );
+
+    expect(
+      screen.getByText(/Personalized routines, made for your skin/i),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /allow ai suggestions/i }),
+    );
+
+    expect(mockUpdateAiConsentMutate).toHaveBeenCalledWith(
+      { granted: true },
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
+    );
   });
 });

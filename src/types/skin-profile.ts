@@ -164,6 +164,7 @@ export enum SkinProfileConsentType {
   LocationProcessing = "location_processing",
   HealthContextProcessing = "health_context_processing",
   HormonalContextProcessing = "hormonal_context_processing",
+  AiSuggestionProcessing = "ai_suggestion_processing",
 }
 
 export enum SkinProfileAccessEventType {

@@ -33,18 +33,20 @@ function SettingsTabs() {
 
   return (
     <Tabs defaultValue={initialTab}>
-      <div className="sticky top-0 z-10 bg-background pt-6">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+      <div className="sticky top-0 z-10 bg-background pt-3 sm:pt-6">
+        <h1 className="text-lg font-bold tracking-tight text-foreground sm:text-2xl">
           {t("title")}
         </h1>
-        <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>
+        <p className="mt-0.5 text-xs text-muted sm:mt-1 sm:text-sm">
+          {t("subtitle")}
+        </p>
         <div
           data-testid="settings-tab-indicator-rail"
-          className="mx-auto mt-6 w-full border-b border-border lg:w-[65%]"
+          className="mx-auto mt-3 w-full border-b border-border sm:mt-6 lg:w-[65%]"
         >
           <div
             data-testid="settings-tab-scroll-region"
-            className="overflow-x-auto pb-px"
+            className="overflow-x-auto pb-px [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             <TabsList className="border-b-0">
               <TabsTrigger value={SettingsTab.Account}>
@@ -67,27 +69,27 @@ function SettingsTabs() {
         </div>
       </div>
 
-      <TabsContent value={SettingsTab.Account}>
+      <TabsContent value={SettingsTab.Account} className="mt-4 sm:mt-6">
         <div className="mx-auto w-full lg:w-[65%]">
           <AccountTab />
         </div>
       </TabsContent>
-      <TabsContent value={SettingsTab.Appearance}>
+      <TabsContent value={SettingsTab.Appearance} className="mt-4 sm:mt-6">
         <div className="mx-auto w-full lg:w-[65%]">
           <AppearanceTab />
         </div>
       </TabsContent>
-      <TabsContent value={SettingsTab.Language}>
+      <TabsContent value={SettingsTab.Language} className="mt-4 sm:mt-6">
         <div className="mx-auto w-full lg:w-[65%]">
           <LanguageTab />
         </div>
       </TabsContent>
-      <TabsContent value={SettingsTab.Notifications}>
+      <TabsContent value={SettingsTab.Notifications} className="mt-4 sm:mt-6">
         <div className="mx-auto w-full lg:w-[65%]">
           <NotificationsTab />
         </div>
       </TabsContent>
-      <TabsContent value={SettingsTab.Privacy}>
+      <TabsContent value={SettingsTab.Privacy} className="mt-4 sm:mt-6">
         <div className="mx-auto w-full lg:w-[65%]">
           <PrivacyTab />
         </div>

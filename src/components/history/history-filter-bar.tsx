@@ -6,6 +6,7 @@ import {
   DaypartDropdown,
   Divider,
   ModeDropdown,
+  SourceDropdown,
   StatusDropdown,
 } from "@/components/history/history-filter-dropdowns";
 import { RangeDropdown } from "@/components/history/history-range-dropdown";
@@ -29,6 +30,8 @@ export function HistoryFilterBar({ value, onChange }: Props) {
       <DaypartDropdown value={value} onChange={update} />
       <Divider />
       <ModeDropdown value={value} onChange={update} />
+      <Divider />
+      <SourceDropdown value={value} onChange={update} />
       <Divider />
       <StatusDropdown value={value} onChange={update} />
       <EditedToggle value={value} onChange={update} label={t("edited")} />

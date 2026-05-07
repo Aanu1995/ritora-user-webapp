@@ -14,6 +14,8 @@ jest.mock('sonner', () => ({
 const mockCreateSlot = jest.fn();
 const mockCreateSlots = jest.fn();
 const mockApplyPreset = jest.fn();
+const mockUpdateAiConsentMutate = jest.fn();
+let mockAiConsentGranted = false;
 
 jest.mock('@/hooks/use-schedule', () => ({
   useCreateSlot: () => ({
@@ -30,11 +32,34 @@ jest.mock('@/hooks/use-schedule', () => ({
   }),
 }));
 
+jest.mock('@/hooks/use-suggestions', () => ({
+  useSuggestionAiConsent: () => ({
+    data: {
+      granted: mockAiConsentGranted,
+      grantedAt: mockAiConsentGranted
+        ? '2026-05-07T09:00:00.000Z'
+        : null,
+      canReadSensitiveContext: false,
+      blockedReason: mockAiConsentGranted
+        ? 'sensitive_recommendation_context_consent_missing'
+        : 'ai_suggestion_processing_consent_missing',
+      activeSensitiveConsentTypes: [],
+    },
+    isLoading: false,
+  }),
+  useUpdateSuggestionAiConsent: () => ({
+    mutate: mockUpdateAiConsentMutate,
+    isPending: false,
+  }),
+}));
+
 describe('AddSlotContent', () => {
   beforeEach(() => {
     mockCreateSlot.mockReset();
     mockCreateSlots.mockReset();
     mockApplyPreset.mockReset();
+    mockUpdateAiConsentMutate.mockReset();
+    mockAiConsentGranted = false;
   });
 
   it('submits partial multi-day creates through one batch mutation', async () => {
@@ -107,5 +132,28 @@ describe('AddSlotContent', () => {
         /could not save schedule/i,
       );
     });
+  });
+
+  it('offers AI suggestion consent while creating AI schedule slots', () => {
+    renderWithProviders(
+      <AddSlotContent
+        presetMode={AddSlotPresetMode.Single}
+        preselectDay={DayOfWeek.Mon}
+        onClose={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText(/Personalized routines, made for your skin/i),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole('button', { name: /allow ai suggestions/i }),
+    );
+
+    expect(mockUpdateAiConsentMutate).toHaveBeenCalledWith(
+      { granted: true },
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
+    );
   });
 });

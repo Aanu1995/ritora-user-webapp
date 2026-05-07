@@ -112,7 +112,7 @@ export function AccountTab() {
 
   if (!isEditingName) {
     return (
-      <div className="space-y-8">
+      <div className="space-y-5 sm:space-y-8">
         <SettingsSection
           title={t("account.profileTitle")}
           description={t("account.profileDescription")}
@@ -147,7 +147,7 @@ export function AccountTab() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 sm:space-y-8">
       <SettingsSection
         title={t("account.profileTitle")}
         description={t("account.profileDescription")}

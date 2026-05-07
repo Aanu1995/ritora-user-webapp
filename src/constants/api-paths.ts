@@ -113,6 +113,10 @@ export const ApiPath = {
   NotificationPreferences: `${NOTIFICATIONS_BASE}/preferences`,
 
   SuggestionsToday: `${SUGGESTIONS_BASE}/today`,
+  SuggestionsAiConsent: `${SUGGESTIONS_BASE}/ai-consent`,
+  SuggestionsOnDemand: `${SUGGESTIONS_BASE}/on-demand`,
+  SuggestionOnDemandRetry: (id: string) =>
+    `${SUGGESTIONS_BASE}/on-demand/${id}/retry`,
   SuggestionsTodayNormalRoutine: `${SUGGESTIONS_BASE}/today/reaction/normal-routine`,
   SuggestionsTodayReminderLater: `${SUGGESTIONS_BASE}/today/reminders/later`,
   SuggestionGapActions: `${SUGGESTIONS_BASE}/gap-actions`,

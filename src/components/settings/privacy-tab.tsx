@@ -28,6 +28,10 @@ import {
   useUpdateSkinProfile,
 } from "@/hooks/use-skin-profile";
 import {
+  useSuggestionAiConsent,
+  useUpdateSuggestionAiConsent,
+} from "@/hooks/use-suggestions";
+import {
   SkinProfileAccessEventType,
   SkinProfileConsentType,
   type SkinProfileAccessLog,
@@ -71,12 +75,14 @@ export function PrivacyTab() {
   const router = useRouter();
 
   const profile = useSkinProfile();
+  const aiConsent = useSuggestionAiConsent();
   const accessLogs = useSkinProfileAccessLogs({
-    enabled: Boolean(profile.data),
+    enabled: Boolean(profile.data || aiConsent.data?.granted),
   });
   const updateMutation = useUpdateSkinProfile();
   const deleteHealthMutation = useDeleteSkinProfileHealthContext();
   const deleteHormonalMutation = useDeleteSkinProfileHormonalContext();
+  const updateAiConsentMutation = useUpdateSuggestionAiConsent();
   const [healthRevokeOpen, setHealthRevokeOpen] = useState(false);
   const [hormonalRevokeOpen, setHormonalRevokeOpen] = useState(false);
   const [locationRevokeOpen, setLocationRevokeOpen] = useState(false);
@@ -98,16 +104,24 @@ export function PrivacyTab() {
         logs,
         SkinProfileConsentType.HormonalContextProcessing,
       ),
+      aiSuggestion: getLogsForConsent(
+        logs,
+        SkinProfileConsentType.AiSuggestionProcessing,
+      ),
     };
   }, [accessLogs.data]);
 
   const hasHealth = Boolean(profile.data?.hasHealthContextConsent);
   const hasHormonal = Boolean(profile.data?.hasHormonalContextConsent);
+  const hasAiSuggestionConsent = Boolean(aiConsent.data?.granted);
   const hasLocation = Boolean(
     profile.data && (profile.data.countryCode || profile.data.city),
   );
   const activeCount =
-    (hasHealth ? 1 : 0) + (hasLocation ? 1 : 0) + (hasHormonal ? 1 : 0);
+    (hasHealth ? 1 : 0) +
+    (hasLocation ? 1 : 0) +
+    (hasHormonal ? 1 : 0) +
+    (hasAiSuggestionConsent ? 1 : 0);
 
   const handleRevokeHealth = () => {
     deleteHealthMutation.mutate(undefined, {
@@ -167,8 +181,30 @@ export function PrivacyTab() {
     });
   };
 
+  const handleGrantAiSuggestionConsent = () => {
+    updateAiConsentMutation.mutate(
+      { granted: true },
+      {
+        onSuccess: () => {
+          toast.success(tConsent("grantSuccess"));
+        },
+      },
+    );
+  };
+
+  const handleRevokeAiSuggestionConsent = () => {
+    updateAiConsentMutation.mutate(
+      { granted: false },
+      {
+        onSuccess: () => {
+          toast.success(tConsent("revokeSuccess"));
+        },
+      },
+    );
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 sm:space-y-8">
       <SettingsSection
         title={tConsent("title")}
         description={tConsent("description")}
@@ -179,6 +215,31 @@ export function PrivacyTab() {
               {tConsent("activeCount", { count: activeCount })}
             </span>
           </div>
+
+          <ConsentCard
+            title={tConsent("aiSuggestionLabel")}
+            description={tConsent("aiSuggestionDesc")}
+            active={hasAiSuggestionConsent}
+            encrypted
+            grantedAt={aiConsent.data?.grantedAt ?? null}
+            storedDataItems={
+              hasAiSuggestionConsent
+                ? [
+                    {
+                      label: tConsent("storedAiSuggestionProcessing"),
+                      value: tConsent("yes"),
+                    },
+                  ]
+                : undefined
+            }
+            accessLogs={consentLogs.aiSuggestion}
+            accessLogsLoading={accessLogs.isLoading}
+            onGrant={handleGrantAiSuggestionConsent}
+            onRevoke={handleRevokeAiSuggestionConsent}
+            grantLabel={tConsent("grantAiSuggestion")}
+            revokeLabel={tConsent("revokeAiSuggestion")}
+            pending={aiConsent.isLoading || updateAiConsentMutation.isPending}
+          />
 
           <ConsentCard
             title={tConsent("healthLabel")}

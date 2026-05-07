@@ -1,12 +1,16 @@
 import { waitFor } from "@testing-library/react";
 import { renderHookWithProviders } from "@/test/utils";
 import {
+  getTodaysSuggestionRefetchInterval,
   getNextSuggestionHistoryPageParam,
   mergeSuggestionHistoryPages,
   useNormalRoutineToday,
+  useCreateOnDemandSuggestion,
+  useSuggestionAiConsent,
   useRecordSuggestionGapAction,
   useRegenerateSuggestion,
   useResumeRoutineBreak,
+  useRetryOnDemandSuggestion,
   useSnoozeRecordingReminder,
   useStartRoutineBreak,
   useSuggestion,
@@ -14,23 +18,29 @@ import {
   useSuggestionHistoryDay,
   useRoutineBreak,
   useUpdateRoutineBreak,
+  useUpdateSuggestionAiConsent,
   useTodaysSuggestion,
 } from "@/hooks/use-suggestions";
 import {
   getRoutineBreak,
   getSuggestion,
+  getSuggestionAiConsent,
   getSuggestionHistory,
   getSuggestionHistoryDay,
   getTodaysSuggestion,
+  createOnDemandSuggestion,
   recordSuggestionGapAction,
   regenerateSuggestion,
   resumeRoutineBreak,
+  retryOnDemandSuggestion,
   snoozeRecordingReminder,
   startRoutineBreak,
+  updateSuggestionAiConsent,
   updateRoutineBreak,
   useNormalRoutineForToday,
 } from "@/services/suggestions.service";
 import type {
+  SuggestionAiConsent,
   SuggestionHistoryListResponse,
   SuggestionInstance,
   TodaysSuggestionResponse,
@@ -42,6 +52,10 @@ jest.mock("@/hooks/use-auth-enabled", () => ({
 
 jest.mock("@/services/suggestions.service", () => ({
   getTodaysSuggestion: jest.fn(),
+  createOnDemandSuggestion: jest.fn(),
+  retryOnDemandSuggestion: jest.fn(),
+  getSuggestionAiConsent: jest.fn(),
+  updateSuggestionAiConsent: jest.fn(),
   getRoutineBreak: jest.fn(),
   getSuggestion: jest.fn(),
   regenerateSuggestion: jest.fn(),
@@ -63,6 +77,18 @@ const mockGetRoutineBreak = getRoutineBreak as jest.MockedFunction<
 >;
 const mockGetSuggestion = getSuggestion as jest.MockedFunction<
   typeof getSuggestion
+>;
+const mockCreateOnDemand = createOnDemandSuggestion as jest.MockedFunction<
+  typeof createOnDemandSuggestion
+>;
+const mockRetryOnDemand = retryOnDemandSuggestion as jest.MockedFunction<
+  typeof retryOnDemandSuggestion
+>;
+const mockGetAiConsent = getSuggestionAiConsent as jest.MockedFunction<
+  typeof getSuggestionAiConsent
+>;
+const mockUpdateAiConsent = updateSuggestionAiConsent as jest.MockedFunction<
+  typeof updateSuggestionAiConsent
 >;
 const mockRegenerate = regenerateSuggestion as jest.MockedFunction<
   typeof regenerateSuggestion
@@ -138,6 +164,99 @@ describe("suggestion hooks", () => {
     await waitFor(() => expect(day.result.current.isSuccess).toBe(true));
     expect(mockGetHistoryDay).toHaveBeenCalledWith("2026-05-03");
   });
+
+  it("queues on-demand suggestions through mutate", async () => {
+    mockCreateOnDemand.mockResolvedValue(
+      suggestionInstance({
+        id: "suggestion-on-demand-1",
+        slotId: null,
+        requestSource: "on_demand",
+      }),
+    );
+
+    const mutation = renderHookWithProviders(() =>
+      useCreateOnDemandSuggestion(),
+    );
+    mutation.result.current.mutate({
+      intent: "post_workout",
+      intensity: "minimal",
+      note: "Back from training.",
+      requestId: "quick-20260506",
+    });
+
+    await waitFor(() => expect(mockCreateOnDemand).toHaveBeenCalled());
+    expect(mockCreateOnDemand).toHaveBeenCalledWith({
+      intent: "post_workout",
+      intensity: "minimal",
+      note: "Back from training.",
+      requestId: "quick-20260506",
+    });
+  });
+
+  it("fetches and updates AI suggestion consent", async () => {
+    mockGetAiConsent.mockResolvedValue(aiConsent({ granted: false }));
+    mockUpdateAiConsent.mockResolvedValue(
+      aiConsent({
+        granted: true,
+        grantedAt: "2026-05-07T09:00:00.000Z",
+      }),
+    );
+
+    const state = renderHookWithProviders(() => useSuggestionAiConsent());
+    await waitFor(() => expect(state.result.current.isSuccess).toBe(true));
+    expect(mockGetAiConsent).toHaveBeenCalledTimes(1);
+
+    const mutation = renderHookWithProviders(() =>
+      useUpdateSuggestionAiConsent(),
+    );
+    mutation.result.current.mutate({ granted: true });
+    await waitFor(() => expect(mockUpdateAiConsent).toHaveBeenCalled());
+    expect(mockUpdateAiConsent).toHaveBeenCalledWith({ granted: true });
+  });
+
+  it("retries failed on-demand suggestions through mutate", async () => {
+    mockRetryOnDemand.mockResolvedValue(
+      suggestionInstance({
+        id: "suggestion-on-demand-1",
+        slotId: null,
+        requestSource: "on_demand",
+      }),
+    );
+
+    const mutation = renderHookWithProviders(() =>
+      useRetryOnDemandSuggestion(),
+    );
+    mutation.result.current.mutate("suggestion-on-demand-1");
+
+    await waitFor(() => expect(mockRetryOnDemand).toHaveBeenCalled());
+    expect(mockRetryOnDemand).toHaveBeenCalledWith("suggestion-on-demand-1");
+  });
+
+  it("polls faster while a suggestion is generating", () => {
+    expect(getTodaysSuggestionRefetchInterval(undefined)).toBe(60_000);
+    expect(getTodaysSuggestionRefetchInterval(todayResponse())).toBe(60_000);
+    expect(
+      getTodaysSuggestionRefetchInterval({
+        ...todayResponse(),
+        onDemandSuggestions: [
+          {
+            id: "on-demand-generating",
+            status: "generating",
+            requestedAt: "2026-05-04T10:00:00.000Z",
+            recording: null,
+            applicationLog: null,
+            suggestion: suggestionInstance({
+              id: "on-demand-generating",
+              slotId: null,
+              requestSource: "on_demand",
+              generationStatus: "generating",
+            }),
+          },
+        ],
+      }),
+    ).toBe(5_000);
+  });
+
 
   it("persists normal-routine override and gap actions through mutations", async () => {
     mockUseNormalRoutine.mockResolvedValue({
@@ -260,9 +379,11 @@ function todayResponse(): TodaysSuggestionResponse {
       recorded: 0,
       edited: 0,
       failed: 0,
+      onDemand: 0,
     },
     weatherSummary: null,
     slots: [],
+    onDemandSuggestions: [],
     reactionAlert: null,
     routineBreak: null,
   };
@@ -295,12 +416,27 @@ function historyResponse(
   };
 }
 
+function aiConsent(
+  partial: Partial<SuggestionAiConsent> = {},
+): SuggestionAiConsent {
+  return {
+    granted: false,
+    grantedAt: null,
+    canReadSensitiveContext: false,
+    blockedReason: "ai_suggestion_processing_consent_missing",
+    activeSensitiveConsentTypes: [],
+    ...partial,
+  };
+}
+
 function suggestionInstance(
   partial: Partial<SuggestionInstance> = {},
 ): SuggestionInstance {
   return {
     id: "suggestion-1",
     slotId: "slot-1",
+    requestSource: "scheduled",
+    requestContext: null,
     targetDate: "2026-05-04",
     targetTime: "08:00",
     daypart: "morning",
@@ -318,6 +454,12 @@ function suggestionInstance(
     safetyFlags: [],
     inputTrace: null,
     evidenceSources: [],
+    productDataQuality: {
+      verifiedCount: 0,
+      partialCount: 0,
+      insufficientCount: 0,
+      warnings: [],
+    },
     steps: [],
     applicationLogId: null,
     createdAt: "2026-05-04T04:00:00.000Z",

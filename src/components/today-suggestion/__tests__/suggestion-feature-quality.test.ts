@@ -54,6 +54,20 @@ function readSource(file: string): string {
   return readFileSync(file, "utf8");
 }
 
+function collectMessageStrings(value: unknown): string[] {
+  if (typeof value === "string") {
+    return [value];
+  }
+
+  if (!value || typeof value !== "object") {
+    return [];
+  }
+
+  return Object.values(value as Record<string, unknown>).flatMap(
+    collectMessageStrings,
+  );
+}
+
 describe("Today's Suggestion frontend quality guardrails", () => {
   const files = SOURCE_ROOTS.flatMap(walkSourceFiles);
 
@@ -107,6 +121,12 @@ describe("Today's Suggestion frontend quality guardrails", () => {
     const recordSchema = readSource(
       join(process.cwd(), "src/components/today-suggestion/record-application-form.ts"),
     );
+    const onDemandDialog = readSource(
+      join(process.cwd(), "src/components/today-suggestion/on-demand-suggestion-dialog.tsx"),
+    );
+    const onDemandSchema = readSource(
+      join(process.cwd(), "src/components/today-suggestion/on-demand-suggestion-validation.ts"),
+    );
     const notificationForm = readSource(
       join(process.cwd(), "src/components/settings/notification-preferences-form.tsx"),
     );
@@ -116,6 +136,8 @@ describe("Today's Suggestion frontend quality guardrails", () => {
 
     expect(recordSheet).toContain("@tanstack/react-form");
     expect(recordSchema).toContain('from "zod"');
+    expect(onDemandDialog).toContain("@tanstack/react-form");
+    expect(onDemandSchema).toContain('from "zod"');
     expect(notificationForm).toContain("@tanstack/react-form");
     expect(notificationControls).toContain('from "zod"');
   });
@@ -137,5 +159,18 @@ describe("Today's Suggestion frontend quality guardrails", () => {
     expect(todayPage).not.toContain("LoadingIndicator");
     expect(historyPage).not.toContain("LoadingIndicator");
     expect(historyDayPage).not.toContain("LoadingIndicator");
+  });
+
+  it("keeps Today user-facing copy free of internal slot wording", () => {
+    const messages = JSON.parse(
+      readSource(join(process.cwd(), "messages/en.json")),
+    ) as Record<string, unknown>;
+    const todayMessages = messages.todaysSuggestion;
+
+    const violations = collectMessageStrings(todayMessages)
+      .filter((message) => /\bslots?\b/i.test(message))
+      .sort();
+
+    expect(violations).toEqual([]);
   });
 });

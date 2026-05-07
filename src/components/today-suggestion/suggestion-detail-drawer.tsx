@@ -15,7 +15,6 @@ import {
   Pause,
   Package,
   RefreshCw,
-  SlidersHorizontal,
   UserCircle,
   XCircle,
 } from "lucide-react";
@@ -42,7 +41,7 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   suggestion: SuggestionInstance | null;
   onMarkApplied?: () => void;
-  onCustomise?: () => void;
+  allowRegeneration?: boolean;
 };
 
 export function SuggestionDetailDrawer({
@@ -50,7 +49,7 @@ export function SuggestionDetailDrawer({
   onOpenChange,
   suggestion,
   onMarkApplied,
-  onCustomise,
+  allowRegeneration = false,
 }: Props) {
   const t = useTranslations("todaysSuggestion.detailDrawer");
   const regenerate = useRegenerateSuggestion();
@@ -68,6 +67,7 @@ export function SuggestionDetailDrawer({
     skipped.length > 0 ||
     inputs.length > 0 ||
     suggestion.evidenceSources.length > 0;
+  const hasActions = Boolean(onMarkApplied) || allowRegeneration;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -250,45 +250,41 @@ export function SuggestionDetailDrawer({
             </p>
           )}
 
-          <div className="mt-5 flex flex-col gap-2 border-t border-border pb-1 pt-3.5">
-            <Button
-              onClick={onMarkApplied}
-              disabled={!onMarkApplied}
-              className="w-full border border-[color:var(--accent)] bg-[color:var(--accent)] text-white shadow-none hover:bg-[color:var(--accent-strong)] hover:opacity-100"
-            >
-              <Check className="h-4 w-4" />
-              {t("markApplied")}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={onCustomise}
-              disabled={!onCustomise}
-              className="w-full font-medium shadow-none"
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              {t("customise")}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() =>
-                regenerate.mutate({
-                  id: suggestion.id,
-                  payload: { reason: "user_requested" },
-                })
-              }
-              disabled={regenerate.isPending}
-              className="w-full font-medium shadow-none"
-            >
-              {regenerate.isPending ? (
-                <LoadingIndicator size="sm" />
-              ) : (
-                <>
-                  <RefreshCw className="h-4 w-4" />
-                  {t("generateAlternatives")}
-                </>
-              )}
-            </Button>
-          </div>
+          {hasActions ? (
+            <div className="mt-5 flex flex-col gap-2 border-t border-border pb-1 pt-3.5">
+              {onMarkApplied ? (
+                <Button
+                  onClick={onMarkApplied}
+                  className="w-full border border-[color:var(--accent)] bg-[color:var(--accent)] text-white shadow-none hover:bg-[color:var(--accent-strong)] hover:opacity-100"
+                >
+                  <Check className="h-4 w-4" />
+                  {t("markApplied")}
+                </Button>
+              ) : null}
+              {allowRegeneration ? (
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    regenerate.mutate({
+                      id: suggestion.id,
+                      payload: { reason: "user_requested" },
+                    })
+                  }
+                  disabled={regenerate.isPending}
+                  className="w-full font-medium shadow-none"
+                >
+                  {regenerate.isPending ? (
+                    <LoadingIndicator size="sm" />
+                  ) : (
+                    <>
+                      <RefreshCw className="h-4 w-4" />
+                      {t("tryAnotherSuggestion")}
+                    </>
+                  )}
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </SheetContent>
     </Sheet>

@@ -7,6 +7,7 @@ import {
   Sparkles,
   Sun,
   UserRound,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 
@@ -34,4 +35,9 @@ export const MODE_FILTERS = [
   { value: "ai", labelKey: "ai", Icon: Sparkles },
   { value: "manual", labelKey: "manual", Icon: UserRound },
   { value: "mixed", labelKey: "mixed", Icon: Circle },
+] as const;
+
+export const SOURCE_FILTERS = [
+  { value: "scheduled", labelKey: "scheduled", Icon: Clock3 },
+  { value: "on_demand", labelKey: "on_demand", Icon: Zap },
 ] as const;

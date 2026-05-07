@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronDown, Clock3, Sparkles } from "lucide-react";
+import { Check, ChevronDown, Clock3, Sparkles, Zap } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import {
@@ -13,6 +13,7 @@ import type { SuggestionHistoryListQuery } from "@/types/suggestions";
 import {
   DAYPART_FILTERS,
   MODE_FILTERS,
+  SOURCE_FILTERS,
   STATUS_FILTERS,
   type HistoryFilterOption,
 } from "./history-filter-options";
@@ -67,6 +68,21 @@ export function ModeDropdown({ value, onChange }: FilterDropdownProps) {
       options={MODE_FILTERS}
       onClear={() => onChange({ ...value, mode: undefined })}
       onSelect={(mode) => onChange({ ...value, mode })}
+    />
+  );
+}
+
+export function SourceDropdown({ value, onChange }: FilterDropdownProps) {
+  const active = value.requestSource ?? null;
+  return (
+    <FilterMenu
+      ariaKey="source"
+      allKey="source_all"
+      active={active}
+      fallbackIcon={Zap}
+      options={SOURCE_FILTERS}
+      onClear={() => onChange({ ...value, requestSource: undefined })}
+      onSelect={(requestSource) => onChange({ ...value, requestSource })}
     />
   );
 }

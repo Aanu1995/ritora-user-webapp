@@ -36,18 +36,14 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
 
   return (
     <div className="mb-4 rounded-3xl border border-[color:var(--note-cool-border)] bg-[color:var(--note-cool-bg)] px-4 py-3.5">
-      <div className="flex items-start gap-3">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-surface text-[color:var(--note-cool-fg)]">
-          <Bell className="h-4 w-4" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-foreground">
-            {t("title", { time: formatSlotTime12h(slot.slotTime) })}
-          </p>
-          <p className="mt-0.5 text-xs leading-snug text-muted">
-            {t("body")}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+      <span className="grid h-9 w-9 place-items-center rounded-xl bg-surface text-[color:var(--note-cool-fg)]">
+        <Bell className="h-4 w-4" />
+      </span>
+      <p className="mt-2 text-sm font-semibold text-foreground">
+        {t("title", { time: formatSlotTime12h(slot.slotTime) })}
+      </p>
+      <p className="mt-0.5 text-xs leading-snug text-muted">{t("body")}</p>
+      <div className="mt-3 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => onRecord(slot)}
@@ -88,8 +84,6 @@ export function RecordingReminderBanner({ slots, onRecord }: Props) {
                 t("remindLater")
               )}
             </button>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -81,17 +81,19 @@ function SlotStateHeader({
   pill: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-3 py-2">
-      <SuggestionDaypartIcon daypart={slot.daypart} />
-      <div className="flex min-w-0 flex-col gap-0.5">
-        <span className="font-display text-base font-bold leading-tight tracking-[-0.01em] text-foreground">
+    <div className="py-1">
+      <div className="flex items-start gap-3">
+        <SuggestionDaypartIcon daypart={slot.daypart} />
+        <span className="min-w-0 flex-1 font-display text-base font-bold leading-tight tracking-[-0.01em] text-foreground">
           {formatSlotTime12h(slot.slotTime)}
         </span>
-        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
-          {label}
-        </span>
+        <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+          {pill}
+        </div>
       </div>
-      <div className="ml-auto flex flex-wrap justify-end gap-1.5">{pill}</div>
+      <p className="mt-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">
+        {label}
+      </p>
     </div>
   );
 }

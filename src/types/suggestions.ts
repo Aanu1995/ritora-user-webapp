@@ -1,4 +1,25 @@
 import type { ApplicationLog } from "@/types/application-tracking";
+import type {
+  OnDemandSuggestionIntent,
+  SuggestionRequestContext,
+  SuggestionRequestSource,
+} from "@/types/on-demand-suggestions";
+export type {
+  SuggestionAiConsent,
+  UpdateSuggestionAiConsentPayload,
+} from "@/types/suggestion-ai-consent";
+export {
+  ON_DEMAND_SUGGESTION_INTENSITIES,
+  ON_DEMAND_SUGGESTION_INTENTS,
+  SUGGESTION_REQUEST_SOURCES,
+} from "@/types/on-demand-suggestions";
+export type {
+  CreateOnDemandSuggestionPayload,
+  OnDemandSuggestionIntensity,
+  OnDemandSuggestionIntent,
+  SuggestionRequestContext,
+  SuggestionRequestSource,
+} from "@/types/on-demand-suggestions";
 
 export type SuggestionDaypart = "morning" | "noon" | "evening";
 export const SUGGESTION_DAYPARTS: readonly SuggestionDaypart[] = [
@@ -110,6 +131,7 @@ export type SuggestionStep = {
   quantity: string | null;
   waitAfterMinutes: number | null;
   explanation: string | null;
+  routineNote: string | null;
   provenance: SuggestionStepProvenance;
   chips: SuggestionStepChip[];
   safetyWarnings: SuggestionSafetyFlag[];
@@ -119,6 +141,8 @@ export type SuggestionStep = {
 export type SuggestionInstance = {
   id: string;
   slotId: string | null;
+  requestSource: SuggestionRequestSource;
+  requestContext: SuggestionRequestContext | null;
   targetDate: string; // YYYY-MM-DD in user time zone
   targetTime: string; // HH:MM
   daypart: SuggestionDaypart;
@@ -136,11 +160,20 @@ export type SuggestionInstance = {
   safetyFlags: SuggestionSafetyFlag[];
   inputTrace: Record<string, unknown> | null;
   evidenceSources: SuggestionEvidenceSource[];
+  productDataQuality: SuggestionProductDataQuality;
   steps: SuggestionStep[];
   applicationLogId: string | null;
   createdAt: string;
   updatedAt: string;
 };
+
+export type SuggestionProductDataQuality = {
+  verifiedCount: number;
+  partialCount: number;
+  insufficientCount: number;
+  warnings: string[];
+};
+
 
 export type TodaysSuggestionResponse = {
   date: string; // YYYY-MM-DD in user TZ
@@ -150,6 +183,7 @@ export type TodaysSuggestionResponse = {
   summary: TodaysSuggestionSummary;
   weatherSummary: TodaysSuggestionWeatherSummary | null;
   slots: TodaysSuggestionSlot[];
+  onDemandSuggestions: TodaysOnDemandSuggestion[];
   reactionAlert: TodaysSuggestionReactionAlert | null;
   routineBreak: RoutineBreak | null;
 };
@@ -187,6 +221,16 @@ export type TodaysSuggestionSummary = {
   recorded: number;
   edited: number;
   failed: number;
+  onDemand: number;
+};
+
+export type TodaysOnDemandSuggestion = {
+  id: string;
+  status: "generating" | "ready" | "recorded" | "edited" | "failed";
+  requestedAt: string;
+  recording: TodaysSuggestionRecording | null;
+  applicationLog: ApplicationLog | null;
+  suggestion: SuggestionInstance;
 };
 
 export type TodaysSuggestionWeatherSummary = {
@@ -275,6 +319,8 @@ export type SuggestionHistorySlotSummary = {
   slotId: string | null;
   suggestionId: string | null;
   applicationLogId: string | null;
+  requestSource: SuggestionRequestSource;
+  onDemandIntent: OnDemandSuggestionIntent | null;
   daypart: SuggestionDaypart;
   slotTime: string;
   mode: SuggestionMode;
@@ -302,6 +348,7 @@ export type SuggestionHistoryListQuery = {
   toDate?: string;
   daypart?: SuggestionDaypart;
   mode?: SuggestionMode;
+  requestSource?: SuggestionRequestSource;
   status?: "applied" | "partial" | "skipped" | "simplified" | "missed";
   hasBeenEdited?: boolean;
   cursor?: string;
@@ -315,6 +362,7 @@ export type RegenerateSuggestionPayload = {
     | "reaction_detected"
     | "normal_routine_requested";
 };
+
 
 export type NormalRoutineOverrideResponse = {
   targetDate: string;

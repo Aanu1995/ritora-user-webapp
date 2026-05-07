@@ -24,20 +24,17 @@ export function GapRecommendationBanner({
   const t = useTranslations("todaysSuggestion.gapRecommendation");
 
   return (
-    <aside
-      className="flex items-start gap-3 rounded-2xl border border-[color:var(--ai-border)] bg-[color:var(--ai-soft)] px-4 py-3.5"
-    >
-      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-[color:var(--ai-bg)] text-[color:var(--ai-strong)]">
+    <aside className="rounded-2xl border border-[color:var(--ai-border)] bg-[color:var(--ai-soft)] px-4 py-3.5">
+      <span className="grid h-8 w-8 place-items-center rounded-md bg-[color:var(--ai-bg)] text-[color:var(--ai-strong)]">
         <PackagePlus className="h-4 w-4" />
       </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-sm font-semibold text-[color:var(--ai-fg)]">
-          {t("title", { ingredient: recommendation.ingredientOrCategory })}
-        </p>
-        <p className="mt-0.5 text-[12.5px] leading-snug text-muted">
-          {recommendation.reason}
-        </p>
-        <div className="mt-2 flex flex-wrap gap-1.5">
+      <p className="mt-2 text-sm font-semibold text-[color:var(--ai-fg)]">
+        {t("title", { ingredient: recommendation.ingredientOrCategory })}
+      </p>
+      <p className="mt-0.5 text-[12.5px] leading-snug text-muted">
+        {recommendation.reason}
+      </p>
+      <div className="mt-2 flex flex-wrap gap-1.5">
           {onBrowse ? (
             <button
               type="button"
@@ -82,7 +79,6 @@ export function GapRecommendationBanner({
               {t("dismiss")}
             </button>
           ) : null}
-        </div>
       </div>
     </aside>
   );

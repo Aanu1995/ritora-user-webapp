@@ -10,9 +10,11 @@ import {
   DayAdherencePill,
   DaySummaryPills,
 } from "@/components/today-suggestion/day-summary-pills";
+import { LockedDayBanners } from "@/components/today-suggestion/today-timeline-layout";
 import { RecordingReminderBanner } from "@/components/today-suggestion/recording-reminder-banner";
 import { RoutineBreakBanner } from "@/components/today-suggestion/routine-break-banner";
 import { RoutineBreakStartDialog } from "@/components/today-suggestion/routine-break-start-dialog";
+import { OnDemandSuggestionSection } from "@/components/today-suggestion/on-demand-suggestion-section";
 import {
   routineBreakResumeSchema,
   toRoutineBreakEndsAt,
@@ -25,6 +27,7 @@ import {
   SuggestionEvidenceSourceId,
   type SuggestionInstance,
   type SuggestionStep,
+  type TodaysOnDemandSuggestion,
   type TodaysSuggestionResponse,
   type TodaysSuggestionSlot,
 } from "@/types/suggestions";
@@ -127,6 +130,8 @@ describe("today suggestion UI contract", () => {
         open
         onOpenChange={jest.fn()}
         suggestion={suggestion}
+        onMarkApplied={jest.fn()}
+        allowRegeneration
       />,
     );
 
@@ -142,22 +147,22 @@ describe("today suggestion UI contract", () => {
     expect(
       screen.getByTestId("suggestion-detail-scroll-body"),
     ).toContainElement(
-      screen.getByRole("button", { name: /generate alternatives/i }),
+      screen.getByRole("button", { name: /try another suggestion/i }),
     );
     expect(
       screen.getByRole("button", { name: /mark as applied/i }),
     ).toHaveClass("bg-[color:var(--accent)]");
     expect(
-      screen.getByRole("button", {
+      screen.queryByRole("button", {
         name: /customise this before applying/i,
       }),
-    ).toHaveClass("border");
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /generate alternatives/i }),
+      screen.getByRole("button", { name: /try another suggestion/i }),
     ).toHaveClass("border");
 
     await user.click(
-      screen.getByRole("button", { name: /generate alternatives/i }),
+      screen.getByRole("button", { name: /try another suggestion/i }),
     );
     expect(mockRegenerateMutate).toHaveBeenCalledWith({
       id: "suggestion-1",
@@ -185,6 +190,12 @@ describe("today suggestion UI contract", () => {
     expect(screen.getByText(/What I am trying to do/i)).toBeInTheDocument();
     expect(screen.getByText(/Why each step/i)).toBeInTheDocument();
     expect(screen.getByText(/Selected for hydration/i)).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /mark as applied/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /try another suggestion/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("shows persisted gap save state instead of a local-only wishlist action", () => {
@@ -210,7 +221,6 @@ describe("today suggestion UI contract", () => {
     const onRecord = jest.fn();
     const onEdit = jest.fn();
     const onShowDetail = jest.fn();
-    const onCustomise = jest.fn();
 
     const { rerender } = renderWithProviders(
       <SuggestionSlotCard
@@ -235,15 +245,20 @@ describe("today suggestion UI contract", () => {
         slot={slot({ suggestion: suggestionInstance() })}
         onRecord={onRecord}
         onShowDetail={onShowDetail}
-        onCustomise={onCustomise}
       />,
     );
     await user.click(screen.getByRole("button", { name: /mark as applied/i }));
-    await user.click(screen.getByRole("button", { name: /customise/i }));
-    await user.click(screen.getByRole("button", { name: /why this routine/i }));
+    expect(
+      screen.queryByRole("button", { name: /customise/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /^more$/i }),
+    ).not.toBeInTheDocument();
+    await user.click(
+      screen.getAllByRole("button", { name: /why this routine/i })[0],
+    );
     expect(screen.getAllByText(/Morning routine/i).length).toBeGreaterThan(0);
     expect(onRecord).toHaveBeenCalled();
-    expect(onCustomise).toHaveBeenCalled();
     expect(onShowDetail).toHaveBeenCalled();
 
     rerender(
@@ -272,6 +287,80 @@ describe("today suggestion UI contract", () => {
     );
   });
 
+  it("marks scheduled cards as basic when AI personalization is off", () => {
+    renderWithProviders(
+      <SuggestionSlotCard
+        slot={slot({ suggestion: suggestionInstance() })}
+        personalizationOff
+      />,
+    );
+
+    expect(screen.getByText(/Basic suggestion/i)).toBeInTheDocument();
+    expect(screen.getByText(/Personalization is off/i)).toBeInTheDocument();
+  });
+
+  it("renders on-demand suggestion states and retry actions", async () => {
+    const user = userEvent.setup();
+    const onRetry = jest.fn();
+    const onRecord = jest.fn();
+    const onEdit = jest.fn();
+    const onShowDetail = jest.fn();
+
+    renderWithProviders(
+      <OnDemandSuggestionSection
+        suggestions={[
+          onDemandSuggestion({ id: "on-demand-generating" }),
+          onDemandSuggestion({ id: "on-demand-ready", status: "ready" }),
+          onDemandSuggestion({ id: "on-demand-failed", status: "failed" }),
+        ]}
+        onRetry={onRetry}
+        onRecord={onRecord}
+        onEdit={onEdit}
+        onShowDetail={onShowDetail}
+      />,
+    );
+
+    expect(screen.getByText(/Quick suggestions/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/On-demand/i).length).toBeGreaterThan(0);
+    await user.click(screen.getByRole("button", { name: /try again/i }));
+    expect(onRetry).toHaveBeenCalledWith("on-demand-failed");
+    await user.click(screen.getByRole("button", { name: /mark as applied/i }));
+    expect(onRecord).toHaveBeenCalledWith(
+      expect.objectContaining({ slotId: "on-demand:on-demand-ready" }),
+    );
+  });
+
+  it("shows a product quality warning for limited on-demand product data", () => {
+    renderWithProviders(
+      <OnDemandSuggestionSection
+        suggestions={[
+          onDemandSuggestion({
+            id: "on-demand-ready",
+            status: "ready",
+            suggestion: suggestionInstance({
+              id: "on-demand-ready",
+              slotId: null,
+              requestSource: "on_demand",
+              productDataQuality: {
+                verifiedCount: 0,
+                partialCount: 1,
+                insufficientCount: 1,
+                warnings: ["ingredient list missing"],
+              },
+            }),
+          }),
+        ]}
+        onRetry={jest.fn()}
+        onRecord={jest.fn()}
+        onEdit={jest.fn()}
+        onShowDetail={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/Product data is limited/i)).toBeInTheDocument();
+    expect(screen.getByText(/ingredient list missing/i)).toBeInTheDocument();
+  });
+
   it("shows the why-this-routine card from explanation copy when headline is missing", () => {
     renderWithProviders(
       <SuggestionSlotCard
@@ -294,8 +383,11 @@ describe("today suggestion UI contract", () => {
     expect(screen.getByText(/Brighten and protect today/i)).toBeInTheDocument();
     expect(screen.getByText(/Last night's photo/i)).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /why this routine/i }),
-    ).toBeInTheDocument();
+      screen.getAllByRole("button", { name: /why this routine/i }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.queryByRole("button", { name: /^more$/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("renders actual application log items on recorded Today cards", () => {
@@ -592,10 +684,21 @@ describe("today suggestion UI contract", () => {
 
   it("covers step row provenance, fallback labels, and compact applied rendering", () => {
     const { rerender } = render(
-      <SuggestionStepRow step={suggestionStep({ provenance: "ai_added" })} />,
+      <SuggestionStepRow
+        step={suggestionStep({
+          provenance: "ai_added",
+          routineNote: "Apply over damp skin before moisturiser.",
+        })}
+      />,
     );
     expect(screen.getByText(/Ava Lab/i)).toBeInTheDocument();
-    expect(screen.getByText(/selected for hydration/i)).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/selected for hydration/i).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Routine note/i).length).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText(/Apply over damp skin before moisturiser/i).length,
+    ).toBeGreaterThan(0);
 
     rerender(
       <SuggestionStepRow
@@ -626,6 +729,19 @@ describe("today suggestion UI contract", () => {
       />,
     );
     expect(screen.getByText(/sun protection/i)).toBeInTheDocument();
+  });
+
+  it("uses the configured suggestion arrival window in locked-day copy", () => {
+    renderWithProviders(<LockedDayBanners leadTimeMinutes={90} />);
+
+    expect(
+      screen.getByText(
+        /Visible 1 hour 30 minutes before each suggestion arrives/i,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(new RegExp(["couple", "of", "hours"].join(" "), "i")),
+    ).not.toBeInTheDocument();
   });
 
   it("summarizes today's visible, locked, weather, photo, and adherence states", () => {
@@ -767,9 +883,11 @@ function todaysResponse(
       recorded: 0,
       edited: 0,
       failed: 0,
+      onDemand: 0,
     },
     weatherSummary: null,
     slots: [],
+    onDemandSuggestions: [],
     reactionAlert: null,
     routineBreak: null,
     ...partial,
@@ -913,6 +1031,8 @@ function suggestionInstance(
   return {
     id: "suggestion-1",
     slotId: "slot-1",
+    requestSource: "scheduled",
+    requestContext: null,
     targetDate: "2026-05-04",
     targetTime: "08:00",
     daypart: "morning",
@@ -936,10 +1056,50 @@ function suggestionInstance(
     safetyFlags: [],
     inputTrace: null,
     evidenceSources: [],
+    productDataQuality: {
+      verifiedCount: 0,
+      partialCount: 0,
+      insufficientCount: 0,
+      warnings: [],
+    },
     steps: [suggestionStep()],
     applicationLogId: null,
     createdAt: "2026-05-04T06:00:00.000Z",
     updatedAt: "2026-05-04T06:00:00.000Z",
+    ...partial,
+  };
+}
+
+function onDemandSuggestion(
+  partial: Partial<TodaysOnDemandSuggestion> & { id: string },
+): TodaysOnDemandSuggestion {
+  const suggestion = suggestionInstance({
+    id: partial.id,
+    slotId: null,
+    requestSource: "on_demand",
+    requestContext: {
+      intent: "post_workout",
+      intensity: "minimal",
+      note: "Back from training.",
+      activityAt: null,
+      requestedAt: "2026-05-04T12:15:00.000Z",
+    },
+    targetTime: "12:15",
+    daypart: "noon",
+    generationStatus:
+      partial.status === "failed"
+        ? "failed"
+        : partial.status === "generating"
+          ? "generating"
+          : "ready",
+  });
+  return {
+    id: partial.id,
+    status: partial.status ?? "generating",
+    requestedAt: "2026-05-04T12:15:00.000Z",
+    recording: null,
+    applicationLog: null,
+    suggestion,
     ...partial,
   };
 }
@@ -968,6 +1128,7 @@ function suggestionStep(partial: Partial<SuggestionStep> = {}): SuggestionStep {
         sourceIds: [SuggestionEvidenceSourceId.MayoDrySkinCare],
       },
     ],
+    routineNote: null,
     product: {
       id: "product-1",
       brand: "Ava Lab",

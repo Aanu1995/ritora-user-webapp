@@ -952,6 +952,10 @@
       "notGranted": "Inte beviljat",
       "activeCount": "{count} aktiva",
       "encrypted": "Krypterad",
+      "aiSuggestionLabel": "AI-behandling av förslag",
+      "aiSuggestionDesc": "Tillåter Ritora att använda AI för schemalagda och snabba förslag. Känslig profil- eller journalkontext används bara när motsvarande samtycke också är aktivt.",
+      "grantAiSuggestion": "Tillåt AI-förslag",
+      "revokeAiSuggestion": "Återkalla",
       "healthLabel": "Behandling av hälsokontext",
       "healthDesc": "Graviditet, åkommor, mediciner, nyliga behandlingar, dermatologvård.",
       "locationLabel": "Behandling av plats",
@@ -1009,6 +1013,7 @@
       "storedCycleRelated": "Cykelrelaterade utbrott",
       "storedHormonalContraception": "Hormonellt preventivmedel",
       "storedMenopause": "Klimakterierelaterade förändringar",
+      "storedAiSuggestionProcessing": "AI-behandling av förslag",
       "loadingLog": "Läser in åtkomstlogg...",
       "noAccessLog": "Inga granskningsposter ännu.",
       "accessEventDataAccessed": "Data användes",
@@ -1991,6 +1996,20 @@
       "ai": "AI",
       "aiShort": "AI",
       "aiDescription": "Smarta val"
+    },
+    "aiConsentNudge": {
+      "title": "Personliga rutiner anpassade efter din hud",
+      "body": "Slå på AI-förslag och Ritora anpassar varje schemalagd rutin efter din hudprofil, hylla och senaste journalanteckningar.",
+      "benefits": {
+        "matchProfile": "Rutiner som matchar dina mål och toleranser",
+        "adaptToShelf": "Anpassar sig efter produkterna du faktiskt äger",
+        "revokeAnytime": "Du har kontrollen. Stäng av när som helst i Inställningar."
+      },
+      "privacy": "Dina data är krypterade och säljs aldrig.",
+      "action": "Tillåt AI-förslag",
+      "dismiss": "Kanske senare",
+      "saved": "AI-förslag aktiverade.",
+      "error": "Vi kunde inte spara samtycket. Försök igen."
     },
     "addDialog": {
       "titleSingle": "Lägg till tid",
@@ -3012,14 +3031,14 @@
     "wrappedAlertsBody": "Wrapped-klar-aviseringar",
     "newPill": "Nytt",
     "todaysSuggestionTitle": "Dagens förslag",
-    "todaysSuggestionBody": "Tre påminnelser kopplade till varje schemalagd plats. Tillsammans håller de din rutin på rätt spår utan att bli stökiga.",
+    "todaysSuggestionBody": "Tre påminnelser kopplade till varje schemalagt förslag. Tillsammans håller de din rutin på rätt spår utan att bli stökiga.",
     "suggestionReadyTitle": "Förslag redo",
-    "suggestionReadyBody": "När en plats förslag blir synligt, din ledtid före schemalagd tid.",
-    "slotStartTitle": "Plats startar",
+    "suggestionReadyBody": "När ett förslag blir synligt, din ledtid före schemalagd tid.",
+    "slotStartTitle": "Rutintid",
     "slotStartBody": "Vid schemalagd tid, så att du kommer ihåg att applicera din rutin.",
     "recordingReminderTitle": "Inspelningspåminnelse",
-    "recordingReminderBody": "30 minuter efter platsen om ingen registrering. Tyst på natten, försöker igen vid nästa plats nästa morgon.",
-    "leadTimeLabel": "Ledtid före varje plats",
+    "recordingReminderBody": "30 minuter efter en rutintid om ingen registrering finns. Tyst på natten, försöker igen nästa morgon.",
+    "leadTimeLabel": "Ledtid före varje förslag",
     "leadTimeOption": "{minutes, plural, =60 {1 timme} =120 {2 timmar} =180 {3 timmar} =240 {4 timmar} =360 {6 timmar} =480 {8 timmar} =720 {12 timmar} other {# minuter}}",
     "leadTimeNote": "Används av alla tre påminnelsetyper. Intervall 30 minuter till 12 timmar.",
     "quietHoursTitle": "Tysta timmar",
@@ -3092,7 +3111,7 @@
       },
       "slot_start": {
         "title": "Dags att starta din rutin",
-        "body": "Din plats just öppnade. Markera varje steg när du gör det."
+        "body": "Din rutin är redo. Markera varje steg när du gör det."
       },
       "recording_reminder": {
         "title": "Hur gick din rutin?",
@@ -3113,11 +3132,37 @@
       "nextSlotTomorrow": "imorgon",
       "normalRoutineRestored": "Vanlig rutin återställd för kommande förslag.",
       "routineBreakStarted": "Rutinen pausad. Inga nya förslag skapas förrän du återupptar.",
-      "routineBreakResumed": "Rutinen har återupptagits. Förslag visas när varje slot närmar sig.",
+      "routineBreakResumed": "Rutinen har återupptagits. Förslag visas när varje rutintid närmar sig.",
       "routineBreakResumeUpdated": "Återupptagningsdatum uppdaterat.",
       "routineBreakActionFailed": "Vi kunde inte uppdatera din rutinpaus. Försök igen.",
+      "quickSuggestion": "Snabbt förslag",
+      "quickSuggestionQueued": "Snabbt förslag förbereds.",
+      "quickSuggestionFailed": "Vi kunde inte starta förslaget. Försök igen.",
+      "quickSuggestionConsentRequired": "Tillåt AI-förslag innan du ber om ett snabbt förslag.",
+      "aiConsentGranted": "AI-förslag aktiverade.",
+      "aiConsentFailed": "Vi kunde inte spara samtycket. Försök igen.",
       "gapSaved": "Sparat i dagens önskelista.",
       "gapDismissed": "Rekommendationen dold tills vidare."
+    },
+    "aiConsentDialog": {
+      "title": "Tillåt AI-förslag",
+      "body": "Snabba förslag använder AI för att läsa din hylla, ditt schema, din hudprofil, dina journaler och tidigare registreringar. Känslig profil- eller journalkontext används bara när motsvarande samtycke också är aktivt.",
+      "controlTitle": "Du har kontroll",
+      "controlBody": "Du kan återkalla detta när som helst i Inställningar → Integritet. Ritora håller dessa förfrågningar krypterade och använder inte råa journalbilder för förslag.",
+      "cancel": "Inte nu",
+      "confirm": "Tillåt AI-förslag"
+    },
+    "aiConsentCard": {
+      "title": "Personliga rutiner anpassade efter din hud",
+      "body": "Slå på AI-förslag och Ritora anpassar varje förslag efter din hudprofil, hylla och senaste journalanteckningar. Utan detta visas förslag men förblir grundläggande.",
+      "benefits": {
+        "matchProfile": "Rutiner som matchar dina mål och toleranser",
+        "adaptToShelf": "Anpassar sig efter produkterna du faktiskt äger",
+        "revokeAnytime": "Du har kontrollen. Stäng av när som helst i Inställningar."
+      },
+      "privacy": "Dina data är krypterade och säljs aldrig.",
+      "grant": "Tillåt AI-förslag",
+      "dismiss": "Kanske senare"
     },
     "routineBreak": {
       "statusLabel": "Pausad",
@@ -3147,11 +3192,50 @@
         "resumeDatePast": "Välj ett framtida datum."
       }
     },
+    "onDemandDialog": {
+      "title": "Snabbt förslag",
+      "body": "Berätta vad som händer just nu. Ritora använder din hylla och senaste registreringar.",
+      "intentLabel": "Vad händer?",
+      "intensityLabel": "Hur mycket vill du göra?",
+      "noteLabel": "Kort anteckning (valfritt)",
+      "notePlaceholder": "Till exempel, kom precis hem svettig och vill göra en snabb återställning.",
+      "cancel": "Avbryt",
+      "submit": "Generera förslag",
+      "noteTooLong": "Håll detta under 280 tecken.",
+      "intensity": {
+        "minimal": "Minimal",
+        "minimalDescription": "Bara det viktigaste",
+        "standard": "Standard",
+        "standardDescription": "Hela minirutinen"
+      }
+    },
+    "onDemand": {
+      "sectionTitle": "Snabba förslag",
+      "label": "På begäran",
+      "newRequest": "Nytt",
+      "retry": "Försök igen",
+      "retrying": "Försöker igen...",
+      "qualityTitle": "Produktdata är begränsad",
+      "intent": {
+        "post_workout": "Efter träning",
+        "post_sun": "Efter sol",
+        "post_swim": "Efter simning",
+        "travel_refresh": "Resefräschning",
+        "quick_refresh": "Snabb uppfräschning",
+        "event_prep": "Inför event",
+        "post_makeup_or_shower": "Efter makeup eller dusch",
+        "other": "Annat"
+      }
+    },
     "lockedDay": {
-      "leadTitle": "Förslag kommer ett par timmar innan varje slot",
-      "leadBody": "Din rutin förbereds i bakgrunden utifrån gårdagens foto, din hylla och din hudprofil. Den visas här när synlighetsfönstret öppnas.",
-      "notifyTitle": "Du får en notis när det är klart",
-      "notifyBody": "Vi skickar en notis när varje slot blir synligt, igen vid den schemalagda tiden, och en påminnelse om att registrera. Hantera allt i <link>Notifikationer</link>."
+      "title": "Så kommer förslagen",
+      "body": "Varje rutin förbereds strax innan den kommer, utifrån ditt senaste foto, din hylla och din hudprofil.",
+      "leadFact": "Visas {leadTime} innan varje förslag kommer.",
+      "notifyFact": "Vi notiserar dig när det är klart och vid den schemalagda tiden. Hantera i <link>Notifikationer</link>.",
+      "leadTimeHour": "{count} timme",
+      "leadTimeHours": "{count} timmar",
+      "leadTimeMinute": "{count} minut",
+      "leadTimeMinutes": "{count} minuter"
     },
     "section": {
       "morning": "Morgon",
@@ -3179,6 +3263,9 @@
       "yourRoutine": "Din rutin",
       "aiAdded": "Tillagt av AI"
     },
+    "step": {
+      "routineNote": "Rutinanteckning:"
+    },
     "slot": {
       "stepCount": "{count, plural, one {# steg} other {# steg}}",
       "ready": "Redo",
@@ -3190,20 +3277,22 @@
       "awaitingRecord": "Väntar på registrering",
       "simplified": "Förenklad",
       "specialist": "Specialist",
+      "basicSuggestion": "Grundförslag",
+      "personalizationOffTitle": "Personalisering är av.",
+      "personalizationOffBody": "Detta förslag undviker profil-, journal- och historikkontext tills samtycke för AI-förslag har beviljats.",
       "morningLabel": "Morgonrutin",
       "noonLabel": "Påminnelse mitt på dagen",
       "eveningLabel": "Kvällsrutin",
       "availableAt": "Tillgänglig {time}",
       "unlocksIn": "Låser upp om {eta}.",
       "unlocksInRich": "Låser upp om <strong>{eta}</strong>.",
-      "lockedExplainer": "Vi visar förslag ett par timmar innan slotet så de speglar ditt senaste foto, sömn och incheckning.",
-      "generatingExplainer": "Ritora förbereder denna plats med ditt senaste schema, din hylla, hudprofil och senaste registreringar.",
+      "lockedExplainer": "Vi visar bara förslag när ditt inställda ankomstfönster öppnas så de speglar ditt senaste foto, sömn och incheckning.",
+      "generatingExplainer": "Ritora förbereder detta förslag med ditt senaste schema, din hylla, hudprofil och senaste registreringar.",
       "failedExplainer": "Detta förslag kunde inte förberedas. Det förblir synligt så att problemet inte försvinner från dagen.",
-      "missedExplainer": "Denna plats passerade utan en sparad appliceringsregistrering. Du kan fortfarande registrera eller redigera den från Historik efter idag.",
+      "missedExplainer": "Detta förslag passerade utan en sparad appliceringsregistrering. Du kan fortfarande registrera eller redigera det från Historik efter idag.",
       "whyThisRoutine": "Varför denna rutin",
       "markAsApplied": "Markera som applicerad",
       "recordWhatIApplied": "Registrera vad jag applicerade",
-      "customise": "Anpassa",
       "more": "Mer",
       "edit": "Redigera",
       "edited": "Redigerad",
@@ -3242,8 +3331,8 @@
     "recordSheet": {
       "recordTitle": "Registrera vad du applicerade",
       "editTitle": "Redigera applicering",
-      "recordSubtitle": "Plats kl. {time}, {count} föreslagna steg",
-      "editSubtitle": "Plats kl. {time}. Ursprungligen registrerad {firstRecordedAt}.",
+      "recordSubtitle": "Förslag kl. {time}, {count} föreslagna steg",
+      "editSubtitle": "Förslag kl. {time}. Ursprungligen registrerat {firstRecordedAt}.",
       "appliedAt": "Applicerad kl.",
       "rowSuggestedTag": "Föreslaget",
       "rowAddedTag": "Tillagd av dig",
@@ -3302,7 +3391,7 @@
     },
     "reminderBanner": {
       "title": "Registrera din rutin kl. {time}",
-      "body": "Den här platsen är redo att loggas. Det du faktiskt gjorde gör eftermiddagens och kvällens förslag mer träffsäkra.",
+      "body": "Det här förslaget är redo att loggas. Det du faktiskt gjorde gör eftermiddagens och kvällens förslag mer träffsäkra.",
       "recordNow": "Registrera morgonen nu",
       "skippedToday": "Överhoppad idag",
       "remindLater": "Påminn mig senare",
@@ -3330,8 +3419,7 @@
       "evidenceReviewed": "granskad {date}",
       "noRationale": "Inget resonemang sparat för detta förslag.",
       "markApplied": "Markera som applicerad",
-      "customise": "Anpassa innan du applicerar",
-      "generateAlternatives": "Generera alternativ"
+      "tryAnotherSuggestion": "Prova ett annat förslag"
     },
     "empty": {
       "skinProfile": {
@@ -3348,16 +3436,16 @@
       },
       "schedule": {
         "title": "Bygg ditt veckorytm",
-        "body": "Berätta för Ritora när du brukar göra din morgon- och kvällsrutin. Förslag visas bara inför varje schemalagd plats.",
+        "body": "Berätta för Ritora när du brukar göra din morgon- och kvällsrutin. Förslag visas bara inför varje schemalagd rutintid.",
         "ctaEveryDay": "Tillämpa en gång på varje dag",
         "ctaScratch": "Bygg från grunden",
         "note": "Du kan ändra tider när som helst från Schema."
       },
       "recoverable": {
         "title": "Inget schemalagt just nu",
-        "body": "Din nästa plats idag är kl. {nextSlotLabel}. Medan du väntar, logga ett foto så att AI har färska data när det genererar.",
+        "body": "Din nästa rutintid idag är kl. {nextSlotLabel}. Medan du väntar, logga ett foto så att AI har färska data när det genererar.",
         "ctaPhoto": "Lägg till dagens foto",
-        "ctaAddSlot": "Lägg till en plats"
+        "ctaAddSlot": "Lägg till rutintid"
       }
     }
   },
@@ -3381,6 +3469,8 @@
       "daypart_all": "Visa alla tider",
       "mode": "Rutintyp",
       "mode_all": "Visa alla typer",
+      "source": "Källa",
+      "source_all": "Visa alla källor",
       "status": "Status",
       "status_all": "Visa alla statusar",
       "last7d": "Senaste 7 dagarna",
@@ -3397,6 +3487,8 @@
       "ai": "AI",
       "manual": "Manuell",
       "mixed": "Blandad",
+      "scheduled": "Schemalagd",
+      "on_demand": "På begäran",
       "applied": "Applicerad",
       "partial": "Delvis",
       "skipped": "Överhoppad",
@@ -3421,6 +3513,17 @@
         "morning": "Morgon",
         "noon": "Mitt på dagen",
         "evening": "Kväll"
+      },
+      "onDemandLabel": "På begäran · {intent}",
+      "onDemandIntent": {
+        "post_workout": "Efter träning",
+        "post_sun": "Efter sol",
+        "post_swim": "Efter simning",
+        "travel_refresh": "Resefräschning",
+        "quick_refresh": "Snabb uppfräschning",
+        "event_prep": "Inför event",
+        "post_makeup_or_shower": "Efter makeup eller dusch",
+        "other": "Annat"
       },
       "status": {
         "applied": "Applicerad",

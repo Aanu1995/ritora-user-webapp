@@ -39,6 +39,8 @@ interface ConsentCardProps {
   accessLogsLoading?: boolean;
   onGrant?: () => void;
   onRevoke?: () => void;
+  grantLabel?: string;
+  revokeLabel?: string;
   pending?: boolean;
 }
 
@@ -64,6 +66,8 @@ export function ConsentCard({
   accessLogsLoading,
   onGrant,
   onRevoke,
+  grantLabel,
+  revokeLabel,
   pending,
 }: ConsentCardProps) {
   const t = useTranslations("skinProfile.consentCenter");
@@ -82,17 +86,14 @@ export function ConsentCard({
       ].join(" ")}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-sm font-semibold text-foreground">{title}</p>
-            {encrypted ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-ai-bg px-2 py-0.5 text-[10px] font-semibold text-ai-fg">
-                <Lock className="h-2.5 w-2.5" strokeWidth={2.5} />
-                {t("encrypted")}
-              </span>
-            ) : null}
-          </div>
-          <p className="mt-0.5 text-xs text-muted">{description}</p>
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+          <p className="text-sm font-semibold text-foreground">{title}</p>
+          {encrypted ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-ai-bg px-2 py-0.5 text-[10px] font-semibold text-ai-fg">
+              <Lock className="h-2.5 w-2.5" strokeWidth={2.5} />
+              {t("encrypted")}
+            </span>
+          ) : null}
         </div>
         <span
           className={[
@@ -105,6 +106,7 @@ export function ConsentCard({
           {active ? t("active") : t("notGranted")}
         </span>
       </div>
+      <p className="mt-1 text-xs text-muted">{description}</p>
 
       {active ? (
         <>
@@ -233,7 +235,7 @@ export function ConsentCard({
                 disabled={pending}
                 className="border-danger text-danger hover:bg-danger/5"
               >
-                {t("revoke")}
+                {revokeLabel ?? t("revoke")}
               </Button>
             ) : null}
           </div>
@@ -252,7 +254,7 @@ export function ConsentCard({
               disabled={pending}
               className="bg-accent text-white hover:bg-accent-strong"
             >
-              {t("grant")}
+              {grantLabel ?? t("grant")}
             </Button>
           ) : null}
         </div>
