@@ -100,8 +100,7 @@ export function SchedulePage() {
     (editingSlotId !== null && editingSlot !== null) || addSlotDialog.open;
   const desktopPanelOpen = isDesktop && panelOpen;
   const pickerOpen =
-    editingSlotId !== null &&
-    editingSlot !== null &&
+    ((editingSlotId !== null && editingSlot !== null) || addSlotDialog.open) &&
     productPickerOpenForStepIndex !== null;
   const desktopPickerOpen = isDesktop && pickerOpen;
   const mobileEditorDismissSuppressed = !isDesktop && isEditorDismissSuppressed;
@@ -266,6 +265,7 @@ export function SchedulePage() {
               presetMode={addSlotDialog.presetMode ?? AddSlotPresetMode.Single}
               preselectDay={addSlotDialog.preselectDay}
               onClose={closeAddSlotGuarded}
+              onProductPickerClose={suppressEditorDismissTemporarily}
               showCloseButton
             />
           ) : null}
@@ -304,6 +304,8 @@ export function SchedulePage() {
                 closeAddSlotDialog();
               }
             }}
+            onProductPickerClose={suppressEditorDismissTemporarily}
+            suppressAutoClose={pickerOpen || mobileEditorDismissSuppressed}
           />
 
           <SlotEditorSheet

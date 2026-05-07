@@ -1,8 +1,8 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { AppRoute } from '@/constants/app-routes';
-import { ApiError } from '@/lib/api-error';
-import { renderWithProviders } from '@/test/utils';
+import { fireEvent, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { AppRoute } from "@/constants/app-routes";
+import { ApiError } from "@/lib/api-error";
+import { renderWithProviders } from "@/test/utils";
 
 const mockPush = jest.fn();
 const mockMutate = jest.fn();
@@ -19,15 +19,15 @@ let mockRegisterReturn: {
   error: Error | null;
 };
 
-jest.mock('@/hooks/use-auth', () => ({
+jest.mock("@/hooks/use-auth", () => ({
   useRegister: () => mockRegisterReturn,
 }));
 
-jest.mock('@/lib/browser-navigation', () => ({
+jest.mock("@/lib/browser-navigation", () => ({
   navigateToUrl: jest.fn(),
 }));
 
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
     replace: jest.fn(),
@@ -40,27 +40,32 @@ jest.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-import RegisterPage from '@/app/(auth)/register/page';
+import RegisterPage from "@/app/(auth)/register/page";
 
-describe('RegisterPage', () => {
+describe("RegisterPage", () => {
   const user = userEvent.setup();
 
   function fillRegistrationForm() {
     fireEvent.change(screen.getByLabelText(/first name/i), {
-      target: { value: 'Test' },
+      target: { value: "Test" },
     });
     fireEvent.change(screen.getByLabelText(/last name/i), {
-      target: { value: 'User' },
+      target: { value: "User" },
     });
     fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'test@example.com' },
+      target: { value: "test@example.com" },
     });
     fireEvent.change(screen.getByLabelText(/^password$/i), {
-      target: { value: 'TestPass1' },
+      target: { value: "TestPass1" },
     });
     fireEvent.change(screen.getByLabelText(/confirm password/i), {
-      target: { value: 'TestPass1' },
+      target: { value: "TestPass1" },
     });
+  }
+
+  function acceptLegalConsent() {
+    fireEvent.click(screen.getByRole("checkbox", { name: /terms/i }));
+    fireEvent.click(screen.getByRole("checkbox", { name: /privacy/i }));
   }
 
   beforeEach(() => {
@@ -73,7 +78,7 @@ describe('RegisterPage', () => {
     };
   });
 
-  it('renders registration form', () => {
+  it("renders registration form", () => {
     renderWithProviders(<RegisterPage />);
 
     expect(screen.getByLabelText(/first name/i)).toBeInTheDocument();
@@ -86,48 +91,47 @@ describe('RegisterPage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('shows password validation hint for weak password', async () => {
+  it("shows password validation hint for weak password", async () => {
     renderWithProviders(<RegisterPage />);
 
-    await user.type(screen.getByLabelText(/^password$/i), 'weak');
+    await user.type(screen.getByLabelText(/^password$/i), "weak");
 
     await waitFor(() => {
-      expect(
-        screen.getByText(/at least 8 characters/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/at least 8 characters/i)).toBeInTheDocument();
     });
   });
 
-  it('shows mismatch error when passwords differ', async () => {
+  it("shows mismatch error when passwords differ", async () => {
     renderWithProviders(<RegisterPage />);
 
-    await user.type(screen.getByLabelText(/^password$/i), 'TestPass1');
-    await user.type(screen.getByLabelText(/confirm password/i), 'Different1');
+    await user.type(screen.getByLabelText(/^password$/i), "TestPass1");
+    await user.type(screen.getByLabelText(/confirm password/i), "Different1");
 
     await waitFor(() => {
       expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
     });
   });
 
-  it('shows the clickwrap disclosure above the auth options', () => {
+  it("shows legal disclosure and explicit email signup consent", () => {
     renderWithProviders(<RegisterPage />);
-    // Pattern A — implicit consent. The submit button is not gated by
-    // checkboxes; the disclosure shown before auth actions covers ToS /
-    // Privacy acceptance via the user's affirmative action of continuing.
     expect(
       screen.getByText(/by continuing, you agree to our/i),
     ).toBeInTheDocument();
-    expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+    expect(screen.getByRole("checkbox", { name: /terms/i })).toBeVisible();
+    expect(screen.getByRole("checkbox", { name: /privacy/i })).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: /create account/i }),
+    ).toBeDisabled();
   });
 
-  it('places the clickwrap disclosure before social signup buttons that record consent', () => {
+  it("places the clickwrap disclosure before social signup buttons that record consent", () => {
     renderWithProviders(<RegisterPage />);
 
     const disclosure = screen.getByText(/by continuing, you agree to our/i);
-    const googleButton = screen.getByRole('button', {
+    const googleButton = screen.getByRole("button", {
       name: /continue with google/i,
     });
-    const appleButton = screen.getByRole('button', {
+    const appleButton = screen.getByRole("button", {
       name: /continue with apple/i,
     });
 
@@ -141,23 +145,22 @@ describe('RegisterPage', () => {
     ).toBeTruthy();
   });
 
-  it('submits with all required fields and implicit consent', async () => {
+  it("submits with all required fields and explicit consent", async () => {
     renderWithProviders(<RegisterPage />);
 
     fillRegistrationForm();
+    acceptLegalConsent();
 
-    await user.click(
-      screen.getByRole('button', { name: /create account/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /create account/i }));
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalledWith(
         {
-          email: 'test@example.com',
-          password: 'TestPass1',
-          firstName: 'Test',
-          lastName: 'User',
-          preferredLanguage: 'en',
+          email: "test@example.com",
+          password: "TestPass1",
+          firstName: "Test",
+          lastName: "User",
+          preferredLanguage: "en",
           termsAccepted: true,
           privacyPolicyAccepted: true,
         },
@@ -166,7 +169,7 @@ describe('RegisterPage', () => {
     });
   });
 
-  it('shows email verification instructions on success', async () => {
+  it("shows email verification instructions on success", async () => {
     mockMutate.mockImplementation(
       (_input: unknown, options?: MutationCallbacks) => {
         options?.onSuccess?.();
@@ -176,10 +179,9 @@ describe('RegisterPage', () => {
     renderWithProviders(<RegisterPage />);
 
     fillRegistrationForm();
+    acceptLegalConsent();
 
-    await user.click(
-      screen.getByRole('button', { name: /create account/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /create account/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/verify email/i)).toBeInTheDocument();
@@ -189,35 +191,30 @@ describe('RegisterPage', () => {
       screen.getByText(/you'll be able to log in after verifying your email/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: /resend verification email/i }),
-    ).toHaveAttribute(
-      'href',
-      '/resend-verification?email=test%40example.com',
-    );
+      screen.getByRole("link", { name: /resend verification email/i }),
+    ).toHaveAttribute("href", "/resend-verification?email=test%40example.com");
   });
 
-  it('has link to login', () => {
+  it("has link to login", () => {
     renderWithProviders(<RegisterPage />);
-    expect(
-      screen.getByRole('link', { name: /log in/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /log in/i })).toBeInTheDocument();
   });
 
-  it('has links to terms and privacy policy', () => {
+  it("has links to terms and privacy policy", () => {
     renderWithProviders(<RegisterPage />);
-    expect(screen.getByText(/terms of service/i)).toBeInTheDocument();
-    expect(screen.getByText(/privacy policy/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/terms of service/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/privacy policy/i).length).toBeGreaterThan(0);
   });
 
-  it('does not navigate when registration fails', async () => {
+  it("does not navigate when registration fails", async () => {
     mockMutate.mockImplementation(
       (_input: unknown, options?: MutationCallbacks) => {
         options?.onError?.(
-          new ApiError('Email already in use', {
+          new ApiError("Email already in use", {
             status: 409,
             body: {
-              code: 'EMAIL_IN_USE',
-              message: 'Email already in use',
+              code: "EMAIL_IN_USE",
+              message: "Email already in use",
             },
           }),
         );
@@ -227,10 +224,9 @@ describe('RegisterPage', () => {
     renderWithProviders(<RegisterPage />);
 
     fillRegistrationForm();
+    acceptLegalConsent();
 
-    await user.click(
-      screen.getByRole('button', { name: /create account/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /create account/i }));
 
     await waitFor(() => {
       expect(mockPush).not.toHaveBeenCalled();

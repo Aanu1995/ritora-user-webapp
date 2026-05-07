@@ -1,20 +1,26 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const passwordPattern = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}/;
 
 export const registerSchema = z
   .object({
-    firstName: z.string().trim().min(1, 'validation.firstNameRequired'),
-    lastName: z.string().trim().min(1, 'validation.lastNameRequired'),
+    firstName: z.string().trim().min(1, "validation.firstNameRequired"),
+    lastName: z.string().trim().min(1, "validation.lastNameRequired"),
     email: z
       .string()
-      .min(1, 'validation.emailRequired')
-      .email('validation.emailInvalid'),
+      .min(1, "validation.emailRequired")
+      .email("validation.emailInvalid"),
     password: z
       .string()
-      .min(1, 'validation.passwordRequired')
-      .regex(passwordPattern, 'validation.passwordPattern'),
-    confirmPassword: z.string().min(1, 'validation.passwordRequired'),
+      .min(1, "validation.passwordRequired")
+      .regex(passwordPattern, "validation.passwordPattern"),
+    confirmPassword: z.string().min(1, "validation.passwordRequired"),
+    termsAccepted: z
+      .boolean()
+      .refine((value) => value, "validation.termsRequired"),
+    privacyPolicyAccepted: z
+      .boolean()
+      .refine((value) => value, "validation.privacyRequired"),
   })
   .superRefine((value, ctx) => {
     if (
@@ -24,8 +30,8 @@ export const registerSchema = z
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['confirmPassword'],
-        message: 'validation.passwordMismatch',
+        path: ["confirmPassword"],
+        message: "validation.passwordMismatch",
       });
     }
   });

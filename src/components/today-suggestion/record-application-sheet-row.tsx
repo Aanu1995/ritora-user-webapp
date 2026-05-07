@@ -51,7 +51,7 @@ export function ApplicationRecordRow({
 }) {
   const selectedSubstitute = row.substitutedWithProductId
     ? t("substitution.selectedShelf")
-    : row.isAdHoc && row.status === "substituted"
+    : row.status === "substituted"
       ? [row.adHocBrand, row.adHocName].filter(Boolean).join(" ")
       : null;
   const productLabel = row.productName ?? row.adHocName ?? row.stepLabel ?? "";

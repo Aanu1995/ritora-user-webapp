@@ -16,21 +16,10 @@ export function HistoryAppliedItemRow({
   const t = useTranslations("history.day");
   const source = item.itemSource ?? "recommended";
   const appliedAt = item.appliedAt ?? fallbackAppliedAt;
-  const productName =
-    item.substitutedWithProduct?.name ??
-    item.product?.name ??
-    item.adHocName ??
-    item.appliedSnapshot?.name ??
-    item.productName ??
-    item.stepLabel ??
-    "";
-  const productBrand =
-    item.substitutedWithProduct?.brand ??
-    item.product?.brand ??
-    item.adHocBrand ??
-    item.appliedSnapshot?.brand ??
-    item.productBrand;
-  const substitutedOriginal = item.recommendedSnapshot?.name ?? item.productName;
+  const productName = appliedProductName(item);
+  const productBrand = appliedProductBrand(item);
+  const substitutedOriginal =
+    item.recommendedSnapshot?.name ?? item.productName;
   const Icon =
     item.status === "substituted"
       ? Repeat2
@@ -98,5 +87,42 @@ export function HistoryAppliedItemRow({
         ) : null}
       </div>
     </div>
+  );
+}
+
+function appliedProductName(item: ApplicationLogItem): string {
+  if (item.status === "substituted") {
+    return (
+      item.appliedSnapshot?.name ??
+      item.substitutedWithProduct?.name ??
+      item.adHocName ??
+      item.stepLabel ??
+      ""
+    );
+  }
+  return (
+    item.appliedSnapshot?.name ??
+    item.productName ??
+    item.product?.name ??
+    item.adHocName ??
+    item.stepLabel ??
+    ""
+  );
+}
+
+function appliedProductBrand(item: ApplicationLogItem): string | null {
+  if (item.status === "substituted") {
+    return (
+      item.appliedSnapshot?.brand ??
+      item.substitutedWithProduct?.brand ??
+      item.adHocBrand ??
+      null
+    );
+  }
+  return (
+    item.appliedSnapshot?.brand ??
+    item.productBrand ??
+    item.product?.brand ??
+    item.adHocBrand
   );
 }

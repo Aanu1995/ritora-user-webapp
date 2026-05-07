@@ -3,9 +3,13 @@ import {
   type RoutineStep,
   type RoutineStepInput,
   type RoutineStepProductSummary,
-} from '@/types/schedule';
+} from "@/types/schedule";
 
-export function stepsFromEntity(entitySteps: RoutineStep[]): RoutineStepInput[] {
+let transientStepId = 0;
+
+export function stepsFromEntity(
+  entitySteps: RoutineStep[],
+): RoutineStepInput[] {
   return entitySteps
     .slice()
     .sort((a, b) => a.stepOrder - b.stepOrder)
@@ -79,7 +83,7 @@ export function createRoutineStepInput(
   stepCount: number,
 ): RoutineStepInput {
   return {
-    id: `${idPrefix}-${stepCount}-${Date.now()}`,
+    id: `${idPrefix}-${stepCount}-${++transientStepId}`,
     stepOrder: stepCount,
     inventoryProductId: null,
     stepLabel: StepLabel.Cleanser,

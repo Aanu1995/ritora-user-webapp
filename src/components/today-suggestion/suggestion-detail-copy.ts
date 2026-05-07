@@ -66,8 +66,8 @@ export function buildStepReasonRows(
 }
 
 function stepProductName(step: SuggestionInstance["steps"][number]): string {
-  const brand = step.product?.brand ?? step.productBrand;
-  const name = step.product?.name ?? step.productName ?? step.customLabel;
+  const brand = step.productBrand ?? step.product?.brand;
+  const name = step.productName ?? step.product?.name ?? step.customLabel;
   return [brand, name].filter(Boolean).join(" ").trim() || step.stepLabel;
 }
 

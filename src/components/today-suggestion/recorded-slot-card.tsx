@@ -275,29 +275,37 @@ function resolveAppliedProduct(item: ApplicationLogItem) {
   if (item.status === "substituted") {
     return {
       brand:
+        item.appliedSnapshot?.brand ??
         item.substitutedWithProduct?.brand ??
         item.adHocBrand ??
-        item.appliedSnapshot?.brand ??
         null,
       name:
+        item.appliedSnapshot?.name ??
         item.substitutedWithProduct?.name ??
         item.adHocName ??
-        item.appliedSnapshot?.name ??
         null,
       imageUrl: item.substitutedWithProduct?.imageUrl ?? null,
       category:
-        item.substitutedWithProduct?.category ??
         item.appliedSnapshot?.step_label ??
+        item.substitutedWithProduct?.category ??
         item.stepLabel,
     };
   }
   return {
-    brand: item.product?.brand ?? item.adHocBrand ?? item.productBrand,
-    name: item.product?.name ?? item.adHocName ?? item.productName,
+    brand:
+      item.appliedSnapshot?.brand ??
+      item.productBrand ??
+      item.product?.brand ??
+      item.adHocBrand,
+    name:
+      item.appliedSnapshot?.name ??
+      item.productName ??
+      item.product?.name ??
+      item.adHocName,
     imageUrl: item.product?.imageUrl ?? null,
     category:
-      item.product?.category ??
       item.appliedSnapshot?.step_label ??
+      item.product?.category ??
       item.stepLabel,
   };
 }

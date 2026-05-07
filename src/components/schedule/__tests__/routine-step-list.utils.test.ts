@@ -45,14 +45,6 @@ function createEntityStep(
 }
 
 describe("routine step list utils", () => {
-  beforeEach(() => {
-    jest.spyOn(Date, "now").mockReturnValue(123456);
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
-
   it("normalizes entity steps into sorted form inputs", () => {
     expect(
       stepsFromEntity([
@@ -110,7 +102,7 @@ describe("routine step list utils", () => {
     const lookup = new Map([[PRODUCT.id, PRODUCT]]);
 
     expect(step).toEqual({
-      id: "slot-2-123456",
+      id: expect.stringMatching(/^slot-2-\d+$/),
       stepOrder: 2,
       inventoryProductId: null,
       stepLabel: StepLabel.Cleanser,

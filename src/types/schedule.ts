@@ -135,6 +135,7 @@ export type CreateSlotPayload = {
   specialistClinicName?: string | null;
   specialistActiveSince?: string | null;
   specialistSafetyNotes?: string | null;
+  steps?: RoutineStepInput[];
 };
 
 export type UpdateSlotPayload = {
@@ -156,6 +157,7 @@ export type CreateSlotsPayload = {
   specialistClinicName?: string | null;
   specialistActiveSince?: string | null;
   specialistSafetyNotes?: string | null;
+  steps?: RoutineStepInput[];
 };
 
 export type ApplyPresetPayload = {
@@ -167,6 +169,7 @@ export type ApplyPresetPayload = {
   specialistClinicName?: string | null;
   specialistActiveSince?: string | null;
   specialistSafetyNotes?: string | null;
+  steps?: RoutineStepInput[];
 };
 
 export type MoveSlotPayload = {

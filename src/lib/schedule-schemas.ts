@@ -65,16 +65,6 @@ export const daySelectionSchema = z
   .array(dayOfWeekSchema)
   .min(1, "addDialog.selectAtLeastOneDay");
 
-export const createSlotsFormSchema = z
-  .object({
-    daysOfWeek: daySelectionSchema,
-    slotTime: timeSchema,
-    mode: slotModeSchema,
-  })
-  .strict();
-
-export type CreateSlotsFormValues = z.infer<typeof createSlotsFormSchema>;
-
 export const applyPresetFormSchema = z
   .object({
     slotTime: timeSchema,
@@ -116,6 +106,41 @@ export const routineStepSchema = routineStepBaseSchema.refine(
 export const routineStepsSchema = z
   .array(routineStepSchema)
   .max(MAX_STEPS_PER_SLOT, "validation.maxSteps");
+
+export const createSlotsFormSchema = z
+  .object({
+    daysOfWeek: daySelectionSchema,
+    slotTime: timeSchema,
+    mode: slotModeSchema,
+    slotNotes: slotNotesInputSchema,
+    specialistProviderName: specialistProviderNameInputSchema,
+    specialistClinicName: specialistClinicNameInputSchema,
+    specialistActiveSince: specialistActiveSinceInputSchema,
+    specialistSafetyNotes: specialistSafetyNotesInputSchema,
+    steps: z.array(routineStepBaseSchema),
+  })
+  .strict()
+  .superRefine((value, ctx) => {
+    if (value.mode !== SlotMode.Manual) {
+      return;
+    }
+
+    const parsedSteps = routineStepsSchema.safeParse(value.steps);
+
+    if (!parsedSteps.success) {
+      const firstIssue = parsedSteps.error.issues[0];
+
+      if (firstIssue) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["steps"],
+          message: firstIssue.message,
+        });
+      }
+    }
+  });
+
+export type CreateSlotsFormValues = z.infer<typeof createSlotsFormSchema>;
 
 export const scheduleEditorFormSchema = z
   .object({

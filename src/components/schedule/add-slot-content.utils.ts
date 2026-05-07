@@ -1,10 +1,11 @@
-import type { CreateSlotsFormValues } from '@/lib/schedule-schemas';
+import type { CreateSlotsFormValues } from "@/lib/schedule-schemas";
 import {
   AddSlotPresetMode,
+  type CreateSlotsPayload,
   DAYS_OF_WEEK,
   type DayOfWeek,
   SlotMode,
-} from '@/types/schedule';
+} from "@/types/schedule";
 
 type ScheduleTranslator = (
   key: string,
@@ -44,9 +45,36 @@ export function createAddSlotDefaultValues({
 }): CreateSlotsFormValues {
   return {
     daysOfWeek: computeInitialDays(presetMode, preselectDay),
-    slotTime: '08:00',
+    slotTime: "08:00",
     mode: SlotMode.AI,
+    slotNotes: "",
+    specialistProviderName: "",
+    specialistClinicName: "",
+    specialistActiveSince: "",
+    specialistSafetyNotes: "",
+    steps: [],
   };
+}
+
+export function buildCreateSlotsPayload(
+  value: CreateSlotsFormValues,
+): CreateSlotsPayload {
+  return {
+    daysOfWeek: value.daysOfWeek,
+    slotTime: value.slotTime,
+    mode: value.mode,
+    slotNotes: value.slotNotes,
+    specialistProviderName: value.specialistProviderName,
+    specialistClinicName: value.specialistClinicName,
+    specialistActiveSince: normalizeOptionalDate(value.specialistActiveSince),
+    specialistSafetyNotes: value.specialistSafetyNotes,
+    steps: value.steps,
+  };
+}
+
+function normalizeOptionalDate(value: string): string | null {
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
 }
 
 export function toggleDaySelection(
@@ -86,19 +114,19 @@ export function getAddSlotDialogCopy({
   return {
     daysHint:
       selectedDayCount === DAYS_OF_WEEK.length
-        ? t('addDialog.daysHintEveryDay')
-        : t('addDialog.daysHintSingle'),
-    duplicateNote: t('addDialog.duplicateNote'),
-    savingLabel: t('save.saving'),
+        ? t("addDialog.daysHintEveryDay")
+        : t("addDialog.daysHintSingle"),
+    duplicateNote: t("addDialog.duplicateNote"),
+    savingLabel: t("save.saving"),
     submitLabel:
       selectedDayCount <= 1
-        ? t('addDialog.submitSingle')
-        : t('addDialog.submitMultiple', { count: selectedDayCount }),
+        ? t("addDialog.submitSingle")
+        : t("addDialog.submitMultiple", { count: selectedDayCount }),
     subtitle: isEveryDayPreset
-      ? t('addDialog.subtitleEveryDay')
-      : t('addDialog.subtitleSingle'),
+      ? t("addDialog.subtitleEveryDay")
+      : t("addDialog.subtitleSingle"),
     title: isEveryDayPreset
-      ? t('addDialog.titleEveryDay')
-      : t('addDialog.titleSingle'),
+      ? t("addDialog.titleEveryDay")
+      : t("addDialog.titleSingle"),
   };
 }

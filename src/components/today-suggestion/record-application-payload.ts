@@ -17,7 +17,7 @@ export function buildRecordApplicationPayload(
 ): RecordApplicationPayload {
   return {
     suggestionInstanceId: suggestion.id,
-    slotId: suggestion.slotId ?? slot.slotId,
+    slotId: suggestion.slotId ?? undefined,
     targetDate: suggestion.targetDate,
     targetTime: suggestion.targetTime,
     appliedAt: buildAppliedAt(suggestion, value.appliedTime),
@@ -48,7 +48,7 @@ export function buildSkippedApplicationPayload(
 
   return {
     suggestionInstanceId: suggestion.id,
-    slotId: slot.slotId,
+    slotId: suggestion.slotId ?? undefined,
     targetDate: suggestion.targetDate,
     targetTime: suggestion.targetTime,
     appliedAt: buildLocalDateTimeIso(
@@ -60,8 +60,8 @@ export function buildSkippedApplicationPayload(
       stepOrder: step.stepOrder,
       suggestionStepId: step.id,
       inventoryProductId: step.inventoryProductId,
-      productBrand: step.product?.brand ?? step.productBrand,
-      productName: step.product?.name ?? step.productName,
+      productBrand: step.productBrand ?? step.product?.brand ?? null,
+      productName: step.productName ?? step.product?.name ?? null,
       stepLabel: step.stepLabel,
       status: "skipped",
       isAdHoc: false,

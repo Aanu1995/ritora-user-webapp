@@ -46,6 +46,7 @@ import type {
 
 const TODAYS_SUGGESTION_REFETCH_INTERVAL_MS = 60_000;
 const TODAYS_SUGGESTION_ACTIVE_REFETCH_INTERVAL_MS = 5_000;
+const TODAYS_SUGGESTION_MIN_REFETCH_INTERVAL_MS = 5_000;
 
 const EMPTY_HISTORY_RESPONSE: SuggestionHistoryListResponse = {
   days: [],
@@ -70,10 +71,23 @@ export function useTodaysSuggestion() {
 
 export function getTodaysSuggestionRefetchInterval(
   data: TodaysSuggestionResponse | undefined,
-): number {
-  return hasGeneratingSuggestion(data)
-    ? TODAYS_SUGGESTION_ACTIVE_REFETCH_INTERVAL_MS
-    : TODAYS_SUGGESTION_REFETCH_INTERVAL_MS;
+  nowMs = Date.now(),
+): number | false {
+  if (!data) return false;
+  if (hasGeneratingSuggestion(data)) {
+    return TODAYS_SUGGESTION_ACTIVE_REFETCH_INTERVAL_MS;
+  }
+
+  const nextVisibleAtMs = getNextLockedSlotVisibleAtMs(data, nowMs);
+  if (nextVisibleAtMs === null) return false;
+
+  return Math.min(
+    Math.max(
+      nextVisibleAtMs - nowMs,
+      TODAYS_SUGGESTION_MIN_REFETCH_INTERVAL_MS,
+    ),
+    TODAYS_SUGGESTION_REFETCH_INTERVAL_MS,
+  );
 }
 
 function hasGeneratingSuggestion(
@@ -90,6 +104,21 @@ function hasGeneratingSuggestion(
         slot.suggestion?.generationStatus === "generating",
     )
   );
+}
+
+function getNextLockedSlotVisibleAtMs(
+  data: TodaysSuggestionResponse,
+  nowMs: number,
+): number | null {
+  const futureVisibleTimes = data.slots
+    .filter((slot) => slot.status === "locked")
+    .map((slot) => Date.parse(slot.visibleAt))
+    .filter(
+      (visibleAtMs) => Number.isFinite(visibleAtMs) && visibleAtMs > nowMs,
+    )
+    .sort((first, second) => first - second);
+
+  return futureVisibleTimes[0] ?? null;
 }
 
 export function useSuggestion(id: string | null | undefined) {
@@ -112,7 +141,10 @@ export function useRegenerateSuggestion() {
       payload?: RegenerateSuggestionPayload;
     }) => regenerateSuggestion(id, payload),
     onSuccess: (suggestion) => {
-      queryClient.setQueryData([QueryKey.Suggestion, suggestion.id], suggestion);
+      queryClient.setQueryData(
+        [QueryKey.Suggestion, suggestion.id],
+        suggestion,
+      );
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.SuggestionsToday],
       });
@@ -126,7 +158,10 @@ export function useCreateOnDemandSuggestion() {
     mutationFn: (payload: CreateOnDemandSuggestionPayload) =>
       createOnDemandSuggestion(payload),
     onSuccess: (suggestion) => {
-      queryClient.setQueryData([QueryKey.Suggestion, suggestion.id], suggestion);
+      queryClient.setQueryData(
+        [QueryKey.Suggestion, suggestion.id],
+        suggestion,
+      );
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.SuggestionsToday],
       });
@@ -165,7 +200,10 @@ export function useRetryOnDemandSuggestion() {
   return useMutation({
     mutationFn: (id: string) => retryOnDemandSuggestion(id),
     onSuccess: (suggestion) => {
-      queryClient.setQueryData([QueryKey.Suggestion, suggestion.id], suggestion);
+      queryClient.setQueryData(
+        [QueryKey.Suggestion, suggestion.id],
+        suggestion,
+      );
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.SuggestionsToday],
       });

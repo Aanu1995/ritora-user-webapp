@@ -20,7 +20,11 @@ import {
   toRoutineBreakEndsAt,
 } from "@/components/today-suggestion/routine-break-validation";
 import { TodayGapRecommendationSection } from "@/components/today-suggestion/today-gap-recommendation-section";
-import { updateApplicationRecordRowStatus } from "@/components/today-suggestion/record-application-form";
+import {
+  applicationRecordFormSchema,
+  buildApplicationRecordDefaultValues,
+  updateApplicationRecordRowStatus,
+} from "@/components/today-suggestion/record-application-form";
 import { buildRecordApplicationPayload } from "@/components/today-suggestion/record-application-payload";
 import type { ApplicationLog } from "@/types/application-tracking";
 import {
@@ -361,6 +365,44 @@ describe("today suggestion UI contract", () => {
     expect(screen.getByText(/ingredient list missing/i)).toBeInTheDocument();
   });
 
+  it("shows each product quality warning instead of hiding later issues", () => {
+    renderWithProviders(
+      <OnDemandSuggestionSection
+        suggestions={[
+          onDemandSuggestion({
+            id: "on-demand-ready",
+            status: "ready",
+            suggestion: suggestionInstance({
+              id: "on-demand-ready",
+              slotId: null,
+              requestSource: "on_demand",
+              productDataQuality: {
+                verifiedCount: 0,
+                partialCount: 1,
+                insufficientCount: 0,
+                warnings: [
+                  "application guidance missing",
+                  "key active ingredients not matched",
+                ],
+              },
+            }),
+          }),
+        ]}
+        onRetry={jest.fn()}
+        onRecord={jest.fn()}
+        onEdit={jest.fn()}
+        onShowDetail={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText(/application guidance missing/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/key active ingredients not matched/i),
+    ).toBeInTheDocument();
+  });
+
   it("shows the why-this-routine card from explanation copy when headline is missing", () => {
     renderWithProviders(
       <SuggestionSlotCard
@@ -682,6 +724,95 @@ describe("today suggestion UI contract", () => {
     ]);
   });
 
+  it("does not send synthetic UI slot ids as persisted schedule ids", () => {
+    const suggestion = suggestionInstance({
+      slotId: null,
+      requestSource: "on_demand",
+    });
+    const payload = buildRecordApplicationPayload(
+      slot({ slotId: `on-demand:${suggestion.id}`, suggestion }),
+      suggestion,
+      {
+        appliedTime: "12:15",
+        generalNotes: "",
+        editReason: "",
+        items: [
+          {
+            stepOrder: 0,
+            suggestionStepId: "step-1",
+            inventoryProductId: "product-1",
+            productBrand: "Ava Lab",
+            productName: "Barrier Serum",
+            stepLabel: "serum",
+            status: "applied",
+            substitutedWithProductId: null,
+            substitutionReason: null,
+            isAdHoc: false,
+            adHocBrand: null,
+            adHocName: null,
+            notes: null,
+            appliedAt: null,
+          },
+        ],
+      },
+    );
+
+    expect(payload.slotId).toBeUndefined();
+  });
+
+  it("keeps deleted substitution snapshots visible when editing a record", () => {
+    const suggestion = suggestionInstance();
+    const existingLog = {
+      ...applicationLog(),
+      items: [
+        {
+          ...applicationLog().items[1]!,
+          substitutedWithProductId: null,
+          appliedSnapshot: {
+            product_id: "deleted-substitute",
+            brand: "Plain Lab",
+            name: "Recovery Balm",
+            step_label: "moisturizer",
+          },
+          substitutedWithProduct: null,
+        },
+      ],
+    };
+    const values = buildApplicationRecordDefaultValues(
+      {
+        kind: "edit",
+        slot: slot({ suggestion }),
+        existingLog,
+      },
+      suggestion,
+    );
+
+    expect(values.items[0]).toEqual(
+      expect.objectContaining({
+        status: "substituted",
+        substitutedWithProductId: null,
+        adHocBrand: "Plain Lab",
+        adHocName: "Recovery Balm",
+      }),
+    );
+    expect(applicationRecordFormSchema.safeParse(values).success).toBe(true);
+
+    renderWithProviders(
+      <RecordApplicationSheet
+        open
+        onOpenChange={jest.fn()}
+        mode={{
+          kind: "edit",
+          slot: slot({ suggestion }),
+          existingLog,
+        }}
+      />,
+    );
+    expect(
+      screen.getByText(/Substituted with Plain Lab Recovery Balm/i),
+    ).toBeInTheDocument();
+  });
+
   it("covers step row provenance, fallback labels, and compact applied rendering", () => {
     const { rerender } = render(
       <SuggestionStepRow
@@ -699,6 +830,27 @@ describe("today suggestion UI contract", () => {
     expect(
       screen.getAllByText(/Apply over damp skin before moisturiser/i).length,
     ).toBeGreaterThan(0);
+
+    rerender(
+      <SuggestionStepRow
+        step={suggestionStep({
+          id: "snapshot",
+          productBrand: "Original Brand",
+          productName: "Original Serum",
+          product: {
+            id: "product-1",
+            brand: "Edited Brand",
+            name: "Edited Serum",
+            category: "serum",
+            imageUrl: null,
+            status: "active",
+          },
+        })}
+      />,
+    );
+    expect(screen.getByText(/Original Brand/i)).toBeInTheDocument();
+    expect(screen.getByText(/Original Serum/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Edited Serum/i)).not.toBeInTheDocument();
 
     rerender(
       <SuggestionStepRow

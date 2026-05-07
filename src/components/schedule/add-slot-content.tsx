@@ -1,42 +1,50 @@
-'use client';
+"use client";
 
-import { useForm, useStore } from '@tanstack/react-form';
-import { X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { toast } from 'sonner';
-import { TimePicker } from '@/components/ui/time-picker';
-import { useCreateSlots } from '@/hooks/use-schedule';
-import { firstFieldError } from '@/lib/form-errors';
+import { useForm, useStore } from "@tanstack/react-form";
+import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
+import { TimePicker } from "@/components/ui/time-picker";
+import { useCreateSlots } from "@/hooks/use-schedule";
+import { firstFieldError } from "@/lib/form-errors";
 import {
   clearSubmitErrors,
   executeMutation,
   readSubmissionErrorMessage,
-} from '@/lib/form-submission';
+} from "@/lib/form-submission";
 import {
   createSlotsFormSchema,
   type CreateSlotsFormValues,
-} from '@/lib/schedule-schemas';
-import { getCreateSlotsSubmitError } from '@/lib/schedule-submit-errors';
+} from "@/lib/schedule-schemas";
+import { getCreateSlotsSubmitError } from "@/lib/schedule-submit-errors";
 import {
   AddSlotPresetMode,
   DAYS_OF_WEEK,
   DayOfWeek,
-} from '@/types/schedule';
-import { cn } from '@/lib/utils';
-import { AddSlotFooter } from './add-slot-footer';
+  type RoutineStepProductSummary,
+  SlotMode,
+} from "@/types/schedule";
+import { cn } from "@/lib/utils";
+import { AddSlotFooter } from "./add-slot-footer";
 import {
+  buildCreateSlotsPayload,
   createAddSlotDefaultValues,
   getAddSlotDialogCopy,
   shouldShowFieldError,
   toggleDaySelection,
-} from './add-slot-content.utils';
-import { SlotModeToggle } from './slot-mode-toggle';
+} from "./add-slot-content.utils";
+import { SlotEditorNotesSection } from "./slot-editor-notes-section";
+import { SlotEditorStepsSection } from "./slot-editor-steps-section";
+import { SlotModeToggle } from "./slot-mode-toggle";
+import { SlotSpecialistFields } from "./slot-specialist-fields";
 
 type AddSlotContentProps = {
   presetMode: AddSlotPresetMode;
   preselectDay: DayOfWeek | null;
   onClose: () => void;
   onCreated?: () => void;
+  onProductPickerClose?: () => void;
   showCloseButton?: boolean;
 };
 
@@ -45,11 +53,15 @@ export function AddSlotContent({
   preselectDay,
   onClose,
   onCreated,
+  onProductPickerClose,
   showCloseButton = false,
 }: AddSlotContentProps) {
-  const t = useTranslations('schedule');
-  const tCommon = useTranslations('common');
+  const t = useTranslations("schedule");
+  const tCommon = useTranslations("common");
   const createSlots = useCreateSlots();
+  const [productLookup, setProductLookup] = useState<
+    Map<string, RoutineStepProductSummary>
+  >(() => new Map());
   const defaultValues: CreateSlotsFormValues = createAddSlotDefaultValues({
     presetMode,
     preselectDay,
@@ -66,11 +78,10 @@ export function AddSlotContent({
       onChange: createSlotsFormSchema,
       onSubmit: createSlotsFormSchema,
       onSubmitAsync: async ({ value }) => {
-        const result = await executeMutation(createSlots.mutate, {
-          daysOfWeek: value.daysOfWeek,
-          slotTime: value.slotTime,
-          mode: value.mode,
-        });
+        const result = await executeMutation(
+          createSlots.mutate,
+          buildCreateSlotsPayload(value),
+        );
 
         if (result.error !== null) {
           return getCreateSlotsSubmitError(result.error, t);
@@ -80,7 +91,7 @@ export function AddSlotContent({
       },
     },
     onSubmit: () => {
-      toast.success(t('save.saved'));
+      toast.success(t("save.saved"));
       onClose();
       onCreated?.();
     },
@@ -91,6 +102,27 @@ export function AddSlotContent({
   const selectedDayCount = useStore(
     form.store,
     (state) => state.values.daysOfWeek.length,
+  );
+  const modeValue = useStore(form.store, (state) => state.values.mode);
+  const slotNotesValue = useStore(
+    form.store,
+    (state) => state.values.slotNotes,
+  );
+  const specialistProviderNameValue = useStore(
+    form.store,
+    (state) => state.values.specialistProviderName,
+  );
+  const specialistClinicNameValue = useStore(
+    form.store,
+    (state) => state.values.specialistClinicName,
+  );
+  const specialistActiveSinceValue = useStore(
+    form.store,
+    (state) => state.values.specialistActiveSince,
+  );
+  const specialistSafetyNotesValue = useStore(
+    form.store,
+    (state) => state.values.specialistSafetyNotes,
   );
   const submissionAttempts = useStore(
     form.store,
@@ -105,6 +137,16 @@ export function AddSlotContent({
     selectedDayCount,
     t,
   });
+  const handleProductPicked = useCallback(
+    (picked: RoutineStepProductSummary) => {
+      setProductLookup((prev) => {
+        const next = new Map(prev);
+        next.set(picked.id, picked);
+        return next;
+      });
+    },
+    [],
+  );
 
   return (
     <form
@@ -118,9 +160,9 @@ export function AddSlotContent({
     >
       <header
         className={cn(
-          'border-b border-border px-5 py-4',
-          !showCloseButton && 'pr-12',
-          showCloseButton && 'flex items-start justify-between gap-3',
+          "border-b border-border px-5 py-4",
+          !showCloseButton && "pr-12",
+          showCloseButton && "flex items-start justify-between gap-3",
         )}
       >
         <div>
@@ -134,7 +176,7 @@ export function AddSlotContent({
             type="button"
             onClick={onClose}
             className="rounded-md p-1.5 text-muted transition hover:bg-accent-soft"
-            aria-label={tCommon('close')}
+            aria-label={tCommon("close")}
           >
             <X className="h-4 w-4" />
           </button>
@@ -156,7 +198,7 @@ export function AddSlotContent({
             return (
               <section className="border-b border-border px-5 py-4">
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
-                  {t('addDialog.daysLabel')}
+                  {t("addDialog.daysLabel")}
                 </p>
                 <div className="flex gap-1.5">
                   {DAYS_OF_WEEK.map((day) => {
@@ -173,10 +215,10 @@ export function AddSlotContent({
                         }
                         aria-pressed={selected}
                         className={cn(
-                          'inline-flex h-10 min-w-10 flex-1 items-center justify-center rounded-full border text-sm font-semibold transition',
+                          "inline-flex h-10 min-w-10 flex-1 items-center justify-center rounded-full border text-sm font-semibold transition",
                           selected
-                            ? 'border-accent bg-accent text-surface'
-                            : 'border-border bg-surface text-foreground hover:border-accent',
+                            ? "border-accent bg-accent text-surface"
+                            : "border-border bg-surface text-foreground hover:border-accent",
                         )}
                       >
                         {t(`days.${day}Initial`)}
@@ -188,7 +230,10 @@ export function AddSlotContent({
                   {dialogCopy.daysHint}
                 </p>
                 {errorText ? (
-                  <p className="mt-2 text-xs font-medium text-danger" role="alert">
+                  <p
+                    className="mt-2 text-xs font-medium text-danger"
+                    role="alert"
+                  >
                     {errorText}
                   </p>
                 ) : null}
@@ -211,7 +256,7 @@ export function AddSlotContent({
             return (
               <section className="border-b border-border px-5 py-4">
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
-                  {t('addDialog.timeLabel')}
+                  {t("addDialog.timeLabel")}
                 </p>
                 <TimePicker
                   id={field.name}
@@ -219,11 +264,13 @@ export function AddSlotContent({
                   onChange={field.handleChange}
                   onBlur={field.handleBlur}
                   invalid={Boolean(errorText)}
-                  ariaLabel={t('addDialog.timeLabel')}
-                  ariaDescribedBy={errorText ? `${field.name}-error` : undefined}
+                  ariaLabel={t("addDialog.timeLabel")}
+                  ariaDescribedBy={
+                    errorText ? `${field.name}-error` : undefined
+                  }
                 />
                 <p className="mt-2 text-[11px] text-muted">
-                  {t('addDialog.timeHint')}
+                  {t("addDialog.timeHint")}
                 </p>
                 {errorText ? (
                   <p
@@ -241,9 +288,9 @@ export function AddSlotContent({
 
         <form.Field name="mode">
           {(field) => (
-            <section className="px-5 py-4">
+            <section className="border-b border-border px-5 py-4">
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
-                {t('addDialog.modeLabel')}
+                {t("addDialog.modeLabel")}
               </p>
               <SlotModeToggle
                 value={field.state.value}
@@ -252,6 +299,63 @@ export function AddSlotContent({
             </section>
           )}
         </form.Field>
+
+        <form.Field name="slotNotes">
+          {(field) => (
+            <SlotEditorNotesSection
+              disabled={isPending}
+              errors={field.state.meta.errors}
+              id={field.name}
+              isDirty={field.state.meta.isDirty}
+              isTouched={field.state.meta.isTouched}
+              mode={modeValue}
+              onBlur={field.handleBlur}
+              onChange={field.handleChange}
+              showAllErrors={showAllErrors}
+              value={slotNotesValue}
+            />
+          )}
+        </form.Field>
+
+        {modeValue === SlotMode.Manual ? (
+          <SlotSpecialistFields
+            activeSince={specialistActiveSinceValue}
+            clinicName={specialistClinicNameValue}
+            disabled={isPending}
+            providerName={specialistProviderNameValue}
+            safetyNotes={specialistSafetyNotesValue}
+            onActiveSinceChange={(value) =>
+              form.setFieldValue("specialistActiveSince", value)
+            }
+            onClinicNameChange={(value) =>
+              form.setFieldValue("specialistClinicName", value)
+            }
+            onProviderNameChange={(value) =>
+              form.setFieldValue("specialistProviderName", value)
+            }
+            onSafetyNotesChange={(value) =>
+              form.setFieldValue("specialistSafetyNotes", value)
+            }
+          />
+        ) : null}
+
+        {modeValue === SlotMode.Manual ? (
+          <form.Field name="steps">
+            {(field) => (
+              <SlotEditorStepsSection
+                errors={field.state.meta.errors}
+                isDirty={field.state.meta.isDirty}
+                isTouched={field.state.meta.isTouched}
+                onChange={field.handleChange}
+                onProductPicked={handleProductPicked}
+                onProductPickerClose={onProductPickerClose}
+                productLookup={productLookup}
+                showAllErrors={showAllErrors}
+                steps={field.state.value}
+              />
+            )}
+          </form.Field>
+        ) : null}
       </div>
       <AddSlotFooter
         canSubmit={canSubmit}

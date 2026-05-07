@@ -41,7 +41,7 @@ const applicationRecordItemSchema = z
     if (
       row.status === "substituted" &&
       !row.substitutedWithProductId &&
-      !(row.isAdHoc && row.adHocBrand?.trim() && row.adHocName?.trim())
+      !(row.adHocBrand?.trim() && row.adHocName?.trim())
     ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -57,7 +57,9 @@ export const applicationRecordFormSchema = z.object({
     .regex(applicationTimePattern, "validation.invalidAppliedTime"),
   generalNotes: z.string().max(1000, "validation.notesTooLong"),
   editReason: z.string().max(500, "validation.editReasonTooLong"),
-  items: z.array(applicationRecordItemSchema).min(1, "validation.itemsRequired"),
+  items: z
+    .array(applicationRecordItemSchema)
+    .min(1, "validation.itemsRequired"),
 });
 
 export type ApplicationRecordFormValues = z.infer<
@@ -74,8 +76,12 @@ export function buildApplicationRecordDefaultValues(
 ): ApplicationRecordFormValues {
   const items =
     mode.kind === "edit"
-      ? mode.existingLog.items
-          .map((item) => ({
+      ? mode.existingLog.items.map((item) => {
+          const deletedSubstitutionSnapshot =
+            item.status === "substituted" && !item.substitutedWithProductId
+              ? item.appliedSnapshot
+              : null;
+          return {
             stepOrder: item.stepOrder,
             suggestionStepId: item.suggestionStepId,
             inventoryProductId: item.inventoryProductId,
@@ -86,17 +92,20 @@ export function buildApplicationRecordDefaultValues(
             substitutedWithProductId: item.substitutedWithProductId,
             substitutionReason: item.substitutionReason,
             isAdHoc: item.isAdHoc,
-            adHocBrand: item.adHocBrand,
-            adHocName: item.adHocName,
+            adHocBrand:
+              item.adHocBrand ?? deletedSubstitutionSnapshot?.brand ?? null,
+            adHocName:
+              item.adHocName ?? deletedSubstitutionSnapshot?.name ?? null,
             notes: item.notes,
             appliedAt: item.appliedAt,
-          }))
+          };
+        })
       : suggestion.steps.map((step) => ({
           stepOrder: step.stepOrder,
           suggestionStepId: step.id,
           inventoryProductId: step.inventoryProductId,
-          productBrand: step.product?.brand ?? step.productBrand,
-          productName: step.product?.name ?? step.productName,
+          productBrand: step.productBrand ?? step.product?.brand ?? null,
+          productName: step.productName ?? step.product?.name ?? null,
           stepLabel: step.stepLabel,
           status: "applied" as const,
           substitutedWithProductId: null,
@@ -110,7 +119,8 @@ export function buildApplicationRecordDefaultValues(
 
   return {
     appliedTime: initialAppliedTime(mode),
-    generalNotes: mode.kind === "edit" ? (mode.existingLog.generalNotes ?? "") : "",
+    generalNotes:
+      mode.kind === "edit" ? (mode.existingLog.generalNotes ?? "") : "",
     editReason: "",
     items,
   };

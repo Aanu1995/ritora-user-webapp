@@ -118,9 +118,11 @@ function OnDemandCard({
                 <p className="text-sm font-semibold text-[color:var(--note-warm-fg)]">
                   {t("qualityTitle")}
                 </p>
-                <p className="mt-0.5 text-xs leading-5 text-muted">
-                  {qualityWarnings[0]}
-                </p>
+                <ul className="mt-1 space-y-0.5 text-xs leading-5 text-muted">
+                  {qualityWarnings.map((warning) => (
+                    <li key={warning}>{warning}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           ) : null}

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+let fallbackRequestCounter = 0;
+
 export function useOnDemandDialogState() {
   const [open, setOpen] = useState(false);
   const [requestId, setRequestId] = useState<string | null>(null);
@@ -33,10 +35,14 @@ export function useOnDemandDialogState() {
 }
 
 function createOnDemandRequestId(): string {
-  if (globalThis.crypto?.randomUUID) {
-    return globalThis.crypto.randomUUID();
+  const cryptoObject = globalThis.crypto;
+  if (cryptoObject?.randomUUID) {
+    return cryptoObject.randomUUID();
   }
-  return `quick-${Date.now().toString(36)}-${Math.random()
-    .toString(36)
-    .slice(2, 10)}`;
+  if (cryptoObject?.getRandomValues) {
+    const values = cryptoObject.getRandomValues(new Uint32Array(2));
+    return `quick-${values[0].toString(36)}-${values[1].toString(36)}`;
+  }
+  fallbackRequestCounter += 1;
+  return `quick-${fallbackRequestCounter.toString(36)}`;
 }

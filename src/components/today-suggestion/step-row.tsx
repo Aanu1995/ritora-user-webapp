@@ -86,19 +86,15 @@ export function SuggestionStepRow({ step, compactApplied = false }: Props) {
       </div>
 
       <div className="min-w-0 flex-1">
-        {step.product ? (
+        {(step.productBrand ?? step.product?.brand) ? (
           <div className="text-[10px] font-bold uppercase tracking-wider text-muted">
-            {step.product.brand}
-          </div>
-        ) : step.productBrand ? (
-          <div className="text-[10px] font-bold uppercase tracking-wider text-muted">
-            {step.productBrand}
+            {step.productBrand ?? step.product?.brand}
           </div>
         ) : null}
 
         <div className="text-sm font-semibold leading-tight text-foreground">
-          {step.product?.name ??
-            step.productName ??
+          {step.productName ??
+            step.product?.name ??
             step.customLabel ??
             stepLabelLabel(step.stepLabel)}
         </div>

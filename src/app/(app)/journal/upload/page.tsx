@@ -208,14 +208,11 @@ export default function JournalUploadPage() {
               />
             </div>
 
-            <div className="mt-8 flex flex-col gap-3 rounded-2xl border border-border bg-surface-muted px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface-muted px-4 py-3">
               <p className="text-sm text-muted">
                 {t("nextStepHint")}
               </p>
-              <div className="grid grid-cols-1 gap-2 [&>*]:w-full sm:flex sm:flex-wrap [&>*]:sm:w-auto">
-                <Button size="sm" variant="ghost" onClick={() => router.back()}>
-                  {t("cancel")}
-                </Button>
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   size="sm"
                   variant="outline"

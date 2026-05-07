@@ -137,7 +137,9 @@ describe("suggestion hooks", () => {
   });
 
   it("runs regenerate through mutate and keeps history queries enabled", async () => {
-    mockRegenerate.mockResolvedValue(suggestionInstance({ id: "suggestion-2" }));
+    mockRegenerate.mockResolvedValue(
+      suggestionInstance({ id: "suggestion-2" }),
+    );
     mockGetHistory.mockResolvedValue(historyResponse());
     mockGetHistoryDay.mockResolvedValue(historyResponse().days[0]!);
 
@@ -233,8 +235,8 @@ describe("suggestion hooks", () => {
   });
 
   it("polls faster while a suggestion is generating", () => {
-    expect(getTodaysSuggestionRefetchInterval(undefined)).toBe(60_000);
-    expect(getTodaysSuggestionRefetchInterval(todayResponse())).toBe(60_000);
+    expect(getTodaysSuggestionRefetchInterval(undefined)).toBe(false);
+    expect(getTodaysSuggestionRefetchInterval(todayResponse())).toBe(false);
     expect(
       getTodaysSuggestionRefetchInterval({
         ...todayResponse(),
@@ -257,6 +259,38 @@ describe("suggestion hooks", () => {
     ).toBe(5_000);
   });
 
+  it("polls only until the next locked slot becomes visible", () => {
+    expect(
+      getTodaysSuggestionRefetchInterval(
+        {
+          ...todayResponse(),
+          slots: [
+            todaySlot({
+              slotId: "slot-locked",
+              status: "locked",
+              visibleAt: "2026-05-04T10:00:20.000Z",
+            }),
+          ],
+        },
+        Date.parse("2026-05-04T10:00:00.000Z"),
+      ),
+    ).toBe(20_000);
+    expect(
+      getTodaysSuggestionRefetchInterval(
+        {
+          ...todayResponse(),
+          slots: [
+            todaySlot({
+              slotId: "slot-elapsed",
+              status: "missed",
+              visibleAt: "2026-05-04T08:00:00.000Z",
+            }),
+          ],
+        },
+        Date.parse("2026-05-04T10:00:00.000Z"),
+      ),
+    ).toBe(false);
+  });
 
   it("persists normal-routine override and gap actions through mutations", async () => {
     mockUseNormalRoutine.mockResolvedValue({
@@ -386,6 +420,32 @@ function todayResponse(): TodaysSuggestionResponse {
     onDemandSuggestions: [],
     reactionAlert: null,
     routineBreak: null,
+  };
+}
+
+function todaySlot(
+  partial: Partial<TodaysSuggestionResponse["slots"][number]> = {},
+): TodaysSuggestionResponse["slots"][number] {
+  return {
+    slotId: "slot-1",
+    daypart: "morning",
+    slotTime: "08:00",
+    mode: "ai",
+    slotNotes: null,
+    routineStepCount: 0,
+    specialistLockedStepCount: 0,
+    specialist: null,
+    visibleAt: "2026-05-04T06:00:00.000Z",
+    status: "locked",
+    slotStartsAt: "2026-05-04T08:00:00.000Z",
+    recordableAt: "2026-05-04T08:30:00.000Z",
+    expiresAt: "2026-05-04T21:59:59.999Z",
+    recording: null,
+    recordingReminderSnoozedUntil: null,
+    applicationLog: null,
+    isVisible: false,
+    suggestion: null,
+    ...partial,
   };
 }
 

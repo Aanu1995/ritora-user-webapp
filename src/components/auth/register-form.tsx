@@ -7,8 +7,10 @@ import { useState } from "react";
 import { AppleSignInButton } from "@/components/auth/apple-sign-in-button";
 import { AuthDivider } from "@/components/auth/auth-divider";
 import { AuthLegalDisclosure } from "@/components/auth/auth-legal-disclosure";
+import { ConsentCheckbox } from "@/components/auth/consent-checkbox";
 import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
 import { PasswordInputField } from "@/components/auth/password-input-field";
+import { RegisterVerificationMessage } from "@/components/auth/register-verification-message";
 import { TextInputField } from "@/components/auth/text-input-field";
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
@@ -35,12 +37,9 @@ const DEFAULT_VALUES: RegisterValues = {
   email: "",
   password: "",
   confirmPassword: "",
+  termsAccepted: false,
+  privacyPolicyAccepted: false,
 };
-
-function buildResendVerificationHref(email: string) {
-  const params = new URLSearchParams({ email });
-  return `${AppRoute.ResendVerification}?${params.toString()}`;
-}
 
 export function RegisterForm() {
   const t = useTranslations("auth");
@@ -68,8 +67,8 @@ export function RegisterForm() {
           firstName: value.firstName,
           lastName: value.lastName,
           preferredLanguage: locale,
-          termsAccepted: true,
-          privacyPolicyAccepted: true,
+          termsAccepted: value.termsAccepted,
+          privacyPolicyAccepted: value.privacyPolicyAccepted,
         });
 
         if (result.error !== null) {
@@ -107,41 +106,7 @@ export function RegisterForm() {
   };
 
   if (submittedEmail) {
-    return (
-      <div className="space-y-6 text-center sm:text-left">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-            {t("verifyEmail")}
-          </h1>
-          <p className="text-sm text-muted">
-            {t("verifyEmailAfterRegistrationDescription", {
-              email: submittedEmail,
-            })}
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-accent/20 bg-accent-soft/60 p-4">
-          <p className="text-sm font-medium text-accent-strong">
-            {t("verifyEmailSent")}
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button asChild className="w-full sm:w-auto">
-            <Link href={AppRoute.Login}>{t("backToLogin")}</Link>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            className="w-full rounded-full sm:w-auto"
-          >
-            <Link href={buildResendVerificationHref(submittedEmail)}>
-              {t("resendVerification")}
-            </Link>
-          </Button>
-        </div>
-      </div>
-    );
+    return <RegisterVerificationMessage submittedEmail={submittedEmail} />;
   }
 
   return (
@@ -312,17 +277,69 @@ export function RegisterForm() {
             }}
           </form.Subscribe>
 
+          <div className="space-y-3">
+            <form.Field name="termsAccepted">
+              {(field) => (
+                <ConsentCheckbox
+                  id={field.name}
+                  checked={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                  prefix={t("acceptTermsPrefix")}
+                  linkLabel={t("termsOfService")}
+                  href={AppRoute.Terms}
+                  errorText={
+                    field.state.meta.isTouched || field.state.meta.isDirty
+                      ? firstFieldError(field.state.meta.errors, t)
+                      : undefined
+                  }
+                />
+              )}
+            </form.Field>
+            <form.Field name="privacyPolicyAccepted">
+              {(field) => (
+                <ConsentCheckbox
+                  id={field.name}
+                  checked={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                  prefix={t("acceptPrivacyPrefix")}
+                  linkLabel={t("privacyPolicy")}
+                  href={AppRoute.Privacy}
+                  errorText={
+                    field.state.meta.isTouched || field.state.meta.isDirty
+                      ? firstFieldError(field.state.meta.errors, t)
+                      : undefined
+                  }
+                />
+              )}
+            </form.Field>
+          </div>
+
           <form.Subscribe
             selector={(state) => ({
               canSubmit: state.canSubmit,
               isSubmitting: state.isSubmitting,
+              privacyPolicyAccepted: state.values.privacyPolicyAccepted,
+              termsAccepted: state.values.termsAccepted,
             })}
           >
-            {({ canSubmit, isSubmitting }) => (
+            {({
+              canSubmit,
+              isSubmitting,
+              privacyPolicyAccepted,
+              termsAccepted,
+            }) => (
               <Button
                 type="submit"
                 size="lg"
-                disabled={!canSubmit || isSubmitting || registerUser.isPending}
+                disabled={
+                  !canSubmit ||
+                  !termsAccepted ||
+                  !privacyPolicyAccepted ||
+                  isSubmitting ||
+                  registerUser.isPending
+                }
                 className="w-full"
               >
                 {isSubmitting || registerUser.isPending ? (

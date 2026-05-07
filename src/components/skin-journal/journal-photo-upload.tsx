@@ -222,21 +222,24 @@ export function JournalPhotoUpload({
           </p>
         </div>
       ) : (
-        <Button
+        <button
           type="button"
-          variant="ghost"
           onClick={() => inputRef.current?.click()}
-          className="group flex aspect-square h-auto mx-auto w-full max-w-[420px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[color:var(--border-strong)] bg-accent-soft/30 p-4 text-center transition hover:border-accent hover:bg-accent-soft/60"
+          className="group mx-auto flex aspect-square w-full max-w-[420px] cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[color:var(--border-strong)] bg-accent-soft/30 p-6 text-center transition hover:border-accent hover:bg-accent-soft/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
         >
           <div
             aria-hidden
-            className="mb-3 grid h-12 w-12 place-items-center rounded-xl border border-border bg-surface text-[22px] leading-none"
+            className="mb-3 grid h-12 w-12 place-items-center rounded-xl border border-border bg-surface"
           >
             <Camera className="h-5 w-5 text-muted" />
           </div>
-          <p className="text-sm font-semibold">{t("dropZoneTitle")}</p>
-          <p className="mt-0.5 text-xs text-muted">{t("dropZoneDesc")}</p>
-        </Button>
+          <p className="text-sm font-semibold text-foreground">
+            {t("dropZoneTitle")}
+          </p>
+          <p className="mt-1 max-w-[280px] text-balance text-xs leading-relaxed text-muted">
+            {t("dropZoneDesc")}
+          </p>
+        </button>
       )}
 
       <p className="mt-2 text-xs text-muted">{t("noWebcam")}</p>
