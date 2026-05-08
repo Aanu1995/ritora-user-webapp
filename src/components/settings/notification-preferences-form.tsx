@@ -3,12 +3,14 @@
 import { useForm } from "@tanstack/react-form";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { BrowserPushSection } from "@/components/settings/browser-push-section";
 import { InsightsNotificationSection } from "@/components/settings/insights-notification-section";
 import {
   notificationPreferencesSchema,
   type SectionProps,
 } from "@/components/settings/notification-form-controls";
 import { PhotoReminderSection } from "@/components/settings/photo-reminder-section";
+import { ProductExpiryAlertsSection } from "@/components/settings/product-expiry-alerts-section";
 import { QuietHoursSection } from "@/components/settings/quiet-hours-section";
 import { ReactionAlertsSection } from "@/components/settings/reaction-alerts-section";
 import { TodaysSuggestionSection } from "@/components/settings/todays-suggestion-notification-section";
@@ -38,16 +40,23 @@ export function NotificationPreferencesForm({
   const persistPatch = (
     nextValues: NotificationPreferences,
     patch: UpdatePreferencesPayload,
-  ) => {
+  ): Promise<NotificationPreferences | null> => {
     const parsed = notificationPreferencesSchema.safeParse(nextValues);
     if (!parsed.success) {
-      return;
+      return Promise.resolve(null);
     }
-    updatePrefs.mutate(patch, {
-      onError: () => {
-        form.reset(preferences);
-        toast.error(t("updateFailed"));
-      },
+
+    return new Promise((resolve) => {
+      updatePrefs.mutate(patch, {
+        onSuccess: (savedPreferences) => {
+          resolve(savedPreferences);
+        },
+        onError: () => {
+          form.reset(preferences);
+          toast.error(t("updateFailed"));
+          resolve(null);
+        },
+      });
     });
   };
 
@@ -70,6 +79,8 @@ export function NotificationPreferencesForm({
           return (
             <>
               <TodaysSuggestionSection {...sectionProps} />
+              <ProductExpiryAlertsSection {...sectionProps} />
+              <BrowserPushSection {...sectionProps} />
               <QuietHoursSection {...sectionProps} />
               <PhotoReminderSection {...sectionProps} />
               <ReactionAlertsSection {...sectionProps} />

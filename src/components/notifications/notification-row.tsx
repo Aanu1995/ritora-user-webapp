@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { formatLocalizedDate } from "@/lib/dayjs";
 import { cn } from "@/lib/utils";
 import { useMarkNotificationRead } from "@/hooks/use-notifications";
 import type { InAppNotification, NotificationKind } from "@/types/notifications";
@@ -71,11 +72,22 @@ const KIND_STYLES: Record<
     bg: "bg-[color:var(--note-cool-bg)]",
     fg: "text-[color:var(--note-cool-fg)]",
   },
+  product_nearing_expiry: {
+    emoji: "!",
+    bg: "bg-warning-soft",
+    fg: "text-[color:var(--warning)]",
+  },
+  product_expired: {
+    emoji: "!",
+    bg: "bg-danger-soft",
+    fg: "text-danger",
+  },
 };
 
 enum NotificationSourceMessageKey {
   SkinJournal = "sourceSkinJournal",
   TodaysSuggestion = "sourceTodaysSuggestion",
+  Shelf = "sourceShelf",
 }
 
 const TODAY_SUGGESTION_NOTIFICATION_KINDS = new Set<NotificationKind>([
@@ -83,12 +95,19 @@ const TODAY_SUGGESTION_NOTIFICATION_KINDS = new Set<NotificationKind>([
   "slot_start",
   "recording_reminder",
 ]);
+const SHELF_NOTIFICATION_KINDS = new Set<NotificationKind>([
+  "product_nearing_expiry",
+  "product_expired",
+]);
 
 function getNotificationSourceMessageKey(
   kind: NotificationKind,
 ): NotificationSourceMessageKey {
   if (TODAY_SUGGESTION_NOTIFICATION_KINDS.has(kind)) {
     return NotificationSourceMessageKey.TodaysSuggestion;
+  }
+  if (SHELF_NOTIFICATION_KINDS.has(kind)) {
+    return NotificationSourceMessageKey.Shelf;
   }
 
   return NotificationSourceMessageKey.SkinJournal;
@@ -121,6 +140,26 @@ function normalizeDeepLink(deepLink: string | null): string | null {
   return deepLink;
 }
 
+function getPayloadString(
+  payload: Record<string, unknown> | null,
+  key: string,
+): string | null {
+  const value = payload?.[key];
+  return typeof value === "string" && value.trim() ? value : null;
+}
+
+function getPayloadNumber(
+  payload: Record<string, unknown> | null,
+  key: string,
+): number | null {
+  const value = payload?.[key];
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function formatDateLabel(value: string | null, locale: string): string | null {
+  return formatLocalizedDate(value, locale);
+}
+
 export function NotificationRow({ notification }: NotificationRowProps) {
   const locale = useLocale();
   const t = useTranslations("notificationsPage");
@@ -130,8 +169,33 @@ export function NotificationRow({ notification }: NotificationRowProps) {
   const styles = KIND_STYLES[notification.kind];
   const deepLink = normalizeDeepLink(notification.deep_link);
   const sourceMessageKey = getNotificationSourceMessageKey(notification.kind);
+  const productName =
+    getPayloadString(notification.payload, "productName") ??
+    getPayloadString(notification.payload, "name") ??
+    t("fallbackProductName");
+  const expiresDate =
+    formatDateLabel(
+      getPayloadString(notification.payload, "expiresAt"),
+      locale,
+    ) ?? t("unknownDate");
+  const daysUntilExpiry = getPayloadNumber(
+    notification.payload,
+    "daysUntilExpiry",
+  );
 
   const isUnread = !notification.read_at;
+  const body =
+    notification.kind === "product_nearing_expiry"
+      ? daysUntilExpiry !== null
+        ? tKind("body", {
+            productName,
+            daysUntilExpiry,
+            expiresDate,
+          })
+        : tKind("bodyFallback", { productName, expiresDate })
+      : notification.kind === "product_expired"
+        ? tKind("body", { productName, expiresDate })
+        : tKind("body");
 
   const handleClick = () => {
     if (!notification.read_at) {
@@ -165,7 +229,7 @@ export function NotificationRow({ notification }: NotificationRowProps) {
           {tKind("title")}
         </p>
         <p className="mt-1 text-sm leading-[1.55] text-muted">
-          {tKind("body")}
+          {body}
         </p>
         <p className="mt-1.5 text-xs text-muted">
           {formatRelative(notification.created_at, locale)} ·{" "}

@@ -8,9 +8,14 @@ import type { ApplicationLog } from "@/types/application-tracking";
 type Props = {
   existingLog: ApplicationLog;
   t: ReturnType<typeof useTranslations>;
+  timeZone?: string;
 };
 
-export function ApplicationEditHistoryFooter({ existingLog, t }: Props) {
+export function ApplicationEditHistoryFooter({
+  existingLog,
+  t,
+  timeZone,
+}: Props) {
   return (
     <div className="mb-3">
       <div
@@ -27,7 +32,7 @@ export function ApplicationEditHistoryFooter({ existingLog, t }: Props) {
         <div className="flex items-center gap-2">
           <Clock4 className="h-3.5 w-3.5" />
           {t("editHistory.firstSavedAt", {
-            time: formatIsoTime12h(existingLog.firstRecordedAt),
+            time: formatIsoTime12h(existingLog.firstRecordedAt, timeZone),
           })}
         </div>
         <div className="flex items-start gap-2">

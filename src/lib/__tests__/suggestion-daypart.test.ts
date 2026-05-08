@@ -24,6 +24,9 @@ describe("suggestion-daypart utilities", () => {
     expect(formatSlotTime12h("00:05")).toBe("12:05 AM");
     expect(formatSlotTime12h("12:30:00")).toBe("12:30 PM");
     expect(formatSlotTime12h("20:15")).toBe("8:15 PM");
+    expect(formatIsoTime12h("2026-05-04T08:05:00.000Z", "Europe/Stockholm")).toBe(
+      "10:05 AM",
+    );
     expect(formatSlotTime12h("not-a-time")).toBe("not-a-time");
     expect(formatIsoTime12h("not-an-iso")).toBe("not-an-iso");
   });

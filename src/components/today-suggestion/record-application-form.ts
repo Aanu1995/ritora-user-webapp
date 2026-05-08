@@ -73,6 +73,7 @@ export type ApplicationRecordSheetMode =
 export function buildApplicationRecordDefaultValues(
   mode: ApplicationRecordSheetMode,
   suggestion: SuggestionInstance,
+  timeZone?: string,
 ): ApplicationRecordFormValues {
   const items =
     mode.kind === "edit"
@@ -118,7 +119,7 @@ export function buildApplicationRecordDefaultValues(
         }));
 
   return {
-    appliedTime: initialAppliedTime(mode),
+    appliedTime: initialAppliedTime(mode, timeZone),
     generalNotes:
       mode.kind === "edit" ? (mode.existingLog.generalNotes ?? "") : "",
     editReason: "",
@@ -236,11 +237,14 @@ export function applicationRecordSheetKey(
   return `record:${mode.slot.suggestion?.id ?? mode.slot.slotId}`;
 }
 
-function initialAppliedTime(mode: ApplicationRecordSheetMode): string {
-  if (mode.kind !== "edit") return formatLocalTimeInput();
+function initialAppliedTime(
+  mode: ApplicationRecordSheetMode,
+  timeZone?: string,
+): string {
+  if (mode.kind !== "edit") return formatLocalTimeInput(undefined, timeZone);
   return mode.existingLog.appliedAt
-    ? formatLocalTimeInput(new Date(mode.existingLog.appliedAt))
-    : formatLocalTimeInput();
+    ? formatLocalTimeInput(new Date(mode.existingLog.appliedAt), timeZone)
+    : formatLocalTimeInput(undefined, timeZone);
 }
 
 function nextStepOrder(rows: ApplicationRecordFormValues["items"]): number {

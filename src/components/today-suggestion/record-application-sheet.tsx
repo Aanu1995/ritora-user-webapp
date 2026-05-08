@@ -48,6 +48,7 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   mode: ApplicationRecordSheetMode | null;
   onSaved?: (log: ApplicationLog) => void;
+  timeZone?: string;
 };
 
 export function RecordApplicationSheet(props: Props) {
@@ -69,6 +70,7 @@ function RecordApplicationSheetForm({
   mode,
   onSaved,
   suggestion,
+  timeZone,
 }: Props & {
   mode: ApplicationRecordSheetMode;
   suggestion: SuggestionInstance;
@@ -93,7 +95,11 @@ function RecordApplicationSheetForm({
   );
 
   const form = useForm({
-    defaultValues: buildApplicationRecordDefaultValues(mode, suggestion),
+    defaultValues: buildApplicationRecordDefaultValues(
+      mode,
+      suggestion,
+      timeZone,
+    ),
     validators: {
       onChange: applicationRecordFormSchema,
       onSubmit: applicationRecordFormSchema,
@@ -150,6 +156,7 @@ function RecordApplicationSheetForm({
                       time: formatSlotTime12h(suggestion.targetTime),
                       firstRecordedAt: formatIsoTime12h(
                         mode.existingLog.firstRecordedAt,
+                        timeZone,
                       ),
                     })
                   : t("recordSubtitle", {
@@ -165,6 +172,7 @@ function RecordApplicationSheetForm({
               <ApplicationEditHistoryFooter
                 existingLog={mode.existingLog}
                 t={t}
+                timeZone={timeZone}
               />
             ) : null}
 

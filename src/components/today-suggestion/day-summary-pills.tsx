@@ -20,9 +20,10 @@ import type {
 
 type Props = {
   data: TodaysSuggestionResponse;
+  timeZone?: string;
 };
 
-export function DaySummaryPills({ data }: Props) {
+export function DaySummaryPills({ data, timeZone }: Props) {
   const t = useTranslations("todaysSuggestion.summary");
   const todayEntry = useTodayEntry();
   const entry = todayEntry.data?.entry ?? null;
@@ -66,7 +67,9 @@ export function DaySummaryPills({ data }: Props) {
       <WeatherPill weather={data.weatherSummary} />
       {entry?.has_photo ? (
         <Pill tone="neutral" icon={<Camera className="h-3 w-3 text-muted" />}>
-          {t("photoLoggedAt", { time: formatIsoTime12h(entry.created_at) })}
+          {t("photoLoggedAt", {
+            time: formatIsoTime12h(entry.created_at, timeZone),
+          })}
         </Pill>
       ) : (
         <PillLink

@@ -111,6 +111,11 @@ export const ApiPath = {
   NotificationRead: (id: string) => `${NOTIFICATIONS_BASE}/${id}/read`,
   NotificationsReadAll: `${NOTIFICATIONS_BASE}/read-all`,
   NotificationPreferences: `${NOTIFICATIONS_BASE}/preferences`,
+  NotificationPushPublicKey: `${NOTIFICATIONS_BASE}/push/public-key`,
+  NotificationPushSubscriptions: `${NOTIFICATIONS_BASE}/push/subscriptions`,
+  NotificationPushStatus: `${NOTIFICATIONS_BASE}/push/status`,
+  NotificationPushSubscription: (id: string) =>
+    `${NOTIFICATIONS_BASE}/push/subscriptions/${id}`,
 
   SuggestionsToday: `${SUGGESTIONS_BASE}/today`,
   SuggestionsAiConsent: `${SUGGESTIONS_BASE}/ai-consent`,

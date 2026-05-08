@@ -7,6 +7,8 @@ import { Switch } from "@/components/ui/switch";
 import type { FieldIssue } from "@/lib/form-errors";
 import {
   NOTIFICATION_CHANNEL_VALUES,
+  PRODUCT_EXPIRY_NOTICE_DAYS_MAX,
+  PRODUCT_EXPIRY_NOTICE_DAYS_MIN,
   SUGGESTION_LEAD_TIME_MAX_MINUTES,
   SUGGESTION_LEAD_TIME_MIN_MINUTES,
   type NotificationChannel,
@@ -36,6 +38,12 @@ export const notificationPreferencesSchema = z.object({
   suggestion_ready_enabled: z.boolean(),
   slot_start_enabled: z.boolean(),
   recording_reminder_enabled: z.boolean(),
+  product_expiry_alerts_enabled: z.boolean(),
+  product_expiry_notice_days: z
+    .number()
+    .int()
+    .min(PRODUCT_EXPIRY_NOTICE_DAYS_MIN, "validation.invalidExpiryNoticeDays")
+    .max(PRODUCT_EXPIRY_NOTICE_DAYS_MAX, "validation.invalidExpiryNoticeDays"),
   suggestion_lead_time_minutes: z
     .number()
     .int()
@@ -128,5 +136,5 @@ export type SectionProps = {
   persistPatch: (
     nextValues: NotificationPreferences,
     patch: UpdatePreferencesPayload,
-  ) => void;
+  ) => Promise<NotificationPreferences | null>;
 };

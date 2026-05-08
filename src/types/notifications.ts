@@ -9,17 +9,23 @@ export type NotificationKind =
   | "export_ready"
   | "suggestion_ready"
   | "slot_start"
-  | "recording_reminder";
+  | "recording_reminder"
+  | "product_nearing_expiry"
+  | "product_expired";
 
 export const SUGGESTION_LEAD_TIME_MIN_MINUTES = 30;
 export const SUGGESTION_LEAD_TIME_MAX_MINUTES = 720;
 export const SUGGESTION_LEAD_TIME_DEFAULT_MINUTES = 120;
+export const PRODUCT_EXPIRY_NOTICE_DAYS_MIN = 1;
+export const PRODUCT_EXPIRY_NOTICE_DAYS_MAX = 90;
+export const PRODUCT_EXPIRY_NOTICE_DAYS_DEFAULT = 14;
 
 export type NotificationSeverity = "info" | "warning" | "critical";
 
 export const NotificationChannelValue = {
   Email: "email",
   InApp: "in_app",
+  Push: "push",
 } as const;
 
 export type NotificationChannel =
@@ -28,6 +34,7 @@ export type NotificationChannel =
 export const NOTIFICATION_CHANNEL_VALUES = [
   NotificationChannelValue.Email,
   NotificationChannelValue.InApp,
+  NotificationChannelValue.Push,
 ] as const;
 
 export interface InAppNotification {
@@ -67,6 +74,8 @@ export interface NotificationPreferences {
   suggestion_ready_enabled: boolean;
   slot_start_enabled: boolean;
   recording_reminder_enabled: boolean;
+  product_expiry_alerts_enabled: boolean;
+  product_expiry_notice_days: number;
   suggestion_lead_time_minutes: number;
   quiet_hours_enabled: boolean;
   quiet_hours_start: string;
@@ -86,8 +95,73 @@ export interface UpdatePreferencesPayload {
   suggestion_ready_enabled?: boolean;
   slot_start_enabled?: boolean;
   recording_reminder_enabled?: boolean;
+  product_expiry_alerts_enabled?: boolean;
+  product_expiry_notice_days?: number;
   suggestion_lead_time_minutes?: number;
   quiet_hours_enabled?: boolean;
   quiet_hours_start?: string;
   quiet_hours_end?: string;
+}
+
+export const PushProviderValue = {
+  WebPush: "web_push",
+  Fcm: "fcm",
+  Apns: "apns",
+} as const;
+
+export type PushProvider =
+  (typeof PushProviderValue)[keyof typeof PushProviderValue];
+
+export const PushPlatformValue = {
+  Web: "web",
+  Ios: "ios",
+  Android: "android",
+} as const;
+
+export type PushPlatform =
+  (typeof PushPlatformValue)[keyof typeof PushPlatformValue];
+
+export interface WebPushSubscriptionKeys {
+  p256dh: string;
+  auth: string;
+}
+
+export interface PushSubscriptionRegistration {
+  provider: PushProvider;
+  platform: PushPlatform;
+  endpoint?: string;
+  keys?: WebPushSubscriptionKeys;
+  token?: string;
+  device_name?: string;
+}
+
+export interface PushSubscriptionSummary {
+  id: string;
+  provider: PushProvider;
+  platform: PushPlatform;
+  endpoint_hash?: string;
+  device_name?: string;
+  last_seen_at: string | null;
+  created_at: string;
+  failure_count: number;
+  last_failure_at: string | null;
+  last_failure_reason?: string;
+}
+
+export interface PushDeliveryStatusCounts {
+  sending: number;
+  sent: number;
+  failed: number;
+  skipped: number;
+}
+
+export interface PushStatusSummary {
+  active_subscriptions: number;
+  web_push_subscriptions: number;
+  mobile_subscriptions: number;
+  failing_subscriptions: number;
+  recent_delivery_statuses: PushDeliveryStatusCounts;
+  pending_retries: number;
+  exhausted_failures: number;
+  stale_sending: number;
 }

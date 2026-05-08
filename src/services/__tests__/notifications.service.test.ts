@@ -1,15 +1,21 @@
 jest.mock('@/lib/api', () => ({
+  deleteRequest: jest.fn(),
   getRequest: jest.fn(),
   patchRequest: jest.fn(),
   postRequest: jest.fn(),
 }));
 
-import { getRequest, patchRequest, postRequest } from '@/lib/api';
+import { deleteRequest, getRequest, patchRequest, postRequest } from '@/lib/api';
 import {
   getNotificationPreferences,
+  getPushStatus,
+  getPushPublicKey,
+  listPushSubscriptions,
   listNotifications,
   markAllNotificationsRead,
   markNotificationRead,
+  registerPushSubscription,
+  revokePushSubscription,
   updateNotificationPreferences,
 } from '@/services/notifications.service';
 
@@ -53,6 +59,51 @@ describe('notifications.service', () => {
     });
   });
 
+  it('integrates push subscription endpoints', async () => {
+    (getRequest as jest.Mock)
+      .mockResolvedValueOnce({ publicKey: 'public-key' })
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce({
+        active_subscriptions: 0,
+        web_push_subscriptions: 0,
+        mobile_subscriptions: 0,
+        failing_subscriptions: 0,
+        recent_delivery_statuses: {
+          sending: 0,
+          sent: 0,
+          failed: 0,
+          skipped: 0,
+        },
+        pending_retries: 0,
+        exhausted_failures: 0,
+        stale_sending: 0,
+      });
+    (postRequest as jest.Mock).mockResolvedValue({ id: 'sub-1' });
+    (deleteRequest as jest.Mock).mockResolvedValue(undefined);
+
+    await getPushPublicKey();
+    await listPushSubscriptions();
+    await getPushStatus();
+    await registerPushSubscription({
+      provider: 'web_push',
+      platform: 'web',
+      endpoint: 'https://push.example/sub-1',
+      keys: { p256dh: 'p256dh', auth: 'auth' },
+    });
+    await revokePushSubscription('sub-1');
+
+    expect(getRequest).toHaveBeenCalledWith('/notifications/push/public-key');
+    expect(getRequest).toHaveBeenCalledWith('/notifications/push/subscriptions');
+    expect(getRequest).toHaveBeenCalledWith('/notifications/push/status');
+    expect(postRequest).toHaveBeenCalledWith(
+      '/notifications/push/subscriptions',
+      expect.objectContaining({ provider: 'web_push' }),
+    );
+    expect(deleteRequest).toHaveBeenCalledWith(
+      '/notifications/push/subscriptions/sub-1',
+    );
+  });
+
   it('normalizes database time values in notification preferences', async () => {
     (getRequest as jest.Mock).mockResolvedValue({
       photo_reminder_local_time: '08:00:00',
@@ -68,5 +119,7 @@ describe('notifications.service', () => {
     const preferences = await getNotificationPreferences();
 
     expect(preferences.photo_reminder_local_time).toBe('08:00');
+    expect(preferences.product_expiry_alerts_enabled).toBe(true);
+    expect(preferences.product_expiry_notice_days).toBe(14);
   });
 });

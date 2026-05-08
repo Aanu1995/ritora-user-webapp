@@ -1,18 +1,44 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { ApiError } from "@/lib/api-error";
 import { NotificationsTab } from "@/components/settings/notifications-tab";
 import { useAuthStore } from "@/stores/auth-store";
 import { renderWithProviders } from "@/test/utils";
-import type {
-  NotificationPreferences,
-  UpdatePreferencesPayload,
+import {
+  PushPlatformValue,
+  PushProviderValue,
+  type NotificationPreferences,
+  type UpdatePreferencesPayload,
 } from "@/types/notifications";
 
 const mockUpdatePreferencesMutate = jest.fn();
 const mockRefetchPreferences = jest.fn();
+const mockGetBrowserPushSupportState = jest.fn();
+const mockGetCurrentBrowserPushSubscription = jest.fn();
+const mockSubscribeCurrentBrowserToPush = jest.fn();
+const mockRevokeCurrentBrowserPushSubscription = jest.fn();
+const mockHashPushEndpoint = jest.fn();
+const mockGetPushPublicKey = jest.fn();
+const mockGetPushStatus = jest.fn();
+const mockListPushSubscriptions = jest.fn();
+const mockRevokePushSubscription = jest.fn();
+const mockToastError = jest.fn();
+const mockToastSuccess = jest.fn();
 let mockPreferences: NotificationPreferences | undefined;
 let mockIsLoading = false;
 let mockIsError = false;
+
+type PreferencesMutationOptions = {
+  onSuccess?: (data: NotificationPreferences) => void;
+  onError?: () => void;
+};
+
+jest.mock("sonner", () => ({
+  toast: {
+    error: (message: string) => mockToastError(message),
+    success: (message: string) => mockToastSuccess(message),
+  },
+}));
 
 jest.mock("@/hooks/use-notifications", () => ({
   useNotificationPreferences: () => ({
@@ -25,6 +51,49 @@ jest.mock("@/hooks/use-notifications", () => ({
     mutate: mockUpdatePreferencesMutate,
     isPending: false,
   }),
+}));
+
+jest.mock("@/lib/browser-push", () => ({
+  BrowserPushErrorCode: {
+    Unsupported: "unsupported",
+    InsecureContext: "insecure_context",
+    PermissionDenied: "permission_denied",
+    MissingPublicKey: "missing_public_key",
+    InvalidPublicKey: "invalid_public_key",
+    SubscriptionFailed: "subscription_failed",
+    IncompleteSubscription: "incomplete_subscription",
+    BackendRegistrationFailed: "backend_registration_failed",
+  },
+  getBrowserPushErrorCode: (error: unknown) => {
+    if (typeof error !== "object" || error === null || !("code" in error)) {
+      return null;
+    }
+    const code = (error as { code?: unknown }).code;
+    return typeof code === "string" ? code : null;
+  },
+  getBrowserPushErrorDetail: (error: unknown) => {
+    if (typeof error !== "object" || error === null || !("detail" in error)) {
+      return null;
+    }
+    const detail = (error as { detail?: unknown }).detail;
+    return typeof detail === "string" ? detail : null;
+  },
+  getBrowserPushSupportState: () => mockGetBrowserPushSupportState(),
+  getCurrentBrowserPushSubscription: () =>
+    mockGetCurrentBrowserPushSubscription(),
+  subscribeCurrentBrowserToPush: (publicKey: string) =>
+    mockSubscribeCurrentBrowserToPush(publicKey),
+  revokeCurrentBrowserPushSubscription: () =>
+    mockRevokeCurrentBrowserPushSubscription(),
+  hashPushEndpoint: (endpoint: string | null | undefined) =>
+    mockHashPushEndpoint(endpoint),
+}));
+
+jest.mock("@/services/notifications.service", () => ({
+  getPushPublicKey: () => mockGetPushPublicKey(),
+  getPushStatus: () => mockGetPushStatus(),
+  listPushSubscriptions: () => mockListPushSubscriptions(),
+  revokePushSubscription: (id: string) => mockRevokePushSubscription(id),
 }));
 
 function preferences(
@@ -43,6 +112,8 @@ function preferences(
     suggestion_ready_enabled: true,
     slot_start_enabled: true,
     recording_reminder_enabled: true,
+    product_expiry_alerts_enabled: true,
+    product_expiry_notice_days: 14,
     suggestion_lead_time_minutes: 120,
     quiet_hours_enabled: false,
     quiet_hours_start: "22:30",
@@ -59,6 +130,45 @@ describe("NotificationsTab", () => {
     mockPreferences = preferences();
     mockIsLoading = false;
     mockIsError = false;
+    mockGetBrowserPushSupportState.mockReturnValue("unsupported");
+    mockGetCurrentBrowserPushSubscription.mockResolvedValue(null);
+    mockHashPushEndpoint.mockImplementation(
+      async (endpoint: string | null | undefined) =>
+        endpoint ? "abcd" : null,
+    );
+    mockSubscribeCurrentBrowserToPush.mockResolvedValue(undefined);
+    mockRevokeCurrentBrowserPushSubscription.mockResolvedValue(undefined);
+    mockGetPushPublicKey.mockResolvedValue("public-key");
+    mockGetPushStatus.mockResolvedValue({
+      active_subscriptions: 0,
+      web_push_subscriptions: 0,
+      mobile_subscriptions: 0,
+      failing_subscriptions: 0,
+      recent_delivery_statuses: {
+        sending: 0,
+        sent: 0,
+        failed: 0,
+        skipped: 0,
+      },
+      pending_retries: 0,
+      exhausted_failures: 0,
+      stale_sending: 0,
+    });
+    mockListPushSubscriptions.mockResolvedValue([]);
+    mockRevokePushSubscription.mockResolvedValue(undefined);
+    mockUpdatePreferencesMutate.mockImplementation(
+      (
+        payload: UpdatePreferencesPayload,
+        options?: PreferencesMutationOptions,
+      ) => {
+        const nextPreferences = {
+          ...(mockPreferences ?? preferences()),
+          ...payload,
+        };
+        mockPreferences = nextPreferences;
+        options?.onSuccess?.(nextPreferences);
+      },
+    );
     useAuthStore.setState({
       user: {
         id: "user-1",
@@ -204,5 +314,296 @@ describe("NotificationsTab", () => {
       { wrapped_alerts_enabled: false },
       expect.any(Object),
     );
+  });
+
+  it("persists product expiry alert settings", async () => {
+    renderWithProviders(<NotificationsTab />);
+
+    const noticeDays = screen.getByLabelText(
+      "Notify me days before expiry",
+    );
+    await user.clear(noticeDays);
+    await user.type(noticeDays, "30");
+    await user.tab();
+    await user.click(
+      screen.getByRole("switch", {
+        name: "Product expiry alerts",
+      }),
+    );
+
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { product_expiry_alerts_enabled: false },
+      expect.any(Object),
+    );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { product_expiry_notice_days: 30 },
+      expect.any(Object),
+    );
+  });
+
+  it("rolls back the product expiry notice days input when saving fails", async () => {
+    mockUpdatePreferencesMutate.mockImplementation(
+      (
+        _payload: UpdatePreferencesPayload,
+        options?: PreferencesMutationOptions,
+      ) => {
+        options?.onError?.();
+      },
+    );
+
+    renderWithProviders(<NotificationsTab />);
+
+    const noticeDays = screen.getByLabelText("Notify me days before expiry");
+    await user.clear(noticeDays);
+    await user.type(noticeDays, "30");
+    await user.tab();
+
+    await waitFor(() => expect(noticeDays).toHaveValue(14));
+    expect(mockToastError).toHaveBeenCalledWith(
+      "Could not save notification settings.",
+    );
+  });
+
+  it("enables browser push and persists the push channel", async () => {
+    mockGetBrowserPushSupportState.mockReturnValue("supported");
+    mockGetCurrentBrowserPushSubscription.mockResolvedValue(null);
+
+    renderWithProviders(<NotificationsTab />);
+
+    const browserPushSwitch = screen.getByRole("switch", {
+      name: "Browser push",
+    });
+    const photoReminderPushChannel = screen.getByLabelText("Push");
+    expect(photoReminderPushChannel).toBeDisabled();
+
+    await user.click(browserPushSwitch);
+
+    expect(mockGetPushPublicKey).toHaveBeenCalled();
+    expect(mockSubscribeCurrentBrowserToPush).toHaveBeenCalledWith(
+      "public-key",
+    );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { channels: ["email", "in_app", "push"] },
+      expect.any(Object),
+    );
+    await waitFor(() => expect(browserPushSwitch).toBeChecked());
+    await waitFor(() => expect(photoReminderPushChannel).toBeChecked());
+    expect(photoReminderPushChannel).toBeEnabled();
+    expect(mockToastSuccess).toHaveBeenCalledWith("Browser push enabled.");
+  });
+
+  it("keeps the photo reminder push channel disabled when photo reminders are off", async () => {
+    mockPreferences = preferences({
+      photo_reminder_enabled: false,
+      channels: ["email", "in_app", "push"],
+    });
+
+    renderWithProviders(<NotificationsTab />);
+
+    const photoReminderPushChannel = screen.getByLabelText("Push");
+    expect(photoReminderPushChannel).toBeChecked();
+    expect(photoReminderPushChannel).toBeDisabled();
+
+    await user.click(photoReminderPushChannel);
+
+    expect(mockUpdatePreferencesMutate).not.toHaveBeenCalledWith(
+      { channels: ["email", "in_app"] },
+      expect.any(Object),
+    );
+  });
+
+  it("disables every photo reminder channel when photo reminders are off", () => {
+    mockPreferences = preferences({
+      photo_reminder_enabled: false,
+      channels: ["email", "in_app", "push"],
+    });
+
+    renderWithProviders(<NotificationsTab />);
+
+    expect(screen.getByLabelText("In-app")).toBeDisabled();
+    expect(screen.getByLabelText("Email")).toBeDisabled();
+    expect(screen.getByLabelText("Push")).toBeDisabled();
+  });
+
+  it("cleans up the browser subscription when push channel persistence fails", async () => {
+    mockGetBrowserPushSupportState.mockReturnValue("supported");
+    mockGetCurrentBrowserPushSubscription.mockResolvedValue(null);
+    mockUpdatePreferencesMutate.mockImplementation(
+      (
+        _payload: UpdatePreferencesPayload,
+        options?: PreferencesMutationOptions,
+      ) => {
+        options?.onError?.();
+      },
+    );
+
+    renderWithProviders(<NotificationsTab />);
+
+    await user.click(screen.getByRole("switch", { name: "Browser push" }));
+
+    await waitFor(() =>
+      expect(mockRevokeCurrentBrowserPushSubscription).toHaveBeenCalled(),
+    );
+    expect(mockToastError).toHaveBeenCalledWith(
+      "Could not save notification settings.",
+    );
+    expect(mockToastSuccess).not.toHaveBeenCalledWith("Browser push enabled.");
+  });
+
+  it("shows a specific error when browser permission is not granted", async () => {
+    mockGetBrowserPushSupportState.mockReturnValue("supported");
+    mockSubscribeCurrentBrowserToPush.mockRejectedValue({
+      code: "permission_denied",
+    });
+
+    renderWithProviders(<NotificationsTab />);
+
+    await user.click(screen.getByRole("switch", { name: "Browser push" }));
+
+    await waitFor(() =>
+      expect(mockToastError).toHaveBeenCalledWith(
+        "Browser notification permission was not granted.",
+      ),
+    );
+  });
+
+  it("shows a specific error when the server has no push configuration", async () => {
+    mockGetBrowserPushSupportState.mockReturnValue("supported");
+    mockGetPushPublicKey.mockRejectedValue(
+      new ApiError("Push unavailable", { status: 503 }),
+    );
+
+    renderWithProviders(<NotificationsTab />);
+
+    await user.click(screen.getByRole("switch", { name: "Browser push" }));
+
+    await waitFor(() =>
+      expect(mockToastError).toHaveBeenCalledWith("Push unavailable"),
+    );
+  });
+
+  it("shows the backend message when subscription registration fails", async () => {
+    mockGetBrowserPushSupportState.mockReturnValue("supported");
+    mockSubscribeCurrentBrowserToPush.mockRejectedValue({
+      code: "backend_registration_failed",
+      detail: "Missing web keys",
+    });
+
+    renderWithProviders(<NotificationsTab />);
+
+    await user.click(screen.getByRole("switch", { name: "Browser push" }));
+
+    await waitFor(() =>
+      expect(mockToastError).toHaveBeenCalledWith("Missing web keys"),
+    );
+  });
+
+  it("shows a concise error when the browser push service rejects subscription", async () => {
+    mockGetBrowserPushSupportState.mockReturnValue("supported");
+    mockSubscribeCurrentBrowserToPush.mockRejectedValue({
+      code: "subscription_failed",
+    });
+
+    renderWithProviders(<NotificationsTab />);
+
+    await user.click(screen.getByRole("switch", { name: "Browser push" }));
+
+    await waitFor(() =>
+      expect(mockToastError).toHaveBeenCalledWith("Subscription failed."),
+    );
+  });
+
+  it("renders the browser push description once", async () => {
+    renderWithProviders(<NotificationsTab />);
+
+    await waitFor(() =>
+      expect(
+        screen.queryByTestId("browser-push-devices-skeleton"),
+      ).not.toBeInTheDocument(),
+    );
+    expect(
+      screen.getAllByText(
+        "Send device notifications from this browser for enabled notification types.",
+      ),
+    ).toHaveLength(1);
+  });
+
+  it("allows push to be disabled when browser permission is denied", async () => {
+    mockPreferences = preferences({ channels: ["in_app", "push"] });
+    mockGetBrowserPushSupportState.mockReturnValue("denied");
+
+    renderWithProviders(<NotificationsTab />);
+
+    const browserPushSwitch = screen.getByRole("switch", {
+      name: "Browser push",
+    });
+    expect(browserPushSwitch).toBeEnabled();
+
+    await user.click(browserPushSwitch);
+
+    expect(mockRevokeCurrentBrowserPushSubscription).toHaveBeenCalled();
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { channels: ["in_app"] },
+      expect.any(Object),
+    );
+  });
+
+  it("shows a skeleton while browser push devices are loading", () => {
+    mockGetBrowserPushSupportState.mockReturnValue("supported");
+    mockListPushSubscriptions.mockImplementation(
+      () => new Promise<never>(() => undefined),
+    );
+
+    renderWithProviders(<NotificationsTab />);
+
+    expect(
+      screen.getByTestId("browser-push-devices-skeleton"),
+    ).toBeInTheDocument();
+  });
+
+  it("renders connected push devices and revokes one device", async () => {
+    mockGetBrowserPushSupportState.mockReturnValue("supported");
+    mockGetCurrentBrowserPushSubscription.mockResolvedValue({
+      endpoint: "https://push.example/current",
+      unsubscribe: jest.fn().mockResolvedValue(true),
+    });
+    mockListPushSubscriptions.mockResolvedValue([
+      {
+        id: "sub-1",
+        provider: PushProviderValue.WebPush,
+        platform: PushPlatformValue.Web,
+        endpoint_hash: "abcd",
+        device_name: "Chrome on web",
+        last_seen_at: "2026-05-01T08:00:00.000Z",
+        created_at: "2026-05-01T08:00:00.000Z",
+        failure_count: 1,
+        last_failure_at: "2026-05-01T08:05:00.000Z",
+        last_failure_reason: "Provider overloaded",
+      },
+    ]);
+    mockGetPushStatus.mockResolvedValue({
+      active_subscriptions: 1,
+      web_push_subscriptions: 1,
+      mobile_subscriptions: 0,
+      failing_subscriptions: 1,
+      recent_delivery_statuses: {
+        sending: 0,
+        sent: 0,
+        failed: 1,
+        skipped: 0,
+      },
+      pending_retries: 1,
+      exhausted_failures: 0,
+      stale_sending: 0,
+    });
+
+    renderWithProviders(<NotificationsTab />);
+
+    expect(await screen.findByText("Chrome on web")).toBeInTheDocument();
+    expect(screen.getByText("This browser")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Remove" }));
+
+    expect(mockRevokePushSubscription).toHaveBeenCalledWith("sub-1");
   });
 });

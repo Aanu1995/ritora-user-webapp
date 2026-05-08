@@ -1,13 +1,18 @@
 import {
+  deleteRequest,
   getRequest,
   patchRequest,
   postRequest,
 } from "@/lib/api";
 import { ApiPath } from "@/constants/api-paths";
-import type {
-  NotificationPreferences,
-  NotificationsList,
-  UpdatePreferencesPayload,
+import {
+  PRODUCT_EXPIRY_NOTICE_DAYS_DEFAULT,
+  type NotificationPreferences,
+  type NotificationsList,
+  type PushStatusSummary,
+  type PushSubscriptionRegistration,
+  type PushSubscriptionSummary,
+  type UpdatePreferencesPayload,
 } from "@/types/notifications";
 
 export async function listNotifications(
@@ -47,6 +52,38 @@ export async function updateNotificationPreferences(
   return normalizeNotificationPreferences(preferences);
 }
 
+export async function getPushPublicKey(): Promise<string> {
+  const response = await getRequest<{ publicKey: string }>(
+    ApiPath.NotificationPushPublicKey,
+  );
+  return response.publicKey;
+}
+
+export async function listPushSubscriptions(): Promise<
+  PushSubscriptionSummary[]
+> {
+  return getRequest<PushSubscriptionSummary[]>(
+    ApiPath.NotificationPushSubscriptions,
+  );
+}
+
+export async function getPushStatus(): Promise<PushStatusSummary> {
+  return getRequest<PushStatusSummary>(ApiPath.NotificationPushStatus);
+}
+
+export async function registerPushSubscription(
+  payload: PushSubscriptionRegistration,
+): Promise<PushSubscriptionSummary> {
+  return postRequest<PushSubscriptionSummary>(
+    ApiPath.NotificationPushSubscriptions,
+    payload,
+  );
+}
+
+export async function revokePushSubscription(id: string): Promise<void> {
+  await deleteRequest<unknown>(ApiPath.NotificationPushSubscription(id));
+}
+
 function normalizeNotificationPreferences(
   preferences: NotificationPreferences,
 ): NotificationPreferences {
@@ -54,6 +91,11 @@ function normalizeNotificationPreferences(
     ...preferences,
     ai_polished_insights_enabled:
       preferences.ai_polished_insights_enabled ?? true,
+    product_expiry_alerts_enabled:
+      preferences.product_expiry_alerts_enabled ?? true,
+    product_expiry_notice_days:
+      preferences.product_expiry_notice_days ??
+      PRODUCT_EXPIRY_NOTICE_DAYS_DEFAULT,
     photo_reminder_local_time: normalizeReminderTime(
       preferences.photo_reminder_local_time,
     ),

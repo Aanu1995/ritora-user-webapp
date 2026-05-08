@@ -11,7 +11,13 @@ import { SuggestionDaypartIcon } from "@/components/today-suggestion/daypart-ico
 import { SuggestionStatusPill } from "@/components/today-suggestion/mode-badge";
 import type { TodaysSuggestionSlot } from "@/types/suggestions";
 
-export function LockedSlotCard({ slot }: { slot: TodaysSuggestionSlot }) {
+export function LockedSlotCard({
+  slot,
+  timeZone,
+}: {
+  slot: TodaysSuggestionSlot;
+  timeZone?: string;
+}) {
   const t = useTranslations("todaysSuggestion.slot");
   return (
     <article className="rounded-3xl border border-dashed border-[color:var(--border-strong)] bg-surface p-4">
@@ -24,7 +30,7 @@ export function LockedSlotCard({ slot }: { slot: TodaysSuggestionSlot }) {
             icon={<Lock className="h-3 w-3" />}
           >
             {t("availableAt", {
-              time: formatIsoTime12h(slot.visibleAt),
+              time: formatIsoTime12h(slot.visibleAt, timeZone),
             })}
           </SuggestionStatusPill>
         }
@@ -49,7 +55,12 @@ export function LockedSlotCard({ slot }: { slot: TodaysSuggestionSlot }) {
   );
 }
 
-export function SlotProcessingCard({ slot }: { slot: TodaysSuggestionSlot }) {
+export function SlotProcessingCard({
+  slot,
+}: {
+  slot: TodaysSuggestionSlot;
+  timeZone?: string;
+}) {
   const t = useTranslations("todaysSuggestion.slot");
   const state = resolveProcessingState(slot.status);
   return (

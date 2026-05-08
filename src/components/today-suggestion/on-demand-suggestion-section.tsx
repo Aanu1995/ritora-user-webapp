@@ -20,6 +20,7 @@ type Props = {
   onRecord: (slot: TodaysSuggestionSlot) => void;
   onEdit: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail: (slot: TodaysSuggestionSlot) => void;
+  timeZone?: string;
 };
 
 export function OnDemandSuggestionSection({
@@ -29,6 +30,7 @@ export function OnDemandSuggestionSection({
   onRecord,
   onEdit,
   onShowDetail,
+  timeZone,
 }: Props) {
   const t = useTranslations("todaysSuggestion.onDemand");
   if (suggestions.length === 0) return null;
@@ -53,6 +55,7 @@ export function OnDemandSuggestionSection({
                 onRecord={onRecord}
                 onEdit={onEdit}
                 onShowDetail={onShowDetail}
+                timeZone={timeZone}
               />
             </li>
           );
@@ -70,6 +73,7 @@ function OnDemandCard({
   onRecord,
   onEdit,
   onShowDetail,
+  timeZone,
 }: {
   item: TodaysOnDemandSuggestion;
   slot: TodaysSuggestionSlot;
@@ -78,6 +82,7 @@ function OnDemandCard({
   onRecord: (slot: TodaysSuggestionSlot) => void;
   onEdit: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail: (slot: TodaysSuggestionSlot) => void;
+  timeZone?: string;
 }) {
   const t = useTranslations("todaysSuggestion.onDemand");
   const intent = item.suggestion.requestContext?.intent;
@@ -90,7 +95,7 @@ function OnDemandCard({
       </div>
       {item.status === "generating" || item.status === "failed" ? (
         <div className="space-y-2">
-          <SlotProcessingCard slot={slot} />
+          <SlotProcessingCard slot={slot} timeZone={timeZone} />
           {item.status === "failed" ? (
             <Button
               type="button"
@@ -131,6 +136,7 @@ function OnDemandCard({
             onRecord={onRecord}
             onEdit={onEdit}
             onShowDetail={onShowDetail}
+            timeZone={timeZone}
           />
         </div>
       )}

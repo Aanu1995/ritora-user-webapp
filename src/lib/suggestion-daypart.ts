@@ -18,13 +18,28 @@ export function formatSlotTime12h(slotTime: string): string {
   return `${display}:${minutes} ${suffix}`;
 }
 
-export function formatIsoTime12h(iso: string): string {
+export function formatIsoTime12h(iso: string, timeZone?: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
-  return formatSlotTime12h(formatLocalTimeInput(date));
+  return formatSlotTime12h(formatLocalTimeInput(date, timeZone));
 }
 
-export function formatLocalTimeInput(date = new Date()): string {
+export function formatLocalTimeInput(date = new Date(), timeZone?: string): string {
+  if (timeZone) {
+    try {
+      const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone,
+        hour: "2-digit",
+        minute: "2-digit",
+        hourCycle: "h23",
+      }).formatToParts(date);
+      const hour = parts.find((part) => part.type === "hour")?.value;
+      const minute = parts.find((part) => part.type === "minute")?.value;
+      if (hour && minute) return `${hour}:${minute}`;
+    } catch {
+      // Fall back to runtime-local formatting if the timezone is unavailable.
+    }
+  }
   return `${String(date.getHours()).padStart(2, "0")}:${String(
     date.getMinutes(),
   ).padStart(2, "0")}`;

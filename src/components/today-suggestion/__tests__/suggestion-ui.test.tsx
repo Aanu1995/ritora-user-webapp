@@ -449,6 +449,7 @@ describe("today suggestion UI contract", () => {
           applicationLog: applicationLog(),
           suggestion: suggestionInstance({ applicationLogId: "log-1" }),
         })}
+        timeZone="Europe/Stockholm"
       />,
     );
 
@@ -476,6 +477,9 @@ describe("today suggestion UI contract", () => {
     const user = userEvent.setup();
     const onResume = jest.fn();
     const onUpdateEndsAt = jest.fn();
+    const futureEndsAt = new Date();
+    futureEndsAt.setDate(futureEndsAt.getDate() + 2);
+    futureEndsAt.setHours(8, 0, 0, 0);
 
     renderWithProviders(
       <RoutineBreakBanner
@@ -483,7 +487,7 @@ describe("today suggestion UI contract", () => {
           id: "break-1",
           status: "active",
           startedAt: "2026-05-06T08:00:00.000Z",
-          endsAt: "2026-05-08T08:00:00.000Z",
+          endsAt: futureEndsAt.toISOString(),
           canResumeNow: true,
           message:
             "Your routine is paused. Ritora will not generate new skincare suggestions until you resume.",
@@ -582,6 +586,7 @@ describe("today suggestion UI contract", () => {
           slot: slot({ suggestion: suggestionInstance() }),
           existingLog: applicationLog(),
         }}
+        timeZone="Europe/Stockholm"
       />,
     );
 

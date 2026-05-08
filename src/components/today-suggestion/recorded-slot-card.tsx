@@ -23,15 +23,21 @@ type Props = {
   slot: TodaysSuggestionSlot;
   applicationLogId: string;
   onEdit?: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
+  timeZone?: string;
 };
 
-export function RecordedSlotCard({ slot, applicationLogId, onEdit }: Props) {
+export function RecordedSlotCard({
+  slot,
+  applicationLogId,
+  onEdit,
+  timeZone,
+}: Props) {
   const t = useTranslations("todaysSuggestion.slot");
   const suggestion = slot.suggestion!;
   const applicationLog = slot.applicationLog;
   const items = applicationLog?.items ?? [];
   const appliedAt = applicationLog?.appliedAt ?? slot.recording?.appliedAt;
-  const appliedTime = appliedAt ? formatIsoTime12h(appliedAt) : null;
+  const appliedTime = appliedAt ? formatIsoTime12h(appliedAt, timeZone) : null;
   const appliedCount = slot.recording?.appliedCount ?? items.length;
   const totalItems = slot.recording?.totalItems ?? suggestion.steps.length;
 
@@ -78,7 +84,7 @@ export function RecordedSlotCard({ slot, applicationLogId, onEdit }: Props) {
       </header>
 
       {items.length > 0 ? (
-        <RecordedApplicationList items={items} />
+        <RecordedApplicationList items={items} timeZone={timeZone} />
       ) : (
         <ul className="flex flex-col gap-2">
           {suggestion.steps
@@ -93,7 +99,11 @@ export function RecordedSlotCard({ slot, applicationLogId, onEdit }: Props) {
       )}
 
       {slot.recording?.hasBeenEdited ? (
-        <EditedNotice applicationLog={applicationLog} items={items} />
+        <EditedNotice
+          applicationLog={applicationLog}
+          items={items}
+          timeZone={timeZone}
+        />
       ) : null}
 
       {applicationLog?.generalNotes ? (
@@ -124,7 +134,13 @@ export function RecordedSlotCard({ slot, applicationLogId, onEdit }: Props) {
   );
 }
 
-function RecordedApplicationList({ items }: { items: ApplicationLogItem[] }) {
+function RecordedApplicationList({
+  items,
+  timeZone,
+}: {
+  items: ApplicationLogItem[];
+  timeZone?: string;
+}) {
   return (
     <ul className="flex flex-col gap-2">
       {items
@@ -132,20 +148,26 @@ function RecordedApplicationList({ items }: { items: ApplicationLogItem[] }) {
         .sort((a, b) => a.stepOrder - b.stepOrder)
         .map((item) => (
           <li key={item.id}>
-            <RecordedApplicationItem item={item} />
+            <RecordedApplicationItem item={item} timeZone={timeZone} />
           </li>
         ))}
     </ul>
   );
 }
 
-function RecordedApplicationItem({ item }: { item: ApplicationLogItem }) {
+function RecordedApplicationItem({
+  item,
+  timeZone,
+}: {
+  item: ApplicationLogItem;
+  timeZone?: string;
+}) {
   const t = useTranslations("todaysSuggestion.slot.recordedItem");
   const product = resolveAppliedProduct(item);
   const suggestedName = [item.productBrand, item.productName]
     .filter(Boolean)
     .join(" ");
-  const detailParts = buildItemDetailParts(item, suggestedName, t);
+  const detailParts = buildItemDetailParts(item, suggestedName, t, timeZone);
   const MarkerIcon = markerIconByStatus[item.status];
 
   return (
@@ -216,15 +238,19 @@ function RecordedApplicationItem({ item }: { item: ApplicationLogItem }) {
 function EditedNotice({
   applicationLog,
   items,
+  timeZone,
 }: {
   applicationLog: ApplicationLog | null | undefined;
   items: ApplicationLogItem[];
+  timeZone?: string;
 }) {
   const t = useTranslations("todaysSuggestion.slot");
   const substitution = findSubstitutionSummary(items);
   const parts = [
     applicationLog?.lastEditedAt
-      ? t("editedAt", { time: formatIsoTime12h(applicationLog.lastEditedAt) })
+      ? t("editedAt", {
+          time: formatIsoTime12h(applicationLog.lastEditedAt, timeZone),
+        })
       : null,
     substitution
       ? t("editedSubstitutionSummary", substitution)
@@ -251,6 +277,7 @@ function buildItemDetailParts(
   item: ApplicationLogItem,
   suggestedName: string,
   t: ReturnType<typeof useTranslations>,
+  timeZone?: string,
 ): string[] {
   const parts: string[] = [];
 
@@ -265,7 +292,9 @@ function buildItemDetailParts(
   }
 
   if (item.appliedAt) {
-    parts.push(t("itemAppliedAt", { time: formatIsoTime12h(item.appliedAt) }));
+    parts.push(
+      t("itemAppliedAt", { time: formatIsoTime12h(item.appliedAt, timeZone) }),
+    );
   }
 
   return parts;

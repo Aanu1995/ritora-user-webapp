@@ -14,6 +14,7 @@ import { SuggestionDetailDrawer } from "@/components/today-suggestion/suggestion
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { useSuggestionHistoryDay } from "@/hooks/use-suggestions";
+import { useAuthStore } from "@/stores/auth-store";
 import type { ApplicationLog } from "@/types/application-tracking";
 import type {
   SuggestionInstance,
@@ -25,6 +26,7 @@ export default function HistoryDayPage() {
   const t = useTranslations("history.day");
   const tSummary = useTranslations("history.dayCard");
   const day = useSuggestionHistoryDay(params.date);
+  const userTimeZone = useAuthStore((state) => state.user?.timeZone) ?? "UTC";
   const [editTarget, setEditTarget] = useState<{
     slot: TodaysSuggestionSlot;
     log: ApplicationLog;
@@ -124,6 +126,7 @@ export default function HistoryDayPage() {
           setEditTarget(null);
           void day.refetch();
         }}
+        timeZone={userTimeZone}
       />
       <SuggestionDetailDrawer
         open={detailTarget !== null}

@@ -288,7 +288,7 @@ export default function TodaysSuggestionPage() {
           onGrant={quickSuggestionFlow.grantAiConsentForScheduled}
         />
 
-        <DaySummaryPills data={data} />
+        <DaySummaryPills data={data} timeZone={userTimeZone} />
 
         <TodayOnDemandSuggestionSection
           suggestions={data.onDemandSuggestions}
@@ -299,6 +299,7 @@ export default function TodaysSuggestionPage() {
           onShowDetail={(target) =>
             target.suggestion ? setDetailSuggestion(target.suggestion) : undefined
           }
+          timeZone={userTimeZone}
         />
 
         {data.slots.length > 0 && data.slots.every((s) => !s.isVisible) ? (
@@ -328,6 +329,7 @@ export default function TodaysSuggestionPage() {
                         quickSuggestionFlow.aiConsentMissing &&
                         slot.suggestion?.requestSource === "scheduled"
                       }
+                      timeZone={userTimeZone}
                     />
                   </li>
                 ))}
@@ -346,6 +348,7 @@ export default function TodaysSuggestionPage() {
         onOpenChange={(open) => (open ? null : closeRecord())}
         mode={recordSlot ? { kind: "record", slot: recordSlot } : null}
         onSaved={closeRecord}
+        timeZone={userTimeZone}
       />
 
       <RecordApplicationSheet
@@ -361,6 +364,7 @@ export default function TodaysSuggestionPage() {
             : null
         }
         onSaved={closeEdit}
+        timeZone={userTimeZone}
       />
 
       <SuggestionDetailDrawer

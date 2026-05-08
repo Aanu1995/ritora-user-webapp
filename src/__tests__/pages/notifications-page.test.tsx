@@ -81,6 +81,7 @@ function notification(
   id: string,
   readAt: string | null,
   kind: InAppNotification["kind"] = "photo_reminder",
+  payload: InAppNotification["payload"] = null,
 ): InAppNotification {
   return {
     id,
@@ -88,7 +89,7 @@ function notification(
     title_key: "skinJournal.notifications.photoReminder.title",
     body_key: "skinJournal.notifications.photoReminder.body",
     severity: "info",
-    payload: null,
+    payload,
     deep_link: "/journal/upload",
     read_at: readAt,
     created_at: "2026-04-29T08:00:00.000Z",
@@ -166,6 +167,24 @@ describe("NotificationsPage", () => {
 
     expect(screen.getByText(/today's suggestion/i)).toBeInTheDocument();
     expect(screen.queryByText(/^skin journal$/i)).not.toBeInTheDocument();
+  });
+
+  it("renders product expiry notifications with shelf source and payload copy", () => {
+    mockUnreadNotifications = [
+      notification("product-1", null, "product_nearing_expiry", {
+        productName: "CeraVe Retinol Serum",
+        expiresAt: "2026-05-10T00:00:00.000Z",
+        daysUntilExpiry: 9,
+      }),
+    ];
+    mockReadNotifications = [];
+    mockUnreadCount = 1;
+
+    renderWithProviders(<NotificationsPage />);
+
+    expect(screen.getByText(/shelf/i)).toBeInTheDocument();
+    expect(screen.getByText(/cerave retinol serum/i)).toBeInTheDocument();
+    expect(screen.getByText(/9 days/i)).toBeInTheDocument();
   });
 
   it("renders the notification preferences action in the populated header", () => {

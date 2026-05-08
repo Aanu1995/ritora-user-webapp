@@ -28,6 +28,7 @@ type Props = {
   onEdit?: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail?: (slot: TodaysSuggestionSlot) => void;
   personalizationOff?: boolean;
+  timeZone?: string;
 };
 
 export function SuggestionSlotCard({
@@ -36,15 +37,16 @@ export function SuggestionSlotCard({
   onEdit,
   onShowDetail,
   personalizationOff = false,
+  timeZone,
 }: Props) {
   const t = useTranslations("todaysSuggestion.slot");
 
   if (!slot.isVisible) {
-    return <LockedSlotCard slot={slot} />;
+    return <LockedSlotCard slot={slot} timeZone={timeZone} />;
   }
 
   if (!slot.suggestion || slot.suggestion.generationStatus !== "ready") {
-    return <SlotProcessingCard slot={slot} />;
+    return <SlotProcessingCard slot={slot} timeZone={timeZone} />;
   }
 
   const suggestion = slot.suggestion;
@@ -70,6 +72,7 @@ export function SuggestionSlotCard({
         slot={slot}
         applicationLogId={applicationLogId!}
         onEdit={onEdit}
+        timeZone={timeZone}
       />
     );
   }

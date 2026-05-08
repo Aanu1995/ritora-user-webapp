@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QueryKey } from "@/constants/query-keys";
 import { useAuthEnabled } from "@/hooks/use-auth-enabled";
 import { ApiError } from "@/lib/api-error";
+import { revokeCurrentBrowserPushSubscription } from "@/lib/browser-push";
 import {
   forgotPassword,
   getActiveSessions,
@@ -106,7 +107,12 @@ export function useLogout() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => logoutRequest(),
+    mutationFn: async () => {
+      await revokeCurrentBrowserPushSubscription({
+        disablePushChannelWhenNoSubscriptionsRemain: true,
+      }).catch(() => undefined);
+      return logoutRequest();
+    },
     onSuccess: () => {
       clearClientSession(queryClient, logoutStore);
     },
@@ -121,7 +127,12 @@ export function useLogoutAll() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => logoutAll(),
+    mutationFn: async () => {
+      await revokeCurrentBrowserPushSubscription({
+        disablePushChannelWhenNoSubscriptionsRemain: true,
+      }).catch(() => undefined);
+      return logoutAll();
+    },
     onSuccess: () => {
       clearClientSession(queryClient, logoutStore);
     },
