@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { useShelfProducts } from "@/hooks/use-shelf";
 import { useShelfDateContext } from "@/hooks/use-shelf-time-zone";
@@ -118,8 +119,17 @@ function ProductThumb({ product }: { product: ShelfProduct }) {
   return (
     <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-border bg-accent-soft/40 text-xs font-bold text-accent-strong">
       {imageUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+        <SmoothImage
+          src={imageUrl}
+          alt=""
+          sizes="36px"
+          className="h-full w-full rounded-lg"
+          fallback={
+            <span className="grid h-full w-full place-items-center">
+              {product.identity.category.slice(0, 1).toUpperCase()}
+            </span>
+          }
+        />
       ) : (
         product.identity.category.slice(0, 1).toUpperCase()
       )}

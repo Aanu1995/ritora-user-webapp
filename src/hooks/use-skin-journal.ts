@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-query";
 import { QueryKey } from "@/constants/query-keys";
 import { useAuthEnabled } from "@/hooks/use-auth-enabled";
+import { upsertTodayWithProgress } from "@/hooks/use-skin-journal-upload";
 import { invalidateAppNavBadges } from "@/lib/query-invalidation";
 import {
   acknowledgeEvent,
@@ -35,7 +36,6 @@ import {
   retryAnalysis,
   startSimplification,
   updateEntry,
-  upsertToday,
 } from "@/services/skin-journal.service";
 import {
   PhotoFilterStaticId,
@@ -194,8 +194,7 @@ function invalidateAll(qc: ReturnType<typeof useQueryClient>) {
 export function useUpsertToday() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: { payload: UpsertEntryPayload; photo?: File | null }) =>
-      upsertToday(input.payload, input.photo ?? null),
+    mutationFn: upsertTodayWithProgress,
     onSuccess: () => invalidateAll(qc),
   });
 }

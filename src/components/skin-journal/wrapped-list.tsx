@@ -1,10 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Download, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import { buildBackendUrl } from "@/lib/media-url";
 import { cn } from "@/lib/utils";
 import type { Wrapped } from "@/types/skin-journal";
@@ -81,13 +81,11 @@ export function WrappedList({ wrapped, minPhotos = 3 }: WrappedListProps) {
                   }}
                 >
                   {url ? (
-                    <Image
-                      src={buildBackendUrl(url) ?? ""}
+                    <SmoothImage
+                      src={buildBackendUrl(url) ?? url}
                       alt=""
-                      fill
-                      unoptimized
                       sizes="120px"
-                      className="object-cover"
+                      className="h-full w-full"
                     />
                   ) : null}
                 </div>

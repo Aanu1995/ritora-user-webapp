@@ -26,6 +26,7 @@ import {
   type SimplificationEvent,
   type UpsertEntryPayload,
 } from "@/types/skin-journal";
+import type { UploadProgressOptions } from "@/lib/upload-progress";
 
 function buildEntryFormData(
   payload: UpsertEntryPayload,
@@ -123,10 +124,16 @@ export async function listPhotoDates(filters: {
 export async function upsertToday(
   payload: UpsertEntryPayload,
   photo?: File | null,
+  options: UploadProgressOptions = {},
 ): Promise<JournalEntry> {
+  const config = options.onUploadProgress
+    ? { onUploadProgress: options.onUploadProgress }
+    : undefined;
+
   return postMultipartRequest(
     ApiPath.SkinJournalToday,
     buildEntryFormData(payload, photo),
+    config,
   );
 }
 

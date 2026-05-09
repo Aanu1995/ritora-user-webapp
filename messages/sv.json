@@ -3719,7 +3719,7 @@
       },
       "recoverable": {
         "title": "Inget schemalagt just nu",
-        "body": "Din nästa rutintid idag är kl. {nextSlotLabel}. Medan du väntar, logga ett foto så att AI har färska data när det genererar.",
+        "body": "Din nästa rutin är {nextSlotLabel}. Medan du väntar, logga ett foto så att AI har färska data när det genererar.",
         "ctaPhoto": "Lägg till dagens foto",
         "ctaAddSlot": "Lägg till rutintid"
       }

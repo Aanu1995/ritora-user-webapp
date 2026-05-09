@@ -1,9 +1,9 @@
 "use client";
 
 import { ArrowDown, ArrowUp, ExternalLink } from "lucide-react";
-import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import { cn } from "@/lib/utils";
 import { buildBackendUrl } from "@/lib/media-url";
 import {
@@ -183,13 +183,11 @@ export function InsightEntryThumbs({
               className="group flex h-16 w-14 shrink-0 flex-col overflow-hidden rounded-xl border border-border bg-surface-muted text-xs font-medium text-muted transition hover:border-accent"
             >
               {entry.photo_url ? (
-                <Image
+                <SmoothImage
                   src={buildBackendUrl(entry.photo_url) ?? entry.photo_url}
                   alt={shortDate.format(new Date(`${entry.date}T00:00:00`))}
-                  width={56}
-                  height={40}
-                  unoptimized
-                  className="h-10 w-full object-cover"
+                  sizes="56px"
+                  className="h-10 w-full"
                 />
               ) : (
                 <span className="h-10 w-full bg-background/70" />

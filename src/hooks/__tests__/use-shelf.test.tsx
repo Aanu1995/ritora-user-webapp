@@ -31,6 +31,7 @@ jest.mock('@/services/shelf.service', () => ({
   archiveProduct: jest.fn(),
   archiveProducts: jest.fn(),
   countProductsByStat: jest.fn(),
+  createProductWithImage: jest.fn(),
   createProduct: jest.fn(),
   extractProductFromImages: jest.fn(),
   listProducts: jest.fn(),
@@ -40,6 +41,15 @@ jest.mock('@/services/shelf.service', () => ({
   restoreProduct: jest.fn(),
   restoreProducts: jest.fn(),
   updateProduct: jest.fn(),
+  uploadProductImage: jest.fn(),
+  uploadProductImageForProduct: jest.fn(),
+}));
+
+jest.mock('sonner', () => ({
+  toast: {
+    loading: jest.fn(() => 'upload-toast'),
+    dismiss: jest.fn(),
+  },
 }));
 
 import {
@@ -422,9 +432,14 @@ describe('shelf mutations', () => {
       });
     });
 
-    expect(extractProductFromImages).toHaveBeenCalledWith({
-      images: [productImage, labelImage],
-      heroImageIndex: 0,
-    });
+    expect(extractProductFromImages).toHaveBeenCalledWith(
+      {
+        images: [productImage, labelImage],
+        heroImageIndex: 0,
+      },
+      {
+        onUploadProgress: expect.any(Function),
+      },
+    );
   });
 });

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import { cn } from "@/lib/utils";
 import { buildBackendUrl } from "@/lib/media-url";
 
@@ -40,13 +40,11 @@ export function PhotoFrame({
       style={{ background: TONES[fallbackTone] }}
     >
       {absoluteUrl ? (
-        <Image
+        <SmoothImage
           src={absoluteUrl}
           alt={alt}
-          fill
+          className="h-full w-full"
           sizes="(max-width: 640px) 100vw, 480px"
-          unoptimized
-          className="object-cover"
         />
       ) : (
         <div

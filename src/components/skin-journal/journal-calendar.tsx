@@ -3,9 +3,9 @@
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { buildBackendUrl } from "@/lib/media-url";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import {
   Select,
   SelectContent,
@@ -258,13 +258,11 @@ export function JournalCalendar({
                     state === "pending" && "animate-pulse",
                   )}
                 >
-                  <Image
-                    src={buildBackendUrl(day.thumbnail_url) ?? ""}
+                  <SmoothImage
+                    src={buildBackendUrl(day.thumbnail_url) ?? day.thumbnail_url}
                     alt=""
-                    fill
-                    unoptimized
                     sizes="48px"
-                    className="object-cover"
+                    className="h-full w-full"
                   />
                 </span>
               ) : day?.has_photo === false && day?.entry_id ? (

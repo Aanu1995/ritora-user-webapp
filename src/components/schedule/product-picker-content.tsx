@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { SmoothImage } from '@/components/ui/smooth-image';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useShelfProducts } from '@/hooks/use-shelf';
 import { useShelfDateContext } from '@/hooks/use-shelf-time-zone';
@@ -144,11 +145,16 @@ export function ProductPickerContent({
                   >
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-surface-muted">
                       {summary.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
+                        <SmoothImage
                           src={summary.imageUrl}
                           alt=""
-                          className="h-full w-full object-cover"
+                          sizes="40px"
+                          className="h-full w-full rounded-lg"
+                          fallback={
+                            <span className="text-xs text-muted">
+                              {summary.category.slice(0, 1).toUpperCase()}
+                            </span>
+                          }
                         />
                       ) : (
                         <span className="text-xs text-muted">

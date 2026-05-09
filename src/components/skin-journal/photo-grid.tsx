@@ -2,11 +2,11 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { buildBackendUrl } from "@/lib/media-url";
 import { useAutoLoadMore } from "@/hooks/use-auto-load-more";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import { formatJournalShortDate } from "@/components/skin-journal/journal-date";
 import type { JournalEntry } from "@/types/skin-journal";
 
@@ -57,13 +57,11 @@ export function PhotoGrid({
               )}
             >
               {url ? (
-                <Image
+                <SmoothImage
                   src={url}
                   alt={entry.entry_date}
-                  fill
-                  unoptimized
+                  className="h-full w-full"
                   sizes="(max-width: 640px) 50vw, 240px"
-                  className="object-cover"
                 />
               ) : null}
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/70 to-transparent px-2.5 py-2 text-white">

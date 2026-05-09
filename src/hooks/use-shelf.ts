@@ -38,6 +38,10 @@ import {
   type ShelfProduct,
   type ShelfProductDraft,
 } from "@/types/shelf";
+import {
+  UploadProgressToastKind,
+  withUploadProgressToast,
+} from "@/lib/upload-progress-toast";
 
 type ShelfQueryClient = ReturnType<typeof useQueryClient>;
 type ShelfProductMutationFn<TVariables> = (
@@ -50,7 +54,7 @@ const MISSING_PRODUCT_ID_ERROR = "MISSING_PRODUCT_ID";
 function invalidateShelfQueries(queryClient: ShelfQueryClient) {
   void queryClient.invalidateQueries({ queryKey: [QueryKey.Shelf] });
   // Focus-product ingredient analyses depend on each product's INCI data;
-  // any mutation that changes a shelf product must bust them too.
+  // Shelf-product mutations must bust the dependent suggestion caches too.
   void queryClient.invalidateQueries({
     queryKey: [QueryKey.IngredientsAnalysis],
   });
@@ -203,7 +207,11 @@ export function useUpdateProduct() {
 
 export function useUploadProductImage() {
   return useMutation({
-    mutationFn: (file: File) => uploadProductImage(file),
+    mutationFn: (file: File) =>
+      withUploadProgressToast(
+        UploadProgressToastKind.ProductImage,
+        (onUploadProgress) => uploadProductImage(file, { onUploadProgress }),
+      ),
   });
 }
 
@@ -213,7 +221,12 @@ export function useCreateProductWithImage() {
   return useMutation(
     createShelfProductMutationOptions(
       queryClient,
-      (input: CreateProductWithImageArgs) => createProductWithImage(input),
+      (input: CreateProductWithImageArgs) =>
+        withUploadProgressToast(
+          UploadProgressToastKind.ProductImage,
+          (onUploadProgress) =>
+            createProductWithImage(input, { onUploadProgress }),
+        ),
     ),
   );
 }
@@ -225,7 +238,11 @@ export function useUploadProductImageForProduct() {
     createShelfProductMutationOptions(
       queryClient,
       ({ id, file }: UploadProductImageForProductArgs) =>
-        uploadProductImageForProduct(id, file),
+        withUploadProgressToast(
+          UploadProgressToastKind.ProductImage,
+          (onUploadProgress) =>
+            uploadProductImageForProduct(id, file, { onUploadProgress }),
+        ),
     ),
   );
 }
@@ -269,7 +286,11 @@ export function useExtractProductFromImages() {
   return useMutation({
     mutationKey: [QueryKey.PhotoExtract],
     mutationFn: (input: { images: File[]; heroImageIndex: number }) =>
-      extractProductFromImages(input),
+      withUploadProgressToast(
+        UploadProgressToastKind.ProductPhotos,
+        (onUploadProgress) =>
+          extractProductFromImages(input, { onUploadProgress }),
+      ),
   });
 }
 

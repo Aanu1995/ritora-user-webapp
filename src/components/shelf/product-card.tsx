@@ -1,10 +1,10 @@
 'use client';
 
 import { Calendar, Check, Clock, Droplet } from 'lucide-react';
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import type { MouseEvent } from 'react';
 import { ProductIllustration } from './product-illustration';
+import { SmoothImage } from '@/components/ui/smooth-image';
 import { cn } from '@/lib/utils';
 import {
   deriveShelfLife,
@@ -98,13 +98,20 @@ export function ProductCard({
     >
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-surface-muted">
         {imageUrl ? (
-          <Image
+          <SmoothImage
             src={imageUrl}
             alt=""
-            fill
-            unoptimized
             sizes="(max-width: 640px) 50vw, (max-width: 960px) 33vw, 25vw"
-            className="object-cover"
+            className="h-full w-full"
+            fallback={
+              <span className="flex h-full w-full items-center justify-center">
+                <ProductIllustration
+                  category={product.identity.category}
+                  brand={product.identity.brand}
+                  className="h-[70%] w-auto"
+                />
+              </span>
+            }
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">

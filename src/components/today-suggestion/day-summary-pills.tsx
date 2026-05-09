@@ -12,9 +12,8 @@ import {
 import { useTodayEntry } from "@/hooks/use-skin-journal";
 import { cn } from "@/lib/utils";
 import { formatIsoTime12h } from "@/lib/suggestion-daypart";
-import type {
-  TodaysSuggestionResponse,
-} from "@/types/suggestions";
+import { buildSuggestionClimatePills } from "@/components/today-suggestion/suggestion-climate-pills";
+import type { TodaysSuggestionResponse } from "@/types/suggestions";
 
 type Props = {
   data: TodaysSuggestionResponse;
@@ -23,8 +22,13 @@ type Props = {
 
 export function DaySummaryPills({ data, timeZone }: Props) {
   const t = useTranslations("todaysSuggestion.summary");
+  const tClimate = useTranslations("todaysSuggestion.climate");
   const todayEntry = useTodayEntry();
   const entry = todayEntry.data?.entry ?? null;
+  const climatePills = buildSuggestionClimatePills(
+    data.environmentSummary,
+    tClimate,
+  ).filter((pill) => pill.key !== "air");
 
   const counts = data.slots.reduce(
     (acc, slot) => {
@@ -76,6 +80,11 @@ export function DaySummaryPills({ data, timeZone }: Props) {
           {t("logPhoto")}
         </PillLink>
       )}
+      {climatePills.map((pill) => (
+        <Pill key={pill.key} tone="neutral" icon={pill.icon}>
+          {pill.label}
+        </Pill>
+      ))}
     </div>
   );
 }

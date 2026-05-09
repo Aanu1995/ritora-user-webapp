@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { MessageSquareText, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import { cn } from "@/lib/utils";
 import { SuggestionProvenanceChip } from "@/components/today-suggestion/mode-badge";
 import { productCategoryEmoji } from "@/components/today-suggestion/product-category-icon";
@@ -73,13 +73,16 @@ export function SuggestionStepRow({ step, compactApplied = false }: Props) {
 
       <div className="grid h-12 w-10 shrink-0 place-items-center overflow-hidden rounded-md bg-surface text-base">
         {productImage ? (
-          <Image
+          <SmoothImage
             src={productImage}
             alt=""
-            width={40}
-            height={48}
-            unoptimized
-            className="h-full w-full object-cover"
+            className="h-12 w-10 rounded-md"
+            sizes="40px"
+            fallback={
+              <span className="grid h-full w-full place-items-center" aria-hidden>
+                {productCategoryEmoji(step.stepLabel)}
+              </span>
+            }
           />
         ) : (
           <span aria-hidden>{productCategoryEmoji(step.stepLabel)}</span>

@@ -3716,7 +3716,7 @@
       },
       "recoverable": {
         "title": "Nothing scheduled for now",
-        "body": "Your next routine time today is {nextSlotLabel}. While you wait, log a photo so the AI has fresh data when it generates.",
+        "body": "Your next routine is {nextSlotLabel}. While you wait, log a photo so the AI has fresh data when it generates.",
         "ctaPhoto": "Add today's photo",
         "ctaAddSlot": "Add routine time"
       }

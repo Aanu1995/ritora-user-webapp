@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import {
   Camera,
   RotateCcw,
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import { PhotoCropDialog } from "@/components/skin-journal/photo-crop-dialog";
 import { Chip } from "./chip";
 import {
@@ -126,12 +126,10 @@ export function JournalPhotoUpload({
       {photo && previewUrl ? (
         <div>
           <div className="relative aspect-square mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl border border-border">
-            <Image
+            <SmoothImage
               src={previewUrl}
               alt={t("photoPreviewAlt")}
-              fill
-              unoptimized
-              className="object-cover"
+              className="h-full w-full"
             />
             <div className="absolute left-2.5 top-2.5">
               <Chip variant="accent" selected>
@@ -187,12 +185,10 @@ export function JournalPhotoUpload({
       ) : existingPhotoUrl ? (
         <div>
           <div className="relative aspect-square mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl border border-border">
-            <Image
+            <SmoothImage
               src={existingPhotoUrl}
               alt={existingPhotoAlt ?? t("photoPreviewAlt")}
-              fill
-              unoptimized
-              className="object-cover"
+              className="h-full w-full"
             />
             <div className="absolute left-2.5 top-2.5">
               <Chip variant="accent" selected>

@@ -6,6 +6,7 @@ import {
   ApplicationProductPicker,
   type ApplicationSelectableProduct,
 } from "@/components/today-suggestion/application-product-picker";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import {
   Tooltip,
   TooltipContent,
@@ -279,11 +280,18 @@ function ProductImageTile({
 }) {
   if (imageUrl) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
+      <SmoothImage
         src={imageUrl}
         alt={label || ""}
-        className="h-12 w-10 shrink-0 rounded-md border border-border bg-surface object-cover"
+        sizes="40px"
+        className="h-12 w-10 shrink-0 rounded-md border border-border bg-surface"
+        fallback={
+          <span className="grid h-full w-full place-items-center" aria-hidden>
+            {label.trim().charAt(0).toUpperCase() || (
+              <Package className="h-4 w-4" />
+            )}
+          </span>
+        }
       />
     );
   }

@@ -3,8 +3,8 @@
 import { Calendar, Check, Clock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { MouseEvent } from 'react';
-import Image from 'next/image';
 import { ProductIllustration } from './product-illustration';
+import { SmoothImage } from '@/components/ui/smooth-image';
 import { cn } from '@/lib/utils';
 import {
   deriveShelfLife,
@@ -129,13 +129,20 @@ function ProductListRow({
 
       <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-surface-muted">
         {imageUrl ? (
-          <Image
+          <SmoothImage
             src={imageUrl}
             alt=""
-            fill
-            unoptimized
             sizes="48px"
-            className="object-cover"
+            className="h-full w-full rounded-xl"
+            fallback={
+              <span className="flex h-full w-full items-center justify-center">
+                <ProductIllustration
+                  category={product.identity.category}
+                  brand={product.identity.brand}
+                  className="h-[72%] w-auto"
+                />
+              </span>
+            }
           />
         ) : (
           <ProductIllustration

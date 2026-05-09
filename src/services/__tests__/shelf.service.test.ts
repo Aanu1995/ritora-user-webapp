@@ -150,16 +150,17 @@ describe("shelf.service", () => {
     const imageFile = new File(["photo"], "product.jpg", {
       type: "image/jpeg",
     });
+    const onUploadProgress = jest.fn();
     (postMultipartRequest as jest.Mock).mockResolvedValue({
       imageUrl: "https://cdn.example.com/product-images/processed/photo.webp",
     });
 
-    const result = await uploadProductImage(imageFile);
+    const result = await uploadProductImage(imageFile, { onUploadProgress });
 
     expect(postMultipartRequest).toHaveBeenCalledWith(
       "/inventory/products/upload-image",
       expect.any(FormData),
-      expect.objectContaining({ timeout: 30000 }),
+      expect.objectContaining({ timeout: 30000, onUploadProgress }),
     );
 
     const uploadCall = (postMultipartRequest as jest.Mock).mock.calls[0];
@@ -217,14 +218,18 @@ describe("shelf.service", () => {
       status: ShelfStatus.Active,
       provenance: DataProvenance.PhotoLookup,
     };
+    const onUploadProgress = jest.fn();
     (postMultipartRequest as jest.Mock).mockResolvedValue({ id: "product-1" });
 
-    const result = await createProductWithImage({ draft, file: imageFile });
+    const result = await createProductWithImage(
+      { draft, file: imageFile },
+      { onUploadProgress },
+    );
 
     expect(postMultipartRequest).toHaveBeenCalledWith(
       "/inventory/products/with-image",
       expect.any(FormData),
-      expect.objectContaining({ timeout: 30000 }),
+      expect.objectContaining({ timeout: 30000, onUploadProgress }),
     );
 
     const uploadCall = (postMultipartRequest as jest.Mock).mock.calls[0];
@@ -238,14 +243,19 @@ describe("shelf.service", () => {
     const imageFile = new File(["photo"], "product.jpg", {
       type: "image/jpeg",
     });
+    const onUploadProgress = jest.fn();
     (postMultipartRequest as jest.Mock).mockResolvedValue({ id: "product-1" });
 
-    const result = await uploadProductImageForProduct("product-1", imageFile);
+    const result = await uploadProductImageForProduct(
+      "product-1",
+      imageFile,
+      { onUploadProgress },
+    );
 
     expect(postMultipartRequest).toHaveBeenCalledWith(
       "/inventory/products/product-1/upload-image",
       expect.any(FormData),
-      expect.objectContaining({ timeout: 30000 }),
+      expect.objectContaining({ timeout: 30000, onUploadProgress }),
     );
 
     const uploadCall = (postMultipartRequest as jest.Mock).mock.calls[0];
@@ -302,17 +312,21 @@ describe("shelf.service", () => {
     const directionsImage = new File(["directions"], "directions.jpg", {
       type: "image/jpeg",
     });
+    const onUploadProgress = jest.fn();
     (postMultipartRequest as jest.Mock).mockResolvedValue(null);
 
-    await extractProductFromImages({
-      images: [productImage, ingredientImage, directionsImage],
-      heroImageIndex: 2,
-    });
+    await extractProductFromImages(
+      {
+        images: [productImage, ingredientImage, directionsImage],
+        heroImageIndex: 2,
+      },
+      { onUploadProgress },
+    );
 
     expect(postMultipartRequest).toHaveBeenCalledWith(
       "/catalogue/products/extract-from-images",
       expect.any(FormData),
-      expect.objectContaining({ timeout: 75000 }),
+      expect.objectContaining({ timeout: 75000, onUploadProgress }),
     );
 
     const body = (postMultipartRequest as jest.Mock).mock

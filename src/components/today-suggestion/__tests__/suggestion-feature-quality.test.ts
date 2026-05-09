@@ -173,4 +173,18 @@ describe("Today's Suggestion frontend quality guardrails", () => {
 
     expect(violations).toEqual([]);
   });
+
+  it("keeps the no-current-routine message valid when the next routine is tomorrow", () => {
+    const messages = JSON.parse(
+      readSource(join(process.cwd(), "messages/en.json")),
+    ) as {
+      todaysSuggestion: {
+        empty: { recoverable: { body: string } };
+      };
+    };
+
+    expect(messages.todaysSuggestion.empty.recoverable.body).not.toMatch(
+      /today is \{nextSlotLabel\}/i,
+    );
+  });
 });

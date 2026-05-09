@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import { useRef } from 'react';
 import { ImagePlus, RefreshCw, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ProductFormReviewFields } from '../product-form-body';
 import { ProductIllustration } from '../product-illustration';
 import { Button } from '@/components/ui/button';
+import { SmoothImage } from '@/components/ui/smooth-image';
 import {
   Select,
   SelectContent,
@@ -166,13 +166,11 @@ function PhotoUploadPreview({
           : 'border-border'
       }`}
     >
-      <Image
+      <SmoothImage
         src={imageUrl}
         alt={`${identity.brand} ${identity.name}`.trim() || tField('name')}
-        fill
-        unoptimized
         sizes="160px"
-        className="object-cover"
+        className="h-full w-full"
       />
     </div>
   ) : (
@@ -202,14 +200,11 @@ function ReadonlyPhoto({
   return (
     <div className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-surface-muted">
       {imageUrl ? (
-        <Image
+        <SmoothImage
           src={imageUrl}
           alt={`${identity.brand} ${identity.name}`.trim() || tField('name')}
-          width={320}
-          height={320}
-          unoptimized
           sizes="160px"
-          className="h-full w-full object-cover"
+          className="h-full w-full"
         />
       ) : (
         <ProductIllustration

@@ -51,6 +51,13 @@ jest.mock("@/lib/query-invalidation", () => ({
   invalidateAppNavBadges: jest.fn(),
 }));
 
+jest.mock("sonner", () => ({
+  toast: {
+    loading: jest.fn(() => "upload-toast"),
+    dismiss: jest.fn(),
+  },
+}));
+
 jest.mock("@/services/skin-journal.service", () => ({
   acknowledgeEvent: jest.fn(),
   acknowledgeSimplification: jest.fn(),
@@ -218,6 +225,7 @@ describe("useSkinJournal hooks", () => {
     expect(journalService.upsertToday).toHaveBeenCalledWith(
       { is_pre_routine: true },
       photo,
+      { onUploadProgress: expect.any(Function) },
     );
     expect(journalService.updateEntry).toHaveBeenCalledWith("entry-1", {
       complaint_note: "tight",

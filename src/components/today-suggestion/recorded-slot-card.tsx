@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { Check, CircleSlash, Info, Pencil, Repeat2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import { formatIsoTime12h, formatSlotTime12h } from "@/lib/suggestion-daypart";
 import { cn } from "@/lib/utils";
 import { SuggestionDaypartIcon } from "@/components/today-suggestion/daypart-icon";
@@ -199,13 +199,19 @@ function RecordedApplicationItem({
 
       <div className="grid h-12 w-10 shrink-0 place-items-center overflow-hidden rounded-md bg-surface text-base">
         {product.imageUrl ? (
-          <Image
+          <SmoothImage
             src={product.imageUrl}
             alt=""
-            width={40}
-            height={48}
-            unoptimized
-            className="h-full w-full object-cover"
+            className="h-12 w-10 rounded-md"
+            sizes="40px"
+            fallback={
+              <span
+                className="grid h-full w-full place-items-center"
+                aria-hidden
+              >
+                {productCategoryEmoji(product.category)}
+              </span>
+            }
           />
         ) : (
           <span aria-hidden>{productCategoryEmoji(product.category)}</span>

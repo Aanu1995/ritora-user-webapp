@@ -1,10 +1,10 @@
 'use client';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useState } from 'react';
 import { ProductIllustration } from '@/components/shelf/product-illustration';
+import { SmoothImage } from '@/components/ui/smooth-image';
 import { cn } from '@/lib/utils';
 import type { ProductCategory } from '@/types/shelf';
 
@@ -61,13 +61,20 @@ export function ProductImageCarousel({
       aria-roledescription="carousel"
     >
       {hasImages ? (
-        <Image
+        <SmoothImage
           src={imageUrls[index]}
           alt={`${brand} ${productName}`}
-          fill
-          unoptimized
           sizes="(max-width: 820px) 100vw, 50vw"
-          className="object-cover"
+          className="h-full w-full"
+          fallback={
+            <span className="flex h-full w-full items-center justify-center">
+              <ProductIllustration
+                brand={brand}
+                category={category}
+                className="h-[58%] w-auto"
+              />
+            </span>
+          }
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center">

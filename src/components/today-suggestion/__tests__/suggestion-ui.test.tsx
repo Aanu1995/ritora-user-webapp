@@ -984,9 +984,9 @@ describe("today suggestion UI contract", () => {
     expect(screen.getByText(/applied/)).toBeInTheDocument();
     expect(screen.getByText(/ready/)).toBeInTheDocument();
     expect(screen.getByText(/locked/)).toBeInTheDocument();
-    expect(screen.queryByText("Cloudy · 19°C")).not.toBeInTheDocument();
-    expect(screen.queryByText("UV 3 · moderate")).not.toBeInTheDocument();
-    expect(screen.queryByText("Humid · 60% humidity")).not.toBeInTheDocument();
+    expect(screen.getByText("Cloudy · 19°C")).toBeInTheDocument();
+    expect(screen.getByText("UV 3 · moderate")).toBeInTheDocument();
+    expect(screen.getByText("Humid · 60% humidity")).toBeInTheDocument();
     expect(screen.queryByText("AQI 55 · moderate")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /log photo/i })).toHaveAttribute(
       "href",

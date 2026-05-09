@@ -14,6 +14,7 @@ import {
   type ShelfProduct,
   type ShelfProductDraft,
 } from "@/types/shelf";
+import type { UploadProgressOptions } from "@/lib/upload-progress";
 
 type UploadedProductImage = {
   imageUrl: string;
@@ -21,6 +22,17 @@ type UploadedProductImage = {
 
 const PRODUCT_IMAGE_FORM_FIELD = "image";
 const PRODUCT_DRAFT_FORM_FIELD = "product";
+const PRODUCT_IMAGE_UPLOAD_TIMEOUT_MS = 30000;
+const PRODUCT_PHOTO_EXTRACTION_TIMEOUT_MS = 75000;
+
+function buildUploadConfig(
+  timeout: number,
+  options: UploadProgressOptions,
+) {
+  return options.onUploadProgress
+    ? { timeout, onUploadProgress: options.onUploadProgress }
+    : { timeout };
+}
 
 export async function listProducts(
   filters: ShelfListFilters,
@@ -55,10 +67,13 @@ export async function createProduct(
   return postRequest<ShelfProduct>(ApiPath.InventoryProducts, draft);
 }
 
-export async function createProductWithImage(input: {
-  draft: ShelfProductDraft;
-  file: File;
-}): Promise<ShelfProduct> {
+export async function createProductWithImage(
+  input: {
+    draft: ShelfProductDraft;
+    file: File;
+  },
+  options: UploadProgressOptions = {},
+): Promise<ShelfProduct> {
   const body = new FormData();
   body.append(PRODUCT_DRAFT_FORM_FIELD, JSON.stringify(input.draft));
   body.append(PRODUCT_IMAGE_FORM_FIELD, input.file);
@@ -66,7 +81,7 @@ export async function createProductWithImage(input: {
   return postMultipartRequest<ShelfProduct>(
     ApiPath.InventoryProductsWithImage,
     body,
-    { timeout: 30000 },
+    buildUploadConfig(PRODUCT_IMAGE_UPLOAD_TIMEOUT_MS, options),
   );
 }
 
@@ -79,6 +94,7 @@ export async function updateProduct(
 
 export async function uploadProductImage(
   file: File,
+  options: UploadProgressOptions = {},
 ): Promise<UploadedProductImage> {
   const body = new FormData();
   body.append(PRODUCT_IMAGE_FORM_FIELD, file);
@@ -86,13 +102,14 @@ export async function uploadProductImage(
   return postMultipartRequest<UploadedProductImage>(
     ApiPath.InventoryProductsUploadImage,
     body,
-    { timeout: 30000 },
+    buildUploadConfig(PRODUCT_IMAGE_UPLOAD_TIMEOUT_MS, options),
   );
 }
 
 export async function uploadProductImageForProduct(
   id: string,
   file: File,
+  options: UploadProgressOptions = {},
 ): Promise<ShelfProduct> {
   const body = new FormData();
   body.append(PRODUCT_IMAGE_FORM_FIELD, file);
@@ -100,7 +117,7 @@ export async function uploadProductImageForProduct(
   return postMultipartRequest<ShelfProduct>(
     ApiPath.InventoryProductUploadImage(id),
     body,
-    { timeout: 30000 },
+    buildUploadConfig(PRODUCT_IMAGE_UPLOAD_TIMEOUT_MS, options),
   );
 }
 
@@ -136,10 +153,13 @@ export async function markProductsFinished(ids: string[]): Promise<void> {
   return postRequest<void>(ApiPath.InventoryProductsBulkMarkFinished, { ids });
 }
 
-export async function extractProductFromImages(input: {
-  images: File[];
-  heroImageIndex: number;
-}): Promise<ResolvedLookup | null> {
+export async function extractProductFromImages(
+  input: {
+    images: File[];
+    heroImageIndex: number;
+  },
+  options: UploadProgressOptions = {},
+): Promise<ResolvedLookup | null> {
   const body = new FormData();
   input.images.forEach((image) => {
     body.append("images", image);
@@ -149,6 +169,6 @@ export async function extractProductFromImages(input: {
   return postMultipartRequest<ResolvedLookup | null>(
     ApiPath.CatalogueProductsExtractFromImages,
     body,
-    { timeout: 75000 },
+    buildUploadConfig(PRODUCT_PHOTO_EXTRACTION_TIMEOUT_MS, options),
   );
 }

@@ -20,6 +20,7 @@ import {
   type RoutineStepProductSummary,
   StepLabel,
 } from '@/types/schedule';
+import { SmoothImage } from '@/components/ui/smooth-image';
 import { cn } from '@/lib/utils';
 
 const STEP_LABEL_ORDER: StepLabel[] = [
@@ -153,11 +154,16 @@ function RoutineStepRowComponent({
                 <>
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded bg-surface-muted">
                     {product.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <SmoothImage
                         src={product.imageUrl}
                         alt=""
-                        className="h-full w-full object-cover"
+                        sizes="28px"
+                        className="h-full w-full rounded"
+                        fallback={
+                          <span className="text-[10px] text-muted">
+                            {product.category.slice(0, 1).toUpperCase()}
+                          </span>
+                        }
                       />
                     ) : (
                       <span className="text-[10px] text-muted">

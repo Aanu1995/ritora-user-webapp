@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
+import { SmoothImage } from "@/components/ui/smooth-image";
 import { buildBackendUrl } from "@/lib/media-url";
 import type { Wrapped } from "@/types/skin-journal";
 
@@ -64,14 +64,12 @@ export function WrappedPlayer({ wrapped }: WrappedPlayerProps) {
               }}
             />
             {entry.photo_url ? (
-              <Image
-                src={buildBackendUrl(entry.photo_url) ?? ""}
+              <SmoothImage
+                src={buildBackendUrl(entry.photo_url) ?? entry.photo_url}
                 alt={t("frameAlt", { date: entry.entry_date })}
-                fill
-                unoptimized
                 sizes="360px"
                 priority={i === 0}
-                className="object-cover"
+                className="h-full w-full"
               />
             ) : null}
           </div>

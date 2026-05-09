@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import {
   ChevronRight,
   ImagePlus,
@@ -11,6 +10,7 @@ import {
 import { useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
+import { SmoothImage } from '@/components/ui/smooth-image';
 
 export type ExtractionState =
   | 'idle'
@@ -59,13 +59,11 @@ export function ProductPhotoSection({
       {photo ? (
         <div className="flex flex-col gap-3">
           <div className="relative aspect-[4/5] w-full max-w-60 overflow-hidden rounded-2xl border-2 border-accent-strong bg-background">
-            <Image
+            <SmoothImage
               src={photo.previewUrl}
               alt={t('productPhoto.sectionTitle')}
-              fill
-              unoptimized
               sizes="240px"
-              className="object-cover"
+              className="h-full w-full"
             />
           </div>
           <div className="flex flex-wrap gap-2">
@@ -170,13 +168,11 @@ export function LabelPhotosSection({
             key={photo.id}
             className="relative aspect-[4/5] overflow-hidden rounded-xl border border-border bg-background"
           >
-            <Image
+            <SmoothImage
               src={photo.previewUrl}
               alt=""
-              fill
-              unoptimized
               sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
-              className="object-cover"
+              className="h-full w-full"
             />
             <button
               type="button"

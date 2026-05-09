@@ -46,6 +46,7 @@ afterEach(() => jest.clearAllMocks());
 describe('skin-journal.service', () => {
   it('uploads entries as multipart with consent and skip-check-in fields', async () => {
     const photo = new File(['face'], 'face.jpg', { type: 'image/jpeg' });
+    const onUploadProgress = jest.fn();
     (postMultipartRequest as jest.Mock).mockResolvedValue({ id: 'entry-1' });
 
     await upsertToday(
@@ -55,11 +56,13 @@ describe('skin-journal.service', () => {
         photo_processing_consent: true,
       },
       photo,
+      { onUploadProgress },
     );
 
     expect(postMultipartRequest).toHaveBeenCalledWith(
       '/skin-journal/today',
       expect.any(FormData),
+      { onUploadProgress },
     );
     const body = (postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
     expect(body.get('photo')).toBe(photo);
