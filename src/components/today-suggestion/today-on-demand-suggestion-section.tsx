@@ -16,6 +16,7 @@ type Props = {
   onEdit: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail: (slot: TodaysSuggestionSlot) => void;
   timeZone?: string;
+  nowMs: number;
 };
 
 export function TodayOnDemandSuggestionSection({
@@ -24,6 +25,7 @@ export function TodayOnDemandSuggestionSection({
   onEdit,
   onShowDetail,
   timeZone,
+  nowMs,
 }: Props) {
   const t = useTranslations("todaysSuggestion.page");
   const retryOnDemandSuggestion = useRetryOnDemandSuggestion();
@@ -52,6 +54,7 @@ export function TodayOnDemandSuggestionSection({
       onEdit={onEdit}
       onShowDetail={onShowDetail}
       timeZone={timeZone}
+      nowMs={nowMs}
     />
   );
 }

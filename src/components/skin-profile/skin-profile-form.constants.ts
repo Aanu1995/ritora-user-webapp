@@ -5,14 +5,19 @@ import type {
   SkinProfile,
   SkinProfileInput,
 } from "@/types/skin-profile";
+import {
+  SkinProfileWaterHardness,
+  SkinProfileWaterSensitivity,
+} from "@/types/skin-profile";
 import { dayjs } from "@/lib/dayjs";
 import { TriStateBooleanValue } from "./skin-profile-domain-values";
 
-export const TOTAL_SKIN_PROFILE_STEPS = 5;
+export const TOTAL_SKIN_PROFILE_STEPS = 6;
 export const countryCodePattern = /^[A-Za-z]{2}$/;
 export const MIN_BIRTH_AGE_YEARS = 5;
 export const MAX_BIRTH_AGE_YEARS = 80;
 const ISO_DATE_FORMAT = "YYYY-MM-DD";
+const WATER_REACTION_NOTES_MAX_LENGTH = 180;
 
 const required = (key: string) => z.string().trim().min(1, key);
 
@@ -64,6 +69,28 @@ export const skinProfileSchema = z
       }),
     city: z.string().max(100, "validation.cityTooLong"),
     locationConsent: z.boolean(),
+    waterHardness: z
+      .string()
+      .refine(
+        (value) =>
+          Object.values(SkinProfileWaterHardness).includes(
+            value as SkinProfileWaterHardness,
+          ),
+        { message: "validation.waterHardnessRequired" },
+      ),
+    waterSensitivity: z
+      .string()
+      .refine(
+        (value) =>
+          Object.values(SkinProfileWaterSensitivity).includes(
+            value as SkinProfileWaterSensitivity,
+          ),
+        { message: "validation.waterSensitivityRequired" },
+      ),
+    waterReactionNotes: z
+      .string()
+      .trim()
+      .max(WATER_REACTION_NOTES_MAX_LENGTH, "validation.waterNotesTooLong"),
 
     currentConcerns: z.array(z.string()).min(1, "validation.concernsRequired"),
     primaryGoal: required("validation.primaryGoalRequired"),
@@ -127,6 +154,9 @@ export const DEFAULT_SKIN_PROFILE_VALUES: SkinProfileFormValues = {
   countryCode: "",
   city: "",
   locationConsent: false,
+  waterHardness: SkinProfileWaterHardness.Unknown,
+  waterSensitivity: SkinProfileWaterSensitivity.None,
+  waterReactionNotes: "",
 
   currentConcerns: [],
   primaryGoal: "",
@@ -172,6 +202,7 @@ export function getSkinProfileFormValues(
   }
 
   const behavior = profile.skinBehavior ?? {};
+  const lifestyle = profile.lifestyleContext ?? {};
   const routine = profile.routinePreferences ?? {};
 
   return {
@@ -183,10 +214,12 @@ export function getSkinProfileFormValues(
     ethnicity: profile.ethnicity ?? "",
     countryCode: profile.countryCode ?? "",
     city: profile.city ?? "",
-    locationConsent: hasLocationData(
-      profile.countryCode ?? "",
-      profile.city ?? "",
-    ),
+    locationConsent: profile.hasLocationContextConsent,
+    waterHardness:
+      lifestyle.water_hardness ?? SkinProfileWaterHardness.Unknown,
+    waterSensitivity:
+      lifestyle.water_sensitivity ?? SkinProfileWaterSensitivity.None,
+    waterReactionNotes: lifestyle.water_reaction_notes ?? "",
     currentConcerns: [...profile.currentConcerns],
     primaryGoal: profile.primaryGoal ?? "",
     concernSeverities: Object.fromEntries(
@@ -243,6 +276,16 @@ export function buildSkinProfilePayload(
     skinBehavior.sunscreen_habit = values.sunscreenHabit;
   if (values.sunscreenTolerance)
     skinBehavior.sunscreen_tolerance = values.sunscreenTolerance;
+
+  const lifestyleContext: SkinProfileInput["lifestyleContext"] = {};
+  lifestyleContext.water_hardness = values.waterHardness;
+  lifestyleContext.water_sensitivity = values.waterSensitivity;
+  const waterReactionNotes = values.waterReactionNotes.trim();
+  if (waterReactionNotes) {
+    lifestyleContext.water_reaction_notes = waterReactionNotes;
+  } else if (isEdit && existingProfile?.lifestyleContext.water_reaction_notes) {
+    lifestyleContext.water_reaction_notes = null;
+  }
 
   const routinePreferences: SkinProfileInput["routinePreferences"] = {};
   if (values.routinePace) routinePreferences.pace = values.routinePace;
@@ -315,6 +358,10 @@ export function buildSkinProfilePayload(
 
   if (Object.keys(routinePreferences).length > 0 || isEdit) {
     payload.routinePreferences = routinePreferences;
+  }
+
+  if (Object.keys(lifestyleContext).length > 0 || isEdit) {
+    payload.lifestyleContext = lifestyleContext;
   }
 
   if (hasLocationData(payload.countryCode ?? "", payload.city ?? "")) {

@@ -70,6 +70,9 @@ export type LifestyleContext = {
   sleep?: string;
   stress?: string;
   water_intake?: string;
+  water_hardness?: string;
+  water_sensitivity?: string;
+  water_reaction_notes?: string | null;
   diet_flags?: string[];
   smoking?: string;
   alcohol?: string;
@@ -116,6 +119,7 @@ export type SkinProfile = {
   hormonalContext: HormonalContext;
   completeness: number;
   hasHealthContextConsent: boolean;
+  hasLocationContextConsent: boolean;
   hasHormonalContextConsent: boolean;
   createdAt: string;
   updatedAt: string;
@@ -152,6 +156,8 @@ export type SkinProfileOptions = {
   sleepLevels: string[];
   stressLevels: string[];
   waterIntakeLevels: string[];
+  waterHardnessLevels: string[];
+  waterSensitivityLevels: string[];
   dietFlags: string[];
   smokingLevels: string[];
   alcoholLevels: string[];
@@ -159,6 +165,19 @@ export type SkinProfileOptions = {
   cyclePatterns: string[];
   hormonalBreakoutPatterns: string[];
 };
+
+export enum SkinProfileWaterHardness {
+  Unknown = "unknown",
+  Soft = "soft",
+  Moderate = "moderate",
+  Hard = "hard",
+}
+
+export enum SkinProfileWaterSensitivity {
+  None = "none",
+  Suspected = "suspected",
+  Confirmed = "confirmed",
+}
 
 export enum SkinProfileConsentType {
   LocationProcessing = "location_processing",

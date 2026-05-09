@@ -41,6 +41,7 @@ import {
 import { isEssentialStepComplete } from "./essential-step-validation";
 import { BaselineStep } from "./baseline-step";
 import { ConcernsPriorityStep } from "./concerns-priority-step";
+import { EnvironmentStep } from "./environment-step";
 import { PreferencesStep } from "./preferences-step";
 import { RoutineBaselineStep } from "./routine-baseline-step";
 import { SunPigmentStep } from "./sun-pigment-step";
@@ -144,6 +145,11 @@ export const SkinProfileForm = forwardRef<
   );
 
   const setBoolField = (field: SkinProfileBooleanField, value: boolean) => {
+    clearSubmitErrors(form);
+    form.setFieldValue(field, value);
+  };
+
+  const setStringField = (field: SkinProfileStringField, value: string) => {
     clearSubmitErrors(form);
     form.setFieldValue(field, value);
   };
@@ -357,6 +363,17 @@ export const SkinProfileForm = forwardRef<
                 ) : null}
 
                 {step === 5 ? (
+                  <EnvironmentStep
+                    values={values}
+                    options={options}
+                    setStringField={setStringField}
+                    toggleSingleSelect={toggleSingleSelect}
+                    translateOption={translateOption}
+                    errors={stepErrors}
+                  />
+                ) : null}
+
+                {step === 6 ? (
                   <PreferencesStep
                     values={values}
                     options={options}

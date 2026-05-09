@@ -60,8 +60,8 @@ export function buildLocalDateTimeIso(date: string, time: string): string {
   return localDate.toISOString();
 }
 
-export function formatRelativeUntil(targetIso: string): string {
-  const diffMs = new Date(targetIso).getTime() - Date.now();
+export function formatRelativeUntil(targetIso: string, nowMs: number): string {
+  const diffMs = new Date(targetIso).getTime() - nowMs;
   if (diffMs <= 0) return "Now";
   const totalMinutes = Math.floor(diffMs / 60_000);
   const hours = Math.floor(totalMinutes / 60);

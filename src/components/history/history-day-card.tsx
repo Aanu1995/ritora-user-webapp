@@ -35,6 +35,7 @@ import type {
   SuggestionHistoryDay,
   SuggestionHistorySlotSummary,
 } from "@/types/suggestions";
+import { EnvironmentUvRisk as UvRisk } from "@/types/suggestions";
 
 export function HistoryDayCard({ day }: { day: SuggestionHistoryDay }) {
   const t = useTranslations("history.dayCard");
@@ -65,16 +66,7 @@ export function HistoryDayCard({ day }: { day: SuggestionHistoryDay }) {
                 {t("mildRedness")}
               </span>
             ) : null}
-            {day.weatherSummary?.temperatureCelsius !== undefined &&
-            day.weatherSummary?.temperatureCelsius !== null ? (
-              <span className="inline-flex items-center gap-1">
-                <ThermometerSun className="h-3 w-3" />
-                {Math.round(day.weatherSummary.temperatureCelsius)}°C
-                {day.weatherSummary.uvIndex
-                  ? `, UV ${day.weatherSummary.uvIndex}`
-                  : ""}
-              </span>
-            ) : null}
+            <EnvironmentSummaryMeta day={day} />
           </div>
         </div>
       </header>
@@ -114,6 +106,39 @@ export function HistoryDayCard({ day }: { day: SuggestionHistoryDay }) {
       </ol>
     </article>
   );
+}
+
+function EnvironmentSummaryMeta({ day }: { day: SuggestionHistoryDay }) {
+  const environment = day.environmentSummary;
+  const weather = day.weatherSummary;
+
+  if (environment) {
+    return (
+      <>
+        {environment.temperatureCelsius !== null ? (
+          <span className="inline-flex items-center gap-1">
+            <ThermometerSun className="h-3 w-3" />
+            {Math.round(environment.temperatureCelsius)}°C
+          </span>
+        ) : null}
+        {environment.uvRisk !== UvRisk.Unknown ? (
+          <span className="inline-flex items-center gap-1">
+            <ThermometerSun className="h-3 w-3" />
+            UV {environment.uvIndex ? Math.round(environment.uvIndex) : "-"}
+          </span>
+        ) : null}
+      </>
+    );
+  }
+
+  return weather?.temperatureCelsius !== undefined &&
+    weather?.temperatureCelsius !== null ? (
+    <span className="inline-flex items-center gap-1">
+      <ThermometerSun className="h-3 w-3" />
+      {Math.round(weather.temperatureCelsius)}°C
+      {weather.uvIndex ? `, UV ${weather.uvIndex}` : ""}
+    </span>
+  ) : null;
 }
 
 function SlotStatusPills({ slot }: { slot: SuggestionHistorySlotSummary }) {

@@ -370,6 +370,91 @@
       "viewHistory": "Visa historik"
     }
   },
+  "currentContext": {
+    "localTime": "Lokal tid",
+    "timeZone": "Tidszon",
+    "city": "Stad",
+    "country": "Land",
+    "notSet": "Inte angivet",
+    "unknown": "Okänt",
+    "loading": "Laddar",
+    "climateData": "Klimatdata",
+    "lastUpdated": "Senast uppdaterad {time}",
+    "cityLevelClimate": "Stadsnivå",
+    "profileOnlyClimate": "Endast profil",
+    "weather": "Väder",
+    "seasonLabel": "Säsong",
+    "temperature": "Temp",
+    "uv": "UV",
+    "uvValue": "{risk} · UV {index}",
+    "uvIndexOnly": "UV {index}",
+    "humidity": "Luftfuktighet",
+    "humidityValue": "{band} · {value}%",
+    "airQuality": "Luft",
+    "airQualityValue": "{risk} · AQI {index}",
+    "airQualityIndexOnly": "AQI {index}",
+    "pm25": "PM2.5",
+    "pm10": "PM10",
+    "micrograms": "{value} µg/m³",
+    "pollen": "Pollen",
+    "water": "Vatten",
+    "waterValue": "{hardness} · {sensitivity}",
+    "sensitivities": "Känslig för",
+    "seasons": {
+      "spring": "Vår",
+      "summer": "Sommar",
+      "autumn": "Höst",
+      "winter": "Vinter"
+    },
+    "temperatureBand": {
+      "freezing": "Frysande",
+      "cold": "Kallt",
+      "mild": "Milt",
+      "warm": "Varmt",
+      "hot": "Hett"
+    },
+    "uvRisk": {
+      "low": "Låg",
+      "moderate": "Måttlig",
+      "high": "Hög",
+      "veryHigh": "Mycket hög",
+      "extreme": "Extrem"
+    },
+    "humidityBand": {
+      "veryDry": "Mycket torr",
+      "dry": "Torr",
+      "balanced": "Balanserad",
+      "humid": "Fuktig",
+      "veryHumid": "Mycket fuktig"
+    },
+    "airRisk": {
+      "good": "Bra",
+      "fair": "Okej",
+      "moderate": "Måttlig",
+      "poor": "Dålig",
+      "veryPoor": "Mycket dålig"
+    },
+    "waterHardness": {
+      "unknown": "Okänd hårdhet",
+      "soft": "Mjukt vatten",
+      "moderate": "Måttligt vatten",
+      "hard": "Hårt vatten"
+    },
+    "waterSensitivity": {
+      "none": "Ingen känslighet",
+      "suspected": "Känslighet misstänks",
+      "confirmed": "Känslighet bekräftad"
+    },
+    "sensitivity": {
+      "dryAir": "torr luft",
+      "humidity": "luftfuktighet",
+      "pollution": "föroreningar",
+      "cold": "kyla",
+      "heat": "värme",
+      "sun": "sol",
+      "seasonalChange": "säsongsskifte"
+    }
+  },
   "workspace": {
     "sidebarSubtitle": "Privat arbetsyta",
     "openNavigation": "Öppna arbetsytans navigering",
@@ -663,6 +748,10 @@
         "heading": "Hur gör du hudvård?",
         "description": "Berätta ditt tempo. Tid och frekvens hämtar vi från ditt Schema."
       },
+      "environment": {
+        "heading": "Din vattenkontext",
+        "description": "Valfria detaljer som hjälper Ritora anpassa förslag när vatten verkar trigga torrhet, stramhet eller irritation."
+      },
       "preferences": {
         "heading": "Vad är dina shoppingpreferenser?",
         "description": "Dina preferenser. Ritora föreslår bara produkter som matchar."
@@ -690,6 +779,15 @@
     "routineBaseline": {
       "paceLabel": "Rutintempo",
       "paceHint": "Hur snabbt du vill introducera nya produkter."
+    },
+    "environment": {
+      "waterHardnessLabel": "Vattnets hårdhet",
+      "waterHardnessHint": "Välj det du vet. Okänt går bra.",
+      "waterSensitivityLabel": "Vattenkänslighet",
+      "waterSensitivityHint": "Välj misstänkt eller bekräftad bara om vatten verkar trigga torrhet, sveda eller irritation.",
+      "waterNotesLabel": "Anteckning om vattenreaktion",
+      "waterNotesHint": "Valfritt. Håll det kort och lägg bara till det du vill att Ritora använder.",
+      "waterNotesPlaceholder": "t.ex. Ansiktet känns stramt efter tvätt hemma"
     },
     "preferences": {
       "fragranceFreeLabel": "Endast doftfritt?",
@@ -959,7 +1057,7 @@
       "healthLabel": "Behandling av hälsokontext",
       "healthDesc": "Graviditet, åkommor, mediciner, nyliga behandlingar, dermatologvård.",
       "locationLabel": "Behandling av plats",
-      "locationDesc": "Land och stad för klimatanpassade förslag.",
+      "locationDesc": "Land och stad låter Ritora anpassa förslag efter luftfuktighet, UV, luftkvalitet och säsongsskiften.",
       "hormonalLabel": "Behandling av hormonell kontext",
       "hormonalDesc": "Cykelmedvetenhet för cykliska utbrott.",
       "grantedOn": "Beviljat",
@@ -985,7 +1083,7 @@
       "deleteAction": "Radera konto",
       "deleteUnavailable": "Kontoborttagning kommer snart. Kontakta support tills vidare.",
       "grantLocationTitle": "Bevilja platssamtycke",
-      "grantLocationBody": "Berätta var du befinner dig så att Ritora kan föreslå klimatanpassade rutiner.",
+      "grantLocationBody": "Lägg till plats på stadsnivå så Ritora kan ta hänsyn till luftfuktighet, UV, luftkvalitet och säsong.",
       "grantLocationConfirm": "Bevilja och spara",
       "grantLocationCancel": "Avbryt",
       "cityPlaceholder": "Stockholm",
@@ -1034,6 +1132,7 @@
       "primaryGoal": "Främsta prioritet",
       "sunBehavior": "Sol- och pigmentbeteende",
       "routinePace": "Rutintempo",
+      "waterContext": "Vattenkontext",
       "preferences": "Preferenser",
       "aboutYou": "Om dig",
       "location": "Plats",
@@ -1065,7 +1164,10 @@
       "sunscreenFilterRequired": "Välj ett solskyddsfilter.",
       "sunscreenFinishRequired": "Välj en solskyddsfinish.",
       "budgetTierRequired": "Välj en budget.",
-      "allowSmartPicksRequired": "Välj ja eller nej för Smart Picks."
+      "allowSmartPicksRequired": "Välj ja eller nej för Smart Picks.",
+      "waterHardnessRequired": "Välj ett alternativ för vattnets hårdhet.",
+      "waterSensitivityRequired": "Välj ett alternativ för vattenkänslighet.",
+      "waterNotesTooLong": "Håll vattenanteckningen under 180 tecken."
     },
     "options": {
       "oily": "Fet",
@@ -1093,6 +1195,10 @@
       "middle_eastern": "Mellanöstern",
       "mixed": "Blandad",
       "other": "Annat",
+      "unknown": "Okänt",
+      "soft": "Mjukt",
+      "hard": "Hårt",
+      "confirmed": "Bekräftad",
       "acne": "Akne",
       "dark_marks": "Mörka märken",
       "dryness": "Torrhet",
@@ -3299,12 +3405,55 @@
       "applied": "{count, plural, one {# applicerad} other {# applicerade}}",
       "ready": "{count, plural, one {# redo} other {# redo}}",
       "locked": "{count, plural, one {# låst} other {# låsta}}",
+      "weatherWithTemperature": "{condition} · {temperature}°C",
+      "temperature": "{temperature}°C",
       "uvIndex": "UV {index}",
+      "uvRisk": "UV {index} · {risk}",
+      "humidity": "{band} · {value}% luftfuktighet",
+      "airQuality": "Luft {risk}",
+      "waterContext": "{hardness} vatten",
+      "environment": {
+        "unknown": "Okänt",
+        "uv": {
+          "low": "låg",
+          "moderate": "måttlig",
+          "high": "hög",
+          "very_high": "mycket hög",
+          "extreme": "extrem",
+          "unknown": "okänd"
+        },
+        "humidity": {
+          "very_dry": "Mycket torrt",
+          "dry": "Torrt",
+          "balanced": "Balanserat",
+          "humid": "Fuktigt",
+          "very_humid": "Mycket fuktigt"
+        },
+        "air": {
+          "good": "bra",
+          "fair": "okej",
+          "moderate": "måttlig",
+          "poor": "dålig",
+          "very_poor": "mycket dålig",
+          "unknown": "okänd"
+        },
+        "water": {
+          "unknown": "Okänt",
+          "soft": "Mjukt",
+          "moderate": "Måttligt",
+          "hard": "Hårt"
+        }
+      },
       "photoNudge": "Foto loggat idag",
       "logPhoto": "Logga foto",
       "photoLoggedAt": "Foto loggat {time}",
       "notifications": "{count, plural, one {# avisering} other {# aviseringar}}",
       "adherence": "{percent}% följsamhet"
+    },
+    "environment": {
+      "climateAwareTitle": "Gör förslag klimatanpassade",
+      "climateAwareBody": "Lägg till samtycke för plats på stadsnivå så Ritora kan anpassa efter luftfuktighet, UV, luftkvalitet och säsongsskiften.",
+      "grantLocation": "Hantera platssamtycke"
     },
     "modeBadge": {
       "ai": "AI",
@@ -3467,7 +3616,47 @@
         "whyEach": "Varför varje steg",
         "whatISkipped": "Vad jag hoppade över idag och varför",
         "inputs": "Vad detta använde",
+        "environment": "Miljökontext",
         "evidence": "Betrodd evidens"
+      },
+      "environment": {
+        "weather": "Väder",
+        "uv": "UV",
+        "uvDetail": "UV {index}, {risk}",
+        "humidity": "Luftfuktighet",
+        "humidityDetail": "{value}% luftfuktighet, {band}",
+        "air": "Luftkvalitet",
+        "water": "Vattenkontext",
+        "waterDetail": "{hardness} vatten kan göra skonsam rengöring och barriärstöd viktigare.",
+        "uvRisk": {
+          "low": "låg risk",
+          "moderate": "måttlig risk",
+          "high": "hög risk",
+          "very_high": "mycket hög risk",
+          "extreme": "extrem risk",
+          "unknown": "okänd risk"
+        },
+        "humidityBand": {
+          "very_dry": "mycket torr luft",
+          "dry": "torr luft",
+          "balanced": "balanserad luft",
+          "humid": "fuktig luft",
+          "very_humid": "mycket fuktig luft"
+        },
+        "airRisk": {
+          "good": "Bra",
+          "fair": "Okej",
+          "moderate": "Måttlig",
+          "poor": "Dålig",
+          "very_poor": "Mycket dålig",
+          "unknown": "Okänd"
+        },
+        "waterHardness": {
+          "unknown": "Okänt",
+          "soft": "Mjukt",
+          "moderate": "Måttligt",
+          "hard": "Hårt"
+        }
       },
       "evidenceReviewed": "granskad {date}",
       "noRationale": "Inget resonemang sparat för detta förslag.",

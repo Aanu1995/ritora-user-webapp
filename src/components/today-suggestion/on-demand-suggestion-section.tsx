@@ -21,6 +21,7 @@ type Props = {
   onEdit: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail: (slot: TodaysSuggestionSlot) => void;
   timeZone?: string;
+  nowMs: number;
 };
 
 export function OnDemandSuggestionSection({
@@ -31,6 +32,7 @@ export function OnDemandSuggestionSection({
   onEdit,
   onShowDetail,
   timeZone,
+  nowMs,
 }: Props) {
   const t = useTranslations("todaysSuggestion.onDemand");
   if (suggestions.length === 0) return null;
@@ -56,6 +58,7 @@ export function OnDemandSuggestionSection({
                 onEdit={onEdit}
                 onShowDetail={onShowDetail}
                 timeZone={timeZone}
+                nowMs={nowMs}
               />
             </li>
           );
@@ -74,6 +77,7 @@ function OnDemandCard({
   onEdit,
   onShowDetail,
   timeZone,
+  nowMs,
 }: {
   item: TodaysOnDemandSuggestion;
   slot: TodaysSuggestionSlot;
@@ -83,6 +87,7 @@ function OnDemandCard({
   onEdit: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail: (slot: TodaysSuggestionSlot) => void;
   timeZone?: string;
+  nowMs: number;
 }) {
   const t = useTranslations("todaysSuggestion.onDemand");
   const intent = item.suggestion.requestContext?.intent;
@@ -137,6 +142,7 @@ function OnDemandCard({
             onEdit={onEdit}
             onShowDetail={onShowDetail}
             timeZone={timeZone}
+            nowMs={nowMs}
           />
         </div>
       )}

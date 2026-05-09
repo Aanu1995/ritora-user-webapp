@@ -74,6 +74,7 @@ const buildProfile = (
   hormonalContext: {},
   completeness: 0,
   hasHealthContextConsent: false,
+  hasLocationContextConsent: false,
   hasHormonalContextConsent: false,
   createdAt: '2026-04-15T10:00:00.000Z',
   updatedAt: '2026-04-15T10:00:00.000Z',

@@ -14,9 +14,11 @@ import type { TodaysSuggestionSlot } from "@/types/suggestions";
 export function LockedSlotCard({
   slot,
   timeZone,
+  nowMs,
 }: {
   slot: TodaysSuggestionSlot;
   timeZone?: string;
+  nowMs: number;
 }) {
   const t = useTranslations("todaysSuggestion.slot");
   return (
@@ -41,7 +43,7 @@ export function LockedSlotCard({
           <p>{t("lockedExplainer")}</p>
           <p className="mt-1">
             {t.rich("unlocksInRich", {
-              eta: formatRelativeUntil(slot.visibleAt),
+              eta: formatRelativeUntil(slot.visibleAt, nowMs),
               strong: (chunks) => (
                 <strong className="font-semibold text-foreground">
                   {chunks}

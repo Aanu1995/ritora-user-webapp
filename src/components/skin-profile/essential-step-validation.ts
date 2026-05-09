@@ -1,4 +1,6 @@
 import {
+  countryCodePattern,
+  hasLocationData,
   isValidBirthDate,
   type SkinProfileFormValues,
 } from "./skin-profile-form.constants";
@@ -51,6 +53,14 @@ export function isEssentialStepComplete(
   }
 
   if (step === 5) {
+    const countryCode = values.countryCode.trim();
+    return !(
+      (countryCode && !countryCodePattern.test(countryCode)) ||
+      (hasLocationData(countryCode, values.city) && !values.locationConsent)
+    );
+  }
+
+  if (step === 6) {
     return (
       hasAllValues(values, [
         "fragranceFree",

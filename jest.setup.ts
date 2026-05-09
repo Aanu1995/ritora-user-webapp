@@ -42,9 +42,19 @@ function formatMessage(
     return template;
   }
 
+  const withPlurals = template.replace(
+    /\{(\w+), plural, one \{([^{}]*)\} other \{([^{}]*)\}\}/g,
+    (_match, key: string, one: string, other: string) => {
+      const rawValue = values[key];
+      const count = Number(rawValue);
+      const templateValue = count === 1 ? one : other;
+      return templateValue.replaceAll('#', String(rawValue));
+    },
+  );
+
   return Object.entries(values).reduce(
     (output, [key, value]) => output.replaceAll(`{${key}}`, String(value)),
-    template,
+    withPlurals,
   );
 }
 

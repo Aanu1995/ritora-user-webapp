@@ -1,8 +1,8 @@
 "use client";
-
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { HeaderContextSubtitle } from "@/components/app/header-context-subtitle";
 import { PageHeader } from "@/components/app/page-header";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { DaySummaryPills } from "@/components/today-suggestion/day-summary-pills";
@@ -42,6 +42,7 @@ import {
   useUpdateRoutineBreak,
 } from "@/hooks/use-suggestions";
 import { getApiErrorMessage } from "@/lib/api-error";
+import { useSkinProfile } from "@/hooks/use-skin-profile";
 import type {
   SuggestionInstance,
   TodaysSuggestionSlot,
@@ -56,8 +57,10 @@ export default function TodaysSuggestionPage() {
   const startRoutineBreak = useStartRoutineBreak();
   const updateRoutineBreak = useUpdateRoutineBreak();
   const userTimeZone = useAuthStore((s) => s.user?.timeZone) ?? "UTC";
+  const skinProfile = useSkinProfile();
 
   const [now, setNow] = useState(() => new Date());
+  const nowMs = now.getTime();
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 30_000);
     return () => clearInterval(interval);
@@ -106,8 +109,17 @@ export default function TodaysSuggestionPage() {
   );
 
   const headline = useMemo(
-    () => buildHeadline(data?.date, userTimeZone, now),
-    [data?.date, userTimeZone, now],
+    () => buildHeadline(data?.date, userTimeZone),
+    [data?.date, userTimeZone],
+  );
+  const headerSubtitle = (
+    <HeaderContextSubtitle
+      generatedAt={data?.generatedAt ?? now.toISOString()}
+      timeZone={data?.timeZone ?? userTimeZone}
+      city={skinProfile.data?.city ?? null}
+      locationLoading={skinProfile.isLoading}
+      headline={headline}
+    />
   );
   const headerAction = (
     <TodayPageHeaderActions
@@ -116,6 +128,9 @@ export default function TodaysSuggestionPage() {
       onQuickSuggestion={quickSuggestionFlow.openQuickSuggestion}
       onStartBreak={() => setStartBreakOpen(true)}
     />
+  );
+  const pageHeader = (
+    <PageHeader title={t("title")} subtitle={headerSubtitle} action={headerAction} />
   );
   const routineBreakStartDialog = (
     <RoutineBreakStartDialog
@@ -136,24 +151,15 @@ export default function TodaysSuggestionPage() {
   if (todaysSuggestion.isLoading) {
     return (
       <div>
-        <PageHeader
-          title={t("title")}
-          subtitle={headline}
-          action={headerAction}
-        />
+        {pageHeader}
         <TodaysSuggestionSkeleton />
       </div>
     );
   }
-
   if (todaysSuggestion.isError) {
     return (
       <div>
-        <PageHeader
-          title={t("title")}
-          subtitle={headline}
-          action={headerAction}
-        />
+        {pageHeader}
         <div className="mx-auto w-full lg:w-[70%]">
           <RetryPanel
             title={t("errorTitle")}
@@ -176,11 +182,7 @@ export default function TodaysSuggestionPage() {
   ) {
     return (
       <div>
-        <PageHeader
-          title={t("title")}
-          subtitle={headline}
-          action={headerAction}
-        />
+        {pageHeader}
         <div className="mx-auto w-full lg:w-[70%]">
           <NoCurrentSlotEmptyState nextSlotLabel={t("nextSlotTomorrow")} />
         </div>
@@ -193,11 +195,7 @@ export default function TodaysSuggestionPage() {
   if (!data) {
     return (
       <div>
-        <PageHeader
-          title={t("title")}
-          subtitle={headline}
-          action={headerAction}
-        />
+        {pageHeader}
         <TodaysSuggestionSkeleton />
       </div>
     );
@@ -207,11 +205,7 @@ export default function TodaysSuggestionPage() {
 
   return (
     <div>
-      <PageHeader
-        title={t("title")}
-        subtitle={headline}
-        action={headerAction}
-      />
+      {pageHeader}
 
       <div className="mx-auto w-full lg:w-[70%]">
         {routineBreak ? (
@@ -300,6 +294,7 @@ export default function TodaysSuggestionPage() {
             target.suggestion ? setDetailSuggestion(target.suggestion) : undefined
           }
           timeZone={userTimeZone}
+          nowMs={nowMs}
         />
 
         {data.slots.length > 0 && data.slots.every((s) => !s.isVisible) ? (
@@ -330,6 +325,7 @@ export default function TodaysSuggestionPage() {
                         slot.suggestion?.requestSource === "scheduled"
                       }
                       timeZone={userTimeZone}
+                      nowMs={nowMs}
                     />
                   </li>
                 ))}
@@ -375,6 +371,7 @@ export default function TodaysSuggestionPage() {
           openRecordForSuggestion(detailSuggestion);
         }}
         allowRegeneration
+        showEnvironment={false}
       />
 
       {routineBreakStartDialog}

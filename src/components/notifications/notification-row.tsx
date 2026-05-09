@@ -11,6 +11,7 @@ import type { InAppNotification, NotificationKind } from "@/types/notifications"
 
 interface NotificationRowProps {
   notification: InAppNotification;
+  nowMs: number | null;
 }
 
 const KIND_STYLES: Record<
@@ -113,9 +114,16 @@ function getNotificationSourceMessageKey(
   return NotificationSourceMessageKey.SkinJournal;
 }
 
-function formatRelative(date: string, locale: string): string {
+function formatRelative(
+  date: string,
+  locale: string,
+  nowMs: number | null,
+): string {
+  if (!nowMs || !Number.isFinite(nowMs)) {
+    return formatLocalizedDate(date, locale) ?? date;
+  }
   const diffSeconds = Math.round(
-    (new Date(date).getTime() - Date.now()) / 1000,
+    (new Date(date).getTime() - nowMs) / 1000,
   );
   const formatter = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
   const absSeconds = Math.abs(diffSeconds);
@@ -160,7 +168,7 @@ function formatDateLabel(value: string | null, locale: string): string | null {
   return formatLocalizedDate(value, locale);
 }
 
-export function NotificationRow({ notification }: NotificationRowProps) {
+export function NotificationRow({ notification, nowMs }: NotificationRowProps) {
   const locale = useLocale();
   const t = useTranslations("notificationsPage");
   const tKind = useTranslations(`notificationsPage.kinds.${notification.kind}`);
@@ -232,7 +240,7 @@ export function NotificationRow({ notification }: NotificationRowProps) {
           {body}
         </p>
         <p className="mt-1.5 text-xs text-muted">
-          {formatRelative(notification.created_at, locale)} ·{" "}
+          {formatRelative(notification.created_at, locale, nowMs)} ·{" "}
           {t(sourceMessageKey)}
         </p>
       </div>

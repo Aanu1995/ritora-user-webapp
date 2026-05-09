@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 interface PageHeaderProps {
   title: string;
-  subtitle: string;
+  subtitle: ReactNode;
   action?: ReactNode;
   leading?: ReactNode;
 }
@@ -15,6 +15,7 @@ export function PageHeader({
   action,
   leading,
 }: PageHeaderProps) {
+  const subtitleIsString = typeof subtitle === "string";
   return (
     <div
       data-slot="page-header"
@@ -27,9 +28,15 @@ export function PageHeader({
             <h1 className="text-lg font-bold tracking-tight text-foreground sm:text-2xl">
               {title}
             </h1>
-            <p className="mt-0.5 text-xs text-muted sm:mt-1 sm:text-sm">
-              {subtitle}
-            </p>
+            {subtitleIsString ? (
+              <p className="mt-0.5 text-xs text-muted sm:mt-1 sm:text-sm">
+                {subtitle}
+              </p>
+            ) : (
+              <div className="mt-0.5 text-xs text-muted sm:mt-1 sm:text-sm">
+                {subtitle}
+              </div>
+            )}
           </div>
         </div>
         {action ? <div className="mt-0.5 shrink-0">{action}</div> : null}

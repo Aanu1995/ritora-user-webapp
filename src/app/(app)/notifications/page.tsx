@@ -24,6 +24,7 @@ export default function NotificationsPage() {
   const unread = notifications.data.unread;
   const read = notifications.data.read;
   const unreadCount = notifications.data.unread_count;
+  const relativeNowMs = notifications.dataUpdatedAt || null;
   const hasItems = unread.length > 0 || read.length > 0;
   const hasLoadError = notifications.isError && !hasItems;
   const hasLoadMoreError = Boolean(notifications.isFetchNextPageError);
@@ -133,6 +134,7 @@ export default function NotificationsPage() {
                     <NotificationRow
                       key={notification.id}
                       notification={notification}
+                      nowMs={relativeNowMs}
                     />
                   ))}
                 </div>
@@ -148,6 +150,7 @@ export default function NotificationsPage() {
                     <NotificationRow
                       key={notification.id}
                       notification={notification}
+                      nowMs={relativeNowMs}
                     />
                   ))}
                 </div>

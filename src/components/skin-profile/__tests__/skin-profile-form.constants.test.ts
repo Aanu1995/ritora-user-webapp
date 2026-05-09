@@ -3,10 +3,12 @@ import {
   MAX_BIRTH_AGE_YEARS,
   MIN_BIRTH_AGE_YEARS,
   buildSkinProfilePayload,
+  getSkinProfileFormValues,
   skinProfileSchema,
   type SkinProfileFormValues,
 } from "../skin-profile-form.constants";
 import { dayjs } from "@/lib/dayjs";
+import { createReadySkinProfile } from "@/test/skin-profile";
 
 const dateYearsAgo = (years: number, daysOffset = 0) =>
   dayjs
@@ -146,5 +148,17 @@ describe("skinProfileSchema", () => {
       budgetTier: "mid",
       allowSmartPicks: true,
     });
+  });
+
+  it("does not infer location consent from saved city and country", () => {
+    const values = getSkinProfileFormValues(
+      createReadySkinProfile({
+        countryCode: "SE",
+        city: "Stockholm",
+        hasLocationContextConsent: false,
+      }),
+    );
+
+    expect(values.locationConsent).toBe(false);
   });
 });

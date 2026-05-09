@@ -46,6 +46,7 @@ export function createReadySkinProfile(
     hormonalContext: {},
     completeness: 100,
     hasHealthContextConsent: false,
+    hasLocationContextConsent: false,
     hasHormonalContextConsent: false,
     createdAt: '2026-05-01T00:00:00.000Z',
     updatedAt: '2026-05-01T00:00:00.000Z',

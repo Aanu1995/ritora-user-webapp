@@ -98,7 +98,7 @@ function OverviewSkeleton() {
     <div
       data-testid="skin-profile-skeleton"
       data-skeleton-mode="overview"
-      className="mx-auto max-w-2xl space-y-6"
+      className="mx-auto max-w-3xl space-y-6"
     >
       <div
         data-testid="skin-profile-skeleton-completeness"

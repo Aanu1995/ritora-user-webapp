@@ -169,6 +169,7 @@ function historyDay(): SuggestionHistoryDay {
   return {
     date: "2026-05-03",
     weatherSummary: null,
+    environmentSummary: null,
     moodScore: 4,
     hydrationTrend: "flat",
     reactionFlagged: false,

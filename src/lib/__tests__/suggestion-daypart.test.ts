@@ -8,12 +8,6 @@ import {
 } from "@/lib/suggestion-daypart";
 
 describe("suggestion-daypart utilities", () => {
-  const realDateNow = Date.now;
-
-  afterEach(() => {
-    Date.now = realDateNow;
-  });
-
   it("maps suggestion noon to the schedule afternoon bucket", () => {
     expect(suggestionDaypartToScheduleDaypart("morning")).toBe("morning");
     expect(suggestionDaypartToScheduleDaypart("noon")).toBe("afternoon");
@@ -39,10 +33,12 @@ describe("suggestion-daypart utilities", () => {
   });
 
   it("formats relative lock times without leaking negative durations", () => {
-    Date.now = jest.fn(() => new Date("2026-05-04T06:00:00.000Z").getTime());
+    const nowMs = new Date("2026-05-04T06:00:00.000Z").getTime();
 
-    expect(formatRelativeUntil("2026-05-04T06:00:00.000Z")).toBe("Now");
-    expect(formatRelativeUntil("2026-05-04T06:25:00.000Z")).toBe("25m");
-    expect(formatRelativeUntil("2026-05-04T08:05:00.000Z")).toBe("2h 5m");
+    expect(formatRelativeUntil("2026-05-04T06:00:00.000Z", nowMs)).toBe("Now");
+    expect(formatRelativeUntil("2026-05-04T06:25:00.000Z", nowMs)).toBe("25m");
+    expect(formatRelativeUntil("2026-05-04T08:05:00.000Z", nowMs)).toBe(
+      "2h 5m",
+    );
   });
 });

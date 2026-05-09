@@ -4,9 +4,11 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { renderWithProviders } from "@/test/utils";
 import { HistoryDayCard } from "@/components/history/history-day-card";
+import { HistoryDayDetailSkeleton } from "@/components/history/history-day-detail-skeleton";
 import { HistoryDaySlotCompare } from "@/components/history/history-day-slot-compare";
 import { HistoryExportButton } from "@/components/history/history-export-button";
 import { HistoryFilterBar } from "@/components/history/history-filter-bar";
+import { HistoryListSkeleton } from "@/components/history/history-list-skeleton";
 import { HistorySummaryStrip } from "@/components/history/history-summary-strip";
 import { exportSuggestionHistoryCsv } from "@/services/suggestions.service";
 import {
@@ -55,6 +57,20 @@ describe("history suggestion components", () => {
     expect(screen.getAllByText(/partial/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/simplified/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/missed/i).length).toBeGreaterThan(0);
+  });
+
+  it("renders history loading skeletons without user-visible copy", () => {
+    const { container } = renderWithProviders(
+      <>
+        <HistoryListSkeleton />
+        <HistoryDayDetailSkeleton />
+      </>,
+    );
+
+    expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(
+      20,
+    );
+    expect(screen.queryByText(/suggested/i)).not.toBeInTheDocument();
   });
 
   it("renders suggested-vs-applied comparison and edit callback", async () => {
@@ -251,6 +267,7 @@ function historyDay(): SuggestionHistoryDay {
       humidity: 60,
       conditionLabel: "Cloudy",
     },
+    environmentSummary: null,
     moodScore: 4,
     hydrationTrend: "up",
     reactionFlagged: true,
@@ -353,6 +370,7 @@ function suggestionInstance(
     safetyFlags: [],
     inputTrace: null,
     evidenceSources: [],
+    environmentSummary: null,
     productDataQuality: {
       verifiedCount: 0,
       partialCount: 0,

@@ -4,6 +4,12 @@ import type {
   SuggestionRequestContext,
   SuggestionRequestSource,
 } from "@/types/on-demand-suggestions";
+import type {
+  TodaysSuggestionEnvironmentAlert,
+  TodaysSuggestionEnvironmentSummary,
+} from "@/types/environment-suggestions";
+import type { RoutineBreak } from "@/types/routine-break";
+import type { SuggestionProductDataQuality } from "@/types/suggestion-quality";
 export type {
   SuggestionAiConsent,
   UpdateSuggestionAiConsentPayload,
@@ -20,6 +26,27 @@ export type {
   SuggestionRequestContext,
   SuggestionRequestSource,
 } from "@/types/on-demand-suggestions";
+export {
+  EnvironmentAirQualityRisk,
+  EnvironmentHumidityBand,
+  EnvironmentProviderName,
+  EnvironmentStatus,
+  EnvironmentUvRisk,
+  EnvironmentWaterHardness,
+  EnvironmentWaterSensitivity,
+} from "@/types/environment-suggestions";
+export type {
+  TodaysSuggestionEnvironmentAlert,
+  TodaysSuggestionEnvironmentSummary,
+} from "@/types/environment-suggestions";
+export type {
+  RoutineBreak,
+  RoutineBreakState,
+  RoutineBreakStatus,
+  StartRoutineBreakPayload,
+  UpdateRoutineBreakPayload,
+} from "@/types/routine-break";
+export type { SuggestionProductDataQuality } from "@/types/suggestion-quality";
 
 export type SuggestionDaypart = "morning" | "noon" | "evening";
 export const SUGGESTION_DAYPARTS: readonly SuggestionDaypart[] = [
@@ -66,12 +93,17 @@ export enum SuggestionEvidenceSourceId {
   FdaAhaSunSensitivity = "fda_aha_sun_sensitivity",
   MayoDrySkinCare = "mayo_dry_skin_care",
   DermNetTopicalRetinoids = "dermnet_topical_retinoids",
+  NationalEczemaSocietyHardWater = "national_eczema_society_hard_water",
+  OpenMeteoWeather = "open_meteo_weather",
+  OpenMeteoAirQuality = "open_meteo_air_quality",
+  OpenMeteoSeasonalForecast = "open_meteo_seasonal_forecast",
 }
 
 export type SuggestionEvidenceType =
   | "dermatology_association"
   | "regulatory_guidance"
-  | "clinical_reference";
+  | "clinical_reference"
+  | "environmental_data_provider";
 
 export type SuggestionEvidenceSource = {
   id: SuggestionEvidenceSourceId;
@@ -143,12 +175,12 @@ export type SuggestionInstance = {
   slotId: string | null;
   requestSource: SuggestionRequestSource;
   requestContext: SuggestionRequestContext | null;
-  targetDate: string; // YYYY-MM-DD in user time zone
-  targetTime: string; // HH:MM
+  targetDate: string;
+  targetTime: string;
   daypart: SuggestionDaypart;
   mode: SuggestionMode;
   generationStatus: SuggestionGenerationStatus;
-  visibleAt: string; // ISO timestamp
+  visibleAt: string;
   generatedAt: string | null;
   aiModel: string | null;
   aiPromptVersion: string | null;
@@ -160,6 +192,7 @@ export type SuggestionInstance = {
   safetyFlags: SuggestionSafetyFlag[];
   inputTrace: Record<string, unknown> | null;
   evidenceSources: SuggestionEvidenceSource[];
+  environmentSummary: TodaysSuggestionEnvironmentSummary | null;
   productDataQuality: SuggestionProductDataQuality;
   steps: SuggestionStep[];
   applicationLogId: string | null;
@@ -167,49 +200,19 @@ export type SuggestionInstance = {
   updatedAt: string;
 };
 
-export type SuggestionProductDataQuality = {
-  verifiedCount: number;
-  partialCount: number;
-  insufficientCount: number;
-  warnings: string[];
-};
-
-
 export type TodaysSuggestionResponse = {
-  date: string; // YYYY-MM-DD in user TZ
+  date: string;
   timeZone: string;
-  generatedAt: string; // ISO timestamp the response was assembled
+  generatedAt: string;
   leadTimeMinutes: number;
   summary: TodaysSuggestionSummary;
   weatherSummary: TodaysSuggestionWeatherSummary | null;
+  environmentSummary: TodaysSuggestionEnvironmentSummary | null;
+  environmentAlerts: TodaysSuggestionEnvironmentAlert[];
   slots: TodaysSuggestionSlot[];
   onDemandSuggestions: TodaysOnDemandSuggestion[];
   reactionAlert: TodaysSuggestionReactionAlert | null;
   routineBreak: RoutineBreak | null;
-};
-
-export type RoutineBreakStatus = "active" | "upcoming";
-
-export type RoutineBreak = {
-  id: string;
-  status: RoutineBreakStatus;
-  startedAt: string;
-  endsAt: string | null;
-  canResumeNow: boolean;
-  message: string;
-};
-
-export type RoutineBreakState = {
-  routineBreak: RoutineBreak | null;
-};
-
-export type StartRoutineBreakPayload = {
-  endsAt?: string | null;
-  reason?: string | null;
-};
-
-export type UpdateRoutineBreakPayload = {
-  endsAt?: string | null;
 };
 
 export type TodaysSuggestionSummary = {
@@ -308,6 +311,7 @@ export type TodaysSuggestionRecording = {
 export type SuggestionHistoryDay = {
   date: string;
   weatherSummary: TodaysSuggestionWeatherSummary | null;
+  environmentSummary: TodaysSuggestionEnvironmentSummary | null;
   moodScore: number | null;
   hydrationTrend: "up" | "flat" | "down" | null;
   reactionFlagged: boolean;

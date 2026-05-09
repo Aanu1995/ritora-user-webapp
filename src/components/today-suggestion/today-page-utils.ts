@@ -35,23 +35,15 @@ export function firstGapRecommendation(slots: TodaysSuggestionSlot[]): {
 export function buildHeadline(
   date: string | undefined,
   timeZone: string,
-  now: Date,
 ): string {
   if (!date) return "";
   try {
-    const datePart = new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(undefined, {
       weekday: "long",
       month: "long",
       day: "numeric",
       timeZone,
     }).format(new Date(`${date}T12:00:00Z`));
-    const timePart = new Intl.DateTimeFormat(undefined, {
-      hour: "numeric",
-      minute: "2-digit",
-      timeZone,
-    }).format(now);
-    const cityPart = timeZone.split("/").pop()?.replace(/_/g, " ") ?? timeZone;
-    return `${datePart} · ${timePart} · ${cityPart}`;
   } catch {
     return date;
   }

@@ -6,9 +6,9 @@ import type { SkinProfile } from "@/types/skin-profile";
 import {
   CompletenessCard,
   EssentialsSection,
-  OptionalCard,
   SectionHeading,
 } from "./skin-profile-overview-sections";
+import { OptionalCard } from "./skin-profile-optional-card";
 import { SkinProfileValue } from "./skin-profile-domain-values";
 
 interface SkinProfileOverviewProps {
@@ -23,34 +23,17 @@ export function SkinProfileOverview({
   const tOverview = useTranslations("skinProfile.overview");
   const tCards = useTranslations("skinProfile.optionalCards");
 
-  const hasMedicalData = Boolean(
-    profile.pregnancyStatus ||
-    profile.underDermatologistCare ||
-    profile.safetyContext?.conditions?.length ||
-    profile.safetyContext?.medications?.length ||
-    profile.safetyContext?.recent_procedures?.length,
-  );
+  const hasMedicalData = hasMedicalSafetyContext(profile);
   const totalReactions = profile.reactionHistory?.entries?.length ?? 0;
   const hasReactions = totalReactions > 0;
   const toleranceCount = Object.keys(profile.activeTolerances ?? {}).length;
   const hasTolerance = toleranceCount > 0;
-  const lifestyleFilled = Boolean(
-    profile.lifestyleContext?.sleep ||
-    profile.lifestyleContext?.stress ||
-    profile.lifestyleContext?.water_intake ||
-    (profile.lifestyleContext?.diet_flags?.length ?? 0) > 0,
-  );
-  const hormonalFilled = Boolean(
-    profile.hormonalContext?.cycle_pattern ||
-    profile.hormonalContext?.breakout_pattern ||
-    typeof profile.hormonalContext?.cycle_related_breakouts === "boolean" ||
-    typeof profile.hormonalContext?.uses_hormonal_contraception === "boolean" ||
-    typeof profile.hormonalContext?.menopause_related_changes === "boolean",
-  );
+  const lifestyleFilled = hasLifestyleContext(profile);
+  const hormonalFilled = Object.keys(profile.hormonalContext ?? {}).length > 0;
   const hormonalNotApplicable = profile.sexAtBirth === SkinProfileValue.Male;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6">
       <CompletenessCard value={profile.completeness} />
       <EssentialsSection profile={profile} onEdit={onEdit} />
 
@@ -144,5 +127,33 @@ export function SkinProfileOverview({
         </div>
       </div>
     </div>
+  );
+}
+
+function hasMedicalSafetyContext(profile: SkinProfile): boolean {
+  return Boolean(
+    profile.pregnancyStatus ||
+      profile.underDermatologistCare ||
+      profile.safetyContext?.conditions?.length ||
+      profile.safetyContext?.medications?.length ||
+      profile.safetyContext?.recent_procedures?.length ||
+      profile.safetyContext?.photosensitizing_other,
+  );
+}
+
+function hasLifestyleContext(profile: SkinProfile): boolean {
+  const context = profile.lifestyleContext ?? {};
+
+  return Boolean(
+    context.sleep ||
+      context.stress ||
+      context.water_intake ||
+      context.smoking ||
+      context.alcohol ||
+      context.sweat_exercise ||
+      typeof context.mask_wearing === "boolean" ||
+      typeof context.shaving === "boolean" ||
+      (context.diet_flags?.length ?? 0) > 0 ||
+      (context.climate_sensitivities?.length ?? 0) > 0,
   );
 }

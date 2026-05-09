@@ -39,6 +39,16 @@ import {
   updateRoutineBreak,
   useNormalRoutineForToday,
 } from "@/services/suggestions.service";
+import {
+  EnvironmentAirQualityRisk,
+  EnvironmentHumidityBand,
+  EnvironmentProviderName,
+  EnvironmentStatus,
+  EnvironmentUvRisk,
+  EnvironmentWaterHardness,
+  EnvironmentWaterSensitivity,
+  type TodaysSuggestionEnvironmentSummary,
+} from "@/types/environment-suggestions";
 import type {
   SuggestionAiConsent,
   SuggestionHistoryListResponse,
@@ -292,6 +302,34 @@ describe("suggestion hooks", () => {
     ).toBe(false);
   });
 
+  it("refreshes Today when environment context reaches the one-hour cache window", () => {
+    const withEnvironment = {
+      ...todayResponse(),
+      environmentSummary: environmentSummary({
+        generatedAt: "2026-05-04T10:00:00.000Z",
+      }),
+    };
+
+    expect(
+      getTodaysSuggestionRefetchInterval(
+        withEnvironment,
+        Date.parse("2026-05-04T10:30:00.000Z"),
+      ),
+    ).toBe(30 * 60_000);
+    expect(
+      getTodaysSuggestionRefetchInterval(
+        withEnvironment,
+        Date.parse("2026-05-04T10:59:57.000Z"),
+      ),
+    ).toBe(5_000);
+    expect(
+      getTodaysSuggestionRefetchInterval(
+        withEnvironment,
+        Date.parse("2026-05-04T11:00:00.000Z"),
+      ),
+    ).toBe(5_000);
+  });
+
   it("persists normal-routine override and gap actions through mutations", async () => {
     mockUseNormalRoutine.mockResolvedValue({
       targetDate: "2026-05-04",
@@ -416,6 +454,8 @@ function todayResponse(): TodaysSuggestionResponse {
       onDemand: 0,
     },
     weatherSummary: null,
+    environmentSummary: null,
+    environmentAlerts: [],
     slots: [],
     onDemandSuggestions: [],
     reactionAlert: null,
@@ -449,6 +489,38 @@ function todaySlot(
   };
 }
 
+function environmentSummary(
+  partial: Partial<TodaysSuggestionEnvironmentSummary> = {},
+): TodaysSuggestionEnvironmentSummary {
+  return {
+    status: EnvironmentStatus.Available,
+    provider: EnvironmentProviderName.OpenMeteo,
+    generatedAt: "2026-05-04T10:00:00.000Z",
+    locationPersonalized: true,
+    season: "spring",
+    temperatureCelsius: 14,
+    temperatureBand: "mild",
+    humidity: 42,
+    humidityBand: EnvironmentHumidityBand.Balanced,
+    uvIndex: 5,
+    uvRisk: EnvironmentUvRisk.Moderate,
+    airQualityIndex: 24,
+    airQualityRisk: EnvironmentAirQualityRisk.Good,
+    pm25: 5,
+    pm10: 12,
+    pollenRisk: null,
+    conditionLabel: "Clear",
+    waterHardness: EnvironmentWaterHardness.Unknown,
+    waterSensitivity: EnvironmentWaterSensitivity.None,
+    climateSensitivities: [],
+    transitionSignals: [],
+    confidence: "provider",
+    stale: false,
+    sourceIds: [],
+    ...partial,
+  };
+}
+
 function historyResponse(
   overrides: {
     date?: string;
@@ -461,6 +533,7 @@ function historyResponse(
       {
         date: overrides.date ?? "2026-05-03",
         weatherSummary: null,
+        environmentSummary: null,
         moodScore: null,
         hydrationTrend: null,
         reactionFlagged: false,
@@ -514,6 +587,7 @@ function suggestionInstance(
     safetyFlags: [],
     inputTrace: null,
     evidenceSources: [],
+    environmentSummary: null,
     productDataQuality: {
       verifiedCount: 0,
       partialCount: 0,

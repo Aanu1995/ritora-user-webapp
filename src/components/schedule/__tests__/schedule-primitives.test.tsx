@@ -1,6 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { DaySection } from "@/components/schedule/day-section";
+import { EveryDayQuickAction } from "@/components/schedule/every-day-quick-action";
+import { ScheduleEmptyState } from "@/components/schedule/schedule-empty-state";
+import { ScheduleRouteSkeleton } from "@/components/schedule/schedule-route-skeleton";
 import { ScheduleSkeleton } from "@/components/schedule/schedule-skeleton";
 import { ScheduleViewToggle } from "@/components/schedule/schedule-view-toggle";
 import { ScheduleViewMode } from "@/stores/schedule-ui-store";
@@ -61,6 +64,30 @@ describe("schedule primitive components", () => {
 
     await user.click(screen.getByRole("button", { name: /calendar/i }));
     expect(onChange).toHaveBeenCalledWith(ScheduleViewMode.Calendar);
+  });
+
+  it("renders empty-state shortcuts and delegates their actions", async () => {
+    const user = userEvent.setup();
+    const onEveryDay = jest.fn();
+    const onBuildFromScratch = jest.fn();
+
+    render(
+      <>
+        <EveryDayQuickAction onClick={onEveryDay} />
+        <ScheduleEmptyState
+          onEveryDay={onEveryDay}
+          onBuildFromScratch={onBuildFromScratch}
+        />
+        <ScheduleRouteSkeleton />
+      </>,
+    );
+
+    await user.click(screen.getAllByRole("button", { name: /every day/i })[0]!);
+    await user.click(screen.getByRole("button", { name: /build from scratch/i }));
+
+    expect(onEveryDay).toHaveBeenCalledTimes(1);
+    expect(onBuildFromScratch).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId("schedule-route-skeleton")).toBeInTheDocument();
   });
 });
 

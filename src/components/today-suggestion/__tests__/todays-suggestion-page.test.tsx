@@ -2,7 +2,17 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TodaysSuggestionPage from "@/app/(app)/todays-suggestion/page";
 import { renderWithProviders } from "@/test/utils";
-import type { TodaysSuggestionResponse } from "@/types/suggestions";
+import {
+  EnvironmentAirQualityRisk,
+  EnvironmentHumidityBand,
+  EnvironmentProviderName,
+  EnvironmentStatus,
+  EnvironmentUvRisk,
+  EnvironmentWaterHardness,
+  EnvironmentWaterSensitivity,
+  type TodaysSuggestionEnvironmentSummary,
+  type TodaysSuggestionResponse,
+} from "@/types/suggestions";
 
 const mockStartBreakMutate = jest.fn();
 const mockCreateOnDemandMutate = jest.fn();
@@ -58,9 +68,19 @@ jest.mock("@/hooks/use-application-tracking", () => ({
   useRecordApplication: () => ({ mutate: jest.fn(), isPending: false }),
 }));
 
+jest.mock("@/hooks/use-skin-profile", () => ({
+  useSkinProfile: () => ({
+    data: {
+      city: "Stockholm",
+      countryCode: "SE",
+    },
+    isLoading: false,
+  }),
+}));
+
 jest.mock("@/stores/auth-store", () => ({
   useAuthStore: (selector: (state: { user: { timeZone: string } }) => string) =>
-    selector({ user: { timeZone: "UTC" } }),
+    selector({ user: { timeZone: "Europe/Stockholm" } }),
 }));
 
 jest.mock("next/navigation", () => ({
@@ -182,6 +202,29 @@ describe("TodaysSuggestionPage routine break integration", () => {
       }),
     );
   });
+
+  it("renders compact climate data beside today's summary pills", () => {
+    mockTodayData = mockTodayResponse({
+      timeZone: "Europe/Stockholm",
+      generatedAt: "2026-05-08T20:30:00.000Z",
+      environmentSummary: mockEnvironmentSummary(),
+      slots: [mockSlot()],
+    });
+
+    renderWithProviders(<TodaysSuggestionPage />);
+
+    expect(screen.getAllByText("Stockholm").length).toBeGreaterThan(0);
+    expect(screen.getByText("Local time:")).toBeInTheDocument();
+    expect(screen.getByText("City:")).toBeInTheDocument();
+    expect(screen.queryByText("City-level")).not.toBeInTheDocument();
+    expect(screen.queryByText("Spring")).not.toBeInTheDocument();
+    expect(screen.getByText("Clear · 12°C")).toBeInTheDocument();
+    expect(screen.getByText("UV 5 · moderate")).toBeInTheDocument();
+    expect(screen.getByText("Balanced · 44% humidity")).toBeInTheDocument();
+    expect(screen.queryByText("Good · AQI 22")).not.toBeInTheDocument();
+    expect(screen.queryByText("PM2.5 6 µg/m³")).not.toBeInTheDocument();
+    expect(screen.queryByText("PM10 12 µg/m³")).not.toBeInTheDocument();
+  });
 });
 
 function mockTodayResponse(
@@ -204,11 +247,42 @@ function mockTodayResponse(
       onDemand: 0,
     },
     weatherSummary: null,
+    environmentSummary: null,
+    environmentAlerts: [],
     slots: [],
     onDemandSuggestions: [],
     reactionAlert: null,
     routineBreak: null,
     ...partial,
+  };
+}
+
+function mockEnvironmentSummary(): TodaysSuggestionEnvironmentSummary {
+  return {
+    status: EnvironmentStatus.Available,
+    provider: EnvironmentProviderName.OpenMeteo,
+    generatedAt: "2026-05-08T20:00:00.000Z",
+    locationPersonalized: true,
+    season: "spring",
+    temperatureCelsius: 12,
+    temperatureBand: "mild",
+    humidity: 44,
+    humidityBand: EnvironmentHumidityBand.Balanced,
+    uvIndex: 5,
+    uvRisk: EnvironmentUvRisk.Moderate,
+    airQualityIndex: 22,
+    airQualityRisk: EnvironmentAirQualityRisk.Good,
+    pm25: 6,
+    pm10: 12,
+    pollenRisk: null,
+    conditionLabel: "Clear",
+    waterHardness: EnvironmentWaterHardness.Moderate,
+    waterSensitivity: EnvironmentWaterSensitivity.None,
+    climateSensitivities: [],
+    transitionSignals: [],
+    confidence: "provider",
+    stale: false,
+    sourceIds: [],
   };
 }
 

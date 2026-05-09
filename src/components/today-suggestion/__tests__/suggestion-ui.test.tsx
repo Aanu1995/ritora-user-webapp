@@ -28,6 +28,16 @@ import {
 import { buildRecordApplicationPayload } from "@/components/today-suggestion/record-application-payload";
 import type { ApplicationLog } from "@/types/application-tracking";
 import {
+  EnvironmentAirQualityRisk,
+  EnvironmentHumidityBand,
+  EnvironmentProviderName,
+  EnvironmentStatus,
+  EnvironmentUvRisk,
+  EnvironmentWaterHardness,
+  EnvironmentWaterSensitivity,
+  type TodaysSuggestionEnvironmentSummary,
+} from "@/types/environment-suggestions";
+import {
   SuggestionEvidenceSourceId,
   type SuggestionInstance,
   type SuggestionStep,
@@ -42,6 +52,7 @@ const mockRecordApplicationMutate = jest.fn();
 const mockRouterPush = jest.fn();
 const mockSnoozeMutate = jest.fn();
 const mockTodayEntry = jest.fn();
+const TEST_NOW_MS = new Date("2026-05-04T06:00:00.000Z").getTime();
 
 jest.mock("@/hooks/use-suggestions", () => ({
   useRegenerateSuggestion: () => ({
@@ -230,6 +241,7 @@ describe("today suggestion UI contract", () => {
       <SuggestionSlotCard
         slot={slot({ isVisible: false, suggestion: null })}
         onRecord={onRecord}
+        nowMs={TEST_NOW_MS}
       />,
     );
     expect(screen.getByText(/Available/i)).toBeInTheDocument();
@@ -240,6 +252,7 @@ describe("today suggestion UI contract", () => {
           status: "failed",
           suggestion: suggestionInstance({ generationStatus: "failed" }),
         })}
+        nowMs={TEST_NOW_MS}
       />,
     );
     expect(screen.getByText(/Needs retry/i)).toBeInTheDocument();
@@ -249,6 +262,7 @@ describe("today suggestion UI contract", () => {
         slot={slot({ suggestion: suggestionInstance() })}
         onRecord={onRecord}
         onShowDetail={onShowDetail}
+        nowMs={TEST_NOW_MS}
       />,
     );
     await user.click(screen.getByRole("button", { name: /mark as applied/i }));
@@ -281,6 +295,7 @@ describe("today suggestion UI contract", () => {
           suggestion: suggestionInstance({ applicationLogId: "log-1" }),
         })}
         onEdit={onEdit}
+        nowMs={TEST_NOW_MS}
       />,
     );
 
@@ -296,6 +311,7 @@ describe("today suggestion UI contract", () => {
       <SuggestionSlotCard
         slot={slot({ suggestion: suggestionInstance() })}
         personalizationOff
+        nowMs={TEST_NOW_MS}
       />,
     );
 
@@ -321,6 +337,7 @@ describe("today suggestion UI contract", () => {
         onRecord={onRecord}
         onEdit={onEdit}
         onShowDetail={onShowDetail}
+        nowMs={TEST_NOW_MS}
       />,
     );
 
@@ -358,6 +375,7 @@ describe("today suggestion UI contract", () => {
         onRecord={jest.fn()}
         onEdit={jest.fn()}
         onShowDetail={jest.fn()}
+        nowMs={TEST_NOW_MS}
       />,
     );
 
@@ -392,6 +410,7 @@ describe("today suggestion UI contract", () => {
         onRecord={jest.fn()}
         onEdit={jest.fn()}
         onShowDetail={jest.fn()}
+        nowMs={TEST_NOW_MS}
       />,
     );
 
@@ -419,6 +438,7 @@ describe("today suggestion UI contract", () => {
           }),
         })}
         onShowDetail={jest.fn()}
+        nowMs={TEST_NOW_MS}
       />,
     );
 
@@ -450,6 +470,7 @@ describe("today suggestion UI contract", () => {
           suggestion: suggestionInstance({ applicationLogId: "log-1" }),
         })}
         timeZone="Europe/Stockholm"
+        nowMs={TEST_NOW_MS}
       />,
     );
 
@@ -901,17 +922,19 @@ describe("today suggestion UI contract", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("summarizes today's visible, locked, weather, photo, and adherence states", () => {
+  it("summarizes today's visible, locked, photo, and adherence states", () => {
     renderWithProviders(
       <>
         <DaySummaryPills
           data={todaysResponse({
-            weatherSummary: {
+            environmentSummary: environmentSummary({
               conditionLabel: "Cloudy",
               temperatureCelsius: 19.4,
               uvIndex: 3,
+              uvRisk: EnvironmentUvRisk.Moderate,
               humidity: 60,
-            },
+              humidityBand: EnvironmentHumidityBand.Humid,
+            }),
             slots: [
               slot({
                 slotId: "recorded",
@@ -933,7 +956,9 @@ describe("today suggestion UI contract", () => {
     expect(screen.getByText(/applied/)).toBeInTheDocument();
     expect(screen.getByText(/ready/)).toBeInTheDocument();
     expect(screen.getByText(/locked/)).toBeInTheDocument();
-    expect(screen.getByText("Cloudy, 19°C, UV 3")).toBeInTheDocument();
+    expect(screen.getByText("Cloudy · 19°C")).toBeInTheDocument();
+    expect(screen.getByText("UV 3 · moderate")).toBeInTheDocument();
+    expect(screen.getByText("Humid · 60% humidity")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /log photo/i })).toHaveAttribute(
       "href",
       "/journal/upload",
@@ -1043,10 +1068,44 @@ function todaysResponse(
       onDemand: 0,
     },
     weatherSummary: null,
+    environmentSummary: null,
+    environmentAlerts: [],
     slots: [],
     onDemandSuggestions: [],
     reactionAlert: null,
     routineBreak: null,
+    ...partial,
+  };
+}
+
+function environmentSummary(
+  partial: Partial<TodaysSuggestionEnvironmentSummary> = {},
+): TodaysSuggestionEnvironmentSummary {
+  return {
+    status: EnvironmentStatus.Available,
+    provider: EnvironmentProviderName.OpenMeteo,
+    generatedAt: "2026-05-04T06:00:00.000Z",
+    locationPersonalized: true,
+    season: "spring",
+    temperatureCelsius: null,
+    temperatureBand: null,
+    humidity: null,
+    humidityBand: null,
+    uvIndex: null,
+    uvRisk: EnvironmentUvRisk.Unknown,
+    airQualityIndex: null,
+    airQualityRisk: EnvironmentAirQualityRisk.Unknown,
+    pm25: null,
+    pm10: null,
+    pollenRisk: null,
+    conditionLabel: null,
+    waterHardness: EnvironmentWaterHardness.Unknown,
+    waterSensitivity: EnvironmentWaterSensitivity.None,
+    climateSensitivities: [],
+    transitionSignals: [],
+    confidence: "provider",
+    stale: false,
+    sourceIds: [],
     ...partial,
   };
 }
@@ -1213,6 +1272,7 @@ function suggestionInstance(
     safetyFlags: [],
     inputTrace: null,
     evidenceSources: [],
+    environmentSummary: null,
     productDataQuality: {
       verifiedCount: 0,
       partialCount: 0,

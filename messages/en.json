@@ -370,6 +370,91 @@
       "viewHistory": "View history"
     }
   },
+  "currentContext": {
+    "localTime": "Local time",
+    "timeZone": "Time zone",
+    "city": "City",
+    "country": "Country",
+    "notSet": "Not set",
+    "unknown": "Unknown",
+    "loading": "Loading",
+    "climateData": "Climate data",
+    "lastUpdated": "Last updated {time}",
+    "cityLevelClimate": "City-level",
+    "profileOnlyClimate": "Profile only",
+    "weather": "Weather",
+    "seasonLabel": "Season",
+    "temperature": "Temp",
+    "uv": "UV",
+    "uvValue": "{risk} · UV {index}",
+    "uvIndexOnly": "UV {index}",
+    "humidity": "Humidity",
+    "humidityValue": "{band} · {value}%",
+    "airQuality": "Air",
+    "airQualityValue": "{risk} · AQI {index}",
+    "airQualityIndexOnly": "AQI {index}",
+    "pm25": "PM2.5",
+    "pm10": "PM10",
+    "micrograms": "{value} µg/m³",
+    "pollen": "Pollen",
+    "water": "Water",
+    "waterValue": "{hardness} · {sensitivity}",
+    "sensitivities": "Sensitive to",
+    "seasons": {
+      "spring": "Spring",
+      "summer": "Summer",
+      "autumn": "Autumn",
+      "winter": "Winter"
+    },
+    "temperatureBand": {
+      "freezing": "Freezing",
+      "cold": "Cold",
+      "mild": "Mild",
+      "warm": "Warm",
+      "hot": "Hot"
+    },
+    "uvRisk": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "high": "High",
+      "veryHigh": "Very high",
+      "extreme": "Extreme"
+    },
+    "humidityBand": {
+      "veryDry": "Very dry",
+      "dry": "Dry",
+      "balanced": "Balanced",
+      "humid": "Humid",
+      "veryHumid": "Very humid"
+    },
+    "airRisk": {
+      "good": "Good",
+      "fair": "Fair",
+      "moderate": "Moderate",
+      "poor": "Poor",
+      "veryPoor": "Very poor"
+    },
+    "waterHardness": {
+      "unknown": "Unknown hardness",
+      "soft": "Soft water",
+      "moderate": "Moderate water",
+      "hard": "Hard water"
+    },
+    "waterSensitivity": {
+      "none": "No sensitivity",
+      "suspected": "Sensitivity suspected",
+      "confirmed": "Sensitivity confirmed"
+    },
+    "sensitivity": {
+      "dryAir": "dry air",
+      "humidity": "humidity",
+      "pollution": "pollution",
+      "cold": "cold",
+      "heat": "heat",
+      "sun": "sun",
+      "seasonalChange": "seasonal change"
+    }
+  },
   "workspace": {
     "sidebarSubtitle": "Private workspace",
     "openNavigation": "Open workspace navigation",
@@ -663,6 +748,10 @@
         "heading": "How do you do skincare?",
         "description": "Tell us your pace. We use your Schedule for time and frequency."
       },
+      "environment": {
+        "heading": "Your water context",
+        "description": "Optional details that help Ritora adjust suggestions when water seems to trigger dryness, tightness, or irritation."
+      },
       "preferences": {
         "heading": "What are your shopping preferences?",
         "description": "Your preferences. Ritora only suggests products that match."
@@ -690,6 +779,15 @@
     "routineBaseline": {
       "paceLabel": "Routine pace",
       "paceHint": "How quickly you want to introduce new products."
+    },
+    "environment": {
+      "waterHardnessLabel": "Water hardness",
+      "waterHardnessHint": "Use what you know. Unknown is fine.",
+      "waterSensitivityLabel": "Water sensitivity",
+      "waterSensitivityHint": "Choose suspected or confirmed only if water seems to trigger dryness, stinging, or irritation.",
+      "waterNotesLabel": "Water reaction note",
+      "waterNotesHint": "Optional. Keep it short and only add what you want Ritora to use.",
+      "waterNotesPlaceholder": "e.g. Face feels tight after washing at home"
     },
     "preferences": {
       "fragranceFreeLabel": "Fragrance-free only?",
@@ -959,7 +1057,7 @@
       "healthLabel": "Health context processing",
       "healthDesc": "Pregnancy, conditions, medications, recent procedures, dermatologist care.",
       "locationLabel": "Location processing",
-      "locationDesc": "Country and city for climate-aware suggestions.",
+      "locationDesc": "Country and city let Ritora adapt suggestions to humidity, UV, air quality, and seasonal shifts.",
       "hormonalLabel": "Hormonal context processing",
       "hormonalDesc": "Cycle awareness for cyclical breakouts.",
       "grantedOn": "Granted",
@@ -985,7 +1083,7 @@
       "deleteAction": "Delete account",
       "deleteUnavailable": "Account deletion is coming soon. For now, contact support.",
       "grantLocationTitle": "Grant location consent",
-      "grantLocationBody": "Tell us where you are so Ritora can suggest climate-appropriate routines.",
+      "grantLocationBody": "Add city-level location so Ritora can account for humidity, UV, air quality, and seasonal changes.",
       "grantLocationConfirm": "Grant and save",
       "grantLocationCancel": "Cancel",
       "cityPlaceholder": "Stockholm",
@@ -1034,6 +1132,7 @@
       "primaryGoal": "Top priority",
       "sunBehavior": "Sun and pigment behavior",
       "routinePace": "Routine pace",
+      "waterContext": "Water context",
       "preferences": "Preferences",
       "aboutYou": "About you",
       "location": "Location",
@@ -1065,7 +1164,10 @@
       "sunscreenFilterRequired": "Pick a sunscreen filter.",
       "sunscreenFinishRequired": "Pick a sunscreen finish.",
       "budgetTierRequired": "Pick a budget.",
-      "allowSmartPicksRequired": "Pick yes or no for Smart Picks."
+      "allowSmartPicksRequired": "Pick yes or no for Smart Picks.",
+      "waterHardnessRequired": "Pick a water hardness option.",
+      "waterSensitivityRequired": "Pick a water sensitivity option.",
+      "waterNotesTooLong": "Keep the water note under 180 characters."
     },
     "options": {
       "oily": "Oily",
@@ -1093,6 +1195,10 @@
       "middle_eastern": "Middle Eastern",
       "mixed": "Mixed",
       "other": "Other",
+      "unknown": "Unknown",
+      "soft": "Soft",
+      "hard": "Hard",
+      "confirmed": "Confirmed",
       "acne": "Acne",
       "dark_marks": "Dark marks",
       "dryness": "Dryness",
@@ -3296,12 +3402,55 @@
       "applied": "{count, plural, one {# applied} other {# applied}}",
       "ready": "{count, plural, one {# ready} other {# ready}}",
       "locked": "{count, plural, one {# locked} other {# locked}}",
+      "weatherWithTemperature": "{condition} · {temperature}°C",
+      "temperature": "{temperature}°C",
       "uvIndex": "UV {index}",
+      "uvRisk": "UV {index} · {risk}",
+      "humidity": "{band} · {value}% humidity",
+      "airQuality": "Air {risk}",
+      "waterContext": "{hardness} water",
+      "environment": {
+        "unknown": "Unknown",
+        "uv": {
+          "low": "low",
+          "moderate": "moderate",
+          "high": "high",
+          "very_high": "very high",
+          "extreme": "extreme",
+          "unknown": "unknown"
+        },
+        "humidity": {
+          "very_dry": "Very dry",
+          "dry": "Dry",
+          "balanced": "Balanced",
+          "humid": "Humid",
+          "very_humid": "Very humid"
+        },
+        "air": {
+          "good": "good",
+          "fair": "fair",
+          "moderate": "moderate",
+          "poor": "poor",
+          "very_poor": "very poor",
+          "unknown": "unknown"
+        },
+        "water": {
+          "unknown": "Unknown",
+          "soft": "Soft",
+          "moderate": "Moderate",
+          "hard": "Hard"
+        }
+      },
       "photoNudge": "Photo logged today",
       "logPhoto": "Log photo",
       "photoLoggedAt": "Photo logged at {time}",
       "notifications": "{count, plural, one {# notification} other {# notifications}}",
       "adherence": "{percent}% adherence"
+    },
+    "environment": {
+      "climateAwareTitle": "Make suggestions climate-aware",
+      "climateAwareBody": "Add city-level location consent so Ritora can adjust for humidity, UV, air quality, and seasonal shifts.",
+      "grantLocation": "Manage location consent"
     },
     "modeBadge": {
       "ai": "AI",
@@ -3464,7 +3613,47 @@
         "whyEach": "Why each step",
         "whatISkipped": "What I skipped today and why",
         "inputs": "What this used",
+        "environment": "Environmental context",
         "evidence": "Trusted evidence"
+      },
+      "environment": {
+        "weather": "Weather",
+        "uv": "UV",
+        "uvDetail": "UV {index}, {risk}",
+        "humidity": "Humidity",
+        "humidityDetail": "{value}% humidity, {band}",
+        "air": "Air quality",
+        "water": "Water context",
+        "waterDetail": "{hardness} water may make gentle cleansing and barrier support more important.",
+        "uvRisk": {
+          "low": "low risk",
+          "moderate": "moderate risk",
+          "high": "high risk",
+          "very_high": "very high risk",
+          "extreme": "extreme risk",
+          "unknown": "unknown risk"
+        },
+        "humidityBand": {
+          "very_dry": "very dry air",
+          "dry": "dry air",
+          "balanced": "balanced air",
+          "humid": "humid air",
+          "very_humid": "very humid air"
+        },
+        "airRisk": {
+          "good": "Good",
+          "fair": "Fair",
+          "moderate": "Moderate",
+          "poor": "Poor",
+          "very_poor": "Very poor",
+          "unknown": "Unknown"
+        },
+        "waterHardness": {
+          "unknown": "Unknown",
+          "soft": "Soft",
+          "moderate": "Moderate",
+          "hard": "Hard"
+        }
       },
       "evidenceReviewed": "reviewed {date}",
       "noRationale": "No rationale captured for this suggestion.",

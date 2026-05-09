@@ -1,9 +1,7 @@
 "use client";
 
 import {
-  keepPreviousData,
   type QueryClient,
-  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
@@ -14,8 +12,6 @@ import {
   createOnDemandSuggestion,
   getSuggestion,
   getSuggestionAiConsent,
-  getSuggestionHistory,
-  getSuggestionHistoryDay,
   getTodaysSuggestion,
   getRoutineBreak,
   recordSuggestionGapAction,
@@ -35,9 +31,6 @@ import type {
   SnoozeRecordingReminderPayload,
   RoutineBreakState,
   SuggestionAiConsent,
-  SuggestionHistoryDay,
-  SuggestionHistoryListQuery,
-  SuggestionHistoryListResponse,
   StartRoutineBreakPayload,
   TodaysSuggestionResponse,
   UpdateSuggestionAiConsentPayload,
@@ -47,15 +40,7 @@ import type {
 const TODAYS_SUGGESTION_REFETCH_INTERVAL_MS = 60_000;
 const TODAYS_SUGGESTION_ACTIVE_REFETCH_INTERVAL_MS = 5_000;
 const TODAYS_SUGGESTION_MIN_REFETCH_INTERVAL_MS = 5_000;
-
-const EMPTY_HISTORY_RESPONSE: SuggestionHistoryListResponse = {
-  days: [],
-  nextCursor: null,
-  totalApplied: 0,
-  totalSlots: 0,
-  totalEdited: 0,
-  adherencePercent: null,
-};
+const TODAYS_SUGGESTION_ENVIRONMENT_REFETCH_INTERVAL_MS = 60 * 60_000;
 
 export function useTodaysSuggestion() {
   const isEnabled = useAuthEnabled();
@@ -78,16 +63,14 @@ export function getTodaysSuggestionRefetchInterval(
     return TODAYS_SUGGESTION_ACTIVE_REFETCH_INTERVAL_MS;
   }
 
-  const nextVisibleAtMs = getNextLockedSlotVisibleAtMs(data, nowMs);
-  if (nextVisibleAtMs === null) return false;
+  const nextRefetchIntervals = [
+    getLockedSlotRefetchInterval(data, nowMs),
+    getEnvironmentRefetchInterval(data, nowMs),
+  ]
+    .filter((value): value is number => value !== null)
+    .sort((first, second) => first - second)[0];
 
-  return Math.min(
-    Math.max(
-      nextVisibleAtMs - nowMs,
-      TODAYS_SUGGESTION_MIN_REFETCH_INTERVAL_MS,
-    ),
-    TODAYS_SUGGESTION_REFETCH_INTERVAL_MS,
-  );
+  return nextRefetchIntervals ?? false;
 }
 
 function hasGeneratingSuggestion(
@@ -119,6 +102,38 @@ function getNextLockedSlotVisibleAtMs(
     .sort((first, second) => first - second);
 
   return futureVisibleTimes[0] ?? null;
+}
+
+function getLockedSlotRefetchInterval(
+  data: TodaysSuggestionResponse,
+  nowMs: number,
+): number | null {
+  const nextVisibleAtMs = getNextLockedSlotVisibleAtMs(data, nowMs);
+  if (nextVisibleAtMs === null) return null;
+
+  return Math.min(
+    Math.max(
+      nextVisibleAtMs - nowMs,
+      TODAYS_SUGGESTION_MIN_REFETCH_INTERVAL_MS,
+    ),
+    TODAYS_SUGGESTION_REFETCH_INTERVAL_MS,
+  );
+}
+
+function getEnvironmentRefetchInterval(
+  data: TodaysSuggestionResponse,
+  nowMs: number,
+): number | null {
+  const generatedAt = data.environmentSummary?.generatedAt;
+  if (!generatedAt) return null;
+
+  const generatedAtMs = Date.parse(generatedAt);
+  if (!Number.isFinite(generatedAtMs)) return null;
+
+  return Math.max(
+    generatedAtMs + TODAYS_SUGGESTION_ENVIRONMENT_REFETCH_INTERVAL_MS - nowMs,
+    TODAYS_SUGGESTION_MIN_REFETCH_INTERVAL_MS,
+  );
 }
 
 export function useSuggestion(id: string | null | undefined) {
@@ -294,104 +309,9 @@ export function useSnoozeRecordingReminder() {
   });
 }
 
-export function useSuggestionHistory(query: SuggestionHistoryListQuery = {}) {
-  const isEnabled = useAuthEnabled();
-  const baseQuery = historyQueryWithoutCursor(query);
-  const history = useInfiniteQuery({
-    queryKey: [QueryKey.SuggestionsHistory, baseQuery],
-    queryFn: ({ pageParam }) =>
-      getSuggestionHistory(withHistoryCursor(baseQuery, pageParam)),
-    enabled: isEnabled,
-    initialPageParam: null as string | null,
-    getNextPageParam: getNextSuggestionHistoryPageParam,
-    placeholderData: keepPreviousData,
-  });
-  return {
-    ...history,
-    data: mergeSuggestionHistoryPages(history.data?.pages),
-  };
-}
-
-export function useSuggestionHistoryDay(date: string | null | undefined) {
-  const isEnabled = useAuthEnabled();
-  return useQuery({
-    queryKey: [QueryKey.SuggestionsHistoryDay, date],
-    queryFn: () => getSuggestionHistoryDay(date as string),
-    enabled: isEnabled && Boolean(date),
-  });
-}
-
-export function getNextSuggestionHistoryPageParam(
-  lastPage: SuggestionHistoryListResponse,
-): string | undefined {
-  return lastPage.nextCursor ?? undefined;
-}
-
-export function mergeSuggestionHistoryPages(
-  pages: SuggestionHistoryListResponse[] | undefined,
-): SuggestionHistoryListResponse {
-  if (!pages?.length) return EMPTY_HISTORY_RESPONSE;
-  const dayByDate = new Map<string, SuggestionHistoryDay>();
-  let totalApplied = 0;
-  let totalSlots = 0;
-  let totalEdited = 0;
-
-  for (const page of pages) {
-    totalApplied += page.totalApplied;
-    totalSlots += page.totalSlots;
-    totalEdited += page.totalEdited ?? 0;
-    for (const day of page.days) {
-      const existing = dayByDate.get(day.date);
-      if (!existing) {
-        dayByDate.set(day.date, { ...day, slots: [...day.slots] });
-        continue;
-      }
-      const seenSlotKeys = new Set(
-        existing.slots.map((slot) => slot.suggestionId ?? slot.slotId),
-      );
-      existing.reactionFlagged =
-        existing.reactionFlagged || day.reactionFlagged;
-      existing.moodScore ??= day.moodScore;
-      existing.hydrationTrend ??= day.hydrationTrend;
-      existing.photoEntryId ??= day.photoEntryId;
-      for (const slot of day.slots) {
-        const key = slot.suggestionId ?? slot.slotId;
-        if (key && seenSlotKeys.has(key)) continue;
-        if (key) seenSlotKeys.add(key);
-        existing.slots.push(slot);
-      }
-    }
-  }
-
-  const days = Array.from(dayByDate.values()).sort((a, b) =>
-    a.date < b.date ? 1 : -1,
-  );
-  for (const day of days) {
-    day.slots.sort((a, b) => a.slotTime.localeCompare(b.slotTime));
-  }
-
-  return {
-    days,
-    nextCursor: pages.at(-1)?.nextCursor ?? null,
-    totalApplied,
-    totalSlots,
-    totalEdited,
-    adherencePercent:
-      totalSlots > 0 ? Math.round((totalApplied / totalSlots) * 100) : null,
-  };
-}
-
-function historyQueryWithoutCursor(
-  query: SuggestionHistoryListQuery,
-): SuggestionHistoryListQuery {
-  const rest = { ...query };
-  delete rest.cursor;
-  return rest;
-}
-
-function withHistoryCursor(
-  query: SuggestionHistoryListQuery,
-  cursor: string | null,
-): SuggestionHistoryListQuery {
-  return cursor ? { ...query, cursor } : query;
-}
+export {
+  getNextSuggestionHistoryPageParam,
+  mergeSuggestionHistoryPages,
+  useSuggestionHistory,
+  useSuggestionHistoryDay,
+} from "@/hooks/use-suggestion-history";

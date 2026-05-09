@@ -22,7 +22,10 @@ export type SkinProfileStringField =
   | "sunscreenFilter"
   | "sunscreenFinish"
   | "sunscreenHabit"
-  | "sunscreenTolerance";
+  | "sunscreenTolerance"
+  | "waterHardness"
+  | "waterReactionNotes"
+  | "waterSensitivity";
 
 export type SkinProfileBooleanField = "allowSmartPicks" | "locationConsent";
 

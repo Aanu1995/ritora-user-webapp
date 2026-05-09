@@ -10,10 +10,11 @@ export const STEP_KEYS = [
   "concernsPriority",
   "sunPigmentStep",
   "routineBaseline",
+  "environment",
   "preferences",
 ] as const;
 
-export const ALL_STEP_NUMBERS = [1, 2, 3, 4, 5] as const;
+export const ALL_STEP_NUMBERS = [1, 2, 3, 4, 5, 6] as const;
 
 export function clampStep(step: number): number {
   return Math.min(Math.max(step, 1), TOTAL_SKIN_PROFILE_STEPS);

@@ -3,6 +3,7 @@ export const SkinProfileValue = {
   NotPregnant: "not_pregnant",
   PreferNotToSay: "prefer_not_to_say",
   Other: "other",
+  Unknown: "unknown",
   OtherPhotosensitizing: "other_photosensitizing",
   Yes: "yes",
   No: "no",

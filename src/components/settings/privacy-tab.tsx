@@ -112,11 +112,9 @@ export function PrivacyTab() {
   }, [accessLogs.data]);
 
   const hasHealth = Boolean(profile.data?.hasHealthContextConsent);
+  const hasLocation = Boolean(profile.data?.hasLocationContextConsent);
   const hasHormonal = Boolean(profile.data?.hasHormonalContextConsent);
   const hasAiSuggestionConsent = Boolean(aiConsent.data?.granted);
-  const hasLocation = Boolean(
-    profile.data && (profile.data.countryCode || profile.data.city),
-  );
   const activeCount =
     (hasHealth ? 1 : 0) +
     (hasLocation ? 1 : 0) +

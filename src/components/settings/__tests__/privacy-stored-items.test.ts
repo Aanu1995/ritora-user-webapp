@@ -35,6 +35,7 @@ function profile(overrides: Partial<SkinProfile> = {}): SkinProfile {
     hormonalContext: {},
     completeness: 0,
     hasHealthContextConsent: false,
+    hasLocationContextConsent: false,
     hasHormonalContextConsent: false,
     createdAt: "2026-05-01T08:00:00.000Z",
     updatedAt: "2026-05-01T08:00:00.000Z",

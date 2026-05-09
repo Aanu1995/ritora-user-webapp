@@ -32,6 +32,7 @@ import {
   buildIntent,
   buildStepReasonRows,
 } from "@/components/today-suggestion/suggestion-detail-copy";
+import { buildEnvironmentRows } from "@/components/today-suggestion/suggestion-detail-environment";
 import { useRegenerateSuggestion } from "@/hooks/use-suggestions";
 import { formatIsoTime12h, formatSlotTime12h } from "@/lib/suggestion-daypart";
 import type { SuggestionInstance } from "@/types/suggestions";
@@ -42,6 +43,7 @@ type Props = {
   suggestion: SuggestionInstance | null;
   onMarkApplied?: () => void;
   allowRegeneration?: boolean;
+  showEnvironment?: boolean;
 };
 
 export function SuggestionDetailDrawer({
@@ -50,6 +52,7 @@ export function SuggestionDetailDrawer({
   suggestion,
   onMarkApplied,
   allowRegeneration = false,
+  showEnvironment = true,
 }: Props) {
   const t = useTranslations("todaysSuggestion.detailDrawer");
   const regenerate = useRegenerateSuggestion();
@@ -61,11 +64,15 @@ export function SuggestionDetailDrawer({
   const stepReasons = buildStepReasonRows(suggestion);
   const skipped = explanation?.skipped ?? [];
   const inputs = explanation?.inputs ?? [];
+  const environmentRows = showEnvironment
+    ? buildEnvironmentRows(suggestion.environmentSummary, t)
+    : [];
   const hasRationaleContent =
     intent !== null ||
     stepReasons.length > 0 ||
     skipped.length > 0 ||
     inputs.length > 0 ||
+    environmentRows.length > 0 ||
     suggestion.evidenceSources.length > 0;
   const hasActions = Boolean(onMarkApplied) || allowRegeneration;
 
@@ -203,6 +210,27 @@ export function SuggestionDetailDrawer({
                           </strong>{" "}
                           {input.detail}
                         </span>
+                      </li>
+                    ))}
+                  </ul>
+                </RationaleBlock>
+              ) : null}
+
+              {environmentRows.length > 0 ? (
+                <RationaleBlock
+                  icon={<CloudSun className="h-3 w-3" />}
+                  label={t("sections.environment")}
+                >
+                  <ul className="flex flex-col gap-2">
+                    {environmentRows.map((row) => (
+                      <li
+                        key={row.label}
+                        className="rounded-xl bg-surface-muted px-3 py-2.5 text-[13px] leading-snug"
+                      >
+                        <strong className="text-foreground">
+                          {row.label}.
+                        </strong>{" "}
+                        {row.detail}
                       </li>
                     ))}
                   </ul>
