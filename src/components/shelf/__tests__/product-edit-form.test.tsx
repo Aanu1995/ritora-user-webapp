@@ -1,19 +1,29 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { toast } from 'sonner';
 import {
   getStepInput,
   mockCreateObjectUrl,
   mockMutate,
+  mockUploadForProductMutate,
   mockPush,
   mockRevokeObjectUrl,
-  mockUploadMutate,
   renderProductEditForm,
   resetProductEditFormMocks,
 } from '@/test/shelf/product-edit-form.test-harness';
+import { ApiError } from '@/lib/api-error';
 import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
+
+jest.mock('sonner', () => ({
+  toast: {
+    error: jest.fn(),
+    success: jest.fn(),
+  },
+}));
 
 beforeEach(() => {
   resetProductEditFormMocks();
+  jest.clearAllMocks();
 });
 
 describe('ProductEditForm', () => {
@@ -119,18 +129,22 @@ describe('ProductEditForm', () => {
     ).toEqual([]);
   });
 
-  it('lets the user choose a photo first and upload it before saving', async () => {
+  it('persists an uploaded photo immediately and clears the photo-only dirty state', async () => {
     const user = userEvent.setup();
-    mockUploadMutate.mockImplementation((_file, options) => {
+    mockUploadForProductMutate.mockImplementation((_input, options) => {
       options?.onSuccess?.({
-        imageUrl: 'https://cdn.example.com/product-images/processed/photo.webp',
+        identity: {
+          imageUrls: [
+            'https://cdn.example.com/product-images/processed/photo.webp',
+          ],
+        },
       });
     });
     mockMutate.mockImplementation((_input, options) => {
       options?.onSuccess?.();
     });
 
-    renderProductEditForm();
+    renderProductEditForm({ withUnsavedDialog: true });
 
     await user.upload(
       screen.getByLabelText(/choose product photo/i),
@@ -144,7 +158,15 @@ describe('ProductEditForm', () => {
     await user.click(screen.getByRole('button', { name: /upload photo/i }));
 
     await waitFor(() => {
-      expect(mockUploadMutate).toHaveBeenCalled();
+      expect(mockUploadForProductMutate).toHaveBeenCalledWith(
+        {
+          id: 'product-1',
+          file: expect.any(File),
+        },
+        expect.any(Object),
+      );
+      expect(mockMutate).not.toHaveBeenCalled();
+      expect(useUnsavedChangesStore.getState().hasUnsavedChanges).toBe(false);
     });
 
     await user.click(screen.getByRole('button', { name: /add step/i }));
@@ -152,12 +174,77 @@ describe('ProductEditForm', () => {
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalled();
+      expect(mockMutate).toHaveBeenCalledTimes(1);
     });
 
     expect(mockMutate.mock.calls[0]?.[0].patch.identity.imageUrls).toEqual([
       'https://cdn.example.com/product-images/processed/photo.webp',
     ]);
+  });
+
+  it('keeps the unsaved warning after photo upload when other fields are dirty', async () => {
+    const user = userEvent.setup();
+    mockUploadForProductMutate.mockImplementation((_input, options) => {
+      options?.onSuccess?.({
+        identity: {
+          imageUrls: [
+            'https://cdn.example.com/product-images/processed/photo.webp',
+          ],
+        },
+      });
+    });
+    mockMutate.mockImplementation((_input, options) => {
+      options?.onSuccess?.();
+    });
+
+    renderProductEditForm({ withUnsavedDialog: true });
+
+    await user.clear(screen.getByLabelText(/product name/i));
+    await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+    await user.upload(
+      screen.getByLabelText(/choose product photo/i),
+      new File(['photo'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+    await user.click(screen.getByRole('button', { name: /upload photo/i }));
+
+    await waitFor(() => {
+      expect(mockUploadForProductMutate).toHaveBeenCalledWith(
+        {
+          id: 'product-1',
+          file: expect.any(File),
+        },
+        expect.any(Object),
+      );
+      expect(useUnsavedChangesStore.getState().hasUnsavedChanges).toBe(true);
+    });
+  });
+
+  it('shows the server upload reason when product photo upload fails', async () => {
+    const user = userEvent.setup();
+    mockUploadForProductMutate.mockImplementation((_input, options) => {
+      options?.onError?.(
+        new ApiError('Product image signing is not configured correctly', {
+          status: 503,
+          body: {
+            message: 'Product image signing is not configured correctly',
+          },
+        }),
+      );
+    });
+
+    renderProductEditForm();
+
+    await user.upload(
+      screen.getByLabelText(/choose product photo/i),
+      new File(['photo'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+    await user.click(screen.getByRole('button', { name: /upload photo/i }));
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        'Product image signing is not configured correctly',
+      );
+    });
   });
 
   it('treats a selected but not yet uploaded photo as an unsaved change', async () => {

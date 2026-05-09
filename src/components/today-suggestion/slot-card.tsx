@@ -20,6 +20,7 @@ import {
 } from "@/components/today-suggestion/slot-state-card";
 import { SuggestionStepRow } from "@/components/today-suggestion/step-row";
 import { RecordedSlotCard } from "@/components/today-suggestion/recorded-slot-card";
+import { SuggestionClimatePills } from "@/components/today-suggestion/suggestion-climate-pills";
 import type { TodaysSuggestionSlot } from "@/types/suggestions";
 
 type Props = {
@@ -132,6 +133,8 @@ export function SuggestionSlotCard({
           {t("stepCount", { count: suggestion.steps.length })}
         </p>
       </header>
+
+      <SuggestionClimatePills environment={suggestion.environmentSummary} />
 
       {personalizationOff ? <PersonalizationOffNotice /> : null}
 

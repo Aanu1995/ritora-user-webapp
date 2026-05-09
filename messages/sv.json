@@ -3465,6 +3465,40 @@
       "yourRoutine": "Din rutin",
       "aiAdded": "Tillagt av AI"
     },
+    "climate": {
+      "weatherWithTemperature": "{condition} · {temperature}°C",
+      "temperature": "{temperature}°C",
+      "uvIndex": "UV {index}",
+      "uvRisk": "UV {index} · {risk}",
+      "humidity": "{band} · {value}% luftfuktighet",
+      "airQuality": "AQI · {risk}",
+      "airQualityWithIndex": "AQI {index} · {risk}",
+      "environment": {
+        "uv": {
+          "low": "låg",
+          "moderate": "måttlig",
+          "high": "hög",
+          "very_high": "mycket hög",
+          "extreme": "extrem",
+          "unknown": "okänd"
+        },
+        "humidity": {
+          "very_dry": "Mycket torrt",
+          "dry": "Torrt",
+          "balanced": "Balanserat",
+          "humid": "Fuktigt",
+          "very_humid": "Mycket fuktigt"
+        },
+        "air": {
+          "good": "bra",
+          "fair": "okej",
+          "moderate": "måttlig",
+          "poor": "dålig",
+          "very_poor": "mycket dålig",
+          "unknown": "okänd"
+        }
+      }
+    },
     "step": {
       "routineNote": "Rutinanteckning:"
     },

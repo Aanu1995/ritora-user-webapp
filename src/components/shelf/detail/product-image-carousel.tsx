@@ -65,6 +65,7 @@ export function ProductImageCarousel({
           src={imageUrls[index]}
           alt={`${brand} ${productName}`}
           fill
+          unoptimized
           sizes="(max-width: 820px) 100vw, 50vw"
           className="object-cover"
         />

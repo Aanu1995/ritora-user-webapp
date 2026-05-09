@@ -19,6 +19,9 @@ type UploadedProductImage = {
   imageUrl: string;
 };
 
+const PRODUCT_IMAGE_FORM_FIELD = "image";
+const PRODUCT_DRAFT_FORM_FIELD = "product";
+
 export async function listProducts(
   filters: ShelfListFilters,
   cursor?: string | null,
@@ -52,6 +55,21 @@ export async function createProduct(
   return postRequest<ShelfProduct>(ApiPath.InventoryProducts, draft);
 }
 
+export async function createProductWithImage(input: {
+  draft: ShelfProductDraft;
+  file: File;
+}): Promise<ShelfProduct> {
+  const body = new FormData();
+  body.append(PRODUCT_DRAFT_FORM_FIELD, JSON.stringify(input.draft));
+  body.append(PRODUCT_IMAGE_FORM_FIELD, input.file);
+
+  return postMultipartRequest<ShelfProduct>(
+    ApiPath.InventoryProductsWithImage,
+    body,
+    { timeout: 30000 },
+  );
+}
+
 export async function updateProduct(
   id: string,
   patch: DeepPartial<ShelfProductDraft>,
@@ -63,10 +81,24 @@ export async function uploadProductImage(
   file: File,
 ): Promise<UploadedProductImage> {
   const body = new FormData();
-  body.append("image", file);
+  body.append(PRODUCT_IMAGE_FORM_FIELD, file);
 
   return postMultipartRequest<UploadedProductImage>(
     ApiPath.InventoryProductsUploadImage,
+    body,
+    { timeout: 30000 },
+  );
+}
+
+export async function uploadProductImageForProduct(
+  id: string,
+  file: File,
+): Promise<ShelfProduct> {
+  const body = new FormData();
+  body.append(PRODUCT_IMAGE_FORM_FIELD, file);
+
+  return postMultipartRequest<ShelfProduct>(
+    ApiPath.InventoryProductUploadImage(id),
     body,
     { timeout: 30000 },
   );

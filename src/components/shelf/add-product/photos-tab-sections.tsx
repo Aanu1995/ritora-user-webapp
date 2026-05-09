@@ -146,17 +146,17 @@ export function LabelPhotosSection({
         </p>
       </div>
 
-      <details className="group rounded-xl border border-border bg-surface-muted/40 px-3 py-2 text-sm">
-        <summary className="cursor-pointer list-none font-medium text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
+      <details className="group rounded-xl border border-border bg-surface px-3.5 py-2.5 text-sm">
+        <summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
           <span className="inline-flex items-center gap-2">
             <ChevronRight
-              className="h-4 w-4 transition group-open:rotate-90"
+              className="h-4 w-4 text-muted transition group-open:rotate-90"
               aria-hidden
             />
             {t('shapeTips.heading')}
           </span>
         </summary>
-        <ul className="mt-2 flex flex-col gap-1.5 text-muted">
+        <ul className="mt-2 flex flex-col gap-1.5 pl-6 text-foreground/80">
           <li>{t('shapeTips.rectangular')}</li>
           <li>{t('shapeTips.cylindrical')}</li>
           <li>{t('shapeTips.roundJar')}</li>

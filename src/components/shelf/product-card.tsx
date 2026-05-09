@@ -102,6 +102,7 @@ export function ProductCard({
             src={imageUrl}
             alt=""
             fill
+            unoptimized
             sizes="(max-width: 640px) 50vw, (max-width: 960px) 33vw, 25vw"
             className="object-cover"
           />

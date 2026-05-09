@@ -10,6 +10,7 @@ import {
   EnvironmentUvRisk,
   EnvironmentWaterHardness,
   EnvironmentWaterSensitivity,
+  type SuggestionInstance,
   type TodaysSuggestionEnvironmentSummary,
   type TodaysSuggestionResponse,
 } from "@/types/suggestions";
@@ -203,12 +204,13 @@ describe("TodaysSuggestionPage routine break integration", () => {
     );
   });
 
-  it("renders compact climate data beside today's summary pills", () => {
+  it("renders compact climate data inside the visible suggestion card", () => {
+    const environment = mockEnvironmentSummary();
     mockTodayData = mockTodayResponse({
       timeZone: "Europe/Stockholm",
       generatedAt: "2026-05-08T20:30:00.000Z",
-      environmentSummary: mockEnvironmentSummary(),
-      slots: [mockSlot()],
+      environmentSummary: environment,
+      slots: [mockSlot({ environmentSummary: environment })],
     });
 
     renderWithProviders(<TodaysSuggestionPage />);
@@ -221,7 +223,7 @@ describe("TodaysSuggestionPage routine break integration", () => {
     expect(screen.getByText("Clear · 12°C")).toBeInTheDocument();
     expect(screen.getByText("UV 5 · moderate")).toBeInTheDocument();
     expect(screen.getByText("Balanced · 44% humidity")).toBeInTheDocument();
-    expect(screen.queryByText("Good · AQI 22")).not.toBeInTheDocument();
+    expect(screen.queryByText("AQI 22 · good")).not.toBeInTheDocument();
     expect(screen.queryByText("PM2.5 6 µg/m³")).not.toBeInTheDocument();
     expect(screen.queryByText("PM10 12 µg/m³")).not.toBeInTheDocument();
   });
@@ -286,7 +288,7 @@ function mockEnvironmentSummary(): TodaysSuggestionEnvironmentSummary {
   };
 }
 
-function mockSlot() {
+function mockSlot(suggestionPartial: Partial<SuggestionInstance> = {}) {
   return {
     slotId: "slot-1",
     daypart: "morning" as const,
@@ -343,6 +345,8 @@ function mockSlot() {
       applicationLogId: null,
       createdAt: "2026-05-06T06:00:00.000Z",
       updatedAt: "2026-05-06T06:00:00.000Z",
+      environmentSummary: null,
+      ...suggestionPartial,
     },
   };
 }

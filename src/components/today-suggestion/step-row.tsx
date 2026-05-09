@@ -78,6 +78,7 @@ export function SuggestionStepRow({ step, compactApplied = false }: Props) {
             alt=""
             width={40}
             height={48}
+            unoptimized
             className="h-full w-full object-cover"
           />
         ) : (

@@ -13,6 +13,7 @@ import {
 } from "@/components/today-suggestion/mode-badge";
 import { SuggestionDaypartIcon } from "@/components/today-suggestion/daypart-icon";
 import { SuggestionStepRow } from "@/components/today-suggestion/step-row";
+import { SuggestionClimatePills } from "@/components/today-suggestion/suggestion-climate-pills";
 import { Button } from "@/components/ui/button";
 import { formatSlotTime12h } from "@/lib/suggestion-daypart";
 import { cn } from "@/lib/utils";
@@ -71,6 +72,10 @@ export function HistoryDaySlotCompare({
           <SuggestionModeBadge mode={slot.mode} />
         </div>
       </header>
+
+      <SuggestionClimatePills
+        environment={slot.suggestion?.environmentSummary ?? null}
+      />
 
       <p className="text-sm leading-snug text-muted">{slot.summaryLine}</p>
 

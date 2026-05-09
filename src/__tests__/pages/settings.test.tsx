@@ -281,7 +281,8 @@ describe("SettingsPage", () => {
     renderWithProviders(<SettingsPage />);
 
     await user.click(screen.getByRole("tab", { name: /language/i }));
-    await user.click(screen.getByRole("button", { name: /svenska/i }));
+    await user.click(screen.getByRole("combobox", { name: /language/i }));
+    await user.click(await screen.findByRole("option", { name: /svenska/i }));
 
     expect(mockUpdatePreferredLanguageMutate).toHaveBeenCalledWith(
       { preferredLanguage: "sv" },
@@ -306,7 +307,8 @@ describe("SettingsPage", () => {
     renderWithProviders(<SettingsPage />);
 
     await user.click(screen.getByRole("tab", { name: /language/i }));
-    await user.click(screen.getByRole("button", { name: /svenska/i }));
+    await user.click(screen.getByRole("combobox", { name: /language/i }));
+    await user.click(await screen.findByRole("option", { name: /svenska/i }));
 
     expect(mockUpdatePreferredLanguageMutate).toHaveBeenCalledWith(
       { preferredLanguage: "sv" },

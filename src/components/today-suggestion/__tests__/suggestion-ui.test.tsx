@@ -138,6 +138,12 @@ describe("today suggestion UI contract", () => {
           reviewedAt: "2026-05-04",
         },
       ],
+      environmentSummary: environmentSummary({
+        conditionLabel: "Cloudy",
+        temperatureCelsius: 11,
+        uvIndex: 3,
+        uvRisk: EnvironmentUvRisk.Moderate,
+      }),
     });
 
     renderWithProviders(
@@ -153,6 +159,8 @@ describe("today suggestion UI contract", () => {
     expect(screen.queryByText(/Model gpt-4.1-mini/i)).not.toBeInTheDocument();
     expect(screen.getByText(/What I am trying to do/i)).toBeInTheDocument();
     expect(screen.getByText(/Why each step/i)).toBeInTheDocument();
+    expect(screen.getByText(/Environmental context/i)).toBeInTheDocument();
+    expect(screen.getByText(/Cloudy · 11°C/i)).toBeInTheDocument();
     expect(screen.getByText(/Ava Lab Barrier Serum/i)).toBeInTheDocument();
     expect(screen.getByText(/Trusted evidence/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /sunscreen/i })).toHaveAttribute(
@@ -259,12 +267,30 @@ describe("today suggestion UI contract", () => {
 
     rerender(
       <SuggestionSlotCard
-        slot={slot({ suggestion: suggestionInstance() })}
+        slot={{
+          ...slot({ suggestion: suggestionInstance() }),
+          suggestion: suggestionInstance({
+            environmentSummary: environmentSummary({
+              conditionLabel: "Cloudy",
+              temperatureCelsius: 19.4,
+              uvIndex: 3,
+              uvRisk: EnvironmentUvRisk.Moderate,
+              humidity: 60,
+              humidityBand: EnvironmentHumidityBand.Humid,
+              airQualityIndex: 55,
+              airQualityRisk: EnvironmentAirQualityRisk.Moderate,
+            }),
+          }),
+        }}
         onRecord={onRecord}
         onShowDetail={onShowDetail}
         nowMs={TEST_NOW_MS}
       />,
     );
+    expect(screen.getByText("Cloudy · 19°C")).toBeInTheDocument();
+    expect(screen.getByText("UV 3 · moderate")).toBeInTheDocument();
+    expect(screen.getByText("Humid · 60% humidity")).toBeInTheDocument();
+    expect(screen.getByText("AQI 55 · moderate")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /mark as applied/i }));
     expect(
       screen.queryByRole("button", { name: /customise/i }),
@@ -934,6 +960,8 @@ describe("today suggestion UI contract", () => {
               uvRisk: EnvironmentUvRisk.Moderate,
               humidity: 60,
               humidityBand: EnvironmentHumidityBand.Humid,
+              airQualityIndex: 55,
+              airQualityRisk: EnvironmentAirQualityRisk.Moderate,
             }),
             slots: [
               slot({
@@ -956,9 +984,10 @@ describe("today suggestion UI contract", () => {
     expect(screen.getByText(/applied/)).toBeInTheDocument();
     expect(screen.getByText(/ready/)).toBeInTheDocument();
     expect(screen.getByText(/locked/)).toBeInTheDocument();
-    expect(screen.getByText("Cloudy · 19°C")).toBeInTheDocument();
-    expect(screen.getByText("UV 3 · moderate")).toBeInTheDocument();
-    expect(screen.getByText("Humid · 60% humidity")).toBeInTheDocument();
+    expect(screen.queryByText("Cloudy · 19°C")).not.toBeInTheDocument();
+    expect(screen.queryByText("UV 3 · moderate")).not.toBeInTheDocument();
+    expect(screen.queryByText("Humid · 60% humidity")).not.toBeInTheDocument();
+    expect(screen.queryByText("AQI 55 · moderate")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /log photo/i })).toHaveAttribute(
       "href",
       "/journal/upload",

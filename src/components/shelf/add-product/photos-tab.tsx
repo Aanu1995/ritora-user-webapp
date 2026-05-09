@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useTranslations } from 'next-intl';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { toast } from 'sonner';
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import {
   ExtractActionBar,
   LabelPhotosSection,
@@ -10,13 +10,14 @@ import {
   type ExtractionState,
   type PhotoItem,
   type PhotosHelperState,
-} from './photos-tab-sections';
-import { useExtractProductFromImages } from '@/hooks/use-shelf';
-import { getApiErrorStatus } from '@/lib/api-error';
-import { LookupWarningCode, type ResolvedLookup } from '@/types/shelf';
+} from "./photos-tab-sections";
+import { useExtractProductFromImages } from "@/hooks/use-shelf";
+import { getApiErrorStatus } from "@/lib/api-error";
+import { LookupWarningCode, type ResolvedLookup } from "@/types/shelf";
 
 type Props = {
   onPhotosChange?: () => void;
+  onProductPhotoChange?: (file: File | null) => void;
   onResolved: (resolved: ResolvedLookup) => void;
 };
 
@@ -50,9 +51,7 @@ function toUploadFiles(
     return [];
   }
 
-  return Array.from(files).filter(
-    (file): file is File => file instanceof File,
-  );
+  return Array.from(files).filter((file): file is File => file instanceof File);
 }
 
 function getHelperState(input: {
@@ -62,30 +61,30 @@ function getHelperState(input: {
   state: ExtractionState;
 }): PhotosHelperState {
   if (input.isExtracting) {
-    return 'extracting';
+    return "extracting";
   }
 
   if (!input.canExtract) {
-    return 'incomplete';
+    return "incomplete";
   }
 
-  if (input.state === 'partial') {
-    return 'partial';
+  if (input.state === "partial") {
+    return "partial";
   }
 
-  if (input.state === 'error') {
-    return 'error';
+  if (input.state === "error") {
+    return "error";
   }
 
-  if (input.state === 'serviceUnavailable') {
-    return 'serviceUnavailable';
+  if (input.state === "serviceUnavailable") {
+    return "serviceUnavailable";
   }
 
   if (!input.canAddLabelPhoto) {
-    return 'maxReached';
+    return "maxReached";
   }
 
-  return 'ready';
+  return "ready";
 }
 
 function isServiceUnavailableError(error: unknown): boolean {
@@ -93,11 +92,15 @@ function isServiceUnavailableError(error: unknown): boolean {
   return status === undefined || status === 0;
 }
 
-export function PhotosTab({ onPhotosChange, onResolved }: Props) {
-  const t = useTranslations('shelf.dialog.photos');
+export function PhotosTab({
+  onPhotosChange,
+  onProductPhotoChange,
+  onResolved,
+}: Props) {
+  const t = useTranslations("shelf.dialog.photos");
   const [productPhoto, setProductPhoto] = useState<PhotoItem | null>(null);
   const [labelPhotos, setLabelPhotos] = useState<PhotoItem[]>([]);
-  const [state, setState] = useState<ExtractionState>('idle');
+  const [state, setState] = useState<ExtractionState>("idle");
   const productPhotoRef = useRef<PhotoItem | null>(null);
   const labelPhotosRef = useRef<PhotoItem[]>([]);
   const isMountedRef = useRef(true);
@@ -139,7 +142,8 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
     productPhotoRef.current = nextPhoto;
     setProductPhoto(nextPhoto);
     onPhotosChange?.();
-    setState('idle');
+    onProductPhotoChange?.(file);
+    setState("idle");
   };
 
   const handleRemoveProductPhoto = () => {
@@ -147,7 +151,8 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
     productPhotoRef.current = null;
     setProductPhoto(null);
     onPhotosChange?.();
-    setState('idle');
+    onProductPhotoChange?.(null);
+    setState("idle");
   };
 
   const handleAddLabelPhotos = (files: FileList | readonly File[] | null) => {
@@ -175,7 +180,7 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
     labelPhotosRef.current = nextPhotos;
     setLabelPhotos(nextPhotos);
     onPhotosChange?.();
-    setState('idle');
+    setState("idle");
   };
 
   const handleRemoveLabelPhoto = (photoId: string) => {
@@ -190,7 +195,7 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
     labelPhotosRef.current = nextPhotos;
     setLabelPhotos(nextPhotos);
     onPhotosChange?.();
-    setState('idle');
+    setState("idle");
   };
 
   const handleExtract = () => {
@@ -198,7 +203,7 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
       return;
     }
 
-    setState('idle');
+    setState("idle");
     extractProductFromImages.mutate(
       {
         images: [productPhoto.file, ...labelPhotos.map((photo) => photo.file)],
@@ -210,9 +215,9 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
             return;
           }
           if (!resolved) {
-            setState('error');
-            toast.error(t('errorTitle'), {
-              description: t('error'),
+            setState("error");
+            toast.error(t("errorTitle"), {
+              description: t("error"),
             });
             return;
           }
@@ -220,7 +225,7 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
           const shouldReview =
             resolved.reviewRequired ||
             resolved.warnings.includes(LookupWarningCode.PartialData);
-          setState(shouldReview ? 'partial' : 'ready');
+          setState(shouldReview ? "partial" : "ready");
           onResolved(resolved);
         },
         onError: (error) => {
@@ -228,13 +233,13 @@ export function PhotosTab({ onPhotosChange, onResolved }: Props) {
             return;
           }
           const isServiceDown = isServiceUnavailableError(error);
-          setState(isServiceDown ? 'serviceUnavailable' : 'error');
+          setState(isServiceDown ? "serviceUnavailable" : "error");
           toast.error(
-            isServiceDown ? t('serviceUnavailableTitle') : t('errorTitle'),
+            isServiceDown ? t("serviceUnavailableTitle") : t("errorTitle"),
             {
               description: isServiceDown
-                ? t('serviceUnavailableDescription')
-                : t('error'),
+                ? t("serviceUnavailableDescription")
+                : t("error"),
             },
           );
         },

@@ -204,6 +204,7 @@ function RecordedApplicationItem({
             alt=""
             width={40}
             height={48}
+            unoptimized
             className="h-full w-full object-cover"
           />
         ) : (

@@ -3462,6 +3462,40 @@
       "yourRoutine": "Your routine",
       "aiAdded": "Added by AI"
     },
+    "climate": {
+      "weatherWithTemperature": "{condition} · {temperature}°C",
+      "temperature": "{temperature}°C",
+      "uvIndex": "UV {index}",
+      "uvRisk": "UV {index} · {risk}",
+      "humidity": "{band} · {value}% humidity",
+      "airQuality": "AQI · {risk}",
+      "airQualityWithIndex": "AQI {index} · {risk}",
+      "environment": {
+        "uv": {
+          "low": "low",
+          "moderate": "moderate",
+          "high": "high",
+          "very_high": "very high",
+          "extreme": "extreme",
+          "unknown": "unknown"
+        },
+        "humidity": {
+          "very_dry": "Very dry",
+          "dry": "Dry",
+          "balanced": "Balanced",
+          "humid": "Humid",
+          "very_humid": "Very humid"
+        },
+        "air": {
+          "good": "good",
+          "fair": "fair",
+          "moderate": "moderate",
+          "poor": "poor",
+          "very_poor": "very poor",
+          "unknown": "unknown"
+        }
+      }
+    },
     "step": {
       "routineNote": "Routine note:"
     },

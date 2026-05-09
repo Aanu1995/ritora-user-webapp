@@ -12,10 +12,17 @@ import { HistoryListSkeleton } from "@/components/history/history-list-skeleton"
 import { HistorySummaryStrip } from "@/components/history/history-summary-strip";
 import { exportSuggestionHistoryCsv } from "@/services/suggestions.service";
 import {
+  EnvironmentAirQualityRisk,
+  EnvironmentProviderName,
+  EnvironmentStatus,
+  EnvironmentUvRisk,
+  EnvironmentWaterHardness,
+  EnvironmentWaterSensitivity,
   type SuggestionHistoryDay,
   type SuggestionHistorySlotSummary,
   type SuggestionInstance,
   type SuggestionStep,
+  type TodaysSuggestionEnvironmentSummary,
 } from "@/types/suggestions";
 import type {
   ApplicationLog,
@@ -92,6 +99,8 @@ describe("history suggestion components", () => {
     expect(screen.getByText(/Ran out of original/i)).toBeInTheDocument();
     expect(screen.getByText(/8:42 AM/i)).toBeInTheDocument();
     expect(screen.getByText(/same record your AI saw/i)).toBeInTheDocument();
+    expect(screen.getByText("Cloudy · 11°C")).toBeInTheDocument();
+    expect(screen.getByText("UV 3 · moderate")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /why this routine/i }));
     expect(onShowDetail).toHaveBeenCalledWith(
@@ -370,7 +379,7 @@ function suggestionInstance(
     safetyFlags: [],
     inputTrace: null,
     evidenceSources: [],
-    environmentSummary: null,
+    environmentSummary: environmentSummary(),
     productDataQuality: {
       verifiedCount: 0,
       partialCount: 0,
@@ -396,6 +405,38 @@ function suggestionInstance(
     applicationLogId: "log-1",
     createdAt: "2026-05-03T06:00:00.000Z",
     updatedAt: "2026-05-03T06:00:00.000Z",
+    ...partial,
+  };
+}
+
+function environmentSummary(
+  partial: Partial<TodaysSuggestionEnvironmentSummary> = {},
+): TodaysSuggestionEnvironmentSummary {
+  return {
+    status: EnvironmentStatus.Available,
+    provider: EnvironmentProviderName.OpenMeteo,
+    generatedAt: "2026-05-03T06:05:00.000Z",
+    locationPersonalized: true,
+    season: "spring",
+    temperatureCelsius: 11,
+    temperatureBand: "mild",
+    humidity: null,
+    humidityBand: null,
+    uvIndex: 3,
+    uvRisk: EnvironmentUvRisk.Moderate,
+    airQualityIndex: null,
+    airQualityRisk: EnvironmentAirQualityRisk.Unknown,
+    pm25: null,
+    pm10: null,
+    pollenRisk: null,
+    conditionLabel: "Cloudy",
+    waterHardness: EnvironmentWaterHardness.Unknown,
+    waterSensitivity: EnvironmentWaterSensitivity.None,
+    climateSensitivities: [],
+    transitionSignals: [],
+    confidence: "provider",
+    stale: false,
+    sourceIds: [],
     ...partial,
   };
 }

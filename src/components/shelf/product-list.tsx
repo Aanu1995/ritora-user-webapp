@@ -133,6 +133,7 @@ function ProductListRow({
             src={imageUrl}
             alt=""
             fill
+            unoptimized
             sizes="48px"
             className="object-cover"
           />

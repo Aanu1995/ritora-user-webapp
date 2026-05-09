@@ -6,7 +6,12 @@ jest.mock("@/lib/time-zone", () => ({
   getBrowserTimeZone: jest.fn(() => "Europe/Stockholm"),
 }));
 
-import { applyRequestContext, setAccessToken } from "@/lib/api";
+import { AxiosHeaders } from "axios";
+import {
+  applyRequestContext,
+  buildMultipartRequestConfig,
+  setAccessToken,
+} from "@/lib/api";
 
 describe("applyRequestContext", () => {
   const originalNodeEnv = process.env.NODE_ENV;
@@ -53,5 +58,24 @@ describe("applyRequestContext", () => {
     } as never);
 
     expect(config.baseURL).toBe("http://localhost:3001/api/v1");
+  });
+});
+
+describe("buildMultipartRequestConfig", () => {
+  it("prevents the JSON default content type from overriding FormData", () => {
+    const config = buildMultipartRequestConfig({
+      headers: {
+        "Content-Type": "application/json",
+        "X-Trace": "trace-1",
+      },
+      timeout: 30000,
+    });
+
+    expect(config.timeout).toBe(30000);
+    expect(config.headers).toBeInstanceOf(AxiosHeaders);
+    const headers = config.headers as AxiosHeaders;
+
+    expect(headers.get("Content-Type")).toBe(false);
+    expect(headers.get("X-Trace")).toBe("trace-1");
   });
 });

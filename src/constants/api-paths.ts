@@ -49,6 +49,7 @@ export const ApiPath = {
   CatalogueProductsExtractFromImages: `${CATALOGUE_PRODUCTS_BASE}/extract-from-images`,
 
   InventoryProducts: INVENTORY_PRODUCTS_BASE,
+  InventoryProductsWithImage: `${INVENTORY_PRODUCTS_BASE}/with-image`,
   InventoryProductsUploadImage: `${INVENTORY_PRODUCTS_BASE}/upload-image`,
   InventoryProductsStats: `${INVENTORY_PRODUCTS_BASE}/stats`,
   InventoryProductsBulkArchive: `${INVENTORY_PRODUCTS_BASE}/bulk/archive`,
@@ -56,6 +57,8 @@ export const ApiPath = {
   InventoryProductsBulkMarkFinished: `${INVENTORY_PRODUCTS_BASE}/bulk/mark-finished`,
   InventoryProductsBulkDelete: `${INVENTORY_PRODUCTS_BASE}/bulk-delete`,
   InventoryProduct: buildInventoryProductPath,
+  InventoryProductUploadImage: (id: string) =>
+    `${buildInventoryProductPath(id)}/upload-image`,
   InventoryProductArchive: (id: string) =>
     `${buildInventoryProductPath(id)}/archive`,
   InventoryProductRestore: (id: string) =>

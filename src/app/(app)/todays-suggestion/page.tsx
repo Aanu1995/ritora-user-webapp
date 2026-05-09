@@ -371,7 +371,6 @@ export default function TodaysSuggestionPage() {
           openRecordForSuggestion(detailSuggestion);
         }}
         allowRegeneration
-        showEnvironment={false}
       />
 
       {routineBreakStartDialog}

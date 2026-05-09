@@ -74,25 +74,26 @@ export function TimeZoneSelect({
           aria-haspopup="listbox"
           aria-expanded={open}
           className={cn(
-            'flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-surface px-3 text-left text-sm outline-none transition hover:bg-accent-soft focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-not-allowed disabled:opacity-50',
+            'flex h-12 w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 py-3 text-left text-sm text-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-not-allowed disabled:opacity-50',
             !selected && 'text-muted',
             className,
           )}
         >
-          <span className={selected ? 'text-foreground' : undefined}>
+          <span className={cn('line-clamp-1', selected ? 'text-foreground' : undefined)}>
             {selected ?? resolvedPlaceholder}
           </span>
           <ChevronDown className="h-4 w-4 shrink-0 text-muted" />
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[--radix-popover-trigger-width] min-w-[260px] p-0"
+        className="w-[--radix-popover-trigger-width] min-w-[260px] overflow-hidden rounded-2xl border border-border bg-surface p-0 text-foreground shadow-soft"
         align="start"
+        sideOffset={6}
         onOpenAutoFocus={(event) => {
           event.preventDefault();
         }}
       >
-        <div className="flex items-center gap-2 border-b border-border px-3 py-2">
+        <div className="flex items-center gap-2 border-b border-border px-3 py-2.5">
           <Search className="h-4 w-4 shrink-0 text-muted" />
           <input
             autoFocus
@@ -119,13 +120,17 @@ export function TimeZoneSelect({
                   aria-selected={isActive}
                   onClick={() => handlePick(timeZone)}
                   className={cn(
-                    'flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm transition',
-                    'hover:bg-accent-soft hover:text-accent-strong',
-                    isActive && 'bg-accent-soft text-accent-strong',
+                    'relative flex w-full cursor-pointer select-none items-center justify-between rounded-xl py-2.5 pl-3 pr-3 text-left text-sm outline-none transition',
+                    'hover:bg-accent-soft hover:text-accent-strong focus-visible:bg-accent-soft focus-visible:text-accent-strong',
+                    isActive && 'bg-accent-soft font-medium text-accent-strong',
                   )}
                 >
-                  <span>{formatTimeZoneLabel(timeZone)}</span>
-                  {isActive ? <Check className="h-4 w-4" /> : null}
+                  <span className="line-clamp-1">
+                    {formatTimeZoneLabel(timeZone)}
+                  </span>
+                  {isActive ? (
+                    <Check className="h-4 w-4 shrink-0" />
+                  ) : null}
                 </button>
               );
             })

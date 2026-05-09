@@ -1,6 +1,8 @@
 import axios, {
+  AxiosHeaders,
   type AxiosRequestConfig,
   type InternalAxiosRequestConfig,
+  type RawAxiosHeaders,
 } from "axios";
 import { ApiPath } from "@/constants/api-paths";
 import { getPreferredLocale } from "@/i18n/config";
@@ -370,11 +372,30 @@ export async function postMultipartRequest<T>(
   config?: AxiosRequestConfig,
 ): Promise<T> {
   try {
-    const { data } = await apiClient.post<T>(url, body, config);
+    const { data } = await apiClient.post<T>(
+      url,
+      body,
+      buildMultipartRequestConfig(config),
+    );
     return data;
   } catch (error) {
     throwServerError(error, `Failed to post multipart data to ${url}`);
   }
+}
+
+export function buildMultipartRequestConfig(
+  config?: AxiosRequestConfig,
+): AxiosRequestConfig {
+  const headers = AxiosHeaders.from(
+    (config?.headers ?? {}) as RawAxiosHeaders | AxiosHeaders,
+  );
+
+  headers.set("Content-Type", false);
+
+  return {
+    ...config,
+    headers,
+  };
 }
 
 export async function patchRequest<T>(

@@ -1,52 +1,54 @@
-'use client';
+"use client";
 
-import { useForm, useStore } from '@tanstack/react-form';
-import { ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
-import { toast } from 'sonner';
-import { QuickLookupCard } from './add-product/quick-lookup-card';
-import { buildTemplateGuidance } from './add-product/category-templates';
+import { useForm, useStore } from "@tanstack/react-form";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import { QuickLookupCard } from "./add-product/quick-lookup-card";
+import { buildTemplateGuidance } from "./add-product/category-templates";
 import {
   buildLookupReviewFields,
   normalizeLookupCountryValue,
-} from './add-product/lookup-result-import';
+} from "./add-product/lookup-result-import";
 import {
   ProductFormBody,
   type ProductFormReviewFields,
   type ProductFormValue,
-} from './product-form-body';
-import { ProductPageHeader } from './product-page-header';
+} from "./product-form-body";
+import { ProductPageHeader } from "./product-page-header";
 import {
   buildShelfFieldErrors,
   type ShelfFieldMeta,
-} from './form/product-form-errors';
-import { GuardedLink } from '@/components/app/guarded-link';
-import { Button } from '@/components/ui/button';
-import { LoadingIndicator } from '@/components/ui/loading-indicator';
-import { AppRoute } from '@/constants/app-routes';
-import { useUnsavedChangesGuard } from '@/hooks/use-unsaved-changes-guard';
-import { useCreateProduct } from '@/hooks/use-shelf';
-import { firstFieldError } from '@/lib/form-errors';
+} from "./form/product-form-errors";
+import { GuardedLink } from "@/components/app/guarded-link";
+import { Button } from "@/components/ui/button";
+import { LoadingIndicator } from "@/components/ui/loading-indicator";
+import { AppRoute } from "@/constants/app-routes";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
+import { useCreateProduct, useCreateProductWithImage } from "@/hooks/use-shelf";
+import { firstFieldError } from "@/lib/form-errors";
 import {
   clearSubmitErrors,
   executeMutation,
-  readSubmissionErrorMessage,
-} from '@/lib/form-submission';
+  type SubmissionValidationResult,
+} from "@/lib/form-submission";
 import {
   createEmptyIdentity,
   createEmptyManufacturer,
   createEmptyUserFields,
   getShelfGuidanceValidationErrors,
   shelfProductFormSchema,
+  type ShelfFormFieldName,
   toShelfProductDraft,
-} from '@/lib/shelf-form';
-import { getShelfSubmitError } from '@/lib/shelf-submit-errors';
+} from "@/lib/shelf-form";
+import { getShelfSubmitError } from "@/lib/shelf-submit-errors";
 import {
   LookupConfidence,
   type ResolvedLookup,
-} from '@/types/shelf';
+  type ShelfProductDraft,
+} from "@/types/shelf";
 
 function buildDefaultValues(): ProductFormValue {
   const identity = createEmptyIdentity();
@@ -64,7 +66,7 @@ function hasLookupValue(value: unknown): boolean {
     return value.length > 0;
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return value.trim().length > 0;
   }
 
@@ -88,17 +90,51 @@ function mergeLookupValues<T extends object>(
   return next;
 }
 
+function stripIdentityImageUrls<T extends { imageUrls?: string[] }>(
+  identity: T,
+): Omit<T, "imageUrls"> {
+  const next = { ...identity };
+  delete next.imageUrls;
+
+  return next;
+}
+
+function stripDraftImageUrls(draft: ShelfProductDraft): ShelfProductDraft {
+  return {
+    ...draft,
+    identity: {
+      ...draft.identity,
+      imageUrls: [],
+    },
+  };
+}
+
+function firstSubmitErrorMessage(
+  error: SubmissionValidationResult<ShelfFormFieldName>,
+): string | undefined {
+  if (error.form) {
+    return error.form;
+  }
+
+  return Object.values(error.fields).find(
+    (message): message is string =>
+      typeof message === "string" && message.length > 0,
+  );
+}
+
 export function AddProductPage() {
-  const t = useTranslations('shelf');
-  const tDialog = useTranslations('shelf.dialog');
-  const tLookupImport = useTranslations('shelf.dialog.lookupImport');
-  const tLookupReview = useTranslations('shelf.dialog.lookupReview');
+  const t = useTranslations("shelf");
+  const tDialog = useTranslations("shelf.dialog");
+  const tLookupImport = useTranslations("shelf.dialog.lookupImport");
+  const tLookupReview = useTranslations("shelf.dialog.lookupReview");
   const router = useRouter();
   const createProduct = useCreateProduct();
+  const createProductWithImage = useCreateProductWithImage();
   const createdProductIdRef = useRef<string | null>(null);
   const hasPhotoExtractionRef = useRef(false);
   const [reviewFields, setReviewFields] = useState<ProductFormReviewFields>({});
   const [isSaved, setIsSaved] = useState(false);
+  const [productPhotoFile, setProductPhotoFile] = useState<File | null>(null);
 
   const form = useForm({
     defaultValues: buildDefaultValues(),
@@ -115,16 +151,25 @@ export function AddProductPage() {
         createdProductIdRef.current = null;
 
         if (!hasPhotoExtractionRef.current) {
-          return tLookupImport('requiredError');
+          const message = tLookupImport("requiredError");
+          toast.error(message);
+          return message;
         }
 
-        const result = await executeMutation(
-          createProduct.mutate,
-          toShelfProductDraft(value),
-        );
+        const draft = stripDraftImageUrls(toShelfProductDraft(value));
+        const result = productPhotoFile
+          ? await executeMutation(createProductWithImage.mutate, {
+              draft,
+              file: productPhotoFile,
+            })
+          : await executeMutation(createProduct.mutate, draft);
 
         if (result.error !== null) {
-          return getShelfSubmitError(result.error, t);
+          const submitError = getShelfSubmitError(result.error, t);
+          toast.error(
+            firstSubmitErrorMessage(submitError) ?? t("dialog.genericError"),
+          );
+          return submitError;
         }
 
         createdProductIdRef.current = result.data.id;
@@ -136,7 +181,7 @@ export function AddProductPage() {
         return;
       }
 
-      toast.success(tDialog('confirm.successToast'));
+      toast.success(tDialog("confirm.successToast"));
       setIsSaved(true);
       releaseGuard();
       router.push(`${AppRoute.Shelf}/${createdProductIdRef.current}`);
@@ -152,67 +197,67 @@ export function AddProductPage() {
     <GuardedLink
       href={AppRoute.Shelf}
       restoreScrollTo={AppRoute.Shelf}
-      aria-label={t('detail.backLink')}
+      aria-label={t("detail.backLink")}
       className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-accent-soft"
     >
       <ArrowLeft className="h-4 w-4" />
     </GuardedLink>
   );
 
-  const setIdentityValue = (nextIdentity: ProductFormValue['identity']) => {
+  const setIdentityValue = (nextIdentity: ProductFormValue["identity"]) => {
     clearSubmitErrors(form);
-    form.setFieldValue('identity', nextIdentity);
-    form.setFieldValue('identity.brand', nextIdentity.brand);
-    form.setFieldValue('identity.name', nextIdentity.name);
-    form.setFieldValue('identity.category', nextIdentity.category);
-    form.setFieldValue('identity.description', nextIdentity.description);
-    form.setFieldValue('identity.benefits', nextIdentity.benefits);
-    form.setFieldValue('identity.suitedFor', nextIdentity.suitedFor);
+    form.setFieldValue("identity", nextIdentity);
+    form.setFieldValue("identity.brand", nextIdentity.brand);
+    form.setFieldValue("identity.name", nextIdentity.name);
+    form.setFieldValue("identity.category", nextIdentity.category);
+    form.setFieldValue("identity.description", nextIdentity.description);
+    form.setFieldValue("identity.benefits", nextIdentity.benefits);
+    form.setFieldValue("identity.suitedFor", nextIdentity.suitedFor);
     form.setFieldValue(
-      'identity.inciIngredients',
+      "identity.inciIngredients",
       nextIdentity.inciIngredients,
     );
-    form.setFieldValue('identity.sizeMl', nextIdentity.sizeMl);
+    form.setFieldValue("identity.sizeMl", nextIdentity.sizeMl);
   };
 
   const setManufacturerValue = (
-    nextManufacturer: ProductFormValue['manufacturer'],
+    nextManufacturer: ProductFormValue["manufacturer"],
   ) => {
     clearSubmitErrors(form);
-    form.setFieldValue('manufacturer', nextManufacturer);
+    form.setFieldValue("manufacturer", nextManufacturer);
   };
 
   const setUserFieldsValue = (
-    nextUserFields: ProductFormValue['userFields'],
+    nextUserFields: ProductFormValue["userFields"],
   ) => {
     clearSubmitErrors(form);
-    form.setFieldValue('userFields', nextUserFields);
+    form.setFieldValue("userFields", nextUserFields);
   };
 
-  const setGuidanceValue = (nextGuidance: ProductFormValue['guidance']) => {
+  const setGuidanceValue = (nextGuidance: ProductFormValue["guidance"]) => {
     clearSubmitErrors(form);
-    form.setFieldValue('guidance', nextGuidance);
-    form.setFieldValue('guidance.steps', nextGuidance.steps);
-    form.setFieldValue('guidance.cautions', nextGuidance.cautions);
+    form.setFieldValue("guidance", nextGuidance);
+    form.setFieldValue("guidance.steps", nextGuidance.steps);
+    form.setFieldValue("guidance.cautions", nextGuidance.cautions);
   };
 
   const handleLookupResult = (resolved: ResolvedLookup) => {
     if (resolved.confidence === LookupConfidence.Low) {
       setReviewFields({});
       hasPhotoExtractionRef.current = false;
-      toast.error(tLookupReview('lowConfidenceError'));
+      toast.error(tLookupReview("lowConfidenceError"));
       return;
     }
 
-    const resolvedIdentity = resolved.identity ?? {};
+    const resolvedIdentity = stripIdentityImageUrls(resolved.identity ?? {});
     const resolvedManufacturer = resolved.manufacturer ?? {};
     const resolvedGuidance = resolved.guidance ?? {};
     const nextIdentity = mergeLookupValues(
-      form.getFieldValue('identity'),
+      form.getFieldValue("identity"),
       resolvedIdentity,
     );
     const mergedManufacturer = mergeLookupValues(
-      form.getFieldValue('manufacturer'),
+      form.getFieldValue("manufacturer"),
       resolvedManufacturer,
     );
     const nextManufacturer = {
@@ -228,16 +273,14 @@ export function AddProductPage() {
           mergedManufacturer.countryOfManufacture,
       ),
     };
-    const currentGuidance = form.getFieldValue('guidance');
-    const hasResolvedGuidance = Object.values(resolvedGuidance).some(
-      hasLookupValue,
-    );
-    const nextGuidance =
-      hasResolvedGuidance
-        ? mergeLookupValues(currentGuidance, resolvedGuidance)
-        : currentGuidance.steps.length > 0
-          ? currentGuidance
-          : buildTemplateGuidance(nextIdentity.category, [], []);
+    const currentGuidance = form.getFieldValue("guidance");
+    const hasResolvedGuidance =
+      Object.values(resolvedGuidance).some(hasLookupValue);
+    const nextGuidance = hasResolvedGuidance
+      ? mergeLookupValues(currentGuidance, resolvedGuidance)
+      : currentGuidance.steps.length > 0
+        ? currentGuidance
+        : buildTemplateGuidance(nextIdentity.category, [], []);
 
     setIdentityValue(nextIdentity);
     setManufacturerValue(nextManufacturer);
@@ -246,11 +289,11 @@ export function AddProductPage() {
     const nextReviewFields = buildLookupReviewFields(resolved);
 
     setReviewFields(nextReviewFields);
-    toast.success(tLookupImport('title'), {
+    toast.success(tLookupImport("title"), {
       description:
         Object.keys(nextReviewFields).length > 0
-          ? tLookupImport('reviewDescription')
-          : tLookupImport('description'),
+          ? tLookupImport("reviewDescription")
+          : tLookupImport("description"),
     });
   };
 
@@ -274,18 +317,11 @@ export function AddProductPage() {
         selector={(state) => ({
           values: state.values,
           fieldMeta: state.fieldMeta as ShelfFieldMeta,
-          submitError: state.errorMap.onSubmit,
           isSubmitting: state.isSubmitting,
           submissionAttempts: state.submissionAttempts,
         })}
       >
-        {({
-          values,
-          fieldMeta,
-          submitError,
-          isSubmitting,
-          submissionAttempts,
-        }) => {
+        {({ values, fieldMeta, isSubmitting, submissionAttempts }) => {
           const showAllErrors = submissionAttempts > 0;
           const fieldErrors = buildShelfFieldErrors(
             fieldMeta,
@@ -308,22 +344,18 @@ export function AddProductPage() {
               t,
             ),
           };
-          const formError = readSubmissionErrorMessage(submitError);
-
           return (
             <>
               <ProductPageHeader
                 leading={leading}
-                title={tDialog('title')}
-                subtitle={tDialog('subtitle')}
+                title={tDialog("title")}
+                subtitle={tDialog("subtitle")}
                 actions={
                   <Button type="submit" size="sm" disabled={isSubmitting}>
                     {isSubmitting ? (
-                      <LoadingIndicator
-                        label={tDialog('confirm.submitting')}
-                      />
+                      <LoadingIndicator label={tDialog("confirm.submitting")} />
                     ) : (
-                      tDialog('confirm.submit')
+                      tDialog("confirm.submit")
                     )}
                   </Button>
                 }
@@ -332,17 +364,9 @@ export function AddProductPage() {
               <div className="mx-auto mt-6 flex max-w-5xl flex-col gap-6">
                 <QuickLookupCard
                   onPhotosChange={handlePhotosChange}
+                  onProductPhotoChange={setProductPhotoFile}
                   onResult={handleLookupResult}
                 />
-
-                {formError ? (
-                  <div
-                    role="alert"
-                    className="rounded-2xl border border-danger bg-danger/10 px-4 py-3 text-sm text-danger"
-                  >
-                    {formError}
-                  </div>
-                ) : null}
 
                 <ProductFormBody
                   value={values}
