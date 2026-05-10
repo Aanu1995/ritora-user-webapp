@@ -150,7 +150,21 @@ describe("today suggestion UI contract", () => {
       <SuggestionDetailDrawer
         open
         onOpenChange={jest.fn()}
-        suggestion={suggestion}
+        suggestion={{
+          ...suggestion,
+          steps: [
+            suggestionStep({
+              product: {
+                id: "product-1",
+                brand: "Ava Lab",
+                name: "Barrier Serum",
+                category: "serum",
+                imageUrl: "/detail-barrier-serum.webp",
+                status: "active",
+              },
+            }),
+          ],
+        }}
         onMarkApplied={jest.fn()}
         allowRegeneration
       />,
@@ -162,6 +176,9 @@ describe("today suggestion UI contract", () => {
     expect(screen.getByText(/Environmental context/i)).toBeInTheDocument();
     expect(screen.getByText(/Cloudy · 11°C/i)).toBeInTheDocument();
     expect(screen.getByText(/Ava Lab Barrier Serum/i)).toBeInTheDocument();
+    expect(
+      document.querySelector('img[src*="detail-barrier-serum.webp"]'),
+    ).toBeInTheDocument();
     expect(screen.getByText(/Trusted evidence/i)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /sunscreen/i })).toHaveAttribute(
       "href",
@@ -866,11 +883,20 @@ describe("today suggestion UI contract", () => {
   });
 
   it("covers step row provenance, fallback labels, and compact applied rendering", () => {
-    const { rerender } = render(
+    const { container, rerender } = render(
       <SuggestionStepRow
+        index={0}
         step={suggestionStep({
           provenance: "ai_added",
           routineNote: "Apply over damp skin before moisturiser.",
+          product: {
+            id: "product-1",
+            brand: "Ava Lab",
+            name: "Barrier Serum",
+            category: "serum",
+            imageUrl: "/today-barrier-serum.webp",
+            status: "active",
+          },
         })}
       />,
     );
@@ -882,9 +908,13 @@ describe("today suggestion UI contract", () => {
     expect(
       screen.getAllByText(/Apply over damp skin before moisturiser/i).length,
     ).toBeGreaterThan(0);
+    expect(
+      container.querySelector('img[src*="today-barrier-serum.webp"]'),
+    ).toBeInTheDocument();
 
     rerender(
       <SuggestionStepRow
+        index={0}
         step={suggestionStep({
           id: "snapshot",
           productBrand: "Original Brand",
@@ -906,6 +936,7 @@ describe("today suggestion UI contract", () => {
 
     rerender(
       <SuggestionStepRow
+        index={0}
         step={suggestionStep({
           id: "locked",
           product: null,
@@ -920,6 +951,7 @@ describe("today suggestion UI contract", () => {
 
     rerender(
       <SuggestionStepRow
+        index={0}
         compactApplied
         step={suggestionStep({
           id: "fallback",

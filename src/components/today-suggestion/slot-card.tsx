@@ -148,9 +148,9 @@ export function SuggestionSlotCard({
       ) : null}
 
       <ol className="mt-3 flex flex-col gap-2.5">
-        {stepsByOrder.map((step) => (
+        {stepsByOrder.map((step, index) => (
           <li key={step.id}>
-            <SuggestionStepRow step={step} />
+            <SuggestionStepRow step={step} index={index} />
           </li>
         ))}
       </ol>

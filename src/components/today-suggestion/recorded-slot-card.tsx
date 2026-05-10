@@ -2,7 +2,6 @@
 
 import { Check, CircleSlash, Info, Pencil, Repeat2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { SmoothImage } from "@/components/ui/smooth-image";
 import { formatIsoTime12h, formatSlotTime12h } from "@/lib/suggestion-daypart";
 import { cn } from "@/lib/utils";
 import { SuggestionDaypartIcon } from "@/components/today-suggestion/daypart-icon";
@@ -10,7 +9,7 @@ import {
   SuggestionModeBadge,
   SuggestionStatusPill,
 } from "@/components/today-suggestion/mode-badge";
-import { productCategoryEmoji } from "@/components/today-suggestion/product-category-icon";
+import { SuggestionProductImageTile } from "@/components/today-suggestion/product-image-tile";
 import { SuggestionStepRow } from "@/components/today-suggestion/step-row";
 import type {
   ApplicationItemStatus,
@@ -90,9 +89,9 @@ export function RecordedSlotCard({
           {suggestion.steps
             .slice()
             .sort((a, b) => a.stepOrder - b.stepOrder)
-            .map((step) => (
+            .map((step, index) => (
               <li key={step.id}>
-                <SuggestionStepRow step={step} compactApplied />
+                <SuggestionStepRow step={step} index={index} compactApplied />
               </li>
             ))}
         </ul>
@@ -197,26 +196,11 @@ function RecordedApplicationItem({
         <MarkerIcon className="h-3.5 w-3.5" />
       </span>
 
-      <div className="grid h-12 w-10 shrink-0 place-items-center overflow-hidden rounded-md bg-surface text-base">
-        {product.imageUrl ? (
-          <SmoothImage
-            src={product.imageUrl}
-            alt=""
-            className="h-12 w-10 rounded-md"
-            sizes="40px"
-            fallback={
-              <span
-                className="grid h-full w-full place-items-center"
-                aria-hidden
-              >
-                {productCategoryEmoji(product.category)}
-              </span>
-            }
-          />
-        ) : (
-          <span aria-hidden>{productCategoryEmoji(product.category)}</span>
-        )}
-      </div>
+      <SuggestionProductImageTile
+        imageUrl={product.imageUrl}
+        label={[product.brand, product.name].filter(Boolean).join(" ")}
+        category={product.category}
+      />
 
       <div className="min-w-0 flex-1">
         {product.brand ? (

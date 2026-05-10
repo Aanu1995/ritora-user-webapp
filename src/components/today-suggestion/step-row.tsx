@@ -2,21 +2,32 @@
 
 import { MessageSquareText, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { SmoothImage } from "@/components/ui/smooth-image";
 import { cn } from "@/lib/utils";
 import { SuggestionProvenanceChip } from "@/components/today-suggestion/mode-badge";
-import { productCategoryEmoji } from "@/components/today-suggestion/product-category-icon";
+import { SuggestionProductImageTile } from "@/components/today-suggestion/product-image-tile";
 import type { SuggestionStep } from "@/types/suggestions";
 
 type Props = {
   step: SuggestionStep;
+  index: number;
   compactApplied?: boolean;
 };
 
-export function SuggestionStepRow({ step, compactApplied = false }: Props) {
+export function SuggestionStepRow({
+  step,
+  index,
+  compactApplied = false,
+}: Props) {
   const t = useTranslations("todaysSuggestion.step");
   const provenance = step.provenance;
+  const productBrand = step.productBrand ?? step.product?.brand ?? null;
+  const productLabel =
+    step.productName ??
+    step.product?.name ??
+    step.customLabel ??
+    stepLabelLabel(step.stepLabel);
   const productImage = step.product?.imageUrl ?? null;
+  const productCategory = step.product?.category ?? step.stepLabel;
 
   const details = !compactApplied ? (
     <>
@@ -69,47 +80,32 @@ export function SuggestionStepRow({ step, compactApplied = false }: Props) {
             ],
       )}
     >
-      <StepLeading step={step} compactApplied={compactApplied} />
+      <StepLeading
+        step={step}
+        index={index}
+        compactApplied={compactApplied}
+      />
 
-      <div className="grid h-12 w-10 shrink-0 place-items-center overflow-hidden rounded-md bg-surface text-base">
-        {productImage ? (
-          <SmoothImage
-            src={productImage}
-            alt=""
-            className="h-12 w-10 rounded-md"
-            sizes="40px"
-            fallback={
-              <span className="grid h-full w-full place-items-center" aria-hidden>
-                {productCategoryEmoji(step.stepLabel)}
-              </span>
-            }
-          />
-        ) : (
-          <span aria-hidden>{productCategoryEmoji(step.stepLabel)}</span>
-        )}
-      </div>
+      <SuggestionProductImageTile
+        imageUrl={productImage}
+        label={productLabel}
+        category={productCategory}
+      />
 
       <div className="min-w-0 flex-1">
-        {(step.productBrand ?? step.product?.brand) ? (
+        {productBrand ? (
           <div className="text-[10px] font-bold uppercase tracking-wider text-muted">
-            {step.productBrand ?? step.product?.brand}
+            {productBrand}
           </div>
         ) : null}
 
         <div className="text-sm font-semibold leading-tight text-foreground">
-          {step.productName ??
-            step.product?.name ??
-            step.customLabel ??
-            stepLabelLabel(step.stepLabel)}
+          {productLabel}
         </div>
 
-        {/* Details inline beside the image — desktop only. */}
         {details ? <div className="hidden sm:block">{details}</div> : null}
       </div>
 
-      {/* Mobile-only full-width details. The parent uses `flex-wrap`, so this
-          `basis-full` child wraps onto a new line below the title row and
-          uses the full width of the card. Hidden on desktop. */}
       {details ? (
         <div className="mt-1 basis-full sm:hidden">{details}</div>
       ) : null}
@@ -119,9 +115,11 @@ export function SuggestionStepRow({ step, compactApplied = false }: Props) {
 
 function StepLeading({
   step,
+  index,
   compactApplied,
 }: {
   step: SuggestionStep;
+  index: number;
   compactApplied: boolean;
 }) {
   if (compactApplied) {
@@ -138,13 +136,15 @@ function StepLeading({
     );
   }
 
+  const displayNumber = index + 1;
+
   if (step.provenance === "specialist_locked") {
     return (
       <span
         className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[color:var(--accent)] text-xs font-semibold text-white"
         aria-hidden
       >
-        {step.stepOrder + 1}
+        {displayNumber}
       </span>
     );
   }
@@ -155,7 +155,7 @@ function StepLeading({
         className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[color:var(--ai-strong)] text-xs font-semibold text-white"
         aria-hidden
       >
-        {step.stepOrder + 1}
+        {displayNumber}
       </span>
     );
   }
@@ -165,7 +165,7 @@ function StepLeading({
       className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full border border-border bg-surface text-xs font-semibold text-foreground"
       aria-hidden
     >
-      {step.stepOrder + 1}
+      {displayNumber}
     </span>
   );
 }

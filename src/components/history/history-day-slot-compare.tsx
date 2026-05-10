@@ -86,9 +86,9 @@ export function HistoryDaySlotCompare({
         >
           {suggestionSteps.length > 0 ? (
             <ol className="flex flex-col gap-2">
-              {suggestionSteps.map((step) => (
+              {suggestionSteps.map((step, index) => (
                 <li key={step.id}>
-                  <SuggestionStepRow step={step} />
+                  <SuggestionStepRow step={step} index={index} />
                 </li>
               ))}
             </ol>

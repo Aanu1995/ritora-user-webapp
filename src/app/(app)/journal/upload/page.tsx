@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
@@ -35,7 +36,12 @@ import {
   useUpsertToday,
 } from "@/hooks/use-skin-journal";
 import { useSkinProfile } from "@/hooks/use-skin-profile";
-import type { JournalEntry, UpsertEntryPayload } from "@/types/skin-journal";
+import { getApiErrorMessage } from "@/lib/api-error";
+import {
+  CYCLE_MARKER_DONT_TRACK,
+  type JournalEntry,
+  type UpsertEntryPayload,
+} from "@/types/skin-journal";
 
 type Step = "photo" | "checkin";
 
@@ -154,11 +160,23 @@ export default function JournalUploadPage() {
     };
     const payload: UpsertEntryPayload = savePhotoOnly
       ? baseUpload
-      : { ...baseUpload, ...checkInToPayload(checkIn) };
+      : {
+          ...baseUpload,
+          ...checkInToPayload(checkIn, {
+            cycleMarkerFallback: showCycleQuestion
+              ? undefined
+              : CYCLE_MARKER_DONT_TRACK,
+          }),
+        };
 
     upsertToday.mutate(
       { payload, photo },
-      { onSuccess: () => router.push(AppRoute.Journal) },
+      {
+        onSuccess: () => router.push(AppRoute.Journal),
+        onError: (error) => {
+          toast.error(getApiErrorMessage(error) ?? t("saveFailed"));
+        },
+      },
     );
   };
 

@@ -2652,6 +2652,7 @@
       "deleteToday": "Radera post",
       "saving": "Sparar…",
       "deleting": "Raderar…",
+      "saveFailed": "Vi kunde inte spara posten. Försök igen.",
       "savedToast": "Foto sparat. Ritora tittar på det (cirka 10–20s)…",
       "noPhotoSaved": "Avstämning sparad utan foto.",
       "futureDateError": "Kan inte skapa poster för framtida datum.",

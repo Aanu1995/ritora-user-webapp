@@ -72,12 +72,14 @@ export type CycleMarker =
   | "late_cycle"
   | "dont_track";
 
+export const CYCLE_MARKER_DONT_TRACK: CycleMarker = "dont_track";
+
 export const CYCLE_MARKERS: CycleMarker[] = [
   "not_on",
   "day_1_3",
   "day_4_7",
   "late_cycle",
-  "dont_track",
+  CYCLE_MARKER_DONT_TRACK,
 ];
 
 export type RecentChangeKind =

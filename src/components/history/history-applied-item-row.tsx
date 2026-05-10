@@ -2,6 +2,7 @@
 
 import { CheckCheck, CircleSlash, Clock4, Repeat2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { SuggestionProductImageTile } from "@/components/today-suggestion/product-image-tile";
 import { formatIsoTime12h } from "@/lib/suggestion-daypart";
 import { cn } from "@/lib/utils";
 import type { ApplicationLogItem } from "@/types/application-tracking";
@@ -18,6 +19,9 @@ export function HistoryAppliedItemRow({
   const appliedAt = item.appliedAt ?? fallbackAppliedAt;
   const productName = appliedProductName(item);
   const productBrand = appliedProductBrand(item);
+  const productImageUrl = appliedProductImageUrl(item);
+  const productCategory = appliedProductCategory(item);
+  const productLabel = [productBrand, productName].filter(Boolean).join(" ");
   const substitutedOriginal =
     item.recommendedSnapshot?.name ?? item.productName;
   const Icon =
@@ -50,6 +54,13 @@ export function HistoryAppliedItemRow({
       >
         <Icon className="h-3.5 w-3.5" />
       </span>
+      {productImageUrl ? (
+        <SuggestionProductImageTile
+          imageUrl={productImageUrl}
+          label={productLabel}
+          category={productCategory}
+        />
+      ) : null}
       <div className="min-w-0 flex-1">
         {productBrand ? (
           <div className="text-[10px] font-bold uppercase tracking-wider text-muted">
@@ -87,6 +98,28 @@ export function HistoryAppliedItemRow({
         ) : null}
       </div>
     </div>
+  );
+}
+
+function appliedProductImageUrl(item: ApplicationLogItem): string | null {
+  if (item.status === "substituted") {
+    return item.substitutedWithProduct?.imageUrl ?? null;
+  }
+
+  return item.product?.imageUrl ?? null;
+}
+
+function appliedProductCategory(item: ApplicationLogItem): string | null {
+  if (item.status === "substituted") {
+    return (
+      item.substitutedWithProduct?.category ??
+      item.appliedSnapshot?.step_label ??
+      item.stepLabel
+    );
+  }
+
+  return (
+    item.product?.category ?? item.appliedSnapshot?.step_label ?? item.stepLabel
   );
 }
 

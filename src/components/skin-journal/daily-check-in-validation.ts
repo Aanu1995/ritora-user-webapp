@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   CONCERN_KEYS,
+  CYCLE_MARKER_DONT_TRACK,
   CYCLE_MARKERS,
   RECENT_CHANGE_KINDS,
   SLEEP_BANDS,
@@ -46,6 +47,10 @@ export interface CheckInValidationResult {
 
 interface CheckInValidationOptions {
   requireCycleMarker?: boolean;
+}
+
+interface CheckInPayloadOptions {
+  cycleMarkerFallback?: CycleMarker;
 }
 
 const VALID_RATINGS = [1, 2, 3, 4, 5] as const;
@@ -142,7 +147,7 @@ export function validateCheckInForSave(
   const requireCycleMarker = options.requireCycleMarker ?? true;
   const valueForValidation = requireCycleMarker
     ? value
-    : { ...value, cycle_marker: "dont_track" };
+    : { ...value, cycle_marker: CYCLE_MARKER_DONT_TRACK };
   const parsed = requiredCheckInSchema.safeParse(valueForValidation);
   if (parsed.success) {
     return { valid: true, missing: [] };
@@ -174,7 +179,10 @@ export function validateCheckInForSave(
   return { valid: false, missing };
 }
 
-export function checkInToPayload(value: CheckInFormValue): UpsertEntryPayload {
+export function checkInToPayload(
+  value: CheckInFormValue,
+  options: CheckInPayloadOptions = {},
+): UpsertEntryPayload {
   return {
     overall_feel: value.overall_feel,
     ratings: value.ratings,
@@ -182,7 +190,7 @@ export function checkInToPayload(value: CheckInFormValue): UpsertEntryPayload {
     stress_today: value.stress_today,
     sun_exposure_today: value.sun_exposure_today,
     sweat_exercise_today: value.sweat_exercise_today,
-    cycle_marker: value.cycle_marker,
+    cycle_marker: value.cycle_marker ?? options.cycleMarkerFallback,
     recent_change: value.recent_change,
     complaint_note: value.complaint_note,
   };

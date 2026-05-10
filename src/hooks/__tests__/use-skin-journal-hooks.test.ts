@@ -180,10 +180,16 @@ describe("useSkinJournal hooks", () => {
   });
 
   it("keeps polling while analysis or insight generation is active", () => {
+    const today = asQuery(useTodayEntry());
     const calendar = asQuery(useCalendar("2026-05"));
     const day = asQuery(useDay("2026-05-02"));
     const insights = asQuery(useInsights());
 
+    expect(
+      today.refetchInterval?.({
+        state: { data: { entry: { analysis_status: "queued" } } },
+      }),
+    ).toBe(5000);
     expect(
       calendar.refetchInterval?.({
         state: {
@@ -198,6 +204,11 @@ describe("useSkinJournal hooks", () => {
         state: { data: { entry: { analysis_status: "queued" } } },
       }),
     ).toBe(5000);
+    expect(
+      today.refetchInterval?.({
+        state: { data: { entry: { analysis_status: "completed" } } },
+      }),
+    ).toBe(false);
     expect(
       insights.refetchInterval?.({
         state: { data: { meta: { generation_status: "sent" } } },

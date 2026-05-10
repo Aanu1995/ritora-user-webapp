@@ -8,6 +8,8 @@ export type IntentCopy = {
 export type StepReasonRow = {
   stepOrder: number;
   name: string | null;
+  imageUrl: string | null;
+  category: string | null;
   reason: string;
 };
 
@@ -46,6 +48,8 @@ export function buildStepReasonRows(
       return {
         stepOrder: step.stepOrder,
         name: stepProductName(step),
+        imageUrl: step.product?.imageUrl ?? null,
+        category: step.product?.category ?? step.stepLabel,
         reason,
       };
     })
@@ -57,6 +61,8 @@ export function buildStepReasonRows(
     .map(([stepOrder, reason]) => ({
       stepOrder,
       name: null,
+      imageUrl: null,
+      category: null,
       reason,
     }));
 

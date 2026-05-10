@@ -11,6 +11,14 @@ import { useAuthEnabled } from "@/hooks/use-auth-enabled";
 import { upsertTodayWithProgress } from "@/hooks/use-skin-journal-upload";
 import { invalidateAppNavBadges } from "@/lib/query-invalidation";
 import {
+  JOURNAL_ANALYSIS_POLL_INTERVAL_MS,
+  JOURNAL_INSIGHT_POLL_INTERVAL_MS,
+  shouldPollCalendar,
+  shouldPollDay,
+  shouldPollInsights,
+  shouldPollTodayEntry,
+} from "@/hooks/use-skin-journal-polling";
+import {
   acknowledgeEvent,
   acknowledgeSimplification,
   compareDays,
@@ -39,12 +47,10 @@ import {
 } from "@/services/skin-journal.service";
 import {
   PhotoFilterStaticId,
-  type AnalysisStatus,
   type CalendarPayload,
   type DayDetail,
   type InsightWindow,
   type JournalEventFilters,
-  type JournalInsightsResponse,
   type JournalExportJob,
   type PhotoDateIndex,
   type PhotoFilterId,
@@ -53,42 +59,13 @@ import {
 } from "@/types/skin-journal";
 
 const EMPTY_EVENT_FILTERS: JournalEventFilters = {};
-const JOURNAL_ANALYSIS_POLL_INTERVAL_MS = 5000;
-const JOURNAL_INSIGHT_POLL_INTERVAL_MS = 5000;
 const JOURNAL_PHOTO_PAGE_SIZE = 24;
-const ACTIVE_ANALYSIS_STATUSES = new Set<AnalysisStatus>([
-  "pending",
-  "queued",
-  "running",
-]);
 
-export function hasActiveAnalysisStatus(
-  status: AnalysisStatus | null | undefined,
-): boolean {
-  return !!status && ACTIVE_ANALYSIS_STATUSES.has(status);
-}
-
-export function shouldPollCalendar(
-  payload: CalendarPayload | undefined,
-): boolean {
-  return payload?.days.some((day) =>
-    hasActiveAnalysisStatus(day.analysis_status),
-  ) ?? false;
-}
-
-export function shouldPollDay(detail: DayDetail | null | undefined): boolean {
-  return hasActiveAnalysisStatus(detail?.entry?.analysis_status);
-}
-
-function shouldPollInsights(
-  payload: JournalInsightsResponse | undefined,
-): boolean {
-  return (
-    payload?.meta.generation_status === "queued" ||
-    payload?.meta.generation_status === "sent" ||
-    payload?.meta.generation_status === "running"
-  );
-}
+export {
+  hasActiveAnalysisStatus,
+  shouldPollCalendar,
+  shouldPollDay,
+} from "@/hooks/use-skin-journal-polling";
 
 export function useTodayEntry() {
   const enabled = useAuthEnabled();
@@ -96,6 +73,10 @@ export function useTodayEntry() {
     queryKey: [QueryKey.SkinJournalToday],
     queryFn: () => getTodayEntry(),
     enabled,
+    refetchInterval: (query) =>
+      shouldPollTodayEntry(query.state.data)
+        ? JOURNAL_ANALYSIS_POLL_INTERVAL_MS
+        : false,
   });
 }
 

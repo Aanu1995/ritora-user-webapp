@@ -1,6 +1,11 @@
 import { fireEvent, screen } from "@testing-library/react";
+import { toast } from "sonner";
 import { renderWithProviders } from "@/test/utils";
-import type { DayDetail, JournalEntry } from "@/types/skin-journal";
+import {
+  CYCLE_MARKER_DONT_TRACK,
+  type DayDetail,
+  type JournalEntry,
+} from "@/types/skin-journal";
 
 const mockRouterPush = jest.fn();
 const mockRouterBack = jest.fn();
@@ -31,7 +36,15 @@ jest.mock("@/hooks/use-skin-profile", () => ({
   useSkinProfile: () => ({ data: mockSkinProfilePayload }),
 }));
 
+jest.mock("sonner", () => ({
+  toast: {
+    error: jest.fn(),
+  },
+}));
+
 import JournalUploadPage from "@/app/(app)/journal/upload/page";
+
+const mockToast = toast as jest.Mocked<typeof toast>;
 
 beforeAll(() => {
   Object.defineProperty(URL, "createObjectURL", {
@@ -134,6 +147,7 @@ describe("JournalUploadPage edit actions", () => {
     mockRouterBack.mockReset();
     mockDeleteEntryMutate.mockReset();
     mockUpsertTodayMutate.mockReset();
+    mockToast.error.mockReset();
     mockSearchParams = new URLSearchParams("mode=edit");
     mockSkinProfilePayload = undefined;
     mockTodayPayload = {
@@ -286,11 +300,41 @@ describe("JournalUploadPage edit actions", () => {
           stress_today: "low",
           sun_exposure_today: "brief",
           sweat_exercise_today: false,
+          cycle_marker: CYCLE_MARKER_DONT_TRACK,
         }),
         photo: null,
       },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+  });
+
+  it("shows a toast and keeps users on the page when save entry fails", () => {
+    mockSearchParams = new URLSearchParams();
+    mockTodayPayload = {
+      date: "2026-04-30",
+      entry: null,
+      events: [],
+      insights: [],
+    };
+    mockUpsertTodayMutate.mockImplementationOnce(
+      (
+        _input: unknown,
+        options?: { onError?: (error: unknown) => void },
+      ) => {
+        options?.onError?.(new Error("Could not save entry"));
+      },
+    );
+
+    renderWithProviders(<JournalUploadPage />);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /continue to check-in/i }),
+    );
+    completeCheckIn();
+    fireEvent.click(screen.getByRole("button", { name: /save entry/i }));
+
+    expect(mockToast.error).toHaveBeenCalledWith("Could not save entry");
+    expect(mockRouterPush).not.toHaveBeenCalled();
   });
 
   it("requires cycle marker only when the skin profile makes the cycle field visible", () => {
@@ -322,7 +366,7 @@ describe("JournalUploadPage edit actions", () => {
     expect(mockUpsertTodayMutate).toHaveBeenCalledWith(
       expect.objectContaining({
         payload: expect.objectContaining({
-          cycle_marker: "dont_track",
+          cycle_marker: CYCLE_MARKER_DONT_TRACK,
         }),
       }),
       expect.objectContaining({ onSuccess: expect.any(Function) }),

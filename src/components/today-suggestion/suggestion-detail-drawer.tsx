@@ -28,9 +28,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { SuggestionModeBadge } from "@/components/today-suggestion/mode-badge";
+import { SuggestionProductImageTile } from "@/components/today-suggestion/product-image-tile";
 import {
   buildIntent,
   buildStepReasonRows,
+  type StepReasonRow,
 } from "@/components/today-suggestion/suggestion-detail-copy";
 import { buildEnvironmentRows } from "@/components/today-suggestion/suggestion-detail-environment";
 import { useRegenerateSuggestion } from "@/hooks/use-suggestions";
@@ -147,22 +149,7 @@ export function SuggestionDetailDrawer({
                 >
                   <ul className="flex flex-col gap-2">
                     {stepReasons.map((row) => (
-                      <li
-                        key={row.stepOrder}
-                        className="flex items-start gap-2.5 rounded-xl bg-surface-muted px-3 py-2.5 text-[13px] leading-snug"
-                      >
-                        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--accent)]" />
-                        <span>
-                          {row.name ? (
-                            <>
-                              <strong className="text-foreground">
-                                {row.name}.
-                              </strong>{" "}
-                            </>
-                          ) : null}
-                          {row.reason}
-                        </span>
-                      </li>
+                      <StepReasonListItem key={row.stepOrder} row={row} />
                     ))}
                   </ul>
                 </RationaleBlock>
@@ -316,6 +303,32 @@ export function SuggestionDetailDrawer({
         </div>
       </SheetContent>
     </Sheet>
+  );
+}
+
+function StepReasonListItem({ row }: { row: StepReasonRow }) {
+  return (
+    <li className="flex items-start gap-2.5 rounded-xl bg-surface-muted px-3 py-2.5 text-[13px] leading-snug">
+      {row.imageUrl ? (
+        <SuggestionProductImageTile
+          imageUrl={row.imageUrl}
+          label={row.name ?? ""}
+          category={row.category}
+          className="mt-0.5 h-9 w-8 rounded-lg"
+          sizes="32px"
+        />
+      ) : (
+        <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--accent)]" />
+      )}
+      <span>
+        {row.name ? (
+          <>
+            <strong className="text-foreground">{row.name}.</strong>{" "}
+          </>
+        ) : null}
+        {row.reason}
+      </span>
+    </li>
   );
 }
 

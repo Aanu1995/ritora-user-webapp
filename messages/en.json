@@ -2649,6 +2649,7 @@
       "deleteToday": "Delete entry",
       "saving": "Saving…",
       "deleting": "Deleting…",
+      "saveFailed": "We couldn't save this entry. Please try again.",
       "savedToast": "Photo saved. Ritora is taking a look (about 10–20s)…",
       "noPhotoSaved": "Check-in saved without photo.",
       "futureDateError": "Cannot create entries for future dates.",

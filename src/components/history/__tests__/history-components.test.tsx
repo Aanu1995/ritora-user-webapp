@@ -85,7 +85,7 @@ describe("history suggestion components", () => {
     const onEdit = jest.fn();
     const onShowDetail = jest.fn();
 
-    renderWithProviders(
+    const { container } = renderWithProviders(
       <CompareHarness
         slot={historyDay().slots[0]!}
         onEdit={onEdit}
@@ -101,6 +101,12 @@ describe("history suggestion components", () => {
     expect(screen.getByText(/same record your AI saw/i)).toBeInTheDocument();
     expect(screen.getByText("Cloudy · 11°C")).toBeInTheDocument();
     expect(screen.getByText("UV 3 · moderate")).toBeInTheDocument();
+    expect(
+      container.querySelector('img[src*="history-cleanser.webp"]'),
+    ).toBeInTheDocument();
+    expect(
+      container.querySelector('img[src*="history-substitute.webp"]'),
+    ).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /why this routine/i }));
     expect(onShowDetail).toHaveBeenCalledWith(
@@ -397,7 +403,7 @@ function suggestionInstance(
           brand: "Ava Lab",
           name: "Original serum",
           category: "serum",
-          imageUrl: null,
+          imageUrl: "/history-substitute.webp",
           status: "active",
         },
       }),
@@ -464,7 +470,7 @@ function suggestionStep(partial: Partial<SuggestionStep> = {}): SuggestionStep {
       brand: "Ava Lab",
       name: "Gel Cleanser",
       category: "cleanser",
-      imageUrl: null,
+          imageUrl: "/history-substitute.webp",
       status: "active",
     },
     ...partial,
@@ -499,7 +505,7 @@ function applicationLog(): ApplicationLog {
           brand: "Ava Lab",
           name: "Substitute serum",
           category: "serum",
-          imageUrl: null,
+        imageUrl: "/history-cleanser.webp",
           status: "active",
         },
         substitutionReason: "Ran out of original.",
@@ -549,7 +555,7 @@ function applicationItem(
       brand: "Ava Lab",
       name: "Gel Cleanser",
       category: "cleanser",
-      imageUrl: null,
+      imageUrl: "/history-cleanser.webp",
       status: "active",
     },
     substitutedWithProduct: null,
