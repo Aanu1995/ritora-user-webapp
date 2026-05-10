@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { toast } from 'sonner';
 import {
@@ -13,6 +13,12 @@ import {
 } from '@/test/shelf/product-edit-form.test-harness';
 import { ApiError } from '@/lib/api-error';
 import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
+
+function setInputValue(label: RegExp, value: string): void {
+  fireEvent.change(screen.getByLabelText(label), {
+    target: { value },
+  });
+}
 
 jest.mock('sonner', () => ({
   toast: {
@@ -31,7 +37,7 @@ describe('ProductEditForm', () => {
     const user = userEvent.setup();
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/product name/i));
+    setInputValue(/product name/i, '');
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     expect(screen.getByText(/product name is required/i)).toBeInTheDocument();
@@ -47,11 +53,7 @@ describe('ProductEditForm', () => {
     const user = userEvent.setup();
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/product url/i));
-    await user.type(
-      screen.getByLabelText(/product url/i),
-      'ftp://example.com/product',
-    );
+    setInputValue(/product url/i, 'ftp://example.com/product');
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     expect(
@@ -92,10 +94,10 @@ describe('ProductEditForm', () => {
     const user = userEvent.setup();
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/^description$/i));
-    await user.clear(screen.getByLabelText(/^benefits$/i));
-    await user.clear(screen.getByLabelText(/^suited for$/i));
-    await user.clear(screen.getByLabelText(/^ingredients \(inci\)$/i));
+    setInputValue(/^description$/i, '');
+    setInputValue(/^benefits$/i, '');
+    setInputValue(/^suited for$/i, '');
+    setInputValue(/^ingredients \(inci\)$/i, '');
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     expect(screen.getByText(/description is required/i)).toBeInTheDocument();
@@ -116,9 +118,11 @@ describe('ProductEditForm', () => {
 
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/^ingredients \(inci\)$/i));
+    setInputValue(/^ingredients \(inci\)$/i, '');
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {
@@ -170,7 +174,9 @@ describe('ProductEditForm', () => {
     });
 
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {
@@ -199,8 +205,7 @@ describe('ProductEditForm', () => {
 
     renderProductEditForm({ withUnsavedDialog: true });
 
-    await user.clear(screen.getByLabelText(/product name/i));
-    await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+    setInputValue(/product name/i, 'Updated Serum');
     await user.upload(
       screen.getByLabelText(/choose product photo/i),
       new File(['photo'], 'product.jpg', { type: 'image/jpeg' }),
@@ -291,11 +296,12 @@ describe('ProductEditForm', () => {
 
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/product name/i));
-    await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+    setInputValue(/product name/i, 'Updated Serum');
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
-    await user.type(screen.getByLabelText(/^opened on$/i), '2026-04-15');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
+    setInputValue(/^opened on$/i, '2026-04-15');
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {
@@ -312,10 +318,11 @@ describe('ProductEditForm', () => {
 
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/product name/i));
-    await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+    setInputValue(/product name/i, 'Updated Serum');
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {
@@ -331,8 +338,7 @@ describe('ProductEditForm', () => {
       const user = userEvent.setup();
       renderProductEditForm({ withUnsavedDialog: true });
 
-      await user.clear(screen.getByLabelText(/product name/i));
-      await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+      setInputValue(/product name/i, 'Updated Serum');
 
       await user.click(screen.getByLabelText(/back to shelf/i));
 
@@ -347,8 +353,7 @@ describe('ProductEditForm', () => {
       const user = userEvent.setup();
       renderProductEditForm({ withUnsavedDialog: true });
 
-      await user.clear(screen.getByLabelText(/product name/i));
-      await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+      setInputValue(/product name/i, 'Updated Serum');
       await user.click(screen.getByLabelText(/back to shelf/i));
       await user.click(screen.getByRole('button', { name: /keep editing/i }));
 
@@ -365,8 +370,7 @@ describe('ProductEditForm', () => {
       const user = userEvent.setup();
       renderProductEditForm({ withUnsavedDialog: true });
 
-      await user.clear(screen.getByLabelText(/product name/i));
-      await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+      setInputValue(/product name/i, 'Updated Serum');
       await user.click(screen.getByLabelText(/back to shelf/i));
       await user.click(
         screen.getByRole('button', { name: /discard changes/i }),

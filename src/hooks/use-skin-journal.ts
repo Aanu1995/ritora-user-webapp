@@ -47,8 +47,6 @@ import {
 } from "@/services/skin-journal.service";
 import {
   PhotoFilterStaticId,
-  type CalendarPayload,
-  type DayDetail,
   type InsightWindow,
   type JournalEventFilters,
   type JournalExportJob,
