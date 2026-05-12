@@ -13,6 +13,7 @@ import { PhotoReminderSection } from "@/components/settings/photo-reminder-secti
 import { ProductExpiryAlertsSection } from "@/components/settings/product-expiry-alerts-section";
 import { QuietHoursSection } from "@/components/settings/quiet-hours-section";
 import { ReactionAlertsSection } from "@/components/settings/reaction-alerts-section";
+import { SmartPicksNotificationSection } from "@/components/settings/smart-picks-notification-section";
 import { TodaysSuggestionSection } from "@/components/settings/todays-suggestion-notification-section";
 import { useUpdateNotificationPreferences } from "@/hooks/use-notifications";
 import type {
@@ -85,6 +86,7 @@ export function NotificationPreferencesForm({
               <PhotoReminderSection {...sectionProps} />
               <ReactionAlertsSection {...sectionProps} />
               <InsightsNotificationSection {...sectionProps} />
+              <SmartPicksNotificationSection {...sectionProps} />
             </>
           );
         }}

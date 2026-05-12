@@ -36,6 +36,8 @@ export enum QueryKey {
   Suggestion = "suggestion",
   SuggestionsHistory = "suggestions-history",
   SuggestionsHistoryDay = "suggestions-history-day",
+  SmartPicksOverview = "smart-picks-overview",
+  SmartPicksWishlist = "smart-picks-wishlist",
   ApplicationLog = "application-log",
   ApplicationLogVersions = "application-log-versions",
 }

@@ -91,6 +91,7 @@ function normalizeNotificationPreferences(
     ...preferences,
     ai_polished_insights_enabled:
       preferences.ai_polished_insights_enabled ?? true,
+    smart_pick_ready_enabled: preferences.smart_pick_ready_enabled ?? false,
     product_expiry_alerts_enabled:
       preferences.product_expiry_alerts_enabled ?? true,
     product_expiry_notice_days:

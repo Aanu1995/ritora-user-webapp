@@ -36,6 +36,7 @@ export const notificationPreferencesSchema = z.object({
   wrapped_alerts_enabled: z.boolean(),
   photo_tutorial_completed: z.boolean(),
   suggestion_ready_enabled: z.boolean(),
+  smart_pick_ready_enabled: z.boolean(),
   slot_start_enabled: z.boolean(),
   recording_reminder_enabled: z.boolean(),
   product_expiry_alerts_enabled: z.boolean(),

@@ -11,7 +11,8 @@ export type NotificationKind =
   | "slot_start"
   | "recording_reminder"
   | "product_nearing_expiry"
-  | "product_expired";
+  | "product_expired"
+  | "smart_pick_ready";
 
 export const SUGGESTION_LEAD_TIME_MIN_MINUTES = 30;
 export const SUGGESTION_LEAD_TIME_MAX_MINUTES = 720;
@@ -72,6 +73,7 @@ export interface NotificationPreferences {
   wrapped_alerts_enabled: boolean;
   photo_tutorial_completed: boolean;
   suggestion_ready_enabled: boolean;
+  smart_pick_ready_enabled: boolean;
   slot_start_enabled: boolean;
   recording_reminder_enabled: boolean;
   product_expiry_alerts_enabled: boolean;
@@ -93,6 +95,7 @@ export interface UpdatePreferencesPayload {
   wrapped_alerts_enabled?: boolean;
   photo_tutorial_completed?: boolean;
   suggestion_ready_enabled?: boolean;
+  smart_pick_ready_enabled?: boolean;
   slot_start_enabled?: boolean;
   recording_reminder_enabled?: boolean;
   product_expiry_alerts_enabled?: boolean;

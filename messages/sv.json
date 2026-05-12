@@ -3175,6 +3175,10 @@
     "todaysSuggestionBody": "Tre påminnelser som håller din rutin på rätt spår.",
     "suggestionReadyTitle": "Förslag redo",
     "suggestionReadyBody": "När ett förslag blir synligt, din ledtid före schemalagd tid.",
+    "smartPicksTitle": "Smart Picks",
+    "smartPicksBody": "Uppdateringar från din hylluckanalys.",
+    "smartPickReadyTitle": "Smart Picks redo",
+    "smartPickReadyBody": "Valfri avisering när din hylla ändras och en ny produktlucka finns.",
     "slotStartTitle": "Rutintid",
     "slotStartBody": "Vid schemalagd tid, så att du kommer ihåg att applicera din rutin.",
     "recordingReminderTitle": "Inspelningspåminnelse",
@@ -3214,6 +3218,7 @@
     "loadingMore": "Laddar fler",
     "sourceSkinJournal": "Hudjournal",
     "sourceTodaysSuggestion": "Dagens förslag",
+    "sourceSmartPicks": "Smart Picks",
     "sourceShelf": "Hylla",
     "fallbackProductName": "En produkt",
     "unknownDate": "ett okänt datum",
@@ -3276,6 +3281,231 @@
       "product_expired": {
         "title": "Produkt har gått ut",
         "body": "{productName} gick ut den {expiresDate}."
+      },
+      "smart_pick_ready": {
+        "title": "Nytt Smart Pick finns",
+        "body": "Din hylla har ändrats. Granska den senaste luckan innan du köper något nytt."
+      }
+    }
+  },
+  "smartPicks": {
+    "page": {
+      "title": "Smart Picks",
+      "subtitle": "Vad du ska köpa, hoppa över eller byta ut.",
+      "refreshing": "Uppdaterar val",
+      "productUnavailable": "Ritora matchar produktval i bakgrunden. Dina rutin-steg är klara nu; produktkorten visas här när matchningen är klar.",
+      "footer": {
+        "title": "Ritora rekommenderar inget du inte behöver.",
+        "body": "En lucka dyker bara upp här när det finns en verklig anledning för din hud. Vi föreslår en ersättning bara när dina användningsloggar och foton är tydliga. Det bästa valet är ofta inget nytt alls."
+      },
+      "trust": {
+        "title": "Använd detta som beslutsstöd, inte bevis.",
+        "photos": "Fotohistorik kan visa användbara trender, men ljus, tidpunkt, smink och hur jämnt du loggar kan påverka vad Ritora ser.",
+        "retailers": "Återförsäljarlänkar och tillgänglighet kan ändras efter att Ritora förberett ett val. Kontrollera lager, frakt, pris och ingredienslista innan köp."
+      },
+      "mode": {
+        "label": "Smart Picks-läge",
+        "refine": "Förfina min hylla",
+        "starter": "Startkit"
+      },
+      "actions": {
+        "wishlist": "Önskelista",
+        "back": "Tillbaka till Smart Picks",
+        "save": "Spara",
+        "saved": "Sparad",
+        "dismiss": "Dölj",
+        "whyThis": "Varför detta",
+        "remove": "Ta bort"
+      },
+      "error": {
+        "title": "Vi kunde inte ladda Smart Picks",
+        "body": "Försök igen. Din hylla och profildata är oförändrade.",
+        "retry": "Försök igen"
+      },
+      "recap": {
+        "goal": "Mål",
+        "skinType": "Hudtyp",
+        "location": "Plats",
+        "budget": "Budget",
+        "unset": "Ej valt"
+      },
+      "budget": {
+        "drugstore": "Budget",
+        "mid": "Mellan",
+        "premium": "Premium",
+        "luxury": "Lyx"
+      },
+      "coverage": {
+        "title": "Täckningsmätare",
+        "summary": "{filled} av {total} rutinroller täckta",
+        "states": {
+          "filled": "Täckt",
+          "missing": "Valfri lucka",
+          "missing-priority": "Prioriterad lucka"
+        }
+      },
+      "roles": {
+        "cleanse": "Rengör",
+        "hydrate": "Återfukta",
+        "treat": "Behandla",
+        "moisturise": "Mjukgör",
+        "spf": "SPF",
+        "eye": "Ögon",
+        "treatment-secondary": "Andra behandling"
+      },
+      "priority": {
+        "priority": "Prioriterad lucka",
+        "consider": "Värt att överväga"
+      },
+      "sections": {
+        "priority": "Prioriterade luckor",
+        "consider": "Värt att överväga"
+      },
+      "gap": {
+        "noPick": "Luckan är verklig, men ett konkret produktval är inte klart än."
+      },
+      "starterKit": {
+        "eyebrow": "Startkit",
+        "title": "Startrutin",
+        "stepCount": "{count, plural, one {1 steg} other {# steg}}",
+        "step": "Steg {order}",
+        "pickFallback": "Vald för att hålla den första rutinen enkel och låg risk.",
+        "footer": "Startkit håller rutinen liten med flit. Börja med grunderna som är täckta och rekommenderade här; använd Förfina senare när du vill byta ut, förenkla eller jämföra produkter.",
+        "status": {
+          "covered": "Redan täckt",
+          "recommended": "Rekommenderad",
+          "wait": "Vänta"
+        }
+      },
+      "replacement": {
+        "title": "Ersättning för {productName}",
+        "usage90": "{count} användningsdagar på 90 d",
+        "photos": "{count} fotokontroller",
+        "reactions": "{count} reaktionssignaler",
+        "caveat": "Fototrender är inte kliniska bevis. Ritora använder dem som varsamt beslutsstöd."
+      },
+      "retailers": {
+        "paid": "Betald länk",
+        "stale": "Återförsäljaruppgifter kan vara inaktuella. Kontrollera pris, lagerstatus, frakt och ingredienser innan köp.",
+        "verify": "Kontrollera pris, lagerstatus, frakt och ingredienslista innan köp."
+      },
+      "availability": {
+        "bestMatch": "Bästa matchning",
+        "localAlternativeTitle": "Tillgängligt nära dig",
+        "localAlternativeFallback": "Detta är enklare att köpa lokalt, men matchar kanske inte toppvalet lika väl.",
+        "status": {
+          "local": "Lokalt",
+          "import_only": "Endast import",
+          "unavailable": "Inte lokalt tillgängligt",
+          "unknown": "Okänd tillgänglighet"
+        }
+      },
+      "verification": {
+        "aiNamed": "Externt val. Kontrollera ingredienslista, pris och återförsäljaruppgifter innan köp.",
+        "retailerVerified": "Återförsäljarlänken har nyligen kontrollerats. Kontrollera ändå lager, frakt, pris och ingredienser innan köp.",
+        "retailerUnverified": "Ritora kunde inte verifiera återförsäljarlänken automatiskt. Öppna den försiktigt och kontrollera produkten innan köp."
+      },
+      "drawer": {
+        "title": "Varför detta val",
+        "description": "Resonemanget bakom rekommendationen och produkterna som valdes bort.",
+        "facts": "Resonemang",
+        "alternatives": "Alternativ",
+        "ruledOut": "Bortvalda"
+      },
+      "covered": {
+        "title": "Här är du täckt",
+        "empty": "Täckta roller visas här när din hylla har tillräckligt många aktiva produkter."
+      },
+      "redundancy": {
+        "title": "Dubblettkontroll av aktiva ämnen",
+        "empty": "Inga tydliga dubbletter av aktiva ingredienser hittades."
+      },
+      "empty": {
+        "profileRequired": {
+          "title": "Smart Picks behöver din hudprofil först",
+          "body": "Några profildetaljer saknas fortfarande. Fyll i dem först så att Smart Picks kan vara specifikt för din hud, din budget och det du vill förändra."
+        },
+        "consentRequired": {
+          "title": "Smart Picks är av",
+          "body": "Produktval är avstängda i sekretessinställningarna. Ritora använder inte din hylla, profil, rutinhistorik eller fototrender för köpförslag om du inte slår på detta igen."
+        },
+        "allGapsDismissed": {
+          "title": "Inget nytt idag",
+          "body": "Du valde bort de nuvarande förslagen, så vi håller dem undan ett tag. Smart Picks kontrollerar igen när din hylla ändras eller pausen tar slut."
+        },
+        "redundancyOnly": {
+          "title": "Inga nya produkter att köpa",
+          "body": "Det finns ingen användbar lucka att handla för just nu. Det hjälpsamma nästa steget är att titta på överlapp i rutinen innan du lägger till något mer."
+        },
+        "historyInsufficient": {
+          "title": "Fortsätt med det du har",
+          "body": "Din hylla täcker grunderna, men det finns inte tillräckligt med rutinhistorik ännu för att säga att en produkt bör bytas ut. Fortsätt logga användning och tydliga check-in-bilder innan du köper mer."
+        },
+        "productGenerationUnavailable": {
+          "title": "Vi kunde inte förbereda val",
+          "body": "Luckkontrollen kördes, men produktvalen blev inte klara. Använd Dagens förslag så länge och kontrollera Smart Picks igen efter nästa ändring i hyllan eller profilen."
+        },
+        "fullyCovered": {
+          "title": "Inget användbart att lägga till",
+          "body": "Din grundrutin är täckt och vi ser ingen tydlig anledning att köpa något mer just nu. Fortsätt använda det du har så kontrollerar Smart Picks igen när din hylla, dina loggar och dina bilder ändras."
+        },
+        "fullyCoveredStarter": {
+          "title": "Lägg till en produkt för att börja",
+          "body": "Smart Picks behöver minst en hyllprodukt innan det kan jämföra det du äger med det som saknas. Lägg till din första produkt så håller vi startrutinen liten."
+        },
+        "profileCta": "Starta hudprofil",
+        "consentCta": "Slå på Smart Picks igen",
+        "starterCta": "Öppna hyllan",
+        "fullyCoveredCta": "Öppna Dagens förslag",
+        "todayCta": "Öppna Dagens förslag",
+        "shelfCta": "Granska hyllan",
+        "journalCta": "Öppna journalen",
+        "facts": {
+          "coverage": "Täckning {filled}/{total}",
+          "activeProducts": "{count, plural, =0 {Inga aktiva produkter} one {1 aktiv produkt} other {# aktiva produkter}}",
+          "hiddenPicks": "{count, plural, one {1 dolt val} other {# dolda val}}",
+          "pauseEnds": "Pausad till {date}"
+        },
+        "history": {
+          "ready": "{days} användningsdagar, {photos} tydliga fotokontroller",
+          "needs_usage_logs": "{photos} tydliga fotokontroller. Fler användningsloggar behövs.",
+          "needs_clear_photos": "{days} användningsdagar. Lägg till tydligare fotokontroller.",
+          "needs_usage_and_photos": "Mer användningslogg och tydliga foton behövs före ersättningskontroller."
+        },
+        "missingFields": {
+          "date_of_birth": "Födelsedatum",
+          "sex_at_birth": "Kön vid födseln",
+          "skin_type": "Hudtyp",
+          "skin_tone": "Hudton",
+          "fitzpatrick_phototype": "Fitzpatrick-typ",
+          "ethnicity": "Etnicitet",
+          "current_concerns": "Aktuella bekymmer",
+          "primary_goal": "Främsta mål",
+          "concern_severity": "Allvarlighetsgrad",
+          "pih_tendency": "Tendens till mörka märken",
+          "melasma_tendency": "Melasmatendens",
+          "keloid_tendency": "Keloidtendens",
+          "sunscreen_habit": "Solskyddsvana",
+          "sunscreen_tolerance": "Solskyddstolerans",
+          "routine_pace": "Rutintakt",
+          "fragrance_free": "Doftpreferens",
+          "non_comedogenic": "Preferens för porer",
+          "sunscreen_filter": "Solskyddsfilter",
+          "sunscreen_finish": "Solskyddsfinish",
+          "water_hardness": "Vattenhårdhet",
+          "water_sensitivity": "Vattenkänslighet",
+          "budget_tier": "Budget",
+          "smart_picks_consent": "Smart Picks-val",
+          "more": "{count, plural, one {+1 till} other {+# till}}"
+        }
+      },
+      "wishlist": {
+        "title": "Smart Picks-önskelista",
+        "subtitle": "Sparade val från din produktluckanalys.",
+        "emptyTitle": "Inga sparade Smart Picks än",
+        "emptyBody": "Tryck på hjärtat på en Smart Pick-rekommendation för att spara den här. Du kan granska de sparade objekten när du vill innan du köper.",
+        "emptyCta": "Bläddra i Smart Picks",
+        "priceUnavailable": "Pris saknas"
       }
     }
   },

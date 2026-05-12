@@ -9,7 +9,14 @@ import type {
   TodaysSuggestionEnvironmentSummary,
 } from "@/types/environment-suggestions";
 import type { RoutineBreak } from "@/types/routine-break";
+import type { SuggestionGapActionKind } from "@/types/suggestion-gap-actions";
 import type { SuggestionProductDataQuality } from "@/types/suggestion-quality";
+export type {
+  RecordSuggestionGapActionPayload,
+  SuggestionGapActionKind,
+  SuggestionGapActionResponse,
+  SuggestionGapActionSourceType,
+} from "@/types/suggestion-gap-actions";
 export type {
   SuggestionAiConsent,
   UpdateSuggestionAiConsentPayload,
@@ -130,8 +137,6 @@ export type SuggestionGapRecommendation = {
   sourceIds: SuggestionEvidenceSourceId[];
   userAction?: SuggestionGapActionKind | null;
 };
-
-export type SuggestionGapActionKind = "saved" | "dismissed";
 
 export type SuggestionExplanation = {
   headline: string;
@@ -372,19 +377,6 @@ export type NormalRoutineOverrideResponse = {
   targetDate: string;
   expiresAt: string;
   reactionEntryId: string | null;
-};
-
-export type RecordSuggestionGapActionPayload = {
-  suggestionInstanceId: string;
-  ingredientOrCategory: string;
-  action: SuggestionGapActionKind;
-};
-
-export type SuggestionGapActionResponse = {
-  suggestionInstanceId: string;
-  ingredientOrCategory: string;
-  normalizedKey: string;
-  action: SuggestionGapActionKind;
 };
 
 export type SnoozeRecordingReminderPayload = {

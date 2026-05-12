@@ -3172,6 +3172,10 @@
     "todaysSuggestionBody": "Three reminders that keep your routine on track.",
     "suggestionReadyTitle": "Suggestion ready",
     "suggestionReadyBody": "When a suggestion becomes visible, your lead time before the scheduled time.",
+    "smartPicksTitle": "Smart Picks",
+    "smartPicksBody": "Updates from your shelf gap analysis.",
+    "smartPickReadyTitle": "Smart Picks ready",
+    "smartPickReadyBody": "Optional alert when your shelf changes and a new product gap is available.",
     "slotStartTitle": "Routine time",
     "slotStartBody": "At the scheduled time, so you remember to apply your routine.",
     "recordingReminderTitle": "Recording reminder",
@@ -3211,6 +3215,7 @@
     "loadingMore": "Loading more",
     "sourceSkinJournal": "Skin Journal",
     "sourceTodaysSuggestion": "Today's Suggestion",
+    "sourceSmartPicks": "Smart Picks",
     "sourceShelf": "Shelf",
     "fallbackProductName": "A product",
     "unknownDate": "an unknown date",
@@ -3273,6 +3278,231 @@
       "product_expired": {
         "title": "Product expired",
         "body": "{productName} expired on {expiresDate}."
+      },
+      "smart_pick_ready": {
+        "title": "New Smart Pick available",
+        "body": "Your shelf changed. Review the latest gap before buying anything new."
+      }
+    }
+  },
+  "smartPicks": {
+    "page": {
+      "title": "Smart Picks",
+      "subtitle": "What to buy, what to skip, and what to replace.",
+      "refreshing": "Refreshing picks",
+      "productUnavailable": "Ritora is matching product picks in the background. Your routine steps are ready now; product cards will appear here when the match is ready.",
+      "footer": {
+        "title": "Ritora won't recommend something you don't need.",
+        "body": "A gap only appears here when there's a real reason for your skin. We suggest a replacement only when your use logs and photos are clear. The best pick is often nothing new."
+      },
+      "trust": {
+        "title": "Use this as decision support, not proof.",
+        "photos": "Photo history can show useful trends, but lighting, timing, makeup, and logging consistency can change what Ritora sees.",
+        "retailers": "Retailer links and availability can change after Ritora prepares a pick. Check stock, shipping, price, and the ingredient list before buying."
+      },
+      "mode": {
+        "label": "Smart Picks mode",
+        "refine": "Refine my shelf",
+        "starter": "Starter kit"
+      },
+      "actions": {
+        "wishlist": "Wishlist",
+        "back": "Back to Smart Picks",
+        "save": "Save",
+        "saved": "Saved",
+        "dismiss": "Dismiss",
+        "whyThis": "Why this",
+        "remove": "Remove"
+      },
+      "error": {
+        "title": "We could not load Smart Picks",
+        "body": "Try again. Your shelf and profile data are unchanged.",
+        "retry": "Try again"
+      },
+      "recap": {
+        "goal": "Goal",
+        "skinType": "Skin type",
+        "location": "Location",
+        "budget": "Budget",
+        "unset": "Unset"
+      },
+      "budget": {
+        "drugstore": "Drugstore",
+        "mid": "Mid",
+        "premium": "Premium",
+        "luxury": "Luxury"
+      },
+      "coverage": {
+        "title": "Coverage meter",
+        "summary": "{filled} of {total} routine roles covered",
+        "states": {
+          "filled": "Covered",
+          "missing": "Optional gap",
+          "missing-priority": "Priority gap"
+        }
+      },
+      "roles": {
+        "cleanse": "Cleanse",
+        "hydrate": "Hydrate",
+        "treat": "Treat",
+        "moisturise": "Moisturise",
+        "spf": "SPF",
+        "eye": "Eye",
+        "treatment-secondary": "Second treatment"
+      },
+      "priority": {
+        "priority": "Priority gap",
+        "consider": "Worth considering"
+      },
+      "sections": {
+        "priority": "Priority gaps",
+        "consider": "Worth considering"
+      },
+      "gap": {
+        "noPick": "The gap is real, but a concrete product pick is not ready yet."
+      },
+      "starterKit": {
+        "eyebrow": "Starter Kit",
+        "title": "Starter routine",
+        "stepCount": "{count, plural, one {1 step} other {# steps}}",
+        "step": "Step {order}",
+        "pickFallback": "Chosen to keep the first routine simple and low-risk.",
+        "footer": "Starter Kit keeps the routine small on purpose. Start with the covered and recommended basics here; use Refine later when you want to replace, simplify, or compare products.",
+        "status": {
+          "covered": "Already covered",
+          "recommended": "Recommended",
+          "wait": "Wait"
+        }
+      },
+      "replacement": {
+        "title": "Replacement for {productName}",
+        "usage90": "{count} use days in 90d",
+        "photos": "{count} photo checkpoints",
+        "reactions": "{count} reaction signals",
+        "caveat": "Photo trends are not clinical proof. Ritora uses them as cautious decision support."
+      },
+      "retailers": {
+        "paid": "Paid link",
+        "stale": "Retailer details may be stale. Recheck price, stock, shipping, and ingredients before buying.",
+        "verify": "Verify price, stock, shipping, and ingredient lists before buying."
+      },
+      "availability": {
+        "bestMatch": "Best match",
+        "localAlternativeTitle": "Available near you",
+        "localAlternativeFallback": "This is easier to buy locally, but may not match the top pick as closely.",
+        "status": {
+          "local": "Local",
+          "import_only": "Import-only",
+          "unavailable": "Not locally available",
+          "unknown": "Availability unknown"
+        }
+      },
+      "verification": {
+        "aiNamed": "External pick. Verify the ingredient list, price, and retailer details before buying.",
+        "retailerVerified": "Retailer link checked recently. Still confirm stock, shipping, price, and ingredients before buying.",
+        "retailerUnverified": "Ritora could not verify this retailer link automatically. Open it carefully and confirm the product before buying."
+      },
+      "drawer": {
+        "title": "Why this pick",
+        "description": "The reasoning behind the recommendation and the products ruled out.",
+        "facts": "Reasoning facts",
+        "alternatives": "Alternatives",
+        "ruledOut": "Ruled out"
+      },
+      "covered": {
+        "title": "You're set here",
+        "empty": "Covered roles will appear here once your shelf has enough active products."
+      },
+      "redundancy": {
+        "title": "Duplicate active check",
+        "empty": "No obvious active-ingredient duplicates detected."
+      },
+      "empty": {
+        "profileRequired": {
+          "title": "Smart Picks needs your skin profile first",
+          "body": "A few profile details are still missing. Fill those in first so Smart Picks can stay specific to your skin, your budget, and what you are trying to change."
+        },
+        "consentRequired": {
+          "title": "Smart Picks is off",
+          "body": "Product picks are turned off in Privacy settings. Ritora will not use your shelf, profile, routine history, or photo trends for shopping suggestions unless you switch this back on."
+        },
+        "allGapsDismissed": {
+          "title": "Nothing new today",
+          "body": "You passed on the current picks, so we are keeping them out of the way for now. Smart Picks will check again when your shelf changes or the pause ends."
+        },
+        "redundancyOnly": {
+          "title": "No new products to buy",
+          "body": "There is no useful gap to shop for right now. The helpful move is to look at overlap in your routine before adding anything else."
+        },
+        "historyInsufficient": {
+          "title": "Keep using what you have for now",
+          "body": "Your shelf covers the basics, but there is not enough routine history yet to say a product should be replaced. Keep logging use and clear check-in photos before buying more."
+        },
+        "productGenerationUnavailable": {
+          "title": "We couldn't prepare picks",
+          "body": "The gap check ran, but product picks were not ready. Use Today's Suggestion for now and check Smart Picks again after your next shelf or profile update."
+        },
+        "fullyCovered": {
+          "title": "Nothing useful to add",
+          "body": "Your core routine is covered and we do not see a clear reason to buy something else right now. Keep using what you have and Smart Picks will re-check as your shelf, logs, and photos change."
+        },
+        "fullyCoveredStarter": {
+          "title": "Add a product to start",
+          "body": "Smart Picks needs at least one shelf item before it can compare what you own with what is missing. Add your first product and we will keep the starter routine small."
+        },
+        "profileCta": "Start skin profile",
+        "consentCta": "Turn Smart Picks back on",
+        "starterCta": "Open shelf",
+        "fullyCoveredCta": "Open Today's Suggestion",
+        "todayCta": "Open Today's Suggestion",
+        "shelfCta": "Review shelf",
+        "journalCta": "Open journal",
+        "facts": {
+          "coverage": "Coverage {filled}/{total}",
+          "activeProducts": "{count, plural, =0 {No active products} one {1 active product} other {# active products}}",
+          "hiddenPicks": "{count, plural, one {1 hidden pick} other {# hidden picks}}",
+          "pauseEnds": "Paused until {date}"
+        },
+        "history": {
+          "ready": "{days} use days, {photos} clear photo checks",
+          "needs_usage_logs": "{photos} clear photo checks. More use logs needed.",
+          "needs_clear_photos": "{days} use days. Add clearer photo checks.",
+          "needs_usage_and_photos": "Need more use logs and clear photos before replacement checks."
+        },
+        "missingFields": {
+          "date_of_birth": "Date of birth",
+          "sex_at_birth": "Sex at birth",
+          "skin_type": "Skin type",
+          "skin_tone": "Skin tone",
+          "fitzpatrick_phototype": "Fitzpatrick type",
+          "ethnicity": "Ethnicity",
+          "current_concerns": "Current concerns",
+          "primary_goal": "Primary goal",
+          "concern_severity": "Concern severity",
+          "pih_tendency": "Dark-mark tendency",
+          "melasma_tendency": "Melasma tendency",
+          "keloid_tendency": "Keloid tendency",
+          "sunscreen_habit": "Sunscreen habit",
+          "sunscreen_tolerance": "Sunscreen tolerance",
+          "routine_pace": "Routine pace",
+          "fragrance_free": "Fragrance preference",
+          "non_comedogenic": "Pore-clogging preference",
+          "sunscreen_filter": "Sunscreen filter",
+          "sunscreen_finish": "Sunscreen finish",
+          "water_hardness": "Water hardness",
+          "water_sensitivity": "Water sensitivity",
+          "budget_tier": "Budget",
+          "smart_picks_consent": "Smart Picks choice",
+          "more": "{count, plural, one {+1 more} other {+# more}}"
+        }
+      },
+      "wishlist": {
+        "title": "Smart Picks wishlist",
+        "subtitle": "Saved picks from your product gap analysis.",
+        "emptyTitle": "No saved Smart Picks yet",
+        "emptyBody": "Tap the heart on any Smart Pick recommendation to save it here. You can review the saved items anytime before you buy.",
+        "emptyCta": "Browse Smart Picks",
+        "priceUnavailable": "Price unavailable"
       }
     }
   },

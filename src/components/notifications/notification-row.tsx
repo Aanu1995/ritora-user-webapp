@@ -83,11 +83,17 @@ const KIND_STYLES: Record<
     bg: "bg-danger-soft",
     fg: "text-danger",
   },
+  smart_pick_ready: {
+    emoji: "SP",
+    bg: "bg-accent-soft",
+    fg: "text-accent-strong",
+  },
 };
 
 enum NotificationSourceMessageKey {
   SkinJournal = "sourceSkinJournal",
   TodaysSuggestion = "sourceTodaysSuggestion",
+  SmartPicks = "sourceSmartPicks",
   Shelf = "sourceShelf",
 }
 
@@ -95,6 +101,9 @@ const TODAY_SUGGESTION_NOTIFICATION_KINDS = new Set<NotificationKind>([
   "suggestion_ready",
   "slot_start",
   "recording_reminder",
+]);
+const SMART_PICK_NOTIFICATION_KINDS = new Set<NotificationKind>([
+  "smart_pick_ready",
 ]);
 const SHELF_NOTIFICATION_KINDS = new Set<NotificationKind>([
   "product_nearing_expiry",
@@ -106,6 +115,9 @@ function getNotificationSourceMessageKey(
 ): NotificationSourceMessageKey {
   if (TODAY_SUGGESTION_NOTIFICATION_KINDS.has(kind)) {
     return NotificationSourceMessageKey.TodaysSuggestion;
+  }
+  if (SMART_PICK_NOTIFICATION_KINDS.has(kind)) {
+    return NotificationSourceMessageKey.SmartPicks;
   }
   if (SHELF_NOTIFICATION_KINDS.has(kind)) {
     return NotificationSourceMessageKey.Shelf;

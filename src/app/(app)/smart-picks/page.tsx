@@ -1,17 +1,5 @@
-"use client";
+import { SmartPicksPage } from "@/components/smart-picks/smart-picks-page";
 
-import { useTranslations } from "next-intl";
-import { PageHeader } from "@/components/app/page-header";
-
-export default function SmartPicksPage() {
-  const t = useTranslations("sidebar");
-
-  return (
-    <div>
-      <PageHeader
-        title={t("items.smartPicks")}
-        subtitle={t("descriptions.smartPicksDescription")}
-      />
-    </div>
-  );
+export default function Page() {
+  return <SmartPicksPage />;
 }

@@ -234,6 +234,12 @@ export function useNormalRoutineToday() {
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.SuggestionsToday],
       });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.SmartPicksOverview],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.SmartPicksWishlist],
+      });
     },
   });
 }

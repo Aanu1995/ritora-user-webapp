@@ -7,12 +7,19 @@ jest.mock("@/services/notifications.service", () => ({
 }));
 
 import {
+  getNotificationPreferences,
   registerPushSubscription,
   listPushSubscriptions,
   revokePushSubscription,
+  updateNotificationPreferences,
 } from "@/services/notifications.service";
 import {
   BrowserPushErrorCode,
+  getBrowserPushErrorCode,
+  getBrowserPushErrorDetail,
+  getBrowserPushSupportState,
+  getCurrentBrowserPushSubscription,
+  hashPushEndpoint,
   revokeCurrentBrowserPushSubscription,
   subscribeCurrentBrowserToPush,
 } from "@/lib/browser-push";
@@ -23,6 +30,9 @@ const VALID_PUBLIC_KEY =
 const mockListPushSubscriptions = listPushSubscriptions as jest.Mock;
 const mockRegisterPushSubscription = registerPushSubscription as jest.Mock;
 const mockRevokePushSubscription = revokePushSubscription as jest.Mock;
+const mockGetNotificationPreferences = getNotificationPreferences as jest.Mock;
+const mockUpdateNotificationPreferences =
+  updateNotificationPreferences as jest.Mock;
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -95,6 +105,49 @@ describe("browser push subscription revocation", () => {
       "current-subscription",
     );
   });
+
+  it("returns early when push is unsupported or the page is insecure", async () => {
+    Reflect.deleteProperty(window, "Notification");
+
+    await revokeCurrentBrowserPushSubscription();
+    expect(mockListPushSubscriptions).not.toHaveBeenCalled();
+
+    configureBrowserPushSupport(createPushSubscription("https://push.example"));
+    Object.defineProperty(window, "isSecureContext", {
+      configurable: true,
+      value: false,
+    });
+
+    await revokeCurrentBrowserPushSubscription();
+    expect(mockListPushSubscriptions).not.toHaveBeenCalled();
+  });
+
+  it("can disable the push channel when the browser subscription was the last one", async () => {
+    const current = createPushSubscription("https://push.example/current");
+    configureBrowserPushSupport(current);
+    mockListPushSubscriptions
+      .mockResolvedValueOnce([
+        {
+          id: "current-subscription",
+          provider: PushProviderValue.WebPush,
+          platform: PushPlatformValue.Web,
+          endpoint_hash: "abcd",
+        },
+      ])
+      .mockResolvedValueOnce([]);
+    mockGetNotificationPreferences.mockResolvedValue({
+      channels: ["email", "push"],
+    });
+    mockUpdateNotificationPreferences.mockResolvedValue(undefined);
+
+    await revokeCurrentBrowserPushSubscription({
+      disablePushChannelWhenNoSubscriptionsRemain: true,
+    });
+
+    expect(mockUpdateNotificationPreferences).toHaveBeenCalledWith({
+      channels: ["email"],
+    });
+  });
 });
 
 describe("browser push subscription setup", () => {
@@ -110,6 +163,73 @@ describe("browser push subscription setup", () => {
 
     await expect(subscribeCurrentBrowserToPush("")).rejects.toMatchObject({
       code: BrowserPushErrorCode.MissingPublicKey,
+    });
+  });
+
+  it("reports support state and current subscription conservatively", async () => {
+    Reflect.deleteProperty(window, "Notification");
+    expect(getBrowserPushSupportState()).toBe("unsupported");
+    await expect(getCurrentBrowserPushSubscription()).resolves.toBeNull();
+
+    configureBrowserPushSupport(null, "denied");
+    expect(getBrowserPushSupportState()).toBe("denied");
+
+    const current = createPushSubscription("https://push.example/current");
+    configureBrowserPushSupport(current);
+    Object.defineProperty(window, "isSecureContext", {
+      configurable: true,
+      value: false,
+    });
+    expect(getBrowserPushSupportState()).toBe("insecure");
+    await expect(getCurrentBrowserPushSubscription()).resolves.toBeNull();
+
+    Object.defineProperty(window, "isSecureContext", {
+      configurable: true,
+      value: true,
+    });
+    await expect(getCurrentBrowserPushSubscription()).resolves.toBe(current);
+  });
+
+  it("maps denied, insecure, and unsupported setup attempts before registering", async () => {
+    configureBrowserPushRegistration({
+      existing: null,
+      created: createPushSubscription("https://push.example/current"),
+      permission: "denied",
+    });
+    await expect(subscribeCurrentBrowserToPush(VALID_PUBLIC_KEY)).rejects.toMatchObject({
+      code: BrowserPushErrorCode.PermissionDenied,
+    });
+
+    configureBrowserPushRegistration({
+      existing: null,
+      created: createPushSubscription("https://push.example/current"),
+      requestPermission: "denied",
+    });
+    await expect(subscribeCurrentBrowserToPush(VALID_PUBLIC_KEY)).rejects.toMatchObject({
+      code: BrowserPushErrorCode.PermissionDenied,
+    });
+
+    configureBrowserPushRegistration({
+      existing: null,
+      created: createPushSubscription("https://push.example/current"),
+    });
+    Object.defineProperty(window, "isSecureContext", {
+      configurable: true,
+      value: false,
+    });
+    await expect(subscribeCurrentBrowserToPush(VALID_PUBLIC_KEY)).rejects.toMatchObject({
+      code: BrowserPushErrorCode.InsecureContext,
+    });
+
+    Object.defineProperty(window, "isSecureContext", {
+      configurable: true,
+      value: true,
+    });
+    Reflect.deleteProperty(window, "Notification");
+    await expect(
+      subscribeCurrentBrowserToPush(VALID_PUBLIC_KEY),
+    ).rejects.toMatchObject({
+      code: BrowserPushErrorCode.Unsupported,
     });
   });
 
@@ -153,6 +273,51 @@ describe("browser push subscription setup", () => {
     ).toBe(65);
   });
 
+  it("registers an existing subscription without creating a duplicate", async () => {
+    const existing = createPushSubscription("https://push.example/current");
+    const { subscribe } = configureBrowserPushRegistration({
+      existing,
+      created: createPushSubscription("https://push.example/new"),
+    });
+    mockRegisterPushSubscription.mockResolvedValue({ id: "sub-1" });
+
+    await expect(subscribeCurrentBrowserToPush(VALID_PUBLIC_KEY)).resolves.toEqual(
+      expect.objectContaining({
+        endpoint: "https://push.example/current",
+      }),
+    );
+
+    expect(subscribe).not.toHaveBeenCalled();
+  });
+
+  it("maps incomplete subscriptions and browser subscribe failures to safe error codes", async () => {
+    configureBrowserPushRegistration({
+      existing: createIncompletePushSubscription(),
+      created: createPushSubscription("https://push.example/new"),
+    });
+    await expect(subscribeCurrentBrowserToPush(VALID_PUBLIC_KEY)).rejects.toMatchObject({
+      code: BrowserPushErrorCode.IncompleteSubscription,
+    });
+
+    for (const [name, expected] of [
+      ["NotAllowedError", BrowserPushErrorCode.PermissionDenied],
+      ["SecurityError", BrowserPushErrorCode.InsecureContext],
+      ["NotSupportedError", BrowserPushErrorCode.Unsupported],
+      ["OtherError", BrowserPushErrorCode.SubscriptionFailed],
+    ] as const) {
+      configureBrowserPushRegistration({
+        existing: null,
+        created: createPushSubscription("https://push.example/current"),
+        subscribeError: Object.assign(new Error("browser failed"), { name }),
+      });
+
+      await expect(subscribeCurrentBrowserToPush(VALID_PUBLIC_KEY)).rejects.toMatchObject({
+        code: expected,
+        detail: "browser failed",
+      });
+    }
+  });
+
   it("maps browser invalid-key subscription failures to a specific error", async () => {
     configureBrowserPushRegistration({
       existing: null,
@@ -184,12 +349,37 @@ describe("browser push subscription setup", () => {
 
     expect(created.unsubscribe).toHaveBeenCalledTimes(1);
   });
+
+  it("extracts browser push error codes, details, hashes, and device labels safely", async () => {
+    expect(getBrowserPushErrorCode({ code: BrowserPushErrorCode.Unsupported })).toBe(
+      BrowserPushErrorCode.Unsupported,
+    );
+    expect(getBrowserPushErrorCode({ code: "bad-code" })).toBeNull();
+    expect(getBrowserPushErrorCode(null)).toBeNull();
+    expect(getBrowserPushErrorDetail({ detail: "  server down  " })).toBe(
+      "  server down  ",
+    );
+    expect(getBrowserPushErrorDetail({ detail: "   " })).toBeNull();
+
+    Object.defineProperty(globalThis, "crypto", {
+      configurable: true,
+      value: undefined,
+    });
+    await expect(hashPushEndpoint("https://push.example")).resolves.toBeNull();
+    configureEndpointHash("abcd");
+    await expect(hashPushEndpoint(null)).resolves.toBeNull();
+    await expect(hashPushEndpoint("https://push.example")).resolves.toBe("abcd");
+  });
 });
 
 function configureBrowserPushSupport(
   subscription: PushSubscription | null,
   permission: NotificationPermission = "granted",
 ) {
+  Object.defineProperty(window, "isSecureContext", {
+    configurable: true,
+    value: true,
+  });
   Object.defineProperty(window, "Notification", {
     configurable: true,
     value: {
@@ -217,10 +407,14 @@ function configureBrowserPushRegistration({
   existing,
   created,
   subscribeError,
+  permission = "granted",
+  requestPermission = "granted",
 }: {
   existing: PushSubscription | null;
   created: PushSubscription;
   subscribeError?: Error;
+  permission?: NotificationPermission;
+  requestPermission?: NotificationPermission;
 }) {
   const register = jest.fn().mockResolvedValue(undefined);
   const subscribe = subscribeError
@@ -235,9 +429,13 @@ function configureBrowserPushRegistration({
   Object.defineProperty(window, "Notification", {
     configurable: true,
     value: {
-      permission: "granted",
-      requestPermission: jest.fn().mockResolvedValue("granted"),
+      permission,
+      requestPermission: jest.fn().mockResolvedValue(requestPermission),
     },
+  });
+  Object.defineProperty(window, "isSecureContext", {
+    configurable: true,
+    value: true,
   });
   Object.defineProperty(window, "PushManager", {
     configurable: true,
@@ -282,6 +480,19 @@ function createPushSubscription(endpoint: string): PushSubscription {
       keys: {
         p256dh: "p256dh",
         auth: "auth",
+      },
+    }),
+  } as unknown as PushSubscription;
+}
+
+function createIncompletePushSubscription(): PushSubscription {
+  return {
+    endpoint: "https://push.example/incomplete",
+    unsubscribe: jest.fn().mockResolvedValue(true),
+    toJSON: () => ({
+      endpoint: "https://push.example/incomplete",
+      keys: {
+        p256dh: "p256dh",
       },
     }),
   } as unknown as PushSubscription;

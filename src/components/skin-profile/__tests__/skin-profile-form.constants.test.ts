@@ -4,7 +4,10 @@ import {
   MIN_BIRTH_AGE_YEARS,
   buildSkinProfilePayload,
   getSkinProfileFormValues,
+  hasLocationData,
+  isValidBirthDate,
   skinProfileSchema,
+  validateLocationStep,
   type SkinProfileFormValues,
 } from "../skin-profile-form.constants";
 import { dayjs } from "@/lib/dayjs";
@@ -115,6 +118,35 @@ describe("skinProfileSchema", () => {
     expect(oldestAllowed.success).toBe(true);
   });
 
+  it("exposes small validation helpers used by the stepper", () => {
+    expect(isValidBirthDate(dateYearsAgo(30))).toBe(true);
+    expect(isValidBirthDate("")).toBe(false);
+    expect(hasLocationData("", "")).toBe(false);
+    expect(hasLocationData("SE", "")).toBe(true);
+    expect(hasLocationData("", "Stockholm")).toBe(true);
+    expect(
+      validateLocationStep({
+        countryCode: "SWE",
+        city: "",
+        locationConsent: false,
+      }),
+    ).toBe("country");
+    expect(
+      validateLocationStep({
+        countryCode: "SE",
+        city: "Stockholm",
+        locationConsent: false,
+      }),
+    ).toBe("consent");
+    expect(
+      validateLocationStep({
+        countryCode: "SE",
+        city: "Stockholm",
+        locationConsent: true,
+      }),
+    ).toBeNull();
+  });
+
   it("builds a complete essential payload", () => {
     expect(buildSkinProfilePayload(validValues, null, false)).toMatchObject({
       dateOfBirth: "1992-04-15",
@@ -160,5 +192,65 @@ describe("skinProfileSchema", () => {
     );
 
     expect(values.locationConsent).toBe(false);
+  });
+
+  it("builds edit payloads that intentionally clear removed profile values", () => {
+    const existingProfile = createReadySkinProfile({
+      dateOfBirth: "1992-04-15",
+      countryCode: "SE",
+      city: "Stockholm",
+    });
+
+    expect(
+      buildSkinProfilePayload(
+        {
+          ...validValues,
+          dateOfBirth: "",
+          sexAtBirth: "",
+          skinType: "",
+          skinTone: "",
+          fitzpatrickPhototype: "",
+          ethnicity: "",
+          primaryGoal: "",
+          budgetTier: "",
+          currentConcerns: [],
+          countryCode: "",
+          city: "",
+          pihTendency: "",
+          melasmaTendency: "",
+          keloidTendency: "",
+          sunscreenHabit: "",
+          sunscreenTolerance: "",
+          routinePace: "",
+          fragranceFree: "",
+          nonComedogenic: "no",
+          sunscreenFilter: "",
+          sunscreenFinish: "",
+          waterReactionNotes: "",
+          allowSmartPicks: null,
+        },
+        existingProfile,
+        true,
+      ),
+    ).toMatchObject({
+      dateOfBirth: null,
+      sexAtBirth: null,
+      skinType: null,
+      skinTone: null,
+      fitzpatrickPhototype: null,
+      ethnicity: null,
+      primaryGoal: null,
+      budgetTier: null,
+      currentConcerns: [],
+      countryCode: null,
+      city: null,
+      concernDetails: { per_concern: [] },
+      skinBehavior: {},
+      routinePreferences: { non_comedogenic: false },
+      lifestyleContext: {
+        water_hardness: validValues.waterHardness,
+        water_sensitivity: validValues.waterSensitivity,
+      },
+    });
   });
 });

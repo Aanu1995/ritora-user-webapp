@@ -10,7 +10,14 @@ import { AxiosHeaders } from "axios";
 import {
   applyRequestContext,
   buildMultipartRequestConfig,
+  getAccessToken,
+  isAllowedApiRequestUrl,
+  isDevSelfReferentialApiBase,
+  isSecureApiRequestUrl,
   setAccessToken,
+  setUnauthorizedHandler,
+  shouldSendCredentialCookies,
+  warnIfDevApiTargetsFrontend,
 } from "@/lib/api";
 
 describe("applyRequestContext", () => {
@@ -18,7 +25,9 @@ describe("applyRequestContext", () => {
 
   afterEach(() => {
     setAccessToken(null);
+    setUnauthorizedHandler(null);
     process.env.NODE_ENV = originalNodeEnv;
+    jest.restoreAllMocks();
   });
 
   it("adds the preferred locale, browser timezone, and auth token to requests", () => {
@@ -58,6 +67,73 @@ describe("applyRequestContext", () => {
     } as never);
 
     expect(config.baseURL).toBe("http://localhost:3001/api/v1");
+  });
+
+  it("allows only configured API origins and blocks cross-origin API requests", () => {
+    expect(isAllowedApiRequestUrl("/auth/me")).toBe(true);
+    expect(
+      isAllowedApiRequestUrl(
+        "http://localhost:3001/api/v1/auth/me",
+        "http://localhost:3001/api/v1",
+      ),
+    ).toBe(true);
+    expect(
+      isAllowedApiRequestUrl(
+        "https://evil.example/api/v1/auth/me",
+        "https://api.ritora.com/api/v1",
+      ),
+    ).toBe(false);
+    expect(isAllowedApiRequestUrl("https://api.ritora.com/auth", "notaurl")).toBe(
+      false,
+    );
+  });
+
+  it("checks production transport security without blocking relative paths", () => {
+    process.env.NODE_ENV = "production";
+
+    expect(isSecureApiRequestUrl("/auth/me")).toBe(true);
+    expect(
+      isSecureApiRequestUrl(
+        "https://api.ritora.com/api/v1/auth/me",
+        "https://api.ritora.com/api/v1",
+      ),
+    ).toBe(true);
+    expect(
+      isSecureApiRequestUrl(
+        "http://api.ritora.com/api/v1/auth/me",
+        "http://api.ritora.com/api/v1",
+      ),
+    ).toBe(false);
+    expect(
+      isSecureApiRequestUrl(
+        "http://[::1]:3001/api/v1/auth/me",
+        "http://[::1]:3001/api/v1",
+      ),
+    ).toBe(true);
+    expect(isSecureApiRequestUrl("http://[", "http://[")).toBe(false);
+  });
+
+  it("limits credential cookies to auth and language endpoints", () => {
+    expect(shouldSendCredentialCookies("/auth/login")).toBe(true);
+    expect(shouldSendCredentialCookies("/api/v1/auth/refresh")).toBe(true);
+    expect(shouldSendCredentialCookies("/schedule")).toBe(false);
+    expect(shouldSendCredentialCookies(undefined)).toBe(false);
+  });
+
+  it("tracks access token state and dev self-referential API warnings", () => {
+    setAccessToken("access-token");
+    expect(getAccessToken()).toBe("access-token");
+    setAccessToken(null);
+    expect(getAccessToken()).toBeNull();
+
+    process.env.NODE_ENV = "test";
+    expect(isDevSelfReferentialApiBase("http://localhost:3001")).toBe(false);
+    process.env.NODE_ENV = "development";
+    expect(isDevSelfReferentialApiBase("http://localhost:3001")).toBe(true);
+
+    const warn = jest.spyOn(console, "warn").mockImplementation(() => undefined);
+    warnIfDevApiTargetsFrontend();
+    expect(warn).not.toHaveBeenCalled();
   });
 });
 

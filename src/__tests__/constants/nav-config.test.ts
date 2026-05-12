@@ -68,6 +68,7 @@ describe("NAV_ITEMS", () => {
     const byRoute = new Map(NAV_ITEMS.map((item) => [item.route, item]));
 
     expect(byRoute.get(AppRoute.Journal)?.status).toBe(NavItemStatus.Live);
+    expect(byRoute.get(AppRoute.SmartPicks)?.status).toBe(NavItemStatus.Live);
     expect(byRoute.get(AppRoute.Notifications)?.status).toBe(
       NavItemStatus.Live,
     );

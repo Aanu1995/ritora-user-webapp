@@ -119,6 +119,7 @@ describe('notifications.service', () => {
     const preferences = await getNotificationPreferences();
 
     expect(preferences.photo_reminder_local_time).toBe('08:00');
+    expect(preferences.smart_pick_ready_enabled).toBe(false);
     expect(preferences.product_expiry_alerts_enabled).toBe(true);
     expect(preferences.product_expiry_notice_days).toBe(14);
   });

@@ -11,6 +11,7 @@ const SKIN_JOURNAL_BASE = "/skin-journal";
 const NOTIFICATIONS_BASE = "/notifications";
 const APP_BASE = "/app";
 const SUGGESTIONS_BASE = "/suggestions";
+const SMART_PICKS_BASE = "/smart-picks";
 const APPLICATION_LOGS_BASE = "/application-logs";
 const SUGGESTIONS_HISTORY_BASE = "/suggestions/history";
 
@@ -137,6 +138,11 @@ export const ApiPath = {
   SuggestionsHistoryExport: `${SUGGESTIONS_HISTORY_BASE}/export`,
   SuggestionsHistoryDay: (date: string) =>
     `${SUGGESTIONS_HISTORY_BASE}/${date}`,
+
+  SmartPicksOverview: `${SMART_PICKS_BASE}/overview`,
+  SmartPicksWishlist: `${SMART_PICKS_BASE}/wishlist`,
+  SmartPicksWishlistItem: (id: string) => `${SMART_PICKS_BASE}/wishlist/${id}`,
+  SmartPicksBudget: `${SMART_PICKS_BASE}/budget`,
 
   ApplicationLogs: APPLICATION_LOGS_BASE,
   ApplicationLog: (id: string) => `${APPLICATION_LOGS_BASE}/${id}`,

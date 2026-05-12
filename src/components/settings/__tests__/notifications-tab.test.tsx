@@ -110,6 +110,7 @@ function preferences(
     wrapped_alerts_enabled: true,
     photo_tutorial_completed: false,
     suggestion_ready_enabled: true,
+    smart_pick_ready_enabled: false,
     slot_start_enabled: true,
     recording_reminder_enabled: true,
     product_expiry_alerts_enabled: true,
