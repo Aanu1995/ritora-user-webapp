@@ -1,10 +1,13 @@
-import { formatPrice } from "@/components/smart-picks/smart-picks-format";
+import {
+  normalizeFocusKey,
+  roleLabel,
+} from "@/components/smart-picks/smart-picks-format";
 
 describe("smart picks formatters", () => {
-  it("formats known currencies and falls back without crashing on unknown retailer currency labels", () => {
-    expect(formatPrice(1299, "usd")).toMatch(/\$12\.99|US\$12\.99/);
-    expect(formatPrice(null, "USD")).toBeNull();
-    expect(formatPrice(1299, null)).toBeNull();
-    expect(formatPrice(1299, "local")).toBe("LOCAL 12.99");
+  it("normalizes focus keys and coverage role labels", () => {
+    expect(normalizeFocusKey("Azelaic acid / SPF 50+")).toBe(
+      "azelaic-acid-spf-50",
+    );
+    expect(roleLabel("treatment-secondary")).toBe("Second treatment");
   });
 });

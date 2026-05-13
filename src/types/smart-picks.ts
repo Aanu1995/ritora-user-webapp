@@ -18,21 +18,12 @@ export const SMART_PICKS_BUDGET_TIERS: readonly SmartPicksBudgetTier[] = [
   "luxury",
 ] as const;
 
-export const SMART_PICKS_AVAILABILITY_STATUS = {
-  Local: "local",
-  ImportOnly: "import_only",
-  Unavailable: "unavailable",
-  Unknown: "unknown",
-} as const;
-
-export type SmartPicksAvailabilityStatus =
-  (typeof SMART_PICKS_AVAILABILITY_STATUS)[keyof typeof SMART_PICKS_AVAILABILITY_STATUS];
-
 export const SMART_PICKS_GAP_KIND = {
   Missing: "missing",
   Environment: "environment",
   Starter: "starter",
   Replacement: "replacement",
+  GoalSupport: "goal_support",
 } as const;
 
 export type SmartPicksGapKind =
@@ -139,17 +130,19 @@ export type SmartPicksCoverageRole =
   | "moisturise"
   | "spf"
   | "eye"
-  | "treatment-secondary";
-
-export const SMART_PICKS_VERIFICATION_STATUS = {
-  AiNamed: "ai_named",
-  RetailerVerified: "retailer_verified",
-  RetailerUnverified: "retailer_unverified",
-  Unavailable: "unavailable",
-} as const;
-
-export type SmartPicksProductVerificationStatus =
-  (typeof SMART_PICKS_VERIFICATION_STATUS)[keyof typeof SMART_PICKS_VERIFICATION_STATUS];
+  | "treatment-secondary"
+  | "dark-spot-treatment"
+  | "antioxidant"
+  | "exfoliation-mask"
+  | "acne-treatment"
+  | "barrier-support"
+  | "congestion-mask"
+  | "texture-exfoliant"
+  | "retinoid"
+  | "peptide"
+  | "recovery-mask"
+  | "goal-primary"
+  | "goal-support";
 
 export type SmartPicksCoverageSlot = {
   role: SmartPicksCoverageRole;
@@ -157,15 +150,6 @@ export type SmartPicksCoverageSlot = {
   filledByProductId: string | null;
   filledByName: string | null;
   goalRelevance: "essential" | "supportive" | "optional";
-};
-
-export type SmartPicksRetailer = {
-  name: string;
-  url: string;
-  priceCents: number | null;
-  currency: string | null;
-  inStock: boolean;
-  isAffiliate: boolean;
 };
 
 export type SmartPicksReasoningChip = {
@@ -183,8 +167,6 @@ export type SmartPicksReasoningChip = {
 export type SmartPicksRuledOutProduct = {
   brand: string;
   productName: string;
-  priceCents: number | null;
-  currency: string | null;
   reason: string;
 };
 
@@ -193,20 +175,13 @@ export type SmartPicksProductPick = {
   brand: string;
   productName: string;
   budgetTier: SmartPicksBudgetTier | null;
-  priceCents: number | null;
-  currency: string | null;
-  retailers: SmartPicksRetailer[];
+  sellerNames: string[];
   reasoningChips: SmartPicksReasoningChip[];
   reasoningFacts: Record<string, string>;
   ruledOut: SmartPicksRuledOutProduct[];
   sourceIds: SuggestionEvidenceSourceId[];
   alternatives: SmartPicksProductPick[];
-  verificationStatus: SmartPicksProductVerificationStatus;
-  availabilityStatus: SmartPicksAvailabilityStatus;
   recommendationRankReason: string | null;
-  localAlternativeReason: string | null;
-  retailerDataCheckedAt: string | null;
-  retailerDataStale: boolean;
   userAction: SuggestionGapActionKind | null;
   createdAt: string;
 };
@@ -244,6 +219,7 @@ export type SmartPicksGap = {
   normalizedKey: string;
   priority: "priority" | "consider";
   reason: string;
+  shortReason: string;
   goalAlignment: string | null;
   sourceIds: SuggestionEvidenceSourceId[];
   gapKind: SmartPicksGapKind;

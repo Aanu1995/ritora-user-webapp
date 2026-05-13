@@ -18,27 +18,22 @@ const ROLE_LABEL: Record<SmartPicksCoverageRole, string> = {
   spf: "SPF",
   eye: "Eye",
   "treatment-secondary": "Second treatment",
+  "dark-spot-treatment": "Pigment serum",
+  antioxidant: "Vitamin C",
+  "exfoliation-mask": "Mask or peel",
+  "acne-treatment": "Acne treatment",
+  "barrier-support": "Barrier support",
+  "congestion-mask": "Congestion mask",
+  "texture-exfoliant": "Texture exfoliant",
+  retinoid: "Retinoid",
+  peptide: "Peptide support",
+  "recovery-mask": "Recovery mask",
+  "goal-primary": "Goal product",
+  "goal-support": "Goal support",
 };
 
 export function budgetLabel(value: SmartPicksBudgetTier | null): string {
   return value ? BUDGET_LABEL[value] : "Unset";
-}
-
-export function formatPrice(
-  priceCents: number | null,
-  currency: string | null,
-): string | null {
-  if (priceCents === null || !currency) return null;
-  const normalizedCurrency = currency.trim().toUpperCase();
-  if (!normalizedCurrency) return null;
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: normalizedCurrency,
-    }).format(priceCents / 100);
-  } catch {
-    return `${normalizedCurrency} ${(priceCents / 100).toFixed(2)}`;
-  }
 }
 
 export function normalizeFocusKey(value: string): string {

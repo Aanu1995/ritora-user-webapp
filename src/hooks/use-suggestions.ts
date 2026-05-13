@@ -289,10 +289,18 @@ export function useRecordSuggestionGapAction() {
   return useMutation({
     mutationFn: (payload: RecordSuggestionGapActionPayload) =>
       recordSuggestionGapAction(payload),
-    onSuccess: () => {
+    onSuccess: (_response, payload) => {
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.SuggestionsToday],
       });
+      if (payload.sourceType === "smart_pick") {
+        void queryClient.invalidateQueries({
+          queryKey: [QueryKey.SmartPicksOverview],
+        });
+        void queryClient.invalidateQueries({
+          queryKey: [QueryKey.SmartPicksWishlist],
+        });
+      }
     },
   });
 }

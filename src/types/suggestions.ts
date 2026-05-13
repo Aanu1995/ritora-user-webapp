@@ -97,6 +97,8 @@ export enum SuggestionEvidenceSourceId {
   AadSunscreenSelection = "aad_sunscreen_selection",
   AadRetinoidRetinol = "aad_retinoid_retinol",
   AadAcneTreatment = "aad_acne_treatment",
+  AadMelasmaTreatment = "aad_melasma_treatment",
+  DermNetPostInflammatoryHyperpigmentation = "dermnet_post_inflammatory_hyperpigmentation",
   FdaAhaSunSensitivity = "fda_aha_sun_sensitivity",
   MayoDrySkinCare = "mayo_dry_skin_care",
   DermNetTopicalRetinoids = "dermnet_topical_retinoids",

@@ -1,28 +1,32 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { AlertTriangle, CheckCircle2, Heart, ShieldCheck, TimerReset } from "lucide-react";
+import { CheckCircle2, Heart, TimerReset } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import {
   SMART_PICKS_STARTER_KIT_STEP_STATUS,
-  SMART_PICKS_VERIFICATION_STATUS,
   type SmartPicksOverview,
   type SmartPicksProductPick,
   type SmartPicksStarterKitStep,
 } from "@/types/smart-picks";
 import type { SuggestionGapActionKind } from "@/types/suggestions";
-import { formatPrice } from "./smart-picks-format";
+import { sellerDisplayNames } from "./seller-guidance";
+import { SellerNameList } from "./seller-name-list";
 
 interface StarterKitSectionProps {
   overview: SmartPicksOverview;
-  pending: boolean;
+  pendingPickId: string | null;
+  pendingAction: SuggestionGapActionKind | null;
+  actionsDisabled: boolean;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }
 
 export function StarterKitSection({
   overview,
-  pending,
+  pendingPickId,
+  pendingAction,
+  actionsDisabled,
   onAction,
 }: StarterKitSectionProps) {
   const t = useTranslations("smartPicks.page");
@@ -55,7 +59,9 @@ export function StarterKitSection({
           <StarterKitStepCard
             key={`${step.order}-${step.role}-${step.normalizedKey}`}
             step={step}
-            pending={pending}
+            pendingPickId={pendingPickId}
+            pendingAction={pendingAction}
+            actionsDisabled={actionsDisabled}
             onAction={onAction}
           />
         ))}
@@ -66,11 +72,15 @@ export function StarterKitSection({
 
 function StarterKitStepCard({
   step,
-  pending,
+  pendingPickId,
+  pendingAction,
+  actionsDisabled,
   onAction,
 }: {
   step: SmartPicksStarterKitStep;
-  pending: boolean;
+  pendingPickId: string | null;
+  pendingAction: SuggestionGapActionKind | null;
+  actionsDisabled: boolean;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }) {
   const t = useTranslations("smartPicks.page");
@@ -108,11 +118,32 @@ function StarterKitStepCard({
       {step.pick ? (
         <StarterProductPick
           pick={step.pick}
-          pending={pending}
+          pendingAction={pendingPickId === step.pick.id ? pendingAction : null}
+          actionsDisabled={actionsDisabled}
           onAction={onAction}
         />
+      ) : !isCovered && !isWait ? (
+        <StarterPendingPick />
       ) : null}
     </article>
+  );
+}
+
+function StarterPendingPick() {
+  const t = useTranslations("smartPicks.page");
+
+  return (
+    <div className="mt-3 rounded-lg border border-dashed border-border bg-surface-muted p-3">
+      <div className="flex items-start gap-2 text-sm text-muted">
+        <TimerReset className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+        <div>
+          <p className="font-semibold text-foreground">
+            {t("starterKit.noPickTitle")}
+          </p>
+          <p className="mt-1 leading-6">{t("starterKit.noPick")}</p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -140,19 +171,19 @@ function StarterStatusPill({
 
 function StarterProductPick({
   pick,
-  pending,
+  pendingAction,
+  actionsDisabled,
   onAction,
 }: {
   pick: SmartPicksProductPick;
-  pending: boolean;
+  pendingAction: SuggestionGapActionKind | null;
+  actionsDisabled: boolean;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }) {
   const t = useTranslations("smartPicks.page");
   const saved = pick.userAction === "saved";
-  const primaryRetailer = pick.retailers[0] ?? null;
-  const primaryRetailerPrice = primaryRetailer
-    ? formatPrice(primaryRetailer.priceCents, primaryRetailer.currency)
-    : null;
+  const sellerNames = sellerDisplayNames(pick.sellerNames);
+  const saving = pendingAction === "saved";
 
   return (
     <div className="mt-3 rounded-lg border border-border bg-surface p-3">
@@ -162,53 +193,34 @@ function StarterProductPick({
           <p className="mt-1 text-sm font-bold text-foreground">
             {pick.productName}
           </p>
-          <p className="mt-1 text-xs leading-5 text-muted">
-            {pick.recommendationRankReason ?? t("starterKit.pickFallback")}
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            <span className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold text-muted">
-              {t(`availability.status.${pick.availabilityStatus}`)}
-            </span>
-            {primaryRetailer ? (
-              <span className="rounded-full border border-border px-2.5 py-1 text-xs font-semibold text-muted">
-                {primaryRetailer.name}
-                {primaryRetailerPrice ? ` · ${primaryRetailerPrice}` : ""}
-              </span>
-            ) : null}
-          </div>
+          <SellerNameList names={sellerNames} className="mt-3" />
         </div>
         <Button
           type="button"
           size="sm"
           variant={saved ? "secondary" : "outline"}
-          disabled={pending || saved}
+          aria-label={
+            saved
+              ? t("actions.saved")
+              : saving
+                ? t("actions.saving")
+                : t("actions.save")
+          }
+          disabled={saving || actionsDisabled || saved}
           onClick={() => onAction(pick.id, "saved")}
         >
-          {pending ? (
+          {saving ? (
             <LoadingIndicator size="sm" />
           ) : (
             <Heart className="h-4 w-4" />
           )}
-          {saved ? t("actions.saved") : t("actions.save")}
+          {saved
+            ? t("actions.saved")
+            : saving
+              ? null
+              : t("actions.save")}
         </Button>
       </div>
-      <p className="mt-2 text-xs leading-5 text-muted">
-        {t("retailers.verify")}
-      </p>
-      {pick.verificationStatus ===
-      SMART_PICKS_VERIFICATION_STATUS.RetailerVerified ? (
-        <p className="mt-2 flex items-start gap-2 text-xs leading-5 text-emerald-700">
-          <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          {t("verification.retailerVerified")}
-        </p>
-      ) : null}
-      {pick.verificationStatus ===
-      SMART_PICKS_VERIFICATION_STATUS.RetailerUnverified ? (
-        <p className="mt-2 flex items-start gap-2 text-xs leading-5 text-amber-700">
-          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          {t("verification.retailerUnverified")}
-        </p>
-      ) : null}
     </div>
   );
 }

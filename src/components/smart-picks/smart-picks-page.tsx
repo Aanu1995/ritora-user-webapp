@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Bookmark, Leaf, RefreshCw } from "lucide-react";
+import { Bookmark, CircleAlert, Leaf, Lightbulb, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
@@ -33,6 +35,16 @@ export function SmartPicksPage() {
   const overview = useSmartPicksOverview(mode);
   const recordAction = useRecordSuggestionGapAction();
   const activeMode = mode ?? overview.data?.mode ?? "refine";
+  const pendingPickId =
+    recordAction.isPending && recordAction.variables?.sourceType === "smart_pick"
+      ? (recordAction.variables.smartPickProductSuggestionId ?? null)
+      : null;
+  const pendingAction =
+    recordAction.isPending && recordAction.variables?.sourceType === "smart_pick"
+      ? recordAction.variables.action
+      : null;
+  const actionsDisabled =
+    recordAction.isPending && recordAction.variables?.sourceType === "smart_pick";
   const allGaps = useMemo(
     () => [
       ...(overview.data?.priorityGaps ?? []),
@@ -55,11 +67,25 @@ export function SmartPicksPage() {
   }, [allGaps, focusKey]);
 
   const handleAction = (pickId: string, action: SuggestionGapActionKind) => {
-    recordAction.mutate({
-      sourceType: "smart_pick",
-      smartPickProductSuggestionId: pickId,
-      action,
-    });
+    recordAction.mutate(
+      {
+        sourceType: "smart_pick",
+        smartPickProductSuggestionId: pickId,
+        action,
+      },
+      {
+        onSuccess: () => {
+          toast.success(
+            action === "saved"
+              ? t("feedback.saved")
+              : t("feedback.dismissed"),
+          );
+        },
+        onError: () => {
+          toast.error(t("feedback.failed"));
+        },
+      },
+    );
   };
 
   return (
@@ -104,7 +130,9 @@ export function SmartPicksPage() {
             overview={overview.data}
             allGaps={allGaps}
             focusKey={focusKey}
-            pending={recordAction.isPending}
+            pendingPickId={pendingPickId}
+            pendingAction={pendingAction}
+            actionsDisabled={actionsDisabled}
             onAction={handleAction}
           />
         ) : null}
@@ -117,13 +145,17 @@ function SmartPicksContent({
   overview,
   allGaps,
   focusKey,
-  pending,
+  pendingPickId,
+  pendingAction,
+  actionsDisabled,
   onAction,
 }: {
   overview: NonNullable<ReturnType<typeof useSmartPicksOverview>["data"]>;
   allGaps: SmartPicksGap[];
   focusKey: string;
-  pending: boolean;
+  pendingPickId: string | null;
+  pendingAction: SuggestionGapActionKind | null;
+  actionsDisabled: boolean;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }) {
   const t = useTranslations("smartPicks.page");
@@ -139,17 +171,14 @@ function SmartPicksContent({
         <RecapRow recap={overview.recap} />
         <CoverageMeter coverage={overview.coverage} />
         <SmartPicksTrustNotice />
-        {overview.productSuggestionsUnavailable ? (
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
-            {t("productUnavailable")}
-          </div>
-        ) : null}
         {overview.starterKit.steps.length === 0 ? (
           <SmartPicksEmptyState overview={overview} />
         ) : (
           <StarterKitSection
             overview={overview}
-            pending={pending}
+            pendingPickId={pendingPickId}
+            pendingAction={pendingAction}
+            actionsDisabled={actionsDisabled}
             onAction={onAction}
           />
         )}
@@ -165,32 +194,46 @@ function SmartPicksContent({
       <RecapRow recap={overview.recap} />
       <CoverageMeter coverage={overview.coverage} />
       <SmartPicksTrustNotice />
-      {overview.productSuggestionsUnavailable ? (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
-          {t("productUnavailable")}
-        </div>
-      ) : null}
       {allGaps.length === 0 ? (
         <SmartPicksEmptyState overview={overview} />
       ) : (
         <>
           <GapSection
             title={t("sections.priority")}
+            icon={
+              <CircleAlert
+                className="h-3.5 w-3.5 text-amber-600"
+                aria-hidden="true"
+              />
+            }
             gaps={overview.priorityGaps}
             focusKey={focusKey}
-            pending={pending}
-            onAction={onAction}
-          />
-          <GapSection
-            title={t("sections.consider")}
-            gaps={overview.considerGaps}
-            focusKey={focusKey}
-            pending={pending}
+            pendingPickId={pendingPickId}
+            pendingAction={pendingAction}
+            actionsDisabled={actionsDisabled}
             onAction={onAction}
           />
         </>
       )}
       <SupportingSections overview={overview} />
+      {allGaps.length > 0 ? (
+        <GapSection
+          title={t("sections.consider")}
+          icon={
+            <Lightbulb
+              className="h-3.5 w-3.5 text-accent-strong"
+              aria-hidden="true"
+            />
+          }
+          iconTestId="smart-picks-consider-section-icon"
+          gaps={overview.considerGaps}
+          focusKey={focusKey}
+          pendingPickId={pendingPickId}
+          pendingAction={pendingAction}
+          actionsDisabled={actionsDisabled}
+          onAction={onAction}
+        />
+      ) : null}
       <section className="rounded-2xl border border-border bg-surface-muted p-4 text-center sm:p-5">
         <p className="inline-flex items-center justify-center gap-1.5 font-display text-sm font-bold text-foreground">
           <Leaf className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
@@ -206,23 +249,38 @@ function SmartPicksContent({
 
 function GapSection({
   title,
+  icon,
+  iconTestId,
   gaps,
   focusKey,
-  pending,
+  pendingPickId,
+  pendingAction,
+  actionsDisabled,
   onAction,
 }: {
   title: string;
+  icon?: ReactNode;
+  iconTestId?: string;
   gaps: SmartPicksGap[];
   focusKey: string;
-  pending: boolean;
+  pendingPickId: string | null;
+  pendingAction: SuggestionGapActionKind | null;
+  actionsDisabled: boolean;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }) {
   if (gaps.length === 0) return null;
 
   return (
     <section>
-      <h2 className="mb-3 text-sm font-semibold text-foreground">{title}</h2>
-      <div className="grid gap-4 xl:grid-cols-2">
+      <h2 className="mb-3 flex items-center gap-2 text-xs font-bold uppercase text-muted">
+        {icon ? (
+          <span className="inline-flex shrink-0" data-testid={iconTestId}>
+            {icon}
+          </span>
+        ) : null}
+        <span>{title}</span>
+      </h2>
+      <div className="flex flex-col gap-4">
         {gaps.map((gap) => (
           <GapCard
             key={gap.normalizedKey}
@@ -231,7 +289,9 @@ function GapSection({
               focusKey === gap.normalizedKey ||
               focusKey === normalizeFocusKey(gap.ingredientOrCategory)
             }
-            pending={pending}
+            pendingPickId={pendingPickId}
+            pendingAction={pendingAction}
+            actionsDisabled={actionsDisabled}
             onAction={onAction}
           />
         ))}

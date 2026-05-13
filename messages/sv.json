@@ -3293,7 +3293,6 @@
       "title": "Smart Picks",
       "subtitle": "Vad du ska köpa, hoppa över eller byta ut.",
       "refreshing": "Uppdaterar val",
-      "productUnavailable": "Ritora matchar produktval i bakgrunden. Dina rutin-steg är klara nu; produktkorten visas här när matchningen är klar.",
       "footer": {
         "title": "Ritora rekommenderar inget du inte behöver.",
         "body": "En lucka dyker bara upp här när det finns en verklig anledning för din hud. Vi föreslår en ersättning bara när dina användningsloggar och foton är tydliga. Det bästa valet är ofta inget nytt alls."
@@ -3301,7 +3300,8 @@
       "trust": {
         "title": "Använd detta som beslutsstöd, inte bevis.",
         "photos": "Fotohistorik kan visa användbara trender, men ljus, tidpunkt, smink och hur jämnt du loggar kan påverka vad Ritora ser.",
-        "retailers": "Återförsäljarlänkar och tillgänglighet kan ändras efter att Ritora förberett ett val. Kontrollera lager, frakt, pris och ingredienslista innan köp."
+        "shopping": "Ritora föreslår produktnamn och seriösa ställen att kontrollera, inte priser eller köplänkar. Jämför säljare själv och kontrollera ingredienslistan innan köp.",
+        "consistency": "Ritora blir mer användbar när dina loggar och foton är jämna. När underlaget är tunt säger den det hellre än att gissa."
       },
       "mode": {
         "label": "Smart Picks-läge",
@@ -3312,10 +3312,20 @@
         "wishlist": "Önskelista",
         "back": "Tillbaka till Smart Picks",
         "save": "Spara",
+        "saving": "Sparar",
         "saved": "Sparad",
         "dismiss": "Dölj",
+        "dismissing": "Döljer",
         "whyThis": "Varför detta",
-        "remove": "Ta bort"
+        "remove": "Ta bort",
+        "removing": "Tar bort"
+      },
+      "feedback": {
+        "saved": "Sparad. Du hittar den i din önskelista.",
+        "dismissed": "Dold tills vidare.",
+        "removed": "Borttagen från din önskelista.",
+        "failed": "Det gick inte att spara. Försök igen.",
+        "removeFailed": "Det gick inte att ta bort. Försök igen."
       },
       "error": {
         "title": "Vi kunde inte ladda Smart Picks",
@@ -3337,7 +3347,7 @@
       },
       "coverage": {
         "title": "Täckningsmätare",
-        "summary": "{filled} av {total} rutinroller täckta",
+        "summary": "{filled} av {total} målsteg täckta",
         "states": {
           "filled": "Täckt",
           "missing": "Valfri lucka",
@@ -3351,7 +3361,19 @@
         "moisturise": "Mjukgör",
         "spf": "SPF",
         "eye": "Ögon",
-        "treatment-secondary": "Andra behandling"
+        "treatment-secondary": "Andra behandling",
+        "dark-spot-treatment": "Pigmentserum",
+        "antioxidant": "Vitamin C",
+        "exfoliation-mask": "Mask eller peeling",
+        "acne-treatment": "Aknebehandling",
+        "barrier-support": "Barriärstöd",
+        "congestion-mask": "Tilltäppthetsmask",
+        "texture-exfoliant": "Texturpeeling",
+        "retinoid": "Retinoid",
+        "peptide": "Peptidstöd",
+        "recovery-mask": "Återhämtningsmask",
+        "goal-primary": "Målprodukt",
+        "goal-support": "Målstöd"
       },
       "priority": {
         "priority": "Prioriterad lucka",
@@ -3362,7 +3384,9 @@
         "consider": "Värt att överväga"
       },
       "gap": {
-        "noPick": "Luckan är verklig, men ett konkret produktval är inte klart än."
+        "whyPrefix": "Varför:",
+        "noPickTitle": "Produktnamnet matchas fortfarande.",
+        "noPick": "Luckan är tydlig. Ritora väljer fortfarande produktnamnet för den här punkten, så kom tillbaka om några minuter."
       },
       "starterKit": {
         "eyebrow": "Startkit",
@@ -3370,6 +3394,8 @@
         "stepCount": "{count, plural, one {1 steg} other {# steg}}",
         "step": "Steg {order}",
         "pickFallback": "Vald för att hålla den första rutinen enkel och låg risk.",
+        "noPickTitle": "Produktnamnet matchas fortfarande för det här steget.",
+        "noPick": "Behåll det här steget i rutinen. Det specifika produktnamnet visas här när matchningen är klar.",
         "footer": "Startkit håller rutinen liten med flit. Börja med grunderna som är täckta och rekommenderade här; använd Förfina senare när du vill byta ut, förenkla eller jämföra produkter.",
         "status": {
           "covered": "Redan täckt",
@@ -3384,26 +3410,12 @@
         "reactions": "{count} reaktionssignaler",
         "caveat": "Fototrender är inte kliniska bevis. Ritora använder dem som varsamt beslutsstöd."
       },
-      "retailers": {
-        "paid": "Betald länk",
-        "stale": "Återförsäljaruppgifter kan vara inaktuella. Kontrollera pris, lagerstatus, frakt och ingredienser innan köp.",
-        "verify": "Kontrollera pris, lagerstatus, frakt och ingredienslista innan köp."
+      "product": {
+        "bestMatch": "Bästa matchning"
       },
-      "availability": {
-        "bestMatch": "Bästa matchning",
-        "localAlternativeTitle": "Tillgängligt nära dig",
-        "localAlternativeFallback": "Detta är enklare att köpa lokalt, men matchar kanske inte toppvalet lika väl.",
-        "status": {
-          "local": "Lokalt",
-          "import_only": "Endast import",
-          "unavailable": "Inte lokalt tillgängligt",
-          "unknown": "Okänd tillgänglighet"
-        }
-      },
-      "verification": {
-        "aiNamed": "Externt val. Kontrollera ingredienslista, pris och återförsäljaruppgifter innan köp.",
-        "retailerVerified": "Återförsäljarlänken har nyligen kontrollerats. Kontrollera ändå lager, frakt, pris och ingredienser innan köp.",
-        "retailerUnverified": "Ritora kunde inte verifiera återförsäljarlänken automatiskt. Öppna den försiktigt och kontrollera produkten innan köp."
+      "sellers": {
+        "whereToCheck": "Ställen att kontrollera",
+        "compare": "Säljarnamn är en startpunkt. Kontrollera fler än en seriös säljare innan du bestämmer dig."
       },
       "drawer": {
         "title": "Varför detta val",
@@ -3442,8 +3454,8 @@
           "body": "Din hylla täcker grunderna, men det finns inte tillräckligt med rutinhistorik ännu för att säga att en produkt bör bytas ut. Fortsätt logga användning och tydliga check-in-bilder innan du köper mer."
         },
         "productGenerationUnavailable": {
-          "title": "Vi kunde inte förbereda val",
-          "body": "Luckkontrollen kördes, men produktvalen blev inte klara. Använd Dagens förslag så länge och kontrollera Smart Picks igen efter nästa ändring i hyllan eller profilen."
+          "title": "Dina produktval förbereds",
+          "body": "Du behöver inte hålla sidan öppen. Ritora matchar produktnamn i bakgrunden; kom tillbaka om några minuter."
         },
         "fullyCovered": {
           "title": "Inget användbart att lägga till",
@@ -3503,9 +3515,11 @@
         "title": "Smart Picks-önskelista",
         "subtitle": "Sparade val från din produktluckanalys.",
         "emptyTitle": "Inga sparade Smart Picks än",
-        "emptyBody": "Tryck på hjärtat på en Smart Pick-rekommendation för att spara den här. Du kan granska de sparade objekten när du vill innan du köper.",
+        "emptyBody": "Tryck på hjärtat på en Smart Pick-rekommendation för att spara den här. Du kan granska sparade produkter innan du jämför säljare.",
         "emptyCta": "Bläddra i Smart Picks",
-        "priceUnavailable": "Pris saknas"
+        "savedForGoal": "Sparad för ditt mål: {goal}.",
+        "savedFallback": "Sparad från en nyligen Smart Pick.",
+        "savedOn": "Sparad {date}"
       }
     }
   },

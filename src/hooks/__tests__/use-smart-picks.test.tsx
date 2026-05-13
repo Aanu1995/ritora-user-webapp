@@ -70,14 +70,12 @@ describe("Smart Picks hooks", () => {
     expect(mockGetWishlist).toHaveBeenCalledTimes(1);
   });
 
-  it("polls the overview while background product picks are still preparing", async () => {
+  it("does not keep polling while background product picks are still preparing", async () => {
     jest.useFakeTimers();
-    mockGetOverview
-      .mockResolvedValueOnce({
-        ...overview(),
-        productSuggestionsUnavailable: true,
-      })
-      .mockResolvedValueOnce(overview());
+    mockGetOverview.mockResolvedValue({
+      ...overview(),
+      productSuggestionsUnavailable: true,
+    });
 
     const overviewState = renderHookWithProviders(() =>
       useSmartPicksOverview("starter"),
@@ -91,7 +89,7 @@ describe("Smart Picks hooks", () => {
       jest.advanceTimersByTime(4_000);
     });
 
-    await waitFor(() => expect(mockGetOverview).toHaveBeenCalledTimes(2));
+    expect(mockGetOverview).toHaveBeenCalledTimes(1);
   });
 
   it("exposes pending mutation state while budget changes save", async () => {

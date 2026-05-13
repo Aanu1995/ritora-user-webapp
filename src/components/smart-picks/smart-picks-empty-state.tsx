@@ -137,6 +137,10 @@ export function SmartPicksEmptyState({ overview }: SmartPicksEmptyStateProps) {
 }
 
 function variantForOverview(overview: SmartPicksOverview): EmptyVariant {
+  if (overview.productSuggestionsUnavailable) {
+    return "productGenerationUnavailable";
+  }
+
   const reason = overview.emptyState.reason;
   if (reason === SMART_PICKS_EMPTY_REASON.ProfileRequired) {
     return "profileRequired";

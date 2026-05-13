@@ -8,6 +8,7 @@ import {
   Layers,
   Leaf,
   Plus,
+  ShieldCheck,
   Sparkles,
   Sun,
 } from "lucide-react";
@@ -30,6 +31,18 @@ const ROLE_ICON: Record<SmartPicksCoverageRole, ReactNode> = {
   spf: <Sun className="h-4 w-4" aria-hidden="true" />,
   eye: <Eye className="h-4 w-4" aria-hidden="true" />,
   "treatment-secondary": <Layers className="h-4 w-4" aria-hidden="true" />,
+  "dark-spot-treatment": <Sparkles className="h-4 w-4" aria-hidden="true" />,
+  antioxidant: <Sparkles className="h-4 w-4" aria-hidden="true" />,
+  "exfoliation-mask": <Layers className="h-4 w-4" aria-hidden="true" />,
+  "acne-treatment": <Sparkles className="h-4 w-4" aria-hidden="true" />,
+  "barrier-support": <ShieldCheck className="h-4 w-4" aria-hidden="true" />,
+  "congestion-mask": <Layers className="h-4 w-4" aria-hidden="true" />,
+  "texture-exfoliant": <Sparkles className="h-4 w-4" aria-hidden="true" />,
+  retinoid: <Sparkles className="h-4 w-4" aria-hidden="true" />,
+  peptide: <Sparkles className="h-4 w-4" aria-hidden="true" />,
+  "recovery-mask": <ShieldCheck className="h-4 w-4" aria-hidden="true" />,
+  "goal-primary": <Sparkles className="h-4 w-4" aria-hidden="true" />,
+  "goal-support": <ShieldCheck className="h-4 w-4" aria-hidden="true" />,
 };
 
 export function CoverageMeter({ coverage }: CoverageMeterProps) {

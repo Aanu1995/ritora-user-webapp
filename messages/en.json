@@ -3290,7 +3290,6 @@
       "title": "Smart Picks",
       "subtitle": "What to buy, what to skip, and what to replace.",
       "refreshing": "Refreshing picks",
-      "productUnavailable": "Ritora is matching product picks in the background. Your routine steps are ready now; product cards will appear here when the match is ready.",
       "footer": {
         "title": "Ritora won't recommend something you don't need.",
         "body": "A gap only appears here when there's a real reason for your skin. We suggest a replacement only when your use logs and photos are clear. The best pick is often nothing new."
@@ -3298,7 +3297,8 @@
       "trust": {
         "title": "Use this as decision support, not proof.",
         "photos": "Photo history can show useful trends, but lighting, timing, makeup, and logging consistency can change what Ritora sees.",
-        "retailers": "Retailer links and availability can change after Ritora prepares a pick. Check stock, shipping, price, and the ingredient list before buying."
+        "shopping": "Ritora suggests product names and reputable places to check, not prices or shopping links. Compare sellers yourself and confirm the ingredient list before buying.",
+        "consistency": "Ritora gets more useful when your logs and photos stay consistent. When the evidence is thin, it will say so rather than guess."
       },
       "mode": {
         "label": "Smart Picks mode",
@@ -3309,10 +3309,20 @@
         "wishlist": "Wishlist",
         "back": "Back to Smart Picks",
         "save": "Save",
+        "saving": "Saving",
         "saved": "Saved",
         "dismiss": "Dismiss",
+        "dismissing": "Dismissing",
         "whyThis": "Why this",
-        "remove": "Remove"
+        "remove": "Remove",
+        "removing": "Removing"
+      },
+      "feedback": {
+        "saved": "Saved. You can find it in your wishlist.",
+        "dismissed": "Dismissed for now.",
+        "removed": "Removed from your wishlist.",
+        "failed": "That did not save. Please try again.",
+        "removeFailed": "That did not remove. Please try again."
       },
       "error": {
         "title": "We could not load Smart Picks",
@@ -3334,7 +3344,7 @@
       },
       "coverage": {
         "title": "Coverage meter",
-        "summary": "{filled} of {total} routine roles covered",
+        "summary": "{filled} of {total} goal steps covered",
         "states": {
           "filled": "Covered",
           "missing": "Optional gap",
@@ -3348,7 +3358,19 @@
         "moisturise": "Moisturise",
         "spf": "SPF",
         "eye": "Eye",
-        "treatment-secondary": "Second treatment"
+        "treatment-secondary": "Second treatment",
+        "dark-spot-treatment": "Pigment serum",
+        "antioxidant": "Vitamin C",
+        "exfoliation-mask": "Mask or peel",
+        "acne-treatment": "Acne treatment",
+        "barrier-support": "Barrier support",
+        "congestion-mask": "Congestion mask",
+        "texture-exfoliant": "Texture exfoliant",
+        "retinoid": "Retinoid",
+        "peptide": "Peptide support",
+        "recovery-mask": "Recovery mask",
+        "goal-primary": "Goal product",
+        "goal-support": "Goal support"
       },
       "priority": {
         "priority": "Priority gap",
@@ -3359,7 +3381,9 @@
         "consider": "Worth considering"
       },
       "gap": {
-        "noPick": "The gap is real, but a concrete product pick is not ready yet."
+        "whyPrefix": "Why:",
+        "noPickTitle": "Product name is still being matched.",
+        "noPick": "The gap is clear. Ritora is still choosing the product name for this item, so check back in a few minutes."
       },
       "starterKit": {
         "eyebrow": "Starter Kit",
@@ -3367,6 +3391,8 @@
         "stepCount": "{count, plural, one {1 step} other {# steps}}",
         "step": "Step {order}",
         "pickFallback": "Chosen to keep the first routine simple and low-risk.",
+        "noPickTitle": "Product name is still being matched for this step.",
+        "noPick": "Keep this step in the routine. The specific product name will appear here when matching finishes.",
         "footer": "Starter Kit keeps the routine small on purpose. Start with the covered and recommended basics here; use Refine later when you want to replace, simplify, or compare products.",
         "status": {
           "covered": "Already covered",
@@ -3381,26 +3407,12 @@
         "reactions": "{count} reaction signals",
         "caveat": "Photo trends are not clinical proof. Ritora uses them as cautious decision support."
       },
-      "retailers": {
-        "paid": "Paid link",
-        "stale": "Retailer details may be stale. Recheck price, stock, shipping, and ingredients before buying.",
-        "verify": "Verify price, stock, shipping, and ingredient lists before buying."
+      "product": {
+        "bestMatch": "Best match"
       },
-      "availability": {
-        "bestMatch": "Best match",
-        "localAlternativeTitle": "Available near you",
-        "localAlternativeFallback": "This is easier to buy locally, but may not match the top pick as closely.",
-        "status": {
-          "local": "Local",
-          "import_only": "Import-only",
-          "unavailable": "Not locally available",
-          "unknown": "Availability unknown"
-        }
-      },
-      "verification": {
-        "aiNamed": "External pick. Verify the ingredient list, price, and retailer details before buying.",
-        "retailerVerified": "Retailer link checked recently. Still confirm stock, shipping, price, and ingredients before buying.",
-        "retailerUnverified": "Ritora could not verify this retailer link automatically. Open it carefully and confirm the product before buying."
+      "sellers": {
+        "whereToCheck": "Places to check",
+        "compare": "Seller names are a starting point. Check more than one reputable seller before you decide."
       },
       "drawer": {
         "title": "Why this pick",
@@ -3439,8 +3451,8 @@
           "body": "Your shelf covers the basics, but there is not enough routine history yet to say a product should be replaced. Keep logging use and clear check-in photos before buying more."
         },
         "productGenerationUnavailable": {
-          "title": "We couldn't prepare picks",
-          "body": "The gap check ran, but product picks were not ready. Use Today's Suggestion for now and check Smart Picks again after your next shelf or profile update."
+          "title": "Your product picks are being prepared",
+          "body": "You do not need to keep this page open. Ritora is matching product names in the background; check back in a few minutes."
         },
         "fullyCovered": {
           "title": "Nothing useful to add",
@@ -3500,9 +3512,11 @@
         "title": "Smart Picks wishlist",
         "subtitle": "Saved picks from your product gap analysis.",
         "emptyTitle": "No saved Smart Picks yet",
-        "emptyBody": "Tap the heart on any Smart Pick recommendation to save it here. You can review the saved items anytime before you buy.",
+        "emptyBody": "Tap the heart on any Smart Pick recommendation to save it here. You can review saved products before comparing sellers.",
         "emptyCta": "Browse Smart Picks",
-        "priceUnavailable": "Price unavailable"
+        "savedForGoal": "Saved for your {goal} goal.",
+        "savedFallback": "Saved from a recent Smart Pick.",
+        "savedOn": "Saved {date}"
       }
     }
   },

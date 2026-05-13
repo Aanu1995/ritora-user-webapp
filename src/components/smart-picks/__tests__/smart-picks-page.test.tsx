@@ -1,17 +1,16 @@
 import userEvent from "@testing-library/user-event";
 import { screen } from "@testing-library/react";
+import { toast } from "sonner";
 import { renderWithProviders } from "@/test/utils";
 import { SmartPicksPage } from "@/components/smart-picks/smart-picks-page";
 import { useSmartPicksOverview } from "@/hooks/use-smart-picks";
 import { useRecordSuggestionGapAction } from "@/hooks/use-suggestions";
 import { SuggestionEvidenceSourceId } from "@/types/suggestions";
 import {
-  SMART_PICKS_AVAILABILITY_STATUS,
   SMART_PICKS_EMPTY_REASON,
   SMART_PICKS_GAP_KIND,
   SMART_PICKS_HISTORY_READINESS_REASON,
   SMART_PICKS_STARTER_KIT_STEP_STATUS,
-  SMART_PICKS_VERIFICATION_STATUS,
 } from "@/types/smart-picks";
 import type { SmartPicksOverview } from "@/types/smart-picks";
 
@@ -25,6 +24,13 @@ jest.mock("@/hooks/use-smart-picks", () => ({
 
 jest.mock("@/hooks/use-suggestions", () => ({
   useRecordSuggestionGapAction: jest.fn(),
+}));
+
+jest.mock("sonner", () => ({
+  toast: {
+    error: jest.fn(),
+    success: jest.fn(),
+  },
 }));
 
 const mockUseOverview = useSmartPicksOverview as jest.MockedFunction<
@@ -95,62 +101,205 @@ describe("SmartPicksPage", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Retailer links and availability can change after Ritora prepares a pick. Check stock, shipping, price, and the ingredient list before buying.",
+        "Ritora suggests product names and reputable places to check, not prices or shopping links. Compare sellers yourself and confirm the ingredient list before buying.",
       ),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Ritora gets more useful when your logs and photos stay consistent. When the evidence is thin, it will say so rather than guess.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/These picks use/i),
+    ).not.toBeInTheDocument();
     expect(screen.getByText("Derm Store")).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "External pick. Verify the ingredient list, price, and retailer details before buying.",
-      ),
+      screen.getByText("Places to check"),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Retailer details may be stale. Recheck price, stock, shipping, and ingredients before buying.",
-      ),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Import-only")).toBeInTheDocument();
+      screen.queryByRole("link", { name: "Derm Store" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("$22.00")).not.toBeInTheDocument();
     expect(
       screen.getByText(
-        "Verify price, stock, shipping, and ingredient lists before buying.",
+        "Seller names are a starting point. Check more than one reputable seller before you decide.",
       ),
     ).toBeInTheDocument();
+    expect(screen.getByText("Your shelf has no sunscreen role.")).toBeInTheDocument();
     expect(
-      screen.getByText(
+      screen.queryByText(
         "Best fit comes first because it is stronger for the stated skin goal.",
       ),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Available near you")).toBeInTheDocument();
-    expect(screen.getByText("Local Brand Local SPF 50")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "The local option is easier to buy but may not match the top pick as closely.",
-      ),
-    ).toBeInTheDocument();
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Best match")).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Save" }));
 
-    expect(mutation.mutate).toHaveBeenCalledWith({
-      sourceType: "smart_pick",
-      smartPickProductSuggestionId: "pick-1",
-      action: "saved",
-    });
+    expect(mutation.mutate).toHaveBeenCalledWith(
+      {
+        sourceType: "smart_pick",
+        smartPickProductSuggestionId: "pick-1",
+        action: "saved",
+      },
+      expect.any(Object),
+    );
   });
 
-  it("does not render unsafe retailer links from stale data", () => {
+  it("shows save progress for the active pick and confirms when it is saved", async () => {
+    const mutate = jest.fn((payload, options) => {
+      options?.onSuccess?.(
+        {
+          sourceType: "smart_pick",
+          suggestionInstanceId: null,
+          smartPickProductSuggestionId: "pick-1",
+          ingredientOrCategory: "Broad-spectrum sunscreen SPF 30+",
+          normalizedKey: "broad-spectrum-sunscreen-spf-30",
+          action: "saved",
+        },
+        payload,
+        undefined,
+      );
+    });
+    mockUseOverview.mockReturnValue({
+      data: overview(),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    } as ReturnType<typeof useSmartPicksOverview>);
+    mockUseRecordGapAction.mockReturnValue(recordMutation({ mutate }));
+
+    renderWithProviders(<SmartPicksPage />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(toast.success).toHaveBeenCalledWith(
+      "Saved. You can find it in your wishlist.",
+    );
+  });
+
+  it("shows a saving indicator only on the product being saved", () => {
+    const currentOverview = overview();
+    const firstGap = currentOverview.priorityGaps[0];
+    if (!firstGap?.pick) throw new Error("Expected Smart Picks fixture pick.");
+    const secondGap = {
+      ...firstGap,
+      ingredientOrCategory: "Barrier-support moisturizer",
+      normalizedKey: "barrier-support-moisturizer",
+      pick: {
+        ...firstGap.pick,
+        id: "pick-2",
+        productName: "Barrier Cream",
+      },
+    };
+    mockUseOverview.mockReturnValue({
+      data: overview({ priorityGaps: [firstGap, secondGap] }),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    } as ReturnType<typeof useSmartPicksOverview>);
+    mockUseRecordGapAction.mockReturnValue(
+      recordMutation({
+        isPending: true,
+        variables: {
+          sourceType: "smart_pick",
+          smartPickProductSuggestionId: "pick-1",
+          action: "saved",
+        },
+      }),
+    );
+
+    renderWithProviders(<SmartPicksPage />);
+
+    expect(screen.getByRole("button", { name: "Saving" })).toBeDisabled();
+    expect(screen.queryByText("Saving")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+  });
+
+  it("shows spinner-only feedback while dismissing a product", () => {
+    mockUseOverview.mockReturnValue({
+      data: overview(),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    } as ReturnType<typeof useSmartPicksOverview>);
+    mockUseRecordGapAction.mockReturnValue(
+      recordMutation({
+        isPending: true,
+        variables: {
+          sourceType: "smart_pick",
+          smartPickProductSuggestionId: "pick-1",
+          action: "dismissed",
+        },
+      }),
+    );
+
+    renderWithProviders(<SmartPicksPage />);
+
+    expect(screen.getByRole("button", { name: "Dismissing" })).toBeDisabled();
+    expect(screen.queryByText("Dismissing")).not.toBeInTheDocument();
+  });
+
+  it("renders coverage from goal-specific roles instead of a fixed checklist", () => {
+    mockUseOverview.mockReturnValue({
+      data: overview({
+        coverage: {
+          filled: 1,
+          total: 4,
+          slots: [
+            {
+              role: "spf",
+              state: "filled",
+              filledByProductId: "spf-1",
+              filledByName: "Daily SPF",
+              goalRelevance: "essential",
+            },
+            {
+              role: "dark-spot-treatment",
+              state: "missing-priority",
+              filledByProductId: null,
+              filledByName: null,
+              goalRelevance: "essential",
+            },
+            {
+              role: "antioxidant",
+              state: "missing",
+              filledByProductId: null,
+              filledByName: null,
+              goalRelevance: "supportive",
+            },
+            {
+              role: "exfoliation-mask",
+              state: "missing",
+              filledByProductId: null,
+              filledByName: null,
+              goalRelevance: "optional",
+            },
+          ],
+        },
+      }),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    } as ReturnType<typeof useSmartPicksOverview>);
+    mockUseRecordGapAction.mockReturnValue(recordMutation());
+
+    renderWithProviders(<SmartPicksPage />);
+
+    expect(screen.getByText("Pigment serum")).toBeInTheDocument();
+    expect(screen.getByText("Vitamin C")).toBeInTheDocument();
+    expect(screen.getByText("Mask or peel")).toBeInTheDocument();
+    expect(screen.queryByText("Eye")).not.toBeInTheDocument();
+  });
+
+  it("deduplicates seller names from the API", () => {
     const data = overview();
     const pick = data.priorityGaps[0]?.pick;
     if (!pick) throw new Error("Expected Smart Picks fixture pick.");
-    pick.retailers = [
-      {
-        name: "Local Admin",
-        url: "http://127.0.0.1:3001/admin",
-        priceCents: 2200,
-        currency: "USD",
-        inStock: true,
-        isAffiliate: false,
-      },
-    ];
+    pick.sellerNames = ["Derm Store", "Derm Store", "Stylevana"];
     mockUseOverview.mockReturnValue({
       data,
       isLoading: false,
@@ -162,7 +311,102 @@ describe("SmartPicksPage", () => {
 
     renderWithProviders(<SmartPicksPage />);
 
-    expect(screen.queryByText("Local Admin")).not.toBeInTheDocument();
+    expect(screen.getByText("Derm Store")).toBeInTheDocument();
+    expect(screen.getByText("Stylevana")).toBeInTheDocument();
+  });
+
+  it("places worth considering before the final reassurance footer", () => {
+    const data = overview();
+    const priorityGap = data.priorityGaps[0];
+    if (!priorityGap?.pick) {
+      throw new Error("Expected Smart Picks fixture gap and pick.");
+    }
+    mockUseOverview.mockReturnValue({
+      data: overview({
+        considerGaps: [
+          {
+            ...priorityGap,
+            ingredientOrCategory: "Peptide serum",
+            normalizedKey: "peptide-serum",
+            priority: "consider",
+            reason:
+              "Optional support if you want to go beyond the basics. This longer explanation should stay out of the card because Worth considering needs to scan quickly.",
+            shortReason: "Optional support if you want to go beyond the basics.",
+            goalAlignment: "supportive care",
+            pick: {
+              ...priorityGap.pick,
+              id: "pick-consider",
+              productName: "Peptide Serum",
+              alternatives: [],
+            },
+          },
+        ],
+        covered: [
+          {
+            role: "spf",
+            productName: "Daily SPF",
+            reason: "Your shelf already covers this.",
+          },
+        ],
+        redundancy: [
+          {
+            activeTag: "niacinamide",
+            hint: "You already have a niacinamide product.",
+            products: [
+              {
+                id: "owned-1",
+                brand: "Owned",
+                name: "Niacinamide Serum",
+                recommendation: "keep",
+              },
+            ],
+          },
+        ],
+      }),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    } as ReturnType<typeof useSmartPicksOverview>);
+    mockUseRecordGapAction.mockReturnValue(recordMutation());
+
+    renderWithProviders(<SmartPicksPage />);
+
+    const coveredHeading = screen.getByRole("heading", {
+      name: "You're set here",
+    });
+    const redundancyHeading = screen.getByRole("heading", {
+      name: "Duplicate active check",
+    });
+    const considerHeading = screen.getByRole("heading", {
+      name: "Worth considering",
+    });
+    const footerTitle = screen.getByText(
+      "Ritora won't recommend something you don't need.",
+    );
+
+    expect(
+      coveredHeading.compareDocumentPosition(considerHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      redundancyHeading.compareDocumentPosition(considerHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      considerHeading.compareDocumentPosition(footerTitle) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      screen.getByTestId("smart-picks-consider-section-icon"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Why:")).toBeInTheDocument();
+    expect(
+      screen.getByText("Optional support if you want to go beyond the basics."),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/This longer explanation should stay out of the card/),
+    ).not.toBeInTheDocument();
   });
 
   it("clearly explains when a pick is recommended as a replacement", () => {
@@ -343,7 +587,7 @@ describe("SmartPicksPage", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("keeps Starter Kit usable while product picks are being prepared", () => {
+  it("keeps starter steps visible while product picks are still processing", () => {
     mockUseOverview.mockReturnValue({
       data: overview({
         mode: "starter",
@@ -374,16 +618,17 @@ describe("SmartPicksPage", () => {
 
     expect(screen.getByText("Starter routine")).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Ritora is matching product picks in the background. Your routine steps are ready now; product cards will appear here when the match is ready.",
-      ),
-    ).toBeInTheDocument();
-    expect(
       screen.getByText("Broad-spectrum sunscreen SPF 30+"),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText("Product name is still being matched for this step."),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText("Your product picks are being prepared"),
+    ).not.toBeInTheDocument();
   });
 
-  it("keeps Starter Kit visible when retailer currency data is not ISO-formatted", () => {
+  it("shows Starter Kit seller names without links or prices", () => {
     const pick = overview().priorityGaps[0]?.pick;
     if (!pick) throw new Error("Expected Smart Picks fixture pick.");
     mockUseOverview.mockReturnValue({
@@ -396,12 +641,7 @@ describe("SmartPicksPage", () => {
             starterStep({
               pick: {
                 ...pick,
-                retailers: [
-                  {
-                    ...pick.retailers[0],
-                    currency: "local",
-                  },
-                ],
+                sellerNames: ["Derm Store"],
               },
             }),
           ],
@@ -417,7 +657,83 @@ describe("SmartPicksPage", () => {
     renderWithProviders(<SmartPicksPage />);
 
     expect(screen.getByText("Starter routine")).toBeInTheDocument();
-    expect(screen.getByText("Derm Store · LOCAL 22.00")).toBeInTheDocument();
+    expect(screen.getByText("Start here.")).toBeInTheDocument();
+    expect(screen.getByText("Derm Store")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Derm Store" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("LOCAL 22.00")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "Best fit comes first because it is stronger for the stated skin goal.",
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows spinner-only feedback while saving a Starter Kit pick", () => {
+    const pick = overview().priorityGaps[0]?.pick;
+    if (!pick) throw new Error("Expected Smart Picks fixture pick.");
+    mockUseOverview.mockReturnValue({
+      data: overview({
+        mode: "starter",
+        priorityGaps: [],
+        starterKit: {
+          summary: "Start with the essentials. Add treatment last.",
+          steps: [starterStep({ pick })],
+        },
+      }),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    } as ReturnType<typeof useSmartPicksOverview>);
+    mockUseRecordGapAction.mockReturnValue(
+      recordMutation({
+        isPending: true,
+        variables: {
+          sourceType: "smart_pick",
+          smartPickProductSuggestionId: pick.id,
+          action: "saved",
+        },
+      }),
+    );
+
+    renderWithProviders(<SmartPicksPage />);
+
+    expect(screen.getByRole("button", { name: "Saving" })).toBeDisabled();
+    expect(screen.queryByText("Saving")).not.toBeInTheDocument();
+  });
+
+  it("does not render blank Starter Kit seller names", () => {
+    const pick = overview().priorityGaps[0]?.pick;
+    if (!pick) throw new Error("Expected Smart Picks fixture pick.");
+    mockUseOverview.mockReturnValue({
+      data: overview({
+        mode: "starter",
+        priorityGaps: [],
+        starterKit: {
+          summary: "Start with the essentials. Add treatment last.",
+          steps: [
+            starterStep({
+              pick: {
+                ...pick,
+                sellerNames: ["   "],
+              },
+            }),
+          ],
+        },
+      }),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    } as ReturnType<typeof useSmartPicksOverview>);
+    mockUseRecordGapAction.mockReturnValue(recordMutation());
+
+    renderWithProviders(<SmartPicksPage />);
+
+    expect(screen.getByText("Starter routine")).toBeInTheDocument();
+    expect(screen.queryByText("Places to check")).not.toBeInTheDocument();
   });
 
   it("shows owned Starter Kit steps as already covered", () => {
@@ -501,13 +817,22 @@ describe("SmartPicksPage", () => {
   });
 });
 
-function recordMutation() {
+function recordMutation(
+  overrides: Partial<
+    Pick<
+      ReturnType<typeof useRecordSuggestionGapAction>,
+      "mutate" | "isPending" | "variables"
+    >
+  > = {},
+) {
   return {
     mutate: jest.fn(),
     isPending: false,
+    variables: undefined,
+    ...overrides,
   } as Pick<
     ReturnType<typeof useRecordSuggestionGapAction>,
-    "mutate" | "isPending"
+    "mutate" | "isPending" | "variables"
   > as ReturnType<typeof useRecordSuggestionGapAction>;
 }
 
@@ -544,8 +869,13 @@ function overview(
         normalizedKey: "broad-spectrum-sunscreen-spf-30",
         priority: "priority",
         reason: "Your shelf has no sunscreen role.",
+        shortReason: "Your shelf has no sunscreen role.",
         goalAlignment: "sun protection",
-        sourceIds: [SuggestionEvidenceSourceId.AadSunscreenSelection],
+        sourceIds: [
+          SuggestionEvidenceSourceId.AadSunscreenSelection,
+          SuggestionEvidenceSourceId.AadMelasmaTreatment,
+          SuggestionEvidenceSourceId.DermNetPostInflammatoryHyperpigmentation,
+        ],
         gapKind: SMART_PICKS_GAP_KIND.Missing,
         replacementFor: null,
         pick: {
@@ -553,18 +883,7 @@ function overview(
           brand: "Good Brand",
           productName: "Mineral SPF 50",
           budgetTier: "mid",
-          priceCents: 2200,
-          currency: "USD",
-          retailers: [
-            {
-              name: "Derm Store",
-              url: "https://example.com/spf",
-              priceCents: 2200,
-              currency: "USD",
-              inStock: true,
-              isAffiliate: true,
-            },
-          ],
+          sellerNames: ["Derm Store"],
           reasoningChips: [
             { tone: "ethnicity", text: "white-cast checked", icon: "check" },
           ],
@@ -577,18 +896,7 @@ function overview(
               brand: "Local Brand",
               productName: "Local SPF 50",
               budgetTier: "mid",
-              priceCents: 1800,
-              currency: "USD",
-              retailers: [
-                {
-                  name: "Local Pharmacy",
-                  url: "https://example.com/local-spf",
-                  priceCents: 1800,
-                  currency: "USD",
-                  inStock: true,
-                  isAffiliate: false,
-                },
-              ],
+              sellerNames: ["Local Pharmacy"],
               reasoningChips: [
                 { tone: "location", text: "Available locally", icon: "map" },
               ],
@@ -596,25 +904,14 @@ function overview(
               ruledOut: [],
               sourceIds: [SuggestionEvidenceSourceId.AadSunscreenSelection],
               alternatives: [],
-              availabilityStatus: SMART_PICKS_AVAILABILITY_STATUS.Local,
               recommendationRankReason:
-                "Easier to buy locally, but less targeted.",
-              localAlternativeReason: null,
-              retailerDataCheckedAt: "2026-05-01T10:00:00.000Z",
-              retailerDataStale: true,
-              verificationStatus: SMART_PICKS_VERIFICATION_STATUS.AiNamed,
+                "Alternative match, but less targeted.",
               userAction: null,
               createdAt: "2026-05-10T10:00:00.000Z",
             },
           ],
-          availabilityStatus: SMART_PICKS_AVAILABILITY_STATUS.ImportOnly,
           recommendationRankReason:
             "Best fit comes first because it is stronger for the stated skin goal.",
-          localAlternativeReason:
-            "The local option is easier to buy but may not match the top pick as closely.",
-          retailerDataCheckedAt: "2026-05-01T10:00:00.000Z",
-          retailerDataStale: true,
-          verificationStatus: SMART_PICKS_VERIFICATION_STATUS.AiNamed,
           userAction: null,
           createdAt: "2026-05-10T10:00:00.000Z",
         },

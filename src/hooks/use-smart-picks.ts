@@ -27,8 +27,6 @@ export function useSmartPicksOverview(mode?: SmartPicksMode) {
     queryKey: [QueryKey.SmartPicksOverview, mode ?? "auto"],
     queryFn: () => getSmartPicksOverview(mode),
     enabled: isEnabled,
-    refetchInterval: (query) =>
-      query.state.data?.productSuggestionsUnavailable ? 4_000 : false,
   });
 }
 
