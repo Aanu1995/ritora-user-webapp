@@ -20,6 +20,9 @@ import type {
   SmartPicksWishlistResponse,
   UpdateSmartPicksBudgetPayload,
 } from "@/types/smart-picks";
+import { SMART_PICKS_PRODUCT_GENERATION_STATUS } from "@/types/smart-picks";
+
+const SMART_PICKS_PENDING_REFETCH_MS = 30_000;
 
 export function useSmartPicksOverview(mode?: SmartPicksMode) {
   const isEnabled = useAuthEnabled();
@@ -27,6 +30,12 @@ export function useSmartPicksOverview(mode?: SmartPicksMode) {
     queryKey: [QueryKey.SmartPicksOverview, mode ?? "auto"],
     queryFn: () => getSmartPicksOverview(mode),
     enabled: isEnabled,
+    refetchInterval: (query) =>
+      query.state.data?.productGeneration.status ===
+        SMART_PICKS_PRODUCT_GENERATION_STATUS.Pending &&
+      query.state.data.productGeneration.isProcessing
+        ? SMART_PICKS_PENDING_REFETCH_MS
+        : false,
   });
 }
 

@@ -22,6 +22,12 @@ interface ProductPickPanelProps {
   pendingAction: SuggestionGapActionKind | null;
   actionsDisabled: boolean;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
+  /**
+   * Inverts the surface tones. Set to true when the panel sits inside a
+   * card that already uses bg-surface-muted (e.g. Worth Considering), so
+   * the panel and its chips swap to white-on-muted styling and stay legible.
+   */
+  inverted?: boolean;
 }
 
 export function ProductPickPanel({
@@ -29,6 +35,7 @@ export function ProductPickPanel({
   pendingAction,
   actionsDisabled,
   onAction,
+  inverted = false,
 }: ProductPickPanelProps) {
   const t = useTranslations("smartPicks.page");
   const saved = pick.userAction === "saved";
@@ -36,9 +43,16 @@ export function ProductPickPanel({
   const savePending = pendingAction === "saved";
   const dismissPending = pendingAction === "dismissed";
   const busy = savePending || dismissPending;
+  const panelSurfaceClass = inverted ? "bg-surface" : "bg-surface-muted";
+  const innerSurfaceClass = inverted ? "bg-surface-muted" : "bg-surface";
 
   return (
-    <div className="mt-4 rounded-xl border border-border bg-background p-4">
+    <div
+      className={cn(
+        "mt-4 rounded-xl border border-border p-4",
+        panelSurfaceClass,
+      )}
+    >
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted">
@@ -52,7 +66,10 @@ export function ProductPickPanel({
               {pick.reasoningChips.map((chip) => (
                 <span
                   key={`${chip.tone}-${chip.text}`}
-                  className="rounded-full border border-border bg-surface px-2.5 py-0.5 text-[11px] font-medium text-muted"
+                  className={cn(
+                    "rounded-full border border-border px-2.5 py-0.5 text-[11px] font-medium text-muted",
+                    innerSurfaceClass,
+                  )}
                 >
                   {chip.text}
                 </span>
@@ -76,7 +93,10 @@ export function ProductPickPanel({
             "grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full border transition disabled:cursor-default",
             saved || savePending
               ? "border-[color:rgba(47,122,82,0.32)] bg-accent-soft text-accent-strong"
-              : "border-border bg-surface text-muted hover:border-accent-strong hover:text-accent-strong",
+              : cn(
+                  "border-border text-muted hover:border-accent-strong hover:text-accent-strong",
+                  innerSurfaceClass,
+                ),
           )}
         >
           {savePending ? (

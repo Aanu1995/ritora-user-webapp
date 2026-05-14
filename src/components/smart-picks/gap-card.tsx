@@ -3,8 +3,14 @@
 import { useTranslations } from "next-intl";
 import { CircleAlert, Lightbulb, RefreshCcw, TimerReset } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { SMART_PICKS_GAP_KIND } from "@/types/smart-picks";
-import type { SmartPicksGap } from "@/types/smart-picks";
+import {
+  SMART_PICKS_GAP_KIND,
+  SMART_PICKS_PRODUCT_GENERATION_STATUS,
+} from "@/types/smart-picks";
+import type {
+  SmartPicksGap,
+  SmartPicksProductGenerationState,
+} from "@/types/smart-picks";
 import type { SuggestionGapActionKind } from "@/types/suggestions";
 import { ProductPickPanel } from "./product-pick-panel";
 
@@ -14,6 +20,7 @@ interface GapCardProps {
   pendingPickId: string | null;
   pendingAction: SuggestionGapActionKind | null;
   actionsDisabled: boolean;
+  productGeneration: SmartPicksProductGenerationState;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }
 
@@ -23,6 +30,7 @@ export function GapCard({
   pendingPickId,
   pendingAction,
   actionsDisabled,
+  productGeneration,
   onAction,
 }: GapCardProps) {
   const t = useTranslations("smartPicks.page");
@@ -89,16 +97,24 @@ export function GapCard({
           }
           actionsDisabled={actionsDisabled}
           onAction={onAction}
+          inverted={isConsider}
         />
       ) : (
-        <PendingPickNotice />
+        <PendingPickNotice productGeneration={productGeneration} />
       )}
     </article>
   );
 }
 
-function PendingPickNotice() {
+function PendingPickNotice({
+  productGeneration,
+}: {
+  productGeneration: SmartPicksProductGenerationState;
+}) {
   const t = useTranslations("smartPicks.page");
+  const failed =
+    productGeneration.status === SMART_PICKS_PRODUCT_GENERATION_STATUS.Failed ||
+    productGeneration.status === SMART_PICKS_PRODUCT_GENERATION_STATUS.Skipped;
 
   return (
     <div className="mt-4 rounded-lg border border-dashed border-border bg-surface-muted p-4">
@@ -106,9 +122,11 @@ function PendingPickNotice() {
         <TimerReset className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
         <div>
           <p className="font-semibold text-foreground">
-            {t("gap.noPickTitle")}
+            {t(failed ? "gap.noPickFailedTitle" : "gap.noPickTitle")}
           </p>
-          <p className="mt-1 leading-6">{t("gap.noPick")}</p>
+          <p className="mt-1 leading-6">
+            {t(failed ? "gap.noPickFailed" : "gap.noPick")}
+          </p>
         </div>
       </div>
     </div>

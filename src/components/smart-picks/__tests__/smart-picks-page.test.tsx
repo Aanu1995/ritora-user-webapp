@@ -10,6 +10,7 @@ import {
   SMART_PICKS_EMPTY_REASON,
   SMART_PICKS_GAP_KIND,
   SMART_PICKS_HISTORY_READINESS_REASON,
+  SMART_PICKS_PRODUCT_GENERATION_STATUS,
   SMART_PICKS_STARTER_KIT_STEP_STATUS,
 } from "@/types/smart-picks";
 import type { SmartPicksOverview } from "@/types/smart-picks";
@@ -109,13 +110,9 @@ describe("SmartPicksPage", () => {
         "Ritora gets more useful when your logs and photos stay consistent. When the evidence is thin, it will say so rather than guess.",
       ),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByText(/These picks use/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/These picks use/i)).not.toBeInTheDocument();
     expect(screen.getByText("Derm Store")).toBeInTheDocument();
-    expect(
-      screen.getByText("Places to check"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Places to check")).toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: "Derm Store" }),
     ).not.toBeInTheDocument();
@@ -125,7 +122,9 @@ describe("SmartPicksPage", () => {
         "Seller names are a starting point. Check more than one reputable seller before you decide.",
       ),
     ).toBeInTheDocument();
-    expect(screen.getByText("Your shelf has no sunscreen role.")).toBeInTheDocument();
+    expect(
+      screen.getByText("Your shelf has no sunscreen role."),
+    ).toBeInTheDocument();
     expect(
       screen.queryByText(
         "Best fit comes first because it is stronger for the stated skin goal.",
@@ -331,7 +330,8 @@ describe("SmartPicksPage", () => {
             priority: "consider",
             reason:
               "Optional support if you want to go beyond the basics. This longer explanation should stay out of the card because Worth considering needs to scan quickly.",
-            shortReason: "Optional support if you want to go beyond the basics.",
+            shortReason:
+              "Optional support if you want to go beyond the basics.",
             goalAlignment: "supportive care",
             pick: {
               ...priorityGap.pick,
@@ -592,6 +592,14 @@ describe("SmartPicksPage", () => {
       data: overview({
         mode: "starter",
         productSuggestionsUnavailable: true,
+        productGeneration: {
+          status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Pending,
+          reason: null,
+          missingPickCount: 1,
+          isProcessing: true,
+          attemptedAt: null,
+          retryAfter: null,
+        },
         starterKit: {
           summary: "Start with the essentials. Add treatment last.",
           steps: [
@@ -625,6 +633,49 @@ describe("SmartPicksPage", () => {
     ).toBeInTheDocument();
     expect(
       screen.queryByText("Your product picks are being prepared"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows a clear message when product matching failed instead of endless matching copy", () => {
+    const failedGap = overview().priorityGaps[0];
+    if (!failedGap) throw new Error("Expected Smart Picks fixture gap.");
+    mockUseOverview.mockReturnValue({
+      data: overview({
+        productSuggestionsUnavailable: true,
+        productGeneration: {
+          status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Failed,
+          reason: "provider_failed",
+          missingPickCount: 1,
+          isProcessing: false,
+          attemptedAt: "2026-05-10T10:05:00.000Z",
+          retryAfter: "2026-05-10T10:10:00.000Z",
+        },
+        priorityGaps: [
+          {
+            ...failedGap,
+            pick: null,
+          },
+        ],
+      }),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    } as ReturnType<typeof useSmartPicksOverview>);
+    mockUseRecordGapAction.mockReturnValue(recordMutation());
+
+    renderWithProviders(<SmartPicksPage />);
+
+    expect(
+      screen.getByText("Product name could not be matched yet."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "The gap is still useful, but the product match did not finish. Check back later and Ritora will try again.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText("Product name is still being matched."),
     ).not.toBeInTheDocument();
   });
 
@@ -904,8 +955,7 @@ function overview(
               ruledOut: [],
               sourceIds: [SuggestionEvidenceSourceId.AadSunscreenSelection],
               alternatives: [],
-              recommendationRankReason:
-                "Alternative match, but less targeted.",
+              recommendationRankReason: "Alternative match, but less targeted.",
               userAction: null,
               createdAt: "2026-05-10T10:00:00.000Z",
             },
@@ -923,6 +973,14 @@ function overview(
     consentRequired: false,
     skinProfileRequired: false,
     productSuggestionsUnavailable: false,
+    productGeneration: {
+      status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Ready,
+      reason: null,
+      missingPickCount: 0,
+      isProcessing: false,
+      attemptedAt: null,
+      retryAfter: null,
+    },
     emptyState: emptyState(),
     starterKit: { summary: null, steps: [] },
     ...overrides,

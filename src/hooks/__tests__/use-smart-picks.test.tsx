@@ -16,7 +16,10 @@ import type {
   SmartPicksOverview,
   SmartPicksWishlistResponse,
 } from "@/types/smart-picks";
-import { SMART_PICKS_HISTORY_READINESS_REASON } from "@/types/smart-picks";
+import {
+  SMART_PICKS_HISTORY_READINESS_REASON,
+  SMART_PICKS_PRODUCT_GENERATION_STATUS,
+} from "@/types/smart-picks";
 
 jest.mock("@/hooks/use-auth-enabled", () => ({
   useAuthEnabled: () => true,
@@ -70,11 +73,19 @@ describe("Smart Picks hooks", () => {
     expect(mockGetWishlist).toHaveBeenCalledTimes(1);
   });
 
-  it("does not keep polling while background product picks are still preparing", async () => {
+  it("polls while product picks are being generated", async () => {
     jest.useFakeTimers();
     mockGetOverview.mockResolvedValue({
       ...overview(),
       productSuggestionsUnavailable: true,
+      productGeneration: {
+        status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Pending,
+        reason: null,
+        missingPickCount: 1,
+        isProcessing: true,
+        attemptedAt: null,
+        retryAfter: null,
+      },
     });
 
     const overviewState = renderHookWithProviders(() =>
@@ -84,12 +95,44 @@ describe("Smart Picks hooks", () => {
       expect(overviewState.result.current.isSuccess).toBe(true),
     );
 
-    expect(mockGetOverview).toHaveBeenCalledTimes(1);
+    mockGetOverview.mockClear();
+
     await act(async () => {
-      jest.advanceTimersByTime(4_000);
+      jest.advanceTimersByTime(30_000);
     });
 
-    expect(mockGetOverview).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(mockGetOverview).toHaveBeenCalledTimes(1));
+  });
+
+  it("does not poll when pending copy is not backed by a running job", async () => {
+    jest.useFakeTimers();
+    mockGetOverview.mockResolvedValue({
+      ...overview(),
+      productSuggestionsUnavailable: true,
+      productGeneration: {
+        status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Pending,
+        reason: null,
+        missingPickCount: 1,
+        isProcessing: false,
+        attemptedAt: null,
+        retryAfter: null,
+      },
+    });
+
+    const overviewState = renderHookWithProviders(() =>
+      useSmartPicksOverview("starter"),
+    );
+    await waitFor(() =>
+      expect(overviewState.result.current.isSuccess).toBe(true),
+    );
+
+    mockGetOverview.mockClear();
+
+    await act(async () => {
+      jest.advanceTimersByTime(30_000);
+    });
+
+    expect(mockGetOverview).not.toHaveBeenCalled();
   });
 
   it("exposes pending mutation state while budget changes save", async () => {
@@ -138,6 +181,14 @@ function overview(
     consentRequired: false,
     skinProfileRequired: false,
     productSuggestionsUnavailable: false,
+    productGeneration: {
+      status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Ready,
+      reason: null,
+      missingPickCount: 0,
+      isProcessing: false,
+      attemptedAt: null,
+      retryAfter: null,
+    },
     starterKit: { summary: null, steps: [] },
     emptyState: {
       reason: null,

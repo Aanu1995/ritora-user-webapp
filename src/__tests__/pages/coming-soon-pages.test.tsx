@@ -32,6 +32,14 @@ jest.mock("@/hooks/use-smart-picks", () => ({
       consentRequired: false,
       skinProfileRequired: false,
       productSuggestionsUnavailable: false,
+      productGeneration: {
+        status: "ready",
+        reason: null,
+        missingPickCount: 0,
+        isProcessing: false,
+        attemptedAt: null,
+        retryAfter: null,
+      },
       starterKit: { summary: null, steps: [] },
       emptyState: {
         reason: null,

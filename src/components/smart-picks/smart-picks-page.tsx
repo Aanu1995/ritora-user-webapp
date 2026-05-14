@@ -13,7 +13,11 @@ import { RetryPanel } from "@/components/ui/retry-panel";
 import { AppRoute } from "@/constants/app-routes";
 import { useSmartPicksOverview } from "@/hooks/use-smart-picks";
 import { useRecordSuggestionGapAction } from "@/hooks/use-suggestions";
-import type { SmartPicksGap, SmartPicksMode } from "@/types/smart-picks";
+import type {
+  SmartPicksGap,
+  SmartPicksMode,
+  SmartPicksProductGenerationState,
+} from "@/types/smart-picks";
 import type { SuggestionGapActionKind } from "@/types/suggestions";
 import { CoverageMeter } from "./coverage-meter";
 import { GapCard } from "./gap-card";
@@ -179,6 +183,7 @@ function SmartPicksContent({
             pendingPickId={pendingPickId}
             pendingAction={pendingAction}
             actionsDisabled={actionsDisabled}
+            productGeneration={overview.productGeneration}
             onAction={onAction}
           />
         )}
@@ -211,6 +216,7 @@ function SmartPicksContent({
             pendingPickId={pendingPickId}
             pendingAction={pendingAction}
             actionsDisabled={actionsDisabled}
+            productGeneration={overview.productGeneration}
             onAction={onAction}
           />
         </>
@@ -231,6 +237,7 @@ function SmartPicksContent({
           pendingPickId={pendingPickId}
           pendingAction={pendingAction}
           actionsDisabled={actionsDisabled}
+          productGeneration={overview.productGeneration}
           onAction={onAction}
         />
       ) : null}
@@ -256,6 +263,7 @@ function GapSection({
   pendingPickId,
   pendingAction,
   actionsDisabled,
+  productGeneration,
   onAction,
 }: {
   title: string;
@@ -266,6 +274,7 @@ function GapSection({
   pendingPickId: string | null;
   pendingAction: SuggestionGapActionKind | null;
   actionsDisabled: boolean;
+  productGeneration: SmartPicksProductGenerationState;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }) {
   if (gaps.length === 0) return null;
@@ -292,6 +301,7 @@ function GapSection({
             pendingPickId={pendingPickId}
             pendingAction={pendingAction}
             actionsDisabled={actionsDisabled}
+            productGeneration={productGeneration}
             onAction={onAction}
           />
         ))}

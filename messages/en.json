@@ -3383,7 +3383,9 @@
       "gap": {
         "whyPrefix": "Why:",
         "noPickTitle": "Product name is still being matched.",
-        "noPick": "The gap is clear. Ritora is still choosing the product name for this item, so check back in a few minutes."
+        "noPick": "The gap is clear. Ritora is still choosing the product name for this item, so check back in a few minutes.",
+        "noPickFailedTitle": "Product name could not be matched yet.",
+        "noPickFailed": "The gap is still useful, but the product match did not finish. Check back later and Ritora will try again."
       },
       "starterKit": {
         "eyebrow": "Starter Kit",
@@ -3393,6 +3395,8 @@
         "pickFallback": "Chosen to keep the first routine simple and low-risk.",
         "noPickTitle": "Product name is still being matched for this step.",
         "noPick": "Keep this step in the routine. The specific product name will appear here when matching finishes.",
+        "noPickFailedTitle": "Product name could not be matched for this step yet.",
+        "noPickFailed": "Keep the step. The product match did not finish, so check back later and Ritora will try again.",
         "footer": "Starter Kit keeps the routine small on purpose. Start with the covered and recommended basics here; use Refine later when you want to replace, simplify, or compare products.",
         "status": {
           "covered": "Already covered",

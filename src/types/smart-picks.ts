@@ -104,6 +104,34 @@ export const SMART_PICKS_MISSING_PROFILE_FIELD = {
 export type SmartPicksMissingProfileField =
   (typeof SMART_PICKS_MISSING_PROFILE_FIELD)[keyof typeof SMART_PICKS_MISSING_PROFILE_FIELD];
 
+export const SMART_PICKS_PRODUCT_GENERATION_STATUS = {
+  Ready: "ready",
+  Pending: "pending",
+  Failed: "failed",
+  Skipped: "skipped",
+} as const;
+
+export type SmartPicksProductGenerationStatus =
+  (typeof SMART_PICKS_PRODUCT_GENERATION_STATUS)[keyof typeof SMART_PICKS_PRODUCT_GENERATION_STATUS];
+
+export const SMART_PICKS_PRODUCT_GENERATION_REASON = {
+  ProviderFailed: "provider_failed",
+  MissingApiKey: "missing_api_key",
+  NoPick: "no_pick",
+} as const;
+
+export type SmartPicksProductGenerationReason =
+  (typeof SMART_PICKS_PRODUCT_GENERATION_REASON)[keyof typeof SMART_PICKS_PRODUCT_GENERATION_REASON];
+
+export type SmartPicksProductGenerationState = {
+  status: SmartPicksProductGenerationStatus;
+  reason: SmartPicksProductGenerationReason | null;
+  missingPickCount: number;
+  isProcessing: boolean;
+  attemptedAt: string | null;
+  retryAfter: string | null;
+};
+
 export type SmartPicksHistoryReadiness = {
   usablePhotoCheckpoints: number;
   loggedUseDaysLast90: number;
@@ -259,6 +287,7 @@ export type SmartPicksOverview = {
   consentRequired: boolean;
   skinProfileRequired: boolean;
   productSuggestionsUnavailable: boolean;
+  productGeneration: SmartPicksProductGenerationState;
   emptyState: SmartPicksEmptyState;
   starterKit: SmartPicksStarterKit;
 };

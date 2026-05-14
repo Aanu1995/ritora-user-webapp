@@ -3386,7 +3386,9 @@
       "gap": {
         "whyPrefix": "Varför:",
         "noPickTitle": "Produktnamnet matchas fortfarande.",
-        "noPick": "Luckan är tydlig. Ritora väljer fortfarande produktnamnet för den här punkten, så kom tillbaka om några minuter."
+        "noPick": "Luckan är tydlig. Ritora väljer fortfarande produktnamnet för den här punkten, så kom tillbaka om några minuter.",
+        "noPickFailedTitle": "Produktnamnet kunde inte matchas än.",
+        "noPickFailed": "Luckan är fortfarande användbar, men produktmatchningen blev inte klar. Kom tillbaka senare så försöker Ritora igen."
       },
       "starterKit": {
         "eyebrow": "Startkit",
@@ -3396,6 +3398,8 @@
         "pickFallback": "Vald för att hålla den första rutinen enkel och låg risk.",
         "noPickTitle": "Produktnamnet matchas fortfarande för det här steget.",
         "noPick": "Behåll det här steget i rutinen. Det specifika produktnamnet visas här när matchningen är klar.",
+        "noPickFailedTitle": "Produktnamnet kunde inte matchas för det här steget än.",
+        "noPickFailed": "Behåll steget. Produktmatchningen blev inte klar, så kom tillbaka senare så försöker Ritora igen.",
         "footer": "Startkit håller rutinen liten med flit. Börja med grunderna som är täckta och rekommenderade här; använd Förfina senare när du vill byta ut, förenkla eller jämföra produkter.",
         "status": {
           "covered": "Redan täckt",

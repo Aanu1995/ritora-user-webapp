@@ -120,7 +120,7 @@ function CoverageSlotRow({ slot }: { slot: SmartPicksCoverageSlot }) {
         className={cn(
           "grid h-9 w-9 shrink-0 place-items-center rounded-lg border",
           slot.state === "filled" &&
-            "border-[color:rgba(47,122,82,0.32)] bg-gradient-to-br from-[#d1ecdb] to-[#a4d4b6] text-accent-strong",
+            "border-[color:rgba(47,122,82,0.32)] bg-gradient-to-br from-[#d1ecdb] to-[#a4d4b6] text-[#1f5f3d]",
           slot.state === "missing-priority" &&
             "border-dashed border-[color:rgba(184,84,10,0.4)] bg-surface text-[color:var(--warning)]",
           slot.state === "missing" &&

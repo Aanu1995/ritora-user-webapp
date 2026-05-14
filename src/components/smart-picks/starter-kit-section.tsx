@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import {
   SMART_PICKS_STARTER_KIT_STEP_STATUS,
+  SMART_PICKS_PRODUCT_GENERATION_STATUS,
   type SmartPicksOverview,
   type SmartPicksProductPick,
+  type SmartPicksProductGenerationState,
   type SmartPicksStarterKitStep,
 } from "@/types/smart-picks";
 import type { SuggestionGapActionKind } from "@/types/suggestions";
@@ -19,6 +21,7 @@ interface StarterKitSectionProps {
   pendingPickId: string | null;
   pendingAction: SuggestionGapActionKind | null;
   actionsDisabled: boolean;
+  productGeneration: SmartPicksProductGenerationState;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }
 
@@ -27,6 +30,7 @@ export function StarterKitSection({
   pendingPickId,
   pendingAction,
   actionsDisabled,
+  productGeneration,
   onAction,
 }: StarterKitSectionProps) {
   const t = useTranslations("smartPicks.page");
@@ -62,6 +66,7 @@ export function StarterKitSection({
             pendingPickId={pendingPickId}
             pendingAction={pendingAction}
             actionsDisabled={actionsDisabled}
+            productGeneration={productGeneration}
             onAction={onAction}
           />
         ))}
@@ -75,12 +80,14 @@ function StarterKitStepCard({
   pendingPickId,
   pendingAction,
   actionsDisabled,
+  productGeneration,
   onAction,
 }: {
   step: SmartPicksStarterKitStep;
   pendingPickId: string | null;
   pendingAction: SuggestionGapActionKind | null;
   actionsDisabled: boolean;
+  productGeneration: SmartPicksProductGenerationState;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }) {
   const t = useTranslations("smartPicks.page");
@@ -123,14 +130,21 @@ function StarterKitStepCard({
           onAction={onAction}
         />
       ) : !isCovered && !isWait ? (
-        <StarterPendingPick />
+        <StarterPendingPick productGeneration={productGeneration} />
       ) : null}
     </article>
   );
 }
 
-function StarterPendingPick() {
+function StarterPendingPick({
+  productGeneration,
+}: {
+  productGeneration: SmartPicksProductGenerationState;
+}) {
   const t = useTranslations("smartPicks.page");
+  const failed =
+    productGeneration.status === SMART_PICKS_PRODUCT_GENERATION_STATUS.Failed ||
+    productGeneration.status === SMART_PICKS_PRODUCT_GENERATION_STATUS.Skipped;
 
   return (
     <div className="mt-3 rounded-lg border border-dashed border-border bg-surface-muted p-3">
@@ -138,9 +152,15 @@ function StarterPendingPick() {
         <TimerReset className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
         <div>
           <p className="font-semibold text-foreground">
-            {t("starterKit.noPickTitle")}
+            {t(
+              failed
+                ? "starterKit.noPickFailedTitle"
+                : "starterKit.noPickTitle",
+            )}
           </p>
-          <p className="mt-1 leading-6">{t("starterKit.noPick")}</p>
+          <p className="mt-1 leading-6">
+            {t(failed ? "starterKit.noPickFailed" : "starterKit.noPick")}
+          </p>
         </div>
       </div>
     </div>
