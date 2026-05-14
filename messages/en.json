@@ -3295,8 +3295,8 @@
         "body": "A gap only appears here when there's a real reason for your skin. We suggest a replacement only when your use logs and photos are clear. The best pick is often nothing new."
       },
       "trust": {
-        "title": "Use this as decision support, not proof.",
-        "photos": "Photo history can show useful trends, but lighting, timing, makeup, and logging consistency can change what Ritora sees.",
+        "title": "Use this as guidance, not a diagnosis.",
+        "photos": "Photos and logs help Ritora spot patterns over time, but they are not clinical proof. Lighting, timing, makeup, and skipped logs can change the picture.",
         "shopping": "Ritora suggests product names and reputable places to check, not prices or shopping links. Compare sellers yourself and confirm the ingredient list before buying.",
         "consistency": "Ritora gets more useful when your logs and photos stay consistent. When the evidence is thin, it will say so rather than guess."
       },
@@ -3372,6 +3372,21 @@
         "goal-primary": "Goal product",
         "goal-support": "Goal support"
       },
+      "activeTags": {
+        "retinoid": "Retinoid",
+        "aha": "AHA",
+        "bha": "BHA",
+        "pha": "PHA",
+        "vitamin-c": "Vitamin C",
+        "benzoyl-peroxide": "Benzoyl peroxide",
+        "azelaic-acid": "Azelaic acid",
+        "niacinamide": "Niacinamide",
+        "ceramide": "Ceramide",
+        "humectant": "Humectant",
+        "barrier-support": "Barrier support",
+        "spf": "SPF",
+        "salicylic-acid": "Salicylic acid"
+      },
       "priority": {
         "priority": "Priority gap",
         "consider": "Worth considering"
@@ -3409,7 +3424,7 @@
         "usage90": "{count} use days in 90d",
         "photos": "{count} photo checkpoints",
         "reactions": "{count} reaction signals",
-        "caveat": "Photo trends are not clinical proof. Ritora uses them as cautious decision support."
+        "caveat": "Photos can support a replacement decision, but they do not prove a product failed. Ritora waits for enough logged use and repeat photo checkpoints before suggesting a swap."
       },
       "product": {
         "bestMatch": "Best match"
@@ -3514,13 +3529,14 @@
       },
       "wishlist": {
         "title": "Smart Picks wishlist",
-        "subtitle": "Saved picks from your product gap analysis.",
+        "subtitle": "Picks you saved to revisit before buying.",
         "emptyTitle": "No saved Smart Picks yet",
         "emptyBody": "Tap the heart on any Smart Pick recommendation to save it here. You can review saved products before comparing sellers.",
         "emptyCta": "Browse Smart Picks",
         "savedForGoal": "Saved for your {goal} goal.",
         "savedFallback": "Saved from a recent Smart Pick.",
-        "savedOn": "Saved {date}"
+        "savedOn": "Saved {date}",
+        "savedBadge": "Saved"
       }
     }
   },

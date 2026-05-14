@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowLeft, Bookmark, Target, X } from "lucide-react";
+import { ArrowLeft, Bookmark, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
-import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { AppRoute } from "@/constants/app-routes";
 import {
@@ -14,7 +13,8 @@ import {
   useSmartPicksWishlist,
 } from "@/hooks/use-smart-picks";
 import type { SmartPicksWishlistItem } from "@/types/smart-picks";
-import { sellerDisplayNames } from "./seller-guidance";
+import type { SuggestionGapActionKind } from "@/types/suggestions";
+import { ProductPickPanel } from "./product-pick-panel";
 import { SmartPicksSkeleton } from "./smart-picks-skeleton";
 
 export function WishlistPage() {
@@ -75,7 +75,7 @@ export function WishlistPage() {
           </section>
         ) : null}
         {wishlist.data?.items.length ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {wishlist.data.items.map((item) => (
               <WishlistCard
                 key={item.actionId}
@@ -114,7 +114,6 @@ function WishlistCard({
 }) {
   const t = useTranslations("smartPicks.page");
   const locale = useLocale();
-  const sellerNames = sellerDisplayNames(item.pick.sellerNames);
   const savedDate = (() => {
     try {
       return new Intl.DateTimeFormat(locale, {
@@ -125,66 +124,53 @@ function WishlistCard({
       return null;
     }
   })();
-  const whyText = item.reason
-    ? item.reason
-    : item.goalAlignment
-      ? t("wishlist.savedForGoal", { goal: item.goalAlignment })
-      : t("wishlist.savedFallback");
+
+  const handlePanelAction = (
+    _pickId: string,
+    action: SuggestionGapActionKind,
+  ) => {
+    if (action === "dismissed") {
+      onRemove();
+    }
+    // "saved" is a no-op — the item is already saved.
+  };
 
   return (
-    <article className="rounded-2xl border border-border bg-surface p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <div className="text-[10px] font-bold uppercase tracking-[0.08em] text-muted">
-            {item.pick.brand}
-          </div>
-          <h2 className="mt-0.5 font-display text-base font-semibold leading-snug text-foreground sm:text-[17px]">
-            {item.pick.productName}
-          </h2>
-          <p className="mt-2 flex items-start gap-1.5 text-[12.5px] leading-relaxed text-muted">
-            <Target
-              className="mt-0.5 h-3 w-3 shrink-0 text-accent"
-              aria-hidden="true"
-            />
-            <span>
-              {whyText}
-              {savedDate ? (
-                <span className="text-muted/80">
-                  {" · "}
-                  {t("wishlist.savedOn", { date: savedDate })}
-                </span>
-              ) : null}
+    <article className="rounded-2xl border border-border bg-surface p-4 shadow-soft sm:p-5">
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full border border-[color:rgba(47,122,82,0.32)] bg-accent-soft px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-[0.08em] text-accent-strong">
+            <Heart className="h-2.5 w-2.5 fill-current" aria-hidden="true" />
+            {t("wishlist.savedBadge")}
+          </span>
+          {item.goalAlignment ? (
+            <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-[11px] font-semibold text-accent-strong">
+              {item.goalAlignment}
             </span>
-          </p>
-          {sellerNames.length > 0 ? (
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {sellerNames.map((name) => (
-                <span
-                  key={name}
-                  className="rounded-full border border-border bg-surface-muted px-2.5 py-0.5 text-[11px] font-medium text-muted"
-                >
-                  {name}
-                </span>
-              ))}
-            </div>
           ) : null}
         </div>
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          aria-label={pending ? t("actions.removing") : t("actions.remove")}
-          disabled={disabled}
-          onClick={onRemove}
-          className="h-8 w-8 shrink-0 rounded-lg p-0 text-muted hover:border-[color:var(--danger)] hover:text-[color:var(--danger)]"
-        >
-          {pending ? (
-            <LoadingIndicator size="sm" />
-          ) : (
-            <X className="h-3.5 w-3.5" aria-hidden="true" />
-          )}
-        </Button>
+        <h2 className="mt-1.5 font-display text-base font-bold leading-tight text-foreground sm:text-[17px]">
+          {item.ingredientOrCategory}
+        </h2>
+        {item.reason ? (
+          <p className="mt-2 text-sm leading-6 text-muted">{item.reason}</p>
+        ) : null}
+        {savedDate ? (
+          <p className="mt-1.5 text-xs text-muted">
+            {t("wishlist.savedOn", { date: savedDate })}
+          </p>
+        ) : null}
       </div>
+
+      <ProductPickPanel
+        pick={item.pick}
+        pendingAction={pending ? "dismissed" : null}
+        actionsDisabled={disabled && !pending}
+        onAction={handlePanelAction}
+        dismissLabel={t("actions.remove")}
+        dismissingLabel={t("actions.removing")}
+        mode="saved"
+      />
     </article>
   );
 }

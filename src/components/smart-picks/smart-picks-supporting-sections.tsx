@@ -1,7 +1,6 @@
 import { useTranslations } from "next-intl";
 import { CheckCircle2, Layers2 } from "lucide-react";
 import type { SmartPicksOverview } from "@/types/smart-picks";
-import { roleLabel } from "./smart-picks-format";
 
 interface SupportingSectionsProps {
   overview: SmartPicksOverview;
@@ -22,7 +21,7 @@ export function SupportingSections({ overview }: SupportingSectionsProps) {
             {overview.covered.map((item) => (
               <li key={`${item.role}-${item.productName}`}>
                 <div className="text-sm font-semibold text-foreground">
-                  {roleLabel(item.role)}
+                  {translateSmartPicksToken(t, "roles", item.role)}
                 </div>
                 <div className="text-sm text-muted">
                   {item.productName} · {item.reason}
@@ -45,7 +44,7 @@ export function SupportingSections({ overview }: SupportingSectionsProps) {
             {overview.redundancy.map((group) => (
               <div key={group.activeTag}>
                 <div className="text-sm font-semibold text-foreground">
-                  {group.activeTag.replace(/_/g, " ")}
+                  {translateSmartPicksToken(t, "activeTags", group.activeTag)}
                 </div>
                 <p className="text-sm text-muted">{group.hint}</p>
               </div>
@@ -57,4 +56,16 @@ export function SupportingSections({ overview }: SupportingSectionsProps) {
       </section>
     </div>
   );
+}
+
+function translateSmartPicksToken(
+  translate: (key: string) => string,
+  namespace: string,
+  token: string,
+): string {
+  try {
+    return translate(`${namespace}.${token.replace(/_/g, "-")}`);
+  } catch {
+    return token.replace(/[-_]+/g, " ");
+  }
 }

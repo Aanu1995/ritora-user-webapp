@@ -3298,8 +3298,8 @@
         "body": "En lucka dyker bara upp här när det finns en verklig anledning för din hud. Vi föreslår en ersättning bara när dina användningsloggar och foton är tydliga. Det bästa valet är ofta inget nytt alls."
       },
       "trust": {
-        "title": "Använd detta som beslutsstöd, inte bevis.",
-        "photos": "Fotohistorik kan visa användbara trender, men ljus, tidpunkt, smink och hur jämnt du loggar kan påverka vad Ritora ser.",
+        "title": "Använd detta som vägledning, inte som diagnos.",
+        "photos": "Foton och loggar hjälper Ritora att se mönster över tid, men de är inte kliniska bevis. Ljus, tidpunkt, smink och missade loggar kan ändra bilden.",
         "shopping": "Ritora föreslår produktnamn och seriösa ställen att kontrollera, inte priser eller köplänkar. Jämför säljare själv och kontrollera ingredienslistan innan köp.",
         "consistency": "Ritora blir mer användbar när dina loggar och foton är jämna. När underlaget är tunt säger den det hellre än att gissa."
       },
@@ -3375,6 +3375,21 @@
         "goal-primary": "Målprodukt",
         "goal-support": "Målstöd"
       },
+      "activeTags": {
+        "retinoid": "Retinoid",
+        "aha": "AHA",
+        "bha": "BHA",
+        "pha": "PHA",
+        "vitamin-c": "Vitamin C",
+        "benzoyl-peroxide": "Bensoylperoxid",
+        "azelaic-acid": "Azelainsyra",
+        "niacinamide": "Niacinamid",
+        "ceramide": "Ceramid",
+        "humectant": "Fuktbindare",
+        "barrier-support": "Barriärstöd",
+        "spf": "SPF",
+        "salicylic-acid": "Salicylsyra"
+      },
       "priority": {
         "priority": "Prioriterad lucka",
         "consider": "Värt att överväga"
@@ -3412,7 +3427,7 @@
         "usage90": "{count} användningsdagar på 90 d",
         "photos": "{count} fotokontroller",
         "reactions": "{count} reaktionssignaler",
-        "caveat": "Fototrender är inte kliniska bevis. Ritora använder dem som varsamt beslutsstöd."
+        "caveat": "Foton kan stödja ett bytesbeslut, men de bevisar inte att en produkt har misslyckats. Ritora väntar på tillräckligt med loggad användning och upprepade fotokontroller innan ett byte föreslås."
       },
       "product": {
         "bestMatch": "Bästa matchning"
@@ -3517,13 +3532,14 @@
       },
       "wishlist": {
         "title": "Smart Picks-önskelista",
-        "subtitle": "Sparade val från din produktluckanalys.",
+        "subtitle": "Val du sparat för att titta på igen innan du köper.",
         "emptyTitle": "Inga sparade Smart Picks än",
         "emptyBody": "Tryck på hjärtat på en Smart Pick-rekommendation för att spara den här. Du kan granska sparade produkter innan du jämför säljare.",
         "emptyCta": "Bläddra i Smart Picks",
         "savedForGoal": "Sparad för ditt mål: {goal}.",
         "savedFallback": "Sparad från en nyligen Smart Pick.",
-        "savedOn": "Sparad {date}"
+        "savedOn": "Sparad {date}",
+        "savedBadge": "Sparad"
       }
     }
   },

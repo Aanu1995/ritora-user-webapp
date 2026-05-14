@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Heart, Info, ShieldCheck, X } from "lucide-react";
+import { Heart, Info, ShieldCheck, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import {
@@ -28,6 +28,19 @@ interface ProductPickPanelProps {
    * the panel and its chips swap to white-on-muted styling and stay legible.
    */
   inverted?: boolean;
+  /**
+   * Override the dismiss button copy. Defaults to t("actions.dismiss") /
+   * t("actions.dismissing"). On the wishlist the same affordance reads as
+   * "Remove" / "Removing" because it removes the saved pick.
+   */
+  dismissLabel?: string;
+  dismissingLabel?: string;
+  /**
+   * Display mode. "default" shows the save heart (top-right) plus the
+   * Why this + Dismiss footer. "saved" replaces both with a single
+   * destructive Remove button at top-right.
+   */
+  mode?: "default" | "saved";
 }
 
 export function ProductPickPanel({
@@ -36,8 +49,14 @@ export function ProductPickPanel({
   actionsDisabled,
   onAction,
   inverted = false,
+  dismissLabel,
+  dismissingLabel,
+  mode = "default",
 }: ProductPickPanelProps) {
   const t = useTranslations("smartPicks.page");
+  const resolvedDismissLabel = dismissLabel ?? t("actions.dismiss");
+  const resolvedDismissingLabel = dismissingLabel ?? t("actions.dismissing");
+  const isSavedMode = mode === "saved";
   const saved = pick.userAction === "saved";
   const sellerNames = sellerDisplayNames(pick.sellerNames);
   const savePending = pendingAction === "saved";
@@ -77,37 +96,58 @@ export function ProductPickPanel({
             </div>
           ) : null}
         </div>
-        <button
-          type="button"
-          aria-label={
-            saved
-              ? t("actions.saved")
-              : savePending
-                ? t("actions.saving")
-                : t("actions.save")
-          }
-          aria-pressed={saved}
-          disabled={busy || actionsDisabled || saved}
-          onClick={() => onAction(pick.id, "saved")}
-          className={cn(
-            "grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full border transition disabled:cursor-default",
-            saved || savePending
-              ? "border-[color:rgba(47,122,82,0.32)] bg-accent-soft text-accent-strong"
-              : cn(
-                  "border-border text-muted hover:border-accent-strong hover:text-accent-strong",
-                  innerSurfaceClass,
-                ),
-          )}
-        >
-          {savePending ? (
-            <LoadingIndicator size="sm" />
-          ) : (
-            <Heart
-              className={cn("h-3.5 w-3.5", saved && "fill-current")}
-              aria-hidden="true"
-            />
-          )}
-        </button>
+        {isSavedMode ? (
+          <button
+            type="button"
+            aria-label={
+              dismissPending ? resolvedDismissingLabel : resolvedDismissLabel
+            }
+            disabled={busy || actionsDisabled}
+            onClick={() => onAction(pick.id, "dismissed")}
+            className={cn(
+              "grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full border transition disabled:cursor-default disabled:opacity-60",
+              "border-[color:rgba(179,38,30,0.32)] bg-danger-soft text-[color:var(--danger)] hover:bg-[color:rgba(179,38,30,0.18)]",
+            )}
+          >
+            {dismissPending ? (
+              <LoadingIndicator size="sm" />
+            ) : (
+              <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+            )}
+          </button>
+        ) : (
+          <button
+            type="button"
+            aria-label={
+              saved
+                ? t("actions.saved")
+                : savePending
+                  ? t("actions.saving")
+                  : t("actions.save")
+            }
+            aria-pressed={saved}
+            disabled={busy || actionsDisabled || saved}
+            onClick={() => onAction(pick.id, "saved")}
+            className={cn(
+              "grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full border transition disabled:cursor-default",
+              saved || savePending
+                ? "border-[color:rgba(47,122,82,0.32)] bg-accent-soft text-accent-strong"
+                : cn(
+                    "border-border text-muted hover:border-accent-strong hover:text-accent-strong",
+                    innerSurfaceClass,
+                  ),
+            )}
+          >
+            {savePending ? (
+              <LoadingIndicator size="sm" />
+            ) : (
+              <Heart
+                className={cn("h-3.5 w-3.5", saved && "fill-current")}
+                aria-hidden="true"
+              />
+            )}
+          </button>
+        )}
       </div>
 
       <SellerNameList names={sellerNames} />
@@ -126,23 +166,25 @@ export function ProductPickPanel({
             <WhyThisContent pick={pick} />
           </SheetContent>
         </Sheet>
-        <Button
-          type="button"
-          size="sm"
-          variant="ghost"
-          aria-label={
-            dismissPending ? t("actions.dismissing") : t("actions.dismiss")
-          }
-          disabled={busy || actionsDisabled}
-          onClick={() => onAction(pick.id, "dismissed")}
-        >
-          {dismissPending ? (
-            <LoadingIndicator size="sm" />
-          ) : (
-            <X className="h-4 w-4" />
-          )}
-          {dismissPending ? null : t("actions.dismiss")}
-        </Button>
+        {!isSavedMode ? (
+          <Button
+            type="button"
+            size="sm"
+            variant="ghost"
+            aria-label={
+              dismissPending ? resolvedDismissingLabel : resolvedDismissLabel
+            }
+            disabled={busy || actionsDisabled}
+            onClick={() => onAction(pick.id, "dismissed")}
+          >
+            {dismissPending ? (
+              <LoadingIndicator size="sm" />
+            ) : (
+              <X className="h-4 w-4" />
+            )}
+            {dismissPending ? null : resolvedDismissLabel}
+          </Button>
+        ) : null}
       </div>
     </div>
   );

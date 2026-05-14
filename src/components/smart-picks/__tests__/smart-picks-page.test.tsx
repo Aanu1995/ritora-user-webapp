@@ -93,11 +93,11 @@ describe("SmartPicksPage", () => {
 
     expect(screen.getByText("Mineral SPF 50")).toBeInTheDocument();
     expect(
-      screen.getByText("Use this as decision support, not proof."),
+      screen.getByText("Use this as guidance, not a diagnosis."),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Photo history can show useful trends, but lighting, timing, makeup, and logging consistency can change what Ritora sees.",
+        "Photos and logs help Ritora spot patterns over time, but they are not clinical proof. Lighting, timing, makeup, and skipped logs can change the picture.",
       ),
     ).toBeInTheDocument();
     expect(
@@ -459,7 +459,7 @@ describe("SmartPicksPage", () => {
     expect(screen.getByText("3 photo checkpoints")).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Photo trends are not clinical proof. Ritora uses them as cautious decision support.",
+        "Photos can support a replacement decision, but they do not prove a product failed. Ritora waits for enough logged use and repeat photo checkpoints before suggesting a swap.",
       ),
     ).toBeInTheDocument();
   });
