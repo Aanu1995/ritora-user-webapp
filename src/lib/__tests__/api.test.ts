@@ -115,6 +115,7 @@ describe("applyRequestContext", () => {
 
   it("limits credential cookies to auth and language endpoints", () => {
     expect(shouldSendCredentialCookies("/auth/login")).toBe(true);
+    expect(shouldSendCredentialCookies("/auth/account")).toBe(true);
     expect(shouldSendCredentialCookies("/api/v1/auth/refresh")).toBe(true);
     expect(shouldSendCredentialCookies("/schedule")).toBe(false);
     expect(shouldSendCredentialCookies(undefined)).toBe(false);

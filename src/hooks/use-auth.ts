@@ -6,6 +6,8 @@ import { useAuthEnabled } from "@/hooks/use-auth-enabled";
 import { ApiError } from "@/lib/api-error";
 import { revokeCurrentBrowserPushSubscription } from "@/lib/browser-push";
 import {
+  cancelAccountDeletion,
+  confirmAccountDeletion,
   forgotPassword,
   getActiveSessions,
   getCurrentUser,
@@ -13,6 +15,7 @@ import {
   logout as logoutRequest,
   logoutAll,
   register,
+  requestAccountDeletion,
   resendVerification,
   resetPassword,
   updatePreferredLanguage,
@@ -22,6 +25,7 @@ import {
 } from "@/services/auth.service";
 import { useAuthStore } from "@/stores/auth-store";
 import type {
+  AccountDeletionInput,
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
@@ -42,7 +46,7 @@ function clearClientSession(
   logout: Logout,
 ): void {
   logout();
-  queryClient.clear();
+  queryClient.removeQueries();
 }
 
 function syncCurrentUser(
@@ -170,6 +174,47 @@ export function useForgotPassword() {
 export function useResetPassword() {
   return useMutation({
     mutationFn: (data: ResetPasswordInput) => resetPassword(data),
+  });
+}
+
+export function useDeleteAccount() {
+  const logoutStore = useAuthStore((s) => s.logout);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: AccountDeletionInput) => {
+      await revokeCurrentBrowserPushSubscription({
+        disablePushChannelWhenNoSubscriptionsRemain: true,
+      }).catch(() => undefined);
+      return requestAccountDeletion(data);
+    },
+    onSuccess: () => {
+      clearClientSession(queryClient, logoutStore);
+    },
+  });
+}
+
+export function useConfirmAccountDeletion() {
+  const logoutStore = useAuthStore((s) => s.logout);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (token: string) => confirmAccountDeletion(token),
+    onSuccess: () => {
+      clearClientSession(queryClient, logoutStore);
+    },
+  });
+}
+
+export function useCancelAccountDeletion() {
+  const logoutStore = useAuthStore((s) => s.logout);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (token: string) => cancelAccountDeletion(token),
+    onSuccess: () => {
+      clearClientSession(queryClient, logoutStore);
+    },
   });
 }
 

@@ -7,6 +7,7 @@ import { renderWithProviders } from "@/test/utils";
 
 const mockLogoutMutate = jest.fn();
 const mockLogoutAllMutate = jest.fn();
+const mockDeleteAccountMutate = jest.fn();
 const mockUpdateProfileMutate = jest.fn();
 const mockUpdatePreferredLanguageMutate = jest.fn();
 const mockUpdateTimeZoneMutate = jest.fn();
@@ -28,6 +29,10 @@ jest.mock("@/hooks/use-auth", () => ({
   }),
   useLogoutAll: () => ({
     mutate: mockLogoutAllMutate,
+    isPending: false,
+  }),
+  useDeleteAccount: () => ({
+    mutate: mockDeleteAccountMutate,
     isPending: false,
   }),
   useUpdateProfile: () => ({
@@ -105,6 +110,7 @@ describe("SettingsPage", () => {
         firstName: "Ada",
         lastName: "Lovelace",
         emailVerified: true,
+        hasPassword: true,
         preferredLanguage: "en",
         timeZone: "Europe/Stockholm",
         createdAt: "2026-04-15T10:00:00.000Z",
@@ -266,6 +272,57 @@ describe("SettingsPage", () => {
 
     expect(mockLogoutAllMutate).not.toHaveBeenCalled();
     expect(screen.getByText("ada@example.com")).toBeInTheDocument();
+  });
+
+  it("requires the current password before scheduling account deletion", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /^delete account$/i }),
+    );
+    await user.type(screen.getByLabelText(/current password/i), "NewPass1!");
+    await user.click(
+      screen.getByRole("button", { name: /^schedule deletion$/i }),
+    );
+
+    expect(mockDeleteAccountMutate).toHaveBeenCalledWith(
+      { password: "NewPass1!" },
+      expect.objectContaining({
+        onError: expect.any(Function),
+        onSuccess: expect.any(Function),
+      }),
+    );
+  });
+
+  it("requests an email confirmation for OAuth-only account deletion", async () => {
+    useAuthStore.setState({
+      user: {
+        ...(useAuthStore.getState().user as User),
+        hasPassword: false,
+      },
+    });
+
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /^delete account$/i }),
+    );
+
+    expect(
+      screen.getByText(/send a confirmation link to your inbox/i),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /^send confirmation email$/i }),
+    );
+
+    expect(mockDeleteAccountMutate).toHaveBeenCalledWith(
+      { password: "" },
+      expect.objectContaining({
+        onError: expect.any(Function),
+        onSuccess: expect.any(Function),
+      }),
+    );
   });
 
   it("switches to Appearance tab and shows theme controls", async () => {

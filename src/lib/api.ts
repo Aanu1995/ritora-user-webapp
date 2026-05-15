@@ -21,6 +21,7 @@ const CREDENTIALLED_AUTH_PATHS = new Set<string>([
   ApiPath.AuthRefresh,
   ApiPath.AuthLogout,
   ApiPath.AuthLogoutAll,
+  ApiPath.AuthAccount,
   ApiPath.UsersMeLanguage,
 ]);
 
@@ -280,6 +281,8 @@ apiClient.interceptors.response.use(
       ApiPath.AuthResetPassword,
       ApiPath.AuthVerifyEmail,
       ApiPath.AuthResendVerification,
+      ApiPath.AuthAccountDeletionConfirm,
+      ApiPath.AuthAccountDeletionCancel,
     ]);
     const requestPath = normalizeRequestPath(originalRequest?.url);
 

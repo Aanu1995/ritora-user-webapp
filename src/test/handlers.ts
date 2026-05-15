@@ -14,7 +14,9 @@ export const mockUser = {
   firstName: "Test",
   lastName: "User",
   emailVerified: true,
+  hasPassword: true,
   preferredLanguage: "en",
+  timeZone: null,
   createdAt: "2024-01-01T00:00:00.000Z",
 };
 
@@ -92,6 +94,28 @@ export const handlers = [
 
   http.post(`${API}/auth/reset-password`, () => {
     return HttpResponse.json({ message: "Password reset successfully" });
+  }),
+
+  http.delete(`${API}/auth/account`, () => {
+    return HttpResponse.json({
+      status: "scheduled",
+      message: "Account deletion scheduled",
+      scheduledFor: "2026-06-13T12:00:00.000Z",
+    });
+  }),
+
+  http.post(`${API}/auth/account/deletion/confirm`, () => {
+    return HttpResponse.json({
+      status: "scheduled",
+      message: "Account deletion scheduled",
+      scheduledFor: "2026-06-13T12:00:00.000Z",
+    });
+  }),
+
+  http.post(`${API}/auth/account/deletion/cancel`, () => {
+    return HttpResponse.json({
+      message: "Account deletion has been cancelled",
+    });
   }),
 
   http.get(`${API}/skin-profile`, () => {

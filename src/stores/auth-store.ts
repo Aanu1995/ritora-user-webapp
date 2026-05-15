@@ -41,7 +41,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
     if (!user.emailVerified) {
       setAccessToken(null);
-      appQueryClient.clear();
+      appQueryClient.removeQueries();
       set({ user: null, isAuthenticated: false, isLoading: false });
       return;
     }
@@ -62,7 +62,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: () => {
     resetPostLoginState();
     setAccessToken(null);
-    appQueryClient.clear();
+    appQueryClient.removeQueries();
     set({ user: null, isAuthenticated: false, isLoading: false });
   },
 
@@ -70,7 +70,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (isDevSelfReferentialApiBase()) {
       warnIfDevApiTargetsFrontend();
       setAccessToken(null);
-      appQueryClient.clear();
+      appQueryClient.removeQueries();
       set({ user: null, isAuthenticated: false, isLoading: false });
       return false;
     }
@@ -86,7 +86,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (!user.emailVerified) {
         await logoutRequest().catch(() => undefined);
         setAccessToken(null);
-        appQueryClient.clear();
+        appQueryClient.removeQueries();
         set({ user: null, isAuthenticated: false, isLoading: false });
         return false;
       }
@@ -98,7 +98,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     } catch {
       resetPostLoginState();
       setAccessToken(null);
-      appQueryClient.clear();
+      appQueryClient.removeQueries();
       set({ user: null, isAuthenticated: false, isLoading: false });
       return false;
     }

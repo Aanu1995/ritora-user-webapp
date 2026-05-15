@@ -77,7 +77,7 @@ describe("WishlistPage", () => {
 
     expect(screen.getByText("Smart Picks wishlist")).toBeInTheDocument();
     expect(
-      screen.getByText("Saved picks from your product gap analysis."),
+      screen.getByText("Picks you saved to revisit before buying."),
     ).toBeInTheDocument();
     expect(screen.queryByText("Why this is here")).not.toBeInTheDocument();
     expect(screen.getByText("Stylevana")).toBeInTheDocument();

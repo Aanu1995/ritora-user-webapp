@@ -1,9 +1,11 @@
 import { useAuthStore } from '@/stores/auth-store';
+import { QueryKey } from '@/constants/query-keys';
 import {
   isDevSelfReferentialApiBase,
   setAccessToken,
   warnIfDevApiTargetsFrontend,
 } from '@/lib/api';
+import { appQueryClient } from '@/lib/query-client';
 
 jest.mock('@/lib/api', () => ({
   setAccessToken: jest.fn(),
@@ -26,6 +28,7 @@ import {
 
 afterEach(() => {
   jest.clearAllMocks();
+  appQueryClient.clear();
   document.documentElement.lang = 'en';
   document.cookie = 'NEXT_LOCALE=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
   useAuthStore.setState({
@@ -69,6 +72,18 @@ describe('useAuthStore', () => {
       expect(state.isAuthenticated).toBe(false);
       expect(state.isLoading).toBe(false);
       expect(setAccessToken).toHaveBeenLastCalledWith(null);
+    });
+
+    it('removes cached user data while preserving mutation status', () => {
+      appQueryClient.setQueryData([QueryKey.AuthMe], mockUser);
+      const mutation = appQueryClient.getMutationCache().build(appQueryClient, {
+        mutationFn: async () => 'done',
+      });
+
+      useAuthStore.getState().logout();
+
+      expect(appQueryClient.getQueryData([QueryKey.AuthMe])).toBeUndefined();
+      expect(appQueryClient.getMutationCache().getAll()).toContain(mutation);
     });
   });
 

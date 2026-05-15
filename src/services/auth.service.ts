@@ -1,6 +1,14 @@
-import { API_BASE_URL, getRequest, patchRequest, postRequest } from '@/lib/api';
+import {
+  API_BASE_URL,
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from '@/lib/api';
 import { ApiPath } from '@/constants/api-paths';
 import type {
+  AccountDeletionInput,
+  AccountDeletionResponse,
   AuthResponse,
   LoginInput,
   MessageResponse,
@@ -103,6 +111,29 @@ export async function resetPassword(
   data: ResetPasswordInput,
 ): Promise<MessageResponse> {
   return postRequest<MessageResponse>(ApiPath.AuthResetPassword, data);
+}
+
+export async function requestAccountDeletion(
+  data: AccountDeletionInput,
+): Promise<AccountDeletionResponse> {
+  return deleteRequest<AccountDeletionResponse>(ApiPath.AuthAccount, { data });
+}
+
+export async function confirmAccountDeletion(
+  token: string,
+): Promise<AccountDeletionResponse> {
+  return postRequest<AccountDeletionResponse>(
+    ApiPath.AuthAccountDeletionConfirm,
+    { token },
+  );
+}
+
+export async function cancelAccountDeletion(
+  token: string,
+): Promise<MessageResponse> {
+  return postRequest<MessageResponse>(ApiPath.AuthAccountDeletionCancel, {
+    token,
+  });
 }
 
 export async function updateProfile(data: UpdateProfileInput): Promise<User> {

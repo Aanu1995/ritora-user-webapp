@@ -4,6 +4,7 @@ export type User = {
   firstName: string;
   lastName: string;
   emailVerified: boolean;
+  hasPassword?: boolean;
   preferredLanguage: string;
   timeZone: string | null;
   createdAt: string;
@@ -33,6 +34,26 @@ export type Session = {
 
 export type MessageResponse = {
   message: string;
+};
+
+export enum AccountDeletionStatus {
+  Scheduled = 'scheduled',
+  ConfirmationRequired = 'confirmation_required',
+}
+
+export enum AccountDeletionTokenMode {
+  Confirm = 'confirm',
+  Cancel = 'cancel',
+}
+
+export type AccountDeletionInput = {
+  password: string;
+};
+
+export type AccountDeletionResponse = {
+  status: AccountDeletionStatus;
+  message: string;
+  scheduledFor?: string;
 };
 
 export type LoginInput = {

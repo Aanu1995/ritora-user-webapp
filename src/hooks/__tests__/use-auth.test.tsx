@@ -3,7 +3,10 @@ import { ApiError } from '@/lib/api-error';
 import { renderHookWithProviders } from '@/test/utils';
 import { useAuthStore } from '@/stores/auth-store';
 import {
+  useCancelAccountDeletion,
+  useConfirmAccountDeletion,
   useCurrentUser,
+  useDeleteAccount,
   useLogin,
   useRegister,
   useLogout,
@@ -30,6 +33,8 @@ const mockUser = {
 };
 
 jest.mock('@/services/auth.service', () => ({
+  cancelAccountDeletion: jest.fn(),
+  confirmAccountDeletion: jest.fn(),
   login: jest.fn(),
   register: jest.fn(),
   refreshTokens: jest.fn(),
@@ -41,12 +46,15 @@ jest.mock('@/services/auth.service', () => ({
   resendVerification: jest.fn(),
   forgotPassword: jest.fn(),
   resetPassword: jest.fn(),
+  requestAccountDeletion: jest.fn(),
   updateProfile: jest.fn(),
   updatePreferredLanguage: jest.fn(),
   updateTimeZone: jest.fn(),
 }));
 
 import {
+  cancelAccountDeletion,
+  confirmAccountDeletion,
   forgotPassword,
   getActiveSessions,
   getCurrentUser,
@@ -54,6 +62,7 @@ import {
   logout,
   logoutAll,
   register,
+  requestAccountDeletion,
   resendVerification,
   resetPassword,
   updatePreferredLanguage,
@@ -361,6 +370,81 @@ describe('useResetPassword', () => {
       token: 'token',
       newPassword: 'NewPass1!',
     });
+  });
+});
+
+describe('useDeleteAccount', () => {
+  it('requests account deletion and clears the local session', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    (requestAccountDeletion as jest.Mock).mockResolvedValue({
+      status: 'scheduled',
+      message: 'Account deletion scheduled',
+      scheduledFor: '2026-06-13T12:00:00.000Z',
+    });
+
+    const { result } = renderHookWithProviders(() => useDeleteAccount());
+
+    await act(async () => {
+      await result.current.mutateAsync({ password: 'Password1' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+    expect(requestAccountDeletion).toHaveBeenCalledWith({
+      password: 'Password1',
+    });
+    expect(useAuthStore.getState().isAuthenticated).toBe(false);
+    expect(useAuthStore.getState().user).toBeNull();
+  });
+});
+
+describe('useConfirmAccountDeletion', () => {
+  it('confirms account deletion with the email token', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    (confirmAccountDeletion as jest.Mock).mockResolvedValue({
+      status: 'scheduled',
+      message: 'Account deletion scheduled',
+    });
+
+    const { result } = renderHookWithProviders(() =>
+      useConfirmAccountDeletion(),
+    );
+
+    await act(async () => {
+      await result.current.mutateAsync('confirm-token');
+    });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+    expect(confirmAccountDeletion).toHaveBeenCalledWith('confirm-token');
+    expect(useAuthStore.getState().isAuthenticated).toBe(false);
+    expect(useAuthStore.getState().user).toBeNull();
+  });
+});
+
+describe('useCancelAccountDeletion', () => {
+  it('cancels account deletion with the email token', async () => {
+    useAuthStore.setState({ isAuthenticated: true, user: mockUser });
+    (cancelAccountDeletion as jest.Mock).mockResolvedValue({
+      message: 'Account deletion has been cancelled',
+    });
+
+    const { result } = renderHookWithProviders(() =>
+      useCancelAccountDeletion(),
+    );
+
+    await act(async () => {
+      await result.current.mutateAsync('cancel-token');
+    });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+    expect(cancelAccountDeletion).toHaveBeenCalledWith('cancel-token');
+    expect(useAuthStore.getState().isAuthenticated).toBe(false);
+    expect(useAuthStore.getState().user).toBeNull();
   });
 });
 

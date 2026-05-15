@@ -5,6 +5,8 @@ export enum AppRoute {
   ForgotPassword = '/forgot-password',
   ResetPassword = '/reset-password',
   VerifyEmail = '/verify-email',
+  ConfirmAccountDeletion = '/confirm-account-deletion',
+  CancelAccountDeletion = '/cancel-account-deletion',
   ResendVerification = '/resend-verification',
   PostLogin = '/post-login',
   Dashboard = '/dashboard',

@@ -36,6 +36,8 @@ export const ApiPath = {
   AuthResetPassword: `${AUTH_BASE}/reset-password`,
   AuthExport: `${AUTH_BASE}/export`,
   AuthAccount: `${AUTH_BASE}/account`,
+  AuthAccountDeletionConfirm: `${AUTH_BASE}/account/deletion/confirm`,
+  AuthAccountDeletionCancel: `${AUTH_BASE}/account/deletion/cancel`,
 
   UsersMe: USERS_ME_BASE,
   UsersMeLanguage: `${USERS_ME_BASE}/language`,

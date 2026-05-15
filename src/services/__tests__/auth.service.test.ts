@@ -1,13 +1,16 @@
 jest.mock('@/lib/api', () => ({
   API_BASE_URL: 'http://localhost:3001/api/v1',
+  deleteRequest: jest.fn(),
   getRequest: jest.fn(),
   patchRequest: jest.fn(),
   postRequest: jest.fn(),
   setAccessToken: jest.fn(),
 }));
 
-import { getRequest, patchRequest, postRequest } from '@/lib/api';
+import { deleteRequest, getRequest, patchRequest, postRequest } from '@/lib/api';
 import {
+  cancelAccountDeletion,
+  confirmAccountDeletion,
   forgotPassword,
   getActiveSessions,
   getAppleOAuthStartUrl,
@@ -18,6 +21,7 @@ import {
   logoutAll,
   refreshTokens,
   register,
+  requestAccountDeletion,
   resendVerification,
   resetPassword,
   updatePreferredLanguage,
@@ -170,6 +174,47 @@ describe('auth.service', () => {
     expect(postRequest).toHaveBeenCalledWith('/auth/reset-password', {
       token: 't',
       newPassword: 'p',
+    });
+  });
+
+  it('requestAccountDeletion calls deleteRequest with password payload', async () => {
+    (deleteRequest as jest.Mock).mockResolvedValue({
+      status: 'scheduled',
+      message: 'Account deletion scheduled',
+      scheduledFor: '2026-06-13T12:00:00.000Z',
+    });
+
+    const result = await requestAccountDeletion({ password: 'Password1' });
+
+    expect(deleteRequest).toHaveBeenCalledWith('/auth/account', {
+      data: { password: 'Password1' },
+    });
+    expect(result.status).toBe('scheduled');
+  });
+
+  it('confirmAccountDeletion calls postRequest with token', async () => {
+    (postRequest as jest.Mock).mockResolvedValue({
+      status: 'scheduled',
+      message: 'Account deletion scheduled',
+    });
+
+    await confirmAccountDeletion('confirm-token');
+
+    expect(postRequest).toHaveBeenCalledWith(
+      '/auth/account/deletion/confirm',
+      { token: 'confirm-token' },
+    );
+  });
+
+  it('cancelAccountDeletion calls postRequest with token', async () => {
+    (postRequest as jest.Mock).mockResolvedValue({
+      message: 'Account deletion has been cancelled',
+    });
+
+    await cancelAccountDeletion('cancel-token');
+
+    expect(postRequest).toHaveBeenCalledWith('/auth/account/deletion/cancel', {
+      token: 'cancel-token',
     });
   });
 

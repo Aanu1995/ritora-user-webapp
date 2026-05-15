@@ -72,7 +72,7 @@ const DialogContent = forwardRef<
       <DialogContentPrimitive
         ref={ref}
         className={cn(
-          'fixed left-1/2 top-1/2 z-[71] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-border bg-surface p-6 text-foreground shadow-[var(--shadow-hero)]',
+          'fixed left-1/2 top-1/2 z-[71] flex max-h-[calc(100dvh-1.5rem)] w-[calc(100vw-1.5rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-3xl border border-border bg-surface p-6 text-foreground shadow-[var(--shadow-hero)] sm:max-h-[calc(100dvh-2rem)] sm:w-[calc(100vw-2rem)]',
           'data-[state=open]:animate-in data-[state=closed]:animate-out',
           'data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0',
           'data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95',
