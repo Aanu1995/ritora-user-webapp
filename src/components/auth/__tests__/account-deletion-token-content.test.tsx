@@ -1,14 +1,15 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import {
+  ACCOUNT_DELETION_TOKEN_ACTION_TIMEOUT_MS,
   ACCOUNT_DELETION_SUCCESS_REDIRECT_DELAY_MS,
   AccountDeletionTokenContent,
 } from '@/components/auth/account-deletion-token-content';
+import { ApiError } from '@/lib/api-error';
 import { renderWithProviders } from '@/test/utils';
+import { useAuthStore } from '@/stores/auth-store';
 import { AccountDeletionTokenMode } from '@/types/auth';
 
 const mockUseActionToken = jest.fn();
-const mockConfirmMutate = jest.fn();
-const mockCancelMutate = jest.fn();
 const mockReplace = jest.fn();
 
 jest.mock('next/navigation', () => ({
@@ -17,47 +18,29 @@ jest.mock('next/navigation', () => ({
   }),
 }));
 
-let confirmState = {
-  isPending: false,
-  isSuccess: false,
-  error: null as Error | null,
-};
-
-let cancelState = {
-  isPending: false,
-  isSuccess: false,
-  error: null as Error | null,
-};
-
 jest.mock('@/hooks/use-action-token', () => ({
   useActionToken: () => mockUseActionToken(),
 }));
 
-jest.mock('@/hooks/use-auth', () => ({
-  useConfirmAccountDeletion: () => ({
-    mutate: mockConfirmMutate,
-    ...confirmState,
-  }),
-  useCancelAccountDeletion: () => ({
-    mutate: mockCancelMutate,
-    ...cancelState,
-  }),
+jest.mock('@/services/auth.service', () => ({
+  cancelAccountDeletion: jest.fn(),
+  confirmAccountDeletion: jest.fn(),
 }));
+
+import {
+  cancelAccountDeletion,
+  confirmAccountDeletion,
+} from '@/services/auth.service';
 
 describe('AccountDeletionTokenContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useRealTimers();
-    confirmState = {
-      isPending: false,
-      isSuccess: false,
-      error: null,
-    };
-    cancelState = {
-      isPending: false,
-      isSuccess: false,
-      error: null,
-    };
+    useAuthStore.setState({
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+    });
     mockUseActionToken.mockReturnValue({
       token: '',
       isReady: true,
@@ -65,6 +48,11 @@ describe('AccountDeletionTokenContent', () => {
   });
 
   it('confirms OAuth-only deletion with a route token', async () => {
+    (confirmAccountDeletion as jest.Mock).mockResolvedValue({
+      status: 'scheduled',
+      message: 'Account deletion scheduled',
+    });
+
     renderWithProviders(
       <AccountDeletionTokenContent
         mode={AccountDeletionTokenMode.Confirm}
@@ -73,11 +61,16 @@ describe('AccountDeletionTokenContent', () => {
     );
 
     await waitFor(() => {
-      expect(mockConfirmMutate).toHaveBeenCalledWith('confirm-token');
+      expect(confirmAccountDeletion).toHaveBeenCalledWith('confirm-token');
     });
+    expect(await screen.findByText(/deletion scheduled/i)).toBeInTheDocument();
   });
 
   it('cancels scheduled deletion with a route token', async () => {
+    (cancelAccountDeletion as jest.Mock).mockResolvedValue({
+      message: 'Account deletion has been cancelled',
+    });
+
     renderWithProviders(
       <AccountDeletionTokenContent
         mode={AccountDeletionTokenMode.Cancel}
@@ -86,8 +79,11 @@ describe('AccountDeletionTokenContent', () => {
     );
 
     await waitFor(() => {
-      expect(mockCancelMutate).toHaveBeenCalledWith('cancel-token');
+      expect(cancelAccountDeletion).toHaveBeenCalledWith('cancel-token');
     });
+    expect(
+      await screen.findByText(/your account is staying active/i),
+    ).toBeInTheDocument();
   });
 
   it('shows recovery copy when a token is missing', () => {
@@ -101,14 +97,15 @@ describe('AccountDeletionTokenContent', () => {
     expect(
       screen.getByRole('link', { name: /sign in to my account/i }),
     ).toHaveAttribute('href', '/login');
+    expect(cancelAccountDeletion).not.toHaveBeenCalled();
+    expect(confirmAccountDeletion).not.toHaveBeenCalled();
   });
 
-  it('shows success copy after confirmation succeeds', () => {
-    confirmState = {
-      isPending: false,
-      isSuccess: true,
-      error: null,
-    };
+  it('shows success copy after confirmation succeeds', async () => {
+    (confirmAccountDeletion as jest.Mock).mockResolvedValue({
+      status: 'scheduled',
+      message: 'Account deletion scheduled',
+    });
 
     renderWithProviders(
       <AccountDeletionTokenContent
@@ -117,18 +114,16 @@ describe('AccountDeletionTokenContent', () => {
       />,
     );
 
-    expect(screen.getByText(/deletion scheduled/i)).toBeInTheDocument();
+    expect(await screen.findByText(/deletion scheduled/i)).toBeInTheDocument();
     expect(
       screen.getByText(/scheduled to be permanently deleted in 30 days/i),
     ).toBeInTheDocument();
   });
 
-  it('shows success copy after cancellation succeeds', () => {
-    cancelState = {
-      isPending: false,
-      isSuccess: true,
-      error: null,
-    };
+  it('shows success copy after cancellation succeeds', async () => {
+    (cancelAccountDeletion as jest.Mock).mockResolvedValue({
+      message: 'Account deletion has been cancelled',
+    });
 
     renderWithProviders(
       <AccountDeletionTokenContent
@@ -138,17 +133,15 @@ describe('AccountDeletionTokenContent', () => {
     );
 
     expect(
-      screen.getByText(/your account is staying active/i),
+      await screen.findByText(/your account is staying active/i),
     ).toBeInTheDocument();
   });
 
   it('redirects to login after cancellation succeeds', async () => {
     jest.useFakeTimers();
-    cancelState = {
-      isPending: false,
-      isSuccess: true,
-      error: null,
-    };
+    (cancelAccountDeletion as jest.Mock).mockResolvedValue({
+      message: 'Account deletion has been cancelled',
+    });
 
     renderWithProviders(
       <AccountDeletionTokenContent
@@ -156,6 +149,10 @@ describe('AccountDeletionTokenContent', () => {
         tokenFromRoute="cancel-token"
       />,
     );
+
+    expect(
+      await screen.findByText(/your account is staying active/i),
+    ).toBeInTheDocument();
 
     await act(async () => {
       await jest.advanceTimersByTimeAsync(
@@ -164,5 +161,97 @@ describe('AccountDeletionTokenContent', () => {
     });
 
     expect(mockReplace).toHaveBeenCalledWith('/login');
+  });
+
+  it('clears local auth state after the token action succeeds', async () => {
+    useAuthStore.setState({
+      user: {
+        id: 'user-1',
+        email: 'test@example.com',
+        firstName: 'Test',
+        lastName: 'User',
+        emailVerified: true,
+        hasPassword: true,
+        preferredLanguage: 'en',
+        timeZone: null,
+        createdAt: '2026-05-01T00:00:00.000Z',
+      },
+      isAuthenticated: true,
+      isLoading: false,
+    });
+    (cancelAccountDeletion as jest.Mock).mockResolvedValue({
+      message: 'Account deletion has been cancelled',
+    });
+
+    renderWithProviders(
+      <AccountDeletionTokenContent
+        mode={AccountDeletionTokenMode.Cancel}
+        tokenFromRoute="cancel-token"
+      />,
+    );
+
+    expect(
+      await screen.findByText(/your account is staying active/i),
+    ).toBeInTheDocument();
+    expect(useAuthStore.getState().isAuthenticated).toBe(false);
+    expect(useAuthStore.getState().user).toBeNull();
+  });
+
+  it('shows an actionable error when the token request fails', async () => {
+    (confirmAccountDeletion as jest.Mock).mockRejectedValue(
+      new ApiError('Invalid account deletion token', { status: 400 }),
+    );
+
+    renderWithProviders(
+      <AccountDeletionTokenContent
+        mode={AccountDeletionTokenMode.Confirm}
+        tokenFromRoute="confirm-token"
+      />,
+    );
+
+    expect(
+      await screen.findByText(/invalid account deletion token/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /try again/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('times out a stuck request and retries without claiming success', async () => {
+    jest.useFakeTimers();
+    (cancelAccountDeletion as jest.Mock)
+      .mockReturnValueOnce(new Promise(() => undefined))
+      .mockResolvedValueOnce({
+        message: 'Account deletion has been cancelled',
+      });
+
+    renderWithProviders(
+      <AccountDeletionTokenContent
+        mode={AccountDeletionTokenMode.Cancel}
+        tokenFromRoute="cancel-token"
+      />,
+    );
+
+    expect(screen.getByText(/stopping your deletion/i)).toBeInTheDocument();
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(
+        ACCOUNT_DELETION_TOKEN_ACTION_TIMEOUT_MS,
+      );
+    });
+
+    expect(await screen.findByText(/request timed out/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/your account is staying active/i),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /try again/i }));
+
+    await waitFor(() => {
+      expect(cancelAccountDeletion).toHaveBeenCalledTimes(2);
+    });
+    expect(
+      await screen.findByText(/your account is staying active/i),
+    ).toBeInTheDocument();
   });
 });

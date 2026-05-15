@@ -1,8 +1,9 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Suspense, useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { ErrorView } from '@/components/auth/account-deletion-token-error-view';
 import { PendingView } from '@/components/auth/account-deletion-token-primitives';
 import {
@@ -12,11 +13,12 @@ import {
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { AppRoute } from '@/constants/app-routes';
 import { useActionToken } from '@/hooks/use-action-token';
-import {
-  useCancelAccountDeletion,
-  useConfirmAccountDeletion,
-} from '@/hooks/use-auth';
 import { getApiErrorMessage } from '@/lib/api-error';
+import {
+  cancelAccountDeletion,
+  confirmAccountDeletion,
+} from '@/services/auth.service';
+import { useAuthStore } from '@/stores/auth-store';
 import { AccountDeletionTokenMode } from '@/types/auth';
 
 interface AccountDeletionTokenContentProps {
@@ -25,6 +27,50 @@ interface AccountDeletionTokenContentProps {
 }
 
 export const ACCOUNT_DELETION_SUCCESS_REDIRECT_DELAY_MS = 8000;
+export const ACCOUNT_DELETION_TOKEN_ACTION_TIMEOUT_MS = 30000;
+
+enum AccountDeletionTokenActionStatus {
+  Idle = 'idle',
+  Pending = 'pending',
+  Success = 'success',
+  Error = 'error',
+}
+
+class AccountDeletionTokenActionTimeoutError extends Error {
+  constructor() {
+    super('Account deletion link request timed out');
+    this.name = 'AccountDeletionTokenActionTimeoutError';
+  }
+}
+
+type AccountDeletionTokenActionState = {
+  actionKey: string | null;
+  status: AccountDeletionTokenActionStatus;
+  error: unknown;
+};
+
+const INITIAL_ACTION_STATE: AccountDeletionTokenActionState = {
+  actionKey: null,
+  status: AccountDeletionTokenActionStatus.Idle,
+  error: null,
+};
+
+function withAccountDeletionTokenActionTimeout<T>(
+  operation: Promise<T>,
+): Promise<T> {
+  let timeout: number | null = null;
+  const timeoutPromise = new Promise<never>((_resolve, reject) => {
+    timeout = window.setTimeout(() => {
+      reject(new AccountDeletionTokenActionTimeoutError());
+    }, ACCOUNT_DELETION_TOKEN_ACTION_TIMEOUT_MS);
+  });
+
+  return Promise.race([operation, timeoutPromise]).finally(() => {
+    if (timeout) {
+      window.clearTimeout(timeout);
+    }
+  });
+}
 
 function AccountDeletionTokenInner({
   mode,
@@ -32,17 +78,22 @@ function AccountDeletionTokenInner({
 }: AccountDeletionTokenContentProps) {
   const t = useTranslations('auth');
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const logoutStore = useAuthStore((state) => state.logout);
   const actionToken = useActionToken();
-  const confirmDeletion = useConfirmAccountDeletion();
-  const cancelDeletion = useCancelAccountDeletion();
-  const attemptedActionRef = useRef<string | null>(null);
+  const activeActionRef = useRef(0);
+  const [actionState, setActionState] =
+    useState<AccountDeletionTokenActionState>(INITIAL_ACTION_STATE);
+  const [retryCount, setRetryCount] = useState(0);
 
   const token = tokenFromRoute?.trim() || actionToken.token;
   const isReady = tokenFromRoute !== null ? true : actionToken.isReady;
-  const mutation =
-    mode === AccountDeletionTokenMode.Confirm ? confirmDeletion : cancelDeletion;
-  const actionKey = `${mode}:${token}`;
   const isConfirm = mode === AccountDeletionTokenMode.Confirm;
+  const actionKey = isReady && token ? `${mode}:${token}:${retryCount}` : null;
+  const visibleActionStatus =
+    actionKey && actionState.actionKey !== actionKey
+      ? AccountDeletionTokenActionStatus.Pending
+      : actionState.status;
 
   const headerTitle = isConfirm
     ? t('accountDeletionConfirmTitle')
@@ -52,22 +103,51 @@ function AccountDeletionTokenInner({
     : t('accountDeletionCancelling');
 
   useEffect(() => {
-    if (!token || attemptedActionRef.current === actionKey) {
+    if (!actionKey || !token) {
       return;
     }
 
-    attemptedActionRef.current = actionKey;
+    let isCurrentActionMounted = true;
+    activeActionRef.current += 1;
+    const actionId = activeActionRef.current;
 
-    if (isConfirm) {
-      confirmDeletion.mutate(token);
-      return;
-    }
+    const operation = isConfirm
+      ? confirmAccountDeletion(token)
+      : cancelAccountDeletion(token);
 
-    cancelDeletion.mutate(token);
-  }, [actionKey, cancelDeletion, confirmDeletion, isConfirm, token]);
+    void withAccountDeletionTokenActionTimeout(operation)
+      .then(() => {
+        if (!isCurrentActionMounted || activeActionRef.current !== actionId) {
+          return;
+        }
+
+        setActionState({
+          actionKey,
+          status: AccountDeletionTokenActionStatus.Success,
+          error: null,
+        });
+        logoutStore();
+        queryClient.removeQueries();
+      })
+      .catch((error: unknown) => {
+        if (!isCurrentActionMounted || activeActionRef.current !== actionId) {
+          return;
+        }
+
+        setActionState({
+          actionKey,
+          status: AccountDeletionTokenActionStatus.Error,
+          error,
+        });
+      });
+
+    return () => {
+      isCurrentActionMounted = false;
+    };
+  }, [actionKey, isConfirm, logoutStore, queryClient, token]);
 
   useEffect(() => {
-    if (!mutation.isSuccess) {
+    if (visibleActionStatus !== AccountDeletionTokenActionStatus.Success) {
       return;
     }
 
@@ -78,12 +158,16 @@ function AccountDeletionTokenInner({
     return () => {
       window.clearTimeout(redirectTimer);
     };
-  }, [mutation.isSuccess, router]);
+  }, [router, visibleActionStatus]);
+
+  const retryAction = () => {
+    setRetryCount((current) => current + 1);
+  };
 
   if (!isReady) {
     return (
       <div>
-        <h1 className="text-center font-display text-3xl tracking-tight">
+        <h1 className="text-center font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {headerTitle}
         </h1>
         <div className="mt-8">
@@ -107,10 +191,13 @@ function AccountDeletionTokenInner({
     );
   }
 
-  if (mutation.isPending || (!mutation.isSuccess && !mutation.error)) {
+  if (
+    visibleActionStatus === AccountDeletionTokenActionStatus.Idle ||
+    visibleActionStatus === AccountDeletionTokenActionStatus.Pending
+  ) {
     return (
       <div>
-        <h1 className="text-center font-display text-3xl tracking-tight">
+        <h1 className="text-center font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {headerTitle}
         </h1>
         <div className="mt-8">
@@ -120,7 +207,7 @@ function AccountDeletionTokenInner({
     );
   }
 
-  if (mutation.isSuccess) {
+  if (visibleActionStatus === AccountDeletionTokenActionStatus.Success) {
     return (
       <div>
         <h1 className="sr-only">{headerTitle}</h1>
@@ -141,14 +228,19 @@ function AccountDeletionTokenInner({
     );
   }
 
-  const errorBody =
-    getApiErrorMessage(mutation.error) ??
-    (isConfirm
-      ? t('accountDeletionConfirmFailedBody')
-      : t('accountDeletionCancelFailedBody'));
-  const errorTitle = isConfirm
-    ? t('accountDeletionConfirmFailedTitle')
-    : t('accountDeletionCancelFailedTitle');
+  const isTimeoutError =
+    actionState.error instanceof AccountDeletionTokenActionTimeoutError;
+  const errorBody = isTimeoutError
+    ? t('accountDeletionRequestTimedOutBody')
+    : (getApiErrorMessage(actionState.error) ??
+      (isConfirm
+        ? t('accountDeletionConfirmFailedBody')
+        : t('accountDeletionCancelFailedBody')));
+  const errorTitle = isTimeoutError
+    ? t('accountDeletionRequestTimedOutTitle')
+    : isConfirm
+      ? t('accountDeletionConfirmFailedTitle')
+      : t('accountDeletionCancelFailedTitle');
 
   return (
     <div>
@@ -157,7 +249,9 @@ function AccountDeletionTokenInner({
         title={errorTitle}
         body={errorBody}
         t={t}
-        showCommonReasons
+        showCommonReasons={!isTimeoutError}
+        onRetry={retryAction}
+        retryLabel={t('accountDeletionTryAgain')}
       />
     </div>
   );

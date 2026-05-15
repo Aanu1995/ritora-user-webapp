@@ -38,6 +38,12 @@ async function fulfillJson(
   });
 }
 
+function waitForTokenActionLoadingState() {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 500);
+  });
+}
+
 function mockAuthApi(page: import("@playwright/test").Page) {
   return Promise.all([
     page.route("**/api/v1/auth/login", async (route) => {
@@ -201,5 +207,65 @@ test.describe("Forgot Password", () => {
     await page.goto("/forgot-password");
 
     await expect(page.getByLabel(/email/i)).toBeVisible();
+  });
+});
+
+test.describe("Account Deletion Links", () => {
+  test("shows confirmation success instead of staying on the loading state", async ({
+    page,
+  }) => {
+    const token = "a".repeat(64);
+    await mockAuthApi(page);
+    await page.route(
+      "**/api/v1/auth/account/deletion/confirm",
+      async (route) => {
+        if (route.request().method() !== "POST") {
+          await route.fallback();
+          return;
+        }
+
+        await waitForTokenActionLoadingState();
+        await fulfillJson(route, 200, {
+          status: "scheduled",
+          message: "Account deletion scheduled",
+          scheduledFor: "2026-06-15T12:00:00.000Z",
+        });
+      },
+    );
+
+    await page.goto(`/confirm-account-deletion/${token}`);
+
+    await expect(page.getByText(/verifying your link/i)).toBeVisible();
+    await expect(page.getByText(/deletion scheduled/i)).toBeVisible();
+    await expect(page.getByText(/verifying your link/i)).not.toBeVisible();
+  });
+
+  test("shows cancellation success instead of staying on the loading state", async ({
+    page,
+  }) => {
+    const token = "b".repeat(64);
+    await mockAuthApi(page);
+    await page.route(
+      "**/api/v1/auth/account/deletion/cancel",
+      async (route) => {
+        if (route.request().method() !== "POST") {
+          await route.fallback();
+          return;
+        }
+
+        await waitForTokenActionLoadingState();
+        await fulfillJson(route, 200, {
+          message: "Account deletion has been cancelled",
+        });
+      },
+    );
+
+    await page.goto(`/cancel-account-deletion/${token}`);
+
+    await expect(page.getByText(/stopping your deletion/i)).toBeVisible();
+    await expect(
+      page.getByText(/your account is staying active/i),
+    ).toBeVisible();
+    await expect(page.getByText(/stopping your deletion/i)).not.toBeVisible();
   });
 });

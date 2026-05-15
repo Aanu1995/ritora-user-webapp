@@ -8,6 +8,7 @@ jest.mock('@/lib/api', () => ({
 }));
 
 import { deleteRequest, getRequest, patchRequest, postRequest } from '@/lib/api';
+import { ApiError } from '@/lib/api-error';
 import {
   cancelAccountDeletion,
   confirmAccountDeletion,
@@ -206,6 +207,41 @@ describe('auth.service', () => {
     );
   });
 
+  it('confirmAccountDeletion retries once when the first response is lost', async () => {
+    (postRequest as jest.Mock)
+      .mockRejectedValueOnce(new ApiError('Network timeout'))
+      .mockResolvedValueOnce({
+        status: 'scheduled',
+        message: 'Account deletion scheduled',
+      });
+
+    await confirmAccountDeletion('confirm-token');
+
+    expect(postRequest).toHaveBeenCalledTimes(2);
+    expect(postRequest).toHaveBeenNthCalledWith(
+      1,
+      '/auth/account/deletion/confirm',
+      { token: 'confirm-token' },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      2,
+      '/auth/account/deletion/confirm',
+      { token: 'confirm-token' },
+    );
+  });
+
+  it('confirmAccountDeletion does not retry invalid tokens', async () => {
+    (postRequest as jest.Mock).mockRejectedValue(
+      new ApiError('Invalid account deletion token', { status: 400 }),
+    );
+
+    await expect(confirmAccountDeletion('confirm-token')).rejects.toThrow(
+      'Invalid account deletion token',
+    );
+
+    expect(postRequest).toHaveBeenCalledTimes(1);
+  });
+
   it('cancelAccountDeletion calls postRequest with token', async () => {
     (postRequest as jest.Mock).mockResolvedValue({
       message: 'Account deletion has been cancelled',
@@ -216,6 +252,40 @@ describe('auth.service', () => {
     expect(postRequest).toHaveBeenCalledWith('/auth/account/deletion/cancel', {
       token: 'cancel-token',
     });
+  });
+
+  it('cancelAccountDeletion retries once when the first response is lost', async () => {
+    (postRequest as jest.Mock)
+      .mockRejectedValueOnce(new ApiError('Network timeout'))
+      .mockResolvedValueOnce({
+        message: 'Account deletion has been cancelled',
+      });
+
+    await cancelAccountDeletion('cancel-token');
+
+    expect(postRequest).toHaveBeenCalledTimes(2);
+    expect(postRequest).toHaveBeenNthCalledWith(
+      1,
+      '/auth/account/deletion/cancel',
+      { token: 'cancel-token' },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      2,
+      '/auth/account/deletion/cancel',
+      { token: 'cancel-token' },
+    );
+  });
+
+  it('cancelAccountDeletion does not retry invalid tokens', async () => {
+    (postRequest as jest.Mock).mockRejectedValue(
+      new ApiError('Invalid account deletion token', { status: 400 }),
+    );
+
+    await expect(cancelAccountDeletion('cancel-token')).rejects.toThrow(
+      'Invalid account deletion token',
+    );
+
+    expect(postRequest).toHaveBeenCalledTimes(1);
   });
 
   it('updateProfile calls patchRequest with profile data', async () => {

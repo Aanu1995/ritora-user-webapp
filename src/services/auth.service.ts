@@ -6,6 +6,7 @@ import {
   postRequest,
 } from '@/lib/api';
 import { ApiPath } from '@/constants/api-paths';
+import { getApiErrorStatus } from '@/lib/api-error';
 import type {
   AccountDeletionInput,
   AccountDeletionResponse,
@@ -22,6 +23,40 @@ import type {
   UpdateProfileInput,
   User,
 } from '@/types/auth';
+
+const ACCOUNT_DELETION_TOKEN_MAX_ATTEMPTS = 2;
+
+function isRetryableAccountDeletionTokenError(error: unknown): boolean {
+  const status = getApiErrorStatus(error);
+  return status === undefined || status >= 500;
+}
+
+async function postAccountDeletionTokenWithRetry<T>(
+  path: string,
+  token: string,
+): Promise<T> {
+  let lastError: unknown;
+
+  for (
+    let attempt = 1;
+    attempt <= ACCOUNT_DELETION_TOKEN_MAX_ATTEMPTS;
+    attempt += 1
+  ) {
+    try {
+      return await postRequest<T>(path, { token });
+    } catch (error) {
+      lastError = error;
+      if (
+        attempt >= ACCOUNT_DELETION_TOKEN_MAX_ATTEMPTS ||
+        !isRetryableAccountDeletionTokenError(error)
+      ) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError;
+}
 
 export async function login(data: LoginInput): Promise<AuthResponse> {
   return postRequest<AuthResponse>(ApiPath.AuthLogin, data);
@@ -122,18 +157,19 @@ export async function requestAccountDeletion(
 export async function confirmAccountDeletion(
   token: string,
 ): Promise<AccountDeletionResponse> {
-  return postRequest<AccountDeletionResponse>(
+  return postAccountDeletionTokenWithRetry<AccountDeletionResponse>(
     ApiPath.AuthAccountDeletionConfirm,
-    { token },
+    token,
   );
 }
 
 export async function cancelAccountDeletion(
   token: string,
 ): Promise<MessageResponse> {
-  return postRequest<MessageResponse>(ApiPath.AuthAccountDeletionCancel, {
+  return postAccountDeletionTokenWithRetry<MessageResponse>(
+    ApiPath.AuthAccountDeletionCancel,
     token,
-  });
+  );
 }
 
 export async function updateProfile(data: UpdateProfileInput): Promise<User> {

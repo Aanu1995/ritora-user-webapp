@@ -16,12 +16,16 @@ export function ErrorView({
   t,
   showCommonReasons = false,
   showNextSteps = false,
+  onRetry,
+  retryLabel,
 }: {
   title: string;
   body: string;
   t: AuthTranslations;
   showCommonReasons?: boolean;
   showNextSteps?: boolean;
+  onRetry?: () => void;
+  retryLabel?: string;
 }) {
   const commonReasons = [
     t('accountDeletionErrorReason1'),
@@ -106,7 +110,20 @@ export function ErrorView({
       ) : null}
 
       <div className="animate-fade-up-delay-2 space-y-2">
-        <Button asChild className="w-full rounded-full">
+        {onRetry ? (
+          <Button
+            type="button"
+            className="w-full rounded-full"
+            onClick={onRetry}
+          >
+            {retryLabel ?? t('accountDeletionTryAgain')}
+          </Button>
+        ) : null}
+        <Button
+          asChild
+          variant={onRetry ? 'outline' : 'default'}
+          className="w-full rounded-full"
+        >
           <Link href={AppRoute.Login}>{t('accountDeletionGoToLogin')}</Link>
         </Button>
         <Button asChild variant="outline" className="w-full rounded-full">

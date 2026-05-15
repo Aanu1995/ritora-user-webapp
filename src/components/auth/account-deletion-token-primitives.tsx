@@ -79,10 +79,10 @@ export function StillHereRow({
         {icon}
       </div>
       <div className="min-w-0 flex-1 text-left">
-        <p className="truncate text-[13px] font-semibold text-foreground">
+        <p className="text-[13px] font-semibold leading-snug text-foreground">
           {label}
         </p>
-        <p className="truncate text-[12px] text-muted">{description}</p>
+        <p className="text-[12px] leading-snug text-muted">{description}</p>
       </div>
       <Check
         className="h-4 w-4 shrink-0 text-accent-strong"
