@@ -2454,6 +2454,20 @@
       "photoSavedTag": "photo saved",
       "noPhotoTag": "No photo",
       "photoAlt": "Skin journal photo for {date}",
+      "photoAngleAlt": "{angle} skin journal photo for {date}",
+      "angles": {
+        "head_on": "Front",
+        "left_profile": "Left side",
+        "right_profile": "Right side"
+      },
+      "captured": "Captured",
+      "notCaptured": "Not captured",
+      "optionalAngleMissing": "Optional side photo not captured",
+      "angleCount": "{count, plural, one {# angle} other {# angles}}",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "closePhoto": "Close photo",
+      "openPhoto": "Open photo full size",
       "statusCompleted": "Analysis complete",
       "statusAnalysing": "Analysing…",
       "statusFailed": "Analysis failed",
@@ -2475,6 +2489,21 @@
       "framingPoor": "Framing poor",
       "sharp": "Sharp",
       "blurry": "Blurry",
+      "perAngleQualityLabel": "Angle quality",
+      "angles": {
+        "head_on": "Front",
+        "left_profile": "Left side",
+        "right_profile": "Right side"
+      },
+      "quality": {
+        "poor": "poor",
+        "fair": "fair",
+        "good": "good",
+        "excellent": "excellent"
+      },
+      "qualityUsable": "Usable",
+      "qualityReview": "Review",
+      "perAngleQualityRow": "Lighting {lighting}, framing {framing}, {sharpness}.",
       "retakeTitle": "Photo quality was too low",
       "retakeBody": "Upload another photo today if possible, ideally in natural daylight with your face centered.",
       "safetyTitle": "Consider professional review",
@@ -2682,9 +2711,21 @@
           "body": "Square-on, fill the frame."
         }
       },
-      "photoLabel": "Photo",
+      "photoLabel": "Photos",
+      "angles": {
+        "head_on": "Front",
+        "left_profile": "Left side",
+        "right_profile": "Right side"
+      },
+      "angleRequired": "Required",
+      "angleOptional": "Optional",
+      "angleAlt": "{angle} journal photo",
       "dropZoneTitle": "Tap to choose a photo",
       "dropZoneDesc": "Or drag and drop · JPG, PNG, HEIC, WebP up to 10 MB",
+      "dropZoneTitleFront": "Add front photo",
+      "dropZoneTitleSide": "Add {angle}",
+      "dropZoneDescFront": "Required for AI analysis",
+      "dropZoneDescSide": "Optional side coverage",
       "noWebcam": "A photo taken in natural light makes day-to-day comparison cleaner.",
       "unsupportedPhotoType": "Choose a JPG, PNG, HEIC, or WebP photo.",
       "photoTooLarge": "Choose a photo under 10 MB.",
@@ -2698,6 +2739,9 @@
       "currentPhotoBadge": "Current photo",
       "currentPhotoHint": "Choose a new photo only if you want to replace today's saved photo.",
       "cropBadge": "Square preview",
+      "replaceAngle": "Replace {angle} photo",
+      "removeAngle": "Remove {angle} photo",
+      "cropAngle": "Crop {angle} photo",
       "cropDialog": {
         "title": "Crop photo",
         "body": "Center your face and remove background before upload. Ritora will save the cropped square version.",
@@ -2711,9 +2755,11 @@
         "applying": "Cropping…",
         "error": "We could not crop this photo. Try another photo or upload it without cropping."
       },
-      "photoProcessingConsent": "I consent to analysis of this photo.",
+      "photoProcessingConsent": "I consent to analysis of this photo set.",
       "preRoutine": "Taken before today's products (pre-routine)",
       "nextStepHint": "Your check-in is on the next step. You can also save just the photo and add ratings later.",
+      "frontRequired": "Add a front photo to save photo analysis.",
+      "frontRequiredWithSides": "Side photos need a front photo so Ritora can analyse the set.",
       "savePhotoOnly": "Save photo only",
       "saveChanges": "Save changes",
       "continueToCheckIn": "Continue to check-in",
@@ -2760,6 +2806,8 @@
       "fromPhotoAlt": "Skin journal photo from {date}",
       "toPhotoAlt": "Skin journal photo from {date}",
       "aiDeltaBadge": "AI delta",
+      "angleCount": "{count, plural, one {# angle} other {# angles}}",
+      "openFullViewer": "Open all angles",
       "none": "None",
       "delta": {
         "ratingImproved": "{concern} eased from {from} to {to}",
@@ -2783,7 +2831,8 @@
       "emptyTitle": "Your photos will appear here",
       "emptyBody": "Once you start adding daily photos they'll show up here so you can scan back through your shelf at a glance.",
       "loadMore": "Load more photos",
-      "loadingMore": "Loading more photos"
+      "loadingMore": "Loading more photos",
+      "angleBadge": "{count, plural, one {# angle} other {# angles}}"
     },
     "insightsTab": {
       "subtitle": "Plain language suggestions from your photos, check-ins, and trusted dermatology sources.",

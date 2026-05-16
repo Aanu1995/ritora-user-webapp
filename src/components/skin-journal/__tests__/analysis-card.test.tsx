@@ -159,4 +159,51 @@ describe("AnalysisCard", () => {
       screen.queryByText(/RAW MODEL SHOULD NOT BE DISPLAYED/i),
     ).not.toBeInTheDocument();
   });
+
+  it("deduplicates repeated per-angle quality rows from stale analysis payloads", () => {
+    renderWithProviders(
+      <AnalysisCard
+        observations={observations({
+          per_angle_quality: [
+            {
+              angle: "head_on",
+              face_detected: true,
+              lighting_quality: "good",
+              framing_quality: "good",
+              blur_detected: false,
+              issues: [],
+              quality_score: 0.9,
+              needs_retake: false,
+              used_for_analysis: true,
+            },
+            {
+              angle: "head_on",
+              face_detected: true,
+              lighting_quality: "good",
+              framing_quality: "good",
+              blur_detected: false,
+              issues: [],
+              quality_score: 0.91,
+              needs_retake: false,
+              used_for_analysis: true,
+            },
+            {
+              angle: "left_profile",
+              face_detected: true,
+              lighting_quality: "fair",
+              framing_quality: "good",
+              blur_detected: false,
+              issues: [],
+              quality_score: 0.75,
+              needs_retake: false,
+              used_for_analysis: true,
+            },
+          ],
+        })}
+      />,
+    );
+
+    expect(screen.getAllByText(/front/i)).toHaveLength(1);
+    expect(screen.getByText(/left side/i)).toBeInTheDocument();
+  });
 });

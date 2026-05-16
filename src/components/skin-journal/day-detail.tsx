@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Chip } from "./chip";
 import { ConcernRatingRow } from "./concern-rating-row";
 import { AnalysisCard } from "./analysis-card";
-import { PhotoFrame } from "./photo-frame";
+import { DayDetailPhotoSet } from "./day-detail-photo-set";
 import { JournalDayDetailSkeleton } from "./journal-loading-skeletons";
 import { formatJournalShortDate } from "./journal-date";
 import {
@@ -190,21 +190,8 @@ export function DayDetailPanel({
         </div>
       </div>
 
-      {entry.photo_url ? (
-        <div className="overflow-hidden rounded-2xl border border-border bg-surface">
-          <div className="mx-auto w-full max-w-md px-4 py-6 sm:px-6 sm:py-8">
-            <PhotoFrame
-              url={entry.photo_url}
-              alt={t("photoAlt", { date })}
-              aspect="square"
-            />
-          </div>
-          <div className="mx-auto w-full max-w-md px-4 pb-6 sm:px-6 sm:pb-8">
-            <p className="text-xs text-muted">
-              {entry.is_pre_routine ? t("preRoutineTag") : t("photoSavedTag")}
-            </p>
-          </div>
-        </div>
+      {entry.has_photo ? (
+        <DayDetailPhotoSet entry={entry} date={date} />
       ) : (
         <div className="rounded-2xl border border-[color:var(--border-strong)] bg-accent-soft/30 p-5 text-center">
           <Camera className="mx-auto h-9 w-9 text-muted" />
@@ -322,6 +309,7 @@ export function DayDetailPanel({
           ) : null}
         </div>
       )}
+
     </div>
   );
 }

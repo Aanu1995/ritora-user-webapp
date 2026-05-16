@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowLeftRight, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeftRight, Images, Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { AppRoute } from "@/constants/app-routes";
@@ -179,6 +180,22 @@ export default function JournalComparePage() {
                 aspect="square"
               />
               {data?.from ? (
+                <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-surface-muted px-2 py-1 font-semibold text-foreground">
+                    <Images className="h-3 w-3" />
+                    {t("angleCount", { count: data.from.angle_count ?? 1 })}
+                  </span>
+                  {(data.from.angle_count ?? 1) > 1 ? (
+                    <Link
+                      href={`/journal/days/${data.from.entry_date}`}
+                      className="font-semibold text-accent-strong underline-offset-4 hover:underline"
+                    >
+                      {t("openFullViewer")}
+                    </Link>
+                  ) : null}
+                </div>
+              ) : null}
+              {data?.from ? (
                 <div className="rounded-2xl border border-border bg-surface-muted p-3">
                   <p className="text-sm font-semibold">{t("concernsThen")}</p>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -218,6 +235,22 @@ export default function JournalComparePage() {
                 fallbackTone="cool"
                 aspect="square"
               />
+              {data?.to ? (
+                <div className="flex flex-wrap items-center gap-2 text-xs text-muted">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-surface-muted px-2 py-1 font-semibold text-foreground">
+                    <Images className="h-3 w-3" />
+                    {t("angleCount", { count: data.to.angle_count ?? 1 })}
+                  </span>
+                  {(data.to.angle_count ?? 1) > 1 ? (
+                    <Link
+                      href={`/journal/days/${data.to.entry_date}`}
+                      className="font-semibold text-accent-strong underline-offset-4 hover:underline"
+                    >
+                      {t("openFullViewer")}
+                    </Link>
+                  ) : null}
+                </div>
+              ) : null}
               {data?.to ? (
                 <div className="rounded-2xl border border-border bg-surface-muted p-3">
                   <p className="text-sm font-semibold">{t("concernsNow")}</p>

@@ -64,6 +64,11 @@ export function PhotoGrid({
                   sizes="(max-width: 640px) 50vw, 240px"
                 />
               ) : null}
+              {(entry.angle_count ?? 0) > 1 ? (
+                <span className="absolute right-2 top-2 rounded-full bg-foreground/75 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-background">
+                  {t("angleBadge", { count: entry.angle_count ?? 1 })}
+                </span>
+              ) : null}
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/70 to-transparent px-2.5 py-2 text-white">
                 <p className="text-sm font-semibold">
                   {formatJournalShortDate(entry.entry_date, locale)}

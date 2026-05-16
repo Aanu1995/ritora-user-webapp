@@ -8,20 +8,18 @@ import { toast } from "sonner";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { AppRoute } from "@/constants/app-routes";
 import { BackButton } from "@/components/skin-journal/back-button";
 import { UploadGuidanceCard } from "@/components/skin-journal/upload-guidance-card";
 import { JournalPhotoUpload } from "@/components/skin-journal/journal-photo-upload";
+import { JournalDeleteTodayDialog } from "@/components/skin-journal/journal-delete-today-dialog";
+import { JournalUploadSkeleton } from "@/components/skin-journal/journal-loading-skeletons";
+import {
+  EMPTY_CHECK_IN,
+  entryPhotosForUpload,
+  entryToCheckIn,
+  todayYmd,
+} from "@/components/skin-journal/journal-upload-state";
 import {
   DailyCheckInForm,
   checkInToPayload,
@@ -39,44 +37,23 @@ import { useSkinProfile } from "@/hooks/use-skin-profile";
 import { getApiErrorMessage } from "@/lib/api-error";
 import {
   CYCLE_MARKER_DONT_TRACK,
-  type JournalEntry,
+  FRONT_PHOTO_ANGLE,
+  PHOTO_ANGLES,
+  type Angle,
   type UpsertEntryPayload,
 } from "@/types/skin-journal";
 
 type Step = "photo" | "checkin";
 
-const EMPTY_CHECK_IN: CheckInFormValue = { ratings: {} };
-
-function todayYmd(): string {
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${now.getFullYear()}-${month}-${day}`;
-}
-
-function entryToCheckIn(entry: JournalEntry): CheckInFormValue {
-  return {
-    ratings: entry.ratings ?? {},
-    overall_feel: entry.overall_feel ?? undefined,
-    sleep_band: entry.sleep_band ?? undefined,
-    stress_today: entry.stress_today ?? undefined,
-    sun_exposure_today: entry.sun_exposure_today ?? undefined,
-    sweat_exercise_today: entry.sweat_exercise_today ?? undefined,
-    cycle_marker: entry.cycle_marker ?? undefined,
-    recent_change: entry.recent_change ?? null,
-    complaint_note: entry.complaint_note ?? null,
-  };
-}
-
 export default function JournalUploadPage() {
   const t = useTranslations("journal.upload");
-  const tDelete = useTranslations("journal.deleteConfirm");
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [step, setStep] = useState<Step>("photo");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [photo, setPhoto] = useState<File | null>(null);
+  const [photos, setPhotos] = useState<Partial<Record<Angle, File>>>({});
+  const [removedPhotoAngles, setRemovedPhotoAngles] = useState<Angle[]>([]);
   const [photoProcessingConsent, setPhotoProcessingConsent] = useState(false);
   const [isPreRoutineDraft, setIsPreRoutineDraft] = useState<boolean | null>(
     null,
@@ -92,14 +69,20 @@ export default function JournalUploadPage() {
   const date = resolveCanonicalTodayDate(todayPayload?.date, todayYmd());
   const requestedMode = searchParams.get("mode");
   const isRequestedEditMode = requestedMode === JournalUploadMode.Edit;
-  const isEditMode =
-    isRequestedEditMode && (todayPayload === undefined || entry !== null);
+  const isEditEntryLoading =
+    isRequestedEditMode && todayPayload === undefined;
+  const isEditMode = isRequestedEditMode && entry !== null;
   const editableEntry = isRequestedEditMode ? entry : null;
 
   const upsertToday = useUpsertToday();
   const deleteEntry = useDeleteEntry();
   const isPending = upsertToday.isPending;
   const isDeleting = deleteEntry.isPending;
+
+  if (isEditEntryLoading) {
+    return <JournalUploadSkeleton />;
+  }
+
   const isPreRoutine =
     isPreRoutineDraft ?? editableEntry?.is_pre_routine ?? true;
   const checkIn =
@@ -111,9 +94,53 @@ export default function JournalUploadPage() {
   const shouldShowCheckInValidation =
     checkInValidationAttempted && !checkInValidation.valid;
 
-  const handlePhotoChange = (nextPhoto: File | null) => {
-    setPhoto(nextPhoto);
+  const existingPhotos = entryPhotosForUpload(editableEntry);
+  const existingAngles = new Set(existingPhotos.map((item) => item.angle));
+  const removedAngles = new Set(removedPhotoAngles);
+  const hasNewPhotos = Object.values(photos).some(Boolean);
+  const hasAnyPhotoChange = hasNewPhotos || removedPhotoAngles.length > 0;
+  const hasFrontAfterSave =
+    Boolean(photos[FRONT_PHOTO_ANGLE]) ||
+    (existingAngles.has(FRONT_PHOTO_ANGLE) &&
+      !removedAngles.has(FRONT_PHOTO_ANGLE));
+  const hasAnyPhotoAfterSave = PHOTO_ANGLES.some(
+    (angle) =>
+      Boolean(photos[angle]) ||
+      (existingAngles.has(angle) && !removedAngles.has(angle)),
+  );
+  const hasSideAfterSave = PHOTO_ANGLES.some(
+    (angle) =>
+      angle !== FRONT_PHOTO_ANGLE &&
+      (Boolean(photos[angle]) ||
+        (existingAngles.has(angle) && !removedAngles.has(angle))),
+  );
+  const isPhotoSetInvalid = hasAnyPhotoAfterSave && !hasFrontAfterSave;
+
+  const handlePhotoChange = (angle: Angle, nextPhoto: File | null) => {
+    setPhotos((current) => {
+      const next = { ...current };
+      if (nextPhoto) {
+        next[angle] = nextPhoto;
+      } else {
+        delete next[angle];
+      }
+      return next;
+    });
+    setRemovedPhotoAngles((current) =>
+      current.filter((item) => item !== angle),
+    );
     setPhotoProcessingConsent(false);
+  };
+
+  const handleRemoveExistingPhoto = (angle: Angle) => {
+    setPhotos((current) => {
+      const next = { ...current };
+      delete next[angle];
+      return next;
+    });
+    setRemovedPhotoAngles((current) =>
+      current.includes(angle) ? current : [...current, angle],
+    );
   };
 
   const handleCheckInChange = (nextCheckIn: CheckInFormValue) => {
@@ -128,16 +155,19 @@ export default function JournalUploadPage() {
     }
   };
 
-  const isPhotoProcessingBlocked = photo !== null && !photoProcessingConsent;
+  const isPhotoProcessingBlocked = hasNewPhotos && !photoProcessingConsent;
   const canSavePhotoStep = isEditMode
-    ? Boolean(editableEntry || photo)
-    : Boolean(photo);
+    ? Boolean(editableEntry && (hasAnyPhotoAfterSave || hasAnyPhotoChange))
+    : hasFrontAfterSave;
   const canContinueToCheckIn = isEditMode
-    ? Boolean(editableEntry || photo)
+    ? Boolean(editableEntry || hasAnyPhotoAfterSave)
     : true;
 
   const handleSave = (savePhotoOnly: boolean) => {
     if (savePhotoOnly && !canSavePhotoStep) {
+      return;
+    }
+    if (isPhotoSetInvalid) {
       return;
     }
     if (isPhotoProcessingBlocked) {
@@ -156,7 +186,11 @@ export default function JournalUploadPage() {
     const baseUpload: UpsertEntryPayload = {
       is_pre_routine: isPreRoutine,
       skip_check_in: savePhotoOnly ? true : undefined,
-      photo_processing_consent: photo ? photoProcessingConsent : undefined,
+      photo_processing_consent: hasNewPhotos
+        ? photoProcessingConsent
+        : undefined,
+      remove_photo_angles:
+        removedPhotoAngles.length > 0 ? removedPhotoAngles : undefined,
     };
     const payload: UpsertEntryPayload = savePhotoOnly
       ? baseUpload
@@ -169,15 +203,16 @@ export default function JournalUploadPage() {
           }),
         };
 
-    upsertToday.mutate(
-      { payload, photo },
-      {
-        onSuccess: () => router.push(AppRoute.Journal),
-        onError: (error) => {
-          toast.error(getApiErrorMessage(error) ?? t("saveFailed"));
-        },
+    const mutationInput = hasNewPhotos
+      ? { payload, photos }
+      : { payload };
+
+    upsertToday.mutate(mutationInput, {
+      onSuccess: () => router.push(AppRoute.Journal),
+      onError: (error) => {
+        toast.error(getApiErrorMessage(error) ?? t("saveFailed"));
       },
-    );
+    });
   };
 
   return (
@@ -212,13 +247,15 @@ export default function JournalUploadPage() {
       <div className="mx-auto mt-3 max-w-5xl space-y-4">
         {step === "photo" ? (
           <div>
-            <div className="grid grid-cols-1 gap-16 lg:mx-auto lg:w-fit lg:grid-cols-[440px_420px]">
-              <UploadGuidanceCard layout="vertical" />
+            <div className="space-y-6">
+              <UploadGuidanceCard layout="horizontal" />
               <JournalPhotoUpload
-                photo={photo}
-                existingPhotoUrl={editableEntry?.photo_url}
+                photos={photos}
+                existingPhotos={existingPhotos}
+                removedPhotoAngles={removedPhotoAngles}
                 existingPhotoAlt={t("currentPhotoAlt", { date })}
-                onPhotoChange={handlePhotoChange}
+                onPhotoAngleChange={handlePhotoChange}
+                onRemoveExistingAngle={handleRemoveExistingPhoto}
                 isPreRoutine={isPreRoutine}
                 onPreRoutineChange={setIsPreRoutineDraft}
                 photoProcessingConsent={photoProcessingConsent}
@@ -228,7 +265,13 @@ export default function JournalUploadPage() {
 
             <div className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface-muted px-4 py-3">
               <p className="text-sm text-muted">
-                {t("nextStepHint")}
+                {isPhotoSetInvalid
+                  ? t(
+                      hasSideAfterSave
+                        ? "frontRequiredWithSides"
+                        : "frontRequired",
+                    )
+                  : t("nextStepHint")}
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <Button
@@ -236,7 +279,10 @@ export default function JournalUploadPage() {
                   variant="outline"
                   onClick={() => handleSave(true)}
                   disabled={
-                    isPending || !canSavePhotoStep || isPhotoProcessingBlocked
+                    isPending ||
+                    !canSavePhotoStep ||
+                    isPhotoProcessingBlocked ||
+                    isPhotoSetInvalid
                   }
                 >
                   {isPending ? (
@@ -249,7 +295,10 @@ export default function JournalUploadPage() {
                   size="sm"
                   onClick={() => setStep("checkin")}
                   disabled={
-                    isPending || !canContinueToCheckIn || isPhotoProcessingBlocked
+                    isPending ||
+                    !canContinueToCheckIn ||
+                    isPhotoProcessingBlocked ||
+                    isPhotoSetInvalid
                   }
                 >
                   {t("continueToCheckIn")}
@@ -314,7 +363,9 @@ export default function JournalUploadPage() {
                 <Button
                   size="sm"
                   onClick={() => handleSave(false)}
-                  disabled={isPending || isPhotoProcessingBlocked}
+                  disabled={
+                    isPending || isPhotoProcessingBlocked || isPhotoSetInvalid
+                  }
                 >
                   {isPending ? (
                     <LoadingIndicator size="sm" label={t("saving")} />
@@ -328,53 +379,17 @@ export default function JournalUploadPage() {
         )}
       </div>
 
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <div
-              aria-hidden
-              className="grid h-11 w-11 place-items-center rounded-xl bg-[color:var(--danger-soft)] text-danger"
-            >
-              <Trash2 className="h-5 w-5" />
-            </div>
-            <AlertDialogTitle className="mt-2 font-display text-lg font-bold">
-              {tDelete("title")}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-sm leading-relaxed text-muted">
-              {tDelete("body")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>
-              {tDelete("cancel")}
-            </AlertDialogCancel>
-            <AlertDialogAction asChild>
-              <Button
-                disabled={isDeleting || !editableEntry}
-                onClick={() => {
-                  if (!editableEntry) {
-                    return;
-                  }
-
-                  deleteEntry.mutate(editableEntry.id, {
-                    onSuccess: () => router.push(AppRoute.Journal),
-                  });
-                }}
-                className="rounded-full bg-danger text-white shadow-soft hover:bg-danger/90 focus-visible:ring-danger/40"
-              >
-                {isDeleting ? (
-                  <LoadingIndicator size="sm" label={t("deleting")} />
-                ) : (
-                  <>
-                    <Trash2 className="h-3.5 w-3.5" />
-                    {tDelete("confirm")}
-                  </>
-                )}
-              </Button>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <JournalDeleteTodayDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        entry={editableEntry}
+        isDeleting={isDeleting}
+        onConfirm={(entryToDelete) => {
+          deleteEntry.mutate(entryToDelete.id, {
+            onSuccess: () => router.push(AppRoute.Journal),
+          });
+        }}
+      />
     </div>
   );
 }

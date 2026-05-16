@@ -9,6 +9,16 @@ jest.mock('@/components/skin-journal/crop-image-file', () => ({
   cropImageFileToSquare: jest.fn(),
 }));
 
+function getFrontFileInput(): HTMLInputElement {
+  const inputs = document.querySelectorAll<HTMLInputElement>('input[type="file"]');
+  const input = document.querySelector<HTMLInputElement>(
+    'input[data-angle="head_on"]',
+  );
+  expect(inputs).toHaveLength(3);
+  expect(input).toBeInstanceOf(HTMLInputElement);
+  return input as HTMLInputElement;
+}
+
 describe('JournalPhotoUpload', () => {
   beforeEach(() => {
     jest.mocked(cropImageFileToSquare).mockReset();
@@ -27,8 +37,10 @@ describe('JournalPhotoUpload', () => {
 
     renderWithProviders(
       <JournalPhotoUpload
-        photo={new File(['face'], 'face.jpg', { type: 'image/jpeg' })}
-        onPhotoChange={jest.fn()}
+        photos={{
+          head_on: new File(['face'], 'face.jpg', { type: 'image/jpeg' }),
+        }}
+        onPhotoAngleChange={jest.fn()}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
         photoProcessingConsent={false}
@@ -48,10 +60,17 @@ describe('JournalPhotoUpload', () => {
   it('shows the current journal photo in edit mode before a replacement is selected', () => {
     renderWithProviders(
       <JournalPhotoUpload
-        photo={null}
-        existingPhotoUrl="https://example.com/current.webp"
+        photos={{}}
+        existingPhotos={[
+          {
+            angle: 'head_on',
+            photo_url: 'https://example.com/current.webp',
+            width: null,
+            height: null,
+          },
+        ]}
         existingPhotoAlt="Current journal photo"
-        onPhotoChange={jest.fn()}
+        onPhotoAngleChange={jest.fn()}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
       />,
@@ -74,17 +93,16 @@ describe('JournalPhotoUpload', () => {
 
     const { rerender } = renderWithProviders(
       <JournalPhotoUpload
-        photo={null}
-        onPhotoChange={onPhotoChange}
+        photos={{}}
+        onPhotoAngleChange={(_angle, nextPhoto) => onPhotoChange(nextPhoto)}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
       />,
     );
 
-    const input = document.querySelector('input[type="file"]');
-    expect(input).toBeInstanceOf(HTMLInputElement);
+    const input = getFrontFileInput();
 
-    fireEvent.change(input as HTMLInputElement, {
+    fireEvent.change(input, {
       target: { files: [file] },
     });
 
@@ -92,8 +110,8 @@ describe('JournalPhotoUpload', () => {
 
     rerender(
       <JournalPhotoUpload
-        photo={file}
-        onPhotoChange={onPhotoChange}
+        photos={{ head_on: file }}
+        onPhotoAngleChange={(_angle, nextPhoto) => onPhotoChange(nextPhoto)}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
       />,
@@ -101,8 +119,8 @@ describe('JournalPhotoUpload', () => {
 
     rerender(
       <JournalPhotoUpload
-        photo={null}
-        onPhotoChange={onPhotoChange}
+        photos={{}}
+        onPhotoAngleChange={(_angle, nextPhoto) => onPhotoChange(nextPhoto)}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
       />,
@@ -118,8 +136,8 @@ describe('JournalPhotoUpload', () => {
   it('does not render angle selection controls in the photo flow', () => {
     renderWithProviders(
       <JournalPhotoUpload
-        photo={null}
-        onPhotoChange={jest.fn()}
+        photos={{}}
+        onPhotoAngleChange={jest.fn()}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
       />,
@@ -139,21 +157,76 @@ describe('JournalPhotoUpload', () => {
 
     renderWithProviders(
       <JournalPhotoUpload
-        photo={null}
-        onPhotoChange={onPhotoChange}
+        photos={{}}
+        onPhotoAngleChange={(_angle, nextPhoto) => onPhotoChange(nextPhoto)}
         isPreRoutine
         onPreRoutineChange={jest.fn()}
       />,
     );
 
-    const input = document.querySelector('input[type="file"]');
-    fireEvent.change(input as HTMLInputElement, {
+    const input = getFrontFileInput();
+    fireEvent.change(input, {
       target: { files: [invalidFile] },
     });
 
     expect(screen.getByText(/choose a jpg/i)).toBeInTheDocument();
     expect(URL.createObjectURL).not.toHaveBeenCalled();
-    expect(onPhotoChange).toHaveBeenCalledWith(null);
+    expect(onPhotoChange).not.toHaveBeenCalled();
+  });
+
+  it('keeps the current selected photo when a replacement fails validation', () => {
+    const onPhotoChange = jest.fn();
+    const validFile = new File(['face'], 'face.jpg', { type: 'image/jpeg' });
+    const invalidFile = new File(['not-a-photo'], 'notes.txt', {
+      type: 'text/plain',
+    });
+
+    function TestUploader() {
+      const [photos, setPhotos] = useState<{ head_on?: File | null }>({});
+      const handlePhotoChange = (nextPhoto: File | null) => {
+        onPhotoChange(nextPhoto);
+        setPhotos({ head_on: nextPhoto });
+      };
+
+      return (
+        <JournalPhotoUpload
+          photos={photos}
+          onPhotoAngleChange={(_angle, nextPhoto) =>
+            handlePhotoChange(nextPhoto)
+          }
+          isPreRoutine
+          onPreRoutineChange={jest.fn()}
+        />
+      );
+    }
+
+    renderWithProviders(<TestUploader />);
+
+    const input = getFrontFileInput();
+    fireEvent.change(input, {
+      target: { files: [validFile] },
+    });
+
+    expect(onPhotoChange).toHaveBeenCalledWith(validFile);
+    expect(
+      screen.getByRole('img', { name: /front journal photo/i }),
+    ).toBeInTheDocument();
+
+    onPhotoChange.mockClear();
+    jest.mocked(URL.revokeObjectURL).mockClear();
+
+    fireEvent.change(input, {
+      target: { files: [invalidFile] },
+    });
+
+    expect(screen.getByText(/choose a jpg/i)).toBeInTheDocument();
+    expect(onPhotoChange).not.toHaveBeenCalled();
+    expect(URL.revokeObjectURL).not.toHaveBeenCalledWith(
+      'blob:skin-journal-photo',
+    );
+    expect(
+      screen.getByRole('img', { name: /front journal photo/i }),
+    ).toBeInTheDocument();
   });
 
   it('lets the user crop a selected photo before upload', async () => {
@@ -168,16 +241,18 @@ describe('JournalPhotoUpload', () => {
     jest.mocked(cropImageFileToSquare).mockResolvedValue(croppedFile);
 
     function TestUploader() {
-      const [photo, setPhoto] = useState<File | null>(null);
+      const [photos, setPhotos] = useState<{ head_on?: File | null }>({});
       const handlePhotoChange = (nextPhoto: File | null) => {
         onPhotoChange(nextPhoto);
-        setPhoto(nextPhoto);
+        setPhotos({ head_on: nextPhoto });
       };
 
       return (
         <JournalPhotoUpload
-          photo={photo}
-          onPhotoChange={handlePhotoChange}
+          photos={photos}
+          onPhotoAngleChange={(_angle, nextPhoto) =>
+            handlePhotoChange(nextPhoto)
+          }
           isPreRoutine
           onPreRoutineChange={jest.fn()}
         />
@@ -186,8 +261,8 @@ describe('JournalPhotoUpload', () => {
 
     renderWithProviders(<TestUploader />);
 
-    const input = document.querySelector('input[type="file"]');
-    fireEvent.change(input as HTMLInputElement, {
+    const input = getFrontFileInput();
+    fireEvent.change(input, {
       target: { files: [originalFile] },
     });
 
@@ -231,16 +306,18 @@ describe('JournalPhotoUpload', () => {
     jest.mocked(cropImageFileToSquare).mockResolvedValue(croppedFile);
 
     function TestUploader() {
-      const [photo, setPhoto] = useState<File | null>(null);
+      const [photos, setPhotos] = useState<{ head_on?: File | null }>({});
       const handlePhotoChange = (nextPhoto: File | null) => {
         onPhotoChange(nextPhoto);
-        setPhoto(nextPhoto);
+        setPhotos({ head_on: nextPhoto });
       };
 
       return (
         <JournalPhotoUpload
-          photo={photo}
-          onPhotoChange={handlePhotoChange}
+          photos={photos}
+          onPhotoAngleChange={(_angle, nextPhoto) =>
+            handlePhotoChange(nextPhoto)
+          }
           isPreRoutine
           onPreRoutineChange={jest.fn()}
         />
@@ -249,8 +326,8 @@ describe('JournalPhotoUpload', () => {
 
     renderWithProviders(<TestUploader />);
 
-    const input = document.querySelector('input[type="file"]');
-    fireEvent.change(input as HTMLInputElement, {
+    const input = getFrontFileInput();
+    fireEvent.change(input, {
       target: { files: [originalFile] },
     });
 
@@ -294,12 +371,14 @@ describe('JournalPhotoUpload', () => {
     jest.mocked(cropImageFileToSquare).mockResolvedValue(croppedFile);
 
     function TestUploader() {
-      const [photo, setPhoto] = useState<File | null>(null);
+      const [photos, setPhotos] = useState<{ head_on?: File | null }>({});
 
       return (
         <JournalPhotoUpload
-          photo={photo}
-          onPhotoChange={setPhoto}
+          photos={photos}
+          onPhotoAngleChange={(_angle, nextPhoto) =>
+            setPhotos({ head_on: nextPhoto })
+          }
           isPreRoutine
           onPreRoutineChange={jest.fn()}
         />
@@ -308,8 +387,8 @@ describe('JournalPhotoUpload', () => {
 
     renderWithProviders(<TestUploader />);
 
-    const input = document.querySelector('input[type="file"]');
-    fireEvent.change(input as HTMLInputElement, {
+    const input = getFrontFileInput();
+    fireEvent.change(input, {
       target: { files: [originalFile] },
     });
 
@@ -350,16 +429,18 @@ describe('JournalPhotoUpload', () => {
     );
 
     function TestUploader() {
-      const [photo, setPhoto] = useState<File | null>(null);
+      const [photos, setPhotos] = useState<{ head_on?: File | null }>({});
       const handlePhotoChange = (nextPhoto: File | null) => {
         onPhotoChange(nextPhoto);
-        setPhoto(nextPhoto);
+        setPhotos({ head_on: nextPhoto });
       };
 
       return (
         <JournalPhotoUpload
-          photo={photo}
-          onPhotoChange={handlePhotoChange}
+          photos={photos}
+          onPhotoAngleChange={(_angle, nextPhoto) =>
+            handlePhotoChange(nextPhoto)
+          }
           isPreRoutine
           onPreRoutineChange={jest.fn()}
         />
@@ -368,8 +449,8 @@ describe('JournalPhotoUpload', () => {
 
     const { unmount } = renderWithProviders(<TestUploader />);
 
-    const input = document.querySelector('input[type="file"]');
-    fireEvent.change(input as HTMLInputElement, {
+    const input = getFrontFileInput();
+    fireEvent.change(input, {
       target: { files: [originalFile] },
     });
 

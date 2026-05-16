@@ -41,7 +41,7 @@ export type AnalysisSafetyReason =
   | "possible_infection_signs";
 
 export interface AnalysisObservations {
-  schema_version: "1.0" | "1.1";
+  schema_version: "1.0" | "1.1" | "1.2";
   model_version: string;
   image_quality: {
     face_detected: boolean;
@@ -53,6 +53,17 @@ export interface AnalysisObservations {
     needs_retake?: boolean;
     excluded_from_trends_reason?: AnalysisTrendExclusionReason | null;
   };
+  per_angle_quality?: Array<{
+    angle: "head_on" | "left_profile" | "right_profile";
+    face_detected: boolean;
+    lighting_quality: "poor" | "fair" | "good" | "excellent";
+    framing_quality: "poor" | "fair" | "good" | "excellent";
+    blur_detected: boolean;
+    issues: string[];
+    quality_score?: number;
+    needs_retake?: boolean;
+    used_for_analysis: boolean;
+  }>;
   detected_concerns: Array<{
     concern: AnalysisConcern;
     severity: "mild" | "moderate" | "severe";

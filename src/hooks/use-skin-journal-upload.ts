@@ -4,24 +4,33 @@ import {
   UploadProgressToastKind,
   withUploadProgressToast,
 } from "@/lib/upload-progress-toast";
-import { upsertToday } from "@/services/skin-journal.service";
+import {
+  upsertToday,
+  type PhotoAngleUpload,
+} from "@/services/skin-journal.service";
 import type { UpsertEntryPayload } from "@/types/skin-journal";
 
 export type UpsertTodayInput = {
   payload: UpsertEntryPayload;
-  photo?: File | null;
+  photos?: PhotoAngleUpload | null;
 };
 
-export function upsertTodayWithProgress(input: UpsertTodayInput) {
-  const photo = input.photo ?? null;
+function hasAngleUploads(
+  photos: PhotoAngleUpload | null | undefined,
+): photos is PhotoAngleUpload {
+  return !!photos && Object.values(photos).some((photo) => photo instanceof File);
+}
 
-  if (!photo) {
-    return upsertToday(input.payload, photo);
+export function upsertTodayWithProgress(input: UpsertTodayInput) {
+  const photoInput = hasAngleUploads(input.photos) ? input.photos : null;
+
+  if (!photoInput) {
+    return upsertToday(input.payload, photoInput);
   }
 
   return withUploadProgressToast(
     UploadProgressToastKind.JournalPhoto,
     (onUploadProgress) =>
-      upsertToday(input.payload, photo, { onUploadProgress }),
+      upsertToday(input.payload, photoInput, { onUploadProgress }),
   );
 }

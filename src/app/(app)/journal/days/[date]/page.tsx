@@ -46,7 +46,7 @@ export default function JournalDayPage({
         }
         leading={<BackButton href={AppRoute.Journal} label={t("backToJournal")} />}
       />
-      <div className="mx-auto mt-2 max-w-3xl">
+      <div className="mx-auto mt-2 w-full lg:w-[80%]">
         <DayDetailPanel
           detail={data ?? null}
           isLoading={isLoading}

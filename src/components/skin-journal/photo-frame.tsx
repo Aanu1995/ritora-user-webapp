@@ -10,7 +10,7 @@ interface PhotoFrameProps {
   tag?: string;
   fallbackTone?: "warm" | "cool" | "deep" | "default";
   className?: string;
-  aspect?: "square" | "portrait";
+  aspect?: "square" | "portrait" | "wide";
 }
 
 const TONES: Record<NonNullable<PhotoFrameProps["fallbackTone"]>, string> = {
@@ -28,7 +28,12 @@ export function PhotoFrame({
   className,
   aspect = "portrait",
 }: PhotoFrameProps) {
-  const aspectClass = aspect === "square" ? "aspect-square" : "aspect-[5/6]";
+  const aspectClass =
+    aspect === "square"
+      ? "aspect-square"
+      : aspect === "wide"
+        ? "aspect-[5/4]"
+        : "aspect-[5/6]";
   const absoluteUrl = url ? buildBackendUrl(url) : null;
   return (
     <div

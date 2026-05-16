@@ -4,7 +4,6 @@ import type {
   PhotoAnalysisInterpretation,
 } from "./skin-journal-analysis";
 import type { JournalInsight } from "./skin-journal-insights";
-
 export type {
   AnalysisConcern,
   AnalysisObservations,
@@ -31,9 +30,13 @@ export type {
   JournalInsightsResponse,
   LocalizedInsightText,
 } from "./skin-journal-insights";
-
 export type Angle = "head_on" | "left_profile" | "right_profile";
-
+export const PHOTO_ANGLES: Angle[] = [
+  "left_profile",
+  "head_on",
+  "right_profile",
+];
+export const FRONT_PHOTO_ANGLE: Angle = "head_on";
 export type AnalysisStatus =
   | "pending"
   | "queued"
@@ -42,7 +45,6 @@ export type AnalysisStatus =
   | "failed"
   | "needs_review"
   | "skipped";
-
 export type OverallFeel = "awful" | "bad" | "ok" | "good" | "great";
 
 export const OVERALL_FEELS: OverallFeel[] = [
@@ -170,6 +172,9 @@ export interface JournalEntry {
   has_photo: boolean;
   photo_width: number | null;
   photo_height: number | null;
+  photos?: JournalEntryPhoto[];
+  angle_count?: number;
+  has_side_photos?: boolean;
   angle: Angle;
   concern_focus: string[] | null;
   is_pre_routine: boolean;
@@ -201,6 +206,13 @@ export interface JournalEntry {
   has_reaction: boolean;
   created_at: string;
   updated_at: string;
+}
+
+export interface JournalEntryPhoto {
+  angle: Angle;
+  photo_url: string;
+  width: number | null;
+  height: number | null;
 }
 
 export type CalendarDayState =
@@ -361,6 +373,7 @@ export interface UpsertEntryPayload {
   complaint_note?: string | null;
   skip_check_in?: boolean;
   photo_processing_consent?: boolean;
+  remove_photo_angles?: Angle[];
 }
 
 export interface JournalExportPayload {

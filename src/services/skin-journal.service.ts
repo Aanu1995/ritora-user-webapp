@@ -8,6 +8,7 @@ import {
 import { ApiPath } from "@/constants/api-paths";
 import {
   PhotoFilterStaticId,
+  type Angle,
   type CalendarPayload,
   type CompareResponse,
   type DayDetail,
@@ -28,12 +29,28 @@ import {
 } from "@/types/skin-journal";
 import type { UploadProgressOptions } from "@/lib/upload-progress";
 
+export type PhotoAngleUpload = Partial<Record<Angle, File>>;
+
 function buildEntryFormData(
   payload: UpsertEntryPayload,
-  photo?: File | null,
+  photos?: PhotoAngleUpload | null,
 ): FormData {
   const fd = new FormData();
-  if (photo) fd.append("photo", photo);
+  if (photos) {
+    const fieldByAngle: Record<Angle, string> = {
+      head_on: "photo_head_on",
+      left_profile: "photo_left_profile",
+      right_profile: "photo_right_profile",
+    };
+    for (const [angle, file] of Object.entries(photos) as Array<
+      [Angle, unknown]
+    >) {
+      const fieldName = fieldByAngle[angle];
+      if (fieldName && file instanceof File) {
+        fd.append(fieldName, file);
+      }
+    }
+  }
   for (const [key, value] of Object.entries(payload)) {
     if (value === undefined) continue;
     if (value === null) {
@@ -123,7 +140,7 @@ export async function listPhotoDates(filters: {
 
 export async function upsertToday(
   payload: UpsertEntryPayload,
-  photo?: File | null,
+  photos?: PhotoAngleUpload | null,
   options: UploadProgressOptions = {},
 ): Promise<JournalEntry> {
   const config = options.onUploadProgress
@@ -132,7 +149,7 @@ export async function upsertToday(
 
   return postMultipartRequest(
     ApiPath.SkinJournalToday,
-    buildEntryFormData(payload, photo),
+    buildEntryFormData(payload, photos),
     config,
   );
 }

@@ -224,9 +224,12 @@ describe("useSkinJournal hooks", () => {
   it("wires mutations and invalidates affected query groups", () => {
     const photo = new File(["face"], "face.jpg", { type: "image/jpeg" });
 
-    asMutation<{ payload: { is_pre_routine: boolean }; photo: File }>(
+    asMutation<{
+      payload: { is_pre_routine: boolean };
+      photos: { head_on: File };
+    }>(
       useUpsertToday(),
-    ).mutationFn({ payload: { is_pre_routine: true }, photo });
+    ).mutationFn({ payload: { is_pre_routine: true }, photos: { head_on: photo } });
     asMutation<{ id: string; payload: { complaint_note: string } }>(
       useUpdateEntry(),
     ).mutationFn({ id: "entry-1", payload: { complaint_note: "tight" } });
@@ -235,7 +238,7 @@ describe("useSkinJournal hooks", () => {
 
     expect(journalService.upsertToday).toHaveBeenCalledWith(
       { is_pre_routine: true },
-      photo,
+      { head_on: photo },
       { onUploadProgress: expect.any(Function) },
     );
     expect(journalService.updateEntry).toHaveBeenCalledWith("entry-1", {
@@ -251,6 +254,21 @@ describe("useSkinJournal hooks", () => {
       queryKey: [QueryKey.SkinJournalToday],
     });
     expect(invalidateAppNavBadges).toHaveBeenCalledWith(mockQueryClient);
+  });
+
+  it("does not upload an unsupported front photo when the angle map is empty", () => {
+    asMutation<{
+      payload: { is_pre_routine: boolean };
+      photos: Record<string, never>;
+    }>(useUpsertToday()).mutationFn({
+      payload: { is_pre_routine: true },
+      photos: {},
+    });
+
+    expect(journalService.upsertToday).toHaveBeenCalledWith(
+      { is_pre_routine: true },
+      null,
+    );
   });
 
   it("wires event, insight, simplification, and export mutations", () => {

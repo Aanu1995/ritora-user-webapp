@@ -12,7 +12,7 @@ const mockRouterBack = jest.fn();
 const mockDeleteEntryMutate = jest.fn();
 const mockUpsertTodayMutate = jest.fn();
 let mockSearchParams = new URLSearchParams();
-let mockTodayPayload: DayDetail | null = null;
+let mockTodayPayload: DayDetail | null | undefined = null;
 let mockSkinProfilePayload: { sexAtBirth?: string } | undefined;
 
 jest.mock("next/navigation", () => ({
@@ -103,17 +103,34 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
 
 function selectPhoto(container: HTMLElement): File {
   const file = new File(["photo"], "today.jpg", { type: "image/jpeg" });
-  const fileInput = container.querySelector<HTMLInputElement>(
+  const fileInputs = container.querySelectorAll<HTMLInputElement>(
     'input[type="file"]',
   );
+  const fileInput = container.querySelector<HTMLInputElement>(
+    'input[data-angle="head_on"]',
+  );
 
-  expect(fileInput).not.toBeNull();
-  fireEvent.change(fileInput as HTMLInputElement, {
+  expect(fileInputs).toHaveLength(3);
+  expect(fileInput).toBeInstanceOf(HTMLInputElement);
+  fireEvent.change(fileInput, {
     target: { files: [file] },
   });
   fireEvent.click(
     screen.getByRole("checkbox", { name: /analysis of this photo/i }),
   );
+  return file;
+}
+
+function selectAnglePhoto(container: HTMLElement, angle: string, name: string): File {
+  const file = new File([name], `${name}.jpg`, { type: "image/jpeg" });
+  const input = container.querySelector<HTMLInputElement>(
+    `input[data-angle="${angle}"]`,
+  );
+
+  expect(input).toBeInstanceOf(HTMLInputElement);
+  fireEvent.change(input, {
+    target: { files: [file] },
+  });
   return file;
 }
 
@@ -181,6 +198,23 @@ describe("JournalUploadPage edit actions", () => {
     expect(
       screen.getByRole("heading", { name: /edit today's photo/i }),
     ).toBeInTheDocument();
+  });
+
+  it("keeps edit controls behind a skeleton while today's entry is loading", () => {
+    mockTodayPayload = undefined;
+
+    renderWithProviders(<JournalUploadPage />);
+
+    expect(screen.getByTestId("journal-upload-skeleton")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /continue to check-in/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /save changes/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /delete entry/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("falls back to add mode when edit is requested before an entry exists", () => {
@@ -302,7 +336,6 @@ describe("JournalUploadPage edit actions", () => {
           sweat_exercise_today: false,
           cycle_marker: CYCLE_MARKER_DONT_TRACK,
         }),
-        photo: null,
       },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
@@ -401,7 +434,44 @@ describe("JournalUploadPage edit actions", () => {
           skip_check_in: true,
           photo_processing_consent: true,
         }),
-        photo: file,
+        photos: expect.objectContaining({
+          head_on: file,
+        }),
+      },
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
+    );
+  });
+
+  it("uploads front and optional side photos together from today's photo flow", () => {
+    mockSearchParams = new URLSearchParams();
+    mockTodayPayload = {
+      date: "2026-04-30",
+      entry: null,
+      events: [],
+      insights: [],
+    };
+
+    const { container } = renderWithProviders(<JournalUploadPage />);
+    const front = selectAnglePhoto(container, "head_on", "front");
+    const left = selectAnglePhoto(container, "left_profile", "left");
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: /analysis of this photo/i }),
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /save photo only/i }),
+    );
+
+    expect(mockUpsertTodayMutate).toHaveBeenCalledWith(
+      {
+        payload: expect.objectContaining({
+          skip_check_in: true,
+          photo_processing_consent: true,
+        }),
+        photos: expect.objectContaining({
+          head_on: front,
+          left_profile: left,
+        }),
       },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );

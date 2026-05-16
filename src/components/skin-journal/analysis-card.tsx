@@ -2,10 +2,12 @@
 
 import { useTranslations } from "next-intl";
 import { AlertTriangle, ExternalLink, Sparkles } from "lucide-react";
-import type {
-  AnalysisObservations,
-  PhotoAnalysisInterpretation,
-  PhotoAnalysisSourceCitation,
+import {
+  PHOTO_ANGLES,
+  type Angle,
+  type AnalysisObservations,
+  type PhotoAnalysisInterpretation,
+  type PhotoAnalysisSourceCitation,
 } from "@/types/skin-journal";
 import { Chip } from "./chip";
 import { FaceZoneOverlay } from "./face-zone-overlay";
@@ -133,6 +135,23 @@ function AnalysisSourceLink({
   );
 }
 
+function sortPerAngleQuality(
+  rows: NonNullable<AnalysisObservations["per_angle_quality"]>,
+) {
+  const order = new Map<Angle, number>(
+    PHOTO_ANGLES.map((angle, index) => [angle, index]),
+  );
+  const uniqueRows = new Map<Angle, (typeof rows)[number]>();
+  for (const row of rows) {
+    if (!uniqueRows.has(row.angle)) {
+      uniqueRows.set(row.angle, row);
+    }
+  }
+  return [...uniqueRows.values()].sort(
+    (a, b) => (order.get(a.angle) ?? 99) - (order.get(b.angle) ?? 99),
+  );
+}
+
 export function AnalysisCard({
   observations,
   interpretation,
@@ -157,6 +176,9 @@ export function AnalysisCard({
   const summary = interpretation
     ? translateKey(t, interpretation.summary_key, interpretation.summary_values)
     : translateKey(t, fallbackSummaryKey(observations, needsRetake, hasSafetyEscalation));
+  const perAngleQuality = observations.per_angle_quality
+    ? sortPerAngleQuality(observations.per_angle_quality)
+    : [];
 
   return (
     <div
@@ -284,6 +306,52 @@ export function AnalysisCard({
                 : tQuality("sharp")}
             </Chip>
           </div>
+
+          {perAngleQuality.length > 0 ? (
+            <div className="mt-3">
+              <p className="mb-1.5 text-sm text-muted">
+                {t("perAngleQualityLabel")}
+              </p>
+              <div className="space-y-2">
+                {perAngleQuality.map((quality) => {
+                  const hasIssue =
+                    !quality.face_detected ||
+                    quality.blur_detected ||
+                    quality.needs_retake === true ||
+                    quality.lighting_quality === "poor" ||
+                    quality.framing_quality === "poor";
+                  return (
+                    <div
+                      key={quality.angle}
+                      className="rounded-xl border border-border bg-surface/70 p-2"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-xs font-semibold">
+                          {t(`angles.${quality.angle}`)}
+                        </p>
+                        <Chip
+                          variant={hasIssue ? "warning" : "accent"}
+                          selected
+                          className="px-2 py-0.5"
+                        >
+                          {hasIssue ? t("qualityReview") : t("qualityUsable")}
+                        </Chip>
+                      </div>
+                      <p className="mt-1 text-xs leading-relaxed text-muted">
+                        {t("perAngleQualityRow", {
+                          lighting: t(`quality.${quality.lighting_quality}`),
+                          framing: t(`quality.${quality.framing_quality}`),
+                          sharpness: quality.blur_detected
+                            ? t("blurry")
+                            : t("sharp"),
+                        })}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 

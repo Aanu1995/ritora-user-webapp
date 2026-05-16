@@ -2457,6 +2457,20 @@
       "photoSavedTag": "foto sparat",
       "noPhotoTag": "Inget foto",
       "photoAlt": "Hudjournalfoto för {date}",
+      "photoAngleAlt": "{angle} hudjournalfoto för {date}",
+      "angles": {
+        "head_on": "Framifrån",
+        "left_profile": "Vänster sida",
+        "right_profile": "Höger sida"
+      },
+      "captured": "Fångad",
+      "notCaptured": "Saknas",
+      "optionalAngleMissing": "Valfritt sidofoto saknas",
+      "angleCount": "{count, plural, one {# vinkel} other {# vinklar}}",
+      "zoomIn": "Zooma in",
+      "zoomOut": "Zooma ut",
+      "closePhoto": "Stäng foto",
+      "openPhoto": "Öppna foto i fullstorlek",
       "statusCompleted": "Analys klar",
       "statusAnalysing": "Analyserar…",
       "statusFailed": "Analys misslyckades",
@@ -2478,6 +2492,21 @@
       "framingPoor": "Dålig inramning",
       "sharp": "Skarp",
       "blurry": "Suddig",
+      "perAngleQualityLabel": "Kvalitet per vinkel",
+      "angles": {
+        "head_on": "Framifrån",
+        "left_profile": "Vänster sida",
+        "right_profile": "Höger sida"
+      },
+      "quality": {
+        "poor": "dåligt",
+        "fair": "ok",
+        "good": "bra",
+        "excellent": "utmärkt"
+      },
+      "qualityUsable": "Användbar",
+      "qualityReview": "Granska",
+      "perAngleQualityRow": "Ljus {lighting}, inramning {framing}, {sharpness}.",
       "retakeTitle": "Fotokvaliteten var för låg",
       "retakeBody": "Ladda upp ett nytt foto idag om möjligt, helst i naturligt dagsljus med ansiktet centrerat.",
       "safetyTitle": "Överväg professionell bedömning",
@@ -2685,9 +2714,21 @@
           "body": "Rakt på, fyll bilden."
         }
       },
-      "photoLabel": "Foto",
+      "photoLabel": "Foton",
+      "angles": {
+        "head_on": "Framifrån",
+        "left_profile": "Vänster sida",
+        "right_profile": "Höger sida"
+      },
+      "angleRequired": "Krävs",
+      "angleOptional": "Valfritt",
+      "angleAlt": "{angle} journalfoto",
       "dropZoneTitle": "Tryck för att välja ett foto",
       "dropZoneDesc": "Eller dra och släpp · JPG, PNG, HEIC, WebP upp till 10 MB",
+      "dropZoneTitleFront": "Lägg till foto framifrån",
+      "dropZoneTitleSide": "Lägg till {angle}",
+      "dropZoneDescFront": "Krävs för AI-analys",
+      "dropZoneDescSide": "Valfri sidotäckning",
       "noWebcam": "Ett foto i naturligt ljus gör det enklare att jämföra dag för dag.",
       "unsupportedPhotoType": "Välj ett JPG-, PNG-, HEIC- eller WebP-foto.",
       "photoTooLarge": "Välj ett foto under 10 MB.",
@@ -2701,6 +2742,9 @@
       "currentPhotoBadge": "Nuvarande foto",
       "currentPhotoHint": "Välj ett nytt foto bara om du vill ersätta dagens sparade foto.",
       "cropBadge": "Kvadratisk förhandsvisning",
+      "replaceAngle": "Ersätt foto {angle}",
+      "removeAngle": "Ta bort foto {angle}",
+      "cropAngle": "Beskär foto {angle}",
       "cropDialog": {
         "title": "Beskär foto",
         "body": "Centrera ansiktet och ta bort bakgrund innan uppladdning. Ritora sparar den beskurna kvadratiska versionen.",
@@ -2714,9 +2758,11 @@
         "applying": "Beskär…",
         "error": "Vi kunde inte beskära fotot. Försök med ett annat foto eller ladda upp utan beskärning."
       },
-      "photoProcessingConsent": "Jag samtycker till analys av detta foto.",
+      "photoProcessingConsent": "Jag samtycker till analys av denna fotouppsättning.",
       "preRoutine": "Tagit före dagens produkter (före rutin)",
       "nextStepHint": "Din avstämning finns i nästa steg. Du kan också spara endast fotot och lägga till betyg senare.",
+      "frontRequired": "Lägg till ett foto framifrån för att spara fotoanalys.",
+      "frontRequiredWithSides": "Sidofoton behöver ett foto framifrån så att Ritora kan analysera uppsättningen.",
       "savePhotoOnly": "Spara endast foto",
       "saveChanges": "Spara ändringar",
       "continueToCheckIn": "Fortsätt till avstämning",
@@ -2763,6 +2809,8 @@
       "fromPhotoAlt": "Hudjournalfoto från {date}",
       "toPhotoAlt": "Hudjournalfoto från {date}",
       "aiDeltaBadge": "AI-delta",
+      "angleCount": "{count, plural, one {# vinkel} other {# vinklar}}",
+      "openFullViewer": "Öppna alla vinklar",
       "none": "Inga",
       "delta": {
         "ratingImproved": "{concern} minskade från {from} till {to}",
@@ -2786,7 +2834,8 @@
       "emptyTitle": "Dina foton dyker upp här",
       "emptyBody": "När du börjar lägga till dagliga foton visas de här så att du kan bläddra tillbaka i din samling med ett ögonkast.",
       "loadMore": "Ladda fler foton",
-      "loadingMore": "Laddar fler foton"
+      "loadingMore": "Laddar fler foton",
+      "angleBadge": "{count, plural, one {# vinkel} other {# vinklar}}"
     },
     "insightsTab": {
       "subtitle": "Förslag i vanligt språk från dina foton, avstämningar och betrodda hudkällor.",

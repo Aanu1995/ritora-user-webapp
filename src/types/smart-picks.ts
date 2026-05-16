@@ -46,6 +46,8 @@ export type SmartPicksProductPerformanceSummary = {
     | "insufficient_history";
   concernTrend: string | null;
   photoCheckpoints: number;
+  photoInputImages?: number;
+  multiAnglePhotoCheckpoints?: number;
   reactionSignalCount: number;
   replacementCandidate: boolean;
   replacementReason: string | null;

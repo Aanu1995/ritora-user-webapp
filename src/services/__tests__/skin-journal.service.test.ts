@@ -55,7 +55,7 @@ describe('skin-journal.service', () => {
         skip_check_in: true,
         photo_processing_consent: true,
       },
-      photo,
+      { head_on: photo },
       { onUploadProgress },
     );
 
@@ -65,10 +65,57 @@ describe('skin-journal.service', () => {
       { onUploadProgress },
     );
     const body = (postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
-    expect(body.get('photo')).toBe(photo);
-    expect(body.has('angle')).toBe(false);
+    expect(body.get('photo')).toBeNull();
+    expect(body.get('photo_head_on')).toBe(photo);
     expect(body.get('skip_check_in')).toBe('true');
     expect(body.get('photo_processing_consent')).toBe('true');
+  });
+
+  it('uploads multi-angle photo sets with angle-specific multipart fields', async () => {
+    const front = new File(['front'], 'front.jpg', { type: 'image/jpeg' });
+    const left = new File(['left'], 'left.jpg', { type: 'image/jpeg' });
+    const right = new File(['right'], 'right.jpg', { type: 'image/jpeg' });
+    (postMultipartRequest as jest.Mock).mockResolvedValue({ id: 'entry-1' });
+
+    await upsertToday(
+      {
+        skip_check_in: true,
+        photo_processing_consent: true,
+        remove_photo_angles: ['left_profile'],
+      },
+      {
+        head_on: front,
+        left_profile: left,
+        right_profile: right,
+      },
+    );
+
+    const body = (postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
+    expect(body.get('photo')).toBeNull();
+    expect(body.get('photo_head_on')).toBe(front);
+    expect(body.get('photo_left_profile')).toBe(left);
+    expect(body.get('photo_right_profile')).toBe(right);
+    expect(body.get('remove_photo_angles')).toBe('["left_profile"]');
+  });
+
+  it('ignores unknown runtime angle keys instead of falling back to the front field', async () => {
+    const stray = new File(['stray'], 'stray.jpg', { type: 'image/jpeg' });
+    (postMultipartRequest as jest.Mock).mockResolvedValue({ id: 'entry-1' });
+
+    await upsertToday(
+      {
+        skip_check_in: true,
+      },
+      {
+        unknown_angle: stray,
+      } as never,
+    );
+
+    const body = (postMultipartRequest as jest.Mock).mock.calls[0]?.[1] as FormData;
+    expect(body.get('photo')).toBeNull();
+    expect(body.get('photo_head_on')).toBeNull();
+    expect(body.get('photo_left_profile')).toBeNull();
+    expect(body.get('photo_right_profile')).toBeNull();
   });
 
   it('uses the current entry update endpoint only', async () => {
