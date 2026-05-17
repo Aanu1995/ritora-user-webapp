@@ -107,6 +107,9 @@ function preferences(
     simplification_alerts_enabled: true,
     insight_alerts_enabled: true,
     ai_polished_insights_enabled: true,
+    insight_cadence: "weekly",
+    insight_digest_day: 1,
+    insight_digest_local_time: "09:00",
     wrapped_alerts_enabled: true,
     photo_tutorial_completed: false,
     suggestion_ready_enabled: true,
@@ -313,6 +316,36 @@ describe("NotificationsTab", () => {
     );
     expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
       { wrapped_alerts_enabled: false },
+      expect.any(Object),
+    );
+  });
+
+  it("persists insight cadence preferences independently", async () => {
+    renderWithProviders(<NotificationsTab />);
+
+    await user.click(
+      screen.getByRole("combobox", { name: "Insight cadence" }),
+    );
+    await user.click(screen.getByRole("option", { name: "Fewer insights" }));
+
+    await user.click(screen.getByRole("combobox", { name: "Digest day" }));
+    await user.click(screen.getByRole("option", { name: "Friday" }));
+
+    const digestTime = screen.getByLabelText("Digest time");
+    await user.clear(digestTime);
+    await user.type(digestTime, "14:30");
+    await user.tab();
+
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { insight_cadence: "fewer" },
+      expect.any(Object),
+    );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { insight_digest_day: 5 },
+      expect.any(Object),
+    );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { insight_digest_local_time: "14:30" },
       expect.any(Object),
     );
   });

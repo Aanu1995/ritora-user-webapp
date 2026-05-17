@@ -31,6 +31,7 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     analysis_model: null,
     analysis_version: null,
     analysis_prompt_version: null,
+    analysis_error_code: null,
     analysis_started_at: null,
     analysis_completed_at: null,
     analysis_duration_ms: null,
@@ -120,6 +121,26 @@ describe("DayDetailPanel journal-day edit lock", () => {
     );
 
     expect(screen.getByText(/needs review/i)).toBeInTheDocument();
+  });
+
+  it("shows a specific failed analysis explanation when the API returns a failure code", () => {
+    renderWithProviders(
+      <DayDetailPanel
+        detail={dayDetail(
+          journalEntry({
+            entry_date: "2026-04-30",
+            analysis_status: "failed",
+            analysis_error_code: "photo_preflight_rejected",
+          }),
+        )}
+        isToday
+        onRetryAnalysis={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByText(/photo could not pass the local quality check/i),
+    ).toBeInTheDocument();
   });
 
   it("does not offer adding a photo for a past empty day", () => {

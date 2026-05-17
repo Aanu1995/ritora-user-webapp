@@ -41,6 +41,7 @@ import {
   listPhotos,
   listWrapped,
   markInsightSeen,
+  recordInsightAction,
   retryAnalysis,
   startSimplification,
   updateEntry,
@@ -48,6 +49,7 @@ import {
 import {
   PhotoFilterStaticId,
   type InsightWindow,
+  type InsightAction,
   type JournalEventFilters,
   type JournalExportJob,
   type PhotoDateIndex,
@@ -263,6 +265,13 @@ export function useDismissInsight() {
 export function useMarkInsightSeen() {
   return useMutation({
     mutationFn: (id: string) => markInsightSeen(id),
+  });
+}
+
+export function useRecordInsightAction() {
+  return useMutation({
+    mutationFn: (input: { id: string; action_kind: InsightAction["kind"] }) =>
+      recordInsightAction(input.id, { action_kind: input.action_kind }),
   });
 }
 

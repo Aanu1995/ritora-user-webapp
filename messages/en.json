@@ -2848,6 +2848,7 @@
         "reaction_recovery": "Recovery",
         "photo_quality_drift": "Photo quality",
         "face_zone_pattern": "Face zone pattern",
+        "routine_adherence": "Routine use",
         "cycle": "Cycle pattern",
         "ai_summary": "AI summary",
         "ai_pattern": "AI pattern"
@@ -2898,6 +2899,21 @@
         "travelled": "Travel days",
         "stress_today": "stress"
       },
+      "categories": {
+        "cleanser": "cleanser",
+        "toner": "toner",
+        "essence": "essence",
+        "serum": "serum",
+        "moisturizer": "moisturizer",
+        "sun-protection": "sun protection",
+        "mask": "mask",
+        "exfoliant": "exfoliant",
+        "eye-care": "eye care",
+        "lip-care": "lip care",
+        "treatment": "treatment",
+        "other": "other routine step",
+        "custom": "custom routine step"
+      },
       "metric": {
         "previous": "{value} before",
         "sampleCount": "{count, plural, one {# entry} other {# entries}}",
@@ -2922,6 +2938,7 @@
         "referral": "{referralCount} recent entries need a closer safety review.",
         "effectiveness": "{concern} {direction} after a product change.",
         "face_zone_pattern": "{concern} appears most often around your {location}.",
+        "routine_adherence": "{category} was skipped on {skippedCount} logged routine days.",
         "photo_quality_drift": "{poorCount} recent photos need better light for analysis.",
         "correlation": "{factor} appears alongside changes in {concern}.",
         "cycle": "{concern} looks higher around {phase}.",
@@ -2959,6 +2976,9 @@
         "face_zone_pattern": {
           "text": "The repeated zone is your {location}. This can help you compare photos without scanning every entry."
         },
+        "routine_adherence": {
+          "text": "Your routine records show {category} was skipped {skippedCount} times across {loggedCount} logged steps. This is useful context for future skin pattern checks."
+        },
         "photo_quality_drift": {
           "text": "{poorCount} recent photos had low light or retake flags. Natural daylight gives the analysis a clearer view."
         },
@@ -2985,6 +3005,7 @@
           "reaction_recovery": "based on reaction and recovery markers",
           "referral": "based on repeated safety flags",
           "effectiveness": "based on a product change window",
+          "routine_adherence": "based on {loggedCount} logged routine steps",
           "ownLogs": "based only on your journal entries",
           "cycle": "based on cycle markers in your journal"
         }
@@ -2998,7 +3019,7 @@
         "openSettings": "Open settings"
       },
       "disclaimers": {
-        "medical": "Ritora is not making a diagnosis. If symptoms feel severe, spread quickly, or include swelling or breathing trouble, seek medical care.",
+        "medical": "Ritora is skincare decision support, not medical advice. If symptoms feel severe, spread quickly, or include swelling or breathing trouble, seek medical care.",
         "correlation": "This is a pattern in your entries, not proof that one thing made another happen."
       },
       "ai": {
@@ -3198,6 +3219,14 @@
     "errors": {
       "analysisFailedTitle": "Couldn't analyse this photo",
       "analysisFailedBody": "Network hiccup · or lighting too low. Your photo is saved either way.",
+      "analysisFailedProviderUnavailable": "The photo AI service is temporarily unavailable. Your photo is saved and you can retry shortly.",
+      "analysisFailedProviderTimeout": "The photo AI service took too long to respond. Your photo is saved and you can retry shortly.",
+      "analysisFailedProviderInvalidResponse": "The photo AI response did not pass our safety checks. Your photo is saved and you can retry.",
+      "analysisFailedPhotoPreflight": "This photo could not pass the local quality check. Try a larger, clearer face photo in even light.",
+      "analysisFailedPayloadTooLarge": "This photo set is too large to analyse safely. Try replacing it with smaller cropped photos.",
+      "analysisFailedCostLimit": "Photo AI is temporarily capped for safety. Your photo is saved and you can retry later.",
+      "analysisFailedConfiguration": "Photo AI is not configured right now. Your photo is saved and support can review this.",
+      "analysisFailedInvalidPhoto": "A front face photo is required before Photo AI can analyse this entry.",
       "tooDark": "We had trouble seeing your skin clearly. Try natural daylight next time.",
       "futureDate": "Cannot pick a future date.",
       "uploadFailed": "Upload failed. Please try again."
@@ -3288,6 +3317,22 @@
     "autoSimplifyNote": "When off, you'll still get an alert but your routine is never changed automatically.",
     "insightsTitle": "Insights & Wrapped",
     "insightAlertsBody": "Insight notifications",
+    "insightCadenceLabel": "Insight cadence",
+    "insightCadence": {
+      "weekly": "Weekly digest",
+      "fewer": "Fewer insights"
+    },
+    "insightDigestDayLabel": "Digest day",
+    "insightDigestDays": {
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday",
+      "7": "Sunday"
+    },
+    "insightDigestTimeLabel": "Digest time",
     "aiRefinedInsightsBody": "Use AI refined wording and AI sourced insight cards",
     "wrappedAlertsBody": "Wrapped ready notifications",
     "newPill": "New",

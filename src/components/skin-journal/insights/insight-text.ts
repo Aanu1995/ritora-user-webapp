@@ -45,6 +45,7 @@ function translateInsightValue(
   const namespaceByKey: Record<string, string> = {
     direction: "directions",
     factor: "factors",
+    category: "categories",
     phase: "cycle",
     location: "locations",
   };

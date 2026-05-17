@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import type { FieldIssue } from "@/lib/form-errors";
 import {
   NOTIFICATION_CHANNEL_VALUES,
+  INSIGHT_CADENCE_VALUES,
   PRODUCT_EXPIRY_NOTICE_DAYS_MAX,
   PRODUCT_EXPIRY_NOTICE_DAYS_MIN,
   SUGGESTION_LEAD_TIME_MAX_MINUTES,
@@ -33,6 +34,15 @@ export const notificationPreferencesSchema = z.object({
   simplification_alerts_enabled: z.boolean(),
   insight_alerts_enabled: z.boolean(),
   ai_polished_insights_enabled: z.boolean(),
+  insight_cadence: z.enum(INSIGHT_CADENCE_VALUES),
+  insight_digest_day: z
+    .number()
+    .int()
+    .min(1, "validation.invalidInsightDigestDay")
+    .max(7, "validation.invalidInsightDigestDay"),
+  insight_digest_local_time: z
+    .string()
+    .regex(reminderTimePattern, "validation.invalidInsightDigestTime"),
   wrapped_alerts_enabled: z.boolean(),
   photo_tutorial_completed: z.boolean(),
   suggestion_ready_enabled: z.boolean(),

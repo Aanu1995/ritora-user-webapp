@@ -101,6 +101,8 @@ export const ApiPath = {
     `${SKIN_JOURNAL_BASE}/insights/${id}/dismiss`,
   SkinJournalInsightSeen: (id: string) =>
     `${SKIN_JOURNAL_BASE}/insights/${id}/seen`,
+  SkinJournalInsightInteractions: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/insights/${id}/interactions`,
   SkinJournalWrappedList: `${SKIN_JOURNAL_BASE}/wrapped`,
   SkinJournalWrapped: (id: string) => `${SKIN_JOURNAL_BASE}/wrapped/${id}`,
   SkinJournalSimplificationActive: `${SKIN_JOURNAL_BASE}/simplification/active`,

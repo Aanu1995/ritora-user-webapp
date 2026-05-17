@@ -85,6 +85,7 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     analysis_model: null,
     analysis_version: null,
     analysis_prompt_version: null,
+    analysis_error_code: null,
     analysis_started_at: null,
     analysis_completed_at: "2026-04-30T08:00:00.000Z",
     analysis_duration_ms: null,

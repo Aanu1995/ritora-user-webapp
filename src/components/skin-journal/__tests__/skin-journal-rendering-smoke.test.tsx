@@ -68,6 +68,7 @@ function entry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     analysis_model: null,
     analysis_version: null,
     analysis_prompt_version: null,
+    analysis_error_code: null,
     analysis_started_at: null,
     analysis_completed_at: null,
     analysis_duration_ms: null,
@@ -206,6 +207,7 @@ describe("Skin Journal rendering smoke coverage", () => {
   it("renders insights panel states and action routing", () => {
     const onOpenEntries = jest.fn();
     const onRefreshInsights = jest.fn();
+    const onRecordInsightAction = jest.fn();
 
     renderWithProviders(
       <InsightsPanel
@@ -232,6 +234,7 @@ describe("Skin Journal rendering smoke coverage", () => {
         onOpenEntries={onOpenEntries}
         onOpenProduct={jest.fn()}
         onOpenSettings={jest.fn()}
+        onRecordInsightAction={onRecordInsightAction}
         onDismissInsight={jest.fn()}
       />,
     );
@@ -241,6 +244,10 @@ describe("Skin Journal rendering smoke coverage", () => {
 
     expect(onRefreshInsights).toHaveBeenCalled();
     expect(onOpenEntries).toHaveBeenCalledWith(["entry-1"]);
+    expect(onRecordInsightAction).toHaveBeenCalledWith(
+      "insight-1",
+      expect.objectContaining({ kind: "view_entries" }),
+    );
   });
 
   it("renders wrapped list and player controls", () => {

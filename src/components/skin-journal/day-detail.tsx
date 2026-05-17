@@ -18,6 +18,7 @@ import { JournalDayDetailSkeleton } from "./journal-loading-skeletons";
 import { formatJournalShortDate } from "./journal-date";
 import {
   CONCERN_KEYS,
+  type AnalysisFailureCode,
   type DayDetail,
   type JournalEntry,
 } from "@/types/skin-journal";
@@ -30,6 +31,25 @@ interface DayDetailPanelProps {
   onEditEntry?: (entry: JournalEntry) => void;
   onRetryAnalysis?: (entry: JournalEntry) => void;
   onReplacePhoto?: (entry: JournalEntry) => void;
+}
+
+const ANALYSIS_FAILURE_BODY_KEYS: Partial<Record<AnalysisFailureCode, string>> =
+  {
+    provider_unavailable: "analysisFailedProviderUnavailable",
+    provider_rate_limited: "analysisFailedProviderUnavailable",
+    provider_timeout: "analysisFailedProviderTimeout",
+    provider_invalid_response: "analysisFailedProviderInvalidResponse",
+    photo_preflight_rejected: "analysisFailedPhotoPreflight",
+    payload_too_large: "analysisFailedPayloadTooLarge",
+    cost_limit_exceeded: "analysisFailedCostLimit",
+    configuration_error: "analysisFailedConfiguration",
+    invalid_photo_input: "analysisFailedInvalidPhoto",
+    unknown: "analysisFailedBody",
+  };
+
+function analysisFailedBodyKey(code: AnalysisFailureCode | null): string {
+  if (!code) return "analysisFailedBody";
+  return ANALYSIS_FAILURE_BODY_KEYS[code] ?? "analysisFailedBody";
 }
 
 function weekdayShort(date: string, locale: string): string {
@@ -221,7 +241,7 @@ export function DayDetailPanel({
                 {tErrors("analysisFailedTitle")}
               </p>
               <p className="text-sm text-muted">
-                {tErrors("analysisFailedBody")}
+                {tErrors(analysisFailedBodyKey(entry.analysis_error_code))}
               </p>
             </div>
           </div>

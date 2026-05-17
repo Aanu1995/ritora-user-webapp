@@ -20,6 +20,19 @@ export const SUGGESTION_LEAD_TIME_DEFAULT_MINUTES = 120;
 export const PRODUCT_EXPIRY_NOTICE_DAYS_MIN = 1;
 export const PRODUCT_EXPIRY_NOTICE_DAYS_MAX = 90;
 export const PRODUCT_EXPIRY_NOTICE_DAYS_DEFAULT = 14;
+export const InsightCadenceValue = {
+  Weekly: "weekly",
+  Fewer: "fewer",
+} as const;
+export type InsightCadence =
+  (typeof InsightCadenceValue)[keyof typeof InsightCadenceValue];
+export const INSIGHT_CADENCE_VALUES = [
+  InsightCadenceValue.Weekly,
+  InsightCadenceValue.Fewer,
+] as const;
+export const INSIGHT_CADENCE_DEFAULT = InsightCadenceValue.Weekly;
+export const INSIGHT_DIGEST_DAY_DEFAULT = 1;
+export const INSIGHT_DIGEST_LOCAL_TIME_DEFAULT = "09:00";
 
 export type NotificationSeverity = "info" | "warning" | "critical";
 
@@ -70,6 +83,9 @@ export interface NotificationPreferences {
   simplification_alerts_enabled: boolean;
   insight_alerts_enabled: boolean;
   ai_polished_insights_enabled: boolean;
+  insight_cadence: InsightCadence;
+  insight_digest_day: number;
+  insight_digest_local_time: string;
   wrapped_alerts_enabled: boolean;
   photo_tutorial_completed: boolean;
   suggestion_ready_enabled: boolean;
@@ -92,6 +108,9 @@ export interface UpdatePreferencesPayload {
   simplification_alerts_enabled?: boolean;
   insight_alerts_enabled?: boolean;
   ai_polished_insights_enabled?: boolean;
+  insight_cadence?: InsightCadence;
+  insight_digest_day?: number;
+  insight_digest_local_time?: string;
   wrapped_alerts_enabled?: boolean;
   photo_tutorial_completed?: boolean;
   suggestion_ready_enabled?: boolean;

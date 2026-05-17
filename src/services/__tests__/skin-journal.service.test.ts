@@ -35,6 +35,7 @@ import {
   listMonthEntries,
   listWrapped,
   markInsightSeen,
+  recordInsightAction,
   retryAnalysis,
   startSimplification,
   updateEntry,
@@ -293,6 +294,7 @@ describe('skin-journal.service', () => {
     await acknowledgeEvent('event-1');
     await dismissInsight('insight-1');
     await markInsightSeen('insight-1');
+    await recordInsightAction('insight-1', { action_kind: 'open_compare' });
     await startSimplification({
       triggered_by_event_id: 'event-1',
       reason: 'possible irritation',
@@ -314,6 +316,10 @@ describe('skin-journal.service', () => {
     expect(postRequest).toHaveBeenCalledWith(
       '/skin-journal/insights/insight-1/seen',
       {},
+    );
+    expect(postRequest).toHaveBeenCalledWith(
+      '/skin-journal/insights/insight-1/interactions',
+      { action_kind: 'open_compare' },
     );
     expect(postRequest).toHaveBeenCalledWith(
       '/skin-journal/simplification/start',

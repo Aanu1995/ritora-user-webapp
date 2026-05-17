@@ -17,6 +17,7 @@ import {
   type JournalEntry,
   type JournalInsight,
   type JournalInsightsMeta,
+  type InsightAction,
   type InsightWindow,
   type PhotoFilterId,
   type PhotoFilterOption,
@@ -58,6 +59,7 @@ interface JournalTabPanelsProps {
   onOpenInsightEntries: (entryIds: string[]) => void;
   onOpenProduct: (productId: string) => void;
   onOpenSettings: (tab: string) => void;
+  onRecordInsightAction?: (id: string, action: InsightAction) => void;
   onPhotoFilterChange: (filter: PhotoFilterId) => void;
   onEditEntry?: (entry: JournalEntry) => void;
   onRetryAnalysis?: (entry: JournalEntry) => void;
@@ -99,6 +101,7 @@ export function JournalTabPanels({
   onOpenInsightEntries,
   onOpenProduct,
   onOpenSettings,
+  onRecordInsightAction,
   onPhotoFilterChange,
   onEditEntry,
   onRetryAnalysis,
@@ -249,6 +252,7 @@ export function JournalTabPanels({
           onOpenEntries={onOpenInsightEntries}
           onOpenProduct={onOpenProduct}
           onOpenSettings={onOpenSettings}
+          onRecordInsightAction={onRecordInsightAction}
           onDismissInsight={onDismissInsight}
         />
       </TabsContent>

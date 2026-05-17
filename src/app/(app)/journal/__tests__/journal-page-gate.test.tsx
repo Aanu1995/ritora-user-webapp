@@ -52,6 +52,7 @@ jest.mock("@/hooks/use-skin-journal", () => ({
   useJournalStats: () => ({ data: undefined }),
   usePhotoDates: () => ({ data: { dates: [], months: [] } }),
   usePhotoFilters: () => ({ data: { filters: [] } }),
+  useRecordInsightAction: () => ({ mutate: jest.fn() }),
   usePhotos: () => ({
     data: { pages: [{ items: [] }] },
     fetchNextPage: jest.fn(),

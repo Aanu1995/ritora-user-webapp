@@ -3,6 +3,7 @@ import type {
   AnalysisObservations,
   PhotoAnalysisInterpretation,
 } from "./skin-journal-analysis";
+import type { AnalysisFailureCode } from "./skin-journal-analysis-failure";
 import type { JournalInsight } from "./skin-journal-insights";
 export type {
   AnalysisConcern,
@@ -11,6 +12,7 @@ export type {
   PhotoAnalysisSourceCitation,
   ReactionSeverity,
 } from "./skin-journal-analysis";
+export type { AnalysisFailureCode } from "./skin-journal-analysis-failure";
 export type {
   InsightAction,
   InsightBlock,
@@ -31,11 +33,7 @@ export type {
   LocalizedInsightText,
 } from "./skin-journal-insights";
 export type Angle = "head_on" | "left_profile" | "right_profile";
-export const PHOTO_ANGLES: Angle[] = [
-  "left_profile",
-  "head_on",
-  "right_profile",
-];
+export const PHOTO_ANGLES: Angle[] = ["left_profile", "head_on", "right_profile"];
 export const FRONT_PHOTO_ANGLE: Angle = "head_on";
 export type AnalysisStatus =
   | "pending"
@@ -45,6 +43,7 @@ export type AnalysisStatus =
   | "failed"
   | "needs_review"
   | "skipped";
+
 export type OverallFeel = "awful" | "bad" | "ok" | "good" | "great";
 
 export const OVERALL_FEELS: OverallFeel[] = [
@@ -194,6 +193,7 @@ export interface JournalEntry {
   analysis_model: string | null;
   analysis_version: string | null;
   analysis_prompt_version: string | null;
+  analysis_error_code: AnalysisFailureCode | null;
   analysis_started_at: string | null;
   analysis_completed_at: string | null;
   analysis_duration_ms: number | null;

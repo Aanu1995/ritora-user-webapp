@@ -2851,6 +2851,7 @@
         "reaction_recovery": "Återhämtning",
         "photo_quality_drift": "Fotokvalitet",
         "face_zone_pattern": "Ansiktszon",
+        "routine_adherence": "Rutindata",
         "cycle": "Cykelmönster",
         "ai_summary": "AI sammanfattning",
         "ai_pattern": "AI mönster"
@@ -2901,6 +2902,21 @@
         "travelled": "Resdagar",
         "stress_today": "stress"
       },
+      "categories": {
+        "cleanser": "rengöring",
+        "toner": "toner",
+        "essence": "essence",
+        "serum": "serum",
+        "moisturizer": "fuktkräm",
+        "sun-protection": "solskydd",
+        "mask": "mask",
+        "exfoliant": "exfoliering",
+        "eye-care": "ögonvård",
+        "lip-care": "läppvård",
+        "treatment": "behandling",
+        "other": "annat rutinsteg",
+        "custom": "anpassat rutinsteg"
+      },
       "metric": {
         "previous": "{value} tidigare",
         "sampleCount": "{count, plural, one {# post} other {# poster}}",
@@ -2925,6 +2941,7 @@
         "referral": "{referralCount} nya poster behöver en närmare säkerhetsgranskning.",
         "effectiveness": "{concern} har {direction} efter en produktändring.",
         "face_zone_pattern": "{concern} syns oftast runt {location}.",
+        "routine_adherence": "{category} hoppades över på {skippedCount} loggade rutindagar.",
         "photo_quality_drift": "{poorCount} nya foton behöver bättre ljus för analysen.",
         "correlation": "{factor} syns tillsammans med förändringar i {concern}.",
         "cycle": "{concern} ser högre ut runt {phase}.",
@@ -2962,6 +2979,9 @@
         "face_zone_pattern": {
           "text": "Den återkommande zonen är {location}. Det kan hjälpa dig jämföra foton utan att gå igenom varje post."
         },
+        "routine_adherence": {
+          "text": "Dina rutinloggar visar att {category} hoppades över {skippedCount} gånger över {loggedCount} loggade steg. Det är användbar kontext för kommande hudmönster."
+        },
         "photo_quality_drift": {
           "text": "{poorCount} nya foton hade svagt ljus eller flaggades för omtagning. Naturligt dagsljus ger analysen en tydligare bild."
         },
@@ -2988,6 +3008,7 @@
           "reaction_recovery": "baserat på reaktions- och återhämtningsmarkörer",
           "referral": "baserat på upprepade säkerhetsflaggor",
           "effectiveness": "baserat på ett fönster efter produktändring",
+          "routine_adherence": "baserat på {loggedCount} loggade rutinsteg",
           "ownLogs": "endast baserat på dina journalposter",
           "cycle": "baserat på cykelmarkörer i din journal"
         }
@@ -3001,7 +3022,7 @@
         "openSettings": "Öppna inställningar"
       },
       "disclaimers": {
-        "medical": "Ritora ställer ingen diagnos. Om symtom känns svåra, sprider sig snabbt eller innefattar svullnad eller andningsbesvär, sök vård.",
+        "medical": "Ritora är beslutsstöd för hudvård, inte medicinsk rådgivning. Om symtom känns svåra, sprider sig snabbt eller innefattar svullnad eller andningsbesvär, sök vård.",
         "correlation": "Detta är ett mönster i dina poster, inte bevis för att en sak fick en annan att hända."
       },
       "ai": {
@@ -3201,6 +3222,14 @@
     "errors": {
       "analysisFailedTitle": "Kunde inte analysera detta foto",
       "analysisFailedBody": "Nätverksproblem eller för dåligt ljus. Ditt foto är sparat ändå.",
+      "analysisFailedProviderUnavailable": "Foto AI-tjänsten är tillfälligt otillgänglig. Ditt foto är sparat och du kan försöka igen snart.",
+      "analysisFailedProviderTimeout": "Foto AI-tjänsten tog för lång tid att svara. Ditt foto är sparat och du kan försöka igen snart.",
+      "analysisFailedProviderInvalidResponse": "Foto AI-svaret klarade inte våra säkerhetskontroller. Ditt foto är sparat och du kan försöka igen.",
+      "analysisFailedPhotoPreflight": "Fotot klarade inte den lokala kvalitetskontrollen. Prova ett större och tydligare ansiktsfoto i jämnt ljus.",
+      "analysisFailedPayloadTooLarge": "Denna fotouppsättning är för stor för att analyseras säkert. Prova mindre beskurna foton.",
+      "analysisFailedCostLimit": "Foto AI är tillfälligt begränsat av säkerhetsskäl. Ditt foto är sparat och du kan försöka igen senare.",
+      "analysisFailedConfiguration": "Foto AI är inte konfigurerat just nu. Ditt foto är sparat och supporten kan granska detta.",
+      "analysisFailedInvalidPhoto": "Ett ansiktsfoto framifrån krävs innan Foto AI kan analysera posten.",
       "tooDark": "Vi hade svårt att se din hud tydligt. Prova naturligt ljus nästa gång.",
       "futureDate": "Kan inte välja ett framtida datum.",
       "uploadFailed": "Uppladdning misslyckades. Försök igen."
@@ -3291,6 +3320,22 @@
     "autoSimplifyNote": "När av får du fortfarande en varning, men din rutin ändras aldrig automatiskt.",
     "insightsTitle": "Insikter & Wrapped",
     "insightAlertsBody": "Insiktsaviseringar",
+    "insightCadenceLabel": "Insiktsfrekvens",
+    "insightCadence": {
+      "weekly": "Veckosammanfattning",
+      "fewer": "Färre insikter"
+    },
+    "insightDigestDayLabel": "Sammanfattningsdag",
+    "insightDigestDays": {
+      "1": "Måndag",
+      "2": "Tisdag",
+      "3": "Onsdag",
+      "4": "Torsdag",
+      "5": "Fredag",
+      "6": "Lördag",
+      "7": "Söndag"
+    },
+    "insightDigestTimeLabel": "Sammanfattningstid",
     "aiRefinedInsightsBody": "Använd AI förfinad text och AI skapade insiktskort",
     "wrappedAlertsBody": "Wrapped-klar-aviseringar",
     "newPill": "Nytt",

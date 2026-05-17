@@ -122,5 +122,8 @@ describe('notifications.service', () => {
     expect(preferences.smart_pick_ready_enabled).toBe(false);
     expect(preferences.product_expiry_alerts_enabled).toBe(true);
     expect(preferences.product_expiry_notice_days).toBe(14);
+    expect(preferences.insight_cadence).toBe('weekly');
+    expect(preferences.insight_digest_day).toBe(1);
+    expect(preferences.insight_digest_local_time).toBe('09:00');
   });
 });

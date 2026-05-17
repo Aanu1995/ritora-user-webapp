@@ -6,11 +6,7 @@ import { useRouter } from "next/navigation";
 import { Download, Plus } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AppRoute, NOTIFICATION_SETTINGS_ROUTE } from "@/constants/app-routes";
 import { useJournalUiStore } from "@/stores/journal-ui-store";
 import {
@@ -21,6 +17,7 @@ import {
   useJournalStats,
   usePhotoDates,
   usePhotoFilters,
+  useRecordInsightAction,
   usePhotos,
   useWrappedList,
   useRetryAnalysis,
@@ -112,6 +109,7 @@ export default function JournalPage() {
 
   const startSimplification = useStartSimplification();
   const dismissInsight = useDismissInsight();
+  const recordInsightAction = useRecordInsightAction();
   const retryAnalysis = useRetryAnalysis();
   const photos = useMemo(
     () => photosQuery.data?.pages.flatMap((page) => page.items) ?? [],
@@ -347,15 +345,16 @@ export default function JournalPage() {
             router.push(`${AppRoute.Shelf}/${productId}`)
           }
           onOpenSettings={handleOpenSettings}
+          onRecordInsightAction={(id, action) =>
+            recordInsightAction.mutate({ id, action_kind: action.kind })
+          }
           onPhotoFilterChange={setSelectedPhotoFilter}
           onEditEntry={
             canUploadForSelectedDate
               ? () => openTodayUpload(JournalUploadMode.Edit)
               : undefined
           }
-          onRetryAnalysis={
-            (entry) => retryAnalysis.mutate(entry.id)
-          }
+          onRetryAnalysis={(entry) => retryAnalysis.mutate(entry.id)}
           onReplacePhoto={
             canUploadForSelectedDate
               ? () => openTodayUpload(JournalUploadMode.Edit)

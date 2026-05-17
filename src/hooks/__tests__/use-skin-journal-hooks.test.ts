@@ -21,6 +21,7 @@ import {
   usePhotoDates,
   usePhotoFilters,
   usePhotos,
+  useRecordInsightAction,
   useRetryAnalysis,
   useSimplification,
   useStartSimplification,
@@ -81,6 +82,7 @@ jest.mock("@/services/skin-journal.service", () => ({
   listPhotos: jest.fn(),
   listWrapped: jest.fn(),
   markInsightSeen: jest.fn(),
+  recordInsightAction: jest.fn(),
   retryAnalysis: jest.fn(),
   startSimplification: jest.fn(),
   updateEntry: jest.fn(),
@@ -275,6 +277,9 @@ describe("useSkinJournal hooks", () => {
     asMutation<string>(useAcknowledgeEvent()).mutationFn("event-1");
     asMutation<string>(useDismissInsight()).mutationFn("insight-1");
     asMutation<string>(useMarkInsightSeen()).mutationFn("insight-1");
+    asMutation<{ id: string; action_kind: "open_compare" }>(
+      useRecordInsightAction(),
+    ).mutationFn({ id: "insight-1", action_kind: "open_compare" });
     asMutation<{ triggered_by_event_id: string }>(
       useStartSimplification(),
     ).mutationFn({ triggered_by_event_id: "event-1" });
@@ -291,6 +296,10 @@ describe("useSkinJournal hooks", () => {
     expect(journalService.acknowledgeEvent).toHaveBeenCalledWith("event-1");
     expect(journalService.dismissInsight).toHaveBeenCalledWith("insight-1");
     expect(journalService.markInsightSeen).toHaveBeenCalledWith("insight-1");
+    expect(journalService.recordInsightAction).toHaveBeenCalledWith(
+      "insight-1",
+      { action_kind: "open_compare" },
+    );
     expect(journalService.startSimplification).toHaveBeenCalledWith({
       triggered_by_event_id: "event-1",
     });

@@ -34,6 +34,7 @@ interface InsightsPanelProps {
   onOpenEntries: (entryIds: string[]) => void;
   onOpenProduct: (productId: string) => void;
   onOpenSettings: (tab: string) => void;
+  onRecordInsightAction?: (id: string, action: InsightAction) => void;
   onDismissInsight: (id: string) => void;
 }
 
@@ -68,6 +69,7 @@ export function InsightsPanel({
   onOpenEntries,
   onOpenProduct,
   onOpenSettings,
+  onRecordInsightAction,
   onDismissInsight,
 }: InsightsPanelProps) {
   const tInsights = useTranslations("journal.insightsTab");
@@ -81,7 +83,8 @@ export function InsightsPanel({
       insight.id !== aiSummary?.id,
   );
 
-  const handleAction = (action: InsightAction) => {
+  const handleAction = (insightId: string, action: InsightAction) => {
+    onRecordInsightAction?.(insightId, action);
     if (action.kind === "open_export") {
       onOpenExport();
       return;
@@ -175,14 +178,14 @@ export function InsightsPanel({
           <InsightCard
             key={insight.id}
             insight={insight}
-            onAction={handleAction}
+            onAction={(action) => handleAction(insight.id, action)}
             onDismiss={() => onDismissInsight(insight.id)}
           />
         ))}
         {aiSummary ? (
           <InsightCard
             insight={aiSummary}
-            onAction={handleAction}
+            onAction={(action) => handleAction(aiSummary.id, action)}
             onDismiss={() => onDismissInsight(aiSummary.id)}
           />
         ) : null}
@@ -190,7 +193,7 @@ export function InsightsPanel({
           <InsightCard
             key={insight.id}
             insight={insight}
-            onAction={handleAction}
+            onAction={(action) => handleAction(insight.id, action)}
             onDismiss={() => onDismissInsight(insight.id)}
           />
         ))}

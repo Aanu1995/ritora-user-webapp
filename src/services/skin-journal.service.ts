@@ -16,6 +16,7 @@ import {
   type JournalEvent,
   type JournalEventFilters,
   type JournalExportJob,
+  type InsightAction,
   type JournalInsightsResponse,
   type InsightWindow,
   type JournalStats,
@@ -228,6 +229,13 @@ export async function dismissInsight(id: string): Promise<void> {
 
 export async function markInsightSeen(id: string): Promise<void> {
   await postRequest<unknown>(ApiPath.SkinJournalInsightSeen(id), {});
+}
+
+export async function recordInsightAction(
+  id: string,
+  payload: { action_kind: InsightAction["kind"] },
+): Promise<void> {
+  await postRequest<unknown>(ApiPath.SkinJournalInsightInteractions(id), payload);
 }
 
 export async function listWrapped(): Promise<Wrapped[]> {

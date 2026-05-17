@@ -12,6 +12,7 @@ export type InsightKind =
   | "referral"
   | "photo_quality_drift"
   | "face_zone_pattern"
+  | "routine_adherence"
   | "cycle"
   | "ai_summary"
   | "ai_pattern";

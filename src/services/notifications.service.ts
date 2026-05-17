@@ -6,7 +6,12 @@ import {
 } from "@/lib/api";
 import { ApiPath } from "@/constants/api-paths";
 import {
+  INSIGHT_CADENCE_DEFAULT,
+  INSIGHT_DIGEST_DAY_DEFAULT,
+  INSIGHT_DIGEST_LOCAL_TIME_DEFAULT,
   PRODUCT_EXPIRY_NOTICE_DAYS_DEFAULT,
+  InsightCadenceValue,
+  type InsightCadence,
   type NotificationPreferences,
   type NotificationsList,
   type PushStatusSummary,
@@ -91,6 +96,13 @@ function normalizeNotificationPreferences(
     ...preferences,
     ai_polished_insights_enabled:
       preferences.ai_polished_insights_enabled ?? true,
+    insight_cadence: normalizeInsightCadence(preferences.insight_cadence),
+    insight_digest_day:
+      normalizeInsightDigestDay(preferences.insight_digest_day),
+    insight_digest_local_time: normalizeReminderTime(
+      preferences.insight_digest_local_time ??
+        INSIGHT_DIGEST_LOCAL_TIME_DEFAULT,
+    ),
     smart_pick_ready_enabled: preferences.smart_pick_ready_enabled ?? false,
     product_expiry_alerts_enabled:
       preferences.product_expiry_alerts_enabled ?? true,
@@ -101,6 +113,24 @@ function normalizeNotificationPreferences(
       preferences.photo_reminder_local_time,
     ),
   };
+}
+
+function normalizeInsightCadence(
+  value: NotificationPreferences["insight_cadence"] | undefined,
+): InsightCadence {
+  return value === InsightCadenceValue.Weekly ||
+    value === InsightCadenceValue.Fewer
+    ? value
+    : INSIGHT_CADENCE_DEFAULT;
+}
+
+function normalizeInsightDigestDay(value: number | undefined): number {
+  return typeof value === "number" &&
+    Number.isInteger(value) &&
+    value >= 1 &&
+    value <= 7
+    ? value
+    : INSIGHT_DIGEST_DAY_DEFAULT;
 }
 
 function normalizeReminderTime(value: string | undefined): string {
