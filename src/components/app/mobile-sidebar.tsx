@@ -104,59 +104,56 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
 
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-72 bg-surface transition-transform duration-300 ease-in-out",
+          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-surface transition-transform duration-300 ease-in-out",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <button
-          type="button"
-          className="absolute right-4 top-4 cursor-pointer rounded-lg p-2 text-muted hover:text-foreground"
-          onClick={onClose}
-        >
-          <span className="sr-only">{t("toggleSidebar")}</span>
-          <X className="h-5 w-5" />
-        </button>
-
-        <div className="flex h-full flex-col gap-y-5 overflow-y-auto px-6 pb-4">
-          <div className="flex h-16 shrink-0 items-center">
-            <GuardedLink
-              href={AppRoute.Dashboard}
-              className="flex items-center gap-3"
-              onClick={onClose}
-            >
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
-                <RitoraMark className="h-5 w-5" />
-              </span>
-              <span className="text-xl font-semibold tracking-tight text-foreground">
-                Ritora
-              </span>
-            </GuardedLink>
-          </div>
-
-          <nav className="flex flex-1 flex-col">
-            <ul role="list" className="flex flex-1 flex-col gap-y-7">
-              <li>
-                <MobileNavList items={mainItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
-              </li>
-              <li>
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted">
-                  {t("groups.more")}
-                </div>
-                <div className="mt-2">
-                  <MobileNavList items={moreItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
-                </div>
-              </li>
-              <li className="mt-auto">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted">
-                  {t("groups.account")}
-                </div>
-                <div className="mt-2">
-                  <MobileNavList items={accountItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
-                </div>
-              </li>
-            </ul>
-          </nav>
+        <div className="relative flex h-16 shrink-0 items-center border-b border-border px-6">
+          <GuardedLink
+            href={AppRoute.Dashboard}
+            className="flex items-center gap-3"
+            onClick={onClose}
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
+              <RitoraMark className="h-5 w-5" />
+            </span>
+            <span className="text-xl font-semibold tracking-tight text-foreground">
+              Ritora
+            </span>
+          </GuardedLink>
+          <button
+            type="button"
+            className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer rounded-lg p-2 text-muted hover:text-foreground"
+            onClick={onClose}
+          >
+            <span className="sr-only">{t("toggleSidebar")}</span>
+            <X className="h-5 w-5" />
+          </button>
         </div>
+
+        <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-5">
+          <ul role="list" className="flex flex-1 flex-col gap-y-7">
+            <li>
+              <MobileNavList items={mainItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
+            </li>
+            <li>
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted">
+                {t("groups.more")}
+              </div>
+              <div className="mt-2">
+                <MobileNavList items={moreItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
+              </div>
+            </li>
+            <li className="mt-auto">
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted">
+                {t("groups.account")}
+              </div>
+              <div className="mt-2">
+                <MobileNavList items={accountItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
+              </div>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   );

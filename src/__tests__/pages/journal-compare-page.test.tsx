@@ -50,6 +50,12 @@ function journalEntry(overrides: Partial<JournalEntry>): JournalEntry {
     recent_change: null,
     complaint_note: null,
     analysis_status: "completed",
+    analysis_reference: null,
+    photo_reference_quality: {
+      status: "good_reference",
+      reasons: [],
+      quality_score: 0.9,
+    },
     analysis_observations: null,
     analysis_interpretation: null,
     analysis_summary: null,
@@ -187,5 +193,47 @@ describe("JournalComparePage", () => {
       null,
       expect.objectContaining({ enabled: false }),
     );
+  });
+
+  it("renders photo-analysis deltas and quality limitations", () => {
+    const richCompareResponse = {
+      ...COMPARE_RESPONSE,
+      delta: {
+        bullets: [
+          {
+            code: "photo_concern_worsened",
+            tone: "warn",
+            analysis_concern: "acne",
+            from_severity: "mild",
+            to_severity: "moderate",
+            confidence: 0.76,
+          },
+          {
+            code: "reaction_signal_increased",
+            tone: "warn",
+            from_severity: "none",
+            to_severity: "moderate",
+            confidence: 0.75,
+          },
+          {
+            code: "not_comparable",
+            tone: "warn",
+            reason: "poor_lighting",
+          },
+        ],
+      },
+    } as CompareResponse;
+    mockUseCompareDays.mockReturnValue({
+      data: richCompareResponse,
+      isLoading: false,
+    });
+
+    renderWithProviders(<JournalComparePage />);
+
+    expect(screen.getByText(/acne looks more noticeable/i)).toBeInTheDocument();
+    expect(screen.getByText(/reaction signals increased/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/photo comparison is limited by lighting/i),
+    ).toBeInTheDocument();
   });
 });

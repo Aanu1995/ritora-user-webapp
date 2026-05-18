@@ -79,6 +79,12 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     recent_change: null,
     complaint_note: null,
     analysis_status: "completed",
+    analysis_reference: null,
+    photo_reference_quality: {
+      status: "good_reference",
+      reasons: [],
+      quality_score: 0.9,
+    },
     analysis_observations: null,
     analysis_interpretation: null,
     analysis_summary: null,

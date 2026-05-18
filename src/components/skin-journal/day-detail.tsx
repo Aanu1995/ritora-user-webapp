@@ -16,6 +16,7 @@ import { AnalysisCard } from "./analysis-card";
 import { DayDetailPhotoSet } from "./day-detail-photo-set";
 import { JournalDayDetailSkeleton } from "./journal-loading-skeletons";
 import { formatJournalShortDate } from "./journal-date";
+import { PhotoReferenceQualityBadge } from "./photo-reference-quality-badge";
 import {
   CONCERN_KEYS,
   type AnalysisFailureCode,
@@ -118,9 +119,7 @@ export function DayDetailPanel({
               date: formatDayDetailDate(date, locale),
             })}
           </p>
-          <h3 className="font-display text-base font-bold">
-            {t("noEntry")}
-          </h3>
+          <h3 className="font-display text-base font-bold">{t("noEntry")}</h3>
         </div>
         <div className="flex flex-1 flex-col items-center justify-center text-center">
           <Camera className="h-10 w-10 text-muted" />
@@ -209,6 +208,8 @@ export function DayDetailPanel({
           ) : null}
         </div>
       </div>
+
+      {entry.has_photo ? <PhotoReferenceQualityBadge entry={entry} /> : null}
 
       {entry.has_photo ? (
         <DayDetailPhotoSet entry={entry} date={date} />
@@ -303,9 +304,7 @@ export function DayDetailPanel({
 
           {entry.ratings ? (
             <div className="mt-3">
-              <p className="mb-1 text-sm text-muted">
-                {t("ratingsRecorded")}
-              </p>
+              <p className="mb-1 text-sm text-muted">{t("ratingsRecorded")}</p>
               <div className="grid grid-cols-1 gap-1 xl:grid-cols-2">
                 {ratingsArray.map((row) => (
                   <ConcernRatingRow
@@ -329,7 +328,6 @@ export function DayDetailPanel({
           ) : null}
         </div>
       )}
-
     </div>
   );
 }

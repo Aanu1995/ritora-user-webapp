@@ -1,15 +1,21 @@
 import type {
   AnalysisConcern,
+  AnalysisComparisonReference,
   AnalysisObservations,
   PhotoAnalysisInterpretation,
+  PhotoReferenceQuality,
 } from "./skin-journal-analysis";
 import type { AnalysisFailureCode } from "./skin-journal-analysis-failure";
 import type { JournalInsight } from "./skin-journal-insights";
 export type {
   AnalysisConcern,
+  AnalysisComparisonReference,
   AnalysisObservations,
   PhotoAnalysisInterpretation,
   PhotoAnalysisSourceCitation,
+  PhotoReferenceQuality,
+  PhotoReferenceQualityReason,
+  PhotoReferenceQualityStatus,
   ReactionSeverity,
 } from "./skin-journal-analysis";
 export type { AnalysisFailureCode } from "./skin-journal-analysis-failure";
@@ -32,8 +38,13 @@ export type {
   JournalInsightsResponse,
   LocalizedInsightText,
 } from "./skin-journal-insights";
+export type { CompareResponse } from "./skin-journal-compare";
 export type Angle = "head_on" | "left_profile" | "right_profile";
-export const PHOTO_ANGLES: Angle[] = ["left_profile", "head_on", "right_profile"];
+export const PHOTO_ANGLES: Angle[] = [
+  "left_profile",
+  "head_on",
+  "right_profile",
+];
 export const FRONT_PHOTO_ANGLE: Angle = "head_on";
 export type AnalysisStatus =
   | "pending"
@@ -187,6 +198,8 @@ export interface JournalEntry {
   recent_change: RecentChange | null;
   complaint_note: string | null;
   analysis_status: AnalysisStatus;
+  analysis_reference: AnalysisComparisonReference | null;
+  photo_reference_quality: PhotoReferenceQuality;
   analysis_observations: AnalysisObservations | null;
   analysis_interpretation: PhotoAnalysisInterpretation | null;
   analysis_summary: string | null;
@@ -339,24 +352,6 @@ export interface JournalStats {
   weekly_target: number;
   weekly_upload_rate: number;
   first_entry_date: string | null;
-}
-
-export interface CompareResponse {
-  from: JournalEntry | null;
-  to: JournalEntry | null;
-  delta: {
-    bullets: Array<{
-      code:
-        | "rating_improved"
-        | "rating_worsened"
-        | "reaction_cleared"
-        | "no_major_change";
-      tone: "good" | "warn" | "neutral";
-      concern?: ConcernKey;
-      from_rating?: number;
-      to_rating?: number;
-    }>;
-  };
 }
 
 export interface UpsertEntryPayload {

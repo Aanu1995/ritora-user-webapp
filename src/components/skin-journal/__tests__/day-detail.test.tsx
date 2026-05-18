@@ -25,6 +25,12 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     recent_change: null,
     complaint_note: null,
     analysis_status: "failed",
+    analysis_reference: null,
+    photo_reference_quality: {
+      status: "not_trend_safe",
+      reasons: ["analysis_unavailable"],
+      quality_score: null,
+    },
     analysis_observations: null,
     analysis_interpretation: null,
     analysis_summary: null,
@@ -121,6 +127,36 @@ describe("DayDetailPanel journal-day edit lock", () => {
     );
 
     expect(screen.getByText(/needs review/i)).toBeInTheDocument();
+  });
+
+  it("shows reference quality and the date used for analysis comparison", () => {
+    const entry = {
+      ...journalEntry({
+        entry_date: "2026-04-30",
+        analysis_status: "completed",
+      }),
+      analysis_reference: {
+        entry_id: "entry-reference",
+        entry_date: "2026-04-18",
+        quality: {
+          status: "good_reference",
+          reasons: [],
+          quality_score: 0.91,
+        },
+      },
+      photo_reference_quality: {
+        status: "good_reference",
+        reasons: [],
+        quality_score: 0.93,
+      },
+    } as JournalEntry;
+
+    renderWithProviders(<DayDetailPanel detail={dayDetail(entry)} isToday />);
+
+    expect(screen.getByText(/good reference photo/i)).toBeInTheDocument();
+    expect(screen.getByText(/compared with/i)).toHaveTextContent(
+      /apr 18, 2026/i,
+    );
   });
 
   it("shows a specific failed analysis explanation when the API returns a failure code", () => {

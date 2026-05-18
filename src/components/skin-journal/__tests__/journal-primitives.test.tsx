@@ -104,6 +104,12 @@ function journalEntry(): JournalEntry {
     recent_change: null,
     complaint_note: null,
     analysis_status: "completed",
+    analysis_reference: null,
+    photo_reference_quality: {
+      status: "not_trend_safe",
+      reasons: ["no_photo"],
+      quality_score: null,
+    },
     analysis_observations: null,
     analysis_interpretation: null,
     analysis_summary: null,

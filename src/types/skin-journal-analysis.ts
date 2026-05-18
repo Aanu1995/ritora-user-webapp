@@ -40,6 +40,37 @@ export type AnalysisSafetyReason =
   | "cracking_or_open_skin_appearance"
   | "possible_infection_signs";
 
+export type PhotoReferenceQualityStatus =
+  | "good_reference"
+  | "limited_reference"
+  | "not_trend_safe";
+
+export type PhotoReferenceQualityReason =
+  | "no_photo"
+  | "analysis_pending"
+  | "analysis_failed"
+  | "analysis_unavailable"
+  | "face_missing"
+  | "needs_retake"
+  | "poor_lighting"
+  | "poor_framing"
+  | "blur"
+  | "quality_limited"
+  | "reaction_day"
+  | "not_comparable";
+
+export interface PhotoReferenceQuality {
+  status: PhotoReferenceQualityStatus;
+  reasons: PhotoReferenceQualityReason[];
+  quality_score: number | null;
+}
+
+export interface AnalysisComparisonReference {
+  entry_id: string;
+  entry_date: string;
+  quality: PhotoReferenceQuality;
+}
+
 export interface AnalysisObservations {
   schema_version: "1.0" | "1.1" | "1.2";
   model_version: string;
@@ -84,6 +115,7 @@ export interface AnalysisObservations {
   };
   overall_assessment: string;
   overall_change_from_previous?: AnalysisChangeDirection;
+  comparison_reference?: AnalysisComparisonReference | null;
   user_visible_message?: string;
   safety_flags?: {
     urgent_review_recommended: boolean;

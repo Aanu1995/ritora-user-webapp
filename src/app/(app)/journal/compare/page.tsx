@@ -25,27 +25,62 @@ function deltaText(
   t: ReturnType<typeof useTranslations>,
   tConcerns: ReturnType<typeof useTranslations>,
 ): string {
-  if (bullet.code === "reaction_cleared") {
-    return t("delta.reactionCleared");
-  }
-  if (bullet.code === "no_major_change") {
-    return t("delta.noMajorChange");
-  }
-  const concern = bullet.concern
+  const ratingConcern = bullet.concern
     ? safeDynamicTranslation(
         tConcerns,
         bullet.concern,
         bullet.concern.replace(/_/g, " "),
       )
     : t("delta.unknownConcern");
-  const values = {
-    concern,
+  const analysisConcern = bullet.analysis_concern
+    ? safeDynamicTranslation(
+        tConcerns,
+        bullet.analysis_concern,
+        bullet.analysis_concern.replace(/_/g, " "),
+      )
+    : t("delta.unknownConcern");
+  const ratingValues = {
+    concern: ratingConcern,
     from: bullet.from_rating ?? 0,
     to: bullet.to_rating ?? 0,
   };
-  return bullet.code === "rating_improved"
-    ? t("delta.ratingImproved", values)
-    : t("delta.ratingWorsened", values);
+  const analysisValues = { concern: analysisConcern };
+  const qualityReason = bullet.reason
+    ? safeDynamicTranslation(
+        t,
+        `delta.qualityReasons.${bullet.reason}`,
+        bullet.reason.replace(/_/g, " "),
+      )
+    : t("delta.qualityReasons.not_comparable");
+
+  switch (bullet.code) {
+    case "rating_improved":
+      return t("delta.ratingImproved", ratingValues);
+    case "rating_worsened":
+      return t("delta.ratingWorsened", ratingValues);
+    case "reaction_cleared":
+      return t("delta.reactionCleared");
+    case "reaction_signal_increased":
+      return t("delta.reactionSignalIncreased");
+    case "reaction_signal_reduced":
+      return t("delta.reactionSignalReduced");
+    case "barrier_signal_worsened":
+      return t("delta.barrierSignalWorsened");
+    case "barrier_signal_improved":
+      return t("delta.barrierSignalImproved");
+    case "photo_concern_improved":
+      return t("delta.photoConcernImproved", analysisValues);
+    case "photo_concern_worsened":
+      return t("delta.photoConcernWorsened", analysisValues);
+    case "photo_concern_new":
+      return t("delta.photoConcernNew", analysisValues);
+    case "photo_concern_cleared":
+      return t("delta.photoConcernCleared", analysisValues);
+    case "not_comparable":
+      return t("delta.notComparable", { reason: qualityReason });
+    case "no_major_change":
+      return t("delta.noMajorChange");
+  }
 }
 
 function detectedConcernItems(
@@ -204,8 +239,7 @@ export default function JournalComparePage() {
                         <Chip
                           key={`${c.concern}-${idx}`}
                           variant={
-                            c.severity === "severe" ||
-                            c.severity === "moderate"
+                            c.severity === "severe" || c.severity === "moderate"
                               ? "warning"
                               : "default"
                           }

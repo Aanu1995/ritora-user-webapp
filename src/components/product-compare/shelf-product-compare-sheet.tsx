@@ -167,7 +167,7 @@ export function ShelfProductCompareSheet({
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-5 py-4">
+        <div className="flex-1 min-h-0 overflow-y-auto px-5 py-4">
           <div className="flex flex-col gap-4">
             <section className="rounded-2xl border border-secondary/30 bg-secondary-soft p-4">
               <div className="flex items-start gap-3">

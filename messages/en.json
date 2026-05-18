@@ -2124,7 +2124,7 @@
   "checkProduct": {
     "page": {
       "title": "Quick Check",
-      "body": "A fast read on whether a product suits your skin and routine. Paste the ingredients or snap a label before you buy, use, or save it."
+      "body": "See if a product suits your skin and routine before you buy or use it. Paste the ingredients or snap a label."
     },
     "tabsLabel": "Quick check method",
     "tabs": {
@@ -2848,6 +2848,28 @@
       "noPhotoTitle": "Check-in only",
       "noPhotoBody": "You logged how your skin felt without a photo. AI analysis is skipped for this day."
     },
+    "referenceQuality": {
+      "status": {
+        "good_reference": "Good reference photo",
+        "limited_reference": "Limited reference photo",
+        "not_trend_safe": "Not trend-safe"
+      },
+      "comparedWith": "Compared with {date}",
+      "reason": {
+        "no_photo": "No photo yet",
+        "analysis_pending": "Analysis is still running",
+        "analysis_failed": "Analysis failed",
+        "analysis_unavailable": "Analysis is not available yet",
+        "face_missing": "Face not clear",
+        "needs_retake": "Needs retake",
+        "poor_lighting": "Lighting limits comparison",
+        "poor_framing": "Framing limits comparison",
+        "blur": "Blur limits comparison",
+        "quality_limited": "Quality limits comparison",
+        "reaction_day": "Reaction day",
+        "not_comparable": "Not comparable"
+      }
+    },
     "analysis": {
       "title": "Skin observations today",
       "modelBadge": "AI · {model}",
@@ -3186,8 +3208,31 @@
         "ratingImproved": "{concern} eased from {from} to {to}",
         "ratingWorsened": "{concern} increased from {from} to {to}",
         "reactionCleared": "Reaction signs are no longer flagged",
+        "reactionSignalIncreased": "Reaction signals increased in the photo analysis.",
+        "reactionSignalReduced": "Reaction signals reduced in the photo analysis.",
+        "barrierSignalWorsened": "Barrier-stress signs increased in the photo analysis.",
+        "barrierSignalImproved": "Barrier-stress signs reduced in the photo analysis.",
+        "photoConcernImproved": "{concern} looks less noticeable in the photo analysis.",
+        "photoConcernWorsened": "{concern} looks more noticeable in the photo analysis.",
+        "photoConcernNew": "{concern} newly appears in the photo analysis.",
+        "photoConcernCleared": "{concern} is no longer visible in the photo analysis.",
+        "notComparable": "Photo comparison is limited by {reason}.",
         "noMajorChange": "No major visible change",
-        "unknownConcern": "Concern"
+        "unknownConcern": "Concern",
+        "qualityReasons": {
+          "no_photo": "missing photo data",
+          "analysis_pending": "analysis still running",
+          "analysis_failed": "failed analysis",
+          "analysis_unavailable": "missing analysis",
+          "face_missing": "face clarity",
+          "needs_retake": "retake guidance",
+          "poor_lighting": "lighting",
+          "poor_framing": "framing",
+          "blur": "blur",
+          "quality_limited": "photo quality",
+          "reaction_day": "reaction-day context",
+          "not_comparable": "photo quality"
+        }
       },
       "medicalDisclaimerStrong": "Not a medical diagnosis.",
       "medicalDisclaimerBody": "Visible changes may have many causes."

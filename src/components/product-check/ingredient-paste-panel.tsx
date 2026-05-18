@@ -73,6 +73,7 @@ export function IngredientPastePanel({ isPending, onCheck }: Props) {
             onChange={(event) => setBrand(event.target.value)}
             placeholder={t('brandPlaceholder')}
             autoComplete="organization"
+            className="border-border-strong"
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -84,6 +85,7 @@ export function IngredientPastePanel({ isPending, onCheck }: Props) {
             onChange={(event) => setName(event.target.value)}
             placeholder={t('namePlaceholder')}
             autoComplete="off"
+            className="border-border-strong"
           />
         </div>
       </div>
@@ -94,7 +96,10 @@ export function IngredientPastePanel({ isPending, onCheck }: Props) {
           value={category}
           onValueChange={(value) => setCategory(value as ProductCategory)}
         >
-          <SelectTrigger id={`${fieldId}-category`}>
+          <SelectTrigger
+            id={`${fieldId}-category`}
+            className="border-border-strong"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -117,7 +122,7 @@ export function IngredientPastePanel({ isPending, onCheck }: Props) {
           value={ingredients}
           onChange={(event) => setIngredients(event.target.value)}
           placeholder={t('ingredientsPlaceholder')}
-          className="block min-h-40 w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-not-allowed disabled:opacity-50"
+          className="block min-h-40 w-full resize-y rounded-xl border border-border-strong bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
 

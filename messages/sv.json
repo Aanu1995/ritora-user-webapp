@@ -2131,7 +2131,7 @@
   "checkProduct": {
     "page": {
       "title": "Snabbkoll",
-      "body": "En snabb läsning av om en produkt passar din hud och rutin. Klistra in ingredienserna eller fota en etikett innan du köper, använder eller sparar den."
+      "body": "Se om en produkt passar din hud och rutin innan du köper eller använder den. Klistra in ingredienserna eller fota en etikett."
     },
     "tabsLabel": "Metod för snabbkoll",
     "tabs": {
@@ -2855,6 +2855,28 @@
       "noPhotoTitle": "Endast avstämning",
       "noPhotoBody": "Du loggade hur huden kändes utan foto. AI-analys hoppas över denna dag."
     },
+    "referenceQuality": {
+      "status": {
+        "good_reference": "Bra referensfoto",
+        "limited_reference": "Begränsat referensfoto",
+        "not_trend_safe": "Inte trendsäkert"
+      },
+      "comparedWith": "Jämfört med {date}",
+      "reason": {
+        "no_photo": "Inget foto än",
+        "analysis_pending": "Analysen pågår fortfarande",
+        "analysis_failed": "Analysen misslyckades",
+        "analysis_unavailable": "Analys saknas ännu",
+        "face_missing": "Ansiktet är inte tydligt",
+        "needs_retake": "Behöver tas om",
+        "poor_lighting": "Ljuset begränsar jämförelsen",
+        "poor_framing": "Inramningen begränsar jämförelsen",
+        "blur": "Oskärpa begränsar jämförelsen",
+        "quality_limited": "Kvaliteten begränsar jämförelsen",
+        "reaction_day": "Reaktionsdag",
+        "not_comparable": "Inte jämförbart"
+      }
+    },
     "analysis": {
       "title": "Hudobservationer idag",
       "modelBadge": "AI · {model}",
@@ -3193,8 +3215,31 @@
         "ratingImproved": "{concern} minskade från {from} till {to}",
         "ratingWorsened": "{concern} ökade från {from} till {to}",
         "reactionCleared": "Reaktionstecken flaggas inte längre",
+        "reactionSignalIncreased": "Reaktionssignaler ökade i fotoanalysen.",
+        "reactionSignalReduced": "Reaktionssignaler minskade i fotoanalysen.",
+        "barrierSignalWorsened": "Tecken på barriärstress ökade i fotoanalysen.",
+        "barrierSignalImproved": "Tecken på barriärstress minskade i fotoanalysen.",
+        "photoConcernImproved": "{concern} ser mindre tydligt ut i fotoanalysen.",
+        "photoConcernWorsened": "{concern} ser mer tydligt ut i fotoanalysen.",
+        "photoConcernNew": "{concern} syns nu i fotoanalysen.",
+        "photoConcernCleared": "{concern} syns inte längre i fotoanalysen.",
+        "notComparable": "Fotojämförelsen begränsas av {reason}.",
         "noMajorChange": "Ingen större synlig förändring",
-        "unknownConcern": "Problem"
+        "unknownConcern": "Problem",
+        "qualityReasons": {
+          "no_photo": "saknat foto",
+          "analysis_pending": "analys som fortfarande pågår",
+          "analysis_failed": "misslyckad analys",
+          "analysis_unavailable": "saknad analys",
+          "face_missing": "ansiktets tydlighet",
+          "needs_retake": "behov av nytt foto",
+          "poor_lighting": "ljuset",
+          "poor_framing": "inramningen",
+          "blur": "oskärpa",
+          "quality_limited": "fotokvaliteten",
+          "reaction_day": "reaktionsdagens kontext",
+          "not_comparable": "fotokvaliteten"
+        }
       },
       "medicalDisclaimerStrong": "Inte en medicinsk diagnos.",
       "medicalDisclaimerBody": "Synliga förändringar kan ha många orsaker."
