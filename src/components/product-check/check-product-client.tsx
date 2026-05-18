@@ -1,9 +1,11 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { GitCompareArrows, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { QuickCheckProductCompareSheet } from "@/components/product-compare/product-compare-sheet";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCheckProduct } from "@/hooks/use-ingredients";
 import { normalizeLocale } from "@/i18n/config";
@@ -11,6 +13,7 @@ import { IngredientPastePanel } from "./ingredient-paste-panel";
 import { ProductCheckResultDetails } from "./product-check-result-details";
 import { ProductPhotoCheckPanel } from "./product-photo-check-panel";
 import { ProductVerdictCard } from "./product-verdict-card";
+import { ProductCompareItemKind } from "@/types/ingredients";
 import type {
   ProductCheckInput,
   ProductCheckProductInput,
@@ -27,6 +30,8 @@ export function CheckProductClient() {
   const locale = normalizeLocale(useLocale());
   const checkProduct = useCheckProduct();
   const [result, setResult] = useState<ProductCheckResponse | null>(null);
+  const [lastCheckedProduct, setLastCheckedProduct] =
+    useState<ProductCheckProductInput | null>(null);
 
   const runCheck = (product: ProductCheckProductInput) => {
     const payload: ProductCheckInput = {
@@ -37,9 +42,11 @@ export function CheckProductClient() {
     setResult(null);
     checkProduct.mutate(payload, {
       onSuccess: (response) => {
+        setLastCheckedProduct(product);
         setResult(response);
       },
       onError: () => {
+        setLastCheckedProduct(null);
         setResult(null);
         toast.error(t("errors.checkFailed"));
       },
@@ -86,6 +93,18 @@ export function CheckProductClient() {
         {result ? (
           <>
             <ProductVerdictCard verdict={result.verdict} />
+            {lastCheckedProduct ? (
+              <CompareWithShelfCard
+                anchor={{
+                  kind: ProductCompareItemKind.CheckedProduct,
+                  product: lastCheckedProduct,
+                }}
+                anchorLabel={formatCheckedProductLabel(
+                  lastCheckedProduct,
+                  t("compare.checkedProductFallback"),
+                )}
+              />
+            ) : null}
             <ProductCheckResultDetails result={result} />
           </>
         ) : (
@@ -94,6 +113,54 @@ export function CheckProductClient() {
       </aside>
     </div>
   );
+}
+
+function CompareWithShelfCard({
+  anchor,
+  anchorLabel,
+}: {
+  anchor: Parameters<typeof QuickCheckProductCompareSheet>[0]["anchor"];
+  anchorLabel: string;
+}) {
+  const t = useTranslations("checkProduct.compare");
+
+  return (
+    <section className="rounded-2xl border border-border bg-surface p-4">
+      <div className="flex items-start gap-3">
+        <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-accent-strong">
+          <GitCompareArrows className="h-4 w-4" aria-hidden />
+        </span>
+        <div className="min-w-0 flex-1">
+          <h3 className="font-display text-sm font-bold text-foreground sm:text-[15px]">
+            {t("cardTitle")}
+          </h3>
+          <p className="mt-0.5 text-xs leading-snug text-muted sm:text-[13px]">
+            {t("cardBody")}
+          </p>
+        </div>
+      </div>
+      <QuickCheckProductCompareSheet
+        anchor={anchor}
+        anchorLabel={anchorLabel}
+        trigger={
+          <Button size="sm" variant="outline" className="mt-3 w-full">
+            <GitCompareArrows className="h-4 w-4" aria-hidden />
+            {t("cardAction")}
+          </Button>
+        }
+      />
+    </section>
+  );
+}
+
+function formatCheckedProductLabel(
+  product: ProductCheckProductInput,
+  fallback: string,
+): string {
+  return [product.brand, product.name]
+    .map((value) => value?.trim())
+    .filter((value): value is string => Boolean(value))
+    .join(" ") || fallback;
 }
 
 function EmptyVerdictPanel() {

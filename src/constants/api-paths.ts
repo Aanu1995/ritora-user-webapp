@@ -80,6 +80,7 @@ export const ApiPath = {
 
   IngredientsAnalyze: `${INGREDIENTS_BASE}/analyze`,
   IngredientsCheckProduct: `${INGREDIENTS_BASE}/check-product`,
+  IngredientsCompareProducts: `${INGREDIENTS_BASE}/compare-products`,
 
   AppNavBadges: `${APP_BASE}/nav-badges`,
 

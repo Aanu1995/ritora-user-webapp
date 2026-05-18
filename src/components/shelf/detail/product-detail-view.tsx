@@ -1,15 +1,11 @@
 'use client';
 
 import {
-  Archive,
   ArrowLeft,
   Calendar,
-  Check,
   Clock,
   Droplet,
   Package,
-  Pencil,
-  Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -21,6 +17,7 @@ import { DetailAboutTab } from './detail-about-tab';
 import { DetailHowToUseTab } from './detail-how-to-use-tab';
 import { DetailIngredientsTab } from './detail-ingredients-tab';
 import { DetailManufacturerTab } from './detail-manufacturer-tab';
+import { ProductDetailActions } from './product-detail-actions';
 import { ProductPageHeader } from '../product-page-header';
 import {
   isProductDetailTab,
@@ -28,7 +25,6 @@ import {
   saveProductDetailTab,
 } from './product-detail-view-state';
 import { ProductImageCarousel } from './product-image-carousel';
-import { Button } from '@/components/ui/button';
 import {
   ConfirmDialog,
   ConfirmDialogTone,
@@ -84,7 +80,6 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
   const tMethod = useTranslations('shelf.method');
   const tQty = useTranslations('shelf.quantity');
   const tCard = useTranslations('shelf.card');
-  const tEdit = useTranslations('shelf.edit');
   const locale = useLocale();
   const router = useRouter();
   const { timeZone } = useShelfDateContext();
@@ -206,59 +201,16 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
         }
         actionClassName="flex flex-wrap items-center justify-end gap-2"
         actions={
-          <>
-          <Button asChild size="sm" className="w-7 px-0 sm:w-auto sm:px-4">
-            <Link
-              href={`${productDetailPath}/edit`}
-              aria-label={tEdit('title')}
-              onClick={handleEditClick}
-            >
-              <Pencil className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">{t('actions.edit')}</span>
-            </Link>
-          </Button>
-
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={handleArchiveToggle}
-            aria-label={
-              isArchived ? t('actions.unarchive') : t('actions.archive')
-            }
-            disabled={isMutating}
-            className="w-7 px-0 sm:w-auto sm:px-4"
-          >
-            <Archive className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">
-              {isArchived ? t('actions.unarchive') : t('actions.archive')}
-            </span>
-          </Button>
-
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={handleFinish}
-            aria-label={t('actions.markFinished')}
-            disabled={isMutating}
-            className="w-7 px-0 sm:w-auto sm:px-4"
-          >
-            <Check className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">
-              {t('actions.markFinished')}
-            </span>
-          </Button>
-
-          <Button
-            size="sm"
-            onClick={() => setDeleteOpen(true)}
-            aria-label={t('actions.delete')}
-            className="w-7 bg-danger/10 px-0 text-danger shadow-none hover:bg-danger/15 sm:w-auto sm:px-4"
-            disabled={isMutating}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">{t('actions.delete')}</span>
-          </Button>
-          </>
+          <ProductDetailActions
+            product={product}
+            productDetailPath={productDetailPath}
+            isArchived={isArchived}
+            isMutating={isMutating}
+            onArchiveToggle={handleArchiveToggle}
+            onDeleteOpen={() => setDeleteOpen(true)}
+            onEditClick={handleEditClick}
+            onFinish={handleFinish}
+          />
         }
       />
 

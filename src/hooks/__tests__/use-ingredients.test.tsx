@@ -1,16 +1,29 @@
 import { waitFor } from '@testing-library/react';
 import { renderHookWithProviders } from '@/test/utils';
 import { useAuthStore } from '@/stores/auth-store';
-import { useCheckProduct, useFocusProductAnalysis } from '@/hooks/use-ingredients';
+import {
+  useCheckProduct,
+  useCompareProducts,
+  useFocusProductAnalysis,
+} from '@/hooks/use-ingredients';
 import { ProductCategory } from '@/types/shelf';
-import { ProductCheckSource } from '@/types/ingredients';
+import {
+  ProductCheckSource,
+  ProductCompareGoal,
+  ProductCompareItemKind,
+} from '@/types/ingredients';
 
 jest.mock('@/services/ingredients.service', () => ({
   analyzeProducts: jest.fn(),
   checkProduct: jest.fn(),
+  compareProducts: jest.fn(),
 }));
 
-import { analyzeProducts, checkProduct } from '@/services/ingredients.service';
+import {
+  analyzeProducts,
+  checkProduct,
+  compareProducts,
+} from '@/services/ingredients.service';
 
 const ANALYSIS_RESULT = {
   mode: 'focus' as const,
@@ -101,6 +114,64 @@ describe('useCheckProduct', () => {
         category: ProductCategory.Serum,
         inciIngredients: ['Niacinamide'],
       },
+      language: 'en',
+    });
+  });
+});
+
+describe('useCompareProducts', () => {
+  it('runs an authenticated product-compare mutation', async () => {
+    (compareProducts as jest.Mock).mockResolvedValue({
+      goal: ProductCompareGoal.NewProductDecision,
+      comparison: { outcome: 'no_clear_winner' },
+      items: [],
+    });
+
+    const { result } = renderHookWithProviders(() => useCompareProducts());
+
+    result.current.mutate({
+      goal: ProductCompareGoal.NewProductDecision,
+      anchor: {
+        kind: ProductCompareItemKind.CheckedProduct,
+        product: {
+          source: ProductCheckSource.IngredientPaste,
+          brand: 'Ritora Lab',
+          name: 'Barrier Serum',
+          category: ProductCategory.Serum,
+          inciIngredients: ['Niacinamide'],
+        },
+      },
+      candidates: [
+        {
+          kind: ProductCompareItemKind.ShelfProduct,
+          productId: 'product-1',
+        },
+      ],
+      language: 'en',
+    });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    expect(compareProducts).toHaveBeenCalledWith({
+      goal: ProductCompareGoal.NewProductDecision,
+      anchor: {
+        kind: ProductCompareItemKind.CheckedProduct,
+        product: {
+          source: ProductCheckSource.IngredientPaste,
+          brand: 'Ritora Lab',
+          name: 'Barrier Serum',
+          category: ProductCategory.Serum,
+          inciIngredients: ['Niacinamide'],
+        },
+      },
+      candidates: [
+        {
+          kind: ProductCompareItemKind.ShelfProduct,
+          productId: 'product-1',
+        },
+      ],
       language: 'en',
     });
   });

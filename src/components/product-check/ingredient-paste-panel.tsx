@@ -117,7 +117,7 @@ export function IngredientPastePanel({ isPending, onCheck }: Props) {
           value={ingredients}
           onChange={(event) => setIngredients(event.target.value)}
           placeholder={t('ingredientsPlaceholder')}
-          className="min-h-40 rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted focus-visible:ring-2 focus-visible:ring-accent/30"
+          className="block min-h-40 w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition placeholder:text-muted focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-not-allowed disabled:opacity-50"
         />
       </div>
 

@@ -19,6 +19,7 @@ import {
   ProductCheckSource,
   ProductCheckTone,
   ProductCheckVerdict,
+  ProductCompareGoal,
   type ProductCheckResponse,
 } from "@/types/ingredients";
 import {
@@ -32,10 +33,13 @@ import {
 } from "@/types/shelf";
 
 const mockCheckMutate = jest.fn();
+const mockCompareMutate = jest.fn();
 const mockExtractMutate = jest.fn();
 const mockToastError = jest.fn();
 
 let checkPending = false;
+let comparePending = false;
+let shelfProducts = [] as ReturnType<typeof createShelfProduct>[];
 const labelFile = new File(["label"], "label.jpg", { type: "image/jpeg" });
 
 if (typeof URL.createObjectURL === "undefined") {
@@ -62,6 +66,11 @@ jest.mock("@/hooks/use-ingredients", () => ({
     mutate: mockCheckMutate,
     isPending: checkPending,
   }),
+  useCompareProducts: () => ({
+    mutate: mockCompareMutate,
+    isPending: comparePending,
+    data: null,
+  }),
 }));
 
 jest.mock("@/hooks/use-shelf", () => ({
@@ -69,11 +78,17 @@ jest.mock("@/hooks/use-shelf", () => ({
     mutate: mockExtractMutate,
     isPending: false,
   }),
+  useShelfProducts: () => ({
+    data: shelfProducts,
+    isLoading: false,
+  }),
 }));
 
 beforeEach(() => {
   jest.clearAllMocks();
   checkPending = false;
+  comparePending = false;
+  shelfProducts = [];
 });
 
 function createDraft(): ShelfProductDraft {
@@ -119,6 +134,15 @@ function createDraft(): ShelfProductDraft {
     },
     status: ShelfStatus.Active,
     provenance: DataProvenance.PhotoLookup,
+  };
+}
+
+function createShelfProduct() {
+  return {
+    id: "shelf-1",
+    ...createDraft(),
+    createdAt: "2026-05-17T09:00:00.000Z",
+    updatedAt: "2026-05-17T09:00:00.000Z",
   };
 }
 
@@ -311,6 +335,51 @@ describe("CheckProductClient", () => {
     expect(screen.getByText(/ritora lab barrier serum/i)).toBeInTheDocument();
     expect(screen.getByText(/calm lab/i)).toBeInTheDocument();
     expect(screen.getByText(/barrier cream/i)).toBeInTheDocument();
+  });
+
+  it("compares a checked product with selected Shelf products", async () => {
+    const user = userEvent.setup();
+    shelfProducts = [createShelfProduct()];
+    mockCheckMutate.mockImplementation((_payload, options) => {
+      options?.onSuccess?.(createProductCheckResponse());
+    });
+
+    renderWithProviders(<CheckProductClient />);
+
+    fireEvent.change(screen.getByLabelText(/^brand$/i), {
+      target: { value: "Ritora Lab" },
+    });
+    fireEvent.change(screen.getByLabelText(/product name/i), {
+      target: { value: "Barrier Serum" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/paste inci ingredients/i), {
+      target: { value: "Aqua, Niacinamide" },
+    });
+    await user.click(screen.getByRole("button", { name: /quick check/i }));
+    await user.click(screen.getByRole("button", { name: /open comparison/i }));
+    await user.click(
+      screen.getByLabelText(/ritora lab barrier serum/i, {
+        selector: "button",
+      }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: /^compare with 1 shelf product$/i }),
+    );
+
+    expect(mockCompareMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        goal: ProductCompareGoal.NewProductDecision,
+        anchor: expect.objectContaining({
+          kind: "checked_product",
+          product: expect.objectContaining({
+            brand: "Ritora Lab",
+            name: "Barrier Serum",
+          }),
+        }),
+        candidates: [{ kind: "shelf_product", productId: "shelf-1" }],
+      }),
+      expect.any(Object),
+    );
   });
 
   it("clears a previous verdict when the next product check fails", async () => {

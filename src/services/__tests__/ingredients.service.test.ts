@@ -5,18 +5,28 @@ jest.mock('@/lib/api', () => ({
 
 import { postRequest } from '@/lib/api';
 import {
+  PRODUCT_COMPARE_REQUEST_TIMEOUT_MS,
   PRODUCT_CHECK_REQUEST_TIMEOUT_MS,
   analyzeProducts,
   checkProduct,
+  compareProducts,
 } from '@/services/ingredients.service';
 import { ProductCategory } from '@/types/shelf';
-import { ProductCheckSource } from '@/types/ingredients';
+import {
+  ProductCheckSource,
+  ProductCompareGoal,
+  ProductCompareItemKind,
+} from '@/types/ingredients';
 
 afterEach(() => jest.clearAllMocks());
 
 describe('ingredients.service', () => {
   it('keeps product-check timeout long enough for chained AI review calls', () => {
     expect(PRODUCT_CHECK_REQUEST_TIMEOUT_MS).toBeGreaterThanOrEqual(120_000);
+  });
+
+  it('keeps product-compare timeout long enough for AI-backed comparison', () => {
+    expect(PRODUCT_COMPARE_REQUEST_TIMEOUT_MS).toBeGreaterThanOrEqual(240_000);
   });
 
   it('posts focus-product analysis requests with explanations', async () => {
@@ -116,6 +126,59 @@ describe('ingredients.service', () => {
         language: 'en',
       },
       { timeout: PRODUCT_CHECK_REQUEST_TIMEOUT_MS },
+    );
+  });
+
+  it('posts product-compare requests to the ephemeral compare endpoint', async () => {
+    (postRequest as jest.Mock).mockResolvedValue({
+      comparison: { outcome: 'no_clear_winner' },
+      items: [],
+    });
+
+    await compareProducts({
+      goal: ProductCompareGoal.NewProductDecision,
+      anchor: {
+        kind: ProductCompareItemKind.CheckedProduct,
+        product: {
+          source: ProductCheckSource.IngredientPaste,
+          brand: 'Ritora Lab',
+          name: 'Barrier Serum',
+          category: ProductCategory.Serum,
+          inciIngredients: ['Niacinamide'],
+        },
+      },
+      candidates: [
+        {
+          kind: ProductCompareItemKind.ShelfProduct,
+          productId: 'product-1',
+        },
+      ],
+      language: 'en',
+    });
+
+    expect(postRequest).toHaveBeenCalledWith(
+      '/ingredients/compare-products',
+      {
+        goal: ProductCompareGoal.NewProductDecision,
+        anchor: {
+          kind: ProductCompareItemKind.CheckedProduct,
+          product: {
+            source: ProductCheckSource.IngredientPaste,
+            brand: 'Ritora Lab',
+            name: 'Barrier Serum',
+            category: ProductCategory.Serum,
+            inciIngredients: ['Niacinamide'],
+          },
+        },
+        candidates: [
+          {
+            kind: ProductCompareItemKind.ShelfProduct,
+            productId: 'product-1',
+          },
+        ],
+        language: 'en',
+      },
+      { timeout: PRODUCT_COMPARE_REQUEST_TIMEOUT_MS },
     );
   });
 });

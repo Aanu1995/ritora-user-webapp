@@ -1868,6 +1868,7 @@
         "source": "Data från {source}, bekräftad av dig {date}."
       },
       "actions": {
+        "compare": "Jämför",
         "edit": "Redigera",
         "archive": "Arkivera",
         "markFinished": "Markera som förbrukad",
@@ -2137,6 +2138,12 @@
       "paste": "Klistra in ingredienser",
       "photos": "Foton"
     },
+    "compare": {
+      "checkedProductFallback": "Kontrollerad produkt",
+      "cardTitle": "Jämför med din hylla",
+      "cardBody": "Se hur den står sig mot produkter du redan äger.",
+      "cardAction": "Öppna jämförelse"
+    },
     "paste": {
       "brandLabel": "Varumärke",
       "brandPlaceholder": "Produktens varumärke",
@@ -2267,6 +2274,146 @@
       "lip-care": "Läppvård",
       "treatment": "Behandling",
       "other": "Annat"
+    }
+  },
+  "productCompare": {
+    "quickCheck": {
+      "sheet": {
+        "trigger": "Jämför med hyllan",
+        "title": "Jämför före köp",
+        "description": "Välj hyllprodukter att väga mot den här innan du köper.",
+        "info": {
+          "trigger": "Om jämförelsen",
+          "title": "Vad vi kollar innan du köper",
+          "body": "Detta väger produkten du just kontrollerat mot produkter på din hylla så att du kan avgöra om du ska köpa den.",
+          "bullet1": "Är produkten en dubblett av något på din hylla?",
+          "bullet2": "Krockar den med något du redan använder?",
+          "bullet3": "Fyller den ett verkligt gap eller bara mer av samma sak?",
+          "bullet4": "Passar den bättre som ersättning än som extra?"
+        },
+        "anchorLabel": "Ny produkt",
+        "selectionCount": "{count}/{max} valda",
+        "pickHeading": "Produkter du redan äger",
+        "clearSelection": "Rensa",
+        "ingredientCount": "{count, plural, one {# ingrediens} other {# ingredienser}}",
+        "emptyShelf": "Lägg till produkter med ingredienser på hyllan innan du jämför.",
+        "emptyShelfAction": "Till hyllan",
+        "compareCta": "Välj hyllprodukter",
+        "compareSelected": "{count, plural, one {Jämför med # hyllprodukt} other {Jämför med # hyllprodukter}}",
+        "compareAgain": "Jämför igen",
+        "compareAction": "Kör köpkontroll",
+        "comparing": "Jämför med hyllan...",
+        "error": "Vi kunde inte jämföra produkten med din hylla. Försök igen om en stund."
+      },
+      "result": {
+        "eyebrow": "Före köp",
+        "winner": "Bättre val",
+        "noWinnerProduct": "Ingen tydlig köpanledning",
+        "unknownScore": "okänt",
+        "itemMeta": "Poäng {score} · {confidence}",
+        "keyActives": "Viktiga aktiva: {actives}",
+        "ingredients": "({ingredients})",
+        "stats": {
+          "conflicts": "{count, plural, one {# konflikt} other {# konflikter}}",
+          "overlaps": "{count, plural, one {# överlapp} other {# överlapp}}",
+          "reactions": "{count, plural, one {# reaktionssignal} other {# reaktionssignaler}}"
+        },
+        "confidence": {
+          "high": "hög tillförlitlighet",
+          "medium": "medel tillförlitlighet",
+          "low": "låg tillförlitlighet"
+        },
+        "outcomes": {
+          "choose_anchor": "{product} verkar värd att överväga",
+          "choose_candidate": "Fortsätt med {product} istället",
+          "no_clear_winner": "Ingen tydlig anledning att köpa",
+          "not_enough_data": "Inte tillräckligt med data"
+        },
+        "reasons": {
+          "better_fit": "Det här alternativet har starkare helhetspassform.",
+          "lower_conflict": "Det har färre eller mildare ingredienskonflikter.",
+          "less_duplicate_exposure": "Det ger mindre dubblettexponering i rutinen.",
+          "reaction_risk": "Reaktionssignaler gör det andra alternativet mindre tryggt.",
+          "missing_personal_context": "Mer personlig kontext skulle förbättra jämförelsen.",
+          "not_enough_data": "En produkt saknar tillräckligt tillförlitlig ingrediensdata.",
+          "similar_tradeoffs": "Produkterna har liknande tradeoffs.",
+          "already_owned": "Detta överlappar mycket med något som redan finns på din hylla.",
+          "replacement_only": "Köpet passar bäst som ersättning, inte som extra produkt.",
+          "different_routine_roles": "Produkterna fyller olika roller i rutinen, så detta är inte ett direkt ersättningsbeslut.",
+          "routine_conflict": "Detta kan krocka med något du redan använder.",
+          "use_together_carefully": "Lägg inte dessa ovanpå varandra utan en tydlig plan för att separera dem.",
+          "fills_routine_gap": "Detta verkar fylla en annan roll än hyllprodukterna du valde."
+        }
+      }
+    },
+    "shelf": {
+      "sheet": {
+        "trigger": "Jämför ägda produkter",
+        "title": "Jämför ägda produkter",
+        "description": "Välj en hyllprodukt för att se hur de fungerar tillsammans.",
+        "info": {
+          "trigger": "Om jämförelsen",
+          "title": "Vad vi kollar för produkter du äger",
+          "body": "Detta väger produkter som redan finns på din hylla så att du kan avgöra hur du använder dem, inte om du ska köpa fler.",
+          "bullet1": "Vilken passar din hud bättre just nu",
+          "bullet2": "Om de överlappar så mycket att en räcker",
+          "bullet3": "Om du kan använda båda tillsammans",
+          "bullet4": "Om någon kan dela triggers med tidigare reaktioner"
+        },
+        "anchorLabel": "Hyllprodukt",
+        "selectionCount": "{count}/{max} valda",
+        "pickHeading": "Jämför med",
+        "clearSelection": "Rensa",
+        "ingredientCount": "{count, plural, one {# ingrediens} other {# ingredienser}}",
+        "emptyShelf": "Lägg till en annan aktiv produkt med ingredienser innan du jämför ägda produkter.",
+        "emptyShelfAction": "Till hyllan",
+        "compareCta": "Välj ägda produkter",
+        "compareSelected": "{count, plural, one {Granska # ägd produkt} other {Granska # ägda produkter}}",
+        "compareAgain": "Granska igen",
+        "compareAction": "Granska ägda produkter",
+        "comparing": "Granskar produkter...",
+        "error": "Vi kunde inte granska hyllprodukterna. Försök igen om en stund."
+      },
+      "result": {
+        "eyebrow": "Hyllbeslut",
+        "winner": "Huvudval",
+        "noWinnerProduct": "Ingen produkt behöver vinna",
+        "unknownScore": "okänt",
+        "itemMeta": "Poäng {score} · {confidence}",
+        "keyActives": "Viktiga aktiva: {actives}",
+        "ingredients": "({ingredients})",
+        "stats": {
+          "conflicts": "{count, plural, one {# konflikt} other {# konflikter}}",
+          "overlaps": "{count, plural, one {# överlapp} other {# överlapp}}",
+          "reactions": "{count, plural, one {# reaktionssignal} other {# reaktionssignaler}}"
+        },
+        "confidence": {
+          "high": "hög tillförlitlighet",
+          "medium": "medel tillförlitlighet",
+          "low": "låg tillförlitlighet"
+        },
+        "outcomes": {
+          "choose_anchor": "{product} är starkare att fortsätta använda",
+          "choose_candidate": "{product} är starkare att fortsätta använda",
+          "no_clear_winner": "Ingen enskild produkt behöver vinna",
+          "not_enough_data": "Inte tillräckligt med data"
+        },
+        "reasons": {
+          "better_fit": "Det här alternativet har starkare helhetspassform för fortsatt användning.",
+          "lower_conflict": "Det har färre eller mildare ingredienskonflikter.",
+          "less_duplicate_exposure": "Det ger mindre dubblettexponering i rutinen.",
+          "reaction_risk": "Reaktionssignaler gör det andra alternativet mindre tryggt.",
+          "missing_personal_context": "Mer personlig kontext skulle förbättra hyllbeslutet.",
+          "not_enough_data": "En produkt saknar tillräckligt tillförlitlig ingrediensdata.",
+          "similar_tradeoffs": "Produkterna har liknande tradeoffs.",
+          "already_owned": "De här ägda produkterna överlappar mycket.",
+          "replacement_only": "Använd en som huvudprodukt eller ersätt den ena med den andra; båda kanske inte tillför mycket.",
+          "different_routine_roles": "De fyller olika roller i rutinen, så behandla dem inte som ersättare.",
+          "routine_conflict": "Produkterna kan krocka om de används tillsammans.",
+          "use_together_carefully": "Separera dem i rutinen istället för att lägga dem ovanpå varandra.",
+          "fills_routine_gap": "En produkt fyller en roll som den andra inte täcker."
+        }
+      }
     }
   },
   "ingredients": {

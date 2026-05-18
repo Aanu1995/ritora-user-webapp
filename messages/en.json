@@ -1864,6 +1864,7 @@
         "source": "Data resolved from {source}, confirmed by you on {date}."
       },
       "actions": {
+        "compare": "Compare",
         "edit": "Edit",
         "archive": "Archive",
         "markFinished": "Mark finished",
@@ -2130,6 +2131,12 @@
       "paste": "Paste ingredients",
       "photos": "Photos"
     },
+    "compare": {
+      "checkedProductFallback": "Checked product",
+      "cardTitle": "Compare with your Shelf",
+      "cardBody": "See how this stacks up against products you already own.",
+      "cardAction": "Open comparison"
+    },
     "paste": {
       "brandLabel": "Brand",
       "brandPlaceholder": "Product brand",
@@ -2260,6 +2267,146 @@
       "lip-care": "Lip care",
       "treatment": "Treatment",
       "other": "Other"
+    }
+  },
+  "productCompare": {
+    "quickCheck": {
+      "sheet": {
+        "trigger": "Compare with Shelf",
+        "title": "Compare before buying",
+        "description": "Pick Shelf products to weigh against this one before you buy.",
+        "info": {
+          "trigger": "About this comparison",
+          "title": "What we check before you buy",
+          "body": "This weighs the product you just checked against products on your Shelf so you can decide whether to buy it.",
+          "bullet1": "Is this product a duplicate of something on your Shelf?",
+          "bullet2": "Will it clash with what you already use?",
+          "bullet3": "Does it fill a real gap, or add more of the same?",
+          "bullet4": "Would it make more sense as a replacement than an extra?"
+        },
+        "anchorLabel": "New product",
+        "selectionCount": "{count}/{max} selected",
+        "pickHeading": "Products you already own",
+        "clearSelection": "Clear",
+        "ingredientCount": "{count, plural, one {# ingredient} other {# ingredients}}",
+        "emptyShelf": "Add products with ingredients to your Shelf before comparing.",
+        "emptyShelfAction": "Go to Shelf",
+        "compareCta": "Pick Shelf products",
+        "compareSelected": "{count, plural, one {Compare with # Shelf product} other {Compare with # Shelf products}}",
+        "compareAgain": "Compare again",
+        "compareAction": "Run buying check",
+        "comparing": "Comparing with Shelf...",
+        "error": "We couldn't compare this product with your Shelf. Try again in a moment."
+      },
+      "result": {
+        "eyebrow": "Before you buy",
+        "winner": "Better choice",
+        "noWinnerProduct": "No clear buying reason",
+        "unknownScore": "unknown",
+        "itemMeta": "Score {score} · {confidence}",
+        "keyActives": "Key actives: {actives}",
+        "ingredients": "({ingredients})",
+        "stats": {
+          "conflicts": "{count, plural, one {# conflict} other {# conflicts}}",
+          "overlaps": "{count, plural, one {# overlap} other {# overlaps}}",
+          "reactions": "{count, plural, one {# reaction signal} other {# reaction signals}}"
+        },
+        "confidence": {
+          "high": "high confidence",
+          "medium": "medium confidence",
+          "low": "low confidence"
+        },
+        "outcomes": {
+          "choose_anchor": "{product} looks worth considering",
+          "choose_candidate": "Keep using {product} instead",
+          "no_clear_winner": "No clear reason to buy",
+          "not_enough_data": "Not enough data"
+        },
+        "reasons": {
+          "better_fit": "This option has the stronger overall fit.",
+          "lower_conflict": "It has fewer or milder ingredient conflicts.",
+          "less_duplicate_exposure": "It adds less duplicate exposure to your routine.",
+          "reaction_risk": "Reaction risk signals make the other option less comfortable.",
+          "missing_personal_context": "More personal context would improve this comparison.",
+          "not_enough_data": "One product does not have enough reliable ingredient data.",
+          "similar_tradeoffs": "The products have similar tradeoffs.",
+          "already_owned": "This overlaps heavily with something already on your Shelf.",
+          "replacement_only": "Buying it makes most sense as a replacement, not an extra product.",
+          "different_routine_roles": "These products serve different routine roles, so this is not a direct replacement decision.",
+          "routine_conflict": "This may clash with something you already use.",
+          "use_together_carefully": "Do not layer these together unless you have a clear spacing plan.",
+          "fills_routine_gap": "This appears to fill a different role from the Shelf products you selected."
+        }
+      }
+    },
+    "shelf": {
+      "sheet": {
+        "trigger": "Compare owned products",
+        "title": "Compare owned products",
+        "description": "Pick another Shelf product to weigh how they work together.",
+        "info": {
+          "trigger": "About this comparison",
+          "title": "What we check for products you own",
+          "body": "This weighs products already on your Shelf so you can decide how to use them, not whether to buy more.",
+          "bullet1": "Which one fits your skin better right now",
+          "bullet2": "If they overlap enough that one is enough",
+          "bullet3": "Whether you can use both safely together",
+          "bullet4": "If one may share triggers with past reactions"
+        },
+        "anchorLabel": "Shelf product",
+        "selectionCount": "{count}/{max} selected",
+        "pickHeading": "Compare with",
+        "clearSelection": "Clear",
+        "ingredientCount": "{count, plural, one {# ingredient} other {# ingredients}}",
+        "emptyShelf": "Add another active product with ingredients before comparing owned products.",
+        "emptyShelfAction": "Go to Shelf",
+        "compareCta": "Pick owned products",
+        "compareSelected": "{count, plural, one {Review # owned product} other {Review # owned products}}",
+        "compareAgain": "Review again",
+        "compareAction": "Review owned products",
+        "comparing": "Reviewing products...",
+        "error": "We couldn't review these Shelf products. Try again in a moment."
+      },
+      "result": {
+        "eyebrow": "Shelf decision",
+        "winner": "Main choice",
+        "noWinnerProduct": "No product needs to win",
+        "unknownScore": "unknown",
+        "itemMeta": "Score {score} · {confidence}",
+        "keyActives": "Key actives: {actives}",
+        "ingredients": "({ingredients})",
+        "stats": {
+          "conflicts": "{count, plural, one {# conflict} other {# conflicts}}",
+          "overlaps": "{count, plural, one {# overlap} other {# overlaps}}",
+          "reactions": "{count, plural, one {# reaction signal} other {# reaction signals}}"
+        },
+        "confidence": {
+          "high": "high confidence",
+          "medium": "medium confidence",
+          "low": "low confidence"
+        },
+        "outcomes": {
+          "choose_anchor": "{product} is stronger to keep using",
+          "choose_candidate": "{product} is stronger to keep using",
+          "no_clear_winner": "No single product needs to win",
+          "not_enough_data": "Not enough data"
+        },
+        "reasons": {
+          "better_fit": "This option has the stronger overall fit for continued use.",
+          "lower_conflict": "It has fewer or milder ingredient conflicts.",
+          "less_duplicate_exposure": "It creates less duplicate exposure in your routine.",
+          "reaction_risk": "Reaction risk signals make the other option less comfortable.",
+          "missing_personal_context": "More personal context would improve this Shelf decision.",
+          "not_enough_data": "One product does not have enough reliable ingredient data.",
+          "similar_tradeoffs": "The products have similar tradeoffs.",
+          "already_owned": "These already-owned products overlap heavily.",
+          "replacement_only": "Use one as the main product or replace one with the other; keeping both may not add much.",
+          "different_routine_roles": "They serve different routine roles, so do not treat them as substitutes.",
+          "routine_conflict": "These products may clash if used together.",
+          "use_together_carefully": "Separate them in your routine instead of layering them together.",
+          "fills_routine_gap": "One product fills a role the other does not cover."
+        }
+      }
     }
   },
   "ingredients": {

@@ -25,10 +25,19 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('@/hooks/use-shelf', () => ({
   useShelfProduct: (...args: unknown[]) => mockUseShelfProduct(...args),
+  useShelfProducts: () => ({ data: [], isLoading: false }),
   useArchiveProduct: () => ({ mutate: jest.fn(), isPending: false }),
   useRestoreProduct: () => ({ mutate: jest.fn(), isPending: false }),
   useMarkProductFinished: () => ({ mutate: jest.fn(), isPending: false }),
   useDeleteProduct: () => ({ mutate: jest.fn(), isPending: false }),
+}));
+
+jest.mock('@/hooks/use-ingredients', () => ({
+  useCompareProducts: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+    data: null,
+  }),
 }));
 
 import { ProductDetailPage } from '@/components/shelf/detail/product-detail-page';

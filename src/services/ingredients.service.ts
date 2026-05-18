@@ -5,9 +5,12 @@ import type {
   AnalyzeProductsInput,
   ProductCheckInput,
   ProductCheckResponse,
+  ProductCompareInput,
+  ProductCompareResponse,
 } from "@/types/ingredients";
 
 export const PRODUCT_CHECK_REQUEST_TIMEOUT_MS = 120000;
+export const PRODUCT_COMPARE_REQUEST_TIMEOUT_MS = 240000;
 
 export async function analyzeProducts(
   input: AnalyzeProductsInput,
@@ -41,5 +44,20 @@ export async function checkProduct(
       language: input.language,
     },
     { timeout: PRODUCT_CHECK_REQUEST_TIMEOUT_MS },
+  );
+}
+
+export async function compareProducts(
+  input: ProductCompareInput,
+): Promise<ProductCompareResponse> {
+  return postRequest<ProductCompareResponse>(
+    ApiPath.IngredientsCompareProducts,
+    {
+      goal: input.goal,
+      anchor: input.anchor,
+      candidates: input.candidates,
+      language: input.language,
+    },
+    { timeout: PRODUCT_COMPARE_REQUEST_TIMEOUT_MS },
   );
 }

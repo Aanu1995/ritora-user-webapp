@@ -130,6 +130,33 @@ function createShelfDraft() {
   };
 }
 
+function createShelfProduct(overrides?: {
+  id?: string;
+  brand?: string;
+  name?: string;
+  inciIngredients?: string[];
+}) {
+  const draft = createShelfDraft();
+
+  return {
+    id: overrides?.id ?? "shelf-1",
+    ...draft,
+    identity: {
+      ...draft.identity,
+      brand: overrides?.brand ?? draft.identity.brand,
+      name: overrides?.name ?? draft.identity.name,
+      inciIngredients:
+        overrides?.inciIngredients ?? draft.identity.inciIngredients,
+    },
+    manufacturer: {
+      ...draft.manufacturer,
+      brand: overrides?.brand ?? draft.manufacturer.brand,
+    },
+    createdAt: "2026-05-17T09:00:00.000Z",
+    updatedAt: "2026-05-17T09:00:00.000Z",
+  };
+}
+
 function createProductCheckResponse(options?: {
   reviewRequired?: boolean;
   confidence?: "high" | "medium" | "low";
@@ -195,6 +222,107 @@ function createProductCheckResponse(options?: {
   };
 }
 
+function createShelfCompareResponse() {
+  const base = createProductCompareResponse();
+
+  return {
+    ...base,
+    goal: "shelf_routine_decision",
+    items: base.items.map((item, index) => ({
+      ...item,
+      kind: "shelf_product",
+      productId: index === 0 ? "shelf-1" : "shelf-2",
+      brand: index === 0 ? "Ritora Lab" : "Calm Lab",
+      name: index === 0 ? "Barrier Serum" : "Gentle Cream",
+    })),
+    comparison: {
+      ...base.comparison,
+      summary:
+        "These shelf products have similar tradeoffs, so Ritora cannot choose a clear winner.",
+    },
+  };
+}
+
+function createProductCompareResponse() {
+  return {
+    goal: "new_product_decision",
+    context: {
+      level: "personalized",
+      usedSignals: ["skin_profile", "active_shelf"],
+      missingSignals: [],
+      activeShelfProductCount: 1,
+      recentJournalReactionCount: 0,
+      recentSuggestionReactionCount: 0,
+    },
+    items: [
+      {
+        itemId: "anchor",
+        kind: "checked_product",
+        productId: null,
+        brand: "Ritora Lab",
+        name: "Barrier Serum",
+        category: "serum",
+        inciIngredientCount: 2,
+        matchedIngredientCount: 2,
+        confidence: "high",
+        safetyScore: 92,
+        verdict: createProductCheckResponse().verdict,
+        keyActives: ["Niacinamide"],
+        conflictCount: 0,
+        overlapCount: 0,
+        reactionEvidenceCount: 0,
+      },
+      {
+        itemId: "candidate-1",
+        kind: "shelf_product",
+        productId: "shelf-1",
+        brand: "Ritora Lab",
+        name: "Barrier Serum",
+        category: "serum",
+        inciIngredientCount: 2,
+        matchedIngredientCount: 2,
+        confidence: "high",
+        safetyScore: 92,
+        verdict: createProductCheckResponse().verdict,
+        keyActives: ["Niacinamide"],
+        conflictCount: 0,
+        overlapCount: 0,
+        reactionEvidenceCount: 0,
+      },
+    ],
+    comparison: {
+      outcome: "no_clear_winner",
+      winnerItemId: null,
+      confidence: "medium",
+      summary:
+        "This looks very similar to a product you already own. It is only worth buying if you are replacing the shelf product.",
+      reasons: [
+        {
+          code: "already_owned",
+          itemIds: ["anchor", "candidate-1"],
+          ingredientNames: ["Aqua", "Niacinamide"],
+          severity: null,
+        },
+        {
+          code: "replacement_only",
+          itemIds: ["anchor", "candidate-1"],
+          ingredientNames: ["Aqua", "Niacinamide"],
+          severity: null,
+        },
+      ],
+      generatedAt: "2026-05-17T09:00:00.000Z",
+    },
+    aiReview: {
+      status: "unavailable",
+      confidence: "low",
+      preferredItemId: null,
+      reasonCodes: [],
+      summary: null,
+      reviewedAt: "2026-05-17T09:00:00.000Z",
+    },
+  };
+}
+
 function createResolvedLookup() {
   return {
     ...createShelfDraft(),
@@ -224,6 +352,33 @@ test.describe("Check Product", () => {
 
       await fulfillJson(route, 200, createProductCheckResponse());
     });
+    await page.route("**/api/v1/inventory/products**", async (route) => {
+      if (route.request().method() !== "GET") {
+        await route.fallback();
+        return;
+      }
+
+      await fulfillJson(route, 200, {
+        items: [createShelfProduct()],
+        nextCursor: null,
+      });
+    });
+    await page.route("**/api/v1/ingredients/compare-products", async (route) => {
+      expect(route.request().method()).toBe("POST");
+      expect(route.request().postDataJSON()).toMatchObject({
+        goal: "new_product_decision",
+        anchor: {
+          kind: "checked_product",
+          product: {
+            brand: "Ritora Lab",
+            name: "Barrier Serum",
+          },
+        },
+        candidates: [{ kind: "shelf_product", productId: "shelf-1" }],
+      });
+
+      await fulfillJson(route, 200, createProductCompareResponse());
+    });
 
     await page.goto("/check-product");
     await dismissCookieBanner(page);
@@ -241,6 +396,12 @@ test.describe("Check Product", () => {
     await expect(
       page.getByRole("button", { name: /add to shelf/i }),
     ).toHaveCount(0);
+
+    await page.getByRole("button", { name: /open comparison/i }).click();
+    await page.getByLabel(/ritora lab barrier serum/i).click();
+    await page.getByRole("button", { name: /compare with 1 shelf product/i }).click();
+    await expect(page.getByText(/no clear reason to buy/i)).toBeVisible();
+    await expect(page.getByText(/replacement/i)).toBeVisible();
   });
 
   test("checks extracted ingredient label photos and stays verdict-only", async ({
@@ -260,19 +421,11 @@ test.describe("Check Product", () => {
           source: "photo_extraction",
           brand: "Ritora Lab",
           name: "Barrier Serum",
-          lookupConfidence: "medium",
-          reviewRequired: true,
+          reviewRequired: false,
         },
       });
 
-      await fulfillJson(
-        route,
-        200,
-        createProductCheckResponse({
-          reviewRequired: true,
-          confidence: "medium",
-        }),
-      );
+      await fulfillJson(route, 200, createProductCheckResponse());
     });
 
     await page.goto("/check-product");
@@ -287,13 +440,62 @@ test.describe("Check Product", () => {
     await page.getByRole("button", { name: /quick check/i }).click();
 
     await expect(
-      page.getByRole("heading", { name: /good with limits/i }),
+      page.getByRole("heading", { name: /good fit/i }),
     ).toBeVisible();
     await expect(
       page.getByText(/some extracted details need review/i),
-    ).toBeVisible();
+    ).toHaveCount(0);
     await expect(
       page.getByRole("button", { name: /add to shelf/i }),
     ).toHaveCount(0);
+  });
+
+  test("compares one Shelf product with another from the detail page", async ({
+    page,
+  }) => {
+    const shelfOne = createShelfProduct({ id: "shelf-1" });
+    const shelfTwo = createShelfProduct({
+      id: "shelf-2",
+      brand: "Calm Lab",
+      name: "Gentle Cream",
+      inciIngredients: ["Aqua", "Glycerin", "Ceramide NP"],
+    });
+    await mockAuthenticatedApi(page);
+    await page.route("**/api/v1/inventory/products**", async (route) => {
+      if (route.request().method() !== "GET") {
+        await route.fallback();
+        return;
+      }
+
+      const url = new URL(route.request().url());
+      if (url.pathname.endsWith("/inventory/products/shelf-1")) {
+        await fulfillJson(route, 200, shelfOne);
+        return;
+      }
+
+      await fulfillJson(route, 200, {
+        items: [shelfOne, shelfTwo],
+        nextCursor: null,
+      });
+    });
+    await page.route("**/api/v1/ingredients/compare-products", async (route) => {
+      expect(route.request().method()).toBe("POST");
+      expect(route.request().postDataJSON()).toMatchObject({
+        goal: "shelf_routine_decision",
+        anchor: { kind: "shelf_product", productId: "shelf-1" },
+        candidates: [{ kind: "shelf_product", productId: "shelf-2" }],
+      });
+
+      await fulfillJson(route, 200, createShelfCompareResponse());
+    });
+
+    await page.goto("/shelf/shelf-1");
+    await dismissCookieBanner(page);
+    await page.getByRole("button", { name: /^compare$/i }).click();
+    await page.getByLabel(/calm lab gentle cream/i).click();
+    await page.getByRole("button", { name: /review 1 owned product/i }).click();
+
+    await expect(page.getByText(/no single product needs to win/i)).toBeVisible();
+    await expect(page.getByText(/similar tradeoffs/i)).toBeVisible();
   });
 });

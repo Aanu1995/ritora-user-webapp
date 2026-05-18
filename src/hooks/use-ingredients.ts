@@ -5,10 +5,16 @@ import { useLocale } from 'next-intl';
 import { QueryKey } from '@/constants/query-keys';
 import { useAuthEnabled } from '@/hooks/use-auth-enabled';
 import { normalizeLocale } from '@/i18n/config';
-import { analyzeProducts, checkProduct } from '@/services/ingredients.service';
+import {
+  analyzeProducts,
+  checkProduct,
+  compareProducts,
+} from '@/services/ingredients.service';
 import type {
   ProductCheckInput,
   ProductCheckResponse,
+  ProductCompareInput,
+  ProductCompareResponse,
 } from '@/types/ingredients';
 
 const STALE_MS = 60_000;
@@ -59,5 +65,12 @@ export function useCheckProduct() {
   return useMutation<ProductCheckResponse, Error, ProductCheckInput>({
     mutationKey: [QueryKey.ProductCheck],
     mutationFn: (input) => checkProduct(input),
+  });
+}
+
+export function useCompareProducts() {
+  return useMutation<ProductCompareResponse, Error, ProductCompareInput>({
+    mutationKey: [QueryKey.ProductCompare],
+    mutationFn: (input) => compareProducts(input),
   });
 }

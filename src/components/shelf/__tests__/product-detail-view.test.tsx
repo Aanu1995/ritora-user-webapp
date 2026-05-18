@@ -8,6 +8,7 @@ const mockArchive = jest.fn();
 const mockRestore = jest.fn();
 const mockFinish = jest.fn();
 const mockDelete = jest.fn();
+const mockCompare = jest.fn();
 const mockPush = jest.fn();
 
 jest.mock('next/navigation', () => ({
@@ -22,6 +23,10 @@ jest.mock('next/navigation', () => ({
 }));
 
 jest.mock('@/hooks/use-shelf', () => ({
+  useShelfProducts: () => ({
+    data: [],
+    isLoading: false,
+  }),
   useArchiveProduct: () => ({
     mutate: mockArchive,
     isPending: false,
@@ -37,6 +42,14 @@ jest.mock('@/hooks/use-shelf', () => ({
   useDeleteProduct: () => ({
     mutate: mockDelete,
     isPending: false,
+  }),
+}));
+
+jest.mock('@/hooks/use-ingredients', () => ({
+  useCompareProducts: () => ({
+    mutate: mockCompare,
+    isPending: false,
+    data: null,
   }),
 }));
 
@@ -103,6 +116,7 @@ beforeEach(() => {
   mockRestore.mockReset();
   mockFinish.mockReset();
   mockDelete.mockReset();
+  mockCompare.mockReset();
   window.sessionStorage.clear();
 });
 
@@ -120,9 +134,10 @@ describe('ProductDetailView', () => {
     expect(screen.getByText('Serum')).toBeInTheDocument();
   });
 
-  it('renders Edit, Archive, Mark finished, Delete actions', () => {
+  it('renders Compare, Edit, Archive, Mark finished, Delete actions', () => {
     renderWithProviders(<ProductDetailView product={PRODUCT} />);
 
+    expect(screen.getByRole('button', { name: /compare/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /edit/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /archive/i })).toBeInTheDocument();
     expect(
