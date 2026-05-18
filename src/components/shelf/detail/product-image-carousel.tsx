@@ -65,6 +65,8 @@ export function ProductImageCarousel({
           src={imageUrls[index]}
           alt={`${brand} ${productName}`}
           sizes="(max-width: 820px) 100vw, 50vw"
+          loading="eager"
+          fetchPriority="high"
           className="h-full w-full"
           fallback={
             <span className="flex h-full w-full items-center justify-center">

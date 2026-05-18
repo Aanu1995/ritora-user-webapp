@@ -154,7 +154,7 @@ export function LabelPhotosSection({
             {t('shapeTips.heading')}
           </span>
         </summary>
-        <ul className="mt-2 flex flex-col gap-1.5 pl-6 text-foreground/80">
+        <ul className="mt-2 list-disc space-y-1.5 pl-9 text-foreground/80 marker:text-muted">
           <li>{t('shapeTips.rectangular')}</li>
           <li>{t('shapeTips.cylindrical')}</li>
           <li>{t('shapeTips.roundJar')}</li>

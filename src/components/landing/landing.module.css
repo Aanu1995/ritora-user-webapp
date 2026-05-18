@@ -1,0 +1,300 @@
+/*
+ * Landing page custom patterns. Most of the layout is Tailwind in JSX;
+ * this module covers the parts that are easier to express as CSS:
+ *  - Stylized product bottles (pump / dropper / tube / jar) with brand
+ *    labels overlaid on the bottle body.
+ *  - Hero card float animation.
+ *  - Data-flow connector lines in the privacy section.
+ *  - Photo placeholder used in the Skin Journal preview.
+ */
+
+/* ============== Bottle illustrations ============== */
+
+.bottle {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.bottle[data-tone='green']    { --bottle-body: linear-gradient(160deg, #d1ecdb, #a4d4b6); --bottle-ink: #1f4a32; }
+.bottle[data-tone='blush']    { --bottle-body: linear-gradient(160deg, #fcdcd0, #f1b59c); --bottle-ink: #7a3a22; }
+.bottle[data-tone='cream']    { --bottle-body: linear-gradient(160deg, #fff4dc, #f1e1b8); --bottle-ink: #6b4a18; }
+.bottle[data-tone='lavender'] { --bottle-body: linear-gradient(160deg, #e6deff, #c8b8f5); --bottle-ink: #432e87; }
+.bottle[data-tone='aqua']     { --bottle-body: linear-gradient(160deg, #d4eef5, #a3d2dd); --bottle-ink: #1d4d5c; }
+.bottle[data-tone='amber']    { --bottle-body: linear-gradient(160deg, #fde7c0, #f0c789); --bottle-ink: #7a4818; }
+.bottle[data-tone='charcoal'] { --bottle-body: linear-gradient(160deg, #d8dde0, #a8b0b6); --bottle-ink: #2a2f33; }
+
+.bottleBody {
+  position: absolute;
+  inset: 0;
+  background: var(--bottle-body);
+  z-index: 0;
+}
+
+.bottleCap,
+.bottleNeck,
+.bottleLabel,
+.bottleShine {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Pump */
+.bottle[data-shape='pump'] .bottleCap {
+  top: 0;
+  left: 36%;
+  width: 28%;
+  height: 8%;
+  background: rgba(20, 32, 26, 0.45);
+  border-radius: 2px 2px 0 0;
+  z-index: 2;
+}
+.bottle[data-shape='pump'] .bottleNeck {
+  top: 8%;
+  left: 28%;
+  width: 44%;
+  height: 6%;
+  background: rgba(20, 32, 26, 0.28);
+  z-index: 2;
+}
+.bottle[data-shape='pump'] .bottleLabel {
+  top: 38%;
+  bottom: 14%;
+  left: 8%;
+  right: 8%;
+}
+.bottle[data-shape='pump'] .bottleBrand {
+  top: 49%;
+}
+
+/* Dropper */
+.bottle[data-shape='dropper'] .bottleCap {
+  top: 0;
+  left: 24%;
+  width: 52%;
+  height: 14%;
+  background: rgba(20, 32, 26, 0.55);
+  border-radius: 3px 3px 1px 1px;
+  z-index: 2;
+}
+.bottle[data-shape='dropper'] .bottleNeck {
+  top: 14%;
+  left: 46%;
+  width: 8%;
+  height: 6%;
+  background: rgba(20, 32, 26, 0.5);
+  z-index: 2;
+}
+.bottle[data-shape='dropper'] .bottleBody {
+  border-radius: 4px;
+}
+.bottle[data-shape='dropper'] .bottleLabel {
+  top: 44%;
+  bottom: 14%;
+  left: 8%;
+  right: 8%;
+}
+.bottle[data-shape='dropper'] .bottleBrand {
+  top: 56%;
+}
+
+/* Tube */
+.bottle[data-shape='tube'] .bottleCap {
+  top: 0;
+  left: 22%;
+  right: 22%;
+  height: 9%;
+  background: rgba(20, 32, 26, 0.42);
+  border-radius: 2px 2px 0 0;
+  z-index: 2;
+}
+.bottle[data-shape='tube'] .bottleBody {
+  border-radius: 16% 16% 4px 4px / 12% 12% 4px 4px;
+}
+.bottle[data-shape='tube'] .bottleLabel {
+  top: 24%;
+  bottom: 14%;
+  left: 10%;
+  right: 10%;
+}
+.bottle[data-shape='tube'] .bottleBrand {
+  top: 38%;
+}
+
+/* Jar */
+.bottle[data-shape='jar'] .bottleCap {
+  top: 0;
+  left: 6%;
+  right: 6%;
+  height: 24%;
+  background: rgba(20, 32, 26, 0.38);
+  border-radius: 4px 4px 1px 1px;
+  z-index: 2;
+}
+.bottle[data-shape='jar'] .bottleBody {
+  border-radius: 4px 4px 8px 8px;
+}
+.bottle[data-shape='jar'] .bottleLabel {
+  top: 40%;
+  bottom: 14%;
+  left: 8%;
+  right: 8%;
+}
+.bottle[data-shape='jar'] .bottleBrand {
+  top: 52%;
+}
+
+.bottleLabel {
+  z-index: 1;
+  background: rgba(255, 251, 244, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(20, 32, 26, 0.08);
+}
+
+.bottleBrand {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-display), 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--bottle-ink);
+  line-height: 1.05;
+  font-size: 5.5px;
+}
+
+.bottle[data-size='md'] .bottleBrand { font-size: 7px; }
+.bottle[data-size='lg'] .bottleBrand {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.bottleBrandSub {
+  display: block;
+  margin-top: 2px;
+  font-size: 6px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  opacity: 0.7;
+}
+
+.bottleShine {
+  inset: 0;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 35%);
+  z-index: 3;
+  border-radius: inherit;
+}
+
+/* ============== Hero card floats ============== */
+
+@keyframes heroFloatA {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -8px, 0); }
+}
+@keyframes heroFloatB {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, 8px, 0); }
+}
+
+.heroFloatA {
+  animation: heroFloatA 9s ease-in-out infinite;
+}
+.heroFloatB {
+  animation: heroFloatB 11s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroFloatA,
+  .heroFloatB {
+    animation: none;
+  }
+}
+
+/* ============== Data flow connector ============== */
+
+.flowStep + .flowStep::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: -8px;
+  width: 2px;
+  height: 18px;
+  background: var(--border-strong);
+  transform: translateY(-6px);
+}
+
+/* ============== Skin Journal photo placeholder ============== */
+
+.journalPhoto {
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  background: linear-gradient(160deg, #f1d6c4 0%, #d6a78a 100%);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.journalPhoto::before {
+  content: '';
+  position: absolute;
+  inset: 18% 28% auto 28%;
+  height: 36%;
+  border-radius: 50% 50% 45% 45%;
+  background: rgba(255, 255, 255, 0.18);
+}
+.journalPhoto::after {
+  content: '';
+  position: absolute;
+  inset: 38% 32% 22% 32%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(179, 38, 30, 0.4), transparent 50%),
+    radial-gradient(circle at 70% 50%, rgba(179, 38, 30, 0.3), transparent 50%);
+  border-radius: 60%;
+}
+
+/* ============== Hero title accent (highlighter bar under part of the headline) ============== */
+
+.heroAccent {
+  position: relative;
+  display: inline;
+  background: linear-gradient(transparent 70%, var(--accent-soft) 70%);
+  padding: 0 2px;
+  border-radius: 4px;
+}
+
+/* ============== Hero badge dot ping ============== */
+
+@keyframes heroPing {
+  0%   { transform: scale(0.6); opacity: 0.5; }
+  75%, 100% { transform: scale(2.2); opacity: 0; }
+}
+.heroPingDot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+.heroPingDot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  background: var(--accent);
+  opacity: 0.4;
+  animation: heroPing 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroPingDot::after {
+    animation: none;
+  }
+}

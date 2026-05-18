@@ -47,6 +47,7 @@
     "whyRitora": "Why Ritora",
     "howItWorks": "How it works",
     "features": "Features",
+    "privacy": "Privacy",
     "faq": "FAQ",
     "login": "Log in",
     "signUp": "Sign up",
@@ -60,172 +61,229 @@
   },
   "landing": {
     "hero": {
-      "badge": "Skincare without the second guessing",
-      "headline": "Your calmer routine starts with the shelf you already own.",
-      "subheadline": "Ritora reads your shelf, catches ingredient clashes, and turns the chaos into a calm morning and night plan shaped by your skin.",
-      "ctaPrimary": "Create an account",
+      "badge": "Inventory-first skincare decision support",
+      "headlineLead": "Build safer skincare routines from the",
+      "headlineAccent": "products you already own.",
+      "lead": "Ritora reads your shelf, catches ingredient clashes, and gives you a calm morning, midday, and evening plan tuned to your skin. No shopping needed.",
+      "ctaPrimary": "Create your free account",
       "ctaSecondary": "See how it works",
-      "imageAlt": "An open medicine cabinet in warm light, shelves filled with real everyday skincare bottles from different brands.",
+      "imageAlt": "Today's Suggestion app card with morning routine and Skin Journal preview.",
       "pills": {
-        "a": "Built around your shelf",
+        "a": "Inventory first",
         "b": "Ingredient guardrails",
         "c": "Private by design"
       }
     },
+    "trust": [
+      "Privacy first",
+      "Works with every brand",
+      "Free to use",
+      "Photo analysis included",
+      "Export or delete anytime"
+    ],
     "problem": {
       "eyebrow": "Why routines break",
       "headline": "Good products, still guessing.",
-      "body": "You own the right bottles and still wake up unsure what to layer or skip. Ritora gives you the decision layer that was missing."
-    },
-    "problems": [
-      {
-        "title": "Shelf confusion",
-        "body": "You own great products and still guess each morning what to apply and what to skip."
-      },
-      {
-        "title": "Silent ingredient stacking",
-        "body": "Strong actives pile up between cleansers, toners, and serums. Irritation shows up long before you spot the cause."
-      },
-      {
-        "title": "Buying over building",
-        "body": "Most routines don't need another serum. They need structure, sequencing, and safer choices with what you already own."
-      }
-    ],
-    "privacy": {
-      "eyebrow": "Private by design",
-      "headline": "Your shelf stays yours.",
-      "body": "Ritora is built in the EU with explicit consent and essential cookies only. The points below reflect safeguards already present in the product today.",
-      "points": [
+      "body": "You own the right bottles and still wake up unsure what to layer or skip. Ritora gives you the decision layer that was missing.",
+      "problems": [
         {
-          "title": "GDPR from day one",
-          "body": "Your data is stored and processed under European privacy law. No exceptions, no loopholes."
+          "title": "Shelf confusion",
+          "body": "You own great products and still guess each morning what to apply and what to skip."
         },
         {
-          "title": "Essential cookies only",
-          "body": "Authentication and preference cookies only. No ad tech, no social pixels, and no hidden trackers."
+          "title": "Silent ingredient stacking",
+          "body": "Strong actives pile up between cleansers, toners, and serums. Irritation shows up long before you spot the cause."
         },
         {
-          "title": "Sensitive context is opt-in",
-          "body": "Location and profile context only help your guidance when you choose to provide them."
+          "title": "Buying over building",
+          "body": "Most routines don't need another serum. They need structure, sequencing, and safer choices with what you already own."
+        }
+      ],
+      "stats": [
+        {
+          "figure": "10+",
+          "body": "The average enthusiast owns ten or more skincare products. Most of them sit on the shelf, underused."
         },
         {
-          "title": "Verified account access",
-          "body": "Email verification and secure sign-in flows help protect access to your routine and profile data."
+          "figure": "#1",
+          "body": "Over-exfoliation is the most common self-inflicted barrier injury. Quietly stacked actives are usually the cause."
         }
       ]
     },
     "howItWorks": {
       "eyebrow": "How it works",
       "headline": "Three calm steps from shelf clutter to daily clarity.",
-      "illustrationTitle": "From morning to night, on repeat",
-      "illustrationBody": "Ritora treats your routine as a living cycle. Every step carries last night's actives forward into this morning, so your plan stays safe without you having to think about it."
+      "lead": "Tell Ritora about your skin, map the products you already own, and follow a plan tuned to today. Not last month. Not someone else's.",
+      "steps": [
+        {
+          "title": "Tell Ritora about your skin.",
+          "body": "Skin type, concerns, sensitivities, climate. Every answer shapes the guidance you get.",
+          "hint": "Skin tone, ethnicity, and climate aware from the first step"
+        },
+        {
+          "title": "Add what's already on your shelf.",
+          "body": "Add what you use today. Ritora spots overlap and flags risky pairings.",
+          "hint": "Add by photo or manual entry"
+        },
+        {
+          "title": "Follow a calmer daily plan.",
+          "body": "Wake up to clear guidance for morning and evening, tuned to your shelf.",
+          "hint": "Morning, midday, and evening, with on-demand help any time"
+        }
+      ]
     },
-    "steps": [
-      {
-        "title": "Tell Ritora about your skin",
-        "body": "Share your skin type, concerns, sensitivities, goals, and how involved you want your routine to be. Every answer shapes the guidance you get."
-      },
-      {
-        "title": "Map what's already on your shelf",
-        "body": "Add the products you use today so Ritora can spot ingredient overlap, flag risky pairings, and tell you what's genuinely missing."
-      },
-      {
-        "title": "Follow a calmer daily plan",
-        "body": "Wake up to clear morning and evening guidance. Safety rules come first, and everything else is tuned to your goals and your shelf."
-      }
-    ],
     "features": {
-      "eyebrow": "What you get",
-      "headline": "Everything you need to make calmer skincare decisions.",
-      "illustrationTitle": "Safety rules first, personalisation second",
-      "illustrationBody": "Every recommendation passes through a deterministic safety layer before it meets your goals. No surprises, no clashing actives, no regret purchases."
-    },
-    "featureItems": [
-      {
-        "title": "Your shelf comes first",
-        "body": "Guidance always begins with the products you already own, never with a shopping cart.",
-        "icon": "package"
-      },
-      {
-        "title": "Ingredient safety guardrails",
-        "body": "Conflict checks and overlap detection protect sensitive skin and take the guesswork out of stacking actives.",
-        "icon": "shield-check"
-      },
-      {
-        "title": "Tuned to your skin",
-        "body": "Your goals, sensitivities, skin tone, age, and ethnicity all shape every recommendation you see.",
-        "icon": "user"
-      },
-      {
-        "title": "Private by default",
-        "body": "Explicit consent, careful data boundaries, and EU friendly handling. Built in from day one, never bolted on later.",
-        "icon": "lock"
-      },
-      {
-        "title": "Learn in the open",
-        "body": "Open, searchable pages for the basics. Private, personal routines once you sign in.",
-        "icon": "globe"
-      },
-      {
-        "title": "Calmer daily rituals",
-        "body": "A morning and night view that keeps your routine steady even on the busiest days.",
-        "icon": "sunrise"
-      }
-    ],
-    "differentiators": {
-      "eyebrow": "What makes Ritora different",
-      "headline": "Built for your whole routine, not one brand.",
+      "eyebrow": "What's inside",
+      "headline": "Every part of your routine, intelligently aware of the others.",
+      "lead": "Six capabilities working together so your plan stays safe, even on the messy days.",
       "items": [
         {
-          "title": "Every brand, not one ecosystem",
-          "body": "Ritora works with anything you already own. No brand loyalty required, no upsells, no sponsored picks."
+          "key": "shelf",
+          "eyebrow": "Inventory first",
+          "title": "Your shelf comes first. Always.",
+          "bullets": [
+            "Add by photo or manually, with ingredients pulled from the label",
+            "Full lifecycle: started, active, finished, repurchased",
+            "Cleansers, actives, SPF, body, lip, hand. Every category."
+          ]
         },
         {
-          "title": "Your whole routine, not one product",
-          "body": "Ingredient checks run across every bottle at once, so conflicts cannot hide between steps."
+          "key": "ingredients",
+          "eyebrow": "Ingredient intelligence",
+          "title": "Conflict checks across every bottle at once.",
+          "bullets": [
+            "Retinoid + AHA, BP + retinol, vitamin C + niacinamide",
+            "Spots when the same active hides in two products",
+            "Safety score for every suggested routine"
+          ]
         },
         {
-          "title": "Your skin, your climate, your season",
-          "body": "Guidance adapts to your ethnicity, the climate you live in, and the season you are in today."
+          "key": "suggestions",
+          "eyebrow": "Today's Suggestion",
+          "title": "Daily suggestions, not rigid routines.",
+          "bullets": [
+            "Prepared before you wake up",
+            "On-demand suggestions any time of day",
+            "Evening plan reacts to what you actually applied earlier"
+          ]
         },
         {
-          "title": "Full body, not just your face",
-          "body": "Body wash, shampoo, lip care, and hand cream are part of the plan, the same way your face is."
+          "key": "journal",
+          "eyebrow": "Skin Journal",
+          "title": "Photo journal with AI analysis built in.",
+          "bullets": [
+            "Multi-angle capture with private, encrypted storage",
+            "Reaction detection auto-pauses risky actives",
+            "Compare any two dates. Export a dermatologist report."
+          ]
+        },
+        {
+          "key": "smartPicks",
+          "eyebrow": "Smart Picks",
+          "title": "Gap analysis, not shopping ads.",
+          "bullets": [
+            "Four budget tiers: drugstore, mid, premium, luxury",
+            "Redundancy checks so you never duplicate an active you already own",
+            "Save picks to your wishlist. No upsells, no sponsored placements."
+          ]
+        },
+        {
+          "key": "climate",
+          "eyebrow": "Climate aware",
+          "title": "Your skin, your climate, your season.",
+          "bullets": [
+            "Local weather, humidity, and UV index",
+            "Seasonal shifts handled automatically",
+            "Aware of your ethnicity and skin tone from the start"
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "eyebrow": "Private by design",
+      "headline": "Your shelf stays yours.",
+      "lead": "Ritora runs on explicit consent and essential cookies only. Every step of how your data moves is something you can see, and undo.",
+      "points": [
+        {
+          "title": "Consent before anything sensitive.",
+          "body": "Photo analysis, AI personalisation, and location each ask for separate, explicit consent."
+        },
+        {
+          "title": "Essential cookies only.",
+          "body": "No ad tech, no social pixels, no hidden trackers."
+        },
+        {
+          "title": "Sensitive context is opt-in.",
+          "body": "Location and health context help only when you provide them."
+        },
+        {
+          "title": "Export and delete at any time.",
+          "body": "Take your photos and profile with you in one click."
+        }
+      ],
+      "flow": [
+        {
+          "title": "You capture a photo",
+          "detail": "Ritora never opens the camera in the background."
+        },
+        {
+          "title": "Encrypted in transit",
+          "detail": "TLS the whole way. Image bytes are never logged."
+        },
+        {
+          "title": "Stored privately, encrypted at rest",
+          "detail": "Scoped to your account, never shared."
+        },
+        {
+          "title": "Used only for your routine",
+          "detail": "AI runs on your data only after explicit, separate consent."
+        },
+        {
+          "title": "Yours to export, or delete",
+          "detail": "30-day cancellation window before any deletion is final."
         }
       ]
     },
     "faq": {
       "eyebrow": "FAQ",
-      "headline": "Built to earn your trust before it asks for it."
+      "headline": "Built to earn your trust before it asks for it.",
+      "items": [
+        {
+          "question": "Is Ritora a medical product?",
+          "answer": "No. Ritora helps you make safer daily routine choices with the products you already own. It does not diagnose, treat, or replace a dermatologist."
+        },
+        {
+          "question": "Do I need to buy new products to use it well?",
+          "answer": "Not at all. Ritora starts with your shelf. It helps you get more out of the products you already own before it suggests anything new."
+        },
+        {
+          "question": "Will it work for beginners?",
+          "answer": "Yes. Beginners and collectors overwhelmed by their own shelf are exactly who Ritora is built for. It's a simpler path to a routine that actually works."
+        },
+        {
+          "question": "Do I need to upload photos?",
+          "answer": "No. The Skin Journal is optional. Routines, ingredient checks, and Smart Picks all work without a single photo. Uploading just makes the guidance more adaptive."
+        },
+        {
+          "question": "Is it free?",
+          "answer": "Yes, the core experience is free. No card required to sign up. Optional paid tiers may arrive later for advanced features, but the 'stop buying, start using' experience stays free."
+        },
+        {
+          "question": "How is my data handled?",
+          "answer": "With care. Ritora runs on explicit consent, careful data boundaries, and secure authentication. Privacy-conscious handling is built in from day one. See the data flow above."
+        },
+        {
+          "question": "Which languages are supported?",
+          "answer": "English and Swedish at launch. You can change your preferred language any time from settings."
+        }
+      ]
     },
-    "faqItems": [
-      {
-        "question": "Is Ritora a medical product?",
-        "answer": "No. Ritora helps you make safer daily routine choices with the products you already own. It does not diagnose, treat, or replace a dermatologist."
-      },
-      {
-        "question": "Do I need to buy new products to use it well?",
-        "answer": "Not at all. Ritora starts with your shelf. It helps you get more out of the products you already own before it suggests anything new."
-      },
-      {
-        "question": "Will it work for beginners?",
-        "answer": "Yes. Beginners and collectors overwhelmed by their own shelf are exactly who Ritora is built for. It's a simpler path to a routine that actually works."
-      },
-      {
-        "question": "How is my data handled?",
-        "answer": "With care. Ritora runs on explicit consent, careful data boundaries, and secure authentication. EU friendly handling is built in from day one."
-      },
-      {
-        "question": "Which languages are supported?",
-        "answer": "English and Swedish are available at launch. You can change your preferred language any time from the settings page."
-      }
-    ],
     "finalCta": {
-      "eyebrow": "Ready when you are",
-      "headline": "Turn your shelf into a calmer daily routine.",
-      "body": "Create an account in under a minute, or log in to pick up where you left off. Your skin profile, preferences, and routine setup stay in one place.",
-      "ctaPrimary": "Create an account",
-      "ctaSecondary": "Log in"
+      "headline": "Your shelf, your skin, your routine.",
+      "body": "Create your account in under a minute. Add a few products, answer a few questions about your skin, and you'll have a calmer plan for tomorrow morning, built from what's already in your bathroom.",
+      "ctaPrimary": "Create your free account",
+      "ctaSecondary": "Log in",
+      "trust": ["Free to use", "No card required", "Delete your data anytime"]
     }
   },
   "footer": {
@@ -320,7 +378,7 @@
     "accountDeletionStillHereShelf": "Your shelf",
     "accountDeletionStillHereShelfDesc": "Every product you've added, still saved",
     "accountDeletionCancelPrivacyTitle": "Your data, your terms",
-    "accountDeletionCancelPrivacyBody": "Your account was paused, not used. Ritora is built in the EU under GDPR — we never share or sell your data.",
+    "accountDeletionCancelPrivacyBody": "Your account was paused, not used. Ritora never shares or sells your data.",
     "accountDeletionCancelChecksAllSafe": "All checks passed. Your account is back to normal.",
     "accountDeletionConfirmTimelineTodayLabel": "Today",
     "accountDeletionConfirmTimelineTodayBody": "Signed out everywhere",
@@ -1976,6 +2034,7 @@
     "badgeLabel": "{count, plural, one {# item needs attention} other {# items need attention}}",
     "items": {
       "home": "Home",
+      "checkProduct": "Quick Check",
       "skinProfile": "Skin Profile",
       "shelf": "Shelf",
       "todaysSuggestion": "Today's Suggestion",
@@ -1989,6 +2048,7 @@
     },
     "descriptions": {
       "homeDescription": "Daily overview with setup progress and what needs attention.",
+      "checkProductDescription": "A fast read on whether a product suits you before you buy or use it.",
       "skinProfileDescription": "Your skin type, concerns, goals, and location context.",
       "shelfDescription": "Add and manage the skincare products you own.",
       "todaysSuggestionDescription": "AI-curated product pairings for your morning and evening care.",
@@ -2049,6 +2109,148 @@
       "description": "Routine reminders, product expiry alerts, low stock warnings, progress check-ins, and rest day reminders. All configurable to your schedule."
     }
   },
+  "checkProduct": {
+    "page": {
+      "title": "Quick Check",
+      "body": "A fast read on whether a product suits your skin and routine. Paste the ingredients or snap a label before you buy, use, or save it."
+    },
+    "tabsLabel": "Quick check method",
+    "tabs": {
+      "paste": "Paste ingredients",
+      "photos": "Photos"
+    },
+    "paste": {
+      "brandLabel": "Brand",
+      "brandPlaceholder": "Product brand",
+      "nameLabel": "Product name",
+      "namePlaceholder": "For example, Barrier Repair Serum",
+      "categoryLabel": "Category",
+      "ingredientsLabel": "Ingredients",
+      "ingredientsPlaceholder": "Paste INCI ingredients separated by commas or new lines.",
+      "parsedCount": "{count, plural, =0 {No ingredients detected yet} one {# ingredient detected} other {# ingredients detected}}",
+      "checkingAction": "Checking...",
+      "checkAction": "Run quick check"
+    },
+    "photos": {
+      "heading": "Photos",
+      "helper": {
+        "needLabels": "Add a photo so Ritora can read the INCI list.",
+        "ready": "Looks good. Run Quick Check when you're ready."
+      },
+      "addAction": "Add photo",
+      "removeAction": "Remove photo",
+      "shapeTips": {
+        "heading": "Tips by container shape",
+        "rectangular": "Box or rectangular: capture the front and back, or the side with the most text.",
+        "cylindrical": "Bottle, tube, or cylinder: take 3 to 4 overlapping photos while rotating around the body. Keep important text away from curved edges.",
+        "roundJar": "Jar, sphere, or round: capture the top or lid, plus 2–3 side sections with a quarter turn between shots.",
+        "pouch": "Pouch or sachet: lay it flat and take one photo per printed side."
+      },
+      "extractingAction": "Reading photos...",
+      "checkingAction": "Checking...",
+      "checkAction": "Run quick check"
+    },
+    "result": {
+      "eyebrow": "Product verdict",
+      "scoreLabel": "Safety score",
+      "scoreUnknown": "Not enough data",
+      "confidence": {
+        "high": "High confidence",
+        "medium": "Medium confidence",
+        "low": "Low confidence"
+      },
+      "labels": {
+        "good_fit": "Good fit",
+        "good_with_limits": "Good with limits",
+        "use_carefully": "Use carefully",
+        "avoid_for_profile": "Avoid for your profile",
+        "ingredients_only": "Ingredient guide only",
+        "not_enough_data": "Not enough data"
+      },
+      "nextActions": {
+        "add_to_shelf": "Add it to your shelf if you use it.",
+        "use_as_planned": "Looks suitable to use if it fits your routine.",
+        "review_and_patch_test": "Review the ingredients and patch test before using.",
+        "review_ingredients": "Check the ingredient list before deciding.",
+        "review_smart_picks": "Compare with Smart Picks before buying.",
+        "complete_profile": "Add your skin context before trusting this for reaction risk.",
+        "skip_product": "Skip this product for now."
+      },
+      "reasons": {
+        "insufficient_ingredients": "The ingredient list is missing or too sparse.",
+        "high_conflict": "A serious conflict matched your profile.",
+        "medium_conflict": "A moderate conflict needs attention.",
+        "low_conflict": "A mild finding is worth noting.",
+        "duplicate_exposure": "This duplicates an active already in your routine.",
+        "product_reaction_signal": "A similar product has reaction signals near logged use.",
+        "missing_personal_context": "Ritora does not have enough personal context to predict your reaction risk.",
+        "missing_reaction_context": "No reaction history is available, so this cannot rule out a personal trigger.",
+        "recent_journal_reaction": "Recent Skin Journal entries include reaction signals.",
+        "suggestion_history_reaction": "Past suggestions were simplified because reaction risk was detected.",
+        "low_confidence": "The analysis confidence is low.",
+        "review_required": "Some extracted details need review.",
+        "sensitive_profile": "Your sensitive skin context changes the recommendation.",
+        "reaction_trigger": "An ingredient may overlap with your reaction history.",
+        "photosensitizing_active": "A photosensitizing active needs careful timing."
+      },
+      "reasonIngredients": "({ingredients})",
+      "noReasons": "No major ingredient concerns matched your profile."
+    },
+    "details": {
+      "findingsHeading": "Ingredient reasons",
+      "findingsBody": "These are the specific pairings behind the verdict.",
+      "reactionHeading": "Reaction evidence",
+      "reactionBody": "Ritora checked consented reaction history and recent routine signals without using raw journal notes or photos.",
+      "reactionStats": "{reactions, plural, one {# reaction signal} other {# reaction signals}} near {usageDays, plural, one {# logged use day} other {# logged use days}}.",
+      "evidenceIngredients": "Ingredient match: {ingredients}",
+      "evidence": {
+        "profile_reaction_trigger": "Matches your reaction history",
+        "shelf_reaction_signal": "Similar Shelf product had reaction signals"
+      },
+      "routineHeading": "Money-saving context",
+      "routineBody": "Ritora checked this product against active Shelf products to catch duplicates before you buy.",
+      "smartPicksTitle": "Compare before buying",
+      "smartPicksBody": "Smart Picks can help you find alternatives that fit your routine and budget.",
+      "smartPicksCta": "Open Smart Picks",
+      "alternativeCategory": "For: {category}",
+      "alternativeSellers": "Available from: {sellers}",
+      "context": {
+        "educationalTitle": "Ingredient education mode",
+        "educationalBody": "Ritora can explain the ingredients, but it cannot predict your personal reaction risk until you add skin context, Shelf, journal, or suggestion history.",
+        "personalizedTitle": "Personalized with your Ritora data",
+        "personalizedBody": "This check used available account context to make the verdict more specific.",
+        "signals": {
+          "skin_profile": "Skin profile",
+          "reaction_history": "Reaction history",
+          "active_shelf": "Active Shelf",
+          "skin_journal": "Skin Journal",
+          "suggestion_history": "Suggestion history"
+        }
+      }
+    },
+    "empty": {
+      "title": "Your verdict appears here",
+      "body": "Paste a product's ingredients or scan a label and Ritora will tell you whether it suits your skin and routine."
+    },
+    "errors": {
+      "checkFailed": "We couldn't check this product. Try again in a moment.",
+      "incompletePhotoProduct": "We need readable ingredients before checking these photos."
+    },
+    "categories": {
+      "cleanser": "Cleanser",
+      "toner": "Toner",
+      "essence": "Essence",
+      "serum": "Serum",
+      "moisturizer": "Moisturizer",
+      "sun-protection": "Sun protection",
+      "mask": "Mask",
+      "exfoliant": "Exfoliant",
+      "eye-care": "Eye care",
+      "lip-care": "Lip care",
+      "treatment": "Treatment",
+      "other": "Other"
+    }
+  },
   "ingredients": {
     "panel": {
       "heading": "Ingredient intelligence",
@@ -2060,6 +2262,19 @@
       "low": "Low",
       "medium": "Medium",
       "high": "High"
+    },
+    "conflict": {
+      "title": "{ingredientA} + {ingredientB}",
+      "showWhy": "Show why",
+      "hideWhy": "Hide why",
+      "mitigation": "Safer plan"
+    },
+    "overlap": {
+      "title": "{ingredient}",
+      "productCountSingle": "Found in {count} product",
+      "productCountPlural": "Found in {count} products",
+      "showWhy": "Show why",
+      "hideWhy": "Hide why"
     },
     "actives": {
       "heading": "Key actives",
@@ -3333,7 +3548,6 @@
       "7": "Sunday"
     },
     "insightDigestTimeLabel": "Digest time",
-    "aiRefinedInsightsBody": "Use AI refined wording and AI sourced insight cards",
     "wrappedAlertsBody": "Wrapped ready notifications",
     "newPill": "New",
     "todaysSuggestionTitle": "Today's Suggestion",

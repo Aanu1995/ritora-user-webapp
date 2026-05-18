@@ -82,7 +82,6 @@ export interface NotificationPreferences {
   reaction_alerts_enabled: boolean;
   simplification_alerts_enabled: boolean;
   insight_alerts_enabled: boolean;
-  ai_polished_insights_enabled: boolean;
   insight_cadence: InsightCadence;
   insight_digest_day: number;
   insight_digest_local_time: string;
@@ -107,7 +106,6 @@ export interface UpdatePreferencesPayload {
   reaction_alerts_enabled?: boolean;
   simplification_alerts_enabled?: boolean;
   insight_alerts_enabled?: boolean;
-  ai_polished_insights_enabled?: boolean;
   insight_cadence?: InsightCadence;
   insight_digest_day?: number;
   insight_digest_local_time?: string;

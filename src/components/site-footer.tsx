@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
+import { RitoraMark } from './icons/ritora-mark';
 import { LanguageSwitcher } from './language-switcher';
 import { AppRoute } from '@/constants/app-routes';
 import { siteConfig } from '@/lib/site';
@@ -20,9 +21,13 @@ export async function SiteFooter() {
     <footer className="border-t border-border bg-surface/70">
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-12 sm:px-6 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:px-8">
         <div className="space-y-4">
-          <p className="text-sm font-semibold tracking-[0.2em] uppercase text-accent">
-            {siteConfig.name}
-          </p>
+          <Link
+            href={AppRoute.Home}
+            className="inline-flex items-center gap-2.5 text-base font-semibold tracking-tight text-foreground"
+          >
+            <RitoraMark className="h-8 w-8 text-accent-strong" aria-hidden="true" />
+            <span>{siteConfig.name}</span>
+          </Link>
           <p className="max-w-md text-sm leading-7 text-muted">
             {tFooter('brandBlurb')}
           </p>

@@ -79,6 +79,7 @@ export const ApiPath = {
   ScheduleSlotMove: (id: string) => `${buildScheduleSlotPath(id)}/move`,
 
   IngredientsAnalyze: `${INGREDIENTS_BASE}/analyze`,
+  IngredientsCheckProduct: `${INGREDIENTS_BASE}/check-product`,
 
   AppNavBadges: `${APP_BASE}/nav-badges`,
 

@@ -47,6 +47,7 @@
     "whyRitora": "Varför Ritora",
     "howItWorks": "Så fungerar det",
     "features": "Funktioner",
+    "privacy": "Integritet",
     "faq": "Vanliga frågor",
     "login": "Logga in",
     "signUp": "Skapa konto",
@@ -60,172 +61,233 @@
   },
   "landing": {
     "hero": {
-      "badge": "Hudvård utan tvekan",
-      "headline": "Din lugnare rutin börjar med hyllan du redan äger.",
-      "subheadline": "Ritora läser din hylla, fångar ingredienskrockar och förvandlar kaoset till en lugn morgon och kväll formad av just din hud.",
-      "ctaPrimary": "Skapa ett konto",
+      "badge": "Hyllbaserat beslutsstöd för hudvård",
+      "headlineLead": "Bygg tryggare hudvårdsrutiner med",
+      "headlineAccent": "produkterna du redan äger.",
+      "lead": "Ritora läser din hylla, fångar ingredienskrockar och ger dig en lugn morgon-, middags- och kvällsplan anpassad till din hud. Ingen shopping behövs.",
+      "ctaPrimary": "Skapa ditt konto",
       "ctaSecondary": "Så fungerar det",
-      "imageAlt": "Ett öppet badrumsskåp i varmt ljus, hyllorna fyllda med riktiga vardagsflaskor från olika märken.",
+      "imageAlt": "Dagens förslag-kort i appen med morgonrutin och förhandsvisning av huddagboken.",
       "pills": {
-        "a": "Byggd runt din hylla",
+        "a": "Hylla först",
         "b": "Trygga ingredienser",
         "c": "Privat som standard"
       }
     },
+    "trust": [
+      "Privat först",
+      "Fungerar med varje märke",
+      "Gratis att använda",
+      "Fotoanalys ingår",
+      "Exportera eller radera när som helst"
+    ],
     "problem": {
       "eyebrow": "Varför rutiner spricker",
       "headline": "Bra produkter, ändå en gissningslek.",
-      "body": "Du äger rätt flaskor och vaknar ändå osäker på vad du ska lägga på lager och vad du ska hoppa över. Ritora ger dig beslutsagret som saknades."
-    },
-    "problems": [
-      {
-        "title": "Hyllförvirring",
-        "body": "Du äger riktigt bra produkter och gissar ändå varje morgon vad du ska ta och vad du ska hoppa över."
-      },
-      {
-        "title": "Tyst ingredienskrock",
-        "body": "Starka aktiva ingredienser staplas mellan rengöringar, toners och serum. Irritationen dyker upp långt innan du hinner se orsaken."
-      },
-      {
-        "title": "Köp före struktur",
-        "body": "De flesta rutiner behöver inte ännu ett serum. De behöver struktur, ordning och tryggare beslut med produkterna du redan äger."
-      }
-    ],
-    "privacy": {
-      "eyebrow": "Privat som standard",
-      "headline": "Din hylla förblir din.",
-      "body": "Ritora byggs i EU med uttryckligt samtycke och endast nödvändiga cookies. Punkterna nedan speglar skydd som redan finns i produkten i dag.",
-      "points": [
+      "body": "Du äger rätt flaskor och vaknar ändå osäker på vad du ska lägga på lager och vad du ska hoppa över. Ritora ger dig beslutsagret som saknades.",
+      "problems": [
         {
-          "title": "GDPR från dag ett",
-          "body": "Dina uppgifter lagras och behandlas under europeisk dataskyddslag. Inga undantag, inga kryphål."
+          "title": "Hyllförvirring",
+          "body": "Du äger riktigt bra produkter och gissar ändå varje morgon vad du ska ta och vad du ska hoppa över."
         },
         {
-          "title": "Bara nödvändiga cookies",
-          "body": "Endast cookies för autentisering och inställningar. Ingen ad tech, inga sociala pixlar och inga dolda spårare."
+          "title": "Tyst ingredienskrock",
+          "body": "Starka aktiva ingredienser staplas mellan rengöringar, toners och serum. Irritationen dyker upp långt innan du hinner se orsaken."
         },
         {
-          "title": "Känslig kontext är frivillig",
-          "body": "Plats och profilkontext används bara för vägledning när du själv väljer att lämna den."
+          "title": "Köp före struktur",
+          "body": "De flesta rutiner behöver inte ännu ett serum. De behöver struktur, ordning och tryggare beslut med produkterna du redan äger."
+        }
+      ],
+      "stats": [
+        {
+          "figure": "10+",
+          "body": "Den genomsnittliga entusiasten äger tio eller fler hudvårdsprodukter. De flesta står redan på hyllan, underanvända."
         },
         {
-          "title": "Verifierad kontoåtkomst",
-          "body": "E-postverifiering och säkra inloggningsflöden hjälper till att skydda åtkomsten till din rutin- och profildata."
+          "figure": "#1",
+          "body": "Överexfoliering är den vanligaste självpåtagna barriärskadan. Tyst staplade aktiva ingredienser är oftast orsaken."
         }
       ]
     },
     "howItWorks": {
       "eyebrow": "Så fungerar det",
       "headline": "Tre lugna steg från hyllkaos till daglig klarhet.",
-      "illustrationTitle": "Från morgon till kväll, om och om igen",
-      "illustrationBody": "Ritora behandlar din rutin som en levande cykel. Varje steg för med sig vad gårdagens aktiva ingredienser betyder för den här morgonen, så planen förblir trygg utan att du behöver tänka på det."
+      "lead": "Berätta om din hud för Ritora, kartlägg produkterna du redan äger och följ en plan anpassad till idag. Inte förra månaden. Inte någon annans.",
+      "steps": [
+        {
+          "title": "Berätta om din hud för Ritora.",
+          "body": "Hudtyp, besvär, känsligheter, klimat. Varje svar formar vägledningen.",
+          "hint": "Hudton, etnicitet och klimat medveten från första steget"
+        },
+        {
+          "title": "Lägg till det som redan står på din hylla.",
+          "body": "Lägg till det du använder idag. Ritora upptäcker överlapp och flaggar riskfyllda kombinationer.",
+          "hint": "Lägg till via foto eller manuell inmatning"
+        },
+        {
+          "title": "Följ en lugnare daglig plan.",
+          "body": "Vakna till tydlig vägledning för morgon och kväll, anpassad efter din hylla.",
+          "hint": "Morgon, middags och kväll, med hjälp på begäran när som helst"
+        }
+      ]
     },
-    "steps": [
-      {
-        "title": "Berätta om din hud för Ritora",
-        "body": "Dela din hudtyp, dina besvär, dina känsligheter, dina mål och hur mycket tid du vill lägga. Varje svar formar vägledningen du får."
-      },
-      {
-        "title": "Kartlägg din hylla",
-        "body": "Lägg till produkterna du använder idag så kan Ritora upptäcka ingrediensöverlapp, flagga riskfyllda kombinationer och berätta vad som faktiskt saknas."
-      },
-      {
-        "title": "Följ en lugnare daglig plan",
-        "body": "Vakna till tydlig morgon och kvällsvägledning. Säkerhet kommer först, och resten är anpassat efter dina mål och din hylla."
-      }
-    ],
     "features": {
-      "eyebrow": "Det här får du",
-      "headline": "Allt du behöver för lugnare hudvårdsbeslut.",
-      "illustrationTitle": "Säkerhet först, anpassning sedan",
-      "illustrationBody": "Varje rekommendation går genom ett deterministiskt säkerhetslager innan den möter dina mål. Inga överraskningar, inga krockande aktiva ingredienser, inga ångerköp."
-    },
-    "featureItems": [
-      {
-        "title": "Din hylla kommer först",
-        "body": "Vägledningen börjar alltid med produkterna du redan äger, aldrig med en varukorg.",
-        "icon": "package"
-      },
-      {
-        "title": "Trygga ingredienser",
-        "body": "Konfliktkontroller och överlappsdetektion skyddar känslig hud och tar bort gissningarna när du staplar aktiva ingredienser.",
-        "icon": "shield-check"
-      },
-      {
-        "title": "Anpassad efter din hud",
-        "body": "Dina mål, dina känsligheter, din hudton, din ålder och din etnicitet formar varje rekommendation du ser.",
-        "icon": "user"
-      },
-      {
-        "title": "Privat som standard",
-        "body": "Uttryckligt samtycke, tydliga dataramar och EU vänlig hantering. Inbyggt från dag ett, aldrig påklistrat efteråt.",
-        "icon": "lock"
-      },
-      {
-        "title": "Lär dig öppet",
-        "body": "Öppna och sökbara sidor för grunderna. Privata och personliga rutiner när du är inloggad.",
-        "icon": "globe"
-      },
-      {
-        "title": "Lugnare dagliga ritualer",
-        "body": "En morgon och kvällsvy som håller din rutin stadig även under de mest stressiga dagarna.",
-        "icon": "sunrise"
-      }
-    ],
-    "differentiators": {
-      "eyebrow": "Det här skiljer Ritora",
-      "headline": "Byggd för hela din rutin, inte ett enda märke.",
+      "eyebrow": "Vad som ingår",
+      "headline": "Varje del av din rutin, intelligent medveten om de andra.",
+      "lead": "Sex förmågor som arbetar tillsammans så din plan förblir trygg, även på röriga dagar.",
       "items": [
         {
-          "title": "Varje märke, inte ett ekosystem",
-          "body": "Ritora fungerar med allt du redan äger. Ingen märkeslojalitet krävs, inga merförsäljningar, inga sponsrade val."
+          "key": "shelf",
+          "eyebrow": "Hylla först",
+          "title": "Din hylla kommer först. Alltid.",
+          "bullets": [
+            "Lägg till via foto eller manuellt, med ingredienser hämtade från etiketten",
+            "Hela livscykeln: startad, aktiv, slut, återköpt",
+            "Rengöring, aktiva, SPF, kropp, läppar, händer. Varje kategori."
+          ]
         },
         {
-          "title": "Hela din rutin, inte en produkt",
-          "body": "Ingredienskontroller körs över varje flaska samtidigt, så konflikter kan inte gömma sig mellan stegen."
+          "key": "ingredients",
+          "eyebrow": "Ingrediensintelligens",
+          "title": "Krockkontroller över varje flaska samtidigt.",
+          "bullets": [
+            "Retinoid + AHA, BP + retinol, vitamin C + niacinamid",
+            "Upptäcker när samma aktiva ingrediens gömmer sig i två produkter",
+            "Säkerhetspoäng för varje föreslagen rutin"
+          ]
         },
         {
-          "title": "Din hud, ditt klimat, din säsong",
-          "body": "Vägledningen anpassar sig efter din etnicitet, klimatet du lever i och säsongen du är i idag."
+          "key": "suggestions",
+          "eyebrow": "Dagens förslag",
+          "title": "Dagliga förslag, inte stela rutiner.",
+          "bullets": [
+            "Förberett innan du vaknar",
+            "Förslag på begäran när som helst",
+            "Kvällsplanen reagerar på vad du faktiskt applicerade tidigare"
+          ]
         },
         {
-          "title": "Hela kroppen, inte bara ansiktet",
-          "body": "Duschkräm, schampo, läppvård och handkräm är en del av planen, precis som ansiktet är det."
+          "key": "journal",
+          "eyebrow": "Huddagbok",
+          "title": "Fotodagbok med inbyggd AI-analys.",
+          "bullets": [
+            "Flervinklad fotografering med privat, krypterad lagring",
+            "Reaktionsdetektering pausar automatiskt riskfyllda aktiva ingredienser",
+            "Jämför två datum. Exportera en hudläkarrapport."
+          ]
+        },
+        {
+          "key": "smartPicks",
+          "eyebrow": "Smarta val",
+          "title": "Gap-analys, inte shoppingreklam.",
+          "bullets": [
+            "Fyra budgetnivåer: drugstore, mid, premium, lyx",
+            "Redundanskontroller så du aldrig dubblerar en aktiv ingrediens du redan äger",
+            "Spara val till din önskelista. Inga merförsäljningar, inga sponsrade placeringar."
+          ]
+        },
+        {
+          "key": "climate",
+          "eyebrow": "Klimatmedveten",
+          "title": "Din hud, ditt klimat, din säsong.",
+          "bullets": [
+            "Lokalt väder, luftfuktighet och UV-index",
+            "Säsongsförändringar hanteras automatiskt",
+            "Medveten om din etnicitet och hudton från start"
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "eyebrow": "Privat som standard",
+      "headline": "Din hylla förblir din.",
+      "lead": "Ritora bygger på uttryckligt samtycke och endast nödvändiga cookies. Varje steg av hur dina uppgifter rör sig är något du kan se, och ångra.",
+      "points": [
+        {
+          "title": "Samtycke före allt känsligt.",
+          "body": "Fotoanalys, AI-personalisering och plats ber var och en om separat, uttryckligt samtycke."
+        },
+        {
+          "title": "Endast nödvändiga cookies.",
+          "body": "Ingen ad tech, inga sociala pixlar, inga dolda spårare."
+        },
+        {
+          "title": "Känslig kontext är frivillig.",
+          "body": "Plats och hälsokontext hjälper bara när du själv väljer att lämna den."
+        },
+        {
+          "title": "Exportera och radera när som helst.",
+          "body": "Ta med dig dina foton och din profil i ett klick."
+        }
+      ],
+      "flow": [
+        {
+          "title": "Du tar ett foto",
+          "detail": "Ritora öppnar aldrig kameran i bakgrunden."
+        },
+        {
+          "title": "Krypterat under överföring",
+          "detail": "TLS hela vägen. Bildbytes loggas aldrig."
+        },
+        {
+          "title": "Privat lagrat, krypterat i vila",
+          "detail": "Knuten till ditt konto, aldrig delad."
+        },
+        {
+          "title": "Används bara för din rutin",
+          "detail": "AI körs på dina uppgifter först efter uttryckligt, separat samtycke."
+        },
+        {
+          "title": "Ditt att exportera, eller radera",
+          "detail": "30-dagars ångerfönster innan någon radering är slutgiltig."
         }
       ]
     },
     "faq": {
       "eyebrow": "Vanliga frågor",
-      "headline": "Byggt för att förtjäna ditt förtroende innan det ber om det."
+      "headline": "Byggt för att förtjäna ditt förtroende innan det ber om det.",
+      "items": [
+        {
+          "question": "Är Ritora en medicinsk produkt?",
+          "answer": "Nej. Ritora hjälper dig att göra tryggare dagliga rutinval med produkterna du redan äger. Den diagnostiserar, behandlar eller ersätter inte en hudläkare."
+        },
+        {
+          "question": "Måste jag köpa nya produkter för att använda den?",
+          "answer": "Inte alls. Ritora utgår från din hylla. Den hjälper dig att få ut mer av det du redan äger innan den föreslår något nytt."
+        },
+        {
+          "question": "Fungerar det för nybörjare?",
+          "answer": "Ja. Nybörjare och samlare som blivit överväldigade av sin egen hylla är precis vilka Ritora är byggt för. En enklare väg till en rutin som faktiskt fungerar."
+        },
+        {
+          "question": "Måste jag ladda upp foton?",
+          "answer": "Nej. Huddagboken är frivillig. Rutiner, ingredienskontroller och Smarta val fungerar utan ett enda foto. Uppladdning gör bara vägledningen mer anpassningsbar."
+        },
+        {
+          "question": "Är det gratis?",
+          "answer": "Ja, kärnupplevelsen är gratis. Inget kort krävs för att registrera dig. Frivilliga betalda nivåer kan komma senare för avancerade funktioner, men 'sluta köpa, börja använda' förblir gratis."
+        },
+        {
+          "question": "Hur hanteras mina uppgifter?",
+          "answer": "Med omsorg. Ritora bygger på uttryckligt samtycke, tydliga dataramar och säker inloggning. Integritetsmedveten hantering är inbyggd från dag ett. Se dataflödet ovan."
+        },
+        {
+          "question": "Vilka språk stöds?",
+          "answer": "Engelska och svenska från lansering. Du kan byta föredraget språk när som helst från inställningar."
+        }
+      ]
     },
-    "faqItems": [
-      {
-        "question": "Är Ritora en medicinsk produkt?",
-        "answer": "Nej. Ritora hjälper dig att göra tryggare dagliga rutinval med produkterna du redan äger. Den diagnostiserar, behandlar eller ersätter inte en hudläkare."
-      },
-      {
-        "question": "Måste jag köpa nya produkter för att använda den?",
-        "answer": "Inte alls. Ritora utgår från din hylla. Den hjälper dig att få ut mer av det du redan äger innan den föreslår något nytt."
-      },
-      {
-        "question": "Fungerar det för nybörjare?",
-        "answer": "Ja. Nybörjare och samlare som blivit överväldigade av sin egen hylla är precis vilka Ritora är byggt för. En enklare väg till en rutin som faktiskt fungerar."
-      },
-      {
-        "question": "Hur hanteras mina uppgifter?",
-        "answer": "Med omsorg. Ritora bygger på uttryckligt samtycke, tydliga dataramar och säker inloggning. EU vänlig hantering är inbyggd från dag ett."
-      },
-      {
-        "question": "Vilka språk stöds?",
-        "answer": "Engelska och svenska är tillgängliga från lansering. Du kan byta föredraget språk när som helst från inställningssidan."
-      }
-    ],
     "finalCta": {
-      "eyebrow": "När du är redo",
-      "headline": "Förvandla din hylla till en lugnare daglig rutin.",
-      "body": "Skapa ett konto på under en minut, eller logga in för att fortsätta där du slutade. Din hudprofil, dina inställningar och din rutinuppsättning hålls samlade på ett ställe.",
-      "ctaPrimary": "Skapa ett konto",
-      "ctaSecondary": "Logga in"
+      "headline": "Din hylla, din hud, din rutin.",
+      "body": "Skapa ditt konto på under en minut. Lägg till några produkter, svara på några frågor om din hud, och du har en lugnare plan till morgondagen, byggd från det som redan finns i ditt badrum.",
+      "ctaPrimary": "Skapa ditt konto",
+      "ctaSecondary": "Logga in",
+      "trust": [
+        "Gratis att använda",
+        "Inget kort krävs",
+        "Radera dina uppgifter när som helst"
+      ]
     }
   },
   "footer": {
@@ -320,7 +382,7 @@
     "accountDeletionStillHereShelf": "Din hylla",
     "accountDeletionStillHereShelfDesc": "Varje produkt du lagt till finns kvar",
     "accountDeletionCancelPrivacyTitle": "Din data, dina villkor",
-    "accountDeletionCancelPrivacyBody": "Ditt konto pausades, det användes inte. Ritora är byggt i EU under GDPR — vi delar eller säljer aldrig din data.",
+    "accountDeletionCancelPrivacyBody": "Ditt konto pausades, det användes inte. Ritora delar eller säljer aldrig din data.",
     "accountDeletionCancelChecksAllSafe": "Alla kontroller godkända. Ditt konto är tillbaka som vanligt.",
     "accountDeletionConfirmTimelineTodayLabel": "Idag",
     "accountDeletionConfirmTimelineTodayBody": "Utloggad överallt",
@@ -1979,6 +2041,7 @@
     "badgeLabel": "{count, plural, one {# sak behöver uppmärksamhet} other {# saker behöver uppmärksamhet}}",
     "items": {
       "home": "Hem",
+      "checkProduct": "Snabbkoll",
       "skinProfile": "Hudprofil",
       "shelf": "Hylla",
       "todaysSuggestion": "Dagens förslag",
@@ -1992,6 +2055,7 @@
     },
     "descriptions": {
       "homeDescription": "Daglig översikt med installationsframsteg och vad som behöver uppmärksamhet.",
+      "checkProductDescription": "En snabb läsning av om en produkt passar dig innan du köper eller använder den.",
       "skinProfileDescription": "Din hudtyp, bekymmer, mål och platskontext.",
       "shelfDescription": "Lägg till och hantera de hudvårdsprodukter du äger.",
       "todaysSuggestionDescription": "AI-kurerade produktpar för din morgon- och kvällsvård.",
@@ -2052,6 +2116,148 @@
       "description": "Rutinpåminnelser, produktutgångsvarningar, låg lagernivåvarningar, framstegsincheckningar och vilopåminnelser. Allt konfigurerbart efter ditt schema."
     }
   },
+  "checkProduct": {
+    "page": {
+      "title": "Snabbkoll",
+      "body": "En snabb läsning av om en produkt passar din hud och rutin. Klistra in ingredienserna eller fota en etikett innan du köper, använder eller sparar den."
+    },
+    "tabsLabel": "Metod för snabbkoll",
+    "tabs": {
+      "paste": "Klistra in ingredienser",
+      "photos": "Foton"
+    },
+    "paste": {
+      "brandLabel": "Varumärke",
+      "brandPlaceholder": "Produktens varumärke",
+      "nameLabel": "Produktnamn",
+      "namePlaceholder": "Till exempel Barrier Repair Serum",
+      "categoryLabel": "Kategori",
+      "ingredientsLabel": "Ingredienser",
+      "ingredientsPlaceholder": "Klistra in INCI-ingredienser separerade med kommatecken eller nya rader.",
+      "parsedCount": "{count, plural, =0 {Inga ingredienser hittade ännu} one {# ingrediens hittad} other {# ingredienser hittade}}",
+      "checkingAction": "Kontrollerar...",
+      "checkAction": "Kör snabbkoll"
+    },
+    "photos": {
+      "heading": "Foton",
+      "helper": {
+        "needLabels": "Lägg till ett foto så att Ritora kan läsa INCI-listan.",
+        "ready": "Ser bra ut. Kör snabbkollen när du är redo."
+      },
+      "addAction": "Lägg till foto",
+      "removeAction": "Ta bort foto",
+      "shapeTips": {
+        "heading": "Tips per förpackningstyp",
+        "rectangular": "Kartong eller rektangulär: fånga fram- och baksidan, eller sidan med mest text.",
+        "cylindrical": "Flaska, tub eller cylinder: ta 3 till 4 överlappande foton medan du roterar runt förpackningen. Håll viktig text borta från böjda kanter.",
+        "roundJar": "Burk, sfär eller rund: fånga ovansidan eller locket, plus 2 till 3 sidosektioner med ett kvarts varv mellan bilderna.",
+        "pouch": "Påse eller sachet: lägg den platt och ta ett foto per tryckt sida."
+      },
+      "extractingAction": "Läser foton...",
+      "checkingAction": "Kontrollerar...",
+      "checkAction": "Kör snabbkoll"
+    },
+    "result": {
+      "eyebrow": "Produktomdöme",
+      "scoreLabel": "Säkerhetspoäng",
+      "scoreUnknown": "Inte tillräckligt med data",
+      "confidence": {
+        "high": "Hög tillförlitlighet",
+        "medium": "Medel tillförlitlighet",
+        "low": "Låg tillförlitlighet"
+      },
+      "labels": {
+        "good_fit": "Bra matchning",
+        "good_with_limits": "Bra med begränsningar",
+        "use_carefully": "Använd försiktigt",
+        "avoid_for_profile": "Undvik för din profil",
+        "ingredients_only": "Endast ingrediensguide",
+        "not_enough_data": "Inte tillräckligt med data"
+      },
+      "nextActions": {
+        "add_to_shelf": "Lägg till på hyllan om du använder den.",
+        "use_as_planned": "Ser lämplig ut att använda om den passar din rutin.",
+        "review_and_patch_test": "Granska ingredienserna och lapptesta före användning.",
+        "review_ingredients": "Kontrollera ingredienslistan innan du bestämmer dig.",
+        "review_smart_picks": "Jämför med Smart Picks innan du köper.",
+        "complete_profile": "Lägg till din hudkontext innan du litar på detta för reaktionsrisk.",
+        "skip_product": "Hoppa över produkten tills vidare."
+      },
+      "reasons": {
+        "insufficient_ingredients": "Ingredienslistan saknas eller är för tunn.",
+        "high_conflict": "En allvarlig konflikt matchade din profil.",
+        "medium_conflict": "En måttlig konflikt behöver uppmärksamhet.",
+        "low_conflict": "Ett milt fynd är värt att notera.",
+        "duplicate_exposure": "Det här duplicerar en aktiv ingrediens som redan finns i din rutin.",
+        "product_reaction_signal": "En liknande produkt har reaktionssignaler nära loggad användning.",
+        "missing_personal_context": "Ritora har inte tillräckligt med personlig kontext för att bedöma din reaktionsrisk.",
+        "missing_reaction_context": "Ingen reaktionshistorik är tillgänglig, så detta kan inte utesluta en personlig trigger.",
+        "recent_journal_reaction": "Nya Skin Journal-poster innehåller reaktionssignaler.",
+        "suggestion_history_reaction": "Tidigare förslag förenklades eftersom reaktionsrisk upptäcktes.",
+        "low_confidence": "Analysen har låg tillförlitlighet.",
+        "review_required": "Vissa extraherade uppgifter behöver granskas.",
+        "sensitive_profile": "Din känsliga hudkontext påverkar rekommendationen.",
+        "reaction_trigger": "En ingrediens kan överlappa med din reaktionshistorik.",
+        "photosensitizing_active": "En fotosensibiliserande aktiv ingrediens kräver försiktig timing."
+      },
+      "reasonIngredients": "({ingredients})",
+      "noReasons": "Inga större ingrediensrisker matchade din profil."
+    },
+    "details": {
+      "findingsHeading": "Ingrediensskäl",
+      "findingsBody": "Det här är de specifika kombinationerna bakom omdömet.",
+      "reactionHeading": "Reaktionsevidens",
+      "reactionBody": "Ritora kontrollerade samtyckt reaktionshistorik och nya rutinsignaler utan att använda råa journalanteckningar eller foton.",
+      "reactionStats": "{reactions, plural, one {# reaktionssignal} other {# reaktionssignaler}} nära {usageDays, plural, one {# loggad användningsdag} other {# loggade användningsdagar}}.",
+      "evidenceIngredients": "Ingrediensmatchning: {ingredients}",
+      "evidence": {
+        "profile_reaction_trigger": "Matchar din reaktionshistorik",
+        "shelf_reaction_signal": "Liknande hyllprodukt hade reaktionssignaler"
+      },
+      "routineHeading": "Pengasparande kontext",
+      "routineBody": "Ritora jämförde produkten med aktiva hyllprodukter för att fånga dupliceringar innan du köper.",
+      "smartPicksTitle": "Jämför innan köp",
+      "smartPicksBody": "Smart Picks kan hjälpa dig hitta alternativ som passar din rutin och budget.",
+      "smartPicksCta": "Öppna Smart Picks",
+      "alternativeCategory": "För: {category}",
+      "alternativeSellers": "Finns hos: {sellers}",
+      "context": {
+        "educationalTitle": "Ingrediensutbildningsläge",
+        "educationalBody": "Ritora kan förklara ingredienserna, men kan inte bedöma din personliga reaktionsrisk förrän du lägger till hudkontext, hylla, journal eller förslagshistorik.",
+        "personalizedTitle": "Personligt med dina Ritora-data",
+        "personalizedBody": "Den här kontrollen använde tillgänglig kontokontext för att göra omdömet mer specifikt.",
+        "signals": {
+          "skin_profile": "Hudprofil",
+          "reaction_history": "Reaktionshistorik",
+          "active_shelf": "Aktiv hylla",
+          "skin_journal": "Skin Journal",
+          "suggestion_history": "Förslagshistorik"
+        }
+      }
+    },
+    "empty": {
+      "title": "Ditt omdöme visas här",
+      "body": "Klistra in en produkts ingredienser eller fota en etikett, så säger Ritora om den passar din hud och rutin."
+    },
+    "errors": {
+      "checkFailed": "Vi kunde inte kontrollera produkten. Försök igen om en stund.",
+      "incompletePhotoProduct": "Vi behöver läsbara ingredienser innan fotona kan kontrolleras."
+    },
+    "categories": {
+      "cleanser": "Rengöring",
+      "toner": "Toner",
+      "essence": "Essence",
+      "serum": "Serum",
+      "moisturizer": "Fuktkräm",
+      "sun-protection": "Solskydd",
+      "mask": "Mask",
+      "exfoliant": "Exfoliant",
+      "eye-care": "Ögonvård",
+      "lip-care": "Läppvård",
+      "treatment": "Behandling",
+      "other": "Annat"
+    }
+  },
   "ingredients": {
     "panel": {
       "heading": "Ingrediensintelligens",
@@ -2063,6 +2269,19 @@
       "low": "Låg",
       "medium": "Medel",
       "high": "Hög"
+    },
+    "conflict": {
+      "title": "{ingredientA} + {ingredientB}",
+      "showWhy": "Visa varför",
+      "hideWhy": "Dölj varför",
+      "mitigation": "Säkrare plan"
+    },
+    "overlap": {
+      "title": "{ingredient}",
+      "productCountSingle": "Finns i {count} produkt",
+      "productCountPlural": "Finns i {count} produkter",
+      "showWhy": "Visa varför",
+      "hideWhy": "Dölj varför"
     },
     "actives": {
       "heading": "Aktiva ingredienser",
@@ -3336,7 +3555,6 @@
       "7": "Söndag"
     },
     "insightDigestTimeLabel": "Sammanfattningstid",
-    "aiRefinedInsightsBody": "Använd AI förfinad text och AI skapade insiktskort",
     "wrappedAlertsBody": "Wrapped-klar-aviseringar",
     "newPill": "Nytt",
     "todaysSuggestionTitle": "Dagens förslag",

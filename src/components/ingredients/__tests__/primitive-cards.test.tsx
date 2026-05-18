@@ -5,6 +5,7 @@ import { LayeringOrderList } from "@/components/ingredients/layering-order-list"
 import { OverlapCard } from "@/components/ingredients/overlap-card";
 import { SafetyScoreRing } from "@/components/ingredients/safety-score-ring";
 import { SeverityBadge } from "@/components/ingredients/severity-badge";
+import { renderWithProviders } from "@/test/utils";
 import {
   AnalysisSeverity,
   type IngredientConflict,
@@ -14,18 +15,18 @@ import {
 describe("ingredient primitive cards", () => {
   it("expands conflict and overlap explanations", async () => {
     const user = userEvent.setup();
-    render(
+    renderWithProviders(
       <>
         <ConflictCard conflict={conflict()} />
         <OverlapCard overlap={overlap()} />
       </>,
     );
 
-    expect(screen.getByText(/retinoid_aha_spacing/i)).toBeInTheDocument();
-    expect(screen.getByText(/ingredients.overlap.title/i)).toBeInTheDocument();
+    expect(screen.getByText(/Retinol \+ AHA/i)).toBeInTheDocument();
+    expect(screen.getByText(/Found in 2 products/i)).toBeInTheDocument();
 
-    await user.click(screen.getAllByRole("button", { name: /showWhy/i })[0]!);
-    await user.click(screen.getAllByRole("button", { name: /showWhy/i })[0]!);
+    await user.click(screen.getAllByRole("button", { name: /show why/i })[0]!);
+    await user.click(screen.getAllByRole("button", { name: /show why/i })[0]!);
 
     expect(screen.getByText(/alternate nights/i)).toBeInTheDocument();
     expect(screen.getByText(/too many leave-on actives/i)).toBeInTheDocument();

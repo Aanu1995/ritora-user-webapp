@@ -33,7 +33,6 @@ export const notificationPreferencesSchema = z.object({
   reaction_alerts_enabled: z.boolean(),
   simplification_alerts_enabled: z.boolean(),
   insight_alerts_enabled: z.boolean(),
-  ai_polished_insights_enabled: z.boolean(),
   insight_cadence: z.enum(INSIGHT_CADENCE_VALUES),
   insight_digest_day: z
     .number()

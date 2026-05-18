@@ -94,11 +94,10 @@ function normalizeNotificationPreferences(
 ): NotificationPreferences {
   return {
     ...preferences,
-    ai_polished_insights_enabled:
-      preferences.ai_polished_insights_enabled ?? true,
     insight_cadence: normalizeInsightCadence(preferences.insight_cadence),
-    insight_digest_day:
-      normalizeInsightDigestDay(preferences.insight_digest_day),
+    insight_digest_day: normalizeInsightDigestDay(
+      preferences.insight_digest_day,
+    ),
     insight_digest_local_time: normalizeReminderTime(
       preferences.insight_digest_local_time ??
         INSIGHT_DIGEST_LOCAL_TIME_DEFAULT,

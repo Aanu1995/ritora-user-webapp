@@ -10,6 +10,7 @@ export enum AppRoute {
   ResendVerification = '/resend-verification',
   PostLogin = '/post-login',
   Dashboard = '/dashboard',
+  CheckProduct = '/check-product',
   SkinProfile = '/skin-profile',
   Shelf = '/shelf',
   TodaysSuggestion = '/todays-suggestion',
@@ -31,6 +32,7 @@ export const NOTIFICATION_SETTINGS_ROUTE = `${AppRoute.Settings}?tab=notificatio
 export const PROTECTED_APP_ROUTES = [
   AppRoute.PostLogin,
   AppRoute.Dashboard,
+  AppRoute.CheckProduct,
   AppRoute.SkinProfile,
   AppRoute.Shelf,
   AppRoute.TodaysSuggestion,

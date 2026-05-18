@@ -153,18 +153,6 @@ export function InsightsNotificationSection({
         </form.Field>
       </div>
       <NotificationSwitch
-        label={t("aiRefinedInsightsBody")}
-        checked={values.ai_polished_insights_enabled}
-        disabled={isSaving}
-        onCheckedChange={(checked) => {
-          form.setFieldValue("ai_polished_insights_enabled", checked);
-          persistPatch(
-            { ...values, ai_polished_insights_enabled: checked },
-            { ai_polished_insights_enabled: checked },
-          );
-        }}
-      />
-      <NotificationSwitch
         label={t("wrappedAlertsBody")}
         checked={values.wrapped_alerts_enabled}
         disabled={isSaving}

@@ -106,7 +106,6 @@ function preferences(
     reaction_alerts_enabled: true,
     simplification_alerts_enabled: true,
     insight_alerts_enabled: true,
-    ai_polished_insights_enabled: true,
     insight_cadence: "weekly",
     insight_digest_day: 1,
     insight_digest_local_time: "09:00",
@@ -137,8 +136,7 @@ describe("NotificationsTab", () => {
     mockGetBrowserPushSupportState.mockReturnValue("unsupported");
     mockGetCurrentBrowserPushSubscription.mockResolvedValue(null);
     mockHashPushEndpoint.mockImplementation(
-      async (endpoint: string | null | undefined) =>
-        endpoint ? "abcd" : null,
+      async (endpoint: string | null | undefined) => (endpoint ? "abcd" : null),
     );
     mockSubscribeCurrentBrowserToPush.mockResolvedValue(undefined);
     mockRevokeCurrentBrowserPushSubscription.mockResolvedValue(undefined);
@@ -289,11 +287,6 @@ describe("NotificationsTab", () => {
     );
     await user.click(
       screen.getByRole("switch", {
-        name: "Use AI refined wording and AI sourced insight cards",
-      }),
-    );
-    await user.click(
-      screen.getByRole("switch", {
         name: "Wrapped ready notifications",
       }),
     );
@@ -311,21 +304,16 @@ describe("NotificationsTab", () => {
       expect.any(Object),
     );
     expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
-      { ai_polished_insights_enabled: false },
-      expect.any(Object),
-    );
-    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
       { wrapped_alerts_enabled: false },
       expect.any(Object),
     );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledTimes(4);
   });
 
   it("persists insight cadence preferences independently", async () => {
     renderWithProviders(<NotificationsTab />);
 
-    await user.click(
-      screen.getByRole("combobox", { name: "Insight cadence" }),
-    );
+    await user.click(screen.getByRole("combobox", { name: "Insight cadence" }));
     await user.click(screen.getByRole("option", { name: "Fewer insights" }));
 
     await user.click(screen.getByRole("combobox", { name: "Digest day" }));
@@ -353,9 +341,7 @@ describe("NotificationsTab", () => {
   it("persists product expiry alert settings", async () => {
     renderWithProviders(<NotificationsTab />);
 
-    const noticeDays = screen.getByLabelText(
-      "Notify me days before expiry",
-    );
+    const noticeDays = screen.getByLabelText("Notify me days before expiry");
     await user.clear(noticeDays);
     await user.type(noticeDays, "30");
     await user.tab();

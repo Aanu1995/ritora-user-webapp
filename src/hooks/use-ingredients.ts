@@ -1,11 +1,15 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useLocale } from 'next-intl';
 import { QueryKey } from '@/constants/query-keys';
 import { useAuthEnabled } from '@/hooks/use-auth-enabled';
 import { normalizeLocale } from '@/i18n/config';
-import { analyzeProducts } from '@/services/ingredients.service';
+import { analyzeProducts, checkProduct } from '@/services/ingredients.service';
+import type {
+  ProductCheckInput,
+  ProductCheckResponse,
+} from '@/types/ingredients';
 
 const STALE_MS = 60_000;
 const MISSING_PRODUCT_ID_ERROR = 'MISSING_PRODUCT_ID';
@@ -48,5 +52,12 @@ export function useFocusProductAnalysis(
     },
     enabled: isEnabled,
     staleTime: STALE_MS,
+  });
+}
+
+export function useCheckProduct() {
+  return useMutation<ProductCheckResponse, Error, ProductCheckInput>({
+    mutationKey: [QueryKey.ProductCheck],
+    mutationFn: (input) => checkProduct(input),
   });
 }

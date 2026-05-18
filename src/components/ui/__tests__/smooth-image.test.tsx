@@ -68,4 +68,22 @@ describe("SmoothImage", () => {
       screen.queryByRole("img", { name: "Product bottle" }),
     ).not.toBeInTheDocument();
   });
+
+  it("passes loading priority hints to the image element", () => {
+    renderWithProviders(
+      <SmoothImage
+        src="/hero.webp"
+        alt="Hero product"
+        className="h-12 w-10 rounded-md"
+        sizes="40px"
+        loading="eager"
+        fetchPriority="high"
+      />,
+    );
+
+    const image = screen.getByRole("img", { name: "Hero product" });
+
+    expect(image).toHaveAttribute("loading", "eager");
+    expect(image).toHaveAttribute("fetchpriority", "high");
+  });
 });

@@ -11,6 +11,8 @@ type SmoothImageProps = {
   imageClassName?: string;
   fallback?: ReactNode;
   sizes?: ImageProps["sizes"];
+  loading?: ImageProps["loading"];
+  fetchPriority?: ImageProps["fetchPriority"];
   priority?: ImageProps["priority"];
   unoptimized?: ImageProps["unoptimized"];
 };
@@ -26,6 +28,8 @@ function SmoothImageFrame({
   imageClassName,
   fallback,
   sizes,
+  loading,
+  fetchPriority,
   priority,
   unoptimized = true,
 }: SmoothImageProps) {
@@ -55,6 +59,8 @@ function SmoothImageFrame({
           alt={alt}
           fill
           sizes={sizes}
+          loading={loading}
+          fetchPriority={fetchPriority}
           priority={priority}
           unoptimized={unoptimized}
           onLoad={() => setLoaded(true)}

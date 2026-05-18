@@ -11,16 +11,16 @@ test.describe('Landing Page', () => {
   });
 
   test('renders navigation header', async ({ page }) => {
-    const header = page.locator('header');
+    const header = page.getByRole('banner');
     await expect(header).toBeVisible();
     await expect(header.getByRole('link', { name: /ritora/i }).first()).toBeVisible();
   });
 
   test('renders footer', async ({ page }) => {
-    const footer = page.locator('footer');
+    const footer = page.getByRole('contentinfo');
     await expect(footer).toBeVisible();
-    await expect(footer.getByText(/privacy/i)).toBeVisible();
-    await expect(footer.getByText(/terms/i)).toBeVisible();
+    await expect(footer.getByRole('link', { name: /privacy policy/i })).toBeVisible();
+    await expect(footer.getByRole('link', { name: /terms of service/i })).toBeVisible();
   });
 
   test('has correct page title', async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe('Landing Page', () => {
 
     const dialog = page.getByRole('dialog', { name: /open menu/i });
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('link', { name: /why ritora/i })).toBeVisible();
+    await expect(dialog.getByRole('link', { name: /how it works/i })).toBeVisible();
   });
 });
 

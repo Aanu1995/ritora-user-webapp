@@ -1,13 +1,16 @@
 import { waitFor } from '@testing-library/react';
 import { renderHookWithProviders } from '@/test/utils';
 import { useAuthStore } from '@/stores/auth-store';
-import { useFocusProductAnalysis } from '@/hooks/use-ingredients';
+import { useCheckProduct, useFocusProductAnalysis } from '@/hooks/use-ingredients';
+import { ProductCategory } from '@/types/shelf';
+import { ProductCheckSource } from '@/types/ingredients';
 
 jest.mock('@/services/ingredients.service', () => ({
   analyzeProducts: jest.fn(),
+  checkProduct: jest.fn(),
 }));
 
-import { analyzeProducts } from '@/services/ingredients.service';
+import { analyzeProducts, checkProduct } from '@/services/ingredients.service';
 
 const ANALYSIS_RESULT = {
   mode: 'focus' as const,
@@ -63,5 +66,42 @@ describe('useFocusProductAnalysis', () => {
       },
       expect.any(AbortSignal),
     );
+  });
+});
+
+describe('useCheckProduct', () => {
+  it('runs an authenticated product-check mutation', async () => {
+    (checkProduct as jest.Mock).mockResolvedValue({
+      analysis: ANALYSIS_RESULT,
+      verdict: { label: 'good_fit' },
+    });
+
+    const { result } = renderHookWithProviders(() => useCheckProduct());
+
+    result.current.mutate({
+      product: {
+        source: ProductCheckSource.IngredientPaste,
+        brand: 'Ritora Lab',
+        name: 'Barrier Serum',
+        category: ProductCategory.Serum,
+        inciIngredients: ['Niacinamide'],
+      },
+      language: 'en',
+    });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    expect(checkProduct).toHaveBeenCalledWith({
+      product: {
+        source: ProductCheckSource.IngredientPaste,
+        brand: 'Ritora Lab',
+        name: 'Barrier Serum',
+        category: ProductCategory.Serum,
+        inciIngredients: ['Niacinamide'],
+      },
+      language: 'en',
+    });
   });
 });
