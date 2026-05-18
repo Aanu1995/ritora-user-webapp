@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useEffect, useId, useImperativeHandle, useRef, useState } from "react";
 import type { Ref } from "react";
 import { useForm, useStore } from "@tanstack/react-form";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { AppRoute } from "@/constants/app-routes";
 import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   useDeleteSkinProfileHormonalContext,
   useUpdateSkinProfile,
@@ -320,21 +321,34 @@ function BooleanQuestion({
   onChange: (value: string) => void;
   translate: (value: string) => string;
 }) {
+  const baseId = useId();
   return (
     <div className="space-y-3 py-5">
       <FieldHeader question={question} why={why} />
-      <div className="flex flex-wrap gap-1.5">
-        {TRI_STATE_BOOLEAN_OPTIONS.map((option) => (
-          <button
-            key={option}
-            type="button"
-            onClick={() => onChange(option)}
-            className={chipClasses(value === option)}
-          >
-            {translate(option)}
-          </button>
-        ))}
-      </div>
+      <RadioGroup
+        value={value}
+        onValueChange={onChange}
+        className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-2"
+      >
+        {TRI_STATE_BOOLEAN_OPTIONS.map((option) => {
+          const id = `${baseId}-${option}`;
+          return (
+            <div key={option} className="flex items-center gap-2">
+              <RadioGroupItem
+                id={id}
+                value={option}
+                className="cursor-pointer"
+              />
+              <label
+                htmlFor={id}
+                className="cursor-pointer text-sm text-foreground"
+              >
+                {translate(option)}
+              </label>
+            </div>
+          );
+        })}
+      </RadioGroup>
     </div>
   );
 }

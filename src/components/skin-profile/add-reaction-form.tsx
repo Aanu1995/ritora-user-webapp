@@ -1,9 +1,18 @@
 "use client";
 
 import { useForm, useStore } from "@tanstack/react-form";
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { firstFieldError, type FieldIssue } from "@/lib/form-errors";
 import type { ReactionEntry, SkinProfileOptions } from "@/types/skin-profile";
 import { chipClasses } from "./section-shared";
@@ -109,14 +118,13 @@ export function AddReactionForm({
                 <label className="mb-1.5 block text-xs font-semibold text-foreground">
                   {t("fieldTrigger")}
                 </label>
-                <input
+                <Input
                   type="text"
                   value={values.trigger}
                   onChange={(event) =>
                     setStringField("trigger", event.target.value)
                   }
                   placeholder={t("fieldTriggerPlaceholder")}
-                  className="w-full rounded-lg border border-border-strong bg-surface px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                 />
                 {triggerError ? (
                   <p className="mt-1 text-xs text-danger" role="alert">
@@ -165,19 +173,13 @@ export function AddReactionForm({
                 onToggle={(value) => setStringField("severity", value)}
               />
 
-              <label className="flex cursor-pointer items-start gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  className="mt-1 h-4 w-4 rounded border-border-strong accent-accent-strong"
-                  checked={values.patchTest}
-                  onChange={(event) =>
-                    form.setFieldValue("patchTest", event.target.checked)
-                  }
-                />
-                <span className="text-sm text-foreground">
-                  {t("fieldPatchTest")}
-                </span>
-              </label>
+              <PatchTestField
+                checked={values.patchTest}
+                onCheckedChange={(checked) =>
+                  form.setFieldValue("patchTest", checked === true)
+                }
+                label={t("fieldPatchTest")}
+              />
             </div>
 
             <div className="mt-5 flex justify-end">
@@ -225,22 +227,55 @@ function SelectField({
   translateOption: (value: string) => string;
   onChange: (value: string) => void;
 }) {
+  const id = useId();
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-semibold text-foreground">
+      <label
+        htmlFor={id}
+        className="mb-1.5 block text-xs font-semibold text-foreground"
+      >
         {label}
       </label>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-lg border border-border-strong bg-surface px-3 py-2 text-sm focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger id={id}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option} value={option}>
+              {translateOption(option)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function PatchTestField({
+  checked,
+  onCheckedChange,
+  label,
+}: {
+  checked: boolean;
+  onCheckedChange: (checked: boolean | "indeterminate") => void;
+  label: string;
+}) {
+  const id = useId();
+  return (
+    <div className="flex items-center gap-2">
+      <Checkbox
+        id={id}
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+        className="cursor-pointer"
+      />
+      <label
+        htmlFor={id}
+        className="cursor-pointer text-sm text-foreground"
       >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {translateOption(option)}
-          </option>
-        ))}
-      </select>
+        {label}
+      </label>
     </div>
   );
 }

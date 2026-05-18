@@ -20,6 +20,7 @@ export type ReactionEntry = {
 };
 
 export type ReactionHistory = {
+  has_known_reactions?: boolean | null;
   entries?: ReactionEntry[];
 };
 

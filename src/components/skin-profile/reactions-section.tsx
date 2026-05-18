@@ -18,12 +18,17 @@ import {
   executeMutation,
   readSubmissionErrorMessage,
 } from "@/lib/form-submission";
+import { cn } from "@/lib/utils";
 import { getSkinProfileSubmitError } from "@/lib/skin-profile-submit-errors";
 import type {
   ReactionEntry,
   SkinProfile,
   SkinProfileOptions,
 } from "@/types/skin-profile";
+import {
+  ConfirmDialog,
+  ConfirmDialogTone,
+} from "@/components/ui/confirm-dialog";
 import type { SectionFormHandle } from "./medical-safety-section";
 import { AddReactionForm, reactionLabelFor } from "./add-reaction-form";
 import {
@@ -46,7 +51,10 @@ export const ReactionsSection = forwardRef<
   const tOptions = useTranslations("skinProfile.options");
   const updateMutation = useUpdateSkinProfile();
   const draftDirtyRef = useRef(false);
+  const includeConsentRef = useRef(false);
+  const pendingConsentSubmitRef = useRef(false);
   const [draftDirty, setDraftDirty] = useState(false);
+  const [consentDialogOpen, setConsentDialogOpen] = useState(false);
 
   const form = useForm({
     defaultValues: getReactionHistoryFormValues(profile),
@@ -58,8 +66,12 @@ export const ReactionsSection = forwardRef<
       onChange: reactionHistorySectionSchema,
       onSubmit: reactionHistorySectionSchema,
       onSubmitAsync: async ({ value }) => {
+        const consentPayload = includeConsentRef.current
+          ? { healthContextConsent: true }
+          : {};
         const result = await executeMutation(updateMutation.mutate, {
           reactionHistory: value.reactionHistory,
+          ...consentPayload,
         });
 
         if (result.error !== null) {
@@ -74,6 +86,8 @@ export const ReactionsSection = forwardRef<
       if (!draftDirtyRef.current) {
         releaseGuard();
       }
+      includeConsentRef.current = false;
+      setConsentDialogOpen(false);
       toast.success(t("savedChanges"));
     },
   });
@@ -87,11 +101,55 @@ export const ReactionsSection = forwardRef<
     onPendingChange?.(updateMutation.isPending);
   }, [updateMutation.isPending, onPendingChange]);
 
+  const submitWithConsent = (includeConsent: boolean) => {
+    pendingConsentSubmitRef.current = false;
+    includeConsentRef.current = includeConsent;
+    void form.handleSubmit();
+  };
+
+  const reactionHistoryTouchesHealthData = () => {
+    const reactionHistory = form.getFieldValue("reactionHistory");
+    return (
+      typeof reactionHistory.has_known_reactions === "boolean" ||
+      (reactionHistory.entries?.length ?? 0) > 0
+    );
+  };
+
+  const submitReactionHistory = () => {
+    if (!profile.hasHealthContextConsent && reactionHistoryTouchesHealthData()) {
+      pendingConsentSubmitRef.current = true;
+      setConsentDialogOpen(true);
+      return;
+    }
+
+    submitWithConsent(false);
+  };
+
+  const onConsentAccept = () => {
+    setConsentDialogOpen(false);
+
+    if (pendingConsentSubmitRef.current) {
+      submitWithConsent(true);
+    }
+  };
+
+  const onConsentDecline = () => {
+    pendingConsentSubmitRef.current = false;
+    setConsentDialogOpen(false);
+  };
+
   useImperativeHandle(ref, () => ({
-    submit: () => {
-      void form.handleSubmit();
-    },
+    submit: () => submitReactionHistory(),
   }));
+
+  const setKnownReactionStatus = (hasKnownReactions: boolean) => {
+    clearSubmitErrors(form);
+    form.setFieldValue("reactionHistory", (current) => ({
+      ...current,
+      has_known_reactions: hasKnownReactions,
+      entries: hasKnownReactions ? (current.entries ?? []) : [],
+    }));
+  };
 
   const setEntries = (
     updater: (entries: ReactionEntry[]) => ReactionEntry[],
@@ -99,6 +157,7 @@ export const ReactionsSection = forwardRef<
     clearSubmitErrors(form);
     form.setFieldValue("reactionHistory", (current) => ({
       ...current,
+      has_known_reactions: true,
       entries: updater(current.entries ?? []),
     }));
   };
@@ -125,14 +184,63 @@ export const ReactionsSection = forwardRef<
     <form.Subscribe
       selector={(state) => ({
         entries: state.values.reactionHistory.entries ?? [],
+        hasKnownReactions: state.values.reactionHistory.has_known_reactions,
         submitError: state.errorMap.onSubmit,
       })}
     >
-      {({ entries, submitError }) => {
+      {({ entries, hasKnownReactions, submitError }) => {
         const formError = readSubmissionErrorMessage(submitError);
 
         return (
           <>
+            <div className="mb-5 rounded-2xl border border-border bg-surface p-4">
+              <p className="text-sm font-semibold text-foreground">
+                {t("historyQuestion")}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-muted">
+                {t("historyQuestionHint")}
+              </p>
+              <div
+                className="mt-3 grid gap-2 sm:grid-cols-2"
+                role="group"
+                aria-label={t("historyQuestion")}
+              >
+                <button
+                  type="button"
+                  aria-pressed={hasKnownReactions === true}
+                  onClick={() => setKnownReactionStatus(true)}
+                  disabled={updateMutation.isPending}
+                  className={cn(
+                    "rounded-xl border px-3 py-2 text-left text-sm font-semibold transition",
+                    hasKnownReactions === true
+                      ? "border-accent bg-accent-soft text-accent-strong"
+                      : "border-border bg-surface text-foreground hover:border-accent/50",
+                  )}
+                >
+                  {t("hasReactions")}
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={hasKnownReactions === false}
+                  onClick={() => setKnownReactionStatus(false)}
+                  disabled={updateMutation.isPending}
+                  className={cn(
+                    "rounded-xl border px-3 py-2 text-left text-sm font-semibold transition",
+                    hasKnownReactions === false
+                      ? "border-accent bg-accent-soft text-accent-strong"
+                      : "border-border bg-surface text-foreground hover:border-accent/50",
+                  )}
+                >
+                  {t("noKnownReactions")}
+                </button>
+              </div>
+              {hasKnownReactions === false ? (
+                <p className="mt-3 rounded-lg bg-surface-muted px-3 py-2 text-xs text-muted">
+                  {t("noKnownReactionsHint")}
+                </p>
+              ) : null}
+            </div>
+
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <div>
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted">
@@ -222,12 +330,18 @@ export const ReactionsSection = forwardRef<
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-muted">
                   {t("addNew")}
                 </p>
-                <AddReactionForm
-                  options={options}
-                  pending={updateMutation.isPending}
-                  onAdd={onAdd}
-                  onDirtyChange={handleDraftDirtyChange}
-                />
+                {hasKnownReactions === false ? (
+                  <div className="rounded-2xl border border-border bg-surface-muted p-4 text-sm text-muted">
+                    {t("addDisabledNoHistory")}
+                  </div>
+                ) : (
+                  <AddReactionForm
+                    options={options}
+                    pending={updateMutation.isPending}
+                    onAdd={onAdd}
+                    onDirtyChange={handleDraftDirtyChange}
+                  />
+                )}
               </div>
             </div>
 
@@ -236,6 +350,20 @@ export const ReactionsSection = forwardRef<
                 {formError}
               </p>
             ) : null}
+
+            <ConfirmDialog
+              open={consentDialogOpen}
+              onOpenChange={(open) =>
+                open ? setConsentDialogOpen(true) : onConsentDecline()
+              }
+              title={t("consentTitle")}
+              description={t("consentDescription")}
+              confirmLabel={t("consentAccept")}
+              cancelLabel={t("consentDecline")}
+              onConfirm={onConsentAccept}
+              tone={ConfirmDialogTone.Neutral}
+              isPending={updateMutation.isPending}
+            />
           </>
         );
       }}

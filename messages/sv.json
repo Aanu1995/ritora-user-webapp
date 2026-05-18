@@ -953,6 +953,7 @@
       "notApplicable": "Ej tillämpligt",
       "review": "Granska",
       "reactionEntriesCount": "{count} poster",
+      "noKnownReactions": "Inga kända reaktioner",
       "activeToleranceCount": "{count} följs",
       "encryptedBadge": "Krypterad",
       "consentRequired": "Frågar om samtycke först",
@@ -1018,6 +1019,12 @@
       "logged": "Loggade reaktioner",
       "entriesCount": "{count} poster",
       "entriesNone": "Inga reaktioner loggade ännu.",
+      "historyQuestion": "Har du haft hudreaktioner tidigare?",
+      "historyQuestionHint": "Att svara nej räknas också. Ritora behöver veta om detta hoppades över eller verkligen inte gäller dig.",
+      "hasReactions": "Ja, jag har reagerat tidigare",
+      "noKnownReactions": "Inga kända reaktioner",
+      "noKnownReactionsHint": "Ritora behandlar inte reaktionshistoriken som saknad. Du kan lägga till en reaktion senare om det ändras.",
+      "addDisabledNoHistory": "Ändra ditt svar för att lägga till en reaktion.",
       "addNew": "Lägg till en reaktion",
       "addNewHint": "Var specifik där du kan.",
       "fieldTrigger": "Vad utlöste den?",
@@ -1033,7 +1040,11 @@
       "saved": "Reaktion tillagd.",
       "removed": "Reaktion borttagen.",
       "saveAll": "Spara ändringar",
-      "savedChanges": "Ändringar sparade."
+      "savedChanges": "Ändringar sparade.",
+      "consentTitle": "Skydda reaktionshistorik",
+      "consentDescription": "Reaktionshistorik är hälsorelaterad data. Ritora lagrar den krypterad och använder den bara för att anpassa dina förslag.",
+      "consentAccept": "Tillåt och spara",
+      "consentDecline": "Inte nu"
     },
     "activeTolerance": {
       "pageTitle": "Aktiv tolerans",
@@ -2195,7 +2206,7 @@
         "recent_journal_reaction": "Nya Skin Journal-poster innehåller reaktionssignaler.",
         "suggestion_history_reaction": "Tidigare förslag förenklades eftersom reaktionsrisk upptäcktes.",
         "low_confidence": "Analysen har låg tillförlitlighet.",
-        "review_required": "Vissa extraherade uppgifter behöver granskas.",
+        "review_required": "Den extraherade ingredienslistan behöver granskas.",
         "sensitive_profile": "Din känsliga hudkontext påverkar rekommendationen.",
         "reaction_trigger": "En ingrediens kan överlappa med din reaktionshistorik.",
         "photosensitizing_active": "En fotosensibiliserande aktiv ingrediens kräver försiktig timing."

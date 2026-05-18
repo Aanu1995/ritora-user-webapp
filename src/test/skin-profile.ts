@@ -22,7 +22,7 @@ export function createReadySkinProfile(
     allowSmartPicks: true,
     budgetTier: 'mid',
     safetyContext: {},
-    reactionHistory: {},
+    reactionHistory: { has_known_reactions: false, entries: [] },
     concernDetails: {
       per_concern: [{ concern: 'acne', severity: 'moderate' }],
     },
@@ -45,7 +45,7 @@ export function createReadySkinProfile(
     shoppingPreferences: {},
     hormonalContext: {},
     completeness: 100,
-    hasHealthContextConsent: false,
+    hasHealthContextConsent: true,
     hasLocationContextConsent: false,
     hasHormonalContextConsent: false,
     createdAt: '2026-05-01T00:00:00.000Z',

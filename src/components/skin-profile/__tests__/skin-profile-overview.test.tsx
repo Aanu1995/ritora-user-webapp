@@ -93,4 +93,27 @@ describe("SkinProfileOverview", () => {
       within(lifestyleCard as HTMLElement).queryByText("Add now"),
     ).not.toBeInTheDocument();
   });
+
+  it("does not show reaction history as incomplete when none is known", () => {
+    renderWithProviders(
+      <SkinProfileOverview
+        profile={createReadySkinProfile({
+          reactionHistory: {},
+        })}
+        onEdit={jest.fn()}
+      />,
+    );
+
+    const reactionCard = screen
+      .getByText("Reaction history")
+      .closest(".rounded-2xl");
+
+    expect(reactionCard).not.toBeNull();
+    expect(
+      within(reactionCard as HTMLElement).getByText("No known reactions"),
+    ).toBeInTheDocument();
+    expect(
+      within(reactionCard as HTMLElement).queryByText("Add now"),
+    ).not.toBeInTheDocument();
+  });
 });

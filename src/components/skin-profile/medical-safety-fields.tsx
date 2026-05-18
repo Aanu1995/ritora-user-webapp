@@ -1,6 +1,8 @@
 "use client";
 
+import { useId } from "react";
 import { useTranslations } from "next-intl";
+import { Checkbox } from "@/components/ui/checkbox";
 import { DatePicker } from "@/components/ui/date-picker";
 import {
   Popover,
@@ -84,6 +86,8 @@ export function MedicalSafetyFields({
 }: MedicalSafetyFieldsProps) {
   const t = useTranslations("skinProfile.medicalSafety");
   const tOptions = useTranslations("skinProfile.options");
+  const photosensitizingOtherId = useId();
+  const procedureIdBase = useId();
 
   const toggleArrayValue = (setter: StateUpdater<string[]>, value: string) => {
     setter((prev) =>
@@ -208,17 +212,22 @@ export function MedicalSafetyFields({
             {t("none")}
           </button>
         </div>
-        <label className="mt-2 flex cursor-pointer items-start gap-2 text-sm">
-          <input
-            type="checkbox"
-            className="mt-1 h-4 w-4 rounded border-border-strong accent-accent-strong"
+        <div className="mt-2 flex items-center gap-2">
+          <Checkbox
+            id={photosensitizingOtherId}
             checked={photosensitizingOther}
-            onChange={(e) => setPhotosensitizingOther(e.target.checked)}
+            onCheckedChange={(checked) =>
+              setPhotosensitizingOther(checked === true)
+            }
+            className="cursor-pointer"
           />
-          <span className="text-sm text-foreground">
+          <label
+            htmlFor={photosensitizingOtherId}
+            className="cursor-pointer text-sm text-foreground"
+          >
             {t("questionPhotosensitizingOther")}
-          </span>
-        </label>
+          </label>
+        </div>
       </div>
 
       <div className="space-y-3 py-5">
@@ -230,18 +239,21 @@ export function MedicalSafetyFields({
           {options.procedureTypes.map((type) => {
             const procedure = recentProcedures.find((p) => p.type === type);
             const isChecked = Boolean(procedure);
+            const id = `${procedureIdBase}-${type}`;
             return (
               <div
                 key={type}
                 className="flex items-center gap-3 text-sm text-foreground"
               >
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-border-strong accent-accent-strong"
+                <Checkbox
+                  id={id}
                   checked={isChecked}
-                  onChange={() => toggleProcedure(type)}
+                  onCheckedChange={() => toggleProcedure(type)}
+                  className="cursor-pointer"
                 />
-                <span className="flex-1">{tOptions(type)}</span>
+                <label htmlFor={id} className="flex-1 cursor-pointer">
+                  {tOptions(type)}
+                </label>
                 {isChecked ? (
                   <div className="w-44">
                     <DatePicker

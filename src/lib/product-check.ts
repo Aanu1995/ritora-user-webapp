@@ -42,9 +42,9 @@ export function buildPhotoProductCheckInput(
     name,
     category: resolved.identity.category ?? ProductCategory.Other,
     inciIngredients: resolved.identity.inciIngredients ?? [],
-    lookupConfidence: resolved.confidence,
-    lookupWarnings: resolved.warnings,
-    reviewRequired: resolved.reviewRequired,
+    lookupConfidence: undefined,
+    lookupWarnings: [],
+    reviewRequired: false,
   };
 }
 

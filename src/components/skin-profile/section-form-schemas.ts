@@ -70,6 +70,7 @@ const reactionEntrySchema = z.object({
 
 export const reactionHistorySectionSchema = z.object({
   reactionHistory: z.object({
+    has_known_reactions: z.boolean().nullable().optional(),
     entries: z.array(reactionEntrySchema).max(50).optional(),
   }),
 });
@@ -81,8 +82,16 @@ export type ReactionHistoryFormValues = z.infer<
 export function getReactionHistoryFormValues(
   profile: SkinProfile,
 ): ReactionHistoryFormValues {
+  const hasKnownReactions = profile.reactionHistory?.has_known_reactions;
+  const entries =
+    hasKnownReactions === false ? [] : (profile.reactionHistory?.entries ?? []);
+
   return {
-    reactionHistory: { entries: profile.reactionHistory?.entries ?? [] },
+    reactionHistory: {
+      has_known_reactions:
+        hasKnownReactions ?? (entries.length > 0 ? true : undefined),
+      entries,
+    },
   };
 }
 

@@ -57,6 +57,35 @@ jest.mock("sonner", () => ({
   },
 }));
 
+jest.mock("@/components/ui/select", () => ({
+  Select: ({
+    value,
+    onValueChange,
+    children,
+  }: {
+    value: string;
+    onValueChange?: (value: string) => void;
+    children: React.ReactNode;
+  }) => (
+    <select
+      value={value}
+      onChange={(event) => onValueChange?.(event.target.value)}
+    >
+      {children}
+    </select>
+  ),
+  SelectTrigger: () => null,
+  SelectValue: () => null,
+  SelectContent: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  SelectItem: ({
+    value,
+    children,
+  }: {
+    value: string;
+    children: React.ReactNode;
+  }) => <option value={value}>{children}</option>,
+}));
+
 jest.mock("@/hooks/use-skin-profile", () => ({
   useUpdateSkinProfile: () => ({
     mutate: mockUpdateMutate,
@@ -316,7 +345,9 @@ describe("skin profile optional sections", () => {
   it("adds, removes, and submits reaction history entries", async () => {
     const user = userEvent.setup();
     const profile = mergedProfile({
+      hasHealthContextConsent: true,
       reactionHistory: {
+        has_known_reactions: true,
         entries: [
           {
             trigger: "Fragrance",
@@ -360,6 +391,7 @@ describe("skin profile optional sections", () => {
     expect(mockUpdateMutate).toHaveBeenLastCalledWith(
       {
         reactionHistory: {
+          has_known_reactions: true,
           entries: [
             expect.objectContaining({
               trigger: "Lavender oil",
@@ -371,6 +403,45 @@ describe("skin profile optional sections", () => {
             }),
           ],
         },
+      },
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
+    );
+  });
+
+  it("saves no known reaction history as an answered health-context field", async () => {
+    const user = userEvent.setup();
+    const profile = mergedProfile({
+      hasHealthContextConsent: false,
+      reactionHistory: {},
+    });
+    const { ref } = renderForwardedSection((sectionRef) => (
+      <ReactionsSection
+        ref={sectionRef}
+        profile={profile}
+        options={mockSkinProfileOptions}
+        onPendingChange={jest.fn()}
+      />
+    ));
+
+    await user.click(screen.getByRole("button", { name: "No known reactions" }));
+    submitSection(ref);
+
+    expect(
+      await screen.findByRole("alertdialog", {
+        name: "Protect reaction history",
+      }),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Allow and save" }));
+
+    await waitFor(() => expect(mockUpdateMutate).toHaveBeenCalled());
+    expect(mockUpdateMutate).toHaveBeenLastCalledWith(
+      {
+        reactionHistory: {
+          has_known_reactions: false,
+          entries: [],
+        },
+        healthContextConsent: true,
       },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
@@ -440,8 +511,8 @@ describe("skin profile optional sections", () => {
 
     await user.click(screen.getByRole("button", { name: "Regular" }));
     await user.click(screen.getByRole("button", { name: "Before period" }));
-    await user.click(screen.getAllByRole("button", { name: "Yes" })[0]);
-    await user.click(screen.getAllByRole("button", { name: "No" })[1]);
+    await user.click(screen.getAllByRole("radio", { name: "Yes" })[0]);
+    await user.click(screen.getAllByRole("radio", { name: "No" })[1]);
     submitSection(submitRef);
 
     await waitFor(() => expect(mockUpdateMutate).toHaveBeenCalled());

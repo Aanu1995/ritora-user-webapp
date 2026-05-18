@@ -949,6 +949,7 @@
       "notApplicable": "Not applicable",
       "review": "Review",
       "reactionEntriesCount": "{count} entries",
+      "noKnownReactions": "No known reactions",
       "activeToleranceCount": "{count} tracked",
       "encryptedBadge": "Encrypted",
       "consentRequired": "Asks for consent first",
@@ -1014,6 +1015,12 @@
       "logged": "Logged reactions",
       "entriesCount": "{count} entries",
       "entriesNone": "No reactions logged yet.",
+      "historyQuestion": "Have you had skin reactions before?",
+      "historyQuestionHint": "Answering no still counts. Ritora should know whether this was skipped or truly does not apply to you.",
+      "hasReactions": "Yes, I have reacted before",
+      "noKnownReactions": "No known reactions",
+      "noKnownReactionsHint": "Ritora will not treat reaction history as missing. You can come back and add a reaction later if this changes.",
+      "addDisabledNoHistory": "Change your answer to add a reaction.",
       "addNew": "Add a reaction",
       "addNewHint": "Be specific where you can.",
       "fieldTrigger": "What triggered it?",
@@ -1029,7 +1036,11 @@
       "saved": "Reaction added.",
       "removed": "Reaction removed.",
       "saveAll": "Save changes",
-      "savedChanges": "Changes saved."
+      "savedChanges": "Changes saved.",
+      "consentTitle": "Protect reaction history",
+      "consentDescription": "Reaction history is health-context data. Ritora stores it encrypted and uses it only to personalize your suggestions.",
+      "consentAccept": "Allow and save",
+      "consentDecline": "Not now"
     },
     "activeTolerance": {
       "pageTitle": "Active tolerance",
@@ -2188,7 +2199,7 @@
         "recent_journal_reaction": "Recent Skin Journal entries include reaction signals.",
         "suggestion_history_reaction": "Past suggestions were simplified because reaction risk was detected.",
         "low_confidence": "The analysis confidence is low.",
-        "review_required": "Some extracted details need review.",
+        "review_required": "The extracted ingredient list needs review.",
         "sensitive_profile": "Your sensitive skin context changes the recommendation.",
         "reaction_trigger": "An ingredient may overlap with your reaction history.",
         "photosensitizing_active": "A photosensitizing active needs careful timing."

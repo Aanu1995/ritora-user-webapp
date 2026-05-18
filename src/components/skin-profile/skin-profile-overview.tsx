@@ -25,7 +25,13 @@ export function SkinProfileOverview({
 
   const hasMedicalData = hasMedicalSafetyContext(profile);
   const totalReactions = profile.reactionHistory?.entries?.length ?? 0;
-  const hasReactions = totalReactions > 0;
+  const hasKnownReactionAnswer =
+    typeof profile.reactionHistory?.has_known_reactions === "boolean";
+  const hasReactions =
+    profile.reactionHistory?.has_known_reactions === true ||
+    totalReactions > 0;
+  const hasReactionContext =
+    hasKnownReactionAnswer || totalReactions === 0 || hasReactions;
   const toleranceCount = Object.keys(profile.activeTolerances ?? {}).length;
   const hasTolerance = toleranceCount > 0;
   const lifestyleFilled = hasLifestyleContext(profile);
@@ -62,10 +68,12 @@ export function SkinProfileOverview({
             title={tCards("reactionHistoryTitle")}
             description={tCards("reactionHistoryDesc")}
             time={tCards("reactionHistoryTime")}
-            filled={hasReactions}
+            filled={hasReactionContext}
             filledLabel={
               hasReactions
                 ? tOverview("reactionEntriesCount", { count: totalReactions })
+                : hasReactionContext
+                  ? tOverview("noKnownReactions")
                 : undefined
             }
           />
