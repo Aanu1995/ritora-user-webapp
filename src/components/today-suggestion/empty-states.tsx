@@ -73,13 +73,13 @@ export function NoScheduleEmptyState() {
       </p>
       <div className="mt-3 flex flex-col items-stretch gap-1.5">
         <Button asChild>
-          <Link href="/schedule?preset=every_day">
+          <Link href="/routine?preset=every_day">
             <Zap className="h-3.5 w-3.5" />
             {t("ctaEveryDay")}
           </Link>
         </Button>
         <Button asChild variant="outline">
-          <Link href="/schedule">
+          <Link href="/routine">
             <CalendarPlus className="h-3.5 w-3.5" />
             {t("ctaScratch")}
           </Link>
@@ -118,7 +118,7 @@ export function NoCurrentSlotEmptyState({
           </Link>
         </Button>
         <Button asChild variant="outline">
-          <Link href="/schedule">
+          <Link href="/routine">
             <CalendarPlus className="h-3.5 w-3.5" />
             {t("ctaAddSlot")}
           </Link>

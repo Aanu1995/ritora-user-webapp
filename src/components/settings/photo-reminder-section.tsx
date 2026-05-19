@@ -1,6 +1,5 @@
 "use client";
 
-import { Checkbox } from "@/components/ui/checkbox";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { Switch } from "@/components/ui/switch";
 import { TimePicker } from "@/components/ui/time-picker";
@@ -9,8 +8,8 @@ import { useAuthStore } from "@/stores/auth-store";
 import { NotificationChannelValue } from "@/types/notifications";
 import {
   getTimeFieldValue,
+  NotificationChannelPicker,
   reminderTimePattern,
-  updateChannel,
   type SectionProps,
 } from "@/components/settings/notification-form-controls";
 
@@ -22,12 +21,7 @@ export function PhotoReminderSection({
   persistPatch,
 }: SectionProps) {
   const user = useAuthStore((s) => s.user);
-  const inApp = values.channels.includes(NotificationChannelValue.InApp);
-  const email = values.channels.includes(NotificationChannelValue.Email);
   const push = values.channels.includes(NotificationChannelValue.Push);
-  const channelDisabled = isSaving || !values.photo_reminder_enabled;
-  const pushChannelDisabled =
-    channelDisabled || !push;
 
   return (
     <section className="rounded-2xl border border-border bg-surface p-4 sm:p-5">
@@ -109,75 +103,17 @@ export function PhotoReminderSection({
             </div>
           )}
         </form.Field>
-        <form.Field name="channels">
-          {(field) => (
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                {t("channels")}
-              </label>
-              <label
-                className={`mt-1 flex items-center gap-2 text-sm ${
-                  channelDisabled ? "text-muted" : ""
-                }`}
-              >
-                <Checkbox
-                  disabled={channelDisabled}
-                  checked={inApp}
-                  onCheckedChange={(checked) => {
-                    const channels = updateChannel(
-                      values.channels,
-                      NotificationChannelValue.InApp,
-                      checked === true,
-                    );
-                    field.handleChange(channels);
-                    persistPatch({ ...values, channels }, { channels });
-                  }}
-                />
-                {t("channelInApp")}
-              </label>
-              <label
-                className={`mt-2 flex items-center gap-2 text-sm ${
-                  channelDisabled ? "text-muted" : ""
-                }`}
-              >
-                <Checkbox
-                  disabled={channelDisabled}
-                  checked={email}
-                  onCheckedChange={(checked) => {
-                    const channels = updateChannel(
-                      values.channels,
-                      NotificationChannelValue.Email,
-                      checked === true,
-                    );
-                    field.handleChange(channels);
-                    persistPatch({ ...values, channels }, { channels });
-                  }}
-                />
-                {t("channelEmail")}
-              </label>
-              <label
-                className={`mt-2 flex items-center gap-2 text-sm ${
-                  pushChannelDisabled ? "text-muted" : ""
-                }`}
-              >
-                <Checkbox
-                  disabled={pushChannelDisabled}
-                  checked={push}
-                  onCheckedChange={(checked) => {
-                    const channels = updateChannel(
-                      values.channels,
-                      NotificationChannelValue.Push,
-                      checked === true,
-                    );
-                    field.handleChange(channels);
-                    persistPatch({ ...values, channels }, { channels });
-                  }}
-                />
-                {t("channelPush")}
-              </label>
-            </div>
-          )}
-        </form.Field>
+        <NotificationChannelPicker
+          fieldName="channels"
+          label={t("photoReminderTitle")}
+          values={values}
+          isSaving={isSaving}
+          form={form}
+          t={t}
+          persistPatch={persistPatch}
+          disabled={!values.photo_reminder_enabled}
+          pushDisabled={!push}
+        />
       </div>
     </section>
   );

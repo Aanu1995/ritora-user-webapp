@@ -14,7 +14,7 @@ export enum AppRoute {
   SkinProfile = '/skin-profile',
   Shelf = '/shelf',
   TodaysSuggestion = '/todays-suggestion',
-  Schedule = '/schedule',
+  Schedule = '/routine',
   Journal = '/journal',
   SmartPicks = '/smart-picks',
   SmartPicksWishlist = '/smart-picks/wishlist',

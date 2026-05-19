@@ -1,9 +1,11 @@
 "use client";
 
 import {
+  NotificationChannelPicker,
   NotificationSwitch,
   type SectionProps,
 } from "@/components/settings/notification-form-controls";
+import { NotificationChannelValue } from "@/types/notifications";
 
 export function ReactionAlertsSection({
   values,
@@ -27,6 +29,17 @@ export function ReactionAlertsSection({
           );
         }}
       />
+      <NotificationChannelPicker
+        fieldName="reaction_alert_channels"
+        label={t("reactionDetectedTitle")}
+        values={values}
+        isSaving={isSaving}
+        form={form}
+        t={t}
+        persistPatch={persistPatch}
+        disabled={!values.reaction_alerts_enabled}
+        pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
+      />
       <NotificationSwitch
         label={t("autoSimplifyBody")}
         checked={values.simplification_alerts_enabled}
@@ -41,6 +54,17 @@ export function ReactionAlertsSection({
             { simplification_alerts_enabled: checked },
           );
         }}
+      />
+      <NotificationChannelPicker
+        fieldName="simplification_alert_channels"
+        label={t("routineSimplificationTitle")}
+        values={values}
+        isSaving={isSaving}
+        form={form}
+        t={t}
+        persistPatch={persistPatch}
+        disabled={!values.simplification_alerts_enabled}
+        pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
       <p className="mt-1 text-sm text-muted">{t("autoSimplifyNote")}</p>
     </section>

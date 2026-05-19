@@ -2057,7 +2057,7 @@
       "skinProfile": "Hudprofil",
       "shelf": "Hylla",
       "todaysSuggestion": "Dagens förslag",
-      "schedule": "Schema",
+      "schedule": "Rutin",
       "skinJournal": "Huddagbok",
       "smartPicks": "Smarta val",
       "history": "Historik",
@@ -2481,7 +2481,7 @@
     }
   },
   "schedule": {
-    "title": "Schema",
+    "title": "Rutin",
     "subtitle": "Sätt upp dina dagliga hudvårdsrutiner.",
     "timeZone": {
       "label": "Schematidszon: {timeZone}"
@@ -3703,6 +3703,8 @@
     "channelInApp": "I appen",
     "channelEmail": "E-post",
     "channelPush": "Push",
+    "channelToggleLabel": "{channel} för {notification}",
+    "noChannelsWarning": "Levereras inte förrän du väljer en kanal",
     "browserPushTitle": "Webbläsarpush",
     "browserPushBody": "Skicka enhetsaviseringar från den här webbläsaren för aktiverade aviseringstyper.",
     "browserPushOn": "Push är aktiverat för den här webbläsaren.",
@@ -3737,7 +3739,9 @@
     "browserPushDeviceRemoveFailed": "Det gick inte att ta bort push-enheten.",
     "browserPushDeliveryIssues": "{failing, plural, =0 {Inga felande enheter} one {# felande enhet} other {# felande enheter}} · {retries, plural, =0 {inga väntande försök} one {# väntande försök} other {# väntande försök}}",
     "reactionAlertsTitle": "Reaktionsvarningar",
+    "reactionDetectedTitle": "Möjlig reaktion",
     "reactionAlertsBody": "Notifiera mig när AI flaggar en möjlig reaktion",
+    "routineSimplificationTitle": "Rutinförenkling",
     "autoSimplifyBody": "Förenkla rutin automatiskt vid måttlig/svår reaktion",
     "autoSimplifyNote": "När av får du fortfarande en varning, men din rutin ändras aldrig automatiskt.",
     "insightsTitle": "Insikter & Wrapped",

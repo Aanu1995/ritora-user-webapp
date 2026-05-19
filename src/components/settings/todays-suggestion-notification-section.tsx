@@ -8,9 +8,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  NotificationChannelPicker,
   NotificationSwitch,
   type SectionProps,
 } from "@/components/settings/notification-form-controls";
+import { NotificationChannelValue } from "@/types/notifications";
 
 const LEAD_TIME_OPTIONS = [30, 60, 90, 120, 180, 240, 360, 480, 720] as const;
 
@@ -41,6 +43,17 @@ export function TodaysSuggestionSection({
           );
         }}
       />
+      <NotificationChannelPicker
+        fieldName="suggestion_ready_channels"
+        label={t("suggestionReadyTitle")}
+        values={values}
+        isSaving={isSaving}
+        form={form}
+        t={t}
+        persistPatch={persistPatch}
+        disabled={!values.suggestion_ready_enabled}
+        pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
+      />
       <NotificationSwitch
         label={t("slotStartTitle")}
         body={t("slotStartBody")}
@@ -54,6 +67,17 @@ export function TodaysSuggestionSection({
           );
         }}
       />
+      <NotificationChannelPicker
+        fieldName="slot_start_channels"
+        label={t("slotStartTitle")}
+        values={values}
+        isSaving={isSaving}
+        form={form}
+        t={t}
+        persistPatch={persistPatch}
+        disabled={!values.slot_start_enabled}
+        pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
+      />
       <NotificationSwitch
         label={t("recordingReminderTitle")}
         body={t("recordingReminderBody")}
@@ -66,6 +90,17 @@ export function TodaysSuggestionSection({
             { recording_reminder_enabled: checked },
           );
         }}
+      />
+      <NotificationChannelPicker
+        fieldName="recording_reminder_channels"
+        label={t("recordingReminderTitle")}
+        values={values}
+        isSaving={isSaving}
+        form={form}
+        t={t}
+        persistPatch={persistPatch}
+        disabled={!values.recording_reminder_enabled}
+        pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
 
       <div className="mt-3">

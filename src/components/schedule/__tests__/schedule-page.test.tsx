@@ -20,7 +20,7 @@ let mockSearchParams = new URLSearchParams("slot=slot-1");
 let mockIsDesktop = true;
 
 jest.mock("next/navigation", () => ({
-  usePathname: () => "/schedule",
+  usePathname: () => "/routine",
   useRouter: () => ({
     push: mockPush,
     replace: mockReplace,

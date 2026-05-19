@@ -79,9 +79,9 @@ export function NotificationPreferencesForm({
 
           return (
             <>
+              <BrowserPushSection {...sectionProps} />
               <TodaysSuggestionSection {...sectionProps} />
               <ProductExpiryAlertsSection {...sectionProps} />
-              <BrowserPushSection {...sectionProps} />
               <QuietHoursSection {...sectionProps} />
               <PhotoReminderSection {...sectionProps} />
               <ReactionAlertsSection {...sectionProps} />

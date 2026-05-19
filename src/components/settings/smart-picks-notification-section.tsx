@@ -1,9 +1,16 @@
 "use client";
 
 import {
+  NotificationChannelPicker,
   NotificationSwitch,
   type SectionProps,
 } from "@/components/settings/notification-form-controls";
+import { NotificationChannelValue } from "@/types/notifications";
+
+const SMART_PICK_CHANNELS = [
+  NotificationChannelValue.InApp,
+  NotificationChannelValue.Push,
+] as const;
 
 export function SmartPicksNotificationSection({
   values,
@@ -28,6 +35,18 @@ export function SmartPicksNotificationSection({
             { smart_pick_ready_enabled: checked },
           );
         }}
+      />
+      <NotificationChannelPicker
+        fieldName="smart_pick_ready_channels"
+        label={t("smartPickReadyTitle")}
+        values={values}
+        isSaving={isSaving}
+        form={form}
+        t={t}
+        persistPatch={persistPatch}
+        disabled={!values.smart_pick_ready_enabled}
+        allowedChannels={SMART_PICK_CHANNELS}
+        pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
     </section>
   );

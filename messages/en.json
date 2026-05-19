@@ -2050,7 +2050,7 @@
       "skinProfile": "Skin Profile",
       "shelf": "Shelf",
       "todaysSuggestion": "Today's Suggestion",
-      "schedule": "Schedule",
+      "schedule": "Routine",
       "skinJournal": "Skin Journal",
       "smartPicks": "Smart Picks",
       "history": "History",
@@ -2474,7 +2474,7 @@
     }
   },
   "schedule": {
-    "title": "Schedule",
+    "title": "Routine",
     "subtitle": "Set up your daily skincare routines.",
     "timeZone": {
       "label": "Schedule timezone: {timeZone}"
@@ -3696,6 +3696,8 @@
     "channelInApp": "In-app",
     "channelEmail": "Email",
     "channelPush": "Push",
+    "channelToggleLabel": "{channel} for {notification}",
+    "noChannelsWarning": "Won't deliver until you pick a channel",
     "browserPushTitle": "Browser push",
     "browserPushBody": "Send device notifications from this browser for enabled notification types.",
     "browserPushOn": "Push is enabled for this browser.",
@@ -3730,7 +3732,9 @@
     "browserPushDeviceRemoveFailed": "Could not remove push device.",
     "browserPushDeliveryIssues": "{failing, plural, =0 {No failing devices} one {# failing device} other {# failing devices}} · {retries, plural, =0 {no pending retries} one {# pending retry} other {# pending retries}}",
     "reactionAlertsTitle": "Reaction alerts",
+    "reactionDetectedTitle": "Possible reaction",
     "reactionAlertsBody": "Notify me when AI flags a possible reaction",
+    "routineSimplificationTitle": "Routine simplification",
     "autoSimplifyBody": "Auto-simplify routine on moderate/severe reactions",
     "autoSimplifyNote": "When off, you'll still get an alert but your routine is never changed automatically.",
     "insightsTitle": "Insights & Wrapped",

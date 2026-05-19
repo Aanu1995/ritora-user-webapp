@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { toast } from "sonner";
+import {
+  applyChannelPatchToForm,
+  buildPushChannelPatch,
+  pickPushScopedChannels,
+} from "@/components/settings/browser-push-channel-patch";
 import { PushDeviceListSkeleton } from "@/components/settings/browser-push-device-list-skeleton";
 import {
   browserPushEnableErrorMessage,
@@ -31,10 +36,7 @@ import {
   type PushStatusSummary,
   type PushSubscriptionSummary,
 } from "@/types/notifications";
-import {
-  updateChannel,
-  type SectionProps,
-} from "@/components/settings/notification-form-controls";
+import { type SectionProps } from "@/components/settings/notification-form-controls";
 
 export function BrowserPushSection({
   values,
@@ -120,18 +122,14 @@ export function BrowserPushSection({
   };
 
   const persistChannels = async (enabled: boolean) => {
-    const channels = updateChannel(
-      values.channels,
-      NotificationChannelValue.Push,
-      enabled,
-    );
-    form.setFieldValue("channels", channels);
-    const savedPreferences = await persistPatch(
-      { ...values, channels },
-      { channels },
-    );
+    const { nextValues, patch } = buildPushChannelPatch(values, enabled);
+    applyChannelPatchToForm(form.setFieldValue, patch);
+    const savedPreferences = await persistPatch(nextValues, patch);
     if (savedPreferences) {
-      form.setFieldValue("channels", savedPreferences.channels);
+      applyChannelPatchToForm(
+        form.setFieldValue,
+        pickPushScopedChannels(savedPreferences),
+      );
     }
     return savedPreferences;
   };
@@ -144,9 +142,7 @@ export function BrowserPushSection({
     }
   };
 
-  const removeSubscription = async (
-    subscription: PushSubscriptionSummary,
-  ) => {
+  const removeSubscription = async (subscription: PushSubscriptionSummary) => {
     setRevokingSubscriptionId(subscription.id);
     try {
       const current = await getCurrentBrowserPushSubscription().catch(
@@ -231,9 +227,9 @@ export function BrowserPushSection({
           : null;
   const hasDeliveryIssues = Boolean(
     pushStatus &&
-      (pushStatus.failing_subscriptions > 0 ||
-        pushStatus.pending_retries > 0 ||
-        pushStatus.stale_sending > 0),
+    (pushStatus.failing_subscriptions > 0 ||
+      pushStatus.pending_retries > 0 ||
+      pushStatus.stale_sending > 0),
   );
 
   const statusMessage =

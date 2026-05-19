@@ -4,11 +4,20 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { Switch } from "@/components/ui/switch";
-import { type SectionProps } from "@/components/settings/notification-form-controls";
 import {
+  NotificationChannelPicker,
+  type SectionProps,
+} from "@/components/settings/notification-form-controls";
+import {
+  NotificationChannelValue,
   PRODUCT_EXPIRY_NOTICE_DAYS_MAX,
   PRODUCT_EXPIRY_NOTICE_DAYS_MIN,
 } from "@/types/notifications";
+
+const PRODUCT_EXPIRY_CHANNELS = [
+  NotificationChannelValue.InApp,
+  NotificationChannelValue.Push,
+] as const;
 
 function parseNoticeDays(value: string): number | null {
   const parsed = Number(value);
@@ -114,6 +123,19 @@ export function ProductExpiryAlertsSection({
           </div>
         )}
       </form.Field>
+
+      <NotificationChannelPicker
+        fieldName="product_expiry_alert_channels"
+        label={t("productExpiryAlertsTitle")}
+        values={values}
+        isSaving={isSaving}
+        form={form}
+        t={t}
+        persistPatch={persistPatch}
+        disabled={!values.product_expiry_alerts_enabled}
+        allowedChannels={PRODUCT_EXPIRY_CHANNELS}
+        pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
+      />
 
       <form.Field name="product_expiry_notice_days">
         {(field) => (

@@ -12,6 +12,9 @@ import {
   PRODUCT_EXPIRY_NOTICE_DAYS_DEFAULT,
   InsightCadenceValue,
   type InsightCadence,
+  NOTIFICATION_CHANNEL_VALUES,
+  NotificationChannelValue,
+  type NotificationChannel,
   type NotificationPreferences,
   type NotificationsList,
   type PushStatusSummary,
@@ -92,8 +95,57 @@ export async function revokePushSubscription(id: string): Promise<void> {
 function normalizeNotificationPreferences(
   preferences: NotificationPreferences,
 ): NotificationPreferences {
+  const channels = normalizeChannels(preferences.channels, [
+    NotificationChannelValue.InApp,
+  ]);
   return {
     ...preferences,
+    channels,
+    reaction_alert_channels: normalizeSpecificChannels(
+      preferences.reaction_alert_channels,
+      channels,
+      channels,
+    ),
+    simplification_alert_channels: normalizeSpecificChannels(
+      preferences.simplification_alert_channels,
+      channels,
+      channels,
+    ),
+    insight_alert_channels: normalizeSpecificChannels(
+      preferences.insight_alert_channels,
+      channels,
+      channels,
+    ),
+    wrapped_alert_channels: normalizeSpecificChannels(
+      preferences.wrapped_alert_channels,
+      channels,
+      channels,
+    ),
+    suggestion_ready_channels: normalizeSpecificChannels(
+      preferences.suggestion_ready_channels,
+      channels,
+      channels,
+    ),
+    smart_pick_ready_channels: normalizeSpecificChannels(
+      preferences.smart_pick_ready_channels,
+      [NotificationChannelValue.InApp],
+      channels,
+    ),
+    slot_start_channels: normalizeSpecificChannels(
+      preferences.slot_start_channels,
+      channels,
+      channels,
+    ),
+    recording_reminder_channels: normalizeSpecificChannels(
+      preferences.recording_reminder_channels,
+      channels,
+      channels,
+    ),
+    product_expiry_alert_channels: normalizeSpecificChannels(
+      preferences.product_expiry_alert_channels,
+      [NotificationChannelValue.InApp, NotificationChannelValue.Push],
+      channels,
+    ),
     insight_cadence: normalizeInsightCadence(preferences.insight_cadence),
     insight_digest_day: normalizeInsightDigestDay(
       preferences.insight_digest_day,
@@ -112,6 +164,34 @@ function normalizeNotificationPreferences(
       preferences.photo_reminder_local_time,
     ),
   };
+}
+
+function normalizeChannels(
+  value: NotificationChannel[] | undefined,
+  fallback: NotificationChannel[],
+): NotificationChannel[] {
+  const source = Array.isArray(value) ? value : fallback;
+  const allowed = new Set<NotificationChannel>(NOTIFICATION_CHANNEL_VALUES);
+  const seen = new Set<NotificationChannel>();
+  return source.filter((channel) => {
+    if (!allowed.has(channel) || seen.has(channel)) return false;
+    seen.add(channel);
+    return true;
+  });
+}
+
+function normalizeSpecificChannels(
+  value: NotificationChannel[] | undefined,
+  fallback: NotificationChannel[],
+  globalChannels: NotificationChannel[],
+): NotificationChannel[] {
+  const normalized = normalizeChannels(value, fallback);
+  if (globalChannels.includes(NotificationChannelValue.Push)) {
+    return normalized;
+  }
+  return normalized.filter(
+    (channel) => channel !== NotificationChannelValue.Push,
+  );
 }
 
 function normalizeInsightCadence(

@@ -10,12 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  NotificationChannelPicker,
   NotificationSwitch,
   reminderTimePattern,
   type SectionProps,
 } from "@/components/settings/notification-form-controls";
 import {
   INSIGHT_CADENCE_VALUES,
+  NotificationChannelValue,
   type InsightCadence,
 } from "@/types/notifications";
 
@@ -51,6 +53,17 @@ export function InsightsNotificationSection({
             { insight_alerts_enabled: checked },
           );
         }}
+      />
+      <NotificationChannelPicker
+        fieldName="insight_alert_channels"
+        label={t("insightAlertsBody")}
+        values={values}
+        isSaving={isSaving}
+        form={form}
+        t={t}
+        persistPatch={persistPatch}
+        disabled={!values.insight_alerts_enabled}
+        pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
       <div className="mt-3 grid gap-3 sm:grid-cols-3">
         <form.Field name="insight_cadence">
@@ -163,6 +176,17 @@ export function InsightsNotificationSection({
             { wrapped_alerts_enabled: checked },
           );
         }}
+      />
+      <NotificationChannelPicker
+        fieldName="wrapped_alert_channels"
+        label={t("wrappedAlertsBody")}
+        values={values}
+        isSaving={isSaving}
+        form={form}
+        t={t}
+        persistPatch={persistPatch}
+        disabled={!values.wrapped_alerts_enabled}
+        pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
     </section>
   );

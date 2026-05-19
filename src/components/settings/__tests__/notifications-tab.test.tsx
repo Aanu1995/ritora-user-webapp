@@ -103,18 +103,27 @@ function preferences(
     photo_reminder_local_time: "08:00",
     photo_reminder_enabled: true,
     channels: ["in_app", "email"],
+    reaction_alert_channels: ["in_app", "email"],
     reaction_alerts_enabled: true,
+    simplification_alert_channels: ["in_app", "email"],
     simplification_alerts_enabled: true,
+    insight_alert_channels: ["in_app", "email"],
     insight_alerts_enabled: true,
     insight_cadence: "weekly",
     insight_digest_day: 1,
     insight_digest_local_time: "09:00",
+    wrapped_alert_channels: ["in_app", "email"],
     wrapped_alerts_enabled: true,
     photo_tutorial_completed: false,
+    suggestion_ready_channels: ["in_app", "email"],
     suggestion_ready_enabled: true,
+    smart_pick_ready_channels: ["in_app"],
     smart_pick_ready_enabled: false,
+    slot_start_channels: ["in_app", "email"],
     slot_start_enabled: true,
+    recording_reminder_channels: ["in_app", "email"],
     recording_reminder_enabled: true,
+    product_expiry_alert_channels: ["in_app", "push"],
     product_expiry_alerts_enabled: true,
     product_expiry_notice_days: 14,
     suggestion_lead_time_minutes: 120,
@@ -233,17 +242,50 @@ describe("NotificationsTab", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows browser push before notification-specific settings", () => {
+    renderWithProviders(<NotificationsTab />);
+
+    const browserPush = screen.getByText("Browser push");
+    const todaysSuggestion = screen.getByText("Today's Suggestion");
+
+    expect(
+      browserPush.compareDocumentPosition(todaysSuggestion) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
   it("updates channel preferences from current form state instead of stale server props", async () => {
     renderWithProviders(<NotificationsTab />);
 
-    await user.click(screen.getByLabelText("In-app"));
-    await user.click(screen.getByLabelText("Email"));
+    await user.click(screen.getByLabelText("In-app for Photo reminder"));
+    await user.click(screen.getByLabelText("Email for Photo reminder"));
 
     const channelPatches = mockUpdatePreferencesMutate.mock.calls.map(
       ([payload]: [UpdatePreferencesPayload]) => payload.channels,
     );
 
     expect(channelPatches).toEqual([["email"], []]);
+  });
+
+  it("persists notification-specific email channel preferences", async () => {
+    renderWithProviders(<NotificationsTab />);
+
+    await user.click(screen.getByLabelText("Email for Suggestion ready"));
+    await user.click(screen.getByLabelText("Email for Possible reaction"));
+    await user.click(screen.getByLabelText("Email for Insight notifications"));
+
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { suggestion_ready_channels: ["in_app"] },
+      expect.any(Object),
+    );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { reaction_alert_channels: ["in_app"] },
+      expect.any(Object),
+    );
+    expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
+      { insight_alert_channels: ["in_app"] },
+      expect.any(Object),
+    );
   });
 
   it("uses the API mutation for reminder time and switch changes", async () => {
@@ -393,7 +435,9 @@ describe("NotificationsTab", () => {
     const browserPushSwitch = screen.getByRole("switch", {
       name: "Browser push",
     });
-    const photoReminderPushChannel = screen.getByLabelText("Push");
+    const photoReminderPushChannel = screen.getByLabelText(
+      "Push for Photo reminder",
+    );
     expect(photoReminderPushChannel).toBeDisabled();
 
     await user.click(browserPushSwitch);
@@ -412,7 +456,10 @@ describe("NotificationsTab", () => {
     expect(mockToastSuccess).toHaveBeenCalledWith("Browser push enabled.");
   });
 
-  it("keeps the photo reminder push channel disabled when photo reminders are off", async () => {
+  it("hides the photo reminder channel chips when photo reminders are off", () => {
+    // Channel chips collapse when the parent toggle is off. The persisted
+    // selections (channels) remain in state and re-appear when the toggle is
+    // re-enabled — they just don't add noise to the page while inert.
     mockPreferences = preferences({
       photo_reminder_enabled: false,
       channels: ["email", "in_app", "push"],
@@ -420,29 +467,15 @@ describe("NotificationsTab", () => {
 
     renderWithProviders(<NotificationsTab />);
 
-    const photoReminderPushChannel = screen.getByLabelText("Push");
-    expect(photoReminderPushChannel).toBeChecked();
-    expect(photoReminderPushChannel).toBeDisabled();
-
-    await user.click(photoReminderPushChannel);
-
-    expect(mockUpdatePreferencesMutate).not.toHaveBeenCalledWith(
-      { channels: ["email", "in_app"] },
-      expect.any(Object),
-    );
-  });
-
-  it("disables every photo reminder channel when photo reminders are off", () => {
-    mockPreferences = preferences({
-      photo_reminder_enabled: false,
-      channels: ["email", "in_app", "push"],
-    });
-
-    renderWithProviders(<NotificationsTab />);
-
-    expect(screen.getByLabelText("In-app")).toBeDisabled();
-    expect(screen.getByLabelText("Email")).toBeDisabled();
-    expect(screen.getByLabelText("Push")).toBeDisabled();
+    expect(
+      screen.queryByLabelText("In-app for Photo reminder"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText("Email for Photo reminder"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText("Push for Photo reminder"),
+    ).not.toBeInTheDocument();
   });
 
   it("cleans up the browser subscription when push channel persistence fails", async () => {
@@ -548,8 +581,13 @@ describe("NotificationsTab", () => {
     ).toHaveLength(1);
   });
 
-  it("allows push to be disabled when browser permission is denied", async () => {
-    mockPreferences = preferences({ channels: ["in_app", "push"] });
+  it("disables global and notification-specific push channels together", async () => {
+    mockPreferences = preferences({
+      channels: ["in_app", "push"],
+      suggestion_ready_channels: ["in_app", "push"],
+      product_expiry_alert_channels: ["in_app", "push"],
+      reaction_alert_channels: ["in_app", "push"],
+    });
     mockGetBrowserPushSupportState.mockReturnValue("denied");
 
     renderWithProviders(<NotificationsTab />);
@@ -563,7 +601,12 @@ describe("NotificationsTab", () => {
 
     expect(mockRevokeCurrentBrowserPushSubscription).toHaveBeenCalled();
     expect(mockUpdatePreferencesMutate).toHaveBeenCalledWith(
-      { channels: ["in_app"] },
+      expect.objectContaining({
+        channels: ["in_app"],
+        suggestion_ready_channels: ["in_app"],
+        product_expiry_alert_channels: ["in_app"],
+        reaction_alert_channels: ["in_app"],
+      }),
       expect.any(Object),
     );
   });
