@@ -55,6 +55,53 @@ const INITIAL_ACTION_STATE: AccountDeletionTokenActionState = {
   error: null,
 };
 
+const inFlightAccountDeletionTokenActions = new Map<string, Promise<void>>();
+
+function getAccountDeletionTokenActionCacheKey(
+  mode: AccountDeletionTokenMode,
+  token: string,
+): string {
+  return `${mode}:${token}`;
+}
+
+function runAccountDeletionTokenAction(
+  mode: AccountDeletionTokenMode,
+  token: string,
+): Promise<void> {
+  const cacheKey = getAccountDeletionTokenActionCacheKey(mode, token);
+  const inFlightAction = inFlightAccountDeletionTokenActions.get(cacheKey);
+
+  if (inFlightAction) {
+    return inFlightAction;
+  }
+
+  const operation =
+    mode === AccountDeletionTokenMode.Confirm
+      ? confirmAccountDeletion(token).then(() => undefined)
+      : cancelAccountDeletion(token).then(() => undefined);
+
+  inFlightAccountDeletionTokenActions.set(cacheKey, operation);
+  operation.then(
+    () => {
+      inFlightAccountDeletionTokenActions.delete(cacheKey);
+    },
+    () => {
+      inFlightAccountDeletionTokenActions.delete(cacheKey);
+    },
+  );
+
+  return operation;
+}
+
+function clearInFlightAccountDeletionTokenAction(
+  mode: AccountDeletionTokenMode,
+  token: string,
+): void {
+  inFlightAccountDeletionTokenActions.delete(
+    getAccountDeletionTokenActionCacheKey(mode, token),
+  );
+}
+
 function withAccountDeletionTokenActionTimeout<T>(
   operation: Promise<T>,
 ): Promise<T> {
@@ -111,11 +158,9 @@ function AccountDeletionTokenInner({
     activeActionRef.current += 1;
     const actionId = activeActionRef.current;
 
-    const operation = isConfirm
-      ? confirmAccountDeletion(token)
-      : cancelAccountDeletion(token);
-
-    void withAccountDeletionTokenActionTimeout(operation)
+    void withAccountDeletionTokenActionTimeout(
+      runAccountDeletionTokenAction(mode, token),
+    )
       .then(() => {
         if (!isCurrentActionMounted || activeActionRef.current !== actionId) {
           return;
@@ -144,7 +189,7 @@ function AccountDeletionTokenInner({
     return () => {
       isCurrentActionMounted = false;
     };
-  }, [actionKey, isConfirm, logoutStore, queryClient, token]);
+  }, [actionKey, logoutStore, mode, queryClient, token]);
 
   useEffect(() => {
     if (visibleActionStatus !== AccountDeletionTokenActionStatus.Success) {
@@ -161,6 +206,9 @@ function AccountDeletionTokenInner({
   }, [router, visibleActionStatus]);
 
   const retryAction = () => {
+    if (token) {
+      clearInFlightAccountDeletionTokenAction(mode, token);
+    }
     setRetryCount((current) => current + 1);
   };
 

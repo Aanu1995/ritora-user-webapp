@@ -31,7 +31,7 @@ export function AppShell({ children }: AppShellProps) {
           {children}
         </main>
       </div>
-      <MobileNav />
+      <MobileNav onMenuClick={() => setSidebarOpen(true)} />
       <UnsavedChangesDialog />
     </div>
   );

@@ -1,4 +1,5 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { StrictMode } from 'react';
 import {
   ACCOUNT_DELETION_TOKEN_ACTION_TIMEOUT_MS,
   ACCOUNT_DELETION_SUCCESS_REDIRECT_DELAY_MS,
@@ -118,6 +119,69 @@ describe('AccountDeletionTokenContent', () => {
     expect(
       screen.getByText(/scheduled to be permanently deleted in 30 days/i),
     ).toBeInTheDocument();
+  });
+
+  it('does not submit the same one-time confirmation token twice during a StrictMode remount', async () => {
+    (confirmAccountDeletion as jest.Mock).mockResolvedValue({
+      status: 'scheduled',
+      message: 'Account deletion scheduled',
+    });
+
+    renderWithProviders(
+      <StrictMode>
+        <AccountDeletionTokenContent
+          mode={AccountDeletionTokenMode.Confirm}
+          tokenFromRoute="strict-confirm-token"
+        />
+      </StrictMode>,
+    );
+
+    expect(await screen.findByText(/deletion scheduled/i)).toBeInTheDocument();
+    expect(confirmAccountDeletion).toHaveBeenCalledTimes(1);
+    expect(confirmAccountDeletion).toHaveBeenCalledWith(
+      'strict-confirm-token',
+    );
+  });
+
+  it('reuses an in-flight confirmation when the token page remounts before the response finishes', async () => {
+    let resolveConfirmation:
+      | ((value: { status: string; message: string }) => void)
+      | null = null;
+    (confirmAccountDeletion as jest.Mock).mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveConfirmation = resolve;
+      }),
+    );
+
+    const firstRender = renderWithProviders(
+      <AccountDeletionTokenContent
+        mode={AccountDeletionTokenMode.Confirm}
+        tokenFromRoute="remount-confirm-token"
+      />,
+    );
+
+    await waitFor(() => {
+      expect(confirmAccountDeletion).toHaveBeenCalledTimes(1);
+    });
+
+    firstRender.unmount();
+    renderWithProviders(
+      <AccountDeletionTokenContent
+        mode={AccountDeletionTokenMode.Confirm}
+        tokenFromRoute="remount-confirm-token"
+      />,
+    );
+
+    expect(confirmAccountDeletion).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      resolveConfirmation?.({
+        status: 'scheduled',
+        message: 'Account deletion scheduled',
+      });
+    });
+
+    expect(await screen.findByText(/deletion scheduled/i)).toBeInTheDocument();
   });
 
   it('shows success copy after cancellation succeeds', async () => {

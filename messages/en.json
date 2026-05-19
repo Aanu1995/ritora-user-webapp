@@ -407,6 +407,9 @@
     "verificationFailed": "Verification failed. The link may have expired.",
     "verifyingEmail": "Verifying your email...",
     "emailVerifiedSuccess": "Email verified successfully!",
+    "verifyEmailRequestTimedOutTitle": "Request timed out",
+    "verifyEmailRequestTimedOutBody": "Ritora did not receive a completed verification response in this browser. Try again to check the link status, or request a new verification link.",
+    "verifyEmailTryAgain": "Try again",
     "passwordResetSuccess": "Password reset successfully.",
     "registrationFailed": "Registration failed",
     "resetFailed": "Reset failed",
@@ -455,7 +458,11 @@
   "dashboard": {
     "welcome": "Welcome back, {firstName}",
     "subtitle": "A calm look at today and your shelf.",
-    "upcomingHeading": "Coming soon",
+    "greeting": {
+      "morning": "Good morning, {firstName}.",
+      "afternoon": "Good afternoon, {firstName}.",
+      "evening": "Good evening, {firstName}."
+    },
     "profileCard": {
       "title": "Skin Profile",
       "complete": "Your skin profile is ready. AI recommendations will use this context.",
@@ -481,6 +488,52 @@
       "title": "Recent Activity",
       "empty": "No recent activity yet. Start by adding products to your shelf.",
       "viewHistory": "View history"
+    },
+    "setup": {
+      "title": "Finish setting up",
+      "progress": "{completed}/{total} done",
+      "steps": {
+        "profile": {
+          "title": "Skin Profile",
+          "todo": "Tell us about your skin",
+          "done": "Profile set"
+        },
+        "shelf": {
+          "title": "Shelf",
+          "todo": "Add the products you already own",
+          "done": "Shelf has products"
+        },
+        "routine": {
+          "title": "Routine",
+          "todo": "Set up morning and evening times",
+          "done": "Routine ready"
+        }
+      }
+    },
+    "fresh": {
+      "welcome": "Welcome to Ritora, {firstName}.",
+      "subtitle": "A few minutes of setup and your routine starts getting smarter.",
+      "eyebrow": "Step 1 of 2",
+      "title": "Tell us about your skin.",
+      "body": "Type, concerns, climate, and anything you have reacted to. We use it to read your Shelf and build calmer routines.",
+      "progress": "{completed} of {total} done",
+      "primaryCta": "Build skin profile",
+      "secondary": "Already holding a product?",
+      "secondaryCta": "Try Quick Check first"
+    },
+    "promises": {
+      "privateTitle": "Private by design",
+      "privateBody": "Your reaction history, medical notes, and hormonal data are encrypted, saved only with your consent, and never sold or shared. Yours to delete anytime.",
+      "ownedTitle": "Owned products first",
+      "ownedBody": "We read what's on your Shelf and build routines from there. New product suggestions only appear when there is a real gap to fill.",
+      "toneTitle": "Skin tone aware",
+      "toneBody": "Tested across Fitzpatrick types I to VI. Ingredient warnings and product picks account for darker skin where most apps miss."
+    },
+    "latestSuggestion": {
+      "ariaLabel": "{routine} · ready to record",
+      "eyebrow": "Next up · {routine}",
+      "moreSteps": "+ {count, plural, one {# more step} other {# more steps}}",
+      "openRoutine": "Open routine"
     }
   },
   "currentContext": {
@@ -2033,6 +2086,18 @@
     "message": "We use essential cookies for authentication. No tracking cookies are used.",
     "accept": "Accept",
     "reject": "Reject"
+  },
+  "mobileNav": {
+    "ariaLabel": "Primary navigation",
+    "menuAriaLabel": "Open menu",
+    "badge": "{count, plural, one {# unread} other {# unread}}",
+    "items": {
+      "home": "Home",
+      "check": "Check",
+      "today": "Today",
+      "notifications": "Alerts",
+      "more": "More"
+    }
   },
   "sidebar": {
     "toggleSidebar": "Toggle sidebar",

@@ -3,7 +3,6 @@ import {
   Leaf,
   ShieldCheck,
   ThermometerSun,
-  Waves,
   Wind,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -14,22 +13,15 @@ import {
   airTone,
   buildAirValue,
   buildHumidityValue,
-  buildParticleValue,
   buildTemperatureValue,
-  buildWaterValue,
   buildUvValue,
-  formatToken,
+  humidityTone,
   isKnownText,
-  pm10Tone,
-  pm25Tone,
-  pollenTone,
   temperatureTone,
   translateToken,
   type ClimateMetricTone,
   type ClimateTranslate,
-  humidityTone,
   uvTone,
-  waterTone,
 } from "@/components/dashboard/dashboard-climate-formatters";
 export {
   buildClimateHeadline,
@@ -56,7 +48,6 @@ export function buildClimateMetrics(
   const uv = buildUvValue(environment, t);
   const humidity = buildHumidityValue(environment, t);
   const air = buildAirValue(environment, t);
-  const water = buildWaterValue(environment, t);
 
   if (isKnownText(environment.season)) {
     metrics.push({
@@ -105,49 +96,6 @@ export function buildClimateMetrics(
       label: t("airQuality"),
       value: air,
       tone: airTone(environment.airQualityRisk),
-    });
-  }
-
-  if (environment.pm25 !== null) {
-    metrics.push({
-      key: "pm25",
-      icon: <Wind className="h-4 w-4" aria-hidden />,
-      label: t("pm25"),
-      value: buildParticleValue(environment.pm25, t),
-      tone: pm25Tone(environment.pm25),
-    });
-  }
-
-  if (environment.pm10 !== null) {
-    metrics.push({
-      key: "pm10",
-      icon: <Wind className="h-4 w-4" aria-hidden />,
-      label: t("pm10"),
-      value: buildParticleValue(environment.pm10, t),
-      tone: pm10Tone(environment.pm10),
-    });
-  }
-
-  if (isKnownText(environment.pollenRisk)) {
-    metrics.push({
-      key: "pollen",
-      icon: <Leaf className="h-4 w-4" aria-hidden />,
-      label: t("pollen"),
-      value: formatToken(environment.pollenRisk),
-      tone: pollenTone(environment.pollenRisk),
-    });
-  }
-
-  if (water) {
-    metrics.push({
-      key: "water",
-      icon: <Waves className="h-4 w-4" aria-hidden />,
-      label: t("water"),
-      value: water,
-      tone: waterTone(
-        environment.waterHardness,
-        environment.waterSensitivity,
-      ),
     });
   }
 

@@ -30,15 +30,15 @@ describe("DashboardClimatePanel", () => {
     expect(screen.getByText("Balanced · 44%")).toBeInTheDocument();
     expect(screen.getByText("Air")).toBeInTheDocument();
     expect(screen.getByText("Good · AQI 22")).toBeInTheDocument();
-    expect(screen.getByText("PM2.5")).toBeInTheDocument();
-    expect(screen.getByText("6 µg/m³")).toBeInTheDocument();
-    expect(screen.getByText("PM10")).toBeInTheDocument();
-    expect(screen.getByText("12 µg/m³")).toBeInTheDocument();
-    expect(screen.getByText("Pollen")).toBeInTheDocument();
-    expect(screen.getByText("Moderate")).toBeInTheDocument();
+    // Second-row metrics (PM2.5, PM10, pollen, water) are intentionally
+    // omitted from the dashboard climate panel.
+    expect(screen.queryByText("PM2.5")).not.toBeInTheDocument();
+    expect(screen.queryByText("PM10")).not.toBeInTheDocument();
+    expect(screen.queryByText("Pollen")).not.toBeInTheDocument();
     expect(
-      screen.getByText("Moderate water · No sensitivity"),
-    ).toBeInTheDocument();
+      screen.queryByText("Moderate water · No sensitivity"),
+    ).not.toBeInTheDocument();
+    // Sensitivities footer still renders.
     expect(screen.getByText("dry air, pollution")).toBeInTheDocument();
     expect(screen.queryByText("Unknown")).not.toBeInTheDocument();
   });

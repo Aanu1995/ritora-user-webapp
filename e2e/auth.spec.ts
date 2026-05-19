@@ -210,6 +210,32 @@ test.describe("Forgot Password", () => {
   });
 });
 
+test.describe("Email Verification Links", () => {
+  test("shows verification success instead of staying on the loading state", async ({
+    page,
+  }) => {
+    const token = "c".repeat(64);
+    await mockAuthApi(page);
+    await page.route("**/api/v1/auth/verify-email", async (route) => {
+      if (route.request().method() !== "POST") {
+        await route.fallback();
+        return;
+      }
+
+      await waitForTokenActionLoadingState();
+      await fulfillJson(route, 200, {
+        message: "Email verified successfully",
+      });
+    });
+
+    await page.goto(`/verify-email/${token}`);
+
+    await expect(page.getByText(/verifying your email/i)).toBeVisible();
+    await expect(page.getByText(/email verified successfully/i)).toBeVisible();
+    await expect(page.getByText(/verifying your email/i)).not.toBeVisible();
+  });
+});
+
 test.describe("Account Deletion Links", () => {
   test("shows confirmation success instead of staying on the loading state", async ({
     page,

@@ -411,6 +411,9 @@
     "verificationFailed": "Verifiering misslyckades. Länken kan ha gått ut.",
     "verifyingEmail": "Verifierar din e-post...",
     "emailVerifiedSuccess": "E-post verifierad!",
+    "verifyEmailRequestTimedOutTitle": "Begäran tog för lång tid",
+    "verifyEmailRequestTimedOutBody": "Ritora fick inget färdigt verifieringssvar i den här webbläsaren. Försök igen för att kontrollera länkens status, eller begär en ny verifieringslänk.",
+    "verifyEmailTryAgain": "Försök igen",
     "passwordResetSuccess": "Lösenordet har återställts.",
     "registrationFailed": "Registrering misslyckades",
     "resetFailed": "Återställning misslyckades",
@@ -459,7 +462,11 @@
   "dashboard": {
     "welcome": "Välkommen tillbaka, {firstName}",
     "subtitle": "En lugn överblick över idag och din hylla.",
-    "upcomingHeading": "Kommer snart",
+    "greeting": {
+      "morning": "God morgon, {firstName}.",
+      "afternoon": "God eftermiddag, {firstName}.",
+      "evening": "God kväll, {firstName}."
+    },
     "profileCard": {
       "title": "Hudprofil",
       "complete": "Din hudprofil är redo. AI-rekommendationer kommer att använda detta.",
@@ -485,6 +492,52 @@
       "title": "Senaste aktivitet",
       "empty": "Ingen senaste aktivitet ännu. Börja med att lägga till produkter på din hylla.",
       "viewHistory": "Visa historik"
+    },
+    "setup": {
+      "title": "Slutför uppsättningen",
+      "progress": "{completed}/{total} klart",
+      "steps": {
+        "profile": {
+          "title": "Hudprofil",
+          "todo": "Berätta om din hud",
+          "done": "Profil klar"
+        },
+        "shelf": {
+          "title": "Hylla",
+          "todo": "Lägg till produkter du redan äger",
+          "done": "Hyllan har produkter"
+        },
+        "routine": {
+          "title": "Rutin",
+          "todo": "Bestäm tider för morgon och kväll",
+          "done": "Rutin klar"
+        }
+      }
+    },
+    "fresh": {
+      "welcome": "Välkommen till Ritora, {firstName}.",
+      "subtitle": "Några minuters uppsättning så blir din rutin smartare.",
+      "eyebrow": "Steg 1 av 2",
+      "title": "Berätta om din hud.",
+      "body": "Hudtyp, bekymmer, klimat och allt du har reagerat på. Vi använder det för att läsa din hylla och bygga lugnare rutiner.",
+      "progress": "{completed} av {total} klart",
+      "primaryCta": "Bygg hudprofil",
+      "secondary": "Har du en produkt i handen?",
+      "secondaryCta": "Prova Snabbkoll först"
+    },
+    "promises": {
+      "privateTitle": "Privat som standard",
+      "privateBody": "Din reaktionshistorik, medicinska anteckningar och hormonella data är krypterade, sparas bara med ditt samtycke, och säljs eller delas aldrig. Kan raderas när du vill.",
+      "ownedTitle": "Ägda produkter först",
+      "ownedBody": "Vi läser vad som finns på din hylla och bygger rutinerna därifrån. Nya produktförslag dyker upp först när det finns ett verkligt gap att fylla.",
+      "toneTitle": "Anpassad för hudton",
+      "toneBody": "Testad mot Fitzpatrick-typerna I till VI. Ingrediensvarningar och produktval tar hänsyn till mörkare hud där de flesta appar missar."
+    },
+    "latestSuggestion": {
+      "ariaLabel": "{routine} · redo att registreras",
+      "eyebrow": "Nästa · {routine}",
+      "moreSteps": "+ {count, plural, one {# steg till} other {# steg till}}",
+      "openRoutine": "Öppna rutin"
     }
   },
   "currentContext": {
@@ -2040,6 +2093,18 @@
     "message": "Vi använder nödvändiga cookies för autentisering. Inga spårningscookies används.",
     "accept": "Acceptera",
     "reject": "Avvisa"
+  },
+  "mobileNav": {
+    "ariaLabel": "Primär navigation",
+    "menuAriaLabel": "Öppna meny",
+    "badge": "{count, plural, one {# oläst} other {# olästa}}",
+    "items": {
+      "home": "Hem",
+      "check": "Kolla",
+      "today": "Idag",
+      "notifications": "Notiser",
+      "more": "Mer"
+    }
   },
   "sidebar": {
     "toggleSidebar": "Växla sidofält",
