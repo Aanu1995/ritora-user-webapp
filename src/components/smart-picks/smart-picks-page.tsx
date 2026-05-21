@@ -13,6 +13,10 @@ import { RetryPanel } from "@/components/ui/retry-panel";
 import { AppRoute } from "@/constants/app-routes";
 import { useSmartPicksOverview } from "@/hooks/use-smart-picks";
 import { useRecordSuggestionGapAction } from "@/hooks/use-suggestions";
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from "@/hooks/use-user-capabilities";
 import type {
   SmartPicksGap,
   SmartPicksMode,
@@ -36,7 +40,9 @@ export function SmartPicksPage() {
   const initialMode = readMode(searchParams.get("mode"));
   const focusKey = normalizeFocusKey(searchParams.get("focus") ?? "");
   const [mode, setMode] = useState<SmartPicksMode | undefined>(initialMode);
-  const overview = useSmartPicksOverview(mode);
+  const capabilities = useUserCapabilities();
+  const isAiDisabled = isCapabilityDisabled(capabilities.aiGeneration);
+  const overview = useSmartPicksOverview(mode, { enabled: !isAiDisabled });
   const recordAction = useRecordSuggestionGapAction();
   const activeMode = mode ?? overview.data?.mode ?? "refine";
   const pendingPickId =
@@ -48,7 +54,9 @@ export function SmartPicksPage() {
       ? recordAction.variables.action
       : null;
   const actionsDisabled =
-    recordAction.isPending && recordAction.variables?.sourceType === "smart_pick";
+    isAiDisabled ||
+    (recordAction.isPending &&
+      recordAction.variables?.sourceType === "smart_pick");
   const allGaps = useMemo(
     () => [
       ...(overview.data?.priorityGaps ?? []),
@@ -71,6 +79,10 @@ export function SmartPicksPage() {
   }, [allGaps, focusKey]);
 
   const handleAction = (pickId: string, action: SuggestionGapActionKind) => {
+    if (isAiDisabled) {
+      return;
+    }
+
     recordAction.mutate(
       {
         sourceType: "smart_pick",
@@ -109,7 +121,11 @@ export function SmartPicksPage() {
 
       <div className="mx-auto mt-6 flex max-w-4xl flex-col gap-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <ModeSwitch value={activeMode} onChange={setMode} />
+          <ModeSwitch
+            disabled={isAiDisabled}
+            value={activeMode}
+            onChange={setMode}
+          />
           {overview.isFetching && !overview.isLoading ? (
             <span className="inline-flex items-center gap-2 text-xs font-semibold text-muted">
               <RefreshCw className="h-3.5 w-3.5 animate-spin" />
@@ -118,16 +134,20 @@ export function SmartPicksPage() {
           ) : null}
         </div>
 
-        {overview.isLoading ? <SmartPicksSkeleton /> : null}
-        {overview.isError ? (
-          <RetryPanel
-            title={t("error.title")}
-            description={t("error.body")}
-            actionLabel={t("error.retry")}
-            onAction={() => {
-              void overview.refetch();
-            }}
-          />
+        {!isAiDisabled ? (
+          <>
+            {overview.isLoading ? <SmartPicksSkeleton /> : null}
+            {overview.isError ? (
+              <RetryPanel
+                title={t("error.title")}
+                description={t("error.body")}
+                actionLabel={t("error.retry")}
+                onAction={() => {
+                  void overview.refetch();
+                }}
+              />
+            ) : null}
+          </>
         ) : null}
         {overview.data ? (
           <SmartPicksContent

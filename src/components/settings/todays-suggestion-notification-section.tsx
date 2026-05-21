@@ -19,10 +19,12 @@ const LEAD_TIME_OPTIONS = [30, 60, 90, 120, 180, 240, 360, 480, 720] as const;
 export function TodaysSuggestionSection({
   values,
   isSaving,
+  controlsDisabled,
   form,
   t,
   persistPatch,
 }: SectionProps) {
+  const disabled = isSaving || controlsDisabled;
   return (
     <section className="rounded-2xl border border-[color:rgba(47,122,82,0.3)] bg-surface p-4 shadow-[var(--shadow-soft)] sm:p-5">
       <div className="flex items-start justify-between gap-3">
@@ -34,7 +36,7 @@ export function TodaysSuggestionSection({
         label={t("suggestionReadyTitle")}
         body={t("suggestionReadyBody")}
         checked={values.suggestion_ready_enabled}
-        disabled={isSaving}
+        disabled={disabled}
         onCheckedChange={(checked) => {
           form.setFieldValue("suggestion_ready_enabled", checked);
           persistPatch(
@@ -47,18 +49,18 @@ export function TodaysSuggestionSection({
         fieldName="suggestion_ready_channels"
         label={t("suggestionReadyTitle")}
         values={values}
-        isSaving={isSaving}
+        isSaving={disabled}
         form={form}
         t={t}
         persistPatch={persistPatch}
-        disabled={!values.suggestion_ready_enabled}
+        disabled={controlsDisabled || !values.suggestion_ready_enabled}
         pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
       <NotificationSwitch
         label={t("slotStartTitle")}
         body={t("slotStartBody")}
         checked={values.slot_start_enabled}
-        disabled={isSaving}
+        disabled={disabled}
         onCheckedChange={(checked) => {
           form.setFieldValue("slot_start_enabled", checked);
           persistPatch(
@@ -71,18 +73,18 @@ export function TodaysSuggestionSection({
         fieldName="slot_start_channels"
         label={t("slotStartTitle")}
         values={values}
-        isSaving={isSaving}
+        isSaving={disabled}
         form={form}
         t={t}
         persistPatch={persistPatch}
-        disabled={!values.slot_start_enabled}
+        disabled={controlsDisabled || !values.slot_start_enabled}
         pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
       <NotificationSwitch
         label={t("recordingReminderTitle")}
         body={t("recordingReminderBody")}
         checked={values.recording_reminder_enabled}
-        disabled={isSaving}
+        disabled={disabled}
         onCheckedChange={(checked) => {
           form.setFieldValue("recording_reminder_enabled", checked);
           persistPatch(
@@ -95,11 +97,11 @@ export function TodaysSuggestionSection({
         fieldName="recording_reminder_channels"
         label={t("recordingReminderTitle")}
         values={values}
-        isSaving={isSaving}
+        isSaving={disabled}
         form={form}
         t={t}
         persistPatch={persistPatch}
-        disabled={!values.recording_reminder_enabled}
+        disabled={controlsDisabled || !values.recording_reminder_enabled}
         pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
 
@@ -115,7 +117,7 @@ export function TodaysSuggestionSection({
               </label>
               <Select
                 value={String(values.suggestion_lead_time_minutes)}
-                disabled={isSaving}
+                disabled={disabled}
                 onValueChange={(raw) => {
                   const next = Number(raw);
                   field.handleChange(next);

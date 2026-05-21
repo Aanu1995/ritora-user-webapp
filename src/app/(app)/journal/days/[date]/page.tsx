@@ -5,6 +5,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { PageHeader } from "@/components/app/page-header";
 import { AppRoute } from "@/constants/app-routes";
 import { useDay, useRetryAnalysis } from "@/hooks/use-skin-journal";
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from "@/hooks/use-user-capabilities";
 import { BackButton } from "@/components/skin-journal/back-button";
 import { DayDetailPanel } from "@/components/skin-journal/day-detail";
 import { formatJournalLongDate } from "@/components/skin-journal/journal-date";
@@ -29,6 +33,10 @@ export default function JournalDayPage({
   const { openTodayUpload, profileGateDialog } = useJournalProfileGate();
   const { data, isLoading } = useDay(date);
   const retryAnalysis = useRetryAnalysis();
+  const capabilities = useUserCapabilities();
+  const aiActionsDisabled = isCapabilityDisabled(capabilities.aiGeneration);
+  const photoActionsDisabled =
+    aiActionsDisabled || isCapabilityDisabled(capabilities.imageUpload);
   const formattedDate = formatJournalLongDate(date, locale);
 
   const today = todayYmd();
@@ -51,10 +59,16 @@ export default function JournalDayPage({
           detail={data ?? null}
           isLoading={isLoading}
           isToday={isToday}
+          photoActionsDisabled={photoActionsDisabled}
+          retryAnalysisDisabled={aiActionsDisabled}
           onAddPhoto={isToday ? openTodayUpload : undefined}
           onEditEntry={isToday ? openTodayEdit : undefined}
           onRetryAnalysis={
-            isToday ? (entry) => retryAnalysis.mutate(entry.id) : undefined
+            isToday
+              ? (entry) => {
+                  if (!aiActionsDisabled) retryAnalysis.mutate(entry.id);
+                }
+              : undefined
           }
           onReplacePhoto={isToday ? openTodayEdit : undefined}
         />

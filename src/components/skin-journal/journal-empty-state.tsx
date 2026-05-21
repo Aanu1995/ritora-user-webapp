@@ -7,6 +7,7 @@ interface JournalEmptyStateProps {
   title: string;
   body: string;
   cta?: string;
+  ctaDisabled?: boolean;
   onCta?: () => void;
   tone?: "accent" | "ai" | "secondary";
 }
@@ -28,6 +29,7 @@ export function JournalEmptyState({
   title,
   body,
   cta,
+  ctaDisabled = false,
   onCta,
   tone = "accent",
 }: JournalEmptyStateProps) {
@@ -42,7 +44,7 @@ export function JournalEmptyState({
       <h3 className="mt-4 font-display text-lg font-bold">{title}</h3>
       <p className="mx-auto mt-1.5 max-w-md text-sm text-muted">{body}</p>
       {cta && onCta ? (
-        <Button className="mt-4" onClick={onCta}>
+        <Button className="mt-4" disabled={ctaDisabled} onClick={onCta}>
           {cta}
         </Button>
       ) : null}

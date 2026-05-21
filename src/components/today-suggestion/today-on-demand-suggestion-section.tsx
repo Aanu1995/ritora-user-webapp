@@ -12,6 +12,7 @@ import type {
 
 type Props = {
   suggestions: TodaysOnDemandSuggestion[];
+  retryDisabled?: boolean;
   onRecord: (slot: TodaysSuggestionSlot) => void;
   onEdit: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail: (slot: TodaysSuggestionSlot) => void;
@@ -21,6 +22,7 @@ type Props = {
 
 export function TodayOnDemandSuggestionSection({
   suggestions,
+  retryDisabled = false,
   onRecord,
   onEdit,
   onShowDetail,
@@ -38,7 +40,12 @@ export function TodayOnDemandSuggestionSection({
           ? retryOnDemandSuggestion.variables
           : null
       }
+      retryDisabled={retryDisabled}
       onRetry={(suggestionId) => {
+        if (retryDisabled) {
+          return;
+        }
+
         retryOnDemandSuggestion.mutate(suggestionId, {
           onSuccess: () => {
             toast.success(t("quickSuggestionQueued"));

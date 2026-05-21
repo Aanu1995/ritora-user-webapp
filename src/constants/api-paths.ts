@@ -83,6 +83,7 @@ export const ApiPath = {
   IngredientsCompareProducts: `${INGREDIENTS_BASE}/compare-products`,
 
   AppNavBadges: `${APP_BASE}/nav-badges`,
+  AppCapabilities: `${APP_BASE}/capabilities`,
 
   SkinJournalToday: `${SKIN_JOURNAL_BASE}/today`,
   SkinJournalCalendar: `${SKIN_JOURNAL_BASE}/calendar`,

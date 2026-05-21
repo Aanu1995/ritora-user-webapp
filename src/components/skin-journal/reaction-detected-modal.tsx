@@ -22,6 +22,7 @@ interface ReactionDetectedModalProps {
   severity: ReactionSeverity;
   indicators: string[];
   date: string;
+  simplifyDisabled?: boolean;
   onSimplify: () => void;
   onKeep: () => void;
 }
@@ -32,6 +33,7 @@ export function ReactionDetectedModal({
   severity,
   indicators,
   date,
+  simplifyDisabled = false,
   onSimplify,
   onKeep,
 }: ReactionDetectedModalProps) {
@@ -96,6 +98,7 @@ export function ReactionDetectedModal({
         <AlertDialogFooter className="mt-4 flex-col gap-2 sm:flex-col">
           <AlertDialogAction
             className="w-full bg-accent-strong text-white hover:bg-accent"
+            disabled={simplifyDisabled}
             onClick={onSimplify}
           >
             {isSevere ? t("severePrimary") : t("primaryCta")}

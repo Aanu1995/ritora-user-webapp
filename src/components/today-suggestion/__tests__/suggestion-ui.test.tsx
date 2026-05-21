@@ -52,6 +52,7 @@ const mockRecordApplicationMutate = jest.fn();
 const mockRouterPush = jest.fn();
 const mockSnoozeMutate = jest.fn();
 const mockTodayEntry = jest.fn();
+let capabilityOverrides: Partial<Record<string, boolean>> = {};
 const TEST_NOW_MS = new Date("2026-05-04T06:00:00.000Z").getTime();
 
 jest.mock("@/hooks/use-suggestions", () => ({
@@ -92,6 +93,29 @@ jest.mock("@/hooks/use-shelf-time-zone", () => ({
   useShelfDateContext: () => ({ timeZone: "UTC" }),
 }));
 
+jest.mock("@/hooks/use-user-capabilities", () => ({
+  useUserCapabilities: () => {
+    const enabled = (key: string) => capabilityOverrides[key] ?? true;
+    const access = (key: string) => ({
+      enabled: enabled(key),
+      blockedBy: enabled(key) ? null : "platform_global_restriction",
+      expiresAt: null,
+      message: null,
+    });
+
+    return {
+      accountCreation: access("accountCreation"),
+      aiGeneration: access("aiGeneration"),
+      imageUpload: access("imageUpload"),
+      productExtraction: access("productExtraction"),
+      notifications: access("notifications"),
+      supportContact: access("supportContact"),
+    };
+  },
+  isCapabilityDisabled: (access: { enabled?: boolean } | null | undefined) =>
+    access?.enabled === false,
+}));
+
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockRouterPush,
@@ -101,6 +125,7 @@ jest.mock("next/navigation", () => ({
 afterEach(() => {
   jest.clearAllMocks();
   mockTodayEntry.mockReturnValue({ data: { entry: null } });
+  capabilityOverrides = {};
 });
 
 describe("today suggestion UI contract", () => {
@@ -208,6 +233,29 @@ describe("today suggestion UI contract", () => {
       id: "suggestion-1",
       payload: { reason: "user_requested" },
     });
+  });
+
+  it("disables regeneration without rendering capability-disabled copy", async () => {
+    const user = userEvent.setup();
+    capabilityOverrides = { aiGeneration: false };
+
+    renderWithProviders(
+      <SuggestionDetailDrawer
+        open
+        onOpenChange={jest.fn()}
+        suggestion={suggestionInstance()}
+        allowRegeneration
+      />,
+    );
+
+    const regenerateButton = screen.getByRole("button", {
+      name: /try another suggestion/i,
+    });
+
+    expect(regenerateButton).toBeDisabled();
+    expect(screen.queryByText(/temporarily unavailable/i)).not.toBeInTheDocument();
+    await user.click(regenerateButton);
+    expect(mockRegenerateMutate).not.toHaveBeenCalled();
   });
 
   it("uses step explanations as why-each-step drawer fallback", () => {
@@ -392,6 +440,31 @@ describe("today suggestion UI contract", () => {
     expect(onRecord).toHaveBeenCalledWith(
       expect.objectContaining({ slotId: "on-demand:on-demand-ready" }),
     );
+  });
+
+  it("disables on-demand retry without rendering capability-disabled copy", async () => {
+    const user = userEvent.setup();
+    const onRetry = jest.fn();
+
+    renderWithProviders(
+      <OnDemandSuggestionSection
+        suggestions={[
+          onDemandSuggestion({ id: "on-demand-failed", status: "failed" }),
+        ]}
+        retryDisabled
+        onRetry={onRetry}
+        onRecord={jest.fn()}
+        onEdit={jest.fn()}
+        onShowDetail={jest.fn()}
+        nowMs={TEST_NOW_MS}
+      />,
+    );
+
+    const retryButton = screen.getByRole("button", { name: /try again/i });
+    expect(retryButton).toBeDisabled();
+    expect(screen.queryByText(/temporarily unavailable/i)).not.toBeInTheDocument();
+    await user.click(retryButton);
+    expect(onRetry).not.toHaveBeenCalled();
   });
 
   it("shows a product quality warning for limited on-demand product data", () => {

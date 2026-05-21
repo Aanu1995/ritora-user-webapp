@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 
 type Props = {
+  disabled?: boolean;
   open: boolean;
   pending: boolean;
   onOpenChange: (open: boolean) => void;
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function AiSuggestionConsentDialog({
+  disabled = false,
   open,
   pending,
   onOpenChange,
@@ -55,7 +57,11 @@ export function AiSuggestionConsentDialog({
           >
             {t("cancel")}
           </Button>
-          <Button type="button" onClick={onGrant} disabled={pending}>
+          <Button
+            type="button"
+            onClick={onGrant}
+            disabled={pending || disabled}
+          >
             {pending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (

@@ -8,6 +8,11 @@ import { QuickCheckProductCompareSheet } from "@/components/product-compare/prod
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCheckProduct } from "@/hooks/use-ingredients";
+import { useRefreshUserCapabilitiesOnRestriction } from "@/hooks/use-refresh-user-capabilities";
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from "@/hooks/use-user-capabilities";
 import { normalizeLocale } from "@/i18n/config";
 import { IngredientPastePanel } from "./ingredient-paste-panel";
 import { ProductCheckResultDetails } from "./product-check-result-details";
@@ -29,11 +34,23 @@ export function CheckProductClient() {
   const t = useTranslations("checkProduct");
   const locale = normalizeLocale(useLocale());
   const checkProduct = useCheckProduct();
+  const refreshCapabilitiesOnRestriction =
+    useRefreshUserCapabilitiesOnRestriction();
+  const capabilities = useUserCapabilities();
+  const isAiDisabled = isCapabilityDisabled(capabilities.aiGeneration);
+  const isPhotoCheckDisabled =
+    isCapabilityDisabled(capabilities.imageUpload) ||
+    isCapabilityDisabled(capabilities.productExtraction) ||
+    isAiDisabled;
   const [result, setResult] = useState<ProductCheckResponse | null>(null);
   const [lastCheckedProduct, setLastCheckedProduct] =
     useState<ProductCheckProductInput | null>(null);
 
   const runCheck = (product: ProductCheckProductInput) => {
+    if (isAiDisabled) {
+      return;
+    }
+
     const payload: ProductCheckInput = {
       product,
       language: locale,
@@ -45,9 +62,13 @@ export function CheckProductClient() {
         setLastCheckedProduct(product);
         setResult(response);
       },
-      onError: () => {
+      onError: (error) => {
         setLastCheckedProduct(null);
         setResult(null);
+        if (refreshCapabilitiesOnRestriction(error)) {
+          return;
+        }
+
         toast.error(t("errors.checkFailed"));
       },
     });
@@ -73,6 +94,7 @@ export function CheckProductClient() {
             className="-mr-2 flex-1 overflow-y-auto pr-2 data-[state=inactive]:hidden"
           >
             <IngredientPastePanel
+              disabled={isAiDisabled}
               isPending={checkProduct.isPending}
               onCheck={(input) => runCheck(input)}
             />
@@ -82,6 +104,7 @@ export function CheckProductClient() {
             className="-mr-2 flex-1 overflow-y-auto pr-2 data-[state=inactive]:hidden"
           >
             <ProductPhotoCheckPanel
+              disabled={isPhotoCheckDisabled}
               isPending={checkProduct.isPending}
               onCheck={(input) => runCheck(input)}
             />

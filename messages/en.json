@@ -64,7 +64,7 @@
       "badge": "Inventory-first skincare decision support",
       "headlineLead": "Build safer skincare routines from the",
       "headlineAccent": "products you already own.",
-      "lead": "Ritora reads your shelf, catches ingredient clashes, and gives you a calm morning, midday, and evening plan tuned to your skin. No shopping needed.",
+      "lead": "Ritora catches ingredient clashes in the products you already own and turns them into a calm morning, midday, and evening plan tuned to your skin. No shopping needed.",
       "ctaPrimary": "Create your free account",
       "ctaSecondary": "See how it works",
       "imageAlt": "Today's Suggestion app card with morning routine and Skin Journal preview.",
@@ -174,7 +174,18 @@
           "bullets": [
             "Multi-angle capture with private, encrypted storage",
             "Reaction detection auto-pauses risky actives",
-            "Compare any two dates. Export a dermatologist report."
+            "Compare any two dates. Export a dermatologist report.",
+            "Monthly Skin Wrapped: a private recap from your photos"
+          ]
+        },
+        {
+          "key": "quickCheck",
+          "eyebrow": "Quick Check",
+          "title": "Vet any product before you buy or use it.",
+          "bullets": [
+            "Paste the ingredients or snap the label",
+            "Verdict in seconds with safety score and confidence",
+            "Compare straight against products on your shelf"
           ]
         },
         {

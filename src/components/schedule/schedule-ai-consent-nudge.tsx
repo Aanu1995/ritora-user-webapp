@@ -16,7 +16,13 @@ const BENEFIT_KEYS = [
   "benefits.revokeAnytime",
 ] as const;
 
-export function ScheduleAiConsentNudge() {
+type ScheduleAiConsentNudgeProps = {
+  disabled?: boolean;
+};
+
+export function ScheduleAiConsentNudge({
+  disabled = false,
+}: ScheduleAiConsentNudgeProps) {
   const t = useTranslations("schedule.aiConsentNudge");
   const aiConsent = useSuggestionAiConsent();
   const updateConsent = useUpdateSuggestionAiConsent();
@@ -74,8 +80,12 @@ export function ScheduleAiConsentNudge() {
           <Button
             type="button"
             size="sm"
-            disabled={isPending}
+            disabled={isPending || disabled}
             onClick={() => {
+              if (disabled) {
+                return;
+              }
+
               updateConsent.mutate(
                 { granted: true },
                 {

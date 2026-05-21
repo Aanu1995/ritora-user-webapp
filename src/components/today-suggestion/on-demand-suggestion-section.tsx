@@ -17,6 +17,7 @@ type Props = {
   suggestions: TodaysOnDemandSuggestion[];
   onRetry: (suggestionId: string) => void;
   retryingSuggestionId?: string | null;
+  retryDisabled?: boolean;
   onRecord: (slot: TodaysSuggestionSlot) => void;
   onEdit: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail: (slot: TodaysSuggestionSlot) => void;
@@ -28,6 +29,7 @@ export function OnDemandSuggestionSection({
   suggestions,
   onRetry,
   retryingSuggestionId,
+  retryDisabled = false,
   onRecord,
   onEdit,
   onShowDetail,
@@ -53,6 +55,7 @@ export function OnDemandSuggestionSection({
                 item={item}
                 slot={slot}
                 isRetrying={retryingSuggestionId === item.id}
+                retryDisabled={retryDisabled}
                 onRetry={onRetry}
                 onRecord={onRecord}
                 onEdit={onEdit}
@@ -73,6 +76,7 @@ function OnDemandCard({
   slot,
   onRetry,
   isRetrying,
+  retryDisabled,
   onRecord,
   onEdit,
   onShowDetail,
@@ -83,6 +87,7 @@ function OnDemandCard({
   slot: TodaysSuggestionSlot;
   onRetry: (suggestionId: string) => void;
   isRetrying: boolean;
+  retryDisabled: boolean;
   onRecord: (slot: TodaysSuggestionSlot) => void;
   onEdit: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail: (slot: TodaysSuggestionSlot) => void;
@@ -106,7 +111,7 @@ function OnDemandCard({
               type="button"
               variant="outline"
               size="sm"
-              disabled={isRetrying}
+              disabled={isRetrying || retryDisabled}
               onClick={() => onRetry(item.id)}
             >
               <Sparkles className="h-3.5 w-3.5" />

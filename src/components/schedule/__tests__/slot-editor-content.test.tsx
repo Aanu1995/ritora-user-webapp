@@ -18,6 +18,7 @@ const mockUpsertSteps = jest.fn();
 const mockReleaseGuard = jest.fn();
 const mockUpdateAiConsentMutate = jest.fn();
 let mockAiConsentGranted = false;
+let capabilityOverrides: Partial<Record<string, boolean>> = {};
 
 jest.mock("@/hooks/use-schedule", () => ({
   useUpdateSlot: () => ({
@@ -54,6 +55,30 @@ jest.mock("@/hooks/use-suggestions", () => ({
     isPending: false,
   }),
 }));
+
+jest.mock("@/hooks/use-user-capabilities", () => ({
+  useUserCapabilities: () => {
+    const enabled = (key: string) => capabilityOverrides[key] ?? true;
+    const access = (key: string) => ({
+      enabled: enabled(key),
+      blockedBy: enabled(key) ? null : "platform_global_restriction",
+      expiresAt: null,
+      message: null,
+    });
+
+    return {
+      accountCreation: access("accountCreation"),
+      aiGeneration: access("aiGeneration"),
+      imageUpload: access("imageUpload"),
+      productExtraction: access("productExtraction"),
+      notifications: access("notifications"),
+      supportContact: access("supportContact"),
+    };
+  },
+  isCapabilityDisabled: (access: { enabled?: boolean } | null | undefined) =>
+    access?.enabled === false,
+}));
+
 
 jest.mock("@/hooks/use-unsaved-changes-guard", () => ({
   useUnsavedChangesGuard: () => ({
@@ -94,6 +119,7 @@ describe("SlotEditorContent", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockAiConsentGranted = false;
+    capabilityOverrides = {};
   });
 
   it("maps duplicate save errors to the time field inline", async () => {
@@ -276,5 +302,23 @@ describe("SlotEditorContent", () => {
       { granted: true },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+  });
+
+  it("disables AI slot saves without rendering capability-disabled copy", () => {
+    capabilityOverrides = { aiGeneration: false };
+
+    renderWithProviders(
+      <SlotEditorContent slot={createSlot()} onClose={jest.fn()} />,
+    );
+
+    fireEvent.change(screen.getByLabelText(/time/i), {
+      target: { value: "09:00" },
+    });
+
+    expect(screen.getByRole("radio", { name: /ai/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /save/i })).toBeDisabled();
+    expect(screen.queryByText(/temporarily unavailable/i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /save/i }));
+    expect(mockUpdateSlot).not.toHaveBeenCalled();
   });
 });

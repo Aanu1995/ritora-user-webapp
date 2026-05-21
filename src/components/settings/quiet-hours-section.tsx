@@ -12,11 +12,13 @@ import {
 export function QuietHoursSection({
   values,
   isSaving,
+  controlsDisabled,
   form,
   t,
   persistPatch,
 }: SectionProps) {
   const user = useAuthStore((s) => s.user);
+  const disabled = isSaving || controlsDisabled;
   return (
     <section className="rounded-2xl border border-[color:rgba(47,122,82,0.3)] bg-surface p-4 shadow-[var(--shadow-soft)] sm:p-5">
       <div className="flex items-start justify-between gap-3">
@@ -27,7 +29,7 @@ export function QuietHoursSection({
       <NotificationSwitch
         label={t("quietHoursActive")}
         checked={values.quiet_hours_enabled}
-        disabled={isSaving}
+        disabled={disabled}
         onCheckedChange={(checked) => {
           form.setFieldValue("quiet_hours_enabled", checked);
           persistPatch(
@@ -52,7 +54,7 @@ export function QuietHoursSection({
                   { quiet_hours_start: value },
                 );
               }}
-              disabled={isSaving || !values.quiet_hours_enabled}
+              disabled={disabled || !values.quiet_hours_enabled}
               ariaLabel={t("from")}
               className="h-10 rounded-lg px-2.5 py-2 text-sm"
             />
@@ -72,7 +74,7 @@ export function QuietHoursSection({
                   { quiet_hours_end: value },
                 );
               }}
-              disabled={isSaving || !values.quiet_hours_enabled}
+              disabled={disabled || !values.quiet_hours_enabled}
               ariaLabel={t("to")}
               className="h-10 rounded-lg px-2.5 py-2 text-sm"
             />

@@ -47,6 +47,8 @@ interface JournalTabPanelsProps {
   trackedMonths: PhotoMonthItem[];
   dayDetail: DayDetail | null;
   dayLoading: boolean;
+  aiActionsDisabled?: boolean;
+  photoActionsDisabled?: boolean;
   selectedDate: string;
   todayLocalDate: string;
   monthLabel: string;
@@ -89,6 +91,8 @@ export function JournalTabPanels({
   trackedMonths,
   dayDetail,
   dayLoading,
+  aiActionsDisabled = false,
+  photoActionsDisabled = false,
   selectedDate,
   todayLocalDate,
   monthLabel,
@@ -134,6 +138,7 @@ export function JournalTabPanels({
             title={tEmpty("title")}
             body={tEmpty("body")}
             cta={tEmpty("addFirst")}
+            ctaDisabled={photoActionsDisabled}
             onCta={onOpenUpload}
           />
         ) : (
@@ -158,6 +163,8 @@ export function JournalTabPanels({
                 isToday={selectedDate === todayLocalDate}
                 onAddPhoto={onOpenUpload}
                 onEditEntry={onEditEntry}
+                photoActionsDisabled={photoActionsDisabled}
+                retryAnalysisDisabled={aiActionsDisabled}
                 onRetryAnalysis={onRetryAnalysis}
                 onReplacePhoto={onReplacePhoto}
               />
@@ -173,6 +180,7 @@ export function JournalTabPanels({
             title={tPhotosTab("emptyTitle")}
             body={tPhotosTab("emptyBody")}
             cta={tEmpty("addFirst")}
+            ctaDisabled={photoActionsDisabled}
             onCta={onOpenUpload}
           />
         ) : (
@@ -245,7 +253,9 @@ export function JournalTabPanels({
           insightsWindow={insightsWindow}
           onInsightsWindowChange={onInsightsWindowChange}
           onRefreshInsights={onRefreshInsights}
+          refreshInsightsDisabled={aiActionsDisabled}
           isRefreshingInsights={isRefreshingInsights}
+          photoActionsDisabled={photoActionsDisabled}
           onOpenUpload={onOpenUpload}
           onOpenCompare={onOpenCompare}
           onOpenExport={onOpenExport}

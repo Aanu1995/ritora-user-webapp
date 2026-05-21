@@ -1,3 +1,24 @@
+export enum UserFeatureAccessBlockedBy {
+  UserRestriction = "user_restriction",
+  PlatformGlobalRestriction = "platform_global_restriction",
+}
+
+export type UserFeatureAccess = {
+  enabled: boolean;
+  blockedBy: UserFeatureAccessBlockedBy | null;
+  expiresAt: string | null;
+  message: string | null;
+};
+
+export type UserCapabilities = {
+  accountCreation: UserFeatureAccess;
+  aiGeneration: UserFeatureAccess;
+  imageUpload: UserFeatureAccess;
+  productExtraction: UserFeatureAccess;
+  notifications: UserFeatureAccess;
+  supportContact: UserFeatureAccess;
+};
+
 export type User = {
   id: string;
   email: string;
@@ -8,6 +29,7 @@ export type User = {
   preferredLanguage: string;
   timeZone: string | null;
   createdAt: string;
+  capabilities?: UserCapabilities;
 };
 
 export type AuthResponse = {

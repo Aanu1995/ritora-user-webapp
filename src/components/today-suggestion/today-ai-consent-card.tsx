@@ -12,12 +12,18 @@ const BENEFIT_KEYS = [
 ] as const;
 
 type Props = {
+  disabled?: boolean;
   visible: boolean;
   pending: boolean;
   onGrant: () => void;
 };
 
-export function TodayAiConsentCard({ visible, pending, onGrant }: Props) {
+export function TodayAiConsentCard({
+  disabled = false,
+  visible,
+  pending,
+  onGrant,
+}: Props) {
   const t = useTranslations("todaysSuggestion.aiConsentCard");
   const [dismissed, setDismissed] = useState(false);
 
@@ -53,7 +59,12 @@ export function TodayAiConsentCard({ visible, pending, onGrant }: Props) {
           {t("privacy")}
         </p>
         <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-          <Button type="button" size="sm" onClick={onGrant} disabled={pending}>
+          <Button
+            type="button"
+            size="sm"
+            onClick={onGrant}
+            disabled={pending || disabled}
+          >
             <Sparkles className="h-3.5 w-3.5" />
             {t("grant")}
           </Button>

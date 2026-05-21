@@ -20,6 +20,7 @@ const mockCreateSlots = jest.fn();
 const mockApplyPreset = jest.fn();
 const mockUpdateAiConsentMutate = jest.fn();
 let mockAiConsentGranted = false;
+let capabilityOverrides: Partial<Record<string, boolean>> = {};
 
 jest.mock("@/hooks/use-schedule", () => ({
   useCreateSlots: () => ({
@@ -51,12 +52,36 @@ jest.mock("@/hooks/use-suggestions", () => ({
   }),
 }));
 
+jest.mock("@/hooks/use-user-capabilities", () => ({
+  useUserCapabilities: () => {
+    const enabled = (key: string) => capabilityOverrides[key] ?? true;
+    const access = (key: string) => ({
+      enabled: enabled(key),
+      blockedBy: enabled(key) ? null : "platform_global_restriction",
+      expiresAt: null,
+      message: null,
+    });
+
+    return {
+      accountCreation: access("accountCreation"),
+      aiGeneration: access("aiGeneration"),
+      imageUpload: access("imageUpload"),
+      productExtraction: access("productExtraction"),
+      notifications: access("notifications"),
+      supportContact: access("supportContact"),
+    };
+  },
+  isCapabilityDisabled: (access: { enabled?: boolean } | null | undefined) =>
+    access?.enabled === false,
+}));
+
 describe("AddSlotContent", () => {
   beforeEach(() => {
     mockCreateSlots.mockReset();
     mockApplyPreset.mockReset();
     mockUpdateAiConsentMutate.mockReset();
     mockAiConsentGranted = false;
+    capabilityOverrides = {};
   });
 
   it("submits partial multi-day creates through one batch mutation", async () => {
@@ -208,5 +233,21 @@ describe("AddSlotContent", () => {
       { granted: true },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+  });
+
+  it("disables AI schedule creation without rendering capability-disabled copy", () => {
+    capabilityOverrides = { aiGeneration: false };
+
+    renderWithProviders(
+      <AddSlotContent
+        presetMode={AddSlotPresetMode.Single}
+        preselectDay={DayOfWeek.Mon}
+        onClose={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("radio", { name: /ai/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /add time/i })).toBeDisabled();
+    expect(screen.queryByText(/temporarily unavailable/i)).not.toBeInTheDocument();
   });
 });

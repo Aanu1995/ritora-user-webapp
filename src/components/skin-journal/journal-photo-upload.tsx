@@ -19,6 +19,7 @@ import {
 type PhotoMap = Partial<Record<Angle, File | null>>;
 
 interface JournalPhotoUploadProps {
+  disabled?: boolean;
   photos?: PhotoMap;
   existingPhotos?: JournalEntryPhoto[];
   removedPhotoAngles?: Angle[];
@@ -45,6 +46,7 @@ function angleTitle(
 }
 
 export function JournalPhotoUpload({
+  disabled = false,
   photos,
   existingPhotos,
   removedPhotoAngles = [],
@@ -100,6 +102,10 @@ export function JournalPhotoUpload({
   };
 
   const handleFile = (angle: Angle, file: File | null) => {
+    if (disabled) {
+      return;
+    }
+
     if (file) {
       const validationError = validateJournalPhotoFile(file);
       if (validationError) {
@@ -193,6 +199,7 @@ export function JournalPhotoUpload({
             <JournalPhotoAngleCard
               key={angle}
               angle={angle}
+              disabled={disabled}
               selectedPhoto={selectedPhoto}
               previewUrl={previewUrl}
               existingPhoto={existingPhoto}
@@ -203,13 +210,19 @@ export function JournalPhotoUpload({
               }}
               onFileSelected={(file) => handleFile(angle, file)}
               onChoosePhoto={() => {
+                if (disabled) {
+                  return;
+                }
+
                 const input = inputRefs.current[angle];
                 if (input) {
                   input.value = "";
                   input.click();
                 }
               }}
-              onCrop={() => setCropAngle(angle)}
+              onCrop={() => {
+                if (!disabled) setCropAngle(angle);
+              }}
               onRemove={() => {
                 if (selectedPhoto) {
                   handleFile(angle, null);
@@ -225,6 +238,7 @@ export function JournalPhotoUpload({
       {selectedFiles.length > 0 ? (
         <label className="mt-4 flex items-center gap-2 rounded-xl border border-[color:var(--border-strong)] bg-accent-soft/30 p-3 text-sm leading-relaxed">
           <Checkbox
+            disabled={disabled}
             checked={photoProcessingConsent}
             onCheckedChange={(checked) =>
               onPhotoProcessingConsentChange?.(checked === true)
@@ -237,6 +251,7 @@ export function JournalPhotoUpload({
       <label className="mt-4 flex items-center gap-2 text-sm">
         <Checkbox
           checked={isPreRoutine}
+          disabled={disabled}
           onCheckedChange={(checked) => onPreRoutineChange(checked === true)}
         />
         <span>{t("preRoutine")}</span>

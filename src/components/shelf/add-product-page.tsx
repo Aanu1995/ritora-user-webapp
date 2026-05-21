@@ -28,6 +28,10 @@ import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { AppRoute } from "@/constants/app-routes";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 import { useCreateProduct, useCreateProductWithImage } from "@/hooks/use-shelf";
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from "@/hooks/use-user-capabilities";
 import { firstFieldError } from "@/lib/form-errors";
 import {
   clearSubmitErrors,
@@ -130,6 +134,11 @@ export function AddProductPage() {
   const router = useRouter();
   const createProduct = useCreateProduct();
   const createProductWithImage = useCreateProductWithImage();
+  const capabilities = useUserCapabilities();
+  const isLookupDisabled =
+    isCapabilityDisabled(capabilities.imageUpload) ||
+    isCapabilityDisabled(capabilities.productExtraction) ||
+    isCapabilityDisabled(capabilities.aiGeneration);
   const createdProductIdRef = useRef<string | null>(null);
   const hasPhotoExtractionRef = useRef(false);
   const [reviewFields, setReviewFields] = useState<ProductFormReviewFields>({});
@@ -157,6 +166,10 @@ export function AddProductPage() {
         }
 
         const draft = stripDraftImageUrls(toShelfProductDraft(value));
+        if (isLookupDisabled) {
+          return undefined;
+        }
+
         const result = productPhotoFile
           ? await executeMutation(createProductWithImage.mutate, {
               draft,
@@ -308,6 +321,9 @@ export function AddProductPage() {
       onSubmit={(event) => {
         event.preventDefault();
         event.stopPropagation();
+        if (isLookupDisabled) {
+          return;
+        }
         void form.handleSubmit();
       }}
       noValidate
@@ -351,7 +367,11 @@ export function AddProductPage() {
                 title={tDialog("title")}
                 subtitle={tDialog("subtitle")}
                 actions={
-                  <Button type="submit" size="sm" disabled={isSubmitting}>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={isSubmitting || isLookupDisabled}
+                  >
                     {isSubmitting ? (
                       <LoadingIndicator label={tDialog("confirm.submitting")} />
                     ) : (
@@ -363,6 +383,7 @@ export function AddProductPage() {
 
               <div className="mx-auto mt-6 flex max-w-5xl flex-col gap-6">
                 <QuickLookupCard
+                  disabled={isLookupDisabled}
                   onPhotosChange={handlePhotosChange}
                   onProductPhotoChange={setProductPhotoFile}
                   onResult={handleLookupResult}

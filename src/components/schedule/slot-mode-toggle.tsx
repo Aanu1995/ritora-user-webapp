@@ -3,6 +3,10 @@
 import { Sparkles, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { SlotMode } from '@/types/schedule';
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from '@/hooks/use-user-capabilities';
 import { cn } from '@/lib/utils';
 import { ScheduleAiConsentNudge } from './schedule-ai-consent-nudge';
 
@@ -13,6 +17,8 @@ type SlotModeToggleProps = {
 
 export function SlotModeToggle({ value, onChange }: SlotModeToggleProps) {
   const t = useTranslations('schedule.mode');
+  const capabilities = useUserCapabilities();
+  const aiDisabled = isCapabilityDisabled(capabilities.aiGeneration);
   return (
     <>
       <div
@@ -23,15 +29,17 @@ export function SlotModeToggle({ value, onChange }: SlotModeToggleProps) {
         {[SlotMode.Manual, SlotMode.AI].map((mode) => {
           const selected = value === mode;
           const Icon = mode === SlotMode.Manual ? User : Sparkles;
+          const disabled = mode === SlotMode.AI && aiDisabled;
           return (
             <button
               key={mode}
               type="button"
               role="radio"
               aria-checked={selected}
+              disabled={disabled}
               onClick={() => onChange(mode)}
               className={cn(
-                'rounded-xl border-2 p-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30',
+                'rounded-xl border-2 p-3 text-left transition disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30',
                 selected
                   ? 'border-accent bg-accent-soft'
                   : 'border-border bg-surface hover:border-accent/60',
@@ -50,7 +58,9 @@ export function SlotModeToggle({ value, onChange }: SlotModeToggleProps) {
           );
         })}
       </div>
-      {value === SlotMode.AI ? <ScheduleAiConsentNudge /> : null}
+      {value === SlotMode.AI ? (
+        <ScheduleAiConsentNudge disabled={aiDisabled} />
+      ) : null}
     </>
   );
 }

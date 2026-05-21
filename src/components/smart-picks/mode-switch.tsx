@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import type { SmartPicksMode } from "@/types/smart-picks";
 
 interface ModeSwitchProps {
+  disabled?: boolean;
   value: SmartPicksMode;
   onChange: (value: SmartPicksMode) => void;
 }
@@ -15,7 +16,7 @@ const MODES: { value: SmartPicksMode; icon: typeof Layers }[] = [
   { value: "starter", icon: Package },
 ];
 
-export function ModeSwitch({ value, onChange }: ModeSwitchProps) {
+export function ModeSwitch({ disabled = false, value, onChange }: ModeSwitchProps) {
   const t = useTranslations("smartPicks.page");
 
   return (
@@ -31,9 +32,10 @@ export function ModeSwitch({ value, onChange }: ModeSwitchProps) {
             key={modeValue}
             type="button"
             aria-pressed={active}
+            disabled={disabled}
             onClick={() => onChange(modeValue)}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold transition",
+              "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[12.5px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-60",
               active
                 ? "bg-surface text-foreground shadow-soft"
                 : "text-muted hover:text-foreground",

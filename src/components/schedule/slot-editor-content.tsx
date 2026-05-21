@@ -13,6 +13,10 @@ import {
   useUpdateSlot,
   useUpsertSteps,
 } from "@/hooks/use-schedule";
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from "@/hooks/use-user-capabilities";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 import {
   clearSubmitErrors,
@@ -62,6 +66,8 @@ export function SlotEditorContent({
 }: SlotEditorContentProps) {
   const t = useTranslations("schedule");
   const tCommon = useTranslations("common");
+  const capabilities = useUserCapabilities();
+  const aiDisabled = isCapabilityDisabled(capabilities.aiGeneration);
 
   const [baselineSlot, setBaselineSlot] = useState(slot);
   const [baselineSteps, setBaselineSteps] = useState(() =>
@@ -97,6 +103,10 @@ export function SlotEditorContent({
       onSubmit: scheduleEditorFormSchema,
       onSubmitAsync: async ({ value }) => {
         latestSavedSlotRef.current = null;
+        if (value.mode === SlotMode.AI && aiDisabled) {
+          return undefined;
+        }
+
         const changeSummary = getSlotEditorChangeSummary({
           initialSteps: baselineSteps,
           ...baselineSnapshot,
@@ -216,7 +226,9 @@ export function SlotEditorContent({
     deleteSlot.isPending;
   const showAllErrors = submissionAttempts > 0;
   const formError = readSubmissionErrorMessage(submitError);
-  const saveDisabled = !changeSummary.hasChanges || !canSubmit || isPending;
+  const aiModeBlocked = modeValue === SlotMode.AI && aiDisabled;
+  const saveDisabled =
+    !changeSummary.hasChanges || !canSubmit || isPending || aiModeBlocked;
   const { releaseGuard } = useUnsavedChangesGuard({
     hasUnsavedChanges: changeSummary.hasChanges,
   });
@@ -262,6 +274,9 @@ export function SlotEditorContent({
         onSubmit={(event) => {
           event.preventDefault();
           event.stopPropagation();
+          if (aiModeBlocked) {
+            return;
+          }
           void form.handleSubmit();
         }}
         noValidate

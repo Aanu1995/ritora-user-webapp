@@ -15,7 +15,9 @@ import { TextInputField } from "@/components/auth/text-input-field";
 import { Button } from "@/components/ui/button";
 import { LoadingIndicator } from "@/components/ui/loading-indicator";
 import { AppRoute } from "@/constants/app-routes";
+import { useAppCapabilities } from "@/hooks/use-app-capabilities";
 import { useRegister } from "@/hooks/use-auth";
+import { isCapabilityDisabled } from "@/hooks/use-user-capabilities";
 import { normalizeLocale } from "@/i18n/config";
 import { getRegisterSubmitError } from "@/lib/auth-submit-errors";
 import { navigateToUrl } from "@/lib/browser-navigation";
@@ -45,6 +47,10 @@ export function RegisterForm() {
   const t = useTranslations("auth");
   const locale = normalizeLocale(useLocale());
   const registerUser = useRegister();
+  const appCapabilities = useAppCapabilities();
+  const isAccountCreationDisabled = isCapabilityDisabled(
+    appCapabilities.data?.accountCreation,
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
   const [isGoogleRedirecting, setIsGoogleRedirecting] = useState(false);
@@ -61,6 +67,10 @@ export function RegisterForm() {
       onChange: registerSchema,
       onSubmit: registerSchema,
       onSubmitAsync: async ({ value }) => {
+        if (isAccountCreationDisabled) {
+          return undefined;
+        }
+
         const result = await executeMutation(registerUser.mutate, {
           email: value.email,
           password: value.password,
@@ -84,6 +94,10 @@ export function RegisterForm() {
   });
 
   const handleGoogleSignUp = () => {
+    if (isAccountCreationDisabled) {
+      return;
+    }
+
     setIsGoogleRedirecting(true);
     navigateToUrl(
       getGoogleOAuthStartUrl({
@@ -95,6 +109,10 @@ export function RegisterForm() {
   };
 
   const handleAppleSignUp = () => {
+    if (isAccountCreationDisabled) {
+      return;
+    }
+
     setIsAppleRedirecting(true);
     navigateToUrl(
       getAppleOAuthStartUrl({
@@ -129,7 +147,8 @@ export function RegisterForm() {
                   isSubmitting ||
                   registerUser.isPending ||
                   isGoogleRedirecting ||
-                  isAppleRedirecting
+                  isAppleRedirecting ||
+                  isAccountCreationDisabled
                 }
                 isLoading={isGoogleRedirecting}
                 onClick={handleGoogleSignUp}
@@ -139,7 +158,8 @@ export function RegisterForm() {
                   isSubmitting ||
                   registerUser.isPending ||
                   isGoogleRedirecting ||
-                  isAppleRedirecting
+                  isAppleRedirecting ||
+                  isAccountCreationDisabled
                 }
                 isLoading={isAppleRedirecting}
                 onClick={handleAppleSignUp}
@@ -154,6 +174,9 @@ export function RegisterForm() {
           onSubmit={(event) => {
             event.preventDefault();
             event.stopPropagation();
+            if (isAccountCreationDisabled) {
+              return;
+            }
             void form.handleSubmit();
           }}
           className="space-y-5"
@@ -338,7 +361,8 @@ export function RegisterForm() {
                   !termsAccepted ||
                   !privacyPolicyAccepted ||
                   isSubmitting ||
-                  registerUser.isPending
+                  registerUser.isPending ||
+                  isAccountCreationDisabled
                 }
                 className="w-full"
               >

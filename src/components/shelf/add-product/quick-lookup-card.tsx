@@ -5,11 +5,13 @@ import { PhotosTab } from "./photos-tab";
 import type { ResolvedLookup } from "@/types/shelf";
 
 type Props = {
+  disabled?: boolean;
   onPhotosChange?: () => void;
   onProductPhotoChange?: (file: File | null) => void;
   onResult: (resolved: ResolvedLookup) => void;
 };
 export function QuickLookupCard({
+  disabled = false,
   onPhotosChange,
   onProductPhotoChange,
   onResult,
@@ -31,6 +33,7 @@ export function QuickLookupCard({
 
       <div className="mt-5">
         <PhotosTab
+          disabled={disabled}
           onPhotosChange={onPhotosChange}
           onProductPhotoChange={onProductPhotoChange}
           onResolved={handleResult}

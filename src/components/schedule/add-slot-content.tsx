@@ -7,6 +7,10 @@ import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { TimePicker } from "@/components/ui/time-picker";
 import { useCreateSlots } from "@/hooks/use-schedule";
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from "@/hooks/use-user-capabilities";
 import { firstFieldError } from "@/lib/form-errors";
 import {
   clearSubmitErrors,
@@ -59,6 +63,8 @@ export function AddSlotContent({
   const t = useTranslations("schedule");
   const tCommon = useTranslations("common");
   const createSlots = useCreateSlots();
+  const capabilities = useUserCapabilities();
+  const aiDisabled = isCapabilityDisabled(capabilities.aiGeneration);
   const [productLookup, setProductLookup] = useState<
     Map<string, RoutineStepProductSummary>
   >(() => new Map());
@@ -78,6 +84,10 @@ export function AddSlotContent({
       onChange: createSlotsFormSchema,
       onSubmit: createSlotsFormSchema,
       onSubmitAsync: async ({ value }) => {
+        if (value.mode === SlotMode.AI && aiDisabled) {
+          return undefined;
+        }
+
         const result = await executeMutation(
           createSlots.mutate,
           buildCreateSlotsPayload(value),
@@ -132,6 +142,7 @@ export function AddSlotContent({
   const showAllErrors = submissionAttempts > 0;
   const formError = readSubmissionErrorMessage(submitError);
   const isPending = createSlots.isPending || isSubmitting;
+  const aiModeBlocked = modeValue === SlotMode.AI && aiDisabled;
   const dialogCopy = getAddSlotDialogCopy({
     presetMode,
     selectedDayCount,
@@ -153,6 +164,9 @@ export function AddSlotContent({
       onSubmit={(event) => {
         event.preventDefault();
         event.stopPropagation();
+        if (aiModeBlocked) {
+          return;
+        }
         void form.handleSubmit();
       }}
       noValidate
@@ -358,7 +372,7 @@ export function AddSlotContent({
         ) : null}
       </div>
       <AddSlotFooter
-        canSubmit={canSubmit}
+        canSubmit={canSubmit && !aiModeBlocked}
         duplicateNote={dialogCopy.duplicateNote}
         formError={formError}
         isPending={isPending}

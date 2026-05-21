@@ -14,6 +14,7 @@ import { UploadGuidanceCard } from "@/components/skin-journal/upload-guidance-ca
 import { JournalPhotoUpload } from "@/components/skin-journal/journal-photo-upload";
 import { JournalDeleteTodayDialog } from "@/components/skin-journal/journal-delete-today-dialog";
 import { JournalUploadSkeleton } from "@/components/skin-journal/journal-loading-skeletons";
+import { JournalUploadPhotoActions } from "@/components/skin-journal/journal-upload-photo-actions";
 import {
   EMPTY_CHECK_IN,
   entryPhotosForUpload,
@@ -34,6 +35,7 @@ import {
   useUpsertToday,
 } from "@/hooks/use-skin-journal";
 import { useSkinProfile } from "@/hooks/use-skin-profile";
+import { useJournalCapabilityFlags } from "@/components/skin-journal/use-journal-capability-flags";
 import { getApiErrorMessage } from "@/lib/api-error";
 import {
   CYCLE_MARKER_DONT_TRACK,
@@ -64,6 +66,7 @@ export default function JournalUploadPage() {
     useState(false);
   const { data: todayPayload } = useTodayEntry();
   const { data: skinProfile } = useSkinProfile();
+  const { photoActionsDisabled } = useJournalCapabilityFlags();
   const showCycleQuestion = skinProfile?.sexAtBirth === "female";
   const entry = todayPayload?.entry ?? null;
   const date = resolveCanonicalTodayDate(todayPayload?.date, todayYmd());
@@ -156,6 +159,7 @@ export default function JournalUploadPage() {
   };
 
   const isPhotoProcessingBlocked = hasNewPhotos && !photoProcessingConsent;
+  const isPhotoCapabilityBlocked = hasNewPhotos && photoActionsDisabled;
   const canSavePhotoStep = isEditMode
     ? Boolean(editableEntry && (hasAnyPhotoAfterSave || hasAnyPhotoChange))
     : hasFrontAfterSave;
@@ -171,6 +175,9 @@ export default function JournalUploadPage() {
       return;
     }
     if (isPhotoProcessingBlocked) {
+      return;
+    }
+    if (isPhotoCapabilityBlocked) {
       return;
     }
     if (!savePhotoOnly) {
@@ -260,51 +267,22 @@ export default function JournalUploadPage() {
                 onPreRoutineChange={setIsPreRoutineDraft}
                 photoProcessingConsent={photoProcessingConsent}
                 onPhotoProcessingConsentChange={setPhotoProcessingConsent}
+                disabled={photoActionsDisabled}
               />
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-surface-muted px-4 py-3">
-              <p className="text-sm text-muted">
-                {isPhotoSetInvalid
-                  ? t(
-                      hasSideAfterSave
-                        ? "frontRequiredWithSides"
-                        : "frontRequired",
-                    )
-                  : t("nextStepHint")}
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleSave(true)}
-                  disabled={
-                    isPending ||
-                    !canSavePhotoStep ||
-                    isPhotoProcessingBlocked ||
-                    isPhotoSetInvalid
-                  }
-                >
-                  {isPending ? (
-                    <LoadingIndicator size="sm" label={t("saving")} />
-                  ) : (
-                    t(isEditMode ? "saveChanges" : "savePhotoOnly")
-                  )}
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => setStep("checkin")}
-                  disabled={
-                    isPending ||
-                    !canContinueToCheckIn ||
-                    isPhotoProcessingBlocked ||
-                    isPhotoSetInvalid
-                  }
-                >
-                  {t("continueToCheckIn")}
-                </Button>
-              </div>
-            </div>
+            <JournalUploadPhotoActions
+              canContinueToCheckIn={canContinueToCheckIn}
+              canSavePhotoStep={canSavePhotoStep}
+              hasSideAfterSave={hasSideAfterSave}
+              isEditMode={isEditMode}
+              isPending={isPending}
+              isPhotoCapabilityBlocked={isPhotoCapabilityBlocked}
+              isPhotoProcessingBlocked={isPhotoProcessingBlocked}
+              isPhotoSetInvalid={isPhotoSetInvalid}
+              onContinue={() => setStep("checkin")}
+              onSavePhotoOnly={() => handleSave(true)}
+            />
           </div>
         ) : (
           <div className="rounded-2xl border border-border bg-surface p-4 sm:p-5">
@@ -364,7 +342,10 @@ export default function JournalUploadPage() {
                   size="sm"
                   onClick={() => handleSave(false)}
                   disabled={
-                    isPending || isPhotoProcessingBlocked || isPhotoSetInvalid
+                    isPending ||
+                    isPhotoProcessingBlocked ||
+                    isPhotoCapabilityBlocked ||
+                    isPhotoSetInvalid
                   }
                 >
                   {isPending ? (

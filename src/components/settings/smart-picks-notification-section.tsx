@@ -15,10 +15,12 @@ const SMART_PICK_CHANNELS = [
 export function SmartPicksNotificationSection({
   values,
   isSaving,
+  controlsDisabled,
   form,
   t,
   persistPatch,
 }: SectionProps) {
+  const disabled = isSaving || controlsDisabled;
   return (
     <section className="rounded-2xl border border-border bg-surface p-4 sm:p-5">
       <p className="text-base font-semibold">{t("smartPicksTitle")}</p>
@@ -27,7 +29,7 @@ export function SmartPicksNotificationSection({
         label={t("smartPickReadyTitle")}
         body={t("smartPickReadyBody")}
         checked={values.smart_pick_ready_enabled}
-        disabled={isSaving}
+        disabled={disabled}
         onCheckedChange={(checked) => {
           form.setFieldValue("smart_pick_ready_enabled", checked);
           persistPatch(
@@ -40,11 +42,11 @@ export function SmartPicksNotificationSection({
         fieldName="smart_pick_ready_channels"
         label={t("smartPickReadyTitle")}
         values={values}
-        isSaving={isSaving}
+        isSaving={disabled}
         form={form}
         t={t}
         persistPatch={persistPatch}
-        disabled={!values.smart_pick_ready_enabled}
+        disabled={controlsDisabled || !values.smart_pick_ready_enabled}
         allowedChannels={SMART_PICK_CHANNELS}
         pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />

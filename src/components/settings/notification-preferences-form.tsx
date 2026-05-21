@@ -16,6 +16,10 @@ import { ReactionAlertsSection } from "@/components/settings/reaction-alerts-sec
 import { SmartPicksNotificationSection } from "@/components/settings/smart-picks-notification-section";
 import { TodaysSuggestionSection } from "@/components/settings/todays-suggestion-notification-section";
 import { useUpdateNotificationPreferences } from "@/hooks/use-notifications";
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from "@/hooks/use-user-capabilities";
 import type {
   NotificationPreferences,
   UpdatePreferencesPayload,
@@ -28,6 +32,10 @@ export function NotificationPreferencesForm({
 }) {
   const t = useTranslations("settingsNotifications");
   const updatePrefs = useUpdateNotificationPreferences();
+  const capabilities = useUserCapabilities();
+  const notificationsDisabled = isCapabilityDisabled(
+    capabilities.notifications,
+  );
   const isSaving = updatePrefs.isPending;
 
   const form = useForm({
@@ -42,6 +50,10 @@ export function NotificationPreferencesForm({
     nextValues: NotificationPreferences,
     patch: UpdatePreferencesPayload,
   ): Promise<NotificationPreferences | null> => {
+    if (notificationsDisabled) {
+      return Promise.resolve(null);
+    }
+
     const parsed = notificationPreferencesSchema.safeParse(nextValues);
     if (!parsed.success) {
       return Promise.resolve(null);
@@ -72,6 +84,7 @@ export function NotificationPreferencesForm({
           const sectionProps: SectionProps = {
             values,
             isSaving,
+            controlsDisabled: notificationsDisabled,
             form,
             t,
             persistPatch,

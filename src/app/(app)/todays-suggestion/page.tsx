@@ -41,6 +41,10 @@ import {
   useTodaysSuggestion,
   useUpdateRoutineBreak,
 } from "@/hooks/use-suggestions";
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from "@/hooks/use-user-capabilities";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { useSkinProfile } from "@/hooks/use-skin-profile";
 import type {
@@ -58,6 +62,8 @@ export default function TodaysSuggestionPage() {
   const updateRoutineBreak = useUpdateRoutineBreak();
   const userTimeZone = useAuthStore((s) => s.user?.timeZone) ?? "UTC";
   const skinProfile = useSkinProfile();
+  const capabilities = useUserCapabilities();
+  const isAiDisabled = isCapabilityDisabled(capabilities.aiGeneration);
 
   const [now, setNow] = useState(() => new Date());
   const nowMs = now.getTime();
@@ -72,7 +78,9 @@ export default function TodaysSuggestionPage() {
     null,
   );
   const [startBreakOpen, setStartBreakOpen] = useState(false);
-  const quickSuggestionFlow = useTodayQuickSuggestionFlow();
+  const quickSuggestionFlow = useTodayQuickSuggestionFlow({
+    disabled: isAiDisabled,
+  });
   const [editSlot, setEditSlot] = useState<{
     slot: TodaysSuggestionSlot;
     applicationLogId: string;
@@ -125,6 +133,7 @@ export default function TodaysSuggestionPage() {
     <TodayPageHeaderActions
       hasData={Boolean(data)}
       routineBreak={data?.routineBreak}
+      quickSuggestionDisabled={isAiDisabled}
       onQuickSuggestion={quickSuggestionFlow.openQuickSuggestion}
       onStartBreak={() => setStartBreakOpen(true)}
     />
@@ -242,9 +251,14 @@ export default function TodaysSuggestionPage() {
             isResetting={
               normalRoutine.isPending || regenerateSuggestion.isPending
             }
+            resetDisabled={isAiDisabled}
             onResetToNormalRoutine={
               data.reactionAlert.canUseNormalRoutine
                 ? () => {
+                    if (isAiDisabled) {
+                      return;
+                    }
+
                     normalRoutine.mutate(undefined, {
                       onSuccess: () => {
                         regenerateSimplifiedSuggestions(data.slots, (id) =>
@@ -279,6 +293,7 @@ export default function TodaysSuggestionPage() {
             !routineBreak
           }
           pending={quickSuggestionFlow.isGrantingAiConsent}
+          disabled={isAiDisabled}
           onGrant={quickSuggestionFlow.grantAiConsentForScheduled}
         />
 
@@ -293,6 +308,7 @@ export default function TodaysSuggestionPage() {
           onShowDetail={(target) =>
             target.suggestion ? setDetailSuggestion(target.suggestion) : undefined
           }
+          retryDisabled={isAiDisabled}
           timeZone={userTimeZone}
           nowMs={nowMs}
         />

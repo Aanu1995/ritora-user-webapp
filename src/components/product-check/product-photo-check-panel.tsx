@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { SmoothImage } from '@/components/ui/smooth-image';
+import { useRefreshUserCapabilitiesOnRestriction } from '@/hooks/use-refresh-user-capabilities';
 import { useExtractProductFromImages } from '@/hooks/use-shelf';
 import { getApiErrorStatus } from '@/lib/api-error';
 import {
@@ -52,11 +53,16 @@ function toUploadFiles(
 }
 
 type Props = {
+  disabled?: boolean;
   isPending: boolean;
   onCheck: (input: ProductCheckProductInput) => void;
 };
 
-export function ProductPhotoCheckPanel({ isPending, onCheck }: Props) {
+export function ProductPhotoCheckPanel({
+  disabled = false,
+  isPending,
+  onCheck,
+}: Props) {
   const t = useTranslations('checkProduct.photos');
   const tErrors = useTranslations('checkProduct.errors');
   const tShared = useTranslations('shelf.dialog.photos');
@@ -65,6 +71,8 @@ export function ProductPhotoCheckPanel({ isPending, onCheck }: Props) {
   const labelPhotosRef = useRef<PhotoItem[]>([]);
   const isMountedRef = useRef(true);
   const extractProductFromImages = useExtractProductFromImages();
+  const refreshCapabilitiesOnRestriction =
+    useRefreshUserCapabilitiesOnRestriction();
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -74,14 +82,14 @@ export function ProductPhotoCheckPanel({ isPending, onCheck }: Props) {
     };
   }, []);
 
-  const canAddLabelPhoto = labelPhotos.length < MAX_LABEL_PHOTOS;
+  const canAddLabelPhoto = labelPhotos.length < MAX_LABEL_PHOTOS && !disabled;
   const hasLabelPhotos = labelPhotos.length >= 1;
   const isExtracting = extractProductFromImages.isPending;
   const busy = isExtracting || isPending;
-  const canCheck = hasLabelPhotos && !busy;
+  const canCheck = hasLabelPhotos && !busy && !disabled;
 
   const handleAddLabelPhotos = (files: FileList | readonly File[] | null) => {
-    if (!canAddLabelPhoto) return;
+    if (!canAddLabelPhoto || disabled) return;
     const nextFiles = toUploadFiles(files);
     if (nextFiles.length === 0) return;
 
@@ -104,7 +112,7 @@ export function ProductPhotoCheckPanel({ isPending, onCheck }: Props) {
   };
 
   const handleCheck = () => {
-    if (labelPhotos.length === 0) return;
+    if (disabled || labelPhotos.length === 0) return;
 
     extractProductFromImages.mutate(
       {
@@ -131,6 +139,10 @@ export function ProductPhotoCheckPanel({ isPending, onCheck }: Props) {
         },
         onError: (error) => {
           if (!isMountedRef.current) return;
+          if (refreshCapabilitiesOnRestriction(error)) {
+            return;
+          }
+
           const status = getApiErrorStatus(error);
           const isServiceDown = status === undefined || status === 0;
           toast.error(
@@ -204,6 +216,7 @@ export function ProductPhotoCheckPanel({ isPending, onCheck }: Props) {
         accept="image/*"
         capture="environment"
         multiple
+        disabled={disabled}
         aria-label={t('addAction')}
         className="sr-only"
         onChange={(event) => {

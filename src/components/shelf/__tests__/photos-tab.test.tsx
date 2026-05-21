@@ -92,6 +92,30 @@ beforeAll(() => {
 });
 
 describe('PhotosTab', () => {
+  it('keeps photo lookup disabled when the capability is unavailable', async () => {
+    const user = userEvent.setup();
+    const mutate = jest.fn();
+    mockUseExtractProductFromImages.mockReturnValue({
+      mutate,
+      isPending: false,
+    });
+
+    const { container } = renderWithProviders(
+      <PhotosTab disabled onResolved={jest.fn()} />,
+    );
+
+    expect(getProductInput(container)).toBeDisabled();
+    expect(getLabelInput(container)).toBeDisabled();
+    expect(
+      screen.queryByText(/temporarily unavailable/i),
+    ).not.toBeInTheDocument();
+    await user.click(
+      screen.getByRole('button', { name: /extract from photos/i }),
+    );
+
+    expect(mutate).not.toHaveBeenCalled();
+  });
+
   it('keeps extract disabled until a product photo and at least one label photo are present', async () => {
     const user = userEvent.setup();
     const { container } = renderWithProviders(

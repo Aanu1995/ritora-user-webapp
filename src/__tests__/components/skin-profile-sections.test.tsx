@@ -86,6 +86,24 @@ jest.mock("@/components/ui/select", () => ({
   }) => <option value={value}>{children}</option>,
 }));
 
+jest.mock("@/components/ui/date-picker", () => ({
+  DatePicker: ({
+    ariaLabel,
+    onChange,
+    value,
+  }: {
+    ariaLabel?: string;
+    onChange: (next: string) => void;
+    value: string;
+  }) => (
+    <input
+      aria-label={ariaLabel ?? "Date"}
+      onChange={(event) => onChange(event.target.value)}
+      value={value}
+    />
+  ),
+}));
+
 jest.mock("@/hooks/use-skin-profile", () => ({
   useUpdateSkinProfile: () => ({
     mutate: mockUpdateMutate,
@@ -323,7 +341,7 @@ describe("skin profile optional sections", () => {
     await user.click(
       screen.getAllByRole("button", { name: "Tolerates well" })[0],
     );
-    fireEvent.change(screen.getByLabelText("Last used"), {
+    fireEvent.change(screen.getByLabelText(/^Last used/), {
       target: { value: "2026-01-10" },
     });
     submitSection(ref);

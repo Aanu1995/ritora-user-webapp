@@ -4,6 +4,7 @@ import { useForm, useStore } from "@tanstack/react-form";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { DatePicker } from "@/components/ui/date-picker";
 import { useUpdateSkinProfile } from "@/hooks/use-skin-profile";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 import {
@@ -146,21 +147,16 @@ export const ActiveToleranceSection = forwardRef<
                     </div>
                     {current &&
                     current.tolerance !== SkinProfileValue.NeverTried ? (
-                      <div className="mt-3 flex items-center gap-2">
-                        <label
-                          htmlFor={`last-used-${ingredient}`}
-                          className="text-xs text-muted"
-                        >
+                      <div className="mt-3 flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3">
+                        <span className="text-xs font-medium text-muted">
                           {t("lastUsed")}
-                        </label>
-                        <input
-                          id={`last-used-${ingredient}`}
-                          type="date"
+                        </span>
+                        <DatePicker
                           value={current.last_used ?? ""}
-                          onChange={(e) =>
-                            setLastUsed(ingredient, e.target.value)
-                          }
-                          className="rounded-lg border border-border-strong bg-surface px-2.5 py-1 text-xs text-foreground"
+                          onChange={(next) => setLastUsed(ingredient, next)}
+                          ariaLabel={`${t("lastUsed")} · ${tOptions(ingredient)}`}
+                          maxDate={new Date()}
+                          className="sm:w-56"
                         />
                       </div>
                     ) : null}

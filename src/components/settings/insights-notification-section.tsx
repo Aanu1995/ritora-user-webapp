@@ -26,10 +26,12 @@ const INSIGHT_DIGEST_DAYS = [1, 2, 3, 4, 5, 6, 7] as const;
 export function InsightsNotificationSection({
   values,
   isSaving,
+  controlsDisabled,
   form,
   t,
   persistPatch,
 }: SectionProps) {
+  const disabled = isSaving || controlsDisabled;
   return (
     <section className="rounded-2xl border border-border bg-surface p-4 sm:p-5">
       <div className="flex items-start justify-between gap-3">
@@ -45,7 +47,7 @@ export function InsightsNotificationSection({
       <NotificationSwitch
         label={t("insightAlertsBody")}
         checked={values.insight_alerts_enabled}
-        disabled={isSaving}
+        disabled={disabled}
         onCheckedChange={(checked) => {
           form.setFieldValue("insight_alerts_enabled", checked);
           persistPatch(
@@ -58,11 +60,11 @@ export function InsightsNotificationSection({
         fieldName="insight_alert_channels"
         label={t("insightAlertsBody")}
         values={values}
-        isSaving={isSaving}
+        isSaving={disabled}
         form={form}
         t={t}
         persistPatch={persistPatch}
-        disabled={!values.insight_alerts_enabled}
+        disabled={controlsDisabled || !values.insight_alerts_enabled}
         pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
       <div className="mt-3 grid gap-3 sm:grid-cols-3">
@@ -77,7 +79,7 @@ export function InsightsNotificationSection({
               </label>
               <Select
                 value={values.insight_cadence}
-                disabled={isSaving}
+                disabled={disabled}
                 onValueChange={(raw) => {
                   const cadence = raw as InsightCadence;
                   field.handleChange(cadence);
@@ -112,7 +114,7 @@ export function InsightsNotificationSection({
               </label>
               <Select
                 value={String(values.insight_digest_day)}
-                disabled={isSaving}
+                disabled={disabled}
                 onValueChange={(raw) => {
                   const day = Number(raw);
                   field.handleChange(day);
@@ -149,7 +151,7 @@ export function InsightsNotificationSection({
                 id={field.name}
                 type="time"
                 value={String(values.insight_digest_local_time)}
-                disabled={isSaving}
+                disabled={disabled}
                 onChange={(event) => field.handleChange(event.target.value)}
                 onBlur={(event) => {
                   field.handleBlur();
@@ -168,7 +170,7 @@ export function InsightsNotificationSection({
       <NotificationSwitch
         label={t("wrappedAlertsBody")}
         checked={values.wrapped_alerts_enabled}
-        disabled={isSaving}
+        disabled={disabled}
         onCheckedChange={(checked) => {
           form.setFieldValue("wrapped_alerts_enabled", checked);
           persistPatch(
@@ -181,11 +183,11 @@ export function InsightsNotificationSection({
         fieldName="wrapped_alert_channels"
         label={t("wrappedAlertsBody")}
         values={values}
-        isSaving={isSaving}
+        isSaving={disabled}
         form={form}
         t={t}
         persistPatch={persistPatch}
-        disabled={!values.wrapped_alerts_enabled}
+        disabled={controlsDisabled || !values.wrapped_alerts_enabled}
         pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
     </section>

@@ -32,12 +32,14 @@ export type PhotoItem = {
 };
 
 type ProductPhotoSectionProps = {
+  disabled?: boolean;
   onPhotoSelected: (file: File | null) => void;
   onRemove: () => void;
   photo: PhotoItem | null;
 };
 
 export function ProductPhotoSection({
+  disabled = false,
   onPhotoSelected,
   onRemove,
   photo,
@@ -71,6 +73,7 @@ export function ProductPhotoSection({
               type="button"
               variant="outline"
               size="sm"
+              disabled={disabled}
               onClick={() => inputRef.current?.click()}
             >
               <RefreshCw className="h-4 w-4" />
@@ -91,8 +94,9 @@ export function ProductPhotoSection({
       ) : (
         <button
           type="button"
+          disabled={disabled}
           onClick={() => inputRef.current?.click()}
-          className="flex aspect-[4/5] w-full max-w-60 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-surface-muted/40 px-4 text-center text-muted transition hover:border-border-strong hover:bg-accent-soft"
+          className="flex aspect-[4/5] w-full max-w-60 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-surface-muted/40 px-4 text-center text-muted transition hover:border-border-strong hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-border disabled:hover:bg-surface-muted/40"
         >
           <ImagePlus className="h-8 w-8" />
           <span className="text-sm font-medium text-foreground">
@@ -106,6 +110,7 @@ export function ProductPhotoSection({
         type="file"
         accept="image/*"
         capture="environment"
+        disabled={disabled}
         aria-label={t('productPhoto.addAction')}
         className="sr-only"
         onChange={(event) => {
@@ -119,6 +124,7 @@ export function ProductPhotoSection({
 
 type LabelPhotosSectionProps = {
   canAddPhoto: boolean;
+  disabled?: boolean;
   onFilesSelected: (files: FileList | readonly File[] | null) => void;
   onRemovePhoto: (photoId: string) => void;
   photos: PhotoItem[];
@@ -126,6 +132,7 @@ type LabelPhotosSectionProps = {
 
 export function LabelPhotosSection({
   canAddPhoto,
+  disabled = false,
   onFilesSelected,
   onRemovePhoto,
   photos,
@@ -188,8 +195,9 @@ export function LabelPhotosSection({
         {canAddPhoto ? (
           <button
             type="button"
+            disabled={disabled}
             onClick={() => inputRef.current?.click()}
-            className="flex aspect-[4/5] w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-border bg-surface-muted/40 px-2 text-center text-muted transition hover:border-border-strong hover:bg-accent-soft"
+            className="flex aspect-[4/5] w-full cursor-pointer flex-col items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-border bg-surface-muted/40 px-2 text-center text-muted transition hover:border-border-strong hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-border disabled:hover:bg-surface-muted/40"
           >
             <ImagePlus className="h-5 w-5" />
             <span className="text-[11px] font-medium leading-tight text-foreground">
@@ -205,6 +213,7 @@ export function LabelPhotosSection({
         accept="image/*"
         capture="environment"
         multiple
+        disabled={disabled}
         aria-label={t('labelPhotos.addAction')}
         className="sr-only"
         onChange={(event) => {

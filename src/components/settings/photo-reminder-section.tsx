@@ -16,12 +16,14 @@ import {
 export function PhotoReminderSection({
   values,
   isSaving,
+  controlsDisabled,
   form,
   t,
   persistPatch,
 }: SectionProps) {
   const user = useAuthStore((s) => s.user);
   const push = values.channels.includes(NotificationChannelValue.Push);
+  const disabled = isSaving || controlsDisabled;
 
   return (
     <section className="rounded-2xl border border-border bg-surface p-4 sm:p-5">
@@ -41,7 +43,7 @@ export function PhotoReminderSection({
             <p className="text-sm text-muted">{t("photoReminderBody")}</p>
             <Switch
               aria-label={t("photoReminderTitle")}
-              disabled={isSaving}
+              disabled={disabled}
               checked={values.photo_reminder_enabled}
               onCheckedChange={(checked) => {
                 const nextValues = {
@@ -81,7 +83,7 @@ export function PhotoReminderSection({
                   );
                 }}
                 onBlur={field.handleBlur}
-                disabled={isSaving || !values.photo_reminder_enabled}
+                disabled={disabled || !values.photo_reminder_enabled}
                 invalid={field.state.meta.errors.length > 0}
                 ariaLabel={t("reminderTime")}
                 ariaDescribedBy={`${field.name}-hint`}
@@ -107,11 +109,11 @@ export function PhotoReminderSection({
           fieldName="channels"
           label={t("photoReminderTitle")}
           values={values}
-          isSaving={isSaving}
+          isSaving={disabled}
           form={form}
           t={t}
           persistPatch={persistPatch}
-          disabled={!values.photo_reminder_enabled}
+          disabled={controlsDisabled || !values.photo_reminder_enabled}
           pushDisabled={!push}
         />
       </div>

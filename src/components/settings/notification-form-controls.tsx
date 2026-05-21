@@ -291,6 +291,7 @@ export type FormApi = {
 export type SectionProps = {
   values: NotificationPreferences;
   isSaving: boolean;
+  controlsDisabled: boolean;
   form: FormApi;
   t: ReturnType<typeof useTranslations>;
   persistPatch: (

@@ -36,6 +36,7 @@ import type {
 interface InsightBlockViewProps {
   block: InsightBlock;
   insight: JournalInsight;
+  isActionDisabled?: (action: InsightAction) => boolean;
   onAction?: (action: InsightAction) => void;
 }
 
@@ -61,6 +62,7 @@ function toTranslationValues(
 export function InsightBlockView({
   block,
   insight,
+  isActionDisabled,
   onAction,
 }: InsightBlockViewProps) {
   const t = useTranslations("journal.insightsTab");
@@ -238,6 +240,7 @@ export function InsightBlockView({
         type="button"
         variant="outline"
         size="sm"
+        disabled={isActionDisabled?.(block.action) ?? false}
         onClick={() => onAction?.(block.action)}
       >
         {t(insightMessageKey(block.key), toTranslationValues(block.values))}

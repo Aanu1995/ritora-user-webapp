@@ -13,6 +13,10 @@ import {
   useMarkAllNotificationsRead,
   useNotifications,
 } from "@/hooks/use-notifications";
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from "@/hooks/use-user-capabilities";
 import { NotificationRow } from "@/components/notifications/notification-row";
 import { NotificationsPageSkeleton } from "@/components/notifications/notifications-page-skeleton";
 
@@ -20,6 +24,10 @@ export default function NotificationsPage() {
   const t = useTranslations("notificationsPage");
   const notifications = useNotifications();
   const markAll = useMarkAllNotificationsRead();
+  const capabilities = useUserCapabilities();
+  const notificationsDisabled = isCapabilityDisabled(
+    capabilities.notifications,
+  );
 
   const unread = notifications.data.unread;
   const read = notifications.data.read;
@@ -53,8 +61,10 @@ export default function NotificationsPage() {
                 variant="outline"
                 size="sm"
                 aria-label={t("markAllRead")}
-                disabled={markAll.isPending}
-                onClick={() => markAll.mutate()}
+                disabled={markAll.isPending || notificationsDisabled}
+                onClick={() => {
+                  if (!notificationsDisabled) markAll.mutate();
+                }}
                 className="w-7 px-0 sm:w-auto sm:px-4"
               >
                 {markAll.isPending ? (
@@ -133,6 +143,7 @@ export default function NotificationsPage() {
                   {unread.map((notification) => (
                     <NotificationRow
                       key={notification.id}
+                      actionsDisabled={notificationsDisabled}
                       notification={notification}
                       nowMs={relativeNowMs}
                     />
@@ -149,6 +160,7 @@ export default function NotificationsPage() {
                   {read.map((notification) => (
                     <NotificationRow
                       key={notification.id}
+                      actionsDisabled={notificationsDisabled}
                       notification={notification}
                       nowMs={relativeNowMs}
                     />

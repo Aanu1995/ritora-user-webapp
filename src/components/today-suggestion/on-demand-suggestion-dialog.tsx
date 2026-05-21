@@ -71,6 +71,7 @@ const INTENSITY_OPTIONS: readonly IntensityOption[] = [
 ];
 
 type Props = {
+  disabled?: boolean;
   open: boolean;
   isSubmitting: boolean;
   requestId: string | null;
@@ -79,6 +80,7 @@ type Props = {
 };
 
 export function OnDemandSuggestionDialog({
+  disabled = false,
   open,
   isSubmitting,
   requestId,
@@ -96,6 +98,10 @@ export function OnDemandSuggestionDialog({
       onSubmit: onDemandSuggestionSchema,
     },
     onSubmit: ({ value }) => {
+      if (disabled) {
+        return;
+      }
+
       onSubmit({
         intent: value.intent,
         intensity: value.intensity,
@@ -119,6 +125,9 @@ export function OnDemandSuggestionDialog({
           onSubmit={(event) => {
             event.preventDefault();
             event.stopPropagation();
+            if (disabled) {
+              return;
+            }
             void form.handleSubmit();
           }}
           noValidate
@@ -245,7 +254,11 @@ export function OnDemandSuggestionDialog({
             >
               {t("cancel")}
             </Button>
-            <Button type="submit" size="sm" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              size="sm"
+              disabled={isSubmitting || disabled}
+            >
               {isSubmitting ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (

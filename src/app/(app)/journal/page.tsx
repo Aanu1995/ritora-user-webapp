@@ -3,9 +3,7 @@
 import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { Download, Plus } from "lucide-react";
 import { PageHeader } from "@/components/app/page-header";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AppRoute, NOTIFICATION_SETTINGS_ROUTE } from "@/constants/app-routes";
 import { useJournalUiStore } from "@/stores/journal-ui-store";
@@ -25,12 +23,13 @@ import {
   useTodayEntry,
 } from "@/hooks/use-skin-journal";
 import { StatStrip } from "@/components/skin-journal/stat-strip";
-import { JournalAlertButton } from "@/components/skin-journal/journal-alert-button";
+import { JournalPageActions } from "@/components/skin-journal/journal-page-actions";
 import { ReactionDetectedModal } from "@/components/skin-journal/reaction-detected-modal";
 import { DermatologistExportModal } from "@/components/skin-journal/dermatologist-export-modal";
 import { JournalTabPanels } from "@/components/skin-journal/journal-tab-panels";
 import { resolveCanonicalTodayDate } from "@/components/skin-journal/journal-date";
 import { JournalUploadMode } from "@/components/skin-journal/journal-navigation";
+import { useJournalCapabilityFlags } from "@/components/skin-journal/use-journal-capability-flags";
 import { useJournalProfileGate } from "@/components/skin-journal/use-journal-profile-gate";
 import { PhotoFilterStaticId, type PhotoFilterId } from "@/types/skin-journal";
 
@@ -55,6 +54,8 @@ export default function JournalPage() {
   const tReaction = useTranslations("journal.reaction");
   const router = useRouter();
   const { openTodayUpload, profileGateDialog } = useJournalProfileGate();
+  const { aiActionsDisabled, photoActionsDisabled } =
+    useJournalCapabilityFlags();
 
   const todayInfo = useMemo(() => todayLocal(), []);
 
@@ -169,7 +170,7 @@ export default function JournalPage() {
   };
 
   const handleSimplify = () => {
-    if (!reactionEntry) return;
+    if (!reactionEntry || aiActionsDisabled) return;
     startSimplification.mutate({
       reason: tReaction("simplificationReason", {
         date: reactionEntry.entry_date,
@@ -223,31 +224,12 @@ export default function JournalPage() {
         title={t("title")}
         subtitle={t("subtitle")}
         action={
-          <div className="flex items-center gap-2">
-            <JournalAlertButton />
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setExportModalOpen(true)}
-              aria-label={t("exportForDermatologist")}
-              className="w-7 px-0 sm:w-auto sm:px-4"
-            >
-              <Download className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">
-                {t("exportForDermatologist")}
-              </span>
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => openTodayUpload()}
-              disabled={hasTodayEntry}
-              aria-label={t("fab")}
-              className="w-7 px-0 sm:w-auto sm:px-4"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">{t("fab")}</span>
-            </Button>
-          </div>
+          <JournalPageActions
+            hasTodayEntry={hasTodayEntry}
+            photoActionsDisabled={photoActionsDisabled}
+            onOpenExport={() => setExportModalOpen(true)}
+            onOpenUpload={() => openTodayUpload()}
+          />
         }
       />
 
@@ -318,12 +300,17 @@ export default function JournalPage() {
           insightsWindow={insightsWindow}
           onInsightsWindowChange={setInsightsWindow}
           onRefreshInsights={() => {
+            if (aiActionsDisabled) {
+              return;
+            }
             void refetchInsights();
           }}
           isRefreshingInsights={insightsFetching && !insightsLoading}
           wrapped={wrapped}
           calendarData={calendarData}
           calendarLoading={calendarLoading}
+          aiActionsDisabled={aiActionsDisabled}
+          photoActionsDisabled={photoActionsDisabled}
           trackedMonths={photoDateIndex?.months ?? []}
           dayDetail={dayDetail ?? null}
           dayLoading={dayLoading}
@@ -335,7 +322,9 @@ export default function JournalPage() {
           onSelectDate={setSelectedDate}
           onOpenUpload={
             canUploadForSelectedDate && !hasTodayEntry
-              ? () => openTodayUpload()
+              ? () => {
+                  if (!photoActionsDisabled) openTodayUpload();
+                }
               : undefined
           }
           onOpenCompare={handleOpenCompare}
@@ -354,10 +343,16 @@ export default function JournalPage() {
               ? () => openTodayUpload(JournalUploadMode.Edit)
               : undefined
           }
-          onRetryAnalysis={(entry) => retryAnalysis.mutate(entry.id)}
+          onRetryAnalysis={(entry) => {
+            if (!aiActionsDisabled) retryAnalysis.mutate(entry.id);
+          }}
           onReplacePhoto={
             canUploadForSelectedDate
-              ? () => openTodayUpload(JournalUploadMode.Edit)
+              ? () => {
+                  if (!photoActionsDisabled) {
+                    openTodayUpload(JournalUploadMode.Edit);
+                  }
+                }
               : undefined
           }
           onDismissInsight={(id) => dismissInsight.mutate(id)}
@@ -383,6 +378,7 @@ export default function JournalPage() {
             reactionEntry.analysis_observations.reaction_signals.indicators
           }
           date={reactionEntry.entry_date}
+          simplifyDisabled={aiActionsDisabled}
           onSimplify={handleSimplify}
           onKeep={() => setDismissedReactionEntryId(reactionEntry.id)}
         />

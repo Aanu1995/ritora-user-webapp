@@ -53,40 +53,41 @@ export function DatePicker({
   const resolvedPlaceholder = placeholder ?? t('placeholder');
   const displayValue = formatLocalizedDate(value, locale);
 
+  const showClear = allowClear && Boolean(selected) && !disabled;
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          disabled={disabled}
-          aria-label={ariaLabel ?? resolvedPlaceholder}
-          className={cn(
-            'inline-flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-surface px-3 text-left text-sm transition hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong disabled:opacity-60',
-            !selected && 'text-muted',
-            className,
-          )}
-        >
-          <span className="inline-flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4 text-muted" />
-            <span>{displayValue ?? resolvedPlaceholder}</span>
-          </span>
-          {allowClear && selected ? (
-            <span
-              role="button"
-              tabIndex={-1}
-              aria-label={t('clear')}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onChange('');
-              }}
-              className="inline-flex h-5 w-5 items-center justify-center rounded-full text-muted hover:bg-surface hover:text-danger"
-            >
-              <X className="h-3 w-3" />
-            </span>
-          ) : null}
-        </button>
-      </PopoverTrigger>
+      <div className={cn('relative w-full', className)}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            disabled={disabled}
+            aria-label={ariaLabel ?? resolvedPlaceholder}
+            className={cn(
+              'inline-flex h-11 w-full items-center gap-2 rounded-xl border border-border bg-surface text-left text-sm transition hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong disabled:opacity-60',
+              showClear ? 'pl-3 pr-10' : 'px-3',
+              !selected && 'text-muted',
+            )}
+          >
+            <CalendarIcon className="h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
+            <span className="truncate">{displayValue ?? resolvedPlaceholder}</span>
+          </button>
+        </PopoverTrigger>
+        {showClear ? (
+          <button
+            type="button"
+            aria-label={t('clear')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onChange('');
+            }}
+            className="absolute right-2 top-1/2 inline-flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full text-muted transition hover:bg-surface-muted hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong"
+          >
+            <X className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
+        ) : null}
+      </div>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="single"

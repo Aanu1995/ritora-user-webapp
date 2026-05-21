@@ -41,6 +41,7 @@ import { type SectionProps } from "@/components/settings/notification-form-contr
 export function BrowserPushSection({
   values,
   isSaving,
+  controlsDisabled,
   form,
   t,
   persistPatch,
@@ -63,6 +64,7 @@ export function BrowserPushSection({
   >(null);
   const [isWorking, setIsWorking] = useState(false);
   const busy = isSaving || isWorking || revokingSubscriptionId !== null;
+  const controlsBusy = controlsDisabled || busy;
   const deviceBusy = isLoadingDevices || revokingSubscriptionId !== null;
 
   const refreshDevices = async () => {
@@ -122,6 +124,10 @@ export function BrowserPushSection({
   };
 
   const persistChannels = async (enabled: boolean) => {
+    if (controlsDisabled) {
+      return null;
+    }
+
     const { nextValues, patch } = buildPushChannelPatch(values, enabled);
     applyChannelPatchToForm(form.setFieldValue, patch);
     const savedPreferences = await persistPatch(nextValues, patch);
@@ -143,6 +149,10 @@ export function BrowserPushSection({
   };
 
   const removeSubscription = async (subscription: PushSubscriptionSummary) => {
+    if (controlsDisabled) {
+      return;
+    }
+
     setRevokingSubscriptionId(subscription.id);
     try {
       const current = await getCurrentBrowserPushSubscription().catch(
@@ -175,6 +185,10 @@ export function BrowserPushSection({
   };
 
   const enablePush = async () => {
+    if (controlsDisabled) {
+      return;
+    }
+
     setIsWorking(true);
     try {
       const publicKey = await getPushPublicKey();
@@ -198,6 +212,10 @@ export function BrowserPushSection({
   };
 
   const disablePush = async () => {
+    if (controlsDisabled) {
+      return;
+    }
+
     setIsWorking(true);
     try {
       await revokeCurrentBrowserPushSubscription();
@@ -263,7 +281,7 @@ export function BrowserPushSection({
         <Switch
           aria-label={t("browserPushTitle")}
           checked={pushEnabled}
-          disabled={busy || (!pushEnabled && support !== "supported")}
+          disabled={controlsBusy || (!pushEnabled && support !== "supported")}
           onCheckedChange={(checked) => {
             if (checked) {
               void enablePush();
@@ -280,7 +298,7 @@ export function BrowserPushSection({
             type="button"
             variant="outline"
             size="sm"
-            disabled={busy}
+            disabled={controlsBusy}
             onClick={() => void enablePush()}
           >
             {t("browserPushConnect")}
@@ -353,7 +371,7 @@ export function BrowserPushSection({
                     type="button"
                     variant="outline"
                     size="sm"
-                    disabled={busy}
+                    disabled={controlsBusy}
                     onClick={() => void removeSubscription(subscription)}
                     className="border-danger text-danger hover:bg-danger/5 hover:text-danger"
                   >

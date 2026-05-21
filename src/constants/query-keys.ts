@@ -13,6 +13,7 @@ export enum QueryKey {
   IngredientsAnalysis = "ingredients-analysis",
   ProductCheck = "product-check",
   ProductCompare = "product-compare",
+  AppCapabilities = "app-capabilities",
   AppNavBadges = "app-nav-badges",
   SkinJournalToday = "skin-journal-today",
   SkinJournalCalendar = "skin-journal-calendar",

@@ -27,7 +27,9 @@ interface InsightsPanelProps {
   insightsWindow: InsightWindow;
   onInsightsWindowChange: (window: InsightWindow) => void;
   onRefreshInsights: () => void;
+  refreshInsightsDisabled?: boolean;
   isRefreshingInsights: boolean;
+  photoActionsDisabled?: boolean;
   onOpenUpload?: () => void;
   onOpenCompare: (fromDate?: string, toDate?: string) => void;
   onOpenExport: () => void;
@@ -62,7 +64,9 @@ export function InsightsPanel({
   insightsWindow,
   onInsightsWindowChange,
   onRefreshInsights,
+  refreshInsightsDisabled = false,
   isRefreshingInsights,
+  photoActionsDisabled = false,
   onOpenUpload,
   onOpenCompare,
   onOpenExport,
@@ -83,7 +87,14 @@ export function InsightsPanel({
       insight.id !== aiSummary?.id,
   );
 
+  const isActionDisabled = (action: InsightAction) =>
+    action.kind === "open_today_upload" && photoActionsDisabled;
+
   const handleAction = (insightId: string, action: InsightAction) => {
+    if (isActionDisabled(action)) {
+      return;
+    }
+
     onRecordInsightAction?.(insightId, action);
     if (action.kind === "open_export") {
       onOpenExport();
@@ -148,7 +159,7 @@ export function InsightsPanel({
               variant="outline"
               size="sm"
               onClick={onRefreshInsights}
-              disabled={isRefreshingInsights}
+              disabled={isRefreshingInsights || refreshInsightsDisabled}
             >
               {isRefreshingInsights
                 ? tInsights("refreshing")
@@ -178,6 +189,7 @@ export function InsightsPanel({
           <InsightCard
             key={insight.id}
             insight={insight}
+            isActionDisabled={isActionDisabled}
             onAction={(action) => handleAction(insight.id, action)}
             onDismiss={() => onDismissInsight(insight.id)}
           />
@@ -185,6 +197,7 @@ export function InsightsPanel({
         {aiSummary ? (
           <InsightCard
             insight={aiSummary}
+            isActionDisabled={isActionDisabled}
             onAction={(action) => handleAction(aiSummary.id, action)}
             onDismiss={() => onDismissInsight(aiSummary.id)}
           />
@@ -193,6 +206,7 @@ export function InsightsPanel({
           <InsightCard
             key={insight.id}
             insight={insight}
+            isActionDisabled={isActionDisabled}
             onAction={(action) => handleAction(insight.id, action)}
             onDismiss={() => onDismissInsight(insight.id)}
           />

@@ -22,13 +22,18 @@ import {
 import { ProductCategory } from '@/types/shelf';
 
 type Props = {
+  disabled?: boolean;
   isPending: boolean;
   onCheck: (input: ProductCheckProductInput) => void;
 };
 
 const CATEGORY_OPTIONS = Object.values(ProductCategory);
 
-export function IngredientPastePanel({ isPending, onCheck }: Props) {
+export function IngredientPastePanel({
+  disabled = false,
+  isPending,
+  onCheck,
+}: Props) {
   const t = useTranslations('checkProduct.paste');
   const tCategories = useTranslations('checkProduct.categories');
   const fieldId = useId();
@@ -43,6 +48,7 @@ export function IngredientPastePanel({ isPending, onCheck }: Props) {
     brand.trim().length > 0 &&
     name.trim().length > 0 &&
     parsedIngredients.length > 0 &&
+    !disabled &&
     !isPending;
 
   return (

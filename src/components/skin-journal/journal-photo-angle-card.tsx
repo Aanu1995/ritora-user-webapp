@@ -19,6 +19,7 @@ import type { JournalPhotoValidationMessage } from "./journal-photo-upload-valid
 
 interface JournalPhotoAngleCardProps {
   angle: Angle;
+  disabled?: boolean;
   selectedPhoto: File | null;
   previewUrl: string | null;
   existingPhoto?: JournalEntryPhoto;
@@ -40,6 +41,7 @@ function formatMegabytes(size: number): string {
 
 export function JournalPhotoAngleCard({
   angle,
+  disabled = false,
   selectedPhoto,
   previewUrl,
   existingPhoto,
@@ -71,6 +73,7 @@ export function JournalPhotoAngleCard({
         type="file"
         accept={ACCEPTED_IMAGE_TYPES}
         data-angle={angle}
+        disabled={disabled}
         className="hidden"
         onChange={(event) => {
           const nextFile = event.target.files?.[0];
@@ -94,6 +97,7 @@ export function JournalPhotoAngleCard({
                 variant="outline"
                 size="sm"
                 onClick={onChoosePhoto}
+                disabled={disabled}
                 className="bg-surface/90 px-2 backdrop-blur"
                 type="button"
                 aria-label={t("replaceAngle", { angle: label })}
@@ -107,6 +111,7 @@ export function JournalPhotoAngleCard({
                   size="sm"
                   className="bg-surface/90 px-2 backdrop-blur"
                   onClick={onCrop}
+                  disabled={disabled}
                   type="button"
                   aria-label={
                     isFront ? t("crop") : t("cropAngle", { angle: label })
@@ -146,8 +151,9 @@ export function JournalPhotoAngleCard({
       ) : (
         <button
           type="button"
+          disabled={disabled}
           onClick={onChoosePhoto}
-          className="group mx-auto flex aspect-square w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[color:var(--border-strong)] bg-accent-soft/30 p-4 text-center transition hover:border-accent hover:bg-accent-soft/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+          className="group mx-auto flex aspect-square w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[color:var(--border-strong)] bg-accent-soft/30 p-4 text-center transition hover:border-accent hover:bg-accent-soft/60 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:border-[color:var(--border-strong)] disabled:hover:bg-accent-soft/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
         >
           <div
             aria-hidden

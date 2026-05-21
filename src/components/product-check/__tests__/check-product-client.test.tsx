@@ -36,6 +36,7 @@ const mockCheckMutate = jest.fn();
 const mockCompareMutate = jest.fn();
 const mockExtractMutate = jest.fn();
 const mockToastError = jest.fn();
+let capabilityOverrides: Partial<Record<string, boolean>> = {};
 
 let checkPending = false;
 let comparePending = false;
@@ -84,11 +85,35 @@ jest.mock("@/hooks/use-shelf", () => ({
   }),
 }));
 
+jest.mock("@/hooks/use-user-capabilities", () => ({
+  useUserCapabilities: () => {
+    const enabled = (key: string) => capabilityOverrides[key] ?? true;
+    const access = (key: string) => ({
+      enabled: enabled(key),
+      blockedBy: enabled(key) ? null : "user_restriction",
+      expiresAt: null,
+      message: null,
+    });
+
+    return {
+      accountCreation: access("accountCreation"),
+      aiGeneration: access("aiGeneration"),
+      imageUpload: access("imageUpload"),
+      productExtraction: access("productExtraction"),
+      notifications: access("notifications"),
+      supportContact: access("supportContact"),
+    };
+  },
+  isCapabilityDisabled: (access: { enabled?: boolean } | null | undefined) =>
+    access?.enabled === false,
+}));
+
 beforeEach(() => {
   jest.clearAllMocks();
   checkPending = false;
   comparePending = false;
   shelfProducts = [];
+  capabilityOverrides = {};
 });
 
 function createDraft(): ShelfProductDraft {
@@ -445,6 +470,30 @@ describe("CheckProductClient", () => {
     ).toBeDisabled();
   });
 
+  it("disables quick checks when AI generation is unavailable", async () => {
+    const user = userEvent.setup();
+    capabilityOverrides = { aiGeneration: false };
+
+    renderWithProviders(<CheckProductClient />);
+
+    fireEvent.change(screen.getByLabelText(/^brand$/i), {
+      target: { value: "Ritora Lab" },
+    });
+    fireEvent.change(screen.getByLabelText(/product name/i), {
+      target: { value: "Barrier Serum" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/paste inci ingredients/i), {
+      target: { value: "Aqua, Niacinamide" },
+    });
+
+    expect(
+      screen.queryByText(/temporarily unavailable/i),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /quick check/i })).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: /quick check/i }));
+    expect(mockCheckMutate).not.toHaveBeenCalled();
+  });
+
   it("checks extracted label photos and stays verdict-only", async () => {
     const user = userEvent.setup();
     mockExtractMutate.mockImplementation((_payload, options) => {
@@ -499,6 +548,19 @@ describe("CheckProductClient", () => {
     expect(
       screen.queryByRole("button", { name: /add to shelf/i }),
     ).not.toBeInTheDocument();
+  });
+
+  it("disables photo extraction when image upload is unavailable", async () => {
+    const user = userEvent.setup();
+    capabilityOverrides = { imageUpload: false };
+
+    renderWithProviders(<CheckProductClient />);
+
+    await user.click(screen.getByRole("tab", { name: /photos/i }));
+
+    expect(screen.getByLabelText(/^add photo$/i)).toBeDisabled();
+    expect(screen.getByRole("button", { name: /quick check/i })).toBeDisabled();
+    expect(mockExtractMutate).not.toHaveBeenCalled();
   });
 
   it("stops photo checks when extraction misses required product data", async () => {

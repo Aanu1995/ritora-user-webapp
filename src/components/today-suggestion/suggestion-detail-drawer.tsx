@@ -36,6 +36,10 @@ import {
 } from "@/components/today-suggestion/suggestion-detail-copy";
 import { buildEnvironmentRows } from "@/components/today-suggestion/suggestion-detail-environment";
 import { useRegenerateSuggestion } from "@/hooks/use-suggestions";
+import {
+  isCapabilityDisabled,
+  useUserCapabilities,
+} from "@/hooks/use-user-capabilities";
 import { formatIsoTime12h, formatSlotTime12h } from "@/lib/suggestion-daypart";
 import type { SuggestionInstance } from "@/types/suggestions";
 
@@ -58,6 +62,8 @@ export function SuggestionDetailDrawer({
 }: Props) {
   const t = useTranslations("todaysSuggestion.detailDrawer");
   const regenerate = useRegenerateSuggestion();
+  const capabilities = useUserCapabilities();
+  const isAiDisabled = isCapabilityDisabled(capabilities.aiGeneration);
 
   if (!suggestion) return null;
 
@@ -279,13 +285,17 @@ export function SuggestionDetailDrawer({
               {allowRegeneration ? (
                 <Button
                   variant="outline"
-                  onClick={() =>
+                  onClick={() => {
+                    if (isAiDisabled) {
+                      return;
+                    }
+
                     regenerate.mutate({
                       id: suggestion.id,
                       payload: { reason: "user_requested" },
-                    })
-                  }
-                  disabled={regenerate.isPending}
+                    });
+                  }}
+                  disabled={regenerate.isPending || isAiDisabled}
                   className="w-full font-medium shadow-none"
                 >
                   {regenerate.isPending ? (

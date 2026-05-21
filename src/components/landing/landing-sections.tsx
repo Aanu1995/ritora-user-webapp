@@ -15,6 +15,7 @@ import {
   MapPin,
   MessageCircle,
   Plus,
+  ScanSearch,
   Moon,
   Package,
   ScanFace,
@@ -510,6 +511,7 @@ function FeatureBand({ feature, reverse }: { feature: FeatureItem; reverse: bool
           {feature.key === 'ingredients' && <ConflictCard />}
           {feature.key === 'suggestions' && <TimelineCard />}
           {feature.key === 'journal' && <JournalCard />}
+          {feature.key === 'quickCheck' && <QuickCheckCard />}
           {feature.key === 'smartPicks' && <SmartPicksCard />}
           {feature.key === 'climate' && <ClimateCard />}
         </div>
@@ -1360,6 +1362,113 @@ function JournalCard() {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function QuickCheckCard() {
+  return (
+    <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
+      <header className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <p className="font-display text-[15px] font-bold text-foreground">
+            Quick Check
+          </p>
+          <p className="text-[11.5px] text-muted">Verdict in seconds</p>
+        </div>
+        <span
+          className="inline-grid h-8 w-8 place-items-center rounded-lg text-background"
+          style={{
+            background: 'linear-gradient(140deg, var(--accent), var(--accent-strong))',
+          }}
+        >
+          <ScanSearch className="h-4 w-4" aria-hidden="true" />
+        </span>
+      </header>
+
+      <div className="mb-4 flex items-center gap-3 rounded-2xl border border-border bg-surface-muted p-3">
+        <div className="h-[52px] w-10 shrink-0">
+          <ProductBottle shape="dropper" tone="cream" brand="The Lab" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[9.5px] font-bold uppercase tracking-wider text-muted">
+            The Lab Co
+          </p>
+          <p className="mt-0.5 text-[13px] font-semibold leading-tight text-foreground">
+            Brightening Serum 10%
+          </p>
+          <p className="mt-1 text-[11px] text-muted">12 ingredients detected</p>
+        </div>
+      </div>
+
+      <div
+        className="mb-3 flex items-center justify-between gap-3 rounded-2xl border p-3"
+        style={{
+          borderColor: 'rgba(184, 84, 10, 0.32)',
+          background: 'var(--warning-soft)',
+        }}
+      >
+        <div className="flex items-center gap-2.5">
+          <span
+            className="inline-grid h-9 w-9 shrink-0 place-items-center rounded-xl"
+            style={{
+              background: 'rgba(184, 84, 10, 0.18)',
+              color: 'var(--warning)',
+            }}
+          >
+            <AlertTriangle className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <div>
+            <p
+              className="text-[10px] font-bold uppercase tracking-wider"
+              style={{ color: 'var(--warning)' }}
+            >
+              Product verdict
+            </p>
+            <p
+              className="mt-0.5 text-[14px] font-bold"
+              style={{ color: 'var(--note-warm-fg)' }}
+            >
+              Good with limits
+            </p>
+          </div>
+        </div>
+        <span
+          className="rounded-full bg-surface px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted"
+          style={{ borderColor: 'rgba(184, 84, 10, 0.32)' }}
+        >
+          High confidence
+        </span>
+      </div>
+
+      <div className="mb-3">
+        <Reading label="Safety" pct={64} tone="mid" score="64%" />
+      </div>
+
+      <div className="mb-4 flex flex-wrap gap-1.5">
+        <span
+          className="inline-flex items-center gap-1 rounded-full border bg-surface px-2 py-1 text-[10.5px] font-medium"
+          style={{
+            borderColor: 'rgba(184, 84, 10, 0.32)',
+            color: 'var(--warning)',
+          }}
+        >
+          <AlertTriangle className="h-2.5 w-2.5" aria-hidden="true" />
+          Stacks with your evening retinol
+        </span>
+        <span className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-2 py-1 text-[10.5px] font-medium text-muted">
+          <Check className="h-2.5 w-2.5 text-accent" aria-hidden="true" />
+          Niacinamide friendly
+        </span>
+      </div>
+
+      <button
+        type="button"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-accent bg-accent-soft px-3 py-2 text-[12.5px] font-semibold text-accent-strong"
+      >
+        <Package className="h-3.5 w-3.5" aria-hidden="true" />
+        Compare with your Shelf
+      </button>
     </div>
   );
 }

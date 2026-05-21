@@ -30,6 +30,8 @@ interface DayDetailPanelProps {
   isToday?: boolean;
   onAddPhoto?: () => void;
   onEditEntry?: (entry: JournalEntry) => void;
+  photoActionsDisabled?: boolean;
+  retryAnalysisDisabled?: boolean;
   onRetryAnalysis?: (entry: JournalEntry) => void;
   onReplacePhoto?: (entry: JournalEntry) => void;
 }
@@ -81,6 +83,8 @@ export function DayDetailPanel({
   isToday,
   onAddPhoto,
   onEditEntry,
+  photoActionsDisabled = false,
+  retryAnalysisDisabled = false,
   onRetryAnalysis,
   onReplacePhoto,
 }: DayDetailPanelProps) {
@@ -127,7 +131,11 @@ export function DayDetailPanel({
             {canModifyEntry ? t("noEntryBody") : t("lockedNoEntryBody")}
           </p>
           {canModifyEntry && onAddPhoto ? (
-            <Button className="mt-4" onClick={onAddPhoto}>
+            <Button
+              className="mt-4"
+              disabled={photoActionsDisabled}
+              onClick={onAddPhoto}
+            >
               {t("addPhoto")}
             </Button>
           ) : null}
@@ -219,7 +227,11 @@ export function DayDetailPanel({
           <p className="mt-2 text-sm font-semibold">{t("noPhotoTitle")}</p>
           <p className="mt-1 text-sm text-muted">{t("noPhotoBody")}</p>
           {canModifyEntry && onReplacePhoto ? (
-            <Button className="mt-4" onClick={() => onReplacePhoto(entry)}>
+            <Button
+              className="mt-4"
+              disabled={photoActionsDisabled}
+              onClick={() => onReplacePhoto(entry)}
+            >
               {t("addPhotoForDay")}
             </Button>
           ) : null}
@@ -251,6 +263,7 @@ export function DayDetailPanel({
               <Button
                 variant="outline"
                 size="sm"
+                disabled={retryAnalysisDisabled}
                 onClick={() => onRetryAnalysis(entry)}
               >
                 <RotateCcw className="h-3.5 w-3.5" />

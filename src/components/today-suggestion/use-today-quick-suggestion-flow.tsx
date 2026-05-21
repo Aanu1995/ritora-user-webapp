@@ -15,7 +15,13 @@ import { useOnDemandDialogState } from "./use-on-demand-dialog-state";
 
 const AI_CONSENT_ERROR_TEXT = "ai suggestion consent";
 
-export function useTodayQuickSuggestionFlow() {
+type TodayQuickSuggestionFlowOptions = {
+  disabled?: boolean;
+};
+
+export function useTodayQuickSuggestionFlow({
+  disabled = false,
+}: TodayQuickSuggestionFlowOptions = {}) {
   const t = useTranslations("todaysSuggestion.page");
   const quickSuggestion = useOnDemandDialogState();
   const createOnDemandSuggestion = useCreateOnDemandSuggestion();
@@ -25,6 +31,10 @@ export function useTodayQuickSuggestionFlow() {
   const aiConsentMissing = aiConsent.data?.granted === false;
 
   const openQuickSuggestion = () => {
+    if (disabled) {
+      return;
+    }
+
     if (aiConsent.data?.granted) {
       quickSuggestion.openDialog();
       return;
@@ -33,6 +43,10 @@ export function useTodayQuickSuggestionFlow() {
   };
 
   const grantAiConsent = (onSuccess: () => void) => {
+    if (disabled) {
+      return;
+    }
+
     updateAiConsent.mutate(
       { granted: true },
       {
@@ -53,6 +67,7 @@ export function useTodayQuickSuggestionFlow() {
         open={consentOpen}
         pending={updateAiConsent.isPending}
         onOpenChange={setConsentOpen}
+        disabled={disabled}
         onGrant={() =>
           grantAiConsent(() => {
             setConsentOpen(false);
@@ -65,7 +80,12 @@ export function useTodayQuickSuggestionFlow() {
         isSubmitting={createOnDemandSuggestion.isPending}
         requestId={quickSuggestion.requestId}
         onOpenChange={quickSuggestion.handleOpenChange}
+        disabled={disabled}
         onSubmit={(payload) => {
+          if (disabled) {
+            return;
+          }
+
           createOnDemandSuggestion.mutate(payload, {
             onSuccess: () => {
               quickSuggestion.closeDialog();

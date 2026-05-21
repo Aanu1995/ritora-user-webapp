@@ -10,6 +10,7 @@ import { useMarkNotificationRead } from "@/hooks/use-notifications";
 import type { InAppNotification, NotificationKind } from "@/types/notifications";
 
 interface NotificationRowProps {
+  actionsDisabled?: boolean;
   notification: InAppNotification;
   nowMs: number | null;
 }
@@ -180,7 +181,11 @@ function formatDateLabel(value: string | null, locale: string): string | null {
   return formatLocalizedDate(value, locale);
 }
 
-export function NotificationRow({ notification, nowMs }: NotificationRowProps) {
+export function NotificationRow({
+  actionsDisabled = false,
+  notification,
+  nowMs,
+}: NotificationRowProps) {
   const locale = useLocale();
   const t = useTranslations("notificationsPage");
   const tKind = useTranslations(`notificationsPage.kinds.${notification.kind}`);
@@ -218,6 +223,10 @@ export function NotificationRow({ notification, nowMs }: NotificationRowProps) {
         : tKind("body");
 
   const handleClick = () => {
+    if (actionsDisabled) {
+      return;
+    }
+
     if (!notification.read_at) {
       markRead.mutate(notification.id);
     }
@@ -260,7 +269,7 @@ export function NotificationRow({ notification, nowMs }: NotificationRowProps) {
         <Button
           variant="outline"
           size="sm"
-          disabled={markRead.isPending}
+          disabled={markRead.isPending || actionsDisabled}
           onClick={handleClick}
           className="shrink-0"
         >

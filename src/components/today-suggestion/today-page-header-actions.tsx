@@ -8,6 +8,7 @@ import type { RoutineBreak } from "@/types/suggestions";
 
 type Props = {
   hasData: boolean;
+  quickSuggestionDisabled?: boolean;
   routineBreak: RoutineBreak | null | undefined;
   onQuickSuggestion: () => void;
   onStartBreak: () => void;
@@ -15,6 +16,7 @@ type Props = {
 
 export function TodayPageHeaderActions({
   hasData,
+  quickSuggestionDisabled = false,
   routineBreak,
   onQuickSuggestion,
   onStartBreak,
@@ -27,6 +29,7 @@ export function TodayPageHeaderActions({
           type="button"
           size="sm"
           aria-label={t("quickSuggestion")}
+          disabled={quickSuggestionDisabled}
           onClick={onQuickSuggestion}
           className="w-7 px-0 sm:w-auto sm:px-4"
         >

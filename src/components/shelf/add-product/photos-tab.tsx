@@ -11,11 +11,13 @@ import {
   type PhotoItem,
   type PhotosHelperState,
 } from "./photos-tab-sections";
+import { useRefreshUserCapabilitiesOnRestriction } from "@/hooks/use-refresh-user-capabilities";
 import { useExtractProductFromImages } from "@/hooks/use-shelf";
 import { getApiErrorStatus } from "@/lib/api-error";
 import { LookupWarningCode, type ResolvedLookup } from "@/types/shelf";
 
 type Props = {
+  disabled?: boolean;
   onPhotosChange?: () => void;
   onProductPhotoChange?: (file: File | null) => void;
   onResolved: (resolved: ResolvedLookup) => void;
@@ -93,6 +95,7 @@ function isServiceUnavailableError(error: unknown): boolean {
 }
 
 export function PhotosTab({
+  disabled = false,
   onPhotosChange,
   onProductPhotoChange,
   onResolved,
@@ -105,6 +108,8 @@ export function PhotosTab({
   const labelPhotosRef = useRef<PhotoItem[]>([]);
   const isMountedRef = useRef(true);
   const extractProductFromImages = useExtractProductFromImages();
+  const refreshCapabilitiesOnRestriction =
+    useRefreshUserCapabilitiesOnRestriction();
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -118,8 +123,8 @@ export function PhotosTab({
     };
   }, []);
 
-  const canAddLabelPhoto = labelPhotos.length < MAX_LABEL_PHOTOS;
-  const canExtract = productPhoto !== null && labelPhotos.length >= 1;
+  const canAddLabelPhoto = labelPhotos.length < MAX_LABEL_PHOTOS && !disabled;
+  const canExtract = productPhoto !== null && labelPhotos.length >= 1 && !disabled;
 
   const helperKey = useMemo(
     () =>
@@ -133,7 +138,7 @@ export function PhotosTab({
   );
 
   const handleSetProductPhoto = (file: File | null) => {
-    if (!file) {
+    if (disabled || !file) {
       return;
     }
 
@@ -156,7 +161,7 @@ export function PhotosTab({
   };
 
   const handleAddLabelPhotos = (files: FileList | readonly File[] | null) => {
-    if (!canAddLabelPhoto) {
+    if (!canAddLabelPhoto || disabled) {
       return;
     }
 
@@ -199,7 +204,7 @@ export function PhotosTab({
   };
 
   const handleExtract = () => {
-    if (!canExtract || !productPhoto) {
+    if (!canExtract || disabled || !productPhoto) {
       return;
     }
 
@@ -232,6 +237,11 @@ export function PhotosTab({
           if (!isMountedRef.current) {
             return;
           }
+          if (refreshCapabilitiesOnRestriction(error)) {
+            setState("error");
+            return;
+          }
+
           const isServiceDown = isServiceUnavailableError(error);
           setState(isServiceDown ? "serviceUnavailable" : "error");
           toast.error(
@@ -251,6 +261,7 @@ export function PhotosTab({
     <div className="flex flex-col gap-5">
       <div className="grid gap-5 lg:grid-cols-[minmax(0,22rem)_1fr]">
         <ProductPhotoSection
+          disabled={disabled}
           photo={productPhoto}
           onPhotoSelected={handleSetProductPhoto}
           onRemove={handleRemoveProductPhoto}
@@ -258,6 +269,7 @@ export function PhotosTab({
         <LabelPhotosSection
           photos={labelPhotos}
           canAddPhoto={canAddLabelPhoto}
+          disabled={disabled}
           onFilesSelected={handleAddLabelPhotos}
           onRemovePhoto={handleRemoveLabelPhoto}
         />

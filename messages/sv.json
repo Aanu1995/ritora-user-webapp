@@ -64,7 +64,7 @@
       "badge": "Hyllbaserat beslutsstöd för hudvård",
       "headlineLead": "Bygg tryggare hudvårdsrutiner med",
       "headlineAccent": "produkterna du redan äger.",
-      "lead": "Ritora läser din hylla, fångar ingredienskrockar och ger dig en lugn morgon-, middags- och kvällsplan anpassad till din hud. Ingen shopping behövs.",
+      "lead": "Ritora fångar ingredienskrockar i produkterna du redan äger och bygger en lugn morgon-, middags- och kvällsplan anpassad till din hud. Ingen shopping behövs.",
       "ctaPrimary": "Skapa ditt konto",
       "ctaSecondary": "Så fungerar det",
       "imageAlt": "Dagens förslag-kort i appen med morgonrutin och förhandsvisning av huddagboken.",
@@ -174,7 +174,18 @@
           "bullets": [
             "Flervinklad fotografering med privat, krypterad lagring",
             "Reaktionsdetektering pausar automatiskt riskfyllda aktiva ingredienser",
-            "Jämför två datum. Exportera en hudläkarrapport."
+            "Jämför två datum. Exportera en hudläkarrapport.",
+            "Månatlig Skin Wrapped: en privat återblick från dina foton"
+          ]
+        },
+        {
+          "key": "quickCheck",
+          "eyebrow": "Snabbkoll",
+          "title": "Granska vilken produkt som helst innan du köper eller använder den.",
+          "bullets": [
+            "Klistra in ingredienserna eller fota etiketten",
+            "Omdöme på några sekunder med säkerhetspoäng och tillförlitlighet",
+            "Jämför direkt mot produkterna på din hylla"
           ]
         },
         {

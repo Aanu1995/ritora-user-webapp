@@ -24,8 +24,11 @@ import { SMART_PICKS_PRODUCT_GENERATION_STATUS } from "@/types/smart-picks";
 
 const SMART_PICKS_PENDING_REFETCH_MS = 30_000;
 
-export function useSmartPicksOverview(mode?: SmartPicksMode) {
-  const isEnabled = useAuthEnabled();
+export function useSmartPicksOverview(
+  mode?: SmartPicksMode,
+  options?: { enabled?: boolean },
+) {
+  const isEnabled = useAuthEnabled(options?.enabled ?? true);
   return useQuery<SmartPicksOverview>({
     queryKey: [QueryKey.SmartPicksOverview, mode ?? "auto"],
     queryFn: () => getSmartPicksOverview(mode),

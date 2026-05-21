@@ -34,10 +34,12 @@ function parseNoticeDays(value: string): number | null {
 export function ProductExpiryAlertsSection({
   values,
   isSaving,
+  controlsDisabled,
   form,
   t,
   persistPatch,
 }: SectionProps) {
+  const disabled = isSaving || controlsDisabled;
   const savedNoticeDays = String(values.product_expiry_notice_days);
   const [draftNoticeDaysState, setDraftNoticeDaysState] = useState({
     source: savedNoticeDays,
@@ -79,6 +81,10 @@ export function ProductExpiryAlertsSection({
       return;
     }
 
+    if (controlsDisabled) {
+      return;
+    }
+
     form.setFieldValue("product_expiry_notice_days", parsedNoticeDays);
     setDraftNoticeDaysState({
       source: String(parsedNoticeDays),
@@ -111,7 +117,7 @@ export function ProductExpiryAlertsSection({
             <Switch
               aria-label={t("productExpiryAlertsTitle")}
               checked={values.product_expiry_alerts_enabled}
-              disabled={isSaving}
+              disabled={disabled}
               onCheckedChange={(checked) => {
                 field.handleChange(checked);
                 persistPatch(
@@ -128,11 +134,11 @@ export function ProductExpiryAlertsSection({
         fieldName="product_expiry_alert_channels"
         label={t("productExpiryAlertsTitle")}
         values={values}
-        isSaving={isSaving}
+        isSaving={disabled}
         form={form}
         t={t}
         persistPatch={persistPatch}
-        disabled={!values.product_expiry_alerts_enabled}
+        disabled={controlsDisabled || !values.product_expiry_alerts_enabled}
         allowedChannels={PRODUCT_EXPIRY_CHANNELS}
         pushDisabled={!values.channels.includes(NotificationChannelValue.Push)}
       />
@@ -154,7 +160,7 @@ export function ProductExpiryAlertsSection({
               max={PRODUCT_EXPIRY_NOTICE_DAYS_MAX}
               step={1}
               value={draftNoticeDays}
-              disabled={isSaving || !values.product_expiry_alerts_enabled}
+              disabled={disabled || !values.product_expiry_alerts_enabled}
               aria-invalid={noticeDaysInvalid}
               aria-describedby={`${field.name}-hint`}
               onChange={(event) => {

@@ -9,12 +9,14 @@ import type { TodaysSuggestionReactionAlert } from "@/types/suggestions";
 type Props = {
   alert: TodaysSuggestionReactionAlert;
   onResetToNormalRoutine?: () => void;
+  resetDisabled?: boolean;
   isResetting?: boolean;
 };
 
 export function ReactionBanner({
   alert,
   onResetToNormalRoutine,
+  resetDisabled = false,
   isResetting = false,
 }: Props) {
   const t = useTranslations("todaysSuggestion.reactionBanner");
@@ -84,7 +86,7 @@ export function ReactionBanner({
             <button
               type="button"
               onClick={onResetToNormalRoutine}
-              disabled={isResetting}
+              disabled={isResetting || resetDisabled}
               className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--border-strong)] bg-surface px-2.5 py-1 text-xs font-semibold text-foreground transition hover:bg-accent-soft hover:text-accent-strong"
             >
               {isResetting ? (

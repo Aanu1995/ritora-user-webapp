@@ -20,6 +20,7 @@ import type {
 
 interface InsightCardProps {
   insight: JournalInsight;
+  isActionDisabled?: (action: InsightAction) => boolean;
   onAction?: (action: InsightAction) => void;
   onDismiss?: () => void;
 }
@@ -43,6 +44,7 @@ function insightActionLabel(action: InsightAction): string {
 
 export function InsightCard({
   insight,
+  isActionDisabled,
   onAction,
   onDismiss,
 }: InsightCardProps) {
@@ -105,6 +107,7 @@ export function InsightCard({
             key={`${block.type}-${index}`}
             block={block}
             insight={insight}
+            isActionDisabled={isActionDisabled}
             onAction={onAction}
           />
         ))}
@@ -132,6 +135,7 @@ export function InsightCard({
               key={`${action.kind}-${insightActionLabel(action)}`}
               variant="outline"
               size="sm"
+              disabled={isActionDisabled?.(action) ?? false}
               onClick={() => onAction?.(action)}
             >
               {t(insightActionLabel(action))}
