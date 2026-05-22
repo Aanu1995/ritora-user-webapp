@@ -63,7 +63,7 @@ export function InsufficientDataState({
                     href={`${AppRoute.Shelf}/${productId}/edit`}
                     className="font-medium text-accent-strong hover:underline"
                   >
-                    → {label}
+                    {label}
                   </Link>
                 </li>
               );

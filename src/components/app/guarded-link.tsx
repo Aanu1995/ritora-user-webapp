@@ -3,6 +3,7 @@
 import Link, { type LinkProps } from 'next/link';
 import { useRouter } from 'next/navigation';
 import { forwardRef, type AnchorHTMLAttributes, type MouseEvent } from 'react';
+import { requestAppScrollRestore } from '@/lib/app-scroll-restoration';
 import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
 
 /**
@@ -15,7 +16,9 @@ import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
  */
 
 type GuardedLinkProps = LinkProps &
-  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps>;
+  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> & {
+    restoreScrollTo?: string;
+  };
 
 function isModifiedEvent(event: MouseEvent<HTMLAnchorElement>): boolean {
   return (
@@ -28,7 +31,7 @@ function isModifiedEvent(event: MouseEvent<HTMLAnchorElement>): boolean {
 }
 
 export const GuardedLink = forwardRef<HTMLAnchorElement, GuardedLinkProps>(
-  function GuardedLink({ onClick, href, ...props }, ref) {
+  function GuardedLink({ onClick, href, restoreScrollTo, ...props }, ref) {
     const router = useRouter();
 
     const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
@@ -38,11 +41,21 @@ export const GuardedLink = forwardRef<HTMLAnchorElement, GuardedLinkProps>(
 
       const { hasUnsavedChanges, requestLeave } =
         useUnsavedChangesStore.getState();
-      if (!hasUnsavedChanges) return;
+      if (!hasUnsavedChanges) {
+        if (restoreScrollTo) {
+          requestAppScrollRestore(restoreScrollTo);
+        }
+
+        return;
+      }
 
       event.preventDefault();
       // href can be a string or UrlObject; the router push accepts both.
       requestLeave(() => {
+        if (restoreScrollTo) {
+          requestAppScrollRestore(restoreScrollTo);
+        }
+
         router.push(typeof href === 'string' ? href : href.toString());
       });
     };

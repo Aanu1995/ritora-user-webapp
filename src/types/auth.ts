@@ -1,12 +1,35 @@
+export enum UserFeatureAccessBlockedBy {
+  UserRestriction = "user_restriction",
+  PlatformGlobalRestriction = "platform_global_restriction",
+}
+
+export type UserFeatureAccess = {
+  enabled: boolean;
+  blockedBy: UserFeatureAccessBlockedBy | null;
+  expiresAt: string | null;
+  message: string | null;
+};
+
+export type UserCapabilities = {
+  accountCreation: UserFeatureAccess;
+  aiGeneration: UserFeatureAccess;
+  imageUpload: UserFeatureAccess;
+  productExtraction: UserFeatureAccess;
+  notifications: UserFeatureAccess;
+  supportContact: UserFeatureAccess;
+};
+
 export type User = {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
   emailVerified: boolean;
+  hasPassword?: boolean;
   preferredLanguage: string;
   timeZone: string | null;
   createdAt: string;
+  capabilities?: UserCapabilities;
 };
 
 export type AuthResponse = {
@@ -15,9 +38,8 @@ export type AuthResponse = {
 };
 
 export type RegisterResponse = {
-  accessToken?: string;
-  user?: User;
-  message?: string;
+  message: string;
+  user: User;
 };
 
 export type RefreshResponse = {
@@ -34,6 +56,26 @@ export type Session = {
 
 export type MessageResponse = {
   message: string;
+};
+
+export enum AccountDeletionStatus {
+  Scheduled = 'scheduled',
+  ConfirmationRequired = 'confirmation_required',
+}
+
+export enum AccountDeletionTokenMode {
+  Confirm = 'confirm',
+  Cancel = 'cancel',
+}
+
+export type AccountDeletionInput = {
+  password: string;
+};
+
+export type AccountDeletionResponse = {
+  status: AccountDeletionStatus;
+  message: string;
+  scheduledFor?: string;
 };
 
 export type LoginInput = {

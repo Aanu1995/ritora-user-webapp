@@ -6,24 +6,35 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { ProductPageHeader } from '../product-page-header';
 import { ProductFormBody, type ProductFormValue } from '../product-form-body';
 import {
   buildShelfFieldErrors,
   type ShelfFieldMeta,
 } from '../form/product-form-errors';
+import {
+  getProductEditDefaultValues,
+  withIdentityImageUrl,
+  withUploadedImageUrl,
+} from './product-edit-form.utils';
 import { GuardedLink } from '@/components/app/guarded-link';
 import { Button } from '@/components/ui/button';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
 import { AppRoute } from '@/constants/app-routes';
 import { useFilePreviewSelection } from '@/hooks/use-file-preview-selection';
 import { useUnsavedChangesGuard } from '@/hooks/use-unsaved-changes-guard';
-import { useUpdateProduct, useUploadProductImage } from '@/hooks/use-shelf';
+import {
+  useUpdateProduct,
+  useUploadProductImage,
+  useUploadProductImageForProduct,
+} from '@/hooks/use-shelf';
 import { firstFieldError } from '@/lib/form-errors';
 import {
   clearSubmitErrors,
   executeMutation,
   readSubmissionErrorMessage,
 } from '@/lib/form-submission';
+import { getApiErrorMessage } from '@/lib/api-error';
 import {
   getShelfGuidanceValidationErrors,
   normalizeShelfProductForm,
@@ -36,38 +47,6 @@ type Props = {
   product: ShelfProduct;
 };
 
-function getDefaultValues(product: ShelfProduct): ProductFormValue {
-  return {
-    identity: product.identity,
-    guidance: product.guidance,
-    manufacturer: product.manufacturer,
-    userFields: product.userFields,
-  };
-}
-
-function withUploadedImageUrl<T extends { identity: { imageUrls: string[] } }>(
-  value: T,
-  imageUrl: string,
-): T {
-  return {
-    ...value,
-    identity: {
-      ...value.identity,
-      imageUrls: [imageUrl],
-    },
-  };
-}
-
-function withIdentityImageUrl<T extends { imageUrls: string[] }>(
-  value: T,
-  imageUrl: string,
-): T {
-  return {
-    ...value,
-    imageUrls: [imageUrl],
-  };
-}
-
 export function ProductEditForm({ product }: Props) {
   const t = useTranslations('shelf.edit');
   const tDetail = useTranslations('shelf.detail');
@@ -75,7 +54,11 @@ export function ProductEditForm({ product }: Props) {
   const router = useRouter();
   const updateProduct = useUpdateProduct();
   const uploadProductImage = useUploadProductImage();
+  const uploadProductImageForProduct = useUploadProductImageForProduct();
   const [isSaved, setIsSaved] = useState(false);
+  const [persistedPhotoUrl, setPersistedPhotoUrl] = useState(
+    product.identity.imageUrls[0] ?? null,
+  );
   const {
     selectedFile: selectedPhotoFile,
     previewUrl: selectedPhotoPreviewUrl,
@@ -85,7 +68,7 @@ export function ProductEditForm({ product }: Props) {
   } = useFilePreviewSelection();
 
   const form = useForm({
-    defaultValues: getDefaultValues(product),
+    defaultValues: getProductEditDefaultValues(product),
     canSubmitWhenInvalid: true,
     listeners: {
       onChange: ({ formApi }) => {
@@ -100,11 +83,12 @@ export function ProductEditForm({ product }: Props) {
 
         try {
           const uploadedImageUrl = await uploadPendingPhoto();
-          if (uploadedImageUrl) {
-            normalized = withUploadedImageUrl(normalized, uploadedImageUrl);
+          const imageUrl = uploadedImageUrl ?? persistedPhotoUrl;
+          if (imageUrl) {
+            normalized = withUploadedImageUrl(normalized, imageUrl);
           }
-        } catch {
-          return t('photo.uploadFailed');
+        } catch (error) {
+          return getApiErrorMessage(error) ?? t('photo.uploadFailed');
         }
 
         const result = await executeMutation(updateProduct.mutate, {
@@ -134,9 +118,11 @@ export function ProductEditForm({ product }: Props) {
 
   const setUploadedPhoto = (imageUrl: string) => {
     clearSubmitErrors(form);
+    const imageUrls = [imageUrl];
     form.setFieldValue('identity', (previous) =>
       withIdentityImageUrl(previous, imageUrl),
     );
+    form.setFieldValue('identity.imageUrls', imageUrls);
   };
 
   const uploadPendingPhoto = async (): Promise<string | null> => {
@@ -159,6 +145,17 @@ export function ProductEditForm({ product }: Props) {
     return uploaded.imageUrl;
   };
 
+  const resetPhotoOnlyDirtyState = (
+    imageUrl: string,
+    hadUnsavedFormChanges: boolean,
+  ) => {
+    if (hadUnsavedFormChanges) {
+      return;
+    }
+
+    form.reset(withUploadedImageUrl(form.state.values, imageUrl));
+  };
+
   const isFormDirty = useStore(form.store, (state) => state.isDirty);
   const hasUnsavedChanges = (isFormDirty || hasSelectedPhoto) && !isSaved;
 
@@ -173,6 +170,7 @@ export function ProductEditForm({ product }: Props) {
     form.setFieldValue('identity.description', nextIdentity.description);
     form.setFieldValue('identity.benefits', nextIdentity.benefits);
     form.setFieldValue('identity.suitedFor', nextIdentity.suitedFor);
+    form.setFieldValue('identity.imageUrls', nextIdentity.imageUrls);
     form.setFieldValue(
       'identity.inciIngredients',
       nextIdentity.inciIngredients,
@@ -202,15 +200,39 @@ export function ProductEditForm({ product }: Props) {
   };
 
   const uploadSelectedPhoto = async () => {
-    if (!hasSelectedPhoto) {
+    const photoFile = selectedPhotoFile;
+
+    if (!hasSelectedPhoto || !photoFile) {
       return;
     }
 
+    const hadUnsavedFormChanges = isFormDirty;
+
     try {
-      await uploadPendingPhoto();
+      const result = await executeMutation(uploadProductImageForProduct.mutate, {
+        id: product.id,
+        file: photoFile,
+      });
+
+      if (result.error !== null) {
+        throw result.error;
+      }
+
+      const uploadedImageUrl = result.data.identity.imageUrls[0] ?? null;
+
+      if (uploadedImageUrl) {
+        setUploadedPhoto(uploadedImageUrl);
+        clearSelectedPhoto();
+        setPersistedPhotoUrl(uploadedImageUrl);
+        resetPhotoOnlyDirtyState(uploadedImageUrl, hadUnsavedFormChanges);
+      } else {
+        toast.error(t('photo.uploadFailed'));
+        return;
+      }
+
       toast.success(t('photo.uploadSuccess'));
-    } catch {
-      toast.error(t('photo.uploadFailed'));
+    } catch (error) {
+      toast.error(getApiErrorMessage(error) ?? t('photo.uploadFailed'));
     }
   };
 
@@ -222,7 +244,7 @@ export function ProductEditForm({ product }: Props) {
         void form.handleSubmit();
       }}
       noValidate
-      className="relative pb-16"
+      className="relative"
     >
       <form.Subscribe
         selector={(state) => ({
@@ -266,41 +288,41 @@ export function ProductEditForm({ product }: Props) {
 
           return (
             <>
-              <div className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-                <div className="mx-auto flex max-w-5xl items-center gap-3">
+              <ProductPageHeader
+                leading={
                   <GuardedLink
                     href={`${AppRoute.Shelf}/${product.id}`}
+                    restoreScrollTo={`${AppRoute.Shelf}/${product.id}`}
                     aria-label={tDetail('backLink')}
-                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-surface-muted"
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-accent-soft"
                   >
                     <ArrowLeft className="h-4 w-4" />
                   </GuardedLink>
-                  <div className="min-w-0 flex-1">
-                    <h1 className="truncate text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                      {t('title')}
-                    </h1>
-                    <p className="mt-0.5 truncate text-xs text-muted sm:text-sm">
-                      {product.identity.brand} · {product.identity.name}
-                    </p>
-                  </div>
-                  <div className="shrink-0">
-                    <Button
-                      type="submit"
-                      size="sm"
-                      disabled={isSubmitting || uploadProductImage.isPending}
-                    >
-                      {isSubmitting ? (
-                        <LoadingIndicator label={t('saving')} />
-                      ) : (
-                        <>
-                          <span className="sm:hidden">{t('saveShort')}</span>
-                          <span className="hidden sm:inline">{t('save')}</span>
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </div>
+                }
+                title={t('title')}
+                subtitle={`${product.identity.brand} · ${product.identity.name}`}
+                actions={
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={
+                      isSubmitting ||
+                      uploadProductImage.isPending ||
+                      uploadProductImageForProduct.isPending ||
+                      updateProduct.isPending
+                    }
+                  >
+                    {isSubmitting ? (
+                      <LoadingIndicator label={t('saving')} />
+                    ) : (
+                      <>
+                        <span className="sm:hidden">{t('saveShort')}</span>
+                        <span className="hidden sm:inline">{t('save')}</span>
+                      </>
+                    )}
+                  </Button>
+                }
+              />
 
               <div className="mx-auto mt-6 max-w-5xl">
                 {formError ? (
@@ -323,7 +345,10 @@ export function ProductEditForm({ product }: Props) {
                   photoUpload={{
                     previewUrl: selectedPhotoPreviewUrl,
                     isPendingSelection: Boolean(selectedPhotoFile),
-                    isUploading: uploadProductImage.isPending,
+                    isUploading:
+                      uploadProductImage.isPending ||
+                      uploadProductImageForProduct.isPending ||
+                      updateProduct.isPending,
                     onSelectFile: handlePhotoSelection,
                     onUpload: () => {
                       void uploadSelectedPhoto();

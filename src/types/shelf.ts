@@ -84,10 +84,6 @@ export enum ShelfStatFilter {
 
 export enum DataProvenance {
   PhotoLookup = 'photo-lookup',
-  BarcodeLookup = 'barcode-lookup',
-  UrlFetch = 'url-fetch',
-  Catalogue = 'catalogue',
-  UserEntered = 'user-entered',
 }
 
 export enum CatalogueSource {
@@ -110,20 +106,6 @@ export enum LookupWarningCode {
   PartialData = 'partial-data',
   IngredientsUnverified = 'ingredients-unverified',
   GuidanceUnverified = 'guidance-unverified',
-}
-
-export enum BarcodeScannerStatus {
-  Inactive = 'inactive',
-  Starting = 'starting',
-  Scanning = 'scanning',
-  Detected = 'detected',
-  InsecureContext = 'insecure-context',
-  PolicyBlocked = 'policy-blocked',
-  Unsupported = 'unsupported',
-  PermissionDenied = 'permission-denied',
-  SystemBlocked = 'system-blocked',
-  Unavailable = 'unavailable',
-  Error = 'error',
 }
 
 export type CatalogueIdentity = {

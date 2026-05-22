@@ -7,7 +7,17 @@ import {
 } from '@tanstack/react-query';
 import { QueryKey } from '@/constants/query-keys';
 import { useAuthEnabled } from '@/hooks/use-auth-enabled';
-import * as scheduleService from '@/services/schedule.service';
+import {
+  applyEveryDayPreset,
+  createSlot,
+  createSlots,
+  deleteSlot,
+  getSchedule,
+  getTodaysSchedule,
+  moveSlot,
+  updateSlot,
+  upsertSteps,
+} from '@/services/schedule.service';
 import type {
   ApplyPresetPayload,
   CreateSlotPayload,
@@ -55,7 +65,7 @@ export function useSchedule() {
   const isEnabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.Schedule],
-    queryFn: () => scheduleService.getSchedule(),
+    queryFn: ({ signal }) => getSchedule({ signal }),
     enabled: isEnabled,
   });
 }
@@ -64,7 +74,7 @@ export function useTodaysSchedule() {
   const isEnabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.ScheduleToday],
-    queryFn: () => scheduleService.getTodaysSchedule(),
+    queryFn: ({ signal }) => getTodaysSchedule({ signal }),
     enabled: isEnabled,
     refetchOnWindowFocus: true,
   });
@@ -74,7 +84,7 @@ export function useCreateSlot() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateSlotPayload) =>
-      scheduleService.createSlot(payload),
+      createSlot(payload),
     onSuccess: (slot) => {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], (prev) =>
         replaceSlotInSchedule(prev, slot),
@@ -88,7 +98,7 @@ export function useCreateSlots() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateSlotsPayload) =>
-      scheduleService.createSlots(payload),
+      createSlots(payload),
     onSuccess: (schedule) => {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], schedule);
       invalidateTodaysScheduleQuery(queryClient);
@@ -100,7 +110,7 @@ export function useApplyPreset() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: ApplyPresetPayload) =>
-      scheduleService.applyEveryDayPreset(payload),
+      applyEveryDayPreset(payload),
     onSuccess: (schedule) => {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], schedule);
       invalidateTodaysScheduleQuery(queryClient);
@@ -112,7 +122,7 @@ export function useUpdateSlot() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateSlotPayload }) =>
-      scheduleService.updateSlot(id, payload),
+      updateSlot(id, payload),
     onSuccess: (slot) => {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], (prev) =>
         replaceSlotInSchedule(prev, slot),
@@ -125,7 +135,7 @@ export function useUpdateSlot() {
 export function useDeleteSlot() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => scheduleService.deleteSlot(id),
+    mutationFn: (id: string) => deleteSlot(id),
     onSuccess: (_data, id) => {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], (prev) =>
         removeSlotFromSchedule(prev, id),
@@ -144,7 +154,7 @@ export function useUpsertSteps() {
     }: {
       id: string;
       payload: UpsertRoutineStepsPayload;
-    }) => scheduleService.upsertSteps(id, payload),
+    }) => upsertSteps(id, payload),
     onSuccess: (slot) => {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], (prev) =>
         replaceSlotInSchedule(prev, slot),
@@ -158,7 +168,7 @@ export function useMoveSlot() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: MoveSlotPayload }) =>
-      scheduleService.moveSlot(id, payload),
+      moveSlot(id, payload),
     onSuccess: (slot) => {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], (prev) =>
         replaceSlotInSchedule(prev, slot),

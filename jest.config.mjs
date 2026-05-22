@@ -50,6 +50,7 @@ export default createJestConfig({
   ],
   coverageThreshold: {
     global: {
+      statements: 80,
       lines: 80,
       functions: 80,
     },

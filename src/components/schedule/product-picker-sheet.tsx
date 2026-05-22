@@ -16,11 +16,6 @@ type ProductPickerSheetProps = {
   onSelect: (product: RoutineStepProductSummary) => void;
 };
 
-/**
- * Mobile-only wrapper that presents the product picker as a bottom sheet.
- * On desktop the SchedulePage renders <ProductPickerContent /> inline in a
- * second right-hand split-pane column instead of using this component.
- */
 export function ProductPickerSheet({
   open,
   onOpenChange,

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import type { ComponentProps } from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
@@ -11,27 +11,28 @@ const buttonVariants = cva(
         default:
           'bg-foreground text-background shadow-soft hover:-translate-y-0.5 hover:opacity-95',
         outline:
-          'border border-border bg-background/80 text-foreground hover:border-accent hover:bg-surface',
+          'border border-[color:var(--border-strong)] bg-surface text-foreground hover:bg-accent-soft hover:text-accent-strong',
         secondary:
           'bg-accent-soft text-accent-strong hover:bg-accent-soft/80',
         ghost: 'text-foreground hover:bg-accent/5',
         link: 'rounded-none px-0 py-0 text-accent-strong shadow-none hover:underline',
       },
       size: {
-        default: 'h-12 px-6 py-3',
-        sm: 'h-9 px-3 text-xs',
-        lg: 'h-14 px-8 text-base',
-        icon: 'h-10 w-10',
+        sm: 'h-7 px-2.5 text-[11px] sm:h-9 sm:px-4 sm:text-sm',
+        md: 'h-9 px-3.5 text-xs sm:h-11 sm:px-5 sm:text-sm',
+        lg: 'h-10 px-4 text-sm sm:h-[3.25rem] sm:px-7 sm:text-base',
+        xl: 'h-11 px-5 text-sm sm:h-[3.75rem] sm:px-9 sm:text-base',
+        icon: 'h-9 w-9 sm:h-11 sm:w-11',
       },
     },
     defaultVariants: {
       variant: 'default',
-      size: 'default',
+      size: 'md',
     },
   },
 );
 
-type ButtonProps = React.ComponentProps<'button'> &
+type ButtonProps = ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
   };

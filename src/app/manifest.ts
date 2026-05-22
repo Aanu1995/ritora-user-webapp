@@ -1,11 +1,14 @@
 import type { MetadataRoute } from "next";
+import { getTranslations } from "next-intl/server";
 import { siteConfig } from "@/lib/site";
 
-export default function manifest(): MetadataRoute.Manifest {
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const t = await getTranslations("site");
+
   return {
     name: siteConfig.name,
     short_name: siteConfig.name,
-    description: siteConfig.description,
+    description: t("description"),
     start_url: "/",
     display: "standalone",
     background_color: "#f7f5f0",

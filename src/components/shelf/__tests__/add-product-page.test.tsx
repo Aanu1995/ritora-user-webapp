@@ -6,7 +6,14 @@ import {
   mockPush,
   renderAddProductPage,
   resetAddProductPageMocks,
+  setSuccessfulPhotoExtraction,
 } from '@/test/shelf/add-product-page.test-harness';
+
+function setInputValue(label: RegExp, value: string): void {
+  fireEvent.change(screen.getByLabelText(label), {
+    target: { value },
+  });
+}
 
 beforeEach(() => {
   resetAddProductPageMocks();
@@ -27,8 +34,8 @@ describe('AddProductPage', () => {
     const user = userEvent.setup();
     renderAddProductPage();
 
-    await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
-    await user.type(screen.getByLabelText(/^product name$/i), 'Barrier Serum');
+    setInputValue(/^brand$/i, 'CeraVe');
+    setInputValue(/^product name$/i, 'Barrier Serum');
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 
@@ -92,9 +99,9 @@ describe('AddProductPage', () => {
     const user = userEvent.setup();
     renderAddProductPage();
 
-    await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
-    await user.type(screen.getByLabelText(/^product name$/i), 'Barrier Serum');
-    await user.type(screen.getByLabelText(/^support$/i), 'not-an-email');
+    setInputValue(/^brand$/i, 'CeraVe');
+    setInputValue(/^product name$/i, 'Barrier Serum');
+    setInputValue(/^support$/i, 'not-an-email');
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 
@@ -108,8 +115,8 @@ describe('AddProductPage', () => {
     const user = userEvent.setup();
     renderAddProductPage();
 
-    await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
-    await user.type(screen.getByLabelText(/^product name$/i), 'Barrier Serum');
+    setInputValue(/^brand$/i, 'CeraVe');
+    setInputValue(/^product name$/i, 'Barrier Serum');
     await user.click(screen.getByRole('button', { name: /add step/i }));
     const stepInput = screen
       .getAllByLabelText(/step 1/i)
@@ -132,25 +139,26 @@ describe('AddProductPage', () => {
     mockMutate.mockImplementation((_draft, options) => {
       options?.onSuccess?.({ id: 'product-123' });
     });
+    setSuccessfulPhotoExtraction();
 
     renderAddProductPage();
 
-    await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
-    await user.type(screen.getByLabelText(/^product name$/i), 'Barrier Serum');
-    await user.type(
-      screen.getByLabelText(/^description$/i),
+    setInputValue(/^brand$/i, 'CeraVe');
+    setInputValue(/^product name$/i, 'Barrier Serum');
+    setInputValue(
+      /^description$/i,
       'A calming serum that supports smoother texture overnight.',
     );
-    await user.type(screen.getByLabelText(/^benefits$/i), 'calming, smoothing');
-    await user.type(screen.getByLabelText(/^suited for$/i), 'dry, sensitive');
-    await user.type(
-      screen.getByLabelText(/^ingredients \(inci\)$/i),
-      'Aqua, Glycerin, Niacinamide',
-    );
-    await user.type(screen.getByLabelText(/^size$/i), '30');
+    setInputValue(/^benefits$/i, 'calming, smoothing');
+    setInputValue(/^suited for$/i, 'dry, sensitive');
+    setInputValue(/^ingredients \(inci\)$/i, 'Aqua, Glycerin, Niacinamide');
+    setInputValue(/^size$/i, '30');
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
-    await user.type(screen.getByLabelText(/^opened on$/i), '2026-04-15');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
+    setInputValue(/^opened on$/i, '2026-04-15');
+    await user.click(screen.getByRole('button', { name: /import lookup/i }));
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 
@@ -165,23 +173,21 @@ describe('AddProductPage', () => {
     mockMutate.mockImplementation((_draft, options) => {
       options?.onSuccess?.({ id: 'product-123' });
     });
+    setSuccessfulPhotoExtraction();
 
     renderAddProductPage();
 
-    await user.type(screen.getByLabelText(/^brand$/i), 'Eucerin');
-    await user.type(
-      screen.getByLabelText(/^product name$/i),
-      'Oil Control SPF 50+',
-    );
-    await user.type(
-      screen.getByLabelText(/^description$/i),
-      'A dry-touch sunscreen for oily skin.',
-    );
-    await user.type(screen.getByLabelText(/^benefits$/i), 'oil control');
-    await user.type(screen.getByLabelText(/^suited for$/i), 'oily');
-    await user.type(screen.getByLabelText(/^size$/i), '50');
+    setInputValue(/^brand$/i, 'Eucerin');
+    setInputValue(/^product name$/i, 'Oil Control SPF 50+');
+    setInputValue(/^description$/i, 'A dry-touch sunscreen for oily skin.');
+    setInputValue(/^benefits$/i, 'oil control');
+    setInputValue(/^suited for$/i, 'oily');
+    setInputValue(/^size$/i, '50');
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Apply before sun exposure.');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Apply before sun exposure.' },
+    });
+    await user.click(screen.getByRole('button', { name: /import lookup/i }));
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 
@@ -197,24 +203,25 @@ describe('AddProductPage', () => {
     mockMutate.mockImplementation((_draft, options) => {
       options?.onSuccess?.({ id: 'product-123' });
     });
+    setSuccessfulPhotoExtraction();
 
     renderAddProductPage();
 
-    await user.type(screen.getByLabelText(/^brand$/i), 'CeraVe');
-    await user.type(screen.getByLabelText(/^product name$/i), 'Barrier Serum');
-    await user.type(
-      screen.getByLabelText(/^description$/i),
+    setInputValue(/^brand$/i, 'CeraVe');
+    setInputValue(/^product name$/i, 'Barrier Serum');
+    setInputValue(
+      /^description$/i,
       'A calming serum that supports smoother texture overnight.',
     );
-    await user.type(screen.getByLabelText(/^benefits$/i), 'calming, smoothing');
-    await user.type(screen.getByLabelText(/^suited for$/i), 'dry, sensitive');
-    await user.type(
-      screen.getByLabelText(/^ingredients \(inci\)$/i),
-      'Aqua, Glycerin, Niacinamide',
-    );
-    await user.type(screen.getByLabelText(/^size$/i), '30');
+    setInputValue(/^benefits$/i, 'calming, smoothing');
+    setInputValue(/^suited for$/i, 'dry, sensitive');
+    setInputValue(/^ingredients \(inci\)$/i, 'Aqua, Glycerin, Niacinamide');
+    setInputValue(/^size$/i, '30');
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
+    await user.click(screen.getByRole('button', { name: /import lookup/i }));
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 

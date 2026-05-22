@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   MAX_CUSTOM_LABEL_LENGTH,
   MAX_STEP_NOTES_LENGTH,
@@ -19,6 +20,7 @@ import {
   type RoutineStepProductSummary,
   StepLabel,
 } from '@/types/schedule';
+import { SmoothImage } from '@/components/ui/smooth-image';
 import { cn } from '@/lib/utils';
 
 const STEP_LABEL_ORDER: StepLabel[] = [
@@ -77,7 +79,7 @@ function RoutineStepRowComponent({
           type="button"
           aria-label={t('step.dragHandle')}
           style={{ touchAction: 'none' }}
-          className="mt-1 cursor-grab rounded-md p-1 text-muted hover:bg-surface-muted hover:text-foreground active:cursor-grabbing active:text-foreground"
+          className="mt-1 cursor-grab rounded-md p-1 text-muted hover:bg-accent-soft hover:text-foreground active:cursor-grabbing active:text-foreground"
           {...attributes}
           {...listeners}
         >
@@ -89,7 +91,6 @@ function RoutineStepRowComponent({
         </div>
 
         <div className="min-w-0 flex-1 space-y-2">
-          {/* Step label */}
           <Select
             value={step.stepLabel}
             onValueChange={(value) => {
@@ -140,7 +141,6 @@ function RoutineStepRowComponent({
             </>
           ) : null}
 
-          {/* Product picker — hidden for Custom steps (non-product actions). */}
           {step.stepLabel !== StepLabel.Custom ? (
             <button
               type="button"
@@ -154,11 +154,16 @@ function RoutineStepRowComponent({
                 <>
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded bg-surface-muted">
                     {product.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <SmoothImage
                         src={product.imageUrl}
                         alt=""
-                        className="h-full w-full object-cover"
+                        sizes="28px"
+                        className="h-full w-full rounded"
+                        fallback={
+                          <span className="text-[10px] text-muted">
+                            {product.category.slice(0, 1).toUpperCase()}
+                          </span>
+                        }
                       />
                     ) : (
                       <span className="text-[10px] text-muted">
@@ -196,7 +201,6 @@ function RoutineStepRowComponent({
             </button>
           ) : null}
 
-          {/* Notes */}
           <input
             type="text"
             value={step.notes ?? ''}
@@ -211,25 +215,53 @@ function RoutineStepRowComponent({
             maxLength={MAX_STEP_NOTES_LENGTH}
           />
 
-          {/* Optional checkbox */}
-          <label className="flex items-center gap-2 text-[11px] text-muted">
-            <input
-              type="checkbox"
-              checked={step.optional ?? false}
-              onChange={(e) =>
-                onChange(index, { ...step, optional: e.target.checked })
-              }
-              className="h-3.5 w-3.5 rounded border-border"
-            />
-            {t('step.optionalLabel')}
-          </label>
+          <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface-muted/40 p-3">
+            <label className="flex items-start gap-2.5">
+              <Checkbox
+                className="mt-0.5 h-4 w-4"
+                checked={step.optional ?? false}
+                onCheckedChange={(checked) =>
+                  onChange(index, { ...step, optional: checked === true })
+                }
+              />
+              <span className="min-w-0">
+                <span className="block text-xs font-semibold text-foreground">
+                  {t('step.optionalLabel')}
+                </span>
+                <span className="mt-0.5 block text-[11px] leading-snug text-muted">
+                  {t('step.optionalHint')}
+                </span>
+              </span>
+            </label>
+
+            <label className="flex items-start gap-2.5">
+              <Checkbox
+                className="mt-0.5 h-4 w-4"
+                checked={step.isSpecialistLocked ?? false}
+                onCheckedChange={(checked) =>
+                  onChange(index, {
+                    ...step,
+                    isSpecialistLocked: checked === true,
+                  })
+                }
+              />
+              <span className="min-w-0">
+                <span className="block text-xs font-semibold text-foreground">
+                  {t('step.specialistLockedLabel')}
+                </span>
+                <span className="mt-0.5 block text-[11px] leading-snug text-muted">
+                  {t('step.specialistLockedHint')}
+                </span>
+              </span>
+            </label>
+          </div>
         </div>
 
         <button
           type="button"
           onClick={() => onRemove(index)}
           aria-label={t('step.delete')}
-          className="mt-1 rounded-md p-1 text-muted transition hover:bg-surface-muted hover:text-red-600"
+          className="mt-1 rounded-md p-1 text-muted transition hover:bg-accent-soft hover:text-red-600"
         >
           <Trash2 className="h-4 w-4" aria-hidden />
         </button>

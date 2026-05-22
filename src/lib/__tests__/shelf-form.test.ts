@@ -337,10 +337,10 @@ describe('shelf-form', () => {
   });
 
   it('builds a normalized draft with active status and provenance', () => {
-    const draft = toShelfProductDraft(createValue(), DataProvenance.UrlFetch);
+    const draft = toShelfProductDraft(createValue());
 
     expect(draft.status).toBe(ShelfStatus.Active);
-    expect(draft.provenance).toBe(DataProvenance.UrlFetch);
+    expect(draft.provenance).toBe(DataProvenance.PhotoLookup);
     expect(draft.identity.brand).toBe('CeraVe');
     expect(draft.manufacturer.productUrl).toBe(
       'https://www.cerave.com/products/retinol',

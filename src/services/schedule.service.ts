@@ -1,4 +1,5 @@
 import {
+  type ApiRequestOptions,
   deleteRequest,
   getRequest,
   patchRequest,
@@ -18,12 +19,20 @@ import type {
   UpsertRoutineStepsPayload,
 } from '@/types/schedule';
 
-export async function getSchedule(): Promise<Schedule> {
-  return getRequest<Schedule>(ApiPath.Schedule);
+function getWithOptions<T>(path: string, options?: ApiRequestOptions) {
+  return options ? getRequest<T>(path, options) : getRequest<T>(path);
 }
 
-export async function getTodaysSchedule(): Promise<TodaysSchedule> {
-  return getRequest<TodaysSchedule>(ApiPath.ScheduleToday);
+export async function getSchedule(
+  options?: ApiRequestOptions,
+): Promise<Schedule> {
+  return getWithOptions<Schedule>(ApiPath.Schedule, options);
+}
+
+export async function getTodaysSchedule(
+  options?: ApiRequestOptions,
+): Promise<TodaysSchedule> {
+  return getWithOptions<TodaysSchedule>(ApiPath.ScheduleToday, options);
 }
 
 export async function createSlot(

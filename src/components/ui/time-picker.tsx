@@ -53,7 +53,7 @@ const TimePicker = React.forwardRef<HTMLInputElement, TimePickerProps>(
         onClick={openPicker}
         className={cn(
           'flex h-12 w-full items-center gap-2 rounded-xl border bg-background px-4 py-3 text-sm transition focus-within:ring-2 focus-within:ring-accent/30',
-          invalid ? 'border-destructive' : 'border-border',
+          invalid ? 'border-danger' : 'border-border',
           disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer',
           className,
         )}

@@ -22,6 +22,7 @@ import { RetryPanel } from "@/components/ui/retry-panel";
 import { AppRoute } from "@/constants/app-routes";
 import { useAutoLoadMore } from "@/hooks/use-auto-load-more";
 import { useShelfDateContext } from "@/hooks/use-shelf-time-zone";
+import { useSkinProfile } from "@/hooks/use-skin-profile";
 import {
   useArchiveProducts,
   useDeleteProducts,
@@ -30,6 +31,9 @@ import {
   useShelfStats,
 } from "@/hooks/use-shelf";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { getApiErrorStatus } from "@/lib/api-error";
+import { saveCurrentAppScrollPosition } from "@/lib/app-scroll-restoration";
+import { isSkinProfileReady } from "@/lib/skin-profile-readiness";
 import { useShelfUiStore } from "@/stores/shelf-ui-store";
 import {
   ShelfCategoryFilter,
@@ -72,11 +76,18 @@ export function ShelfPage() {
 
   const products = useShelfProducts(filters, shelfDateContext);
   const stats = useShelfStats(shelfDateContext);
+  const skinProfile = useSkinProfile();
   const archive = useArchiveProducts();
   const finish = useMarkFinished();
   const remove = useDeleteProducts();
 
   const selectedArray = useMemo(() => Array.from(selectedIds), [selectedIds]);
+  const canAddProduct = isSkinProfileReady(skinProfile.data);
+  const profileFetchFailed =
+    skinProfile.isError && getApiErrorStatus(skinProfile.error) !== 404;
+  const profileDialogDescription = profileFetchFailed
+    ? t("prerequisites.profile.loadError")
+    : t("prerequisites.profile.body");
 
   const handleArchive = () => {
     archive.archive(selectedArray, {
@@ -95,6 +106,7 @@ export function ShelfPage() {
     });
   };
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [profileRequiredOpen, setProfileRequiredOpen] = useState(false);
   const handleDeleteRequest = () => {
     setDeleteConfirmOpen(true);
   };
@@ -134,6 +146,19 @@ export function ShelfPage() {
     },
   });
 
+  const navigateFromShelf = (href: string) => {
+    saveCurrentAppScrollPosition(AppRoute.Shelf);
+    router.push(href);
+  };
+  const handleAddProduct = () => {
+    if (!canAddProduct) {
+      setProfileRequiredOpen(true);
+      return;
+    }
+
+    navigateFromShelf(`${AppRoute.Shelf}/new`);
+  };
+
   let content: ReactNode;
 
   if (isLoading) {
@@ -159,9 +184,7 @@ export function ShelfPage() {
   } else if (isEmpty) {
     content = (
       <div className="flex flex-1 items-center justify-center">
-        <ShelfEmptyState
-          onAddFirst={() => router.push(`${AppRoute.Shelf}/new`)}
-        />
+        <ShelfEmptyState onAddFirst={handleAddProduct} />
       </div>
     );
   } else if (productList.length === 0) {
@@ -176,7 +199,7 @@ export function ShelfPage() {
         products={productList}
         timeZone={shelfDateContext.timeZone}
         selectedIds={selectedIds}
-        onOpen={(id) => router.push(`${AppRoute.Shelf}/${id}`)}
+        onOpen={(id) => navigateFromShelf(`${AppRoute.Shelf}/${id}`)}
         onToggleSelect={toggleSelected}
       />
     );
@@ -186,7 +209,7 @@ export function ShelfPage() {
         products={productList}
         timeZone={shelfDateContext.timeZone}
         selectedIds={selectedIds}
-        onOpen={(id) => router.push(`${AppRoute.Shelf}/${id}`)}
+        onOpen={(id) => navigateFromShelf(`${AppRoute.Shelf}/${id}`)}
         onToggleSelect={toggleSelected}
       />
     );
@@ -201,7 +224,6 @@ export function ShelfPage() {
 
   return (
     <div className={`mx-auto max-w-360 ${wrapperPadding} ${wrapperLayout}`}>
-      {/* Sticky composite header — title + subtitle + action, then filter bar */}
       <div className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 pb-3 pt-4 backdrop-blur sm:-mx-6 sm:px-6 sm:pt-6 lg:-mx-8 lg:px-8">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
@@ -215,8 +237,9 @@ export function ShelfPage() {
           <div className="shrink-0">
             <Button
               size="sm"
-              onClick={() => router.push(`${AppRoute.Shelf}/new`)}
+              onClick={handleAddProduct}
               aria-label={t("actions.add")}
+              className="w-7 px-0 sm:w-auto sm:px-4"
             >
               <Plus className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">{t("actions.add")}</span>
@@ -296,6 +319,18 @@ export function ShelfPage() {
         onConfirm={handleDeleteConfirm}
         tone={ConfirmDialogTone.Danger}
         isPending={archive.isPending || finish.isPending || remove.isPending}
+      />
+
+      <ConfirmDialog
+        open={profileRequiredOpen}
+        onOpenChange={setProfileRequiredOpen}
+        title={t("prerequisites.profile.title")}
+        description={profileDialogDescription}
+        confirmLabel={t("prerequisites.profile.cta")}
+        onConfirm={() => {
+          setProfileRequiredOpen(false);
+          navigateFromShelf(AppRoute.SkinProfile);
+        }}
       />
     </div>
   );

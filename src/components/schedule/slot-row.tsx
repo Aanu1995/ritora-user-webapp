@@ -35,7 +35,7 @@ export function SlotRow({ slot, onClick }: SlotRowProps) {
       type="button"
       onClick={onClick}
       className={cn(
-        'flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-surface-muted/60',
+        'flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-accent-soft',
         'focus-visible:outline-none focus-visible:bg-surface-muted/60',
       )}
     >

@@ -1,18 +1,24 @@
 import type { SVGProps } from 'react';
 
-export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
+type IllustrationProps = SVGProps<SVGSVGElement> & {
+  title?: string;
+};
+
+export function RoutineCycleIllustration({
+  title,
+  ...props
+}: IllustrationProps) {
   return (
     <svg
       viewBox="0 0 480 320"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-labelledby="routine-cycle-title"
+      role={title ? 'img' : undefined}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
       {...props}
     >
-      <title id="routine-cycle-title">
-        A daily routine cycle that runs from morning sun to evening moon with the shelf at the centre
-      </title>
+      {title ? <title>{title}</title> : null}
       <defs>
         <linearGradient id="routine-bg" x1="0" y1="0" x2="480" y2="320" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="var(--color-accent-glow)" />
@@ -22,7 +28,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
 
       <rect width="480" height="320" rx="28" fill="url(#routine-bg)" />
 
-      {/* Big cycle ring */}
       <circle
         cx="240"
         cy="160"
@@ -34,7 +39,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
         fill="none"
       />
 
-      {/* Center card — "Your shelf" */}
       <g>
         <rect
           x="180"
@@ -53,7 +57,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
         <rect x="236" y="172" width="48" height="16" rx="4" fill="var(--color-accent)" opacity="0.15" />
       </g>
 
-      {/* AM node — sun */}
       <g transform="translate(104 160)">
         <circle r="38" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1.5" />
         <circle r="16" fill="var(--color-accent)" opacity="0.25" />
@@ -70,7 +73,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
         </g>
       </g>
 
-      {/* PM node — moon */}
       <g transform="translate(376 160)">
         <circle r="38" fill="var(--color-surface)" stroke="var(--color-border)" strokeWidth="1.5" />
         <path
@@ -82,7 +84,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
         <circle cx="-16" cy="-18" r="1" fill="var(--color-accent)" opacity="0.6" />
       </g>
 
-      {/* AM → center arrow */}
       <g>
         <path
           d="M148 150 Q168 132 188 130"
@@ -101,7 +102,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
         />
       </g>
 
-      {/* center → PM arrow */}
       <g>
         <path
           d="M296 200 Q320 214 336 178"
@@ -120,7 +120,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
         />
       </g>
 
-      {/* PM → AM (night to next morning) arrow */}
       <g>
         <path
           d="M376 212 Q240 300 104 212"
@@ -133,7 +132,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
         />
       </g>
 
-      {/* AM label */}
       <g transform="translate(104 226)">
         <rect x="-22" y="0" width="44" height="20" rx="10" fill="var(--color-foreground)" />
         <text
@@ -149,7 +147,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
         </text>
       </g>
 
-      {/* PM label */}
       <g transform="translate(376 226)">
         <rect x="-22" y="0" width="44" height="20" rx="10" fill="var(--color-foreground)" />
         <text
@@ -165,7 +162,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
         </text>
       </g>
 
-      {/* Decorative leaf left bottom */}
       <path
         d="M34 268 Q20 240 42 220 Q64 240 58 272 Q46 286 34 268 Z"
         fill="var(--color-accent)"
@@ -178,7 +174,6 @@ export function RoutineCycleIllustration(props: SVGProps<SVGSVGElement>) {
         strokeLinecap="round"
       />
 
-      {/* Small sparkle top */}
       <path
         d="M240 42 l2 5 l5 2 l-5 2 l-2 5 l-2 -5 l-5 -2 l5 -2 Z"
         fill="var(--color-accent-strong)"

@@ -1,17 +1,44 @@
-import { deleteRequest, getRequest, patchRequest, postRequest } from '@/lib/api';
-import { ApiPath } from '@/constants/api-paths';
+import {
+  type ApiRequestOptions,
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "@/lib/api";
+import { ApiPath } from "@/constants/api-paths";
 import type {
   SkinProfile,
+  SkinProfileAccessLog,
   SkinProfileInput,
   SkinProfileOptions,
-} from '@/types/skin-profile';
+} from "@/types/skin-profile";
 
-export async function getSkinProfile(): Promise<SkinProfile> {
-  return getRequest<SkinProfile>(ApiPath.SkinProfile);
+function getWithOptions<T>(path: string, options?: ApiRequestOptions) {
+  return options ? getRequest<T>(path, options) : getRequest<T>(path);
 }
 
-export async function getSkinProfileOptions(): Promise<SkinProfileOptions> {
-  return getRequest<SkinProfileOptions>(ApiPath.SkinProfileOptions);
+export async function getSkinProfile(
+  options?: ApiRequestOptions,
+): Promise<SkinProfile> {
+  return getWithOptions<SkinProfile>(ApiPath.SkinProfile, options);
+}
+
+export async function getSkinProfileOptions(
+  options?: ApiRequestOptions,
+): Promise<SkinProfileOptions> {
+  return getWithOptions<SkinProfileOptions>(
+    ApiPath.SkinProfileOptions,
+    options,
+  );
+}
+
+export async function getSkinProfileAccessLogs(
+  options?: ApiRequestOptions,
+): Promise<SkinProfileAccessLog[]> {
+  return getWithOptions<SkinProfileAccessLog[]>(
+    ApiPath.SkinProfileAccessLogs,
+    options,
+  );
 }
 
 export async function createSkinProfile(
@@ -28,4 +55,12 @@ export async function updateSkinProfile(
 
 export async function deleteSkinProfile(): Promise<void> {
   return deleteRequest(ApiPath.SkinProfile);
+}
+
+export async function deleteSkinProfileHealthContext(): Promise<SkinProfile> {
+  return deleteRequest<SkinProfile>(ApiPath.SkinProfileHealthContext);
+}
+
+export async function deleteSkinProfileHormonalContext(): Promise<SkinProfile> {
+  return deleteRequest<SkinProfile>(ApiPath.SkinProfileHormonalContext);
 }

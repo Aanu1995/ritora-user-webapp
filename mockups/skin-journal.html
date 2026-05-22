@@ -1,0 +1,1782 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ritora · Skin Journal — Progress Tracking &amp; AI Photo Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --background: #f7f5f0;
+        --foreground: #14201a;
+        --surface: #ffffff;
+        --surface-muted: #f0ede4;
+        --muted: #586458;
+        --border: rgba(20, 32, 26, 0.12);
+        --border-strong: rgba(20, 32, 26, 0.22);
+        --accent: #2f7a52;
+        --accent-strong: #1f5f3d;
+        --accent-soft: #e4f0e8;
+        --secondary: #b4633b;
+        --secondary-soft: #f6e7db;
+        --warning: #b8540a;
+        --warning-soft: #fef3c7;
+        --warning-border: rgba(184, 84, 10, 0.25);
+        --danger: #b3261e;
+        --danger-soft: rgba(179, 38, 30, 0.1);
+        --danger-border: rgba(179, 38, 30, 0.35);
+        --success: #2f7a52;
+        --shadow-soft: 0 20px 50px rgba(20, 32, 26, 0.08);
+        --ai: #7c3aed;
+        --ai-soft: rgba(124, 58, 237, 0.08);
+        --ai-border: rgba(124, 58, 237, 0.24);
+        --ai-bg: #ede9fe;
+        --ai-fg: #5b21b6;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0; padding: 0;
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        color: var(--foreground); background: var(--background);
+        font-size: 14px; line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      h1, h2, h3, h4 { font-family: "Plus Jakarta Sans", "Inter", sans-serif; letter-spacing: -0.01em; }
+      code, .mono { font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace; }
+      a { color: inherit; }
+
+      .page { max-width: 1280px; margin: 0 auto; padding: 48px 32px 96px; }
+
+      .hero {
+        background: linear-gradient(135deg, var(--accent-soft) 0%, var(--surface-muted) 100%);
+        border-radius: 24px; padding: 32px 36px; margin-bottom: 32px;
+      }
+      .hero h1 { margin: 0; font-size: 28px; font-weight: 700; }
+      .hero p { margin: 10px 0 0; color: var(--foreground); max-width: 880px; }
+      .hero-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 18px; }
+      .hero-pill {
+        display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px;
+        background: var(--surface); border: 1px solid var(--border); border-radius: 9999px;
+        font-size: 11px; font-weight: 600; color: var(--muted);
+        text-transform: uppercase; letter-spacing: 0.06em;
+      }
+      .hero-pill strong { color: var(--accent-strong); }
+      .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11px; color: var(--muted); margin-top: 16px; }
+      .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+      .legend-dot { width: 8px; height: 8px; border-radius: 9999px; }
+      .legend-dot.empty { background: rgba(20, 32, 26, 0.18); }
+      .legend-dot.pending { background: var(--warning); animation: pulse 1.6s ease-in-out infinite; }
+      .legend-dot.completed { background: var(--accent); }
+      .legend-dot.reaction { background: var(--danger); }
+      .legend-dot.insight { background: var(--ai); }
+      .legend-dot.streak { background: transparent; border: 2px solid var(--accent-strong); width: 12px; height: 12px; }
+      @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+      .section-label {
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+        color: var(--muted); font-weight: 600; margin: 44px 0 14px;
+      }
+      .section-title { font-size: 20px; font-weight: 700; margin: 0 0 4px; }
+      .section-subtitle { color: var(--muted); font-size: 14px; margin: 0 0 20px; max-width: 880px; }
+
+      .frame {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 24px; box-shadow: var(--shadow-soft); overflow: hidden;
+      }
+      .frame + .frame { margin-top: 20px; }
+      .frame-caption {
+        display: flex; align-items: center; gap: 10px;
+        padding: 12px 20px; border-bottom: 1px solid var(--border);
+        background: var(--surface-muted);
+        font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;
+        color: var(--muted); font-weight: 600;
+      }
+      .frame-caption code {
+        text-transform: none; letter-spacing: 0; font-size: 11px;
+        background: rgba(0, 0, 0, 0.05); padding: 1px 6px; border-radius: 4px;
+      }
+      .frame-caption .dot { width: 8px; height: 8px; border-radius: 9999px; background: var(--accent); }
+      .frame-caption .dot.ai { background: var(--ai); }
+      .frame-caption .dot.warning { background: var(--warning); }
+      .frame-caption .dot.danger { background: var(--danger); }
+      .frame-body { padding: 24px; }
+
+      .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+      @media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
+
+      /* App shell (sidebar + content) */
+      .app-shell {
+        display: grid; grid-template-columns: 200px 1fr;
+        background: var(--background); border-radius: 16px;
+        overflow: hidden; border: 1px solid var(--border);
+      }
+      .sidebar-mini { background: var(--surface); padding: 16px 12px; border-right: 1px solid var(--border); font-size: 12px; }
+      .sidebar-mini .brand { display: flex; align-items: center; gap: 8px; padding: 4px 8px 16px; }
+      .brand-mark { width: 24px; height: 24px; border-radius: 6px; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 11px; }
+      .brand-name { font-weight: 600; font-size: 13px; }
+      .nav-group-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); padding: 12px 8px 4px; }
+      .nav-item { padding: 6px 8px; border-radius: 6px; color: var(--foreground); cursor: default; display: flex; justify-content: space-between; align-items: center; }
+      .nav-item.active { background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; }
+      .nav-badge { background: var(--danger); color: #fff; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 9999px; }
+      .app-content { padding: 24px; min-width: 0; }
+
+      .page-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 6px; }
+      .page-title { font-size: 22px; font-weight: 700; margin: 0 0 4px; }
+      .page-subtitle { color: var(--muted); font-size: 13px; margin: 0 0 16px; max-width: 600px; }
+      .page-header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+
+      /* Cards */
+      .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; }
+      .card + .card { margin-top: 14px; }
+      .card-soft { background: var(--surface-muted); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; }
+      .card-title { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+      .card-subtitle { color: var(--muted); font-size: 12px; margin: 0 0 10px; }
+      .card-ai { border: 1px solid var(--ai-border); background: linear-gradient(180deg, var(--ai-soft), transparent 50%); }
+      .card-warning { border: 1px solid var(--warning-border); background: var(--warning-soft); }
+      .card-danger { border: 1px solid var(--danger-border); background: var(--danger-soft); }
+
+      /* Buttons */
+      .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 14px; font-size: 12px; font-weight: 600; border-radius: 9999px; border: 1px solid transparent; cursor: pointer; font-family: inherit; }
+      .btn-primary { background: var(--accent); color: #fff; }
+      .btn-primary-strong { background: var(--accent-strong); color: #fff; }
+      .btn-outline { background: transparent; border-color: var(--border-strong); color: var(--foreground); }
+      .btn-ghost { background: transparent; color: var(--foreground); }
+      .btn-danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+      .btn-danger-solid { background: var(--danger); color: #fff; }
+      .btn-ai { background: var(--ai); color: #fff; }
+      .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+      .btn-row-equal > .btn { flex: 1; min-width: 140px; padding: 10px 14px; font-size: 13px; }
+      .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+      /* Chips */
+      .chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; font-size: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 9999px; color: var(--foreground); cursor: default; }
+      .chip.selected { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-strong); font-weight: 600; }
+      .chip.muted { color: var(--muted); }
+      .chip.danger { background: var(--danger-soft); border-color: var(--danger-border); color: var(--danger); }
+      .chip.warning { background: var(--warning-soft); border-color: var(--warning-border); color: var(--warning); }
+      .chip.ai { background: var(--ai-bg); border-color: var(--ai-border); color: var(--ai-fg); font-weight: 600; }
+      .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+
+      /* Badges */
+      .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; border-radius: 9999px; }
+      .badge-accent { background: var(--accent-soft); color: var(--accent-strong); }
+      .badge-secondary { background: var(--secondary-soft); color: var(--secondary); }
+      .badge-warning { background: var(--warning-soft); color: var(--warning); }
+      .badge-danger { background: var(--danger-soft); color: var(--danger); }
+      .badge-encrypted { background: var(--ai-bg); color: var(--ai-fg); text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 10px; }
+      .badge-muted { background: var(--surface-muted); color: var(--muted); }
+      .badge-ai { background: var(--ai-soft); color: var(--ai); }
+
+      /* Inputs */
+      .input, .select { width: 100%; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 8px; padding: 7px 10px; font-size: 12px; font-family: inherit; color: var(--foreground); }
+      .label { font-size: 12px; font-weight: 600; display: block; margin-bottom: 4px; }
+      .textarea { min-height: 64px; resize: vertical; }
+
+      .checkbox-row { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; }
+      .checkbox { width: 16px; height: 16px; border: 1.5px solid var(--border-strong); border-radius: 3px; flex-shrink: 0; margin-top: 2px; display: grid; place-items: center; background: var(--surface); }
+      .checkbox.checked { background: var(--accent); border-color: var(--accent); }
+      .checkbox.checked::after { content: '✓'; color: #fff; font-size: 11px; font-weight: bold; line-height: 1; }
+      .toggle { width: 30px; height: 18px; border-radius: 9999px; background: var(--border-strong); position: relative; flex-shrink: 0; }
+      .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 9999px; background: #fff; transition: left 0.2s; }
+      .toggle.on { background: var(--accent); }
+      .toggle.on::after { left: 14px; }
+
+      /* Banners */
+      .banner { border-radius: 12px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; }
+      .banner-info { background: var(--accent-soft); border: 1px solid rgba(47, 122, 82, 0.18); }
+      .banner-warning { background: var(--warning-soft); border: 1px solid var(--warning-border); }
+      .banner-danger { background: var(--danger-soft); border: 1px solid var(--danger-border); }
+      .banner-ai { background: var(--ai-soft); border: 1px solid var(--ai-border); }
+      .banner-icon { width: 24px; height: 24px; border-radius: 9999px; display: grid; place-items: center; flex-shrink: 0; font-size: 12px; }
+      .banner-info .banner-icon { background: var(--accent); color: #fff; }
+      .banner-warning .banner-icon { background: var(--warning); color: #fff; }
+      .banner-danger .banner-icon { background: var(--danger); color: #fff; }
+      .banner-ai .banner-icon { background: var(--ai); color: #fff; }
+      .banner-title { font-weight: 600; font-size: 13px; margin: 0 0 2px; }
+      .banner-text { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.55; }
+
+      /* Tabs */
+      .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+      .tab { padding: 10px 16px; font-size: 13px; color: var(--muted); border-bottom: 2px solid transparent; cursor: default; font-weight: 500; }
+      .tab.active { color: var(--foreground); border-bottom-color: var(--accent-strong); font-weight: 700; }
+      .tab .count { background: var(--surface-muted); color: var(--muted); font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 9999px; margin-left: 4px; }
+
+      /* Stat strip */
+      .stat-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+      .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; }
+      .stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+      .stat-value { font-size: 22px; font-weight: 700; font-family: "Plus Jakarta Sans", "Inter"; line-height: 1.1; }
+      .stat-trend { font-size: 11px; color: var(--accent-strong); margin-top: 2px; }
+
+      /* Two-panel journal layout */
+      .journal-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; align-items: start; }
+      @media (max-width: 1100px) { .journal-layout { grid-template-columns: 1fr; } }
+
+      /* Calendar */
+      .calendar { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+      .calendar-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+      .calendar-month { font-size: 14px; font-weight: 700; }
+      .calendar-nav { display: flex; gap: 4px; }
+      .calendar-nav-btn { width: 28px; height: 28px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); display: grid; place-items: center; font-size: 12px; cursor: default; }
+      .weekday-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 6px; }
+      .weekday { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); text-align: center; }
+      .day-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+      .day-cell {
+        aspect-ratio: 1; border-radius: 10px; border: 1px solid var(--border);
+        background: var(--surface); position: relative; padding: 4px; font-size: 11px;
+        display: flex; flex-direction: column; justify-content: space-between; cursor: default;
+      }
+      .day-cell.outside { color: rgba(20, 32, 26, 0.35); background: var(--background); border-color: transparent; }
+      .day-cell.empty { background: var(--background); border: 1px dashed var(--border); }
+      .day-cell.completed { background: var(--surface); border-color: var(--accent-soft); }
+      .day-cell.completed .day-thumb { background: linear-gradient(135deg, #d6c2a3 0%, #c2a886 100%); }
+      .day-cell.entry-no-photo { background: var(--surface-muted); border-color: var(--border); }
+      .day-cell.pending { background: var(--surface); border: 1px solid var(--warning-border); }
+      .day-cell.pending .day-thumb { background: var(--warning-soft); animation: pulse 1.6s ease-in-out infinite; }
+      .day-cell.reaction { border: 1.5px solid var(--danger); background: var(--danger-soft); }
+      .day-cell.reaction .day-thumb { background: linear-gradient(135deg, #e8a298 0%, #c97f6f 100%); }
+      .day-cell.insight { border: 1.5px solid var(--ai-border); }
+      .day-cell.insight::before { content: '✨'; position: absolute; top: 2px; right: 4px; font-size: 9px; }
+      .day-cell.today { box-shadow: 0 0 0 2px var(--accent-strong); }
+      .day-cell.selected { box-shadow: 0 0 0 2px var(--accent-strong); border-color: var(--accent); background: var(--accent-soft); }
+      .day-cell.selected .day-thumb { box-shadow: 0 0 0 2px var(--accent); }
+      .day-num { font-weight: 600; line-height: 1; }
+      .day-thumb { width: 100%; flex: 1; min-height: 18px; max-height: 26px; border-radius: 6px; background: var(--surface-muted); margin-top: 4px; }
+      .day-dot { width: 4px; height: 4px; border-radius: 9999px; background: var(--muted); margin-top: 2px; }
+
+      /* Day detail panel */
+      .day-detail { display: flex; flex-direction: column; gap: 12px; }
+      .day-detail-header { display: flex; justify-content: space-between; align-items: center; }
+      .day-detail-title { font-size: 16px; font-weight: 700; margin: 0; }
+      .day-detail-meta { font-size: 11px; color: var(--muted); }
+      .photo-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+      .photo-canvas { aspect-ratio: 1/1.1; background: linear-gradient(135deg, #d6c2a3 0%, #c2a886 50%, #a78c66 100%); position: relative; }
+      .photo-canvas::after { content: ''; position: absolute; inset: 12% 22% 6% 22%; border-radius: 50% / 60%; border: 1.5px dashed rgba(255, 255, 255, 0.5); }
+      .photo-canvas-tag { position: absolute; top: 10px; left: 10px; background: rgba(20, 32, 26, 0.7); color: #fff; padding: 3px 8px; border-radius: 9999px; font-size: 10px; font-weight: 600; }
+
+      /* Face zone overlay */
+      .face-zones { aspect-ratio: 1/1.1; background: linear-gradient(135deg, #d6c2a3 0%, #c2a886 50%, #a78c66 100%); position: relative; border-radius: 12px; overflow: hidden; }
+      .face-zones::after { content: ''; position: absolute; inset: 12% 22% 6% 22%; border-radius: 50% / 60%; border: 1.5px solid rgba(255, 255, 255, 0.4); }
+      .face-zone {
+        position: absolute; border-radius: 9999px;
+        background: rgba(179, 38, 30, 0.55); border: 2px solid rgba(255, 255, 255, 0.85);
+      }
+      .face-zone.mild { background: rgba(184, 84, 10, 0.5); }
+      .face-zone-label { position: absolute; background: rgba(20, 32, 26, 0.85); color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 9px; white-space: nowrap; transform: translateX(-50%); }
+
+      /* Severity radar (mini) */
+      .radar { aspect-ratio: 1; max-width: 220px; margin: 0 auto; position: relative; }
+      .radar-svg { width: 100%; height: 100%; }
+
+      /* Concern rating row chips (1-5) */
+      .rating-row { display: grid; grid-template-columns: 130px 1fr; gap: 12px; align-items: center; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+      .rating-row:last-child { border-bottom: none; }
+      .rating-label { font-size: 12px; font-weight: 600; }
+      .rating-chips { display: flex; gap: 4px; }
+      .rating-chip { width: 28px; height: 28px; border-radius: 9999px; background: var(--surface); border: 1px solid var(--border); font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+      .rating-chip.selected { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-strong); }
+      .rating-chip.danger.selected { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+
+      /* Upload drop zone */
+      .drop-zone { border: 2px dashed var(--border-strong); border-radius: 16px; aspect-ratio: 1; max-width: 320px; margin: 0 auto; display: grid; place-items: center; padding: 24px; text-align: center; background: var(--surface-muted); }
+      .drop-zone-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); display: grid; place-items: center; font-size: 22px; margin-bottom: 12px; }
+      .drop-zone-title { font-size: 14px; font-weight: 600; margin: 0 0 4px; }
+      .drop-zone-desc { font-size: 11px; color: var(--muted); margin: 0; }
+      .drop-zone-preview { aspect-ratio: 1; max-width: 320px; margin: 0 auto; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); position: relative; }
+
+      /* Tip illustration mini */
+      .tip-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; }
+      .tip-illu { width: 48px; height: 48px; border-radius: 10px; background: var(--accent-soft); display: grid; place-items: center; font-size: 22px; flex-shrink: 0; }
+      .tip-title { font-size: 13px; font-weight: 700; margin: 0 0 2px; }
+      .tip-body { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.5; }
+
+      /* Photos grid */
+      .photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+      @media (max-width: 1100px) { .photo-grid { grid-template-columns: repeat(3, 1fr); } }
+      @media (max-width: 700px) { .photo-grid { grid-template-columns: repeat(2, 1fr); } }
+      .photo-tile { aspect-ratio: 4/5; border-radius: 14px; overflow: hidden; background: linear-gradient(135deg, #d6c2a3, #c2a886); border: 1px solid var(--border); position: relative; }
+      .photo-tile.tone-warm { background: linear-gradient(135deg, #e0b8a0, #c89678); }
+      .photo-tile.tone-cool { background: linear-gradient(135deg, #c2b18f, #a8987a); }
+      .photo-tile.tone-deep { background: linear-gradient(135deg, #8a6f4d, #6c5538); }
+      .photo-tile-meta { position: absolute; bottom: 0; left: 0; right: 0; padding: 8px 10px; background: linear-gradient(0deg, rgba(20, 32, 26, 0.7), transparent); color: #fff; }
+      .photo-tile-meta .date { font-size: 11px; font-weight: 600; }
+      .photo-tile-meta .tag { display: inline-block; font-size: 9px; padding: 2px 6px; background: rgba(255, 255, 255, 0.2); border-radius: 9999px; margin-top: 2px; }
+      .photo-tile.has-reaction { box-shadow: inset 0 0 0 2px var(--danger); }
+
+      /* Comparison */
+      .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      @media (max-width: 800px) { .compare-grid { grid-template-columns: 1fr; } }
+      .compare-pane { display: flex; flex-direction: column; gap: 10px; }
+      .compare-photo { aspect-ratio: 1; border-radius: 14px; overflow: hidden; background: linear-gradient(135deg, #d6c2a3, #c2a886); border: 1px solid var(--border); position: relative; }
+      .compare-photo.later { background: linear-gradient(135deg, #cdc2a3, #b5a988); }
+      .compare-date { font-size: 12px; font-weight: 700; }
+
+      /* Insight cards (variants) */
+      .insight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+      .insight-card.kind-trend { border-left: 4px solid var(--accent); }
+      .insight-card.kind-correlation { border-left: 4px solid var(--ai); }
+      .insight-card.kind-effectiveness { border-left: 4px solid var(--secondary); }
+      .insight-card.kind-referral { border: 1px solid var(--warning-border); background: var(--warning-soft); border-left: 4px solid var(--warning); }
+      .insight-kind { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+      .insight-summary { font-size: 14px; font-weight: 700; line-height: 1.4; margin: 0 0 8px; }
+      .insight-supporting { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.55; }
+      .insight-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+      /* Chart placeholders */
+      .chart-frame { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+      .chart-title { font-size: 12px; font-weight: 700; margin: 0 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+      .chart-canvas { height: 120px; position: relative; }
+      .chart-axis { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--border); }
+      .chart-line { position: absolute; inset: 0; }
+
+      /* Wrapped */
+      .wrapped-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      @media (max-width: 900px) { .wrapped-grid { grid-template-columns: 1fr 1fr; } }
+      @media (max-width: 600px) { .wrapped-grid { grid-template-columns: 1fr; } }
+      .wrapped-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+      .wrapped-thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; aspect-ratio: 3; background: var(--background); }
+      .wrapped-thumb { background: linear-gradient(135deg, #d6c2a3, #c2a886); }
+      .wrapped-thumb.t2 { background: linear-gradient(135deg, #d2bf99, #b09971); }
+      .wrapped-thumb.t3 { background: linear-gradient(135deg, #c8b58a, #9d8763); }
+      .wrapped-meta { padding: 12px 14px; }
+      .wrapped-period { font-size: 14px; font-weight: 700; margin: 0 0 4px; }
+      .wrapped-status { font-size: 11px; }
+      .status-not-enough { color: var(--muted); }
+      .status-ready-to-generate { color: var(--accent-strong); font-weight: 600; }
+      .status-generating { color: var(--warning); font-weight: 600; }
+      .status-ready { color: var(--ai); font-weight: 600; }
+      .status-failed { color: var(--danger); font-weight: 600; }
+      .wrapped-actions { display: flex; gap: 6px; padding: 0 14px 14px; }
+
+      /* Wrapped viewer */
+      .wrapped-viewer { background: #000; border-radius: 18px; aspect-ratio: 4/5; max-width: 320px; margin: 0 auto; position: relative; overflow: hidden; }
+      .wrapped-frame { position: absolute; inset: 0; background: linear-gradient(135deg, #d6c2a3, #c2a886); }
+      .wrapped-caption { position: absolute; bottom: 14px; left: 14px; right: 14px; color: #fff; font-size: 13px; font-weight: 600; text-shadow: 0 2px 8px rgba(0,0,0,0.6); }
+      .wrapped-progress { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; gap: 4px; }
+      .wrapped-bar { flex: 1; height: 2px; background: rgba(255,255,255,0.25); border-radius: 9999px; overflow: hidden; }
+      .wrapped-bar.done { background: rgba(255,255,255,0.85); }
+      .wrapped-bar.active::after { content: ''; display: block; width: 60%; height: 100%; background: rgba(255,255,255,0.85); }
+      .wrapped-controls { position: absolute; bottom: 60px; left: 0; right: 0; display: flex; justify-content: center; gap: 18px; }
+      .wrapped-ctl { width: 36px; height: 36px; border-radius: 9999px; background: rgba(20,32,26,0.6); display: grid; place-items: center; color: #fff; font-size: 14px; }
+
+      /* Dialog stage */
+      .dialog-stage { background: linear-gradient(180deg, rgba(20, 32, 26, 0.04), rgba(20, 32, 26, 0.18)); padding: 32px; display: grid; place-items: center; border-radius: 16px; }
+      .dialog { background: var(--surface); border-radius: 20px; padding: 24px; max-width: 480px; width: 100%; box-shadow: 0 32px 80px rgba(20, 32, 26, 0.2); }
+      .dialog-title { font-size: 18px; font-weight: 700; margin: 8px 0 6px; }
+      .dialog-lede { font-size: 13px; color: var(--muted); margin: 0 0 14px; line-height: 1.55; }
+      .dialog-icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-size: 22px; margin-bottom: 6px; }
+      .dialog-icon.warning { background: var(--warning-soft); color: var(--warning); }
+      .dialog-icon.danger { background: var(--danger-soft); color: var(--danger); }
+      .dialog-icon.ai { background: var(--ai-bg); color: var(--ai-fg); }
+
+      /* FAB */
+      .fab-wrap { position: relative; }
+      .fab { position: absolute; bottom: 14px; right: 14px; padding: 12px 18px; background: var(--accent-strong); color: #fff; border-radius: 9999px; font-weight: 700; font-size: 13px; box-shadow: 0 12px 28px rgba(31, 95, 61, 0.3); display: inline-flex; align-items: center; gap: 8px; }
+
+      /* Disclaimer foot */
+      .disclaimer { font-size: 11px; color: var(--muted); padding: 8px 0; line-height: 1.55; }
+      .disclaimer strong { color: var(--foreground); }
+
+      /* TOC */
+      .toc { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px 22px; margin-bottom: 32px; }
+      .toc-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 10px; }
+      .toc-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 6px 16px; margin: 0; padding: 0; list-style: none; font-size: 13px; }
+      .toc-list a { text-decoration: none; color: var(--foreground); display: flex; gap: 8px; padding: 4px 0; }
+      .toc-list a:hover { color: var(--accent-strong); }
+      .toc-num { display: inline-grid; place-items: center; width: 22px; height: 22px; background: var(--accent-soft); color: var(--accent-strong); border-radius: 6px; font-size: 11px; font-weight: 700; }
+
+      /* Principles */
+      .principles { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; margin-top: 32px; }
+      .principles ul { margin: 8px 0 0; padding-left: 18px; font-size: 13px; line-height: 1.8; color: var(--muted); }
+      .principles ul strong { color: var(--foreground); }
+
+      /* Misc */
+      .stack-sm > * + * { margin-top: 6px; }
+      .stack-md > * + * { margin-top: 12px; }
+      .stack-lg > * + * { margin-top: 18px; }
+      .text-muted { color: var(--muted); }
+      .text-accent { color: var(--accent-strong); }
+      .text-danger { color: var(--danger); }
+      .text-warning { color: var(--warning); }
+      .text-ai { color: var(--ai-fg); }
+      .divider { height: 1px; background: var(--border); margin: 12px 0; }
+      .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .pill-group { display: flex; flex-wrap: wrap; gap: 4px; }
+      .icon-bullet { display: flex; gap: 8px; align-items: flex-start; font-size: 12px; padding: 4px 0; }
+      .icon-bullet .b { width: 6px; height: 6px; background: var(--accent); border-radius: 9999px; margin-top: 7px; flex-shrink: 0; }
+      .icon-bullet.danger .b { background: var(--danger); }
+      .icon-bullet.warning .b { background: var(--warning); }
+      .icon-bullet.ai .b { background: var(--ai); }
+
+      /* Notification row */
+      .notif-row { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+      .notif-row:last-child { border-bottom: none; }
+      .notif-icon { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; flex-shrink: 0; font-size: 16px; }
+      .notif-icon.reminder { background: var(--accent-soft); color: var(--accent-strong); }
+      .notif-icon.reaction { background: var(--danger-soft); color: var(--danger); }
+      .notif-icon.referral { background: var(--warning-soft); color: var(--warning); }
+      .notif-icon.insight { background: var(--ai-bg); color: var(--ai-fg); }
+      .notif-icon.wrapped { background: var(--secondary-soft); color: var(--secondary); }
+      .notif-body { flex: 1; min-width: 0; }
+      .notif-title { font-size: 13px; font-weight: 600; margin: 0 0 2px; }
+      .notif-text { font-size: 12px; color: var(--muted); margin: 0 0 4px; line-height: 1.5; }
+      .notif-meta { font-size: 11px; color: var(--muted); }
+      .notif-row.unread { background: rgba(47, 122, 82, 0.04); padding-left: 10px; padding-right: 10px; border-radius: 10px; border-bottom: none; margin: 4px -10px; }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <!-- ============ HERO ============ -->
+      <header class="hero">
+        <h1>Skin Journal — Progress Tracking &amp; AI Photo Intelligence</h1>
+        <p>
+          A single home for daily face photos, light check-ins, AI photo analysis,
+          reaction safety, side-by-side comparisons, monthly progress wrapped, and
+          dermatologist exports. One entry per local date. No webcam UI — users
+          take a real photo in natural daylight and upload. AI analysis is
+          decision support, not diagnosis.
+        </p>
+        <div class="hero-meta">
+          <span class="hero-pill"><strong>1</strong> entry per local date</span>
+          <span class="hero-pill"><strong>7</strong> daily ratings</span>
+          <span class="hero-pill"><strong>File upload</strong> only</span>
+          <span class="hero-pill"><strong>GPT-4o</strong> · strict JSON</span>
+          <span class="hero-pill"><strong>AES-256</strong> at rest</span>
+          <span class="hero-pill"><strong>GDPR Art. 9</strong> aligned</span>
+        </div>
+        <div class="legend">
+          <span class="legend-item"><span class="legend-dot empty"></span>No entry</span>
+          <span class="legend-item"><span class="legend-dot completed"></span>Photo + analysis done</span>
+          <span class="legend-item"><span class="legend-dot pending"></span>Analysis pending</span>
+          <span class="legend-item"><span class="legend-dot reaction"></span>Reaction flagged</span>
+          <span class="legend-item"><span class="legend-dot insight"></span>Insight available</span>
+          <span class="legend-item"><span class="legend-dot streak"></span>Today / streak</span>
+        </div>
+      </header>
+
+      <!-- ============ TOC ============ -->
+      <nav class="toc">
+        <p class="toc-title">Mockup contents</p>
+        <ul class="toc-list">
+          <li><a href="#s1"><span class="toc-num">1</span>Skin Journal hub · Calendar (default)</a></li>
+          <li><a href="#s2"><span class="toc-num">2</span>Day detail · analysis, ratings, events</a></li>
+          <li><a href="#s3"><span class="toc-num">3</span>Daily entry upload</a></li>
+          <li><a href="#s4"><span class="toc-num">4</span>Daily check-in form</a></li>
+          <li><a href="#s5"><span class="toc-num">5</span>Photos tab + Compare flow</a></li>
+          <li><a href="#s6"><span class="toc-num">6</span>Insights tab · charts &amp; cards</a></li>
+          <li><a href="#s7"><span class="toc-num">7</span>Wrapped · list, generator, viewer</a></li>
+          <li><a href="#s8"><span class="toc-num">8</span>Reaction-detected modal</a></li>
+          <li><a href="#s9"><span class="toc-num">9</span>Routine simplification banner + detail</a></li>
+          <li><a href="#s10"><span class="toc-num">10</span>Dashboard touch-points</a></li>
+          <li><a href="#s11"><span class="toc-num">11</span>Notifications + settings</a></li>
+          <li><a href="#s12"><span class="toc-num">12</span>Empty states &amp; error states</a></li>
+        </ul>
+      </nav>
+
+      <!-- ============ SECTION 1: HUB ============ -->
+      <p class="section-label" id="s1">1 · Skin Journal hub</p>
+      <h2 class="section-title">Calendar is the default tab — two-panel on desktop</h2>
+      <p class="section-subtitle">
+        The Skin Journal hub holds everything for this feature. Tabs at the top: Calendar (default) ·
+        Photos · Insights · Wrapped. Calendar shows rich day markers; selecting a day reveals the day's
+        full detail in the right panel (or as a bottom sheet on mobile). A sticky FAB lets the user add
+        today's photo when missing. The header overflow holds the dermatologist export.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption">
+          <span class="dot"></span>
+          <code>/journal</code> · Calendar tab · two-panel desktop
+        </div>
+        <div class="frame-body">
+          <div class="app-shell">
+            <aside class="sidebar-mini">
+              <div class="brand">
+                <div class="brand-mark">R</div>
+                <div class="brand-name">Ritora</div>
+              </div>
+              <div class="nav-group-label">Main</div>
+              <div class="nav-item">Home</div>
+              <div class="nav-item">Skin Profile</div>
+              <div class="nav-item">Shelf</div>
+              <div class="nav-item">Today's Suggestion</div>
+              <div class="nav-item active">Skin Journal <span class="nav-badge">1</span></div>
+              <div class="nav-item">Smart Picks</div>
+              <div class="nav-item">Schedule</div>
+              <div class="nav-item">History</div>
+              <div class="nav-item">Insights</div>
+              <div class="nav-group-label">Account</div>
+              <div class="nav-item">Settings</div>
+              <div class="nav-item">Notifications <span class="nav-badge">2</span></div>
+            </aside>
+            <div class="app-content fab-wrap">
+              <div class="page-header-row">
+                <div>
+                  <p class="page-eyebrow">Your skin journey</p>
+                  <h1 class="page-title">Skin Journal</h1>
+                  <p class="page-subtitle">One entry per day. Photo, ratings, AI observations and insights — all in one place.</p>
+                </div>
+                <div class="btn-row">
+                  <button class="btn btn-outline">⤓ Export for dermatologist</button>
+                  <button class="btn btn-ghost">⋯</button>
+                </div>
+              </div>
+
+              <!-- Active simplification banner -->
+              <div class="banner banner-warning" style="margin-bottom: 14px;">
+                <div class="banner-icon">!</div>
+                <div style="flex:1">
+                  <p class="banner-title">Routine simplified to barrier-repair mode</p>
+                  <p class="banner-text">We detected possible irritation in your photo from Apr 26. Your usual routine is paused until you acknowledge.</p>
+                </div>
+                <div class="btn-row">
+                  <button class="btn btn-outline btn-sm">View details</button>
+                  <button class="btn btn-primary btn-sm">Restore routine</button>
+                </div>
+              </div>
+
+              <!-- Stat strip -->
+              <div class="stat-strip">
+                <div class="stat-card">
+                  <div class="stat-label">Current streak</div>
+                  <div class="stat-value">12 days</div>
+                  <div class="stat-trend">+3 vs last week</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Total entries</div>
+                  <div class="stat-value">38</div>
+                  <div class="stat-trend">since Mar 21</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-label">Weekly upload rate</div>
+                  <div class="stat-value">86%</div>
+                  <div class="stat-trend">6 of 7 days</div>
+                </div>
+              </div>
+
+              <!-- Tabs -->
+              <div class="tabs">
+                <div class="tab active">Calendar</div>
+                <div class="tab">Photos <span class="count">38</span></div>
+                <div class="tab">Insights <span class="count">5</span></div>
+                <div class="tab">Wrapped <span class="count">2</span></div>
+              </div>
+
+              <!-- Two-panel layout -->
+              <div class="journal-layout">
+                <!-- Left panel: calendar -->
+                <div class="calendar">
+                  <div class="calendar-head">
+                    <div class="calendar-month">April 2026</div>
+                    <div class="calendar-nav">
+                      <div class="calendar-nav-btn">‹</div>
+                      <div class="calendar-nav-btn">›</div>
+                    </div>
+                  </div>
+                  <div class="weekday-row">
+                    <div class="weekday">M</div><div class="weekday">T</div><div class="weekday">W</div>
+                    <div class="weekday">T</div><div class="weekday">F</div><div class="weekday">S</div><div class="weekday">S</div>
+                  </div>
+                  <div class="day-grid">
+                    <!-- Week 1: Mar 30, 31, Apr 1-5 -->
+                    <div class="day-cell outside"><span class="day-num">30</span></div>
+                    <div class="day-cell outside"><span class="day-num">31</span></div>
+                    <div class="day-cell completed"><span class="day-num">1</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">2</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">3</span><div class="day-thumb"></div></div>
+                    <div class="day-cell empty"><span class="day-num">4</span></div>
+                    <div class="day-cell completed"><span class="day-num">5</span><div class="day-thumb"></div></div>
+                    <!-- Week 2 -->
+                    <div class="day-cell completed"><span class="day-num">6</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">7</span><div class="day-thumb"></div></div>
+                    <div class="day-cell entry-no-photo"><span class="day-num">8</span><div class="day-dot"></div></div>
+                    <div class="day-cell completed"><span class="day-num">9</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed insight"><span class="day-num">10</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">11</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">12</span><div class="day-thumb"></div></div>
+                    <!-- Week 3 -->
+                    <div class="day-cell completed"><span class="day-num">13</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">14</span><div class="day-thumb"></div></div>
+                    <div class="day-cell empty"><span class="day-num">15</span></div>
+                    <div class="day-cell completed"><span class="day-num">16</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">17</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed insight"><span class="day-num">18</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">19</span><div class="day-thumb"></div></div>
+                    <!-- Week 4 -->
+                    <div class="day-cell completed"><span class="day-num">20</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">21</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">22</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">23</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">24</span><div class="day-thumb"></div></div>
+                    <div class="day-cell completed"><span class="day-num">25</span><div class="day-thumb"></div></div>
+                    <div class="day-cell reaction"><span class="day-num">26</span><div class="day-thumb"></div></div>
+                    <!-- Week 5 -->
+                    <div class="day-cell completed"><span class="day-num">27</span><div class="day-thumb"></div></div>
+                    <div class="day-cell selected today"><span class="day-num">28</span><div class="day-thumb"></div></div>
+                    <div class="day-cell pending"><span class="day-num">29</span><div class="day-thumb"></div></div>
+                    <div class="day-cell empty"><span class="day-num">30</span></div>
+                    <div class="day-cell outside"><span class="day-num">1</span></div>
+                    <div class="day-cell outside"><span class="day-num">2</span></div>
+                    <div class="day-cell outside"><span class="day-num">3</span></div>
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; font-size: 11px; color: var(--muted);">
+                    <span style="display:inline-flex;gap:4px;align-items:center"><span class="legend-dot completed"></span>Done</span>
+                    <span style="display:inline-flex;gap:4px;align-items:center"><span class="legend-dot empty"></span>None</span>
+                    <span style="display:inline-flex;gap:4px;align-items:center"><span class="legend-dot pending"></span>Analysing</span>
+                    <span style="display:inline-flex;gap:4px;align-items:center"><span class="legend-dot reaction"></span>Reaction</span>
+                    <span style="display:inline-flex;gap:4px;align-items:center"><span class="legend-dot insight"></span>Insight</span>
+                  </div>
+                </div>
+
+                <!-- Right panel: day detail -->
+                <div class="day-detail">
+                  <div class="day-detail-header">
+                    <div>
+                      <p class="day-detail-meta">Tue · Apr 28, 2026 · today</p>
+                      <h3 class="day-detail-title">Today's entry</h3>
+                    </div>
+                    <span class="badge badge-accent">Analysis complete</span>
+                  </div>
+
+                  <div class="card" style="padding: 0; overflow: hidden;">
+                    <div class="photo-canvas">
+                      <span class="photo-canvas-tag">Head-on · 30 cm</span>
+                    </div>
+                    <div style="padding: 14px;">
+                      <p class="card-subtitle" style="margin: 0 0 4px;">Captured at 08:42 · pre-routine</p>
+                      <div class="btn-row">
+                        <button class="btn btn-outline btn-sm">↺ Replace</button>
+                        <button class="btn btn-ghost btn-sm">📐 Add angle</button>
+                        <button class="btn btn-danger btn-sm">🗑 Delete</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- AI analysis card -->
+                  <div class="card card-ai">
+                    <div style="display:flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px;">
+                      <div>
+                        <span class="badge badge-ai">✨ AI · GPT-4o · v1.0</span>
+                        <p class="card-title" style="margin-top: 6px;">Skin observations today</p>
+                      </div>
+                      <span class="badge badge-accent">Confidence 0.78</span>
+                    </div>
+                    <p class="card-subtitle" style="margin-bottom: 10px;">
+                      Skin appears slightly drier than your previous entry. Mild redness around the chin.
+                      No reaction signals detected. Image quality good.
+                    </p>
+                    <div class="row-2" style="align-items: center;">
+                      <div class="face-zones">
+                        <div class="face-zone mild" style="top: 56%; left: 38%; width: 18%; height: 12%;"></div>
+                        <div class="face-zone-label" style="top: 51%; left: 47%;">Mild redness · chin</div>
+                      </div>
+                      <div>
+                        <p class="card-subtitle" style="margin: 0 0 6px;">Detected concerns</p>
+                        <div class="chip-row stack-sm">
+                          <span class="chip warning">Redness · mild · chin</span>
+                          <span class="chip">Dryness · mild · cheeks</span>
+                          <span class="chip">Texture · mild · forehead</span>
+                        </div>
+                        <p class="card-subtitle" style="margin: 12px 0 6px;">Image quality</p>
+                        <div class="chip-row">
+                          <span class="chip selected">Lighting good</span>
+                          <span class="chip selected">Framing good</span>
+                          <span class="chip selected">Sharp</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="disclaimer" style="margin-top: 12px;">
+                      <strong>Not a medical diagnosis.</strong> Ritora is decision support. Consult a dermatologist for medical concerns.
+                    </p>
+                  </div>
+
+                  <!-- Ratings + events -->
+                  <div class="card">
+                    <p class="card-title">Your check-in</p>
+                    <div class="row-2" style="gap: 16px;">
+                      <div>
+                        <p class="card-subtitle" style="margin: 0 0 6px;">Skin feel</p>
+                        <div class="chip-row">
+                          <span class="chip">Awful</span>
+                          <span class="chip">Bad</span>
+                          <span class="chip selected">OK</span>
+                          <span class="chip">Good</span>
+                          <span class="chip">Great</span>
+                        </div>
+                      </div>
+                      <div>
+                        <p class="card-subtitle" style="margin: 0 0 6px;">Today's context</p>
+                        <div class="chip-row">
+                          <span class="chip muted">Sleep 7–9h</span>
+                          <span class="chip muted">Stress · low</span>
+                          <span class="chip muted">Sun · brief</span>
+                          <span class="chip muted">No exercise</span>
+                          <span class="chip ai">Cycle · day 4–7</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="divider"></div>
+                    <p class="card-subtitle" style="margin: 0 0 4px;">Concern severity (1 = none, 5 = severe)</p>
+                    <div class="row-2">
+                      <div class="rating-row"><span class="rating-label">Oiliness</span><div class="rating-chips"><span class="rating-chip">1</span><span class="rating-chip selected">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+                      <div class="rating-row"><span class="rating-label">Dryness</span><div class="rating-chips"><span class="rating-chip">1</span><span class="rating-chip">2</span><span class="rating-chip selected">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+                      <div class="rating-row"><span class="rating-label">Redness</span><div class="rating-chips"><span class="rating-chip">1</span><span class="rating-chip selected">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+                      <div class="rating-row"><span class="rating-label">Breakouts</span><div class="rating-chips"><span class="rating-chip selected">1</span><span class="rating-chip">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+                      <div class="rating-row"><span class="rating-label">Texture</span><div class="rating-chips"><span class="rating-chip">1</span><span class="rating-chip selected">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+                      <div class="rating-row"><span class="rating-label">Irritation</span><div class="rating-chips"><span class="rating-chip selected">1</span><span class="rating-chip">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+                      <div class="rating-row"><span class="rating-label">Sensitivity</span><div class="rating-chips"><span class="rating-chip">1</span><span class="rating-chip selected">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+                    </div>
+                    <div class="divider"></div>
+                    <p class="card-subtitle" style="margin: 0 0 4px;">Complaint / note</p>
+                    <p style="font-size: 12px; margin: 0; color: var(--foreground); font-style: italic;">"Cheeks felt a bit tight after cleanser this morning."</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="fab">＋ Add today's photo</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 2: DAY DETAIL FOCUSED ============ -->
+      <p class="section-label" id="s2">2 · Day detail focused — events, reaction, retry</p>
+      <h2 class="section-title">Five day-detail states the panel handles</h2>
+      <p class="section-subtitle">
+        The day-detail panel renders different states based on
+        <code>analysis_status</code> and journal events. Below: a normal day with insight,
+        a reaction-flagged day, a failed-analysis day with retry, a photo-less entry, and a
+        backfilled day. All five share the same component, just different data.
+      </p>
+
+      <div class="grid-2">
+        <!-- State A: reaction flagged -->
+        <div class="frame">
+          <div class="frame-caption"><span class="dot danger"></span>Day · reaction flagged</div>
+          <div class="frame-body">
+            <div class="day-detail">
+              <div class="day-detail-header">
+                <div>
+                  <p class="day-detail-meta">Sun · Apr 26, 2026</p>
+                  <h3 class="day-detail-title">Apr 26 entry</h3>
+                </div>
+                <span class="badge badge-danger">Reaction · moderate</span>
+              </div>
+              <div class="card card-danger">
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                  <div style="width: 32px; height: 32px; border-radius: 9999px; background: var(--danger); color:#fff; display:grid; place-items:center; font-size: 14px; flex-shrink:0;">!</div>
+                  <div>
+                    <p class="card-title" style="margin: 0 0 4px;">Possible reaction detected</p>
+                    <p class="card-subtitle" style="margin: 0;">
+                      Increased redness across cheeks · new breakout cluster on chin · barrier signs.
+                      Compared to Apr 25: <strong class="text-danger">worse</strong>.
+                    </p>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <p class="card-subtitle" style="margin: 0 0 6px;">Indicators</p>
+                <div class="chip-row">
+                  <span class="chip danger">Redness spike</span>
+                  <span class="chip danger">New breakouts cluster</span>
+                  <span class="chip warning">Diffuse inflammation</span>
+                </div>
+                <div class="btn-row" style="margin-top: 12px;">
+                  <button class="btn btn-primary-strong">Simplify routine (recommended)</button>
+                  <button class="btn btn-outline">Keep my routine</button>
+                </div>
+              </div>
+              <div class="card-soft">
+                <p class="card-title" style="margin: 0 0 4px;">Day events on this entry</p>
+                <ul style="margin: 0; padding-left: 18px; font-size: 12px; color: var(--muted);">
+                  <li><strong>reaction_detected</strong> · severity moderate · 14:02 UTC</li>
+                  <li><strong>simplification_started</strong> · barrier_repair preset · 14:02 UTC</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- State B: failed analysis -->
+        <div class="frame">
+          <div class="frame-caption"><span class="dot warning"></span>Day · analysis failed (retry available)</div>
+          <div class="frame-body">
+            <div class="day-detail">
+              <div class="day-detail-header">
+                <div>
+                  <p class="day-detail-meta">Mon · Apr 27, 2026</p>
+                  <h3 class="day-detail-title">Apr 27 entry</h3>
+                </div>
+                <span class="badge badge-warning">Analysis failed</span>
+              </div>
+              <div class="card" style="padding: 0; overflow: hidden;">
+                <div class="photo-canvas" style="filter: brightness(0.4);">
+                  <span class="photo-canvas-tag">Too dark</span>
+                </div>
+              </div>
+              <div class="banner banner-warning">
+                <div class="banner-icon">!</div>
+                <div style="flex: 1;">
+                  <p class="banner-title">We had trouble seeing your skin</p>
+                  <p class="banner-text">Lighting was too low to assess reliably. Your photo is saved — try retaking in natural daylight or retry analysis on this image.</p>
+                </div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-outline">↻ Retry analysis</button>
+                <button class="btn btn-primary">📷 Replace photo</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- State C: insight available -->
+        <div class="frame">
+          <div class="frame-caption"><span class="dot ai"></span>Day · insight available</div>
+          <div class="frame-body">
+            <div class="day-detail">
+              <div class="day-detail-header">
+                <div>
+                  <p class="day-detail-meta">Sat · Apr 18, 2026</p>
+                  <h3 class="day-detail-title">Apr 18 entry</h3>
+                </div>
+                <span class="badge badge-ai">✨ Insight</span>
+              </div>
+              <div class="card" style="padding: 0; overflow: hidden;">
+                <div class="photo-canvas"><span class="photo-canvas-tag">Head-on</span></div>
+              </div>
+              <div class="insight-card kind-correlation" style="margin: 0;">
+                <span class="insight-kind">Correlation</span>
+                <p class="insight-summary">Breakouts increased after you introduced Glycolic Acid Toner on Apr 12.</p>
+                <p class="insight-supporting">
+                  Average breakouts rating moved from <strong>1.2</strong> (Apr 5–11) to <strong>2.6</strong> (Apr 13–18).
+                  Recovery noted on Apr 21 after you reduced frequency.
+                </p>
+                <div class="insight-actions">
+                  <button class="btn btn-outline btn-sm">Show me how</button>
+                  <button class="btn btn-ghost btn-sm">Dismiss</button>
+                </div>
+              </div>
+              <div class="card-soft">
+                <p class="card-subtitle" style="margin: 0;">
+                  Insights are stored on the entry's date so you can review them in context. The Insights tab aggregates all of them.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- State D: photo-less entry -->
+        <div class="frame">
+          <div class="frame-caption"><span class="dot"></span>Day · entry without photo</div>
+          <div class="frame-body">
+            <div class="day-detail">
+              <div class="day-detail-header">
+                <div>
+                  <p class="day-detail-meta">Wed · Apr 8, 2026</p>
+                  <h3 class="day-detail-title">Apr 8 entry</h3>
+                </div>
+                <span class="badge badge-muted">No photo</span>
+              </div>
+              <div class="card-soft" style="text-align: center; padding: 24px;">
+                <div style="font-size: 32px; opacity: 0.6;">📷</div>
+                <p class="card-title" style="margin-top: 8px;">Check-in only</p>
+                <p class="card-subtitle">You logged how your skin felt without a photo. AI analysis is skipped for this day.</p>
+                <button class="btn btn-primary">Add a photo for this day</button>
+              </div>
+              <div class="card">
+                <p class="card-title">Ratings recorded</p>
+                <p class="card-subtitle" style="margin: 0;">
+                  Skin feel · OK · Oiliness 2 · Dryness 3 · Redness 1 · Breakouts 1 · Texture 2 · Irritation 1 · Sensitivity 2
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 3: UPLOAD ============ -->
+      <p class="section-label" id="s3">3 · Daily entry upload</p>
+      <h2 class="section-title">Photos are uploaded files — not webcam</h2>
+      <p class="section-subtitle">
+        Users take their photo with a real camera in natural daylight, then upload. The page leads
+        with five short tips, then the file picker. A backfill date selector at the top supports
+        catching up on missed days. Crop-to-square is encouraged for consistent comparison.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption"><span class="dot"></span><code>/journal/upload</code> · entry composer</div>
+        <div class="frame-body">
+          <div class="app-shell">
+            <aside class="sidebar-mini">
+              <div class="brand">
+                <div class="brand-mark">R</div>
+                <div class="brand-name">Ritora</div>
+              </div>
+              <div class="nav-group-label">Main</div>
+              <div class="nav-item">Home</div>
+              <div class="nav-item">Skin Profile</div>
+              <div class="nav-item active">Skin Journal</div>
+              <div class="nav-item">Today's Suggestion</div>
+              <div class="nav-item">Schedule</div>
+              <div class="nav-group-label">Account</div>
+              <div class="nav-item">Settings</div>
+            </aside>
+            <div class="app-content">
+              <div class="page-header-row">
+                <div>
+                  <p class="page-eyebrow">Skin Journal · new entry</p>
+                  <h1 class="page-title">Add today's photo</h1>
+                  <p class="page-subtitle">Take a photo in good daylight — your future self will thank you for the consistency.</p>
+                </div>
+                <div>
+                  <label class="label">Date</label>
+                  <select class="select" style="width:auto; min-width: 160px;">
+                    <option>Today · Apr 28, 2026</option>
+                    <option>Apr 27, 2026 (backfill)</option>
+                    <option>Apr 26, 2026 (backfill)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Guidance card -->
+              <div class="card-soft" style="margin-bottom: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div>
+                    <p class="card-title" style="margin: 0 0 2px;">Tips for clearer comparisons</p>
+                    <p class="card-subtitle" style="margin: 0 0 12px;">Same time, same place gives the AI the strongest trend signal.</p>
+                  </div>
+                  <button class="btn btn-ghost btn-sm">Hide tips</button>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+                  <div class="tip-card"><div class="tip-illu">☀️</div><div><p class="tip-title">Natural daylight</p><p class="tip-body">Face a window, no overhead light.</p></div></div>
+                  <div class="tip-card"><div class="tip-illu">🚫</div><div><p class="tip-title">Skip the mirror</p><p class="tip-body">Reflections distort skin tone.</p></div></div>
+                  <div class="tip-card"><div class="tip-illu">😐</div><div><p class="tip-title">Neutral face</p><p class="tip-body">No makeup, relaxed.</p></div></div>
+                  <div class="tip-card"><div class="tip-illu">⏰</div><div><p class="tip-title">Same time daily</p><p class="tip-body">Better trend accuracy.</p></div></div>
+                  <div class="tip-card"><div class="tip-illu">📏</div><div><p class="tip-title">~30 cm away</p><p class="tip-body">Square-on, fill the frame.</p></div></div>
+                </div>
+              </div>
+
+              <div class="row-2" style="gap: 28px;">
+                <!-- Left: file picker (with selected state) -->
+                <div>
+                  <p class="label">Photo</p>
+                  <div class="drop-zone-preview">
+                    <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #d6c2a3, #c2a886);"></div>
+                    <div style="position:absolute; top: 10px; left: 10px;"><span class="badge badge-accent">Cropped 1:1</span></div>
+                    <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+                      <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.9);">↻ Replace</button>
+                      <button class="btn btn-outline btn-sm" style="background:rgba(255,255,255,0.9);">✂︎ Crop</button>
+                      <button class="btn btn-danger btn-sm" style="background:rgba(255,255,255,0.9);">🗑 Remove</button>
+                    </div>
+                  </div>
+                  <p class="card-subtitle" style="margin-top: 8px;">capture-2026-04-28.jpg · 2.4 MB · WebP after upload · EXIF stripped</p>
+                  <p class="label" style="margin-top: 14px;">Angle</p>
+                  <div class="chip-row">
+                    <span class="chip selected">Head-on</span>
+                    <span class="chip">Left profile</span>
+                    <span class="chip">Right profile</span>
+                  </div>
+                  <label class="checkbox-row" style="margin-top: 14px;">
+                    <span class="checkbox checked"></span>
+                    <span class="checkbox-label">Taken before today's products (pre-routine)</span>
+                  </label>
+                </div>
+
+                <!-- Right: empty drop-zone state -->
+                <div>
+                  <p class="label">Empty state for reference</p>
+                  <div class="drop-zone">
+                    <div class="drop-zone-icon">📷</div>
+                    <p class="drop-zone-title">Tap to choose a photo</p>
+                    <p class="drop-zone-desc">Or drag and drop · JPG, PNG, HEIC, WebP up to 10 MB</p>
+                  </div>
+                  <p class="card-subtitle" style="text-align: center; margin-top: 8px;">No camera UI in browser — natural-light photo gives the best AI signal.</p>
+                </div>
+              </div>
+
+              <div class="card-soft" style="margin-top: 18px; display: flex; justify-content: space-between; align-items: center;">
+                <p class="card-subtitle" style="margin: 0;">Your check-in is on the next step. You can also save just the photo and add ratings later.</p>
+                <div class="btn-row">
+                  <button class="btn btn-ghost">Cancel</button>
+                  <button class="btn btn-outline">Save photo only</button>
+                  <button class="btn btn-primary">Continue to check-in</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 4: CHECK-IN ============ -->
+      <p class="section-label" id="s4">4 · Daily check-in form</p>
+      <h2 class="section-title">Single-page form, ≤30 seconds, dynamic context only</h2>
+      <p class="section-subtitle">
+        We deliberately don't duplicate fields already in Skin Profile (lifestyle patterns, skin behaviour, etc.).
+        The check-in only captures what changes <em>day to day</em>: how skin feels today, the seven concern ratings,
+        a small handful of context chips, and an optional "recent change" event.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption"><span class="dot"></span><code>/journal/upload</code> · check-in step</div>
+        <div class="frame-body" style="max-width: 760px; margin: 0 auto;">
+          <div class="card">
+            <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 18px;">
+              <div style="width: 56px; height: 56px; border-radius: 12px; background: linear-gradient(135deg, #d6c2a3, #c2a886);"></div>
+              <div>
+                <p class="card-subtitle" style="margin: 0;">Tue · Apr 28, 2026</p>
+                <p class="card-title" style="margin: 0;">Today's check-in</p>
+              </div>
+            </div>
+
+            <p class="label">How does your skin feel today?</p>
+            <div class="chip-row" style="margin-bottom: 18px;">
+              <span class="chip">Awful</span>
+              <span class="chip">Bad</span>
+              <span class="chip selected">OK</span>
+              <span class="chip">Good</span>
+              <span class="chip">Great</span>
+            </div>
+
+            <p class="label">Concern severity (1 = none, 5 = severe)</p>
+            <div class="row-2" style="gap: 12px;">
+              <div class="rating-row"><span class="rating-label">Oiliness</span><div class="rating-chips"><span class="rating-chip">1</span><span class="rating-chip selected">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+              <div class="rating-row"><span class="rating-label">Dryness</span><div class="rating-chips"><span class="rating-chip">1</span><span class="rating-chip">2</span><span class="rating-chip selected">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+              <div class="rating-row"><span class="rating-label">Redness</span><div class="rating-chips"><span class="rating-chip">1</span><span class="rating-chip selected">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+              <div class="rating-row"><span class="rating-label">Breakouts</span><div class="rating-chips"><span class="rating-chip selected">1</span><span class="rating-chip">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+              <div class="rating-row"><span class="rating-label">Texture</span><div class="rating-chips"><span class="rating-chip">1</span><span class="rating-chip selected">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+              <div class="rating-row"><span class="rating-label">Irritation</span><div class="rating-chips"><span class="rating-chip selected">1</span><span class="rating-chip">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+              <div class="rating-row"><span class="rating-label">Sensitivity</span><div class="rating-chips"><span class="rating-chip">1</span><span class="rating-chip selected">2</span><span class="rating-chip">3</span><span class="rating-chip">4</span><span class="rating-chip">5</span></div></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <p class="label">Today's context (optional)</p>
+            <div class="row-2" style="gap: 18px;">
+              <div>
+                <p class="card-subtitle" style="margin: 0 0 4px;">Sleep last night</p>
+                <div class="chip-row"><span class="chip muted">&lt;5h</span><span class="chip muted">5–7h</span><span class="chip selected">7–9h</span><span class="chip muted">&gt;9h</span></div>
+                <p class="card-subtitle" style="margin: 12px 0 4px;">Stress today</p>
+                <div class="chip-row"><span class="chip selected">Low</span><span class="chip muted">Mid</span><span class="chip muted">High</span></div>
+                <p class="card-subtitle" style="margin: 12px 0 4px;">Sun exposure</p>
+                <div class="chip-row"><span class="chip muted">None</span><span class="chip selected">Brief</span><span class="chip muted">Lots</span></div>
+              </div>
+              <div>
+                <p class="card-subtitle" style="margin: 0 0 4px;">Sweat / exercise</p>
+                <div class="chip-row"><span class="chip selected">No</span><span class="chip muted">Yes</span></div>
+                <p class="card-subtitle" style="margin: 12px 0 4px;">Period day <span class="badge badge-encrypted" style="margin-left:4px;">🔒 from skin profile</span></p>
+                <div class="chip-row"><span class="chip muted">Not on period</span><span class="chip muted">Day 1–3</span><span class="chip selected">Day 4–7</span><span class="chip muted">Late cycle</span></div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <p class="label" style="margin: 0;">Anything change today?</p>
+              <span class="toggle on"></span>
+            </div>
+            <p class="card-subtitle" style="margin: 4px 0 12px;">High-signal: a new product, a stopped product, a treatment, illness, or travel.</p>
+            <div class="row-2" style="gap: 12px;">
+              <div>
+                <label class="label">Type of change</label>
+                <select class="select"><option>Started new product</option><option>Stopped a product</option><option>Changed frequency</option><option>Got a treatment</option><option>Felt unwell</option><option>Travelled</option><option>Other</option></select>
+              </div>
+              <div>
+                <label class="label">Related product (optional)</label>
+                <input class="input" placeholder="Search inventory…" value="Glycolic Acid Toner" />
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <label class="label">Complaint or note (optional)</label>
+            <textarea class="input textarea" placeholder="Tell us anything — feels tight, itches, looks dull…">Cheeks felt a bit tight after cleanser this morning.</textarea>
+
+            <div class="card-soft" style="margin-top: 14px; font-size: 11px; line-height: 1.55;">
+              <strong>Privacy:</strong> Your photo and ratings are encrypted at rest. The AI sees the photo only — never your name, email, or user id. <a class="text-accent" href="#"><strong>How we protect your data</strong></a>.
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+            <button class="btn btn-ghost">← Back</button>
+            <div class="btn-row">
+              <button class="btn btn-outline">Skip check-in</button>
+              <button class="btn btn-primary">Save entry</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 5: PHOTOS + COMPARE ============ -->
+      <p class="section-label" id="s5">5 · Photos tab + Compare flow</p>
+      <h2 class="section-title">Reverse-chronological grid · Compare any two days</h2>
+      <p class="section-subtitle">
+        Photos tab is for browsing the archive — filter by reaction, concern, angle, date range. The
+        <code>Compare</code> action opens a synchronized two-pane viewer with an AI delta card.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption"><span class="dot"></span><code>/journal</code> · Photos tab</div>
+        <div class="frame-body">
+          <div class="page-header-row" style="margin-bottom: 14px;">
+            <div class="btn-row">
+              <span class="chip selected">All photos</span>
+              <span class="chip">Has reaction <span class="badge badge-danger" style="margin-left:4px;">3</span></span>
+              <span class="chip">Concern · acne</span>
+              <span class="chip">Concern · redness</span>
+              <span class="chip">Angle · head-on</span>
+              <span class="chip">Last 30 days</span>
+            </div>
+            <button class="btn btn-primary">⇄ Compare</button>
+          </div>
+          <div class="photo-grid">
+            <div class="photo-tile"><div class="photo-tile-meta"><div class="date">Apr 28 · today</div><span class="tag">Head-on</span></div></div>
+            <div class="photo-tile tone-warm"><div class="photo-tile-meta"><div class="date">Apr 27</div><span class="tag">Head-on</span></div></div>
+            <div class="photo-tile tone-cool has-reaction"><div class="photo-tile-meta"><div class="date">Apr 26 · reaction</div><span class="tag">Head-on</span></div></div>
+            <div class="photo-tile tone-warm"><div class="photo-tile-meta"><div class="date">Apr 25</div><span class="tag">Head-on</span></div></div>
+            <div class="photo-tile"><div class="photo-tile-meta"><div class="date">Apr 24</div><span class="tag">Head-on</span></div></div>
+            <div class="photo-tile tone-deep"><div class="photo-tile-meta"><div class="date">Apr 23</div><span class="tag">Left profile</span></div></div>
+            <div class="photo-tile tone-cool"><div class="photo-tile-meta"><div class="date">Apr 22</div><span class="tag">Head-on</span></div></div>
+            <div class="photo-tile"><div class="photo-tile-meta"><div class="date">Apr 21</div><span class="tag">Head-on</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="frame">
+        <div class="frame-caption"><span class="dot ai"></span><code>/journal/compare?from=2026-04-01&amp;to=2026-04-28</code></div>
+        <div class="frame-body">
+          <div class="page-header-row">
+            <div>
+              <h3 style="margin: 0; font-size: 18px;">Compare two days</h3>
+              <p class="card-subtitle" style="margin: 4px 0 0;">Synchronised zoom and pan · tap to flip on mobile.</p>
+            </div>
+            <div class="btn-row">
+              <select class="select" style="width:auto;"><option>Apr 1, 2026</option></select>
+              <button class="btn btn-ghost">⇄</button>
+              <select class="select" style="width:auto;"><option>Apr 28, 2026</option></select>
+            </div>
+          </div>
+          <div class="compare-grid" style="margin-top: 14px;">
+            <div class="compare-pane">
+              <span class="compare-date">Apr 1, 2026</span>
+              <div class="compare-photo">
+                <div class="face-zone" style="top: 50%; left: 30%; width: 18%; height: 12%;"></div>
+                <div class="face-zone mild" style="top: 38%; left: 56%; width: 14%; height: 10%;"></div>
+              </div>
+              <div class="card-soft">
+                <p class="card-title" style="margin: 0;">Concerns then</p>
+                <div class="chip-row" style="margin-top: 6px;"><span class="chip warning">Acne · moderate</span><span class="chip">Hyperpigmentation · mild</span></div>
+              </div>
+            </div>
+            <div class="compare-pane">
+              <span class="compare-date">Apr 28, 2026</span>
+              <div class="compare-photo later">
+                <div class="face-zone mild" style="top: 56%; left: 38%; width: 16%; height: 11%;"></div>
+              </div>
+              <div class="card-soft">
+                <p class="card-title" style="margin: 0;">Concerns now</p>
+                <div class="chip-row" style="margin-top: 6px;"><span class="chip">Acne · mild</span><span class="chip">Hyperpigmentation · mild</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card card-ai" style="margin-top: 16px;">
+            <span class="badge badge-ai">✨ AI delta</span>
+            <p class="card-title" style="margin-top: 8px;">What's changed in 27 days</p>
+            <ul style="margin: 6px 0; padding-left: 18px; font-size: 13px; line-height: 1.7;">
+              <li><strong>Acne</strong> · severity moved from <em>moderate</em> to <em>mild</em>. <span class="chip ai" style="margin-left:6px;">conf 0.74</span></li>
+              <li><strong>Redness</strong> · slightly reduced on cheeks. <span class="chip ai" style="margin-left:6px;">conf 0.62</span></li>
+              <li><strong>Hyperpigmentation</strong> · roughly stable.</li>
+            </ul>
+            <p class="disclaimer" style="margin-top: 8px;"><strong>Not a medical diagnosis.</strong> Visible changes may have many causes.</p>
+          </div>
+          <div class="card-soft" style="margin-top: 12px;">
+            <p class="card-subtitle" style="margin: 0;">Routine events between these dates</p>
+            <div class="chip-row" style="margin-top: 6px;"><span class="chip">Apr 12 · started Glycolic Acid Toner</span><span class="chip">Apr 21 · reduced toner to 2×/week</span><span class="chip">Apr 26 · barrier-repair simplification</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 6: INSIGHTS ============ -->
+      <p class="section-label" id="s6">6 · Insights tab — charts &amp; cards</p>
+      <h2 class="section-title">Inside Skin Journal · because it's about your journal data</h2>
+      <p class="section-subtitle">
+        The Insights tab lives <em>inside</em> Skin Journal — not the separate <code>/insights</code> page (which
+        is reserved for a different feature). Three Recharts trend charts at the top, then a feed of cards (Trend ·
+        Correlation · Effectiveness · Referral). Each card has a "show me how" expander backed by deterministic data.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption"><span class="dot ai"></span><code>/journal</code> · Insights tab</div>
+        <div class="frame-body">
+          <div class="row-3" style="gap: 12px;">
+            <div class="chart-frame">
+              <p class="chart-title">Concern severity over time</p>
+              <div class="chart-canvas">
+                <svg viewBox="0 0 200 100" class="chart-line" preserveAspectRatio="none">
+                  <polyline points="0,30 25,35 50,28 75,20 100,18 125,16 150,14 175,12 200,10" fill="none" stroke="#2f7a52" stroke-width="2.5" />
+                  <polyline points="0,55 25,60 50,68 75,72 100,65 125,55 150,48 175,42 200,38" fill="none" stroke="#b8540a" stroke-width="2.5" />
+                  <polyline points="0,80 25,78 50,82 75,80 100,78 125,72 150,68 175,66 200,62" fill="none" stroke="#7c3aed" stroke-width="2.5" />
+                </svg>
+                <div class="chart-axis"></div>
+              </div>
+              <div class="chip-row" style="margin-top: 6px;"><span class="chip selected">Acne</span><span class="chip warning">Redness</span><span class="chip ai">Hyperpig.</span></div>
+            </div>
+            <div class="chart-frame">
+              <p class="chart-title">Reaction frequency · weekly</p>
+              <div class="chart-canvas">
+                <svg viewBox="0 0 200 100" class="chart-line" preserveAspectRatio="none">
+                  <rect x="6" y="40" width="22" height="60" fill="#2f7a52" />
+                  <rect x="34" y="60" width="22" height="40" fill="#2f7a52" />
+                  <rect x="62" y="20" width="22" height="80" fill="#b8540a" />
+                  <rect x="90" y="50" width="22" height="50" fill="#2f7a52" />
+                  <rect x="118" y="70" width="22" height="30" fill="#2f7a52" />
+                  <rect x="146" y="45" width="22" height="55" fill="#b8540a" />
+                  <rect x="174" y="80" width="22" height="20" fill="#2f7a52" />
+                </svg>
+                <div class="chart-axis"></div>
+              </div>
+              <p class="card-subtitle" style="margin: 6px 0 0;">2 reactions in last 7 weeks · trending down</p>
+            </div>
+            <div class="chart-frame">
+              <p class="chart-title">Check-in averages · 7-axis</p>
+              <div class="chart-canvas" style="display: grid; place-items: center;">
+                <svg viewBox="-50 -50 100 100" width="120" height="120">
+                  <polygon points="0,-40 35,-15 30,30 -30,30 -35,-15" fill="rgba(47,122,82,0.18)" stroke="#2f7a52" stroke-width="1.5" />
+                  <polygon points="0,-25 22,-10 18,20 -18,20 -22,-10" fill="rgba(124,58,237,0.18)" stroke="#7c3aed" stroke-width="1.5" />
+                  <circle r="40" fill="none" stroke="rgba(20,32,26,0.15)" />
+                </svg>
+              </div>
+              <p class="card-subtitle" style="margin: 6px 0 0;">This week (sage) vs last week (violet)</p>
+            </div>
+          </div>
+
+          <div class="stack-md" style="margin-top: 18px;">
+            <div class="insight-card kind-trend">
+              <span class="insight-kind">📈 Trend · 4-week window</span>
+              <p class="insight-summary">Your acne severity has decreased ~25% since Apr 1.</p>
+              <p class="insight-supporting">Average severity moved from <strong>2.4</strong> to <strong>1.8</strong>. The biggest improvement was on cheeks.</p>
+              <div class="insight-actions"><button class="btn btn-outline btn-sm">Show me how</button><button class="btn btn-ghost btn-sm">Dismiss</button></div>
+            </div>
+
+            <div class="insight-card kind-correlation">
+              <span class="insight-kind">🔗 Correlation</span>
+              <p class="insight-summary">Breakouts <em>may be related to</em> introducing Glycolic Acid Toner on Apr 12.</p>
+              <p class="insight-supporting">Average breakouts rating moved from <strong>1.2</strong> (Apr 5–11) to <strong>2.6</strong> (Apr 13–18). Recovery noted on Apr 21 after you reduced frequency.</p>
+              <div class="insight-actions"><button class="btn btn-outline btn-sm">Show me how</button><button class="btn btn-ghost btn-sm">Dismiss</button></div>
+            </div>
+
+            <div class="insight-card kind-effectiveness">
+              <span class="insight-kind">🌱 Effectiveness · 6-week window</span>
+              <p class="insight-summary">Your hyperpigmentation <em>appears to have faded</em> ~30% since adding Vitamin C Serum 6 weeks ago.</p>
+              <p class="insight-supporting">Severity moved from <strong>2.8</strong> to <strong>1.9</strong>. Active 4–6 weeks is typical for visible change with Vitamin C.</p>
+              <div class="insight-actions"><button class="btn btn-outline btn-sm">Show me how</button><button class="btn btn-ghost btn-sm">Dismiss</button></div>
+            </div>
+
+            <div class="insight-card kind-referral">
+              <span class="insight-kind">🩺 Doctor referral</span>
+              <p class="insight-summary">5 photos in the last 7 days show moderate or severe reaction signals. Consider a dermatologist visit.</p>
+              <p class="insight-supporting">This is a precautionary nudge, not a diagnosis. We can package your last 30 days of entries into a sharable summary for your appointment.</p>
+              <div class="insight-actions"><button class="btn btn-primary btn-sm">⤓ Export skin history</button><button class="btn btn-ghost btn-sm">Not now</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 7: WRAPPED ============ -->
+      <p class="section-label" id="s7">7 · Wrapped — list, generator, viewer</p>
+      <h2 class="section-title">Photos build something beautiful, not just a feed for AI</h2>
+      <p class="section-subtitle">
+        Progress wrapped turn the daily uploads into a chronological slideshow with optional AI captions.
+        Periods supported: monthly, quarterly, yearly. MVP renders the manifest as an animated slideshow
+        in the browser; mp4 export is V2.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption"><span class="dot ai"></span><code>/journal</code> · Wrapped tab</div>
+        <div class="frame-body">
+          <div class="page-header-row">
+            <div>
+              <h3 style="margin: 0; font-size: 18px;">Your progress wrapped</h3>
+              <p class="card-subtitle" style="margin: 4px 0 0;">Built from your daily photos. Generate one any time.</p>
+            </div>
+            <button class="btn btn-ai">✨ Generate wrapped</button>
+          </div>
+
+          <div class="wrapped-grid" style="margin-top: 14px;">
+            <div class="wrapped-card">
+              <div class="wrapped-thumbs"><div class="wrapped-thumb"></div><div class="wrapped-thumb t2"></div><div class="wrapped-thumb t3"></div></div>
+              <div class="wrapped-meta">
+                <p class="wrapped-period">April 2026</p>
+                <p class="wrapped-status status-ready">Ready · 24 photos · 0:48</p>
+              </div>
+              <div class="wrapped-actions"><button class="btn btn-primary btn-sm">▶ Play</button><button class="btn btn-outline btn-sm">⤓ Save</button></div>
+            </div>
+            <div class="wrapped-card">
+              <div class="wrapped-thumbs"><div class="wrapped-thumb"></div><div class="wrapped-thumb t2"></div><div class="wrapped-thumb t3"></div></div>
+              <div class="wrapped-meta">
+                <p class="wrapped-period">March 2026</p>
+                <p class="wrapped-status status-ready">Ready · 28 photos · 0:56</p>
+              </div>
+              <div class="wrapped-actions"><button class="btn btn-primary btn-sm">▶ Play</button><button class="btn btn-outline btn-sm">⤓ Save</button></div>
+            </div>
+            <div class="wrapped-card">
+              <div class="wrapped-thumbs"><div class="wrapped-thumb"></div><div class="wrapped-thumb t2"></div><div class="wrapped-thumb t3"></div></div>
+              <div class="wrapped-meta">
+                <p class="wrapped-period">Q1 2026 · Jan – Mar</p>
+                <p class="wrapped-status status-generating">Generating… · 78 photos</p>
+              </div>
+              <div class="wrapped-actions"><button class="btn btn-ghost btn-sm" disabled>Almost ready</button></div>
+            </div>
+            <div class="wrapped-card">
+              <div class="wrapped-thumbs"><div class="wrapped-thumb"></div><div class="wrapped-thumb t2"></div><div class="wrapped-thumb t3"></div></div>
+              <div class="wrapped-meta">
+                <p class="wrapped-period">February 2026</p>
+                <p class="wrapped-status status-ready-to-generate">Ready to generate · 22 photos</p>
+              </div>
+              <div class="wrapped-actions"><button class="btn btn-primary btn-sm">✨ Generate</button></div>
+            </div>
+            <div class="wrapped-card">
+              <div class="wrapped-thumbs"><div class="wrapped-thumb" style="opacity:0.4;"></div><div class="wrapped-thumb t2" style="opacity:0.4;"></div><div class="wrapped-thumb t3" style="opacity:0.4;"></div></div>
+              <div class="wrapped-meta">
+                <p class="wrapped-period">January 2026</p>
+                <p class="wrapped-status status-not-enough">Not enough photos · need 3+</p>
+              </div>
+              <div class="wrapped-actions"><button class="btn btn-ghost btn-sm" disabled>Not yet</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Generator dialog -->
+        <div class="frame">
+          <div class="frame-caption"><span class="dot ai"></span>Generator modal</div>
+          <div class="frame-body">
+            <div class="dialog-stage">
+              <div class="dialog">
+                <div class="dialog-icon ai">✨</div>
+                <p class="dialog-title">Generate a progress wrapped</p>
+                <p class="dialog-lede">Pick a period. We'll string together your daily photos with short captions describing visible changes.</p>
+                <div class="row-2" style="gap: 10px;">
+                  <div>
+                    <label class="label">Period</label>
+                    <div class="chip-row"><span class="chip selected">Monthly</span><span class="chip">Quarterly</span><span class="chip">Yearly</span></div>
+                  </div>
+                  <div>
+                    <label class="label">Month</label>
+                    <select class="select"><option>April 2026 (current)</option><option>March 2026</option><option>February 2026</option></select>
+                  </div>
+                </div>
+                <div class="card-soft" style="margin-top: 14px;">
+                  <p class="card-subtitle" style="margin: 0 0 4px;">Preview · April 2026</p>
+                  <p style="font-size: 12px; margin: 0;"><strong>24 photos</strong> · ~48s slideshow · captions on visible changes (e.g. "Apr 18 — clearer chin", "Apr 26 — reaction recovery")</p>
+                </div>
+                <div class="btn-row" style="margin-top: 14px; justify-content: flex-end;">
+                  <button class="btn btn-ghost">Cancel</button>
+                  <button class="btn btn-primary">Generate</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wrapped viewer -->
+        <div class="frame">
+          <div class="frame-caption"><span class="dot"></span><code>/journal/wrapped/[id]</code></div>
+          <div class="frame-body" style="background: #0c0c0c; padding: 32px;">
+            <div class="wrapped-viewer">
+              <div class="wrapped-frame"></div>
+              <div class="wrapped-progress">
+                <div class="wrapped-bar done"></div><div class="wrapped-bar done"></div><div class="wrapped-bar done"></div>
+                <div class="wrapped-bar active"></div>
+                <div class="wrapped-bar"></div><div class="wrapped-bar"></div><div class="wrapped-bar"></div>
+              </div>
+              <div class="wrapped-controls">
+                <div class="wrapped-ctl">⏮</div><div class="wrapped-ctl">▶</div><div class="wrapped-ctl">⏭</div>
+              </div>
+              <div class="wrapped-caption">Apr 18 · clearer skin around chin</div>
+            </div>
+            <p style="text-align:center; color: #fff; font-size: 12px; margin-top: 12px; opacity: 0.7;">7 photos · April 2026 · captions auto-generated by AI</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 8: REACTION MODAL ============ -->
+      <p class="section-label" id="s8">8 · Reaction-detected modal</p>
+      <h2 class="section-title">Calm tone, no fear-mongering, primary action is to simplify</h2>
+      <p class="section-subtitle">
+        Triggered when AI returns <code>reaction_severity ≥ moderate</code> with <code>confidence ≥ 0.6</code>.
+        Indicators are presented as observations, not diagnoses. The user can choose to simplify their routine or keep
+        it; both options stay visible.
+      </p>
+
+      <div class="grid-2">
+        <div class="frame">
+          <div class="frame-caption"><span class="dot warning"></span>Moderate severity</div>
+          <div class="frame-body">
+            <div class="dialog-stage">
+              <div class="dialog">
+                <div class="dialog-icon warning">!</div>
+                <p class="dialog-title">We noticed possible irritation</p>
+                <p class="dialog-lede">Your photo from Apr 26 shows signs that <em>may</em> indicate a reaction. Compared to Apr 25: appears worse on cheeks and chin.</p>
+                <div class="card-soft" style="margin-bottom: 14px;">
+                  <p class="card-subtitle" style="margin: 0 0 6px;">Indicators</p>
+                  <div class="chip-row"><span class="chip danger">Redness spike</span><span class="chip danger">New breakouts cluster</span><span class="chip warning">Diffuse inflammation</span></div>
+                </div>
+                <p class="disclaimer" style="margin-bottom: 14px;"><strong>Not a medical diagnosis.</strong> If symptoms worsen or persist, consult a dermatologist.</p>
+                <div class="btn-row btn-row-equal">
+                  <button class="btn btn-primary-strong">Simplify routine until this clears (recommended)</button>
+                  <button class="btn btn-outline">Keep my routine</button>
+                </div>
+                <p class="card-subtitle" style="text-align: center; margin-top: 10px;"><a class="text-accent" href="#">How does Ritora decide?</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frame">
+          <div class="frame-caption"><span class="dot danger"></span>Severe severity</div>
+          <div class="frame-body">
+            <div class="dialog-stage">
+              <div class="dialog">
+                <div class="dialog-icon danger">⚠</div>
+                <p class="dialog-title">Strong reaction signals detected</p>
+                <p class="dialog-lede">Several indicators of significant irritation. We've already paused your active treatments and switched to barrier-repair until you confirm.</p>
+                <div class="card-soft" style="margin-bottom: 14px;">
+                  <p class="card-subtitle" style="margin: 0 0 6px;">Indicators</p>
+                  <div class="chip-row"><span class="chip danger">Hives appearance</span><span class="chip danger">Swelling appearance</span><span class="chip danger">Rash appearance</span></div>
+                  <p class="card-subtitle" style="margin: 10px 0 0;"><strong>If symptoms include difficulty breathing or facial swelling, seek emergency care.</strong></p>
+                </div>
+                <div class="btn-row btn-row-equal">
+                  <button class="btn btn-danger-solid">Acknowledge &amp; keep simplified</button>
+                  <button class="btn btn-outline">Restore my routine anyway</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 9: SIMPLIFICATION ============ -->
+      <p class="section-label" id="s9">9 · Routine simplification banner + detail</p>
+      <h2 class="section-title">A safety net the AI Suggestion engine plugs into later</h2>
+      <p class="section-subtitle">
+        When a reaction triggers simplification, the original schedule is snapshotted, paused, and replaced with a
+        barrier-repair preset (mapped to existing inventory). The user can restore at any time. The simplification
+        detail page shows exactly what was changed.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption"><span class="dot warning"></span><code>/journal/simplification/[id]</code></div>
+        <div class="frame-body">
+          <div class="page-header-row">
+            <div>
+              <p class="page-eyebrow">Skin Journal · safety</p>
+              <h1 class="page-title">Routine simplification · Apr 26 → ongoing</h1>
+              <p class="page-subtitle">Triggered by Apr 26 photo · severity moderate · confidence 0.71</p>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-outline">Keep simplified</button>
+              <button class="btn btn-primary-strong">Restore my routine</button>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <p class="card-title">What we noticed</p>
+              <p class="card-subtitle">Increased redness across cheeks · new breakouts cluster on chin · diffuse inflammation indicators.</p>
+              <div class="card-soft" style="margin-top: 10px;">
+                <p class="card-subtitle" style="margin: 0;">From the Apr 26 analysis · GPT-4o · v1.0</p>
+                <p style="font-size: 12px; margin: 6px 0 0; line-height: 1.55;">"Skin appears noticeably more inflamed than Apr 25. Mild swelling around chin. Recommend simplifying."</p>
+              </div>
+            </div>
+            <div class="card">
+              <p class="card-title">Barrier-repair preset (active)</p>
+              <p class="card-subtitle">Mapped to your existing inventory by closest match.</p>
+              <div class="stack-sm">
+                <div class="card-soft"><strong>AM:</strong> CeraVe Hydrating Cleanser → CeraVe Moisturising Lotion → Sunscreen</div>
+                <div class="card-soft"><strong>PM:</strong> CeraVe Hydrating Cleanser → CeraVe Moisturising Lotion</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top: 14px;">
+            <p class="card-title">What was paused</p>
+            <p class="card-subtitle">Snapshot of your weekly schedule on Apr 26 · restored on acknowledge.</p>
+            <div class="row-2" style="gap: 12px;">
+              <div class="card-soft">
+                <strong>AM (paused):</strong>
+                <ul style="margin: 6px 0 0; padding-left: 18px; font-size: 12px;">
+                  <li>CeraVe Hydrating Cleanser</li>
+                  <li>Vitamin C Serum (Mon/Wed/Fri)</li>
+                  <li>Niacinamide Serum</li>
+                  <li>CeraVe Moisturising Lotion</li>
+                  <li>Sunscreen</li>
+                </ul>
+              </div>
+              <div class="card-soft">
+                <strong>PM (paused):</strong>
+                <ul style="margin: 6px 0 0; padding-left: 18px; font-size: 12px;">
+                  <li>CeraVe SA Smoothing Cleanser</li>
+                  <li>Glycolic Acid Toner (Tue/Thu)</li>
+                  <li>Retinol 0.5% (Mon/Wed/Fri)</li>
+                  <li>CeraVe Moisturising Lotion</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 10: DASHBOARD ============ -->
+      <p class="section-label" id="s10">10 · Dashboard touch-points</p>
+      <h2 class="section-title">Minimal · two cards max · everything else lives in Journal</h2>
+      <p class="section-subtitle">
+        Per the user's product direction: progress-tracking UI lives under <code>/journal</code>. Dashboard
+        only carries a compact alert (when simplification is active) and a missing-photo nudge (when today's
+        upload is overdue). Both deep-link into the Journal.
+      </p>
+
+      <div class="frame">
+        <div class="frame-caption"><span class="dot"></span><code>/dashboard</code> · skin-journal touch-points only</div>
+        <div class="frame-body" style="background: var(--background);">
+          <div style="max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px;">
+            <!-- Compact alert -->
+            <div class="banner banner-warning" style="border-radius: 14px;">
+              <div class="banner-icon">!</div>
+              <div style="flex: 1;">
+                <p class="banner-title">Routine simplified · view in Journal</p>
+                <p class="banner-text">Since Apr 26 · barrier-repair mode active</p>
+              </div>
+              <button class="btn btn-outline btn-sm">View in Journal →</button>
+            </div>
+
+            <!-- Missing-photo nudge -->
+            <div class="card">
+              <div style="display: flex; gap: 14px; align-items: center;">
+                <div style="width: 56px; height: 56px; border-radius: 14px; background: var(--accent-soft); display: grid; place-items: center; font-size: 24px;">📷</div>
+                <div style="flex: 1;">
+                  <p class="card-title" style="margin: 0;">Add today's photo</p>
+                  <p class="card-subtitle" style="margin: 4px 0 0;">It's after your usual 8:00 reminder. A daily photo keeps your trend going.</p>
+                </div>
+                <button class="btn btn-primary">Open Skin Journal →</button>
+              </div>
+            </div>
+
+            <p class="disclaimer" style="text-align: center; margin-top: 4px;">No further skin-progress UI on the dashboard. <code>/insights</code>, <code>/history</code>, <code>/smart-picks</code>, and <code>/todays-suggestion</code> are unchanged in this phase.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 11: NOTIFICATIONS + SETTINGS ============ -->
+      <p class="section-label" id="s11">11 · Notifications inbox &amp; settings</p>
+      <h2 class="section-title">A cross-feature inbox · per-channel preferences</h2>
+      <p class="section-subtitle">
+        The notifications inbox is global (used by this feature and future AI Suggestions). Settings get a new
+        sub-route for photo-reminder time, alert toggles, and channel preferences (email + in-app; push when mobile launches).
+      </p>
+
+      <div class="grid-2">
+        <div class="frame">
+          <div class="frame-caption"><span class="dot"></span><code>/notifications</code></div>
+          <div class="frame-body">
+            <div class="page-header-row">
+              <div>
+                <p class="page-eyebrow">Inbox</p>
+                <h1 class="page-title" style="font-size: 18px;">Notifications</h1>
+              </div>
+              <button class="btn btn-ghost btn-sm">Mark all read</button>
+            </div>
+            <p class="section-label" style="margin: 0 0 6px;">Unread · 3</p>
+            <div class="notif-row unread">
+              <div class="notif-icon reaction">!</div>
+              <div class="notif-body">
+                <p class="notif-title">Possible reaction detected · Apr 26</p>
+                <p class="notif-text">Increased redness, new breakouts. Routine simplified to barrier-repair until you acknowledge.</p>
+                <p class="notif-meta">2 days ago · Skin Journal</p>
+              </div>
+              <button class="btn btn-outline btn-sm">View →</button>
+            </div>
+            <div class="notif-row unread">
+              <div class="notif-icon insight">✨</div>
+              <div class="notif-body">
+                <p class="notif-title">New insight · acne severity ↓25%</p>
+                <p class="notif-text">Your acne has been improving over the last 4 weeks. Tap to see what's working.</p>
+                <p class="notif-meta">today · Skin Journal</p>
+              </div>
+              <button class="btn btn-outline btn-sm">View →</button>
+            </div>
+            <div class="notif-row unread">
+              <div class="notif-icon wrapped">🎞️</div>
+              <div class="notif-body">
+                <p class="notif-title">Your April wrapped is ready</p>
+                <p class="notif-text">24 photos · 0:48 slideshow with AI captions on visible changes.</p>
+                <p class="notif-meta">today · Skin Journal</p>
+              </div>
+              <button class="btn btn-outline btn-sm">Play →</button>
+            </div>
+            <p class="section-label" style="margin: 14px 0 6px;">Read · 5</p>
+            <div class="notif-row">
+              <div class="notif-icon reminder">📷</div>
+              <div class="notif-body">
+                <p class="notif-title">Time for today's photo</p>
+                <p class="notif-text">Capture your morning baseline in natural daylight.</p>
+                <p class="notif-meta">today · 08:00 · Skin Journal</p>
+              </div>
+            </div>
+            <div class="notif-row">
+              <div class="notif-icon referral">🩺</div>
+              <div class="notif-body">
+                <p class="notif-title">Doctor referral nudge</p>
+                <p class="notif-text">Persistent reaction signals. Consider a dermatologist visit. We can prepare an export.</p>
+                <p class="notif-meta">2 days ago · Skin Journal</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frame">
+          <div class="frame-caption"><span class="dot"></span><code>/settings/notifications</code></div>
+          <div class="frame-body">
+            <div class="page-header-row">
+              <div>
+                <p class="page-eyebrow">Settings</p>
+                <h1 class="page-title" style="font-size: 18px;">Notifications</h1>
+                <p class="page-subtitle">Photo reminder, alerts, and channels.</p>
+              </div>
+            </div>
+            <div class="card">
+              <p class="card-title">Photo reminder</p>
+              <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <p class="card-subtitle" style="margin: 0;">Daily prompt to add today's photo</p>
+                <span class="toggle on"></span>
+              </div>
+              <div class="row-2">
+                <div>
+                  <label class="label">Reminder time</label>
+                  <input class="input" type="time" value="08:00" />
+                  <p class="card-subtitle" style="margin: 6px 0 0;">Sent in your timezone · Europe/Stockholm</p>
+                </div>
+                <div>
+                  <label class="label">Channels</label>
+                  <label class="checkbox-row"><span class="checkbox checked"></span><span class="checkbox-label">In-app</span></label>
+                  <label class="checkbox-row"><span class="checkbox checked"></span><span class="checkbox-label">Email</span></label>
+                  <label class="checkbox-row"><span class="checkbox"></span><span class="checkbox-label">Push (when mobile launches)</span></label>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <p class="card-title">Reaction alerts</p>
+              <div style="display:flex; justify-content: space-between; align-items:center; padding: 8px 0;">
+                <p class="card-subtitle" style="margin: 0;">Notify me when AI flags a possible reaction</p>
+                <span class="toggle on"></span>
+              </div>
+              <div style="display:flex; justify-content: space-between; align-items:center; padding: 8px 0;">
+                <p class="card-subtitle" style="margin: 0;">Auto-simplify routine on moderate/severe reactions</p>
+                <span class="toggle on"></span>
+              </div>
+              <p class="disclaimer" style="margin: 6px 0 0;">When off, you'll still get an alert but your routine is never changed automatically.</p>
+            </div>
+            <div class="card">
+              <p class="card-title">Insights &amp; wrapped</p>
+              <div style="display:flex; justify-content: space-between; align-items:center; padding: 8px 0;">
+                <p class="card-subtitle" style="margin: 0;">Insight notifications</p>
+                <span class="toggle on"></span>
+              </div>
+              <div style="display:flex; justify-content: space-between; align-items:center; padding: 8px 0;">
+                <p class="card-subtitle" style="margin: 0;">Wrapped ready notifications</p>
+                <span class="toggle on"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SECTION 12: EMPTY + ERRORS ============ -->
+      <p class="section-label" id="s12">12 · Empty &amp; error states</p>
+      <h2 class="section-title">Calm, encouraging tone — no shame about missed days</h2>
+      <p class="section-subtitle">
+        Per Ritora's voice: supportive, never fear-driven. Empty states give a clear next action. Error states
+        always preserve user data (photos and ratings stay even if AI fails).
+      </p>
+
+      <div class="grid-2">
+        <div class="frame">
+          <div class="frame-caption"><span class="dot"></span>Empty journal</div>
+          <div class="frame-body">
+            <div style="text-align: center; padding: 32px 16px;">
+              <div style="width: 96px; height: 96px; margin: 0 auto 16px; border-radius: 24px; background: var(--accent-soft); display: grid; place-items: center; font-size: 40px;">📸</div>
+              <h3 style="margin: 0 0 6px; font-size: 18px;">Your skin journey starts here</h3>
+              <p class="card-subtitle" style="max-width: 360px; margin: 0 auto 16px;">Take a photo in good daylight to begin tracking. We'll handle the rest — analysis, trends, and a monthly progress wrapped.</p>
+              <button class="btn btn-primary">＋ Add your first photo</button>
+            </div>
+          </div>
+        </div>
+        <div class="frame">
+          <div class="frame-caption"><span class="dot"></span>Empty insights</div>
+          <div class="frame-body">
+            <div style="text-align: center; padding: 32px 16px;">
+              <div style="width: 96px; height: 96px; margin: 0 auto 16px; border-radius: 24px; background: var(--ai-bg); display: grid; place-items: center; font-size: 40px;">✨</div>
+              <h3 style="margin: 0 0 6px; font-size: 18px;">Insights appear after ~2 weeks of tracking</h3>
+              <p class="card-subtitle" style="max-width: 360px; margin: 0 auto 16px;">We need a baseline before drawing trends. Keep adding daily photos — the AI is patient.</p>
+              <button class="btn btn-outline">Open Calendar tab</button>
+            </div>
+          </div>
+        </div>
+        <div class="frame">
+          <div class="frame-caption"><span class="dot"></span>Empty wrapped</div>
+          <div class="frame-body">
+            <div style="text-align: center; padding: 32px 16px;">
+              <div style="width: 96px; height: 96px; margin: 0 auto 16px; border-radius: 24px; background: var(--secondary-soft); display: grid; place-items: center; font-size: 40px;">🎞️</div>
+              <h3 style="margin: 0 0 6px; font-size: 18px;">No wrapped yet</h3>
+              <p class="card-subtitle" style="max-width: 360px; margin: 0 auto 16px;">You need at least 3 photos in a period to generate a wrapped. Yours will appear here once ready.</p>
+            </div>
+          </div>
+        </div>
+        <div class="frame">
+          <div class="frame-caption"><span class="dot warning"></span>Analysis failed (preserves data)</div>
+          <div class="frame-body">
+            <div class="card card-warning">
+              <div style="display: flex; gap: 10px; align-items: flex-start;">
+                <div style="width: 32px; height: 32px; border-radius: 9999px; background: var(--warning); color: #fff; display: grid; place-items: center; flex-shrink: 0;">!</div>
+                <div>
+                  <p class="card-title" style="margin: 0 0 4px;">Couldn't analyse this photo</p>
+                  <p class="card-subtitle" style="margin: 0;">Network hiccup · or lighting too low. Your photo is saved either way.</p>
+                </div>
+              </div>
+              <div class="btn-row" style="margin-top: 12px;">
+                <button class="btn btn-outline">↻ Retry analysis</button>
+                <button class="btn btn-ghost">Replace photo</button>
+              </div>
+              <p class="disclaimer" style="margin: 10px 0 0;">Cost ceiling reached for today is also handled here — analysis is queued and runs automatically tomorrow.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ PRINCIPLES ============ -->
+      <section class="principles">
+        <h2 style="margin: 0 0 4px; font-size: 18px;">Design &amp; safety principles</h2>
+        <ul>
+          <li><strong>One entry per local date.</strong> The unit is the day, not the photo. Same-day re-upload replaces the photo and reruns AI; the entry id is stable.</li>
+          <li><strong>Real photos, real daylight.</strong> No webcam UI. Users take a deliberate photo with their phone or camera, then upload. Better quality, fewer reflections, calmer flow.</li>
+          <li><strong>Static skin profile is foundational; the journal captures dynamic state.</strong> The check-in is intentionally short (≤30s) and never duplicates lifestyle / skin-behavior fields already in Skin Profile.</li>
+          <li><strong>Decision support, not diagnosis.</strong> The AI never says "you have X." It says "may", "appears to", "indicators of". Forbidden terms ("diagnose", "treat", "cure") are post-validated and rejected.</li>
+          <li><strong>Deterministic-first insights.</strong> Trends, correlations, and referral thresholds are computed in code; the LLM only writes the human summary. Bounds cost and prevents hallucinated correlations.</li>
+          <li><strong>Safety net before AI Suggestions.</strong> Reaction → automatic barrier-repair simplification (with snapshot + restore) ships now so the AI Suggestion engine plugs into a working safety net on day one.</li>
+          <li><strong>Photos are not just AI inputs.</strong> They build something the user owns and treasures — monthly, quarterly, and yearly progress wrapped with AI captions.</li>
+          <li><strong>Encrypt everything sensitive.</strong> Photos are S3 + KMS encrypted; concern/reaction JSONB columns use the same encryptedJsonFieldTransformer family used by Skin Profile. EXIF stripped twice (client + server). OpenAI receives photo bytes only — no PII.</li>
+          <li><strong>Failure preserves the user's work.</strong> Analysis errors keep the photo and the ratings; retry is a one-tap action. Cost ceiling queues rather than fails.</li>
+          <li><strong>Calm, supportive voice.</strong> No streak shame, no fear-mongering, no medicalised language. Empty states encourage; reaction modals reassure while giving the user agency.</li>
+          <li><strong>Accessibility from day one.</strong> Chip-based ratings (not sliders) are keyboard-friendly. Visible focus rings, ARIA labels, screen-reader confirmed. EN + SV i18n at parity.</li>
+          <li><strong>Everything under <code>/journal</code>.</strong> <code>/insights</code>, <code>/history</code>, <code>/smart-picks</code>, and <code>/todays-suggestion</code> are reserved for other features and are explicitly not modified in this phase.</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

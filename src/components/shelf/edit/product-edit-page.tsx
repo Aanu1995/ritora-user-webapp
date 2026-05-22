@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import { ProductEditForm } from './product-edit-form';
+import { ProductFormSkeleton } from '../form/product-form-skeleton';
 import { RetryPanel } from '@/components/ui/retry-panel';
-import { Skeleton } from '@/components/ui/skeleton';
 import { AppRoute } from '@/constants/app-routes';
 import { useShelfProduct } from '@/hooks/use-shelf';
 import { getApiErrorStatus } from '@/lib/api-error';
@@ -31,7 +31,7 @@ export function ProductEditPage({ productId }: Props) {
   }, [shouldRedirectToShelf, router]);
 
   if (product.isPending) {
-    return <Skeleton className="h-96 w-full" />;
+    return <ProductFormSkeleton mode="edit" />;
   }
 
   if (shouldRedirectToShelf) {

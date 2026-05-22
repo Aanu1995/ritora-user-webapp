@@ -1,25 +1,47 @@
-'use client';
+"use client";
 
 import {
   useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
-} from '@tanstack/react-query';
-import { QueryKey } from '@/constants/query-keys';
-import { useAuthEnabled } from '@/hooks/use-auth-enabled';
-import type { ShelfDateContext } from '@/hooks/use-shelf-time-zone';
+} from "@tanstack/react-query";
+import { QueryKey } from "@/constants/query-keys";
+import { useAuthEnabled } from "@/hooks/use-auth-enabled";
+import type { ShelfDateContext } from "@/hooks/use-shelf-time-zone";
 import {
   buildShelfProductsQueryKey,
   buildShelfStatsQueryKey,
-} from '@/lib/shelf-query';
-import * as shelfService from '@/services/shelf.service';
+} from "@/lib/shelf-query";
+import {
+  archiveProduct,
+  archiveProducts,
+  countProductsByStat,
+  createProduct,
+  createProductWithImage,
+  extractProductFromImages,
+  getProduct,
+  listProducts,
+  markProductFinished,
+  markProductsFinished,
+  removeProduct,
+  removeProducts,
+  restoreProduct,
+  restoreProducts,
+  updateProduct,
+  uploadProductImage,
+  uploadProductImageForProduct,
+} from "@/services/shelf.service";
 import {
   type DeepPartial,
   type ShelfListFilters,
   type ShelfProduct,
   type ShelfProductDraft,
-} from '@/types/shelf';
+} from "@/types/shelf";
+import {
+  UploadProgressToastKind,
+  withUploadProgressToast,
+} from "@/lib/upload-progress-toast";
 
 type ShelfQueryClient = ReturnType<typeof useQueryClient>;
 type ShelfProductMutationFn<TVariables> = (
@@ -27,10 +49,12 @@ type ShelfProductMutationFn<TVariables> = (
 ) => Promise<ShelfProduct>;
 type ShelfIdsMutationFn = (ids: string[]) => Promise<void>;
 
+const MISSING_PRODUCT_ID_ERROR = "MISSING_PRODUCT_ID";
+
 function invalidateShelfQueries(queryClient: ShelfQueryClient) {
   void queryClient.invalidateQueries({ queryKey: [QueryKey.Shelf] });
   // Focus-product ingredient analyses depend on each product's INCI data;
-  // any mutation that changes a shelf product must bust them too.
+  // Shelf-product mutations must bust the dependent suggestion caches too.
   void queryClient.invalidateQueries({
     queryKey: [QueryKey.IngredientsAnalysis],
   });
@@ -43,10 +67,7 @@ function setShelfProductCache(
   queryClient.setQueryData([QueryKey.ShelfProduct, product.id], product);
 }
 
-function removeShelfProductCache(
-  queryClient: ShelfQueryClient,
-  id: string,
-) {
+function removeShelfProductCache(queryClient: ShelfQueryClient, id: string) {
   queryClient.removeQueries({ queryKey: [QueryKey.ShelfProduct, id] });
 }
 
@@ -74,10 +95,7 @@ function syncShelfProduct(
   invalidateShelfQueries(queryClient);
 }
 
-function invalidateShelfProducts(
-  queryClient: ShelfQueryClient,
-  ids: string[],
-) {
+function invalidateShelfProducts(queryClient: ShelfQueryClient, ids: string[]) {
   invalidateShelfProductCaches(queryClient, ids);
   invalidateShelfQueries(queryClient);
 }
@@ -115,7 +133,7 @@ export function useShelfProducts(
   const query = useInfiniteQuery({
     queryKey: buildShelfProductsQueryKey(filters, dateContext),
     queryFn: ({ pageParam, signal }) =>
-      shelfService.listProducts(filters, pageParam, signal),
+      listProducts(filters, pageParam, signal),
     enabled: isEnabled,
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
@@ -133,7 +151,7 @@ export function useShelfStats(dateContext: ShelfDateContext) {
 
   return useQuery({
     queryKey: buildShelfStatsQueryKey(dateContext),
-    queryFn: () => shelfService.countProductsByStat(),
+    queryFn: ({ signal }) => countProductsByStat({ signal }),
     enabled: isEnabled,
   });
 }
@@ -143,11 +161,11 @@ export function useShelfProduct(id: string | null) {
 
   return useQuery({
     queryKey: [QueryKey.ShelfProduct, id],
-    queryFn: () => {
+    queryFn: ({ signal }) => {
       if (!id) {
-        throw new Error('Product id is required');
+        throw new Error(MISSING_PRODUCT_ID_ERROR);
       }
-      return shelfService.getProduct(id);
+      return getProduct(id, { signal });
     },
     enabled: isEnabled,
   });
@@ -157,7 +175,7 @@ export function useCreateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    createShelfProductMutationOptions(queryClient, shelfService.createProduct),
+    createShelfProductMutationOptions(queryClient, createProduct),
   );
 }
 
@@ -166,28 +184,74 @@ type UpdateProductArgs = {
   patch: DeepPartial<ShelfProductDraft>;
 };
 
+type UploadProductImageForProductArgs = {
+  id: string;
+  file: File;
+};
+
+type CreateProductWithImageArgs = {
+  draft: ShelfProductDraft;
+  file: File;
+};
+
 export function useUpdateProduct() {
   const queryClient = useQueryClient();
 
   return useMutation(
     createShelfProductMutationOptions(
       queryClient,
-      ({ id, patch }: UpdateProductArgs) => shelfService.updateProduct(id, patch),
+      ({ id, patch }: UpdateProductArgs) => updateProduct(id, patch),
     ),
   );
 }
 
 export function useUploadProductImage() {
   return useMutation({
-    mutationFn: (file: File) => shelfService.uploadProductImage(file),
+    mutationFn: (file: File) =>
+      withUploadProgressToast(
+        UploadProgressToastKind.ProductImage,
+        (onUploadProgress) => uploadProductImage(file, { onUploadProgress }),
+      ),
   });
+}
+
+export function useCreateProductWithImage() {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    createShelfProductMutationOptions(
+      queryClient,
+      (input: CreateProductWithImageArgs) =>
+        withUploadProgressToast(
+          UploadProgressToastKind.ProductImage,
+          (onUploadProgress) =>
+            createProductWithImage(input, { onUploadProgress }),
+        ),
+    ),
+  );
+}
+
+export function useUploadProductImageForProduct() {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    createShelfProductMutationOptions(
+      queryClient,
+      ({ id, file }: UploadProductImageForProductArgs) =>
+        withUploadProgressToast(
+          UploadProgressToastKind.ProductImage,
+          (onUploadProgress) =>
+            uploadProductImageForProduct(id, file, { onUploadProgress }),
+        ),
+    ),
+  );
 }
 
 export function useDeleteProduct() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => shelfService.removeProduct(id),
+    mutationFn: (id: string) => removeProduct(id),
     onSuccess: (_data, id) => {
       removeShelfProductCache(queryClient, id);
       invalidateShelfQueries(queryClient);
@@ -199,7 +263,7 @@ export function useDeleteProducts() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (ids: string[]) => shelfService.removeProducts(ids),
+    mutationFn: (ids: string[]) => removeProducts(ids),
     onSuccess: (_data, ids) => {
       ids.forEach((id) => {
         removeShelfProductCache(queryClient, id);
@@ -214,7 +278,7 @@ export function useArchiveProduct() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    createShelfProductMutationOptions(queryClient, shelfService.archiveProduct),
+    createShelfProductMutationOptions(queryClient, archiveProduct),
   );
 }
 
@@ -222,7 +286,11 @@ export function useExtractProductFromImages() {
   return useMutation({
     mutationKey: [QueryKey.PhotoExtract],
     mutationFn: (input: { images: File[]; heroImageIndex: number }) =>
-      shelfService.extractProductFromImages(input),
+      withUploadProgressToast(
+        UploadProgressToastKind.ProductPhotos,
+        (onUploadProgress) =>
+          extractProductFromImages(input, { onUploadProgress }),
+      ),
   });
 }
 
@@ -230,15 +298,13 @@ export function useArchiveProducts() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
-    createShelfIdsMutationOptions(queryClient, shelfService.archiveProducts),
+    createShelfIdsMutationOptions(queryClient, archiveProducts),
   );
 
   return {
     ...mutation,
-    archive: (
-      ids: string[],
-      options?: Parameters<typeof mutation.mutate>[1],
-    ) => mutation.mutate(ids, options),
+    archive: (ids: string[], options?: Parameters<typeof mutation.mutate>[1]) =>
+      mutation.mutate(ids, options),
   };
 }
 
@@ -246,7 +312,7 @@ export function useRestoreProduct() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    createShelfProductMutationOptions(queryClient, shelfService.restoreProduct),
+    createShelfProductMutationOptions(queryClient, restoreProduct),
   );
 }
 
@@ -254,15 +320,13 @@ export function useRestoreProducts() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
-    createShelfIdsMutationOptions(queryClient, shelfService.restoreProducts),
+    createShelfIdsMutationOptions(queryClient, restoreProducts),
   );
 
   return {
     ...mutation,
-    restore: (
-      ids: string[],
-      options?: Parameters<typeof mutation.mutate>[1],
-    ) => mutation.mutate(ids, options),
+    restore: (ids: string[], options?: Parameters<typeof mutation.mutate>[1]) =>
+      mutation.mutate(ids, options),
   };
 }
 
@@ -270,10 +334,7 @@ export function useMarkProductFinished() {
   const queryClient = useQueryClient();
 
   return useMutation(
-    createShelfProductMutationOptions(
-      queryClient,
-      shelfService.markProductFinished,
-    ),
+    createShelfProductMutationOptions(queryClient, markProductFinished),
   );
 }
 
@@ -281,7 +342,7 @@ export function useMarkFinished() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation(
-    createShelfIdsMutationOptions(queryClient, shelfService.markProductsFinished),
+    createShelfIdsMutationOptions(queryClient, markProductsFinished),
   );
 
   return {

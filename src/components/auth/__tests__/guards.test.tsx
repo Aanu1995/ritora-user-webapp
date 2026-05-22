@@ -3,10 +3,11 @@ import { AppRoute } from '@/constants/app-routes';
 import { useAuthStore } from '@/stores/auth-store';
 
 const mockReplace = jest.fn();
+let mockPathname = '/';
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ replace: mockReplace, push: jest.fn() }),
-  usePathname: () => '/',
+  usePathname: () => mockPathname,
   useSearchParams: () => new URLSearchParams(),
 }));
 
@@ -16,6 +17,7 @@ import { HomeRouteGuard } from '@/components/auth/home-route-guard';
 
 afterEach(() => {
   jest.clearAllMocks();
+  mockPathname = '/';
   useAuthStore.setState({
     user: null,
     isAuthenticated: false,
@@ -101,6 +103,20 @@ describe('GuestGuard', () => {
     );
 
     expect(screen.getByText('Guest Content')).toBeInTheDocument();
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it('renders configured action-token routes even when authenticated', () => {
+    mockPathname = `${AppRoute.CancelAccountDeletion}/token-123`;
+    useAuthStore.setState({ isAuthenticated: true, isLoading: false });
+
+    render(
+      <GuestGuard allowAuthenticatedPaths={[AppRoute.CancelAccountDeletion]}>
+        <div>Account Deletion Token</div>
+      </GuestGuard>,
+    );
+
+    expect(screen.getByText('Account Deletion Token')).toBeInTheDocument();
     expect(mockReplace).not.toHaveBeenCalled();
   });
 });

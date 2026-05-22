@@ -1,33 +1,55 @@
 "use client";
 
-import { useForm } from "@tanstack/react-form";
-import { useCallback, useState } from "react";
+import { useForm, useStore } from "@tanstack/react-form";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { useTranslations } from "next-intl";
-import { ContextStepFields } from "@/components/skin-profile/context-step-fields";
-import { KnownSensitivitiesField } from "@/components/skin-profile/known-sensitivities-field";
-import { OptionChipGroup } from "@/components/skin-profile/option-chip-group";
-import { RoutineComplexityStep } from "@/components/skin-profile/routine-complexity-step";
-import { StepActions } from "@/components/skin-profile/step-actions";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { StepProgressBar } from "@/components/skin-profile/step-progress-bar";
+import { Button } from "@/components/ui/button";
 import {
   useCreateSkinProfile,
   useUpdateSkinProfile,
 } from "@/hooks/use-skin-profile";
-import { firstFieldError, type FieldIssue } from "@/lib/form-errors";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 import {
   clearSubmitErrors,
   executeMutation,
   readSubmissionErrorMessage,
 } from "@/lib/form-submission";
+import { firstFieldError } from "@/lib/form-errors";
 import { getSkinProfileSubmitError } from "@/lib/skin-profile-submit-errors";
 import {
   buildSkinProfilePayload,
   getSkinProfileFormValues,
-  hasLocationData,
   skinProfileSchema,
   TOTAL_SKIN_PROFILE_STEPS,
   type SkinProfileFormValues,
 } from "./skin-profile-form.constants";
+import {
+  ALL_STEP_NUMBERS,
+  STEP_KEYS,
+  clampStep,
+  getValidationErrors,
+} from "./skin-profile-form-validation";
+import { isEssentialStepComplete } from "./essential-step-validation";
+import { BaselineStep } from "./baseline-step";
+import { ConcernsPriorityStep } from "./concerns-priority-step";
+import { EnvironmentStep } from "./environment-step";
+import { PreferencesStep } from "./preferences-step";
+import { RoutineBaselineStep } from "./routine-baseline-step";
+import { SunPigmentStep } from "./sun-pigment-step";
+import type {
+  SkinProfileBooleanField,
+  SkinProfileStringArrayField,
+  SkinProfileStringField,
+} from "./essential-form-types";
 import type { SkinProfile, SkinProfileOptions } from "@/types/skin-profile";
 
 interface SkinProfileFormProps {
@@ -36,44 +58,27 @@ interface SkinProfileFormProps {
   initialStep?: number;
   onCancel?: () => void;
   onSaved?: () => void;
+  onPendingChange?: (pending: boolean) => void;
 }
 
-type SingleSelectField =
-  | "skinType"
-  | "skinTone"
-  | "ageRange"
-  | "ethnicity"
-  | "routineComplexity";
-
-type MultiSelectField = "currentConcerns" | "skinGoals";
-type StringField =
-  | "skinType"
-  | "skinTone"
-  | "ageRange"
-  | "ethnicity"
-  | "countryCode"
-  | "city"
-  | "routineComplexity";
-
-type SkinProfileFieldMeta = Partial<
-  Record<keyof SkinProfileFormValues, { errors?: ReadonlyArray<FieldIssue> }>
->;
-
-function getFieldError(
-  fieldMeta: SkinProfileFieldMeta,
-  field: keyof SkinProfileFormValues,
-  translate: (key: string) => string,
-): string | undefined {
-  return firstFieldError(fieldMeta[field]?.errors, translate);
+export interface SkinProfileFormHandle {
+  submit: () => void;
 }
 
-export function SkinProfileForm({
-  existingProfile = null,
-  options,
-  initialStep = 1,
-  onCancel,
-  onSaved,
-}: SkinProfileFormProps) {
+export const SkinProfileForm = forwardRef<
+  SkinProfileFormHandle,
+  SkinProfileFormProps
+>(function SkinProfileForm(
+  {
+    existingProfile = null,
+    options,
+    initialStep = 1,
+    onCancel,
+    onSaved,
+    onPendingChange,
+  },
+  ref,
+) {
   const t = useTranslations("skinProfile");
   const createProfile = useCreateSkinProfile();
   const updateProfile = useUpdateSkinProfile();
@@ -82,7 +87,10 @@ export function SkinProfileForm({
   const mutation = isEdit ? updateProfile : createProfile;
 
   const [step, setStep] = useState(() => clampStep(initialStep));
-  const [sensitivityInput, setSensitivityInput] = useState("");
+  const [attemptedSteps, setAttemptedSteps] = useState<Set<number>>(
+    () => new Set(),
+  );
+  const formTopRef = useRef<HTMLDivElement>(null);
 
   const form = useForm({
     defaultValues: getSkinProfileFormValues(existingProfile),
@@ -108,286 +116,284 @@ export function SkinProfileForm({
         return undefined;
       },
     },
-    onSubmit: () => {
+    onSubmit: ({ value }) => {
+      form.reset(value);
+      releaseGuard();
       onSaved?.();
     },
   });
+
+  const isFormDirty = useStore(form.store, (state) => state.isDirty);
+  const { releaseGuard } = useUnsavedChangesGuard({
+    hasUnsavedChanges: isEdit && isFormDirty,
+  });
+
+  useEffect(() => {
+    onPendingChange?.(mutation.isPending);
+  }, [mutation.isPending, onPendingChange]);
+
+  useImperativeHandle(ref, () => ({
+    submit: () => {
+      setAttemptedSteps(new Set(ALL_STEP_NUMBERS));
+      void form.handleSubmit();
+    },
+  }));
 
   const translateOption = useCallback(
     (value: string) => t(`options.${value}`),
     [t],
   );
 
-  const updateStringField = (field: StringField, value: string) => {
+  const setBoolField = (field: SkinProfileBooleanField, value: boolean) => {
     clearSubmitErrors(form);
     form.setFieldValue(field, value);
-
-    if (
-      (field === "countryCode" || field === "city") &&
-      !hasLocationData(
-        field === "countryCode" ? String(value) : form.getFieldValue("countryCode"),
-        field === "city" ? String(value) : form.getFieldValue("city"),
-      )
-    ) {
-      form.setFieldValue("locationConsent", false);
-    }
   };
 
-  const updateBooleanField = (
-    field: "locationConsent",
-    value: boolean,
+  const setStringField = (field: SkinProfileStringField, value: string) => {
+    clearSubmitErrors(form);
+    form.setFieldValue(field, value);
+  };
+
+  const toggleSingleSelect = (
+    field: SkinProfileStringField,
+    value: string,
   ) => {
     clearSubmitErrors(form);
-    form.setFieldValue(field, value);
+    const previous = form.getFieldValue(field);
+    form.setFieldValue(field, previous === value ? "" : value);
   };
 
-  const toggleSingleSelect = (field: SingleSelectField, value: string) => {
+  const toggleMultiSelect = (
+    field: SkinProfileStringArrayField,
+    value: string,
+  ) => {
     clearSubmitErrors(form);
-    form.setFieldValue(field, (previous) => (previous === value ? "" : value));
-  };
+    const list = form.getFieldValue(field);
+    const isRemoving = list.includes(value);
+    const next = isRemoving
+      ? list.filter((entry) => entry !== value)
+      : [...list, value];
 
-  const toggleMultiSelect = (field: MultiSelectField, value: string) => {
-    clearSubmitErrors(form);
-    form.setFieldValue(field, (previous) =>
-      previous.includes(value)
-        ? previous.filter((entry) => entry !== value)
-        : [...previous, value],
-    );
-  };
-
-  const addSensitivity = () => {
-    const trimmed = sensitivityInput.trim();
-    if (!trimmed) {
-      return;
-    }
-
-    let wasAdded = false;
-
-    clearSubmitErrors(form);
-    form.setFieldValue("knownSensitivities", (previous) => {
-      const alreadyExists = previous.some(
-        (entry) => entry.toLocaleLowerCase() === trimmed.toLocaleLowerCase(),
-      );
-
-      if (alreadyExists) {
-        return previous;
+    if (field === "currentConcerns" && isRemoving) {
+      if (form.getFieldValue("primaryGoal") === value) {
+        form.setFieldValue("primaryGoal", "");
       }
-
-      wasAdded = true;
-      return [...previous, trimmed];
-    });
-
-    if (wasAdded) {
-      setSensitivityInput("");
+      const severities = { ...form.getFieldValue("concernSeverities") };
+      delete severities[value];
+      form.setFieldValue("concernSeverities", severities);
     }
+
+    form.setFieldValue(field, next);
   };
 
-  const removeSensitivity = (value: string) => {
+  const setConcernSeverity = (concern: string, severity: string) => {
     clearSubmitErrors(form);
-    form.setFieldValue("knownSensitivities", (previous) =>
-      previous.filter((entry) => entry !== value),
-    );
-  };
-
-  const canContinue = (): boolean => {
-    switch (step) {
-      case 1:
-        return Boolean(form.getFieldValue("skinType"));
-      case 4:
-        return Boolean(form.getFieldValue("routineComplexity"));
-      default:
-        return true;
-    }
+    const severities = { ...form.getFieldValue("concernSeverities") };
+    severities[concern] = severities[concern] === severity ? "" : severity;
+    form.setFieldValue("concernSeverities", severities);
   };
 
   const isEditMode = Boolean(onCancel);
 
-  const handleBack = () => setStep((currentStep) => Math.max(1, currentStep - 1));
+  const scrollToFormTop = () => {
+    window.requestAnimationFrame(() => {
+      formTopRef.current?.scrollIntoView({
+        block: "start",
+        behavior: "auto",
+      });
+    });
+  };
 
-  const handleContinue = () => {
-    if (mutation.isPending || !canContinue()) {
-      return;
-    }
+  const handleBack = () => {
+    setStep((current) => Math.max(1, current - 1));
+    scrollToFormTop();
+  };
 
-    if (isEditMode || step === TOTAL_SKIN_PROFILE_STEPS) {
+  const handleContinue = (values: SkinProfileFormValues) => {
+    if (mutation.isPending) return;
+
+    setAttemptedSteps((current) => new Set(current).add(step));
+
+    if (!isEssentialStepComplete(step, values)) return;
+
+    if (step === TOTAL_SKIN_PROFILE_STEPS) {
+      setAttemptedSteps(new Set(ALL_STEP_NUMBERS));
       void form.handleSubmit();
       return;
     }
 
-    setStep((currentStep) =>
-      Math.min(TOTAL_SKIN_PROFILE_STEPS, currentStep + 1),
-    );
-  };
-
-  const handleSkip = () => {
-    if (mutation.isPending) {
-      return;
-    }
-
-    void form.handleSubmit();
+    setStep((current) => Math.min(TOTAL_SKIN_PROFILE_STEPS, current + 1));
+    scrollToFormTop();
   };
 
   return (
     <form.Subscribe
       selector={(state) => ({
         values: state.values,
-        fieldMeta: state.fieldMeta as SkinProfileFieldMeta,
         submitError: state.errorMap.onSubmit,
         isSubmitting: state.isSubmitting,
       })}
     >
-      {({ values, fieldMeta, submitError, isSubmitting }) => {
+      {({ values, submitError, isSubmitting }) => {
         const formError = readSubmissionErrorMessage(submitError);
-        const showLocationConsent = hasLocationData(
-          values.countryCode,
-          values.city,
-        );
+        const stepInfo = STEP_KEYS[step - 1];
+
+        const isFirstStep = step === 1;
+        const isLastStep = step === TOTAL_SKIN_PROFILE_STEPS;
+        const showSaveLabel = isLastStep;
+        const stepErrors = attemptedSteps.has(step)
+          ? getValidationErrors(values, t)
+          : {};
 
         return (
-          <div className="mx-auto max-w-xl">
-            <StepProgressBar
-              currentStep={step}
-              totalSteps={TOTAL_SKIN_PROFILE_STEPS}
-            />
-
-            <div className="mt-8">
-              <h1 className="text-xl font-semibold tracking-tight text-foreground">
-                {t(`steps.${stepKey(step)}.heading`)}
-              </h1>
-              <p className="mt-1 text-sm text-muted">
-                {t(`steps.${stepKey(step)}.description`)}
-              </p>
-            </div>
-
-            <div className="mt-8">
-              {step === 1 ? (
-                <>
-                  <OptionChipGroup
-                    options={options.skinTypes}
-                    values={values.skinType ? [values.skinType] : []}
-                    onToggle={(value) => toggleSingleSelect("skinType", value)}
-                    translateOption={translateOption}
-                    multiSelect={false}
-                  />
-                  {getFieldError(fieldMeta, "skinType", t) ? (
-                    <p className="mt-4 text-sm text-danger" role="alert">
-                      {getFieldError(fieldMeta, "skinType", t)}
-                    </p>
+          <div ref={formTopRef} className="mx-auto max-w-3xl scroll-mt-32">
+            {!isEditMode ? (
+              <div className="sticky top-[88px] z-10 -mx-4 bg-background/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+                <div className="mx-auto flex max-w-3xl items-start gap-3">
+                  {!isFirstStep ? (
+                    <button
+                      type="button"
+                      aria-label={t("steps.back")}
+                      onClick={handleBack}
+                      disabled={isSubmitting || mutation.isPending}
+                      className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-accent-soft disabled:opacity-50"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                    </button>
                   ) : null}
-                </>
-              ) : null}
+                  <div className="mt-3 min-w-0 flex-1">
+                    <StepProgressBar
+                      currentStep={step}
+                      totalSteps={TOTAL_SKIN_PROFILE_STEPS}
+                    />
+                  </div>
+                  <div className="flex shrink-0 items-start gap-2 pl-16">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => handleContinue(values)}
+                      disabled={isSubmitting || mutation.isPending}
+                      className="gap-1.5 bg-accent text-white hover:bg-accent-strong"
+                    >
+                      {isSubmitting || mutation.isPending ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : null}
+                      {showSaveLabel
+                        ? isSubmitting || mutation.isPending
+                          ? t("steps.saving")
+                          : t("steps.save")
+                        : t("steps.continue")}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
 
-              {step === 2 ? (
-                <>
-                  <OptionChipGroup
-                    options={options.concerns}
-                    values={values.currentConcerns}
-                    onToggle={(value) =>
-                      toggleMultiSelect("currentConcerns", value)
-                    }
-                    translateOption={translateOption}
-                  />
-                  {getFieldError(fieldMeta, "currentConcerns", t) ? (
-                    <p className="mt-4 text-sm text-danger" role="alert">
-                      {getFieldError(fieldMeta, "currentConcerns", t)}
-                    </p>
-                  ) : null}
-                  <KnownSensitivitiesField
-                    inputValue={sensitivityInput}
-                    values={values.knownSensitivities}
-                    errorText={getFieldError(fieldMeta, "knownSensitivities", t)}
-                    onInputChange={setSensitivityInput}
-                    onAdd={addSensitivity}
-                    onRemove={removeSensitivity}
-                  />
-                </>
-              ) : null}
-
-              {step === 3 ? (
-                <>
-                  <OptionChipGroup
-                    options={options.goals}
-                    values={values.skinGoals}
-                    onToggle={(value) => toggleMultiSelect("skinGoals", value)}
-                    translateOption={translateOption}
-                  />
-                  {getFieldError(fieldMeta, "skinGoals", t) ? (
-                    <p className="mt-4 text-sm text-danger" role="alert">
-                      {getFieldError(fieldMeta, "skinGoals", t)}
-                    </p>
-                  ) : null}
-                </>
-              ) : null}
-
-              {step === 4 ? (
-                <RoutineComplexityStep
-                  options={options.complexities}
-                  selectedValue={values.routineComplexity}
-                  errorText={getFieldError(fieldMeta, "routineComplexity", t)}
-                  onChange={(value) => updateStringField("routineComplexity", value)}
-                />
-              ) : null}
-
-              {step === 5 ? (
-                <ContextStepFields
-                  options={options}
-                  skinTone={values.skinTone}
-                  ageRange={values.ageRange}
-                  ethnicity={values.ethnicity}
-                  countryCode={values.countryCode}
-                  city={values.city}
-                  locationConsent={values.locationConsent}
-                  showConsent={showLocationConsent}
-                  countryCodeError={getFieldError(fieldMeta, "countryCode", t)}
-                  cityError={getFieldError(fieldMeta, "city", t)}
-                  locationConsentError={getFieldError(
-                    fieldMeta,
-                    "locationConsent",
-                    t,
-                  )}
-                  onSkinToneChange={(value) => updateStringField("skinTone", value)}
-                  onAgeRangeChange={(value) => updateStringField("ageRange", value)}
-                  onEthnicityChange={(value) => updateStringField("ethnicity", value)}
-                  onCountryCodeChange={(value) =>
-                    updateStringField("countryCode", value)
-                  }
-                  onCityChange={(value) => updateStringField("city", value)}
-                  onLocationConsentChange={(value) =>
-                    updateBooleanField("locationConsent", value)
-                  }
-                />
-              ) : null}
-
-              {formError ? (
-                <p className="mt-4 text-sm text-danger" role="alert">
-                  {formError}
+            <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-surface">
+              <div className="border-b border-border px-6 py-5">
+                <h2 className="text-lg font-bold tracking-tight text-foreground">
+                  {t(`steps.${stepInfo}.heading`)}
+                </h2>
+                <p className="mt-1 text-sm text-muted">
+                  {t(`steps.${stepInfo}.description`)}
                 </p>
-              ) : null}
+              </div>
+
+              <div className="divide-y divide-border px-6">
+                {step === 1 ? (
+                  <form.Field name="dateOfBirth">
+                    {(dateOfBirthField) => (
+                      <BaselineStep
+                        values={values}
+                        options={options}
+                        dateOfBirthField={{
+                          value: dateOfBirthField.state.value,
+                          errorText:
+                            dateOfBirthField.state.meta.isTouched ||
+                            dateOfBirthField.state.meta.isDirty
+                              ? firstFieldError(
+                                  dateOfBirthField.state.meta.errors,
+                                  t,
+                                )
+                              : undefined,
+                          onBlur: dateOfBirthField.handleBlur,
+                          onChange: (next) => {
+                            clearSubmitErrors(form);
+                            dateOfBirthField.handleChange(next);
+                          },
+                        }}
+                        errors={stepErrors}
+                        toggleSingleSelect={toggleSingleSelect}
+                        translateOption={translateOption}
+                      />
+                    )}
+                  </form.Field>
+                ) : null}
+
+                {step === 2 ? (
+                  <ConcernsPriorityStep
+                    values={values}
+                    options={options}
+                    toggleMultiSelect={toggleMultiSelect}
+                    toggleSingleSelect={toggleSingleSelect}
+                    translateOption={translateOption}
+                    onConcernSeverityChange={setConcernSeverity}
+                    errors={stepErrors}
+                  />
+                ) : null}
+
+                {step === 3 ? (
+                  <SunPigmentStep
+                    values={values}
+                    options={options}
+                    toggleSingleSelect={toggleSingleSelect}
+                    translateOption={translateOption}
+                    errors={stepErrors}
+                  />
+                ) : null}
+
+                {step === 4 ? (
+                  <RoutineBaselineStep
+                    values={values}
+                    options={options}
+                    toggleSingleSelect={toggleSingleSelect}
+                    translateOption={translateOption}
+                    errors={stepErrors}
+                  />
+                ) : null}
+
+                {step === 5 ? (
+                  <EnvironmentStep
+                    values={values}
+                    options={options}
+                    setStringField={setStringField}
+                    toggleSingleSelect={toggleSingleSelect}
+                    translateOption={translateOption}
+                    errors={stepErrors}
+                  />
+                ) : null}
+
+                {step === 6 ? (
+                  <PreferencesStep
+                    values={values}
+                    options={options}
+                    toggleSingleSelect={toggleSingleSelect}
+                    setBoolField={setBoolField}
+                    translateOption={translateOption}
+                    errors={stepErrors}
+                  />
+                ) : null}
+              </div>
             </div>
 
-            <StepActions
-              step={step}
-              totalSteps={TOTAL_SKIN_PROFILE_STEPS}
-              canContinue={canContinue()}
-              isSubmitting={isSubmitting || mutation.isPending}
-              isOptionalStep={step === TOTAL_SKIN_PROFILE_STEPS}
-              onBack={handleBack}
-              onContinue={handleContinue}
-              onSkip={handleSkip}
-              onCancel={onCancel}
-            />
+            {formError ? (
+              <p className="mt-4 text-sm text-danger" role="alert">
+                {formError}
+              </p>
+            ) : null}
           </div>
         );
       }}
     </form.Subscribe>
   );
-}
-
-function stepKey(step: number): string {
-  const keys = ["skinType", "concerns", "goals", "routine", "context"];
-  return keys[step - 1] ?? "skinType";
-}
-
-function clampStep(step: number): number {
-  return Math.min(Math.max(step, 1), TOTAL_SKIN_PROFILE_STEPS);
-}
+});

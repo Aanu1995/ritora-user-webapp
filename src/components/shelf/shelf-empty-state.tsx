@@ -37,11 +37,7 @@ export function ShelfEmptyState({ onAddFirst }: Props) {
           {t('description')}
         </p>
 
-        <Button
-          size="sm"
-          className="mt-4 sm:mt-6 sm:h-12 sm:px-6 sm:text-sm"
-          onClick={onAddFirst}
-        >
+        <Button className="mt-4 sm:mt-6" onClick={onAddFirst}>
           <Plus className="h-3.5 w-3.5" />
           {t('cta')}
         </Button>

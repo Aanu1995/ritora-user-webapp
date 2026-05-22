@@ -1,10 +1,10 @@
 'use client';
 
 import { Calendar, Check, Clock, Droplet } from 'lucide-react';
-import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import type { MouseEvent } from 'react';
 import { ProductIllustration } from './product-illustration';
+import { SmoothImage } from '@/components/ui/smooth-image';
 import { cn } from '@/lib/utils';
 import {
   deriveShelfLife,
@@ -98,12 +98,20 @@ export function ProductCard({
     >
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-surface-muted">
         {imageUrl ? (
-          <Image
+          <SmoothImage
             src={imageUrl}
             alt=""
-            fill
             sizes="(max-width: 640px) 50vw, (max-width: 960px) 33vw, 25vw"
-            className="object-cover"
+            className="h-full w-full"
+            fallback={
+              <span className="flex h-full w-full items-center justify-center">
+                <ProductIllustration
+                  category={product.identity.category}
+                  brand={product.identity.brand}
+                  className="h-[70%] w-auto"
+                />
+              </span>
+            }
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
@@ -115,7 +123,6 @@ export function ProductCard({
           </div>
         )}
 
-        {/* Status dot */}
         <span
           className={cn(
             'absolute right-3 top-3 h-2.5 w-2.5 rounded-full ring-[3px] ring-surface',
@@ -124,7 +131,6 @@ export function ProductCard({
           aria-hidden
         />
 
-        {/* Checkbox */}
         <button
           type="button"
           role="checkbox"
@@ -142,12 +148,10 @@ export function ProductCard({
           <Check className="h-3.5 w-3.5" strokeWidth={3} />
         </button>
 
-        {/* Category badge */}
         <span className="absolute bottom-4 left-3 rounded-full bg-surface/90 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-foreground">
           {categoryLabel}
         </span>
 
-        {/* Shelf-life progress bar */}
         <div className="absolute inset-x-0 bottom-0 h-[3px] bg-foreground/10">
           <div
             className={cn('h-full transition-[width]', STATE_BAR_CLASS[life.state])}

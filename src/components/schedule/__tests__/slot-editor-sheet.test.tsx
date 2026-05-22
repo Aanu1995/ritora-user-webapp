@@ -1,11 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { NextIntlClientProvider } from 'next-intl';
-import enMessages from '../../../../messages/en.json';
-import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
-import { DayOfWeek, SlotMode, type ScheduleSlot } from '@/types/schedule';
-import { SlotEditorSheet } from '../slot-editor-sheet';
+import { fireEvent, render, screen } from "@testing-library/react";
+import { NextIntlClientProvider } from "next-intl";
+import enMessages from "../../../../messages/en.json";
+import { useUnsavedChangesStore } from "@/stores/unsaved-changes-store";
+import { DayOfWeek, SlotMode, type ScheduleSlot } from "@/types/schedule";
+import { SlotEditorSheet } from "../slot-editor-sheet";
 
-jest.mock('@/components/ui/sheet', () => ({
+jest.mock("@/components/ui/sheet", () => ({
   Sheet: ({
     children,
     onOpenChange,
@@ -32,31 +32,37 @@ jest.mock('@/components/ui/sheet', () => ({
   }) => (
     <div
       data-testid="sheet-content"
-      data-show-close-button={showCloseButton ? 'true' : 'false'}
+      data-show-close-button={showCloseButton ? "true" : "false"}
     >
       {children}
     </div>
   ),
-  SheetTitle: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SheetTitle: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
   SheetDescription: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
   ),
 }));
 
-jest.mock('../slot-editor-content', () => ({
+jest.mock("../slot-editor-content", () => ({
   SlotEditorContent: () => <div>slot-editor-content</div>,
 }));
 
 function createSlot(): ScheduleSlot {
   return {
-    id: 'slot-1',
+    id: "slot-1",
     dayOfWeek: DayOfWeek.Mon,
-    slotTime: '08:00',
+    slotTime: "08:00",
     mode: SlotMode.Manual,
     slotNotes: null,
+    specialistProviderName: null,
+    specialistClinicName: null,
+    specialistActiveSince: null,
+    specialistSafetyNotes: null,
     steps: [],
-    createdAt: '2026-04-17T00:00:00.000Z',
-    updatedAt: '2026-04-17T00:00:00.000Z',
+    createdAt: "2026-04-17T00:00:00.000Z",
+    updatedAt: "2026-04-17T00:00:00.000Z",
   };
 }
 
@@ -75,7 +81,7 @@ function renderSheet(
   );
 }
 
-describe('SlotEditorSheet', () => {
+describe("SlotEditorSheet", () => {
   beforeEach(() => {
     useUnsavedChangesStore.setState({
       hasUnsavedChanges: false,
@@ -85,17 +91,17 @@ describe('SlotEditorSheet', () => {
     });
   });
 
-  it('suppresses sheet dismissal while the product picker is stacked above it', () => {
+  it("suppresses sheet dismissal while the product picker is stacked above it", () => {
     const onOpenChange = jest.fn();
 
     renderSheet({ onOpenChange, suppressAutoClose: true });
 
-    expect(screen.getByTestId('sheet-content')).toHaveAttribute(
-      'data-show-close-button',
-      'false',
+    expect(screen.getByTestId("sheet-content")).toHaveAttribute(
+      "data-show-close-button",
+      "false",
     );
 
-    fireEvent.click(screen.getByRole('button', { name: /dismiss-sheet/i }));
+    fireEvent.click(screen.getByRole("button", { name: /dismiss-sheet/i }));
 
     expect(onOpenChange).not.toHaveBeenCalled();
     expect(useUnsavedChangesStore.getState().isDialogOpen).toBe(false);

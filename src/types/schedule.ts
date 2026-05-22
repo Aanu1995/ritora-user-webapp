@@ -1,11 +1,11 @@
 export enum DayOfWeek {
-  Mon = 'mon',
-  Tue = 'tue',
-  Wed = 'wed',
-  Thu = 'thu',
-  Fri = 'fri',
-  Sat = 'sat',
-  Sun = 'sun',
+  Mon = "mon",
+  Tue = "tue",
+  Wed = "wed",
+  Thu = "thu",
+  Fri = "fri",
+  Sat = "sat",
+  Sun = "sun",
 }
 
 export const DAY_OF_WEEK_ORDER: Record<DayOfWeek, number> = {
@@ -29,50 +29,53 @@ export const DAYS_OF_WEEK: readonly DayOfWeek[] = [
 ];
 
 export enum SlotMode {
-  Manual = 'manual',
-  AI = 'ai',
+  Manual = "manual",
+  AI = "ai",
 }
 
 export enum StepLabel {
-  Cleanser = 'cleanser',
-  Toner = 'toner',
-  Essence = 'essence',
-  Serum = 'serum',
-  Moisturizer = 'moisturizer',
-  SunProtection = 'sun-protection',
-  Mask = 'mask',
-  Exfoliant = 'exfoliant',
-  EyeCare = 'eye-care',
-  LipCare = 'lip-care',
-  Treatment = 'treatment',
-  Other = 'other',
-  Custom = 'custom',
+  Cleanser = "cleanser",
+  Toner = "toner",
+  Essence = "essence",
+  Serum = "serum",
+  Moisturizer = "moisturizer",
+  SunProtection = "sun-protection",
+  Mask = "mask",
+  Exfoliant = "exfoliant",
+  EyeCare = "eye-care",
+  LipCare = "lip-care",
+  Treatment = "treatment",
+  Other = "other",
+  Custom = "custom",
 }
 
 export enum SchedulePreset {
-  EveryDay = 'every_day',
+  EveryDay = "every_day",
 }
 
 export enum AddSlotPresetMode {
-  EveryDay = 'every_day',
-  Single = 'single',
+  EveryDay = "every_day",
+  Single = "single",
 }
 
 export enum ScheduleApiErrorCode {
-  CustomLabelRequired = 'SCHEDULE_CUSTOM_LABEL_REQUIRED',
-  MoveConflict = 'SCHEDULE_MOVE_CONFLICT',
-  ProductsNotOwned = 'SCHEDULE_PRODUCTS_NOT_OWNED',
-  SlotConflict = 'SCHEDULE_SLOT_CONFLICT',
-  SlotNotFound = 'SCHEDULE_SLOT_NOT_FOUND',
-  TooManySteps = 'SCHEDULE_TOO_MANY_STEPS',
+  CustomLabelRequired = "SCHEDULE_CUSTOM_LABEL_REQUIRED",
+  MoveConflict = "SCHEDULE_MOVE_CONFLICT",
+  ProductsNotOwned = "SCHEDULE_PRODUCTS_NOT_OWNED",
+  SlotConflict = "SCHEDULE_SLOT_CONFLICT",
+  SlotNotFound = "SCHEDULE_SLOT_NOT_FOUND",
+  TooManySteps = "SCHEDULE_TOO_MANY_STEPS",
 }
 
-export type Daypart = 'morning' | 'afternoon' | 'evening';
+export type Daypart = "morning" | "afternoon" | "evening";
 
 export const MAX_STEPS_PER_SLOT = 10;
 export const MAX_SLOT_NOTES_LENGTH = 1000;
 export const MAX_STEP_NOTES_LENGTH = 500;
 export const MAX_CUSTOM_LABEL_LENGTH = 100;
+export const MAX_SPECIALIST_PROVIDER_NAME_LENGTH = 120;
+export const MAX_SPECIALIST_CLINIC_NAME_LENGTH = 160;
+export const MAX_SPECIALIST_SAFETY_NOTES_LENGTH = 1000;
 
 export type RoutineStepProductSummary = {
   id: string;
@@ -91,6 +94,7 @@ export type RoutineStep = {
   customLabel: string | null;
   notes: string | null;
   optional: boolean;
+  isSpecialistLocked: boolean;
   product: RoutineStepProductSummary | null;
   createdAt: string;
   updatedAt: string;
@@ -102,6 +106,10 @@ export type ScheduleSlot = {
   slotTime: string; // HH:MM
   mode: SlotMode;
   slotNotes: string | null;
+  specialistProviderName: string | null;
+  specialistClinicName: string | null;
+  specialistActiveSince: string | null;
+  specialistSafetyNotes: string | null;
   steps: RoutineStep[];
   createdAt: string;
   updatedAt: string;
@@ -123,12 +131,21 @@ export type CreateSlotPayload = {
   slotTime: string;
   mode?: SlotMode;
   slotNotes?: string;
+  specialistProviderName?: string | null;
+  specialistClinicName?: string | null;
+  specialistActiveSince?: string | null;
+  specialistSafetyNotes?: string | null;
+  steps?: RoutineStepInput[];
 };
 
 export type UpdateSlotPayload = {
   slotTime?: string;
   mode?: SlotMode;
   slotNotes?: string | null;
+  specialistProviderName?: string | null;
+  specialistClinicName?: string | null;
+  specialistActiveSince?: string | null;
+  specialistSafetyNotes?: string | null;
 };
 
 export type CreateSlotsPayload = {
@@ -136,6 +153,11 @@ export type CreateSlotsPayload = {
   slotTime: string;
   mode?: SlotMode;
   slotNotes?: string;
+  specialistProviderName?: string | null;
+  specialistClinicName?: string | null;
+  specialistActiveSince?: string | null;
+  specialistSafetyNotes?: string | null;
+  steps?: RoutineStepInput[];
 };
 
 export type ApplyPresetPayload = {
@@ -143,6 +165,11 @@ export type ApplyPresetPayload = {
   slotTime: string;
   mode?: SlotMode;
   slotNotes?: string;
+  specialistProviderName?: string | null;
+  specialistClinicName?: string | null;
+  specialistActiveSince?: string | null;
+  specialistSafetyNotes?: string | null;
+  steps?: RoutineStepInput[];
 };
 
 export type MoveSlotPayload = {
@@ -158,6 +185,7 @@ export type RoutineStepInput = {
   customLabel?: string | null;
   notes?: string | null;
   optional?: boolean;
+  isSpecialistLocked?: boolean;
 };
 
 export type UpsertRoutineStepsPayload = {
@@ -165,11 +193,11 @@ export type UpsertRoutineStepsPayload = {
 };
 
 export function deriveDaypart(slotTime: string): Daypart {
-  const [hourStr] = slotTime.split(':');
-  const hour = Number.parseInt(hourStr ?? '0', 10);
-  if (hour < 12) return 'morning';
-  if (hour < 18) return 'afternoon';
-  return 'evening';
+  const [hourStr] = slotTime.split(":");
+  const hour = Number.parseInt(hourStr ?? "0", 10);
+  if (hour < 12) return "morning";
+  if (hour < 18) return "afternoon";
+  return "evening";
 }
 
 export function formatSlotTimeLabel(slotTime: string): string {

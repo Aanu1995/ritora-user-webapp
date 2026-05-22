@@ -31,6 +31,7 @@ jest.mock('@/services/shelf.service', () => ({
   archiveProduct: jest.fn(),
   archiveProducts: jest.fn(),
   countProductsByStat: jest.fn(),
+  createProductWithImage: jest.fn(),
   createProduct: jest.fn(),
   extractProductFromImages: jest.fn(),
   listProducts: jest.fn(),
@@ -40,9 +41,31 @@ jest.mock('@/services/shelf.service', () => ({
   restoreProduct: jest.fn(),
   restoreProducts: jest.fn(),
   updateProduct: jest.fn(),
+  uploadProductImage: jest.fn(),
+  uploadProductImageForProduct: jest.fn(),
 }));
 
-import * as shelfService from '@/services/shelf.service';
+jest.mock('sonner', () => ({
+  toast: {
+    loading: jest.fn(() => 'upload-toast'),
+    dismiss: jest.fn(),
+  },
+}));
+
+import {
+  archiveProduct,
+  archiveProducts,
+  countProductsByStat,
+  createProduct,
+  extractProductFromImages,
+  listProducts,
+  markProductFinished,
+  markProductsFinished,
+  removeProducts,
+  restoreProduct,
+  restoreProducts,
+  updateProduct,
+} from '@/services/shelf.service';
 
 const PRODUCT: ShelfProduct = {
   id: 'product-1',
@@ -86,7 +109,7 @@ const PRODUCT: ShelfProduct = {
     preferredTimeOfDay: null,
   },
   status: ShelfStatus.Active,
-  provenance: DataProvenance.UserEntered,
+  provenance: DataProvenance.PhotoLookup,
   createdAt: '2026-04-17T00:00:00.000Z',
   updatedAt: '2026-04-17T00:00:00.000Z',
 };
@@ -130,7 +153,7 @@ describe('useShelfProducts', () => {
 
   it('fetches and flattens paginated shelf products and stats when authenticated', async () => {
     useAuthStore.setState({ isAuthenticated: true });
-    (shelfService.listProducts as jest.Mock)
+    (listProducts as jest.Mock)
       .mockResolvedValueOnce({
         items: [PRODUCT],
         nextCursor: 'next-cursor',
@@ -139,7 +162,7 @@ describe('useShelfProducts', () => {
         items: [{ ...PRODUCT, id: 'product-2' }],
         nextCursor: null,
       });
-    (shelfService.countProductsByStat as jest.Mock).mockResolvedValue({
+    (countProductsByStat as jest.Mock).mockResolvedValue({
       [ShelfStatFilter.All]: 2,
     });
 
@@ -161,7 +184,7 @@ describe('useShelfProducts', () => {
     });
 
     expect(
-      (shelfService.listProducts as jest.Mock).mock.calls[0]?.[2],
+      (listProducts as jest.Mock).mock.calls[0]?.[2],
     ).toBeInstanceOf(AbortSignal);
     expect(products.current.data).toEqual([PRODUCT]);
     expect(products.current.hasNextPage).toBe(true);
@@ -178,7 +201,7 @@ describe('useShelfProducts', () => {
 
   it('does not refetch non-date-sensitive shelf lists when the effective shelf day changes', async () => {
     useAuthStore.setState({ isAuthenticated: true });
-    (shelfService.listProducts as jest.Mock).mockResolvedValue({
+    (listProducts as jest.Mock).mockResolvedValue({
       items: [PRODUCT],
       nextCursor: null,
     });
@@ -216,13 +239,13 @@ describe('useShelfProducts', () => {
     });
 
     await waitFor(() => {
-      expect(shelfService.listProducts).toHaveBeenCalledTimes(1);
+      expect(listProducts).toHaveBeenCalledTimes(1);
     });
   });
 
   it('refetches date-sensitive shelf lists and stats when the effective shelf day changes', async () => {
     useAuthStore.setState({ isAuthenticated: true });
-    (shelfService.listProducts as jest.Mock)
+    (listProducts as jest.Mock)
       .mockResolvedValueOnce({
         items: [PRODUCT],
         nextCursor: null,
@@ -231,7 +254,7 @@ describe('useShelfProducts', () => {
         items: [PRODUCT],
         nextCursor: null,
       });
-    (shelfService.countProductsByStat as jest.Mock)
+    (countProductsByStat as jest.Mock)
       .mockResolvedValueOnce({ [ShelfStatFilter.All]: 1 })
       .mockResolvedValueOnce({ [ShelfStatFilter.All]: 1 });
 
@@ -282,16 +305,16 @@ describe('useShelfProducts', () => {
     });
 
     await waitFor(() => {
-      expect(shelfService.listProducts).toHaveBeenCalledTimes(2);
-      expect(shelfService.countProductsByStat).toHaveBeenCalledTimes(2);
+      expect(listProducts).toHaveBeenCalledTimes(2);
+      expect(countProductsByStat).toHaveBeenCalledTimes(2);
     });
   });
 });
 
 describe('shelf mutations', () => {
   it('creates and updates products through the service layer', async () => {
-    (shelfService.createProduct as jest.Mock).mockResolvedValue(PRODUCT);
-    (shelfService.updateProduct as jest.Mock).mockResolvedValue({
+    (createProduct as jest.Mock).mockResolvedValue(PRODUCT);
+    (updateProduct as jest.Mock).mockResolvedValue({
       ...PRODUCT,
       identity: { ...PRODUCT.identity, name: 'Updated Serum' },
     });
@@ -307,17 +330,17 @@ describe('shelf mutations', () => {
       });
     });
 
-    expect(shelfService.createProduct).toHaveBeenCalled();
-    expect(shelfService.updateProduct).toHaveBeenCalledWith(PRODUCT.id, {
+    expect(createProduct).toHaveBeenCalled();
+    expect(updateProduct).toHaveBeenCalledWith(PRODUCT.id, {
       identity: { name: 'Updated Serum' },
     });
   });
 
   it('archives, restores, finishes, and batch deletes products', async () => {
-    (shelfService.archiveProducts as jest.Mock).mockResolvedValue(undefined);
-    (shelfService.restoreProducts as jest.Mock).mockResolvedValue(undefined);
-    (shelfService.markProductsFinished as jest.Mock).mockResolvedValue(undefined);
-    (shelfService.removeProducts as jest.Mock).mockResolvedValue(undefined);
+    (archiveProducts as jest.Mock).mockResolvedValue(undefined);
+    (restoreProducts as jest.Mock).mockResolvedValue(undefined);
+    (markProductsFinished as jest.Mock).mockResolvedValue(undefined);
+    (removeProducts as jest.Mock).mockResolvedValue(undefined);
 
     const { result: archiveResult } = renderHookWithProviders(() =>
       useArchiveProducts(),
@@ -339,22 +362,22 @@ describe('shelf mutations', () => {
       await deleteResult.current.mutateAsync(['product-1', 'product-2']);
     });
 
-    expect(shelfService.archiveProducts).toHaveBeenCalledWith(['product-1']);
-    expect(shelfService.restoreProducts).toHaveBeenCalledWith(['product-1']);
-    expect(shelfService.markProductsFinished).toHaveBeenCalledWith(['product-1']);
-    expect(shelfService.removeProducts).toHaveBeenCalledWith([
+    expect(archiveProducts).toHaveBeenCalledWith(['product-1']);
+    expect(restoreProducts).toHaveBeenCalledWith(['product-1']);
+    expect(markProductsFinished).toHaveBeenCalledWith(['product-1']);
+    expect(removeProducts).toHaveBeenCalledWith([
       'product-1',
       'product-2',
     ]);
   });
 
   it('uses explicit single-product archive, restore, and finish endpoints', async () => {
-    (shelfService.archiveProduct as jest.Mock).mockResolvedValue({
+    (archiveProduct as jest.Mock).mockResolvedValue({
       ...PRODUCT,
       status: ShelfStatus.Archived,
     });
-    (shelfService.restoreProduct as jest.Mock).mockResolvedValue(PRODUCT);
-    (shelfService.markProductFinished as jest.Mock).mockResolvedValue({
+    (restoreProduct as jest.Mock).mockResolvedValue(PRODUCT);
+    (markProductFinished as jest.Mock).mockResolvedValue({
       ...PRODUCT,
       status: ShelfStatus.FinishedUp,
     });
@@ -375,13 +398,13 @@ describe('shelf mutations', () => {
       await finishResult.current.mutateAsync('product-1');
     });
 
-    expect(shelfService.archiveProduct).toHaveBeenCalledWith('product-1');
-    expect(shelfService.restoreProduct).toHaveBeenCalledWith('product-1');
-    expect(shelfService.markProductFinished).toHaveBeenCalledWith('product-1');
+    expect(archiveProduct).toHaveBeenCalledWith('product-1');
+    expect(restoreProduct).toHaveBeenCalledWith('product-1');
+    expect(markProductFinished).toHaveBeenCalledWith('product-1');
   });
 
   it('extracts product details from uploaded photos', async () => {
-    (shelfService.extractProductFromImages as jest.Mock).mockResolvedValue({
+    (extractProductFromImages as jest.Mock).mockResolvedValue({
       identity: {
         brand: 'CeraVe',
         name: 'Retinol Serum',
@@ -409,9 +432,14 @@ describe('shelf mutations', () => {
       });
     });
 
-    expect(shelfService.extractProductFromImages).toHaveBeenCalledWith({
-      images: [productImage, labelImage],
-      heroImageIndex: 0,
-    });
+    expect(extractProductFromImages).toHaveBeenCalledWith(
+      {
+        images: [productImage, labelImage],
+        heroImageIndex: 0,
+      },
+      {
+        onUploadProgress: expect.any(Function),
+      },
+    );
   });
 });

@@ -1,30 +1,77 @@
 jest.mock('@/lib/api', () => ({
+  API_BASE_URL: 'http://localhost:3001/api/v1',
+  deleteRequest: jest.fn(),
   getRequest: jest.fn(),
   patchRequest: jest.fn(),
   postRequest: jest.fn(),
   setAccessToken: jest.fn(),
 }));
 
-import * as api from '@/lib/api';
-import * as authService from '@/services/auth.service';
+import { deleteRequest, getRequest, patchRequest, postRequest } from '@/lib/api';
+import { ApiError } from '@/lib/api-error';
+import {
+  cancelAccountDeletion,
+  confirmAccountDeletion,
+  forgotPassword,
+  getActiveSessions,
+  getAppleOAuthStartUrl,
+  getCurrentUser,
+  getGoogleOAuthStartUrl,
+  login,
+  logout,
+  logoutAll,
+  refreshTokens,
+  register,
+  requestAccountDeletion,
+  resendVerification,
+  resetPassword,
+  updatePreferredLanguage,
+  updateProfile,
+  updateTimeZone,
+  verifyEmail,
+} from '@/services/auth.service';
 
 afterEach(() => jest.clearAllMocks());
 
 describe('auth.service', () => {
   it('login calls postRequest with login path', async () => {
     const mockResponse = { accessToken: 'token', user: { id: '1' } };
-    (api.postRequest as jest.Mock).mockResolvedValue(mockResponse);
+    (postRequest as jest.Mock).mockResolvedValue(mockResponse);
 
-    const result = await authService.login({
+    const result = await login({
       email: 'test@example.com',
       password: 'pass',
     });
 
-    expect(api.postRequest).toHaveBeenCalledWith('/auth/login', {
+    expect(postRequest).toHaveBeenCalledWith('/auth/login', {
       email: 'test@example.com',
       password: 'pass',
     });
     expect(result).toEqual(mockResponse);
+  });
+
+  it('getGoogleOAuthStartUrl builds backend redirect URL with consent context', () => {
+    const result = getGoogleOAuthStartUrl({
+      preferredLanguage: 'sv',
+      termsAccepted: true,
+      privacyPolicyAccepted: true,
+    });
+
+    expect(result).toBe(
+      'http://localhost:3001/api/v1/auth/google?language=sv&termsAccepted=true&privacyPolicyAccepted=true',
+    );
+  });
+
+  it('getAppleOAuthStartUrl builds backend redirect URL with consent context', () => {
+    const result = getAppleOAuthStartUrl({
+      preferredLanguage: 'sv',
+      termsAccepted: true,
+      privacyPolicyAccepted: true,
+    });
+
+    expect(result).toBe(
+      'http://localhost:3001/api/v1/auth/apple?language=sv&termsAccepted=true&privacyPolicyAccepted=true',
+    );
   });
 
   it('register calls postRequest with register path', async () => {
@@ -37,119 +84,241 @@ describe('auth.service', () => {
       termsAccepted: true,
       privacyPolicyAccepted: true,
     };
-    (api.postRequest as jest.Mock).mockResolvedValue({});
+    (postRequest as jest.Mock).mockResolvedValue({});
 
-    await authService.register(input);
+    await register(input);
 
-    expect(api.postRequest).toHaveBeenCalledWith('/auth/register', input);
+    expect(postRequest).toHaveBeenCalledWith('/auth/register', input);
   });
 
   it('refreshTokens calls postRequest with refresh path', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({ accessToken: 'new' });
+    (postRequest as jest.Mock).mockResolvedValue({ accessToken: 'new' });
 
-    const result = await authService.refreshTokens();
+    const result = await refreshTokens();
 
-    expect(api.postRequest).toHaveBeenCalledWith('/auth/refresh');
+    expect(postRequest).toHaveBeenCalledWith('/auth/refresh');
     expect(result.accessToken).toBe('new');
   });
 
   it('logout calls postRequest with logout path', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue(undefined);
+    (postRequest as jest.Mock).mockResolvedValue(undefined);
 
-    await authService.logout();
+    await logout();
 
-    expect(api.postRequest).toHaveBeenCalledWith('/auth/logout');
+    expect(postRequest).toHaveBeenCalledWith('/auth/logout');
   });
 
   it('logoutAll calls postRequest with logout-all path', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue(undefined);
+    (postRequest as jest.Mock).mockResolvedValue(undefined);
 
-    await authService.logoutAll();
+    await logoutAll();
 
-    expect(api.postRequest).toHaveBeenCalledWith('/auth/logout-all');
+    expect(postRequest).toHaveBeenCalledWith('/auth/logout-all');
   });
 
   it('getCurrentUser calls getRequest with me path', async () => {
     const user = { id: '1', email: 'a@b.com' };
-    (api.getRequest as jest.Mock).mockResolvedValue(user);
+    (getRequest as jest.Mock).mockResolvedValue(user);
 
-    const result = await authService.getCurrentUser();
+    const result = await getCurrentUser();
 
-    expect(api.getRequest).toHaveBeenCalledWith('/auth/me');
+    expect(getRequest).toHaveBeenCalledWith('/auth/me');
     expect(result).toEqual(user);
+  });
+
+  it('getCurrentUser forwards cancellation signals for route-change cleanup', async () => {
+    const controller = new AbortController();
+    const user = { id: '1', email: 'a@b.com' };
+    (getRequest as jest.Mock).mockResolvedValue(user);
+
+    await getCurrentUser({ signal: controller.signal });
+
+    expect(getRequest).toHaveBeenCalledWith('/auth/me', {
+      signal: controller.signal,
+    });
   });
 
   it('getActiveSessions calls getRequest with sessions path', async () => {
     const sessions = [{ id: 's1' }];
-    (api.getRequest as jest.Mock).mockResolvedValue(sessions);
+    (getRequest as jest.Mock).mockResolvedValue(sessions);
 
-    const result = await authService.getActiveSessions();
+    const result = await getActiveSessions();
 
-    expect(api.getRequest).toHaveBeenCalledWith('/auth/sessions');
+    expect(getRequest).toHaveBeenCalledWith('/auth/sessions');
     expect(result).toEqual(sessions);
   });
 
   it('verifyEmail calls postRequest with token', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({ message: 'ok' });
+    (postRequest as jest.Mock).mockResolvedValue({ message: 'ok' });
 
-    await authService.verifyEmail('tok123');
+    await verifyEmail('tok123');
 
-    expect(api.postRequest).toHaveBeenCalledWith('/auth/verify-email', {
+    expect(postRequest).toHaveBeenCalledWith('/auth/verify-email', {
       token: 'tok123',
     });
   });
 
   it('resendVerification calls postRequest with email', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({ message: 'ok' });
+    (postRequest as jest.Mock).mockResolvedValue({ message: 'ok' });
 
-    await authService.resendVerification('a@b.com');
+    await resendVerification('a@b.com');
 
-    expect(api.postRequest).toHaveBeenCalledWith(
+    expect(postRequest).toHaveBeenCalledWith(
       '/auth/resend-verification',
       { email: 'a@b.com' },
     );
   });
 
   it('forgotPassword calls postRequest with email', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({ message: 'ok' });
+    (postRequest as jest.Mock).mockResolvedValue({ message: 'ok' });
 
-    await authService.forgotPassword('a@b.com');
+    await forgotPassword('a@b.com');
 
-    expect(api.postRequest).toHaveBeenCalledWith('/auth/forgot-password', {
+    expect(postRequest).toHaveBeenCalledWith('/auth/forgot-password', {
       email: 'a@b.com',
     });
   });
 
   it('resetPassword calls postRequest with data', async () => {
-    (api.postRequest as jest.Mock).mockResolvedValue({ message: 'ok' });
+    (postRequest as jest.Mock).mockResolvedValue({ message: 'ok' });
 
-    await authService.resetPassword({ token: 't', newPassword: 'p' });
+    await resetPassword({ token: 't', newPassword: 'p' });
 
-    expect(api.postRequest).toHaveBeenCalledWith('/auth/reset-password', {
+    expect(postRequest).toHaveBeenCalledWith('/auth/reset-password', {
       token: 't',
       newPassword: 'p',
     });
   });
 
+  it('requestAccountDeletion calls deleteRequest with password payload', async () => {
+    (deleteRequest as jest.Mock).mockResolvedValue({
+      status: 'scheduled',
+      message: 'Account deletion scheduled',
+      scheduledFor: '2026-06-13T12:00:00.000Z',
+    });
+
+    const result = await requestAccountDeletion({ password: 'Password1' });
+
+    expect(deleteRequest).toHaveBeenCalledWith('/auth/account', {
+      data: { password: 'Password1' },
+    });
+    expect(result.status).toBe('scheduled');
+  });
+
+  it('confirmAccountDeletion calls postRequest with token', async () => {
+    (postRequest as jest.Mock).mockResolvedValue({
+      status: 'scheduled',
+      message: 'Account deletion scheduled',
+    });
+
+    await confirmAccountDeletion('confirm-token');
+
+    expect(postRequest).toHaveBeenCalledWith(
+      '/auth/account/deletion/confirm',
+      { token: 'confirm-token' },
+    );
+  });
+
+  it('confirmAccountDeletion retries once when the first response is lost', async () => {
+    (postRequest as jest.Mock)
+      .mockRejectedValueOnce(new ApiError('Network timeout'))
+      .mockResolvedValueOnce({
+        status: 'scheduled',
+        message: 'Account deletion scheduled',
+      });
+
+    await confirmAccountDeletion('confirm-token');
+
+    expect(postRequest).toHaveBeenCalledTimes(2);
+    expect(postRequest).toHaveBeenNthCalledWith(
+      1,
+      '/auth/account/deletion/confirm',
+      { token: 'confirm-token' },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      2,
+      '/auth/account/deletion/confirm',
+      { token: 'confirm-token' },
+    );
+  });
+
+  it('confirmAccountDeletion does not retry invalid tokens', async () => {
+    (postRequest as jest.Mock).mockRejectedValue(
+      new ApiError('Invalid account deletion token', { status: 400 }),
+    );
+
+    await expect(confirmAccountDeletion('confirm-token')).rejects.toThrow(
+      'Invalid account deletion token',
+    );
+
+    expect(postRequest).toHaveBeenCalledTimes(1);
+  });
+
+  it('cancelAccountDeletion calls postRequest with token', async () => {
+    (postRequest as jest.Mock).mockResolvedValue({
+      message: 'Account deletion has been cancelled',
+    });
+
+    await cancelAccountDeletion('cancel-token');
+
+    expect(postRequest).toHaveBeenCalledWith('/auth/account/deletion/cancel', {
+      token: 'cancel-token',
+    });
+  });
+
+  it('cancelAccountDeletion retries once when the first response is lost', async () => {
+    (postRequest as jest.Mock)
+      .mockRejectedValueOnce(new ApiError('Network timeout'))
+      .mockResolvedValueOnce({
+        message: 'Account deletion has been cancelled',
+      });
+
+    await cancelAccountDeletion('cancel-token');
+
+    expect(postRequest).toHaveBeenCalledTimes(2);
+    expect(postRequest).toHaveBeenNthCalledWith(
+      1,
+      '/auth/account/deletion/cancel',
+      { token: 'cancel-token' },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      2,
+      '/auth/account/deletion/cancel',
+      { token: 'cancel-token' },
+    );
+  });
+
+  it('cancelAccountDeletion does not retry invalid tokens', async () => {
+    (postRequest as jest.Mock).mockRejectedValue(
+      new ApiError('Invalid account deletion token', { status: 400 }),
+    );
+
+    await expect(cancelAccountDeletion('cancel-token')).rejects.toThrow(
+      'Invalid account deletion token',
+    );
+
+    expect(postRequest).toHaveBeenCalledTimes(1);
+  });
+
   it('updateProfile calls patchRequest with profile data', async () => {
     const payload = { firstName: 'Ada', lastName: 'Lovelace' };
     const mockResponse = { id: '1', ...payload };
-    (api.patchRequest as jest.Mock).mockResolvedValue(mockResponse);
+    (patchRequest as jest.Mock).mockResolvedValue(mockResponse);
 
-    const result = await authService.updateProfile(payload);
+    const result = await updateProfile(payload);
 
-    expect(api.patchRequest).toHaveBeenCalledWith('/users/me', payload);
+    expect(patchRequest).toHaveBeenCalledWith('/users/me', payload);
     expect(result).toEqual(mockResponse);
   });
 
   it('updatePreferredLanguage calls patchRequest with language data', async () => {
     const payload = { preferredLanguage: 'sv' };
     const mockResponse = { id: '1', preferredLanguage: 'sv' };
-    (api.patchRequest as jest.Mock).mockResolvedValue(mockResponse);
+    (patchRequest as jest.Mock).mockResolvedValue(mockResponse);
 
-    const result = await authService.updatePreferredLanguage(payload);
+    const result = await updatePreferredLanguage(payload);
 
-    expect(api.patchRequest).toHaveBeenCalledWith(
+    expect(patchRequest).toHaveBeenCalledWith(
       '/users/me/language',
       payload,
     );
@@ -159,11 +328,11 @@ describe('auth.service', () => {
   it('updateTimeZone calls patchRequest with timezone data', async () => {
     const payload = { timeZone: 'Europe/Stockholm' };
     const mockResponse = { id: '1', timeZone: 'Europe/Stockholm' };
-    (api.patchRequest as jest.Mock).mockResolvedValue(mockResponse);
+    (patchRequest as jest.Mock).mockResolvedValue(mockResponse);
 
-    const result = await authService.updateTimeZone(payload);
+    const result = await updateTimeZone(payload);
 
-    expect(api.patchRequest).toHaveBeenCalledWith(
+    expect(patchRequest).toHaveBeenCalledWith(
       '/users/me/time-zone',
       payload,
     );

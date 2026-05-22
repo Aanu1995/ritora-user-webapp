@@ -25,10 +25,19 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('@/hooks/use-shelf', () => ({
   useShelfProduct: (...args: unknown[]) => mockUseShelfProduct(...args),
+  useShelfProducts: () => ({ data: [], isLoading: false }),
   useArchiveProduct: () => ({ mutate: jest.fn(), isPending: false }),
   useRestoreProduct: () => ({ mutate: jest.fn(), isPending: false }),
   useMarkProductFinished: () => ({ mutate: jest.fn(), isPending: false }),
   useDeleteProduct: () => ({ mutate: jest.fn(), isPending: false }),
+}));
+
+jest.mock('@/hooks/use-ingredients', () => ({
+  useCompareProducts: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+    data: null,
+  }),
 }));
 
 import { ProductDetailPage } from '@/components/shelf/detail/product-detail-page';
@@ -75,7 +84,7 @@ const PRODUCT: ShelfProduct = {
     preferredTimeOfDay: null,
   },
   status: ShelfStatus.Active,
-  provenance: DataProvenance.UserEntered,
+  provenance: DataProvenance.PhotoLookup,
   createdAt: '2026-04-17T00:00:00.000Z',
   updatedAt: '2026-04-17T00:00:00.000Z',
 };
@@ -86,7 +95,7 @@ beforeEach(() => {
 });
 
 describe('ProductDetailPage', () => {
-  it('renders loading skeletons while the product is loading', () => {
+  it('renders the product-detail shaped skeleton while the product is loading', () => {
     mockUseShelfProduct.mockReturnValue({
       isPending: true,
       isError: false,
@@ -97,7 +106,9 @@ describe('ProductDetailPage', () => {
       <ProductDetailPage productId="product-1" />,
     );
 
-    expect(container.querySelectorAll('.animate-pulse').length).toBeGreaterThan(0);
+    expect(screen.getByTestId('product-detail-skeleton')).toBeInTheDocument();
+    expect(screen.getByTestId('product-detail-skeleton-tabs')).toBeInTheDocument();
+    expect(container.querySelector('.sticky.top-0')).toBeInTheDocument();
   });
 
   it('renders a retry panel when the query fails', () => {

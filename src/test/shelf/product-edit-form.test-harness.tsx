@@ -12,6 +12,7 @@ import {
 export const mockPush = jest.fn();
 export const mockMutate = jest.fn();
 export const mockUploadMutate = jest.fn();
+export const mockUploadForProductMutate = jest.fn();
 export const mockCreateObjectUrl = jest.fn(() => 'blob:product-photo-preview');
 export const mockRevokeObjectUrl = jest.fn();
 
@@ -33,6 +34,10 @@ jest.mock('@/hooks/use-shelf', () => ({
   }),
   useUploadProductImage: () => ({
     mutate: mockUploadMutate,
+    isPending: false,
+  }),
+  useUploadProductImageForProduct: () => ({
+    mutate: mockUploadForProductMutate,
     isPending: false,
   }),
 }));
@@ -100,7 +105,7 @@ export const PRODUCT: ShelfProduct = {
     preferredTimeOfDay: null,
   },
   status: ShelfStatus.Active,
-  provenance: DataProvenance.UserEntered,
+  provenance: DataProvenance.PhotoLookup,
   createdAt: '2026-04-17T00:00:00.000Z',
   updatedAt: '2026-04-17T00:00:00.000Z',
 };
@@ -109,6 +114,7 @@ export function resetProductEditFormMocks(): void {
   mockPush.mockReset();
   mockMutate.mockReset();
   mockUploadMutate.mockReset();
+  mockUploadForProductMutate.mockReset();
   mockCreateObjectUrl.mockClear();
   mockRevokeObjectUrl.mockClear();
   URL.createObjectURL = mockCreateObjectUrl;

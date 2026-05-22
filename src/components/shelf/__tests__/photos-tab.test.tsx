@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/utils';
 import { ApiError } from '@/lib/api-error';
@@ -13,8 +13,9 @@ import {
 
 const mockUseExtractProductFromImages = jest.fn();
 const mockToastError = jest.fn();
-const mockCreateObjectURL = jest.fn(() => 'blob:preview');
+const mockCreateObjectURL = jest.fn();
 const mockRevokeObjectURL = jest.fn();
+let objectUrlSequence = 0;
 
 jest.mock('@/hooks/use-shelf', () => ({
   useExtractProductFromImages: () => mockUseExtractProductFromImages(),
@@ -67,7 +68,12 @@ beforeEach(() => {
   mockUseExtractProductFromImages.mockReset();
   mockToastError.mockReset();
   mockCreateObjectURL.mockClear();
+  mockCreateObjectURL.mockImplementation(() => {
+    objectUrlSequence += 1;
+    return `blob:preview-${objectUrlSequence}`;
+  });
   mockRevokeObjectURL.mockClear();
+  objectUrlSequence = 0;
   mockUseExtractProductFromImages.mockReturnValue({
     mutate: jest.fn(),
     isPending: false,
@@ -86,6 +92,30 @@ beforeAll(() => {
 });
 
 describe('PhotosTab', () => {
+  it('keeps photo lookup disabled when the capability is unavailable', async () => {
+    const user = userEvent.setup();
+    const mutate = jest.fn();
+    mockUseExtractProductFromImages.mockReturnValue({
+      mutate,
+      isPending: false,
+    });
+
+    const { container } = renderWithProviders(
+      <PhotosTab disabled onResolved={jest.fn()} />,
+    );
+
+    expect(getProductInput(container)).toBeDisabled();
+    expect(getLabelInput(container)).toBeDisabled();
+    expect(
+      screen.queryByText(/temporarily unavailable/i),
+    ).not.toBeInTheDocument();
+    await user.click(
+      screen.getByRole('button', { name: /extract from photos/i }),
+    );
+
+    expect(mutate).not.toHaveBeenCalled();
+  });
+
   it('keeps extract disabled until a product photo and at least one label photo are present', async () => {
     const user = userEvent.setup();
     const { container } = renderWithProviders(
@@ -237,6 +267,34 @@ describe('PhotosTab', () => {
     ).toBeInTheDocument();
   });
 
+  it('revokes preview URLs when photos are replaced, removed, or unmounted', async () => {
+    const user = userEvent.setup();
+    const { container, unmount } = renderWithProviders(
+      <PhotosTab onResolved={jest.fn()} />,
+    );
+
+    await user.upload(
+      getProductInput(container),
+      new File(['product-a'], 'product-a.jpg', { type: 'image/jpeg' }),
+    );
+    await user.upload(
+      getProductInput(container),
+      new File(['product-b'], 'product-b.jpg', { type: 'image/jpeg' }),
+    );
+    await user.upload(
+      getLabelInput(container),
+      new File(['label'], 'label.jpg', { type: 'image/jpeg' }),
+    );
+
+    expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:preview-1');
+
+    await user.click(screen.getAllByRole('button', { name: /^remove$/i })[1]);
+    expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:preview-3');
+
+    unmount();
+    expect(mockRevokeObjectURL).toHaveBeenCalledWith('blob:preview-2');
+  });
+
   it('shows a toast when extraction fails on content', async () => {
     const user = userEvent.setup();
     const mutate = jest.fn(
@@ -273,7 +331,9 @@ describe('PhotosTab', () => {
       expect(mockToastError).toHaveBeenCalledWith(
         expect.stringMatching(/couldn't read those photos/i),
         expect.objectContaining({
-          description: expect.stringMatching(/try clearer label photos/i),
+          description: expect.stringMatching(
+            /try clearer product and label photos/i,
+          ),
         }),
       );
     });
@@ -319,5 +379,49 @@ describe('PhotosTab', () => {
         }),
       );
     });
+  });
+
+  it('ignores extraction callbacks after unmount', async () => {
+    const user = userEvent.setup();
+    const onResolved = jest.fn();
+    let resolveExtraction: ((value: ResolvedLookup) => void) | null = null;
+    const mutate = jest.fn(
+      (
+        _input: { images: File[]; heroImageIndex: number },
+        options?: { onSuccess?: (value: ResolvedLookup | null) => void },
+      ) => {
+        resolveExtraction = (value) => options?.onSuccess?.(value);
+      },
+    );
+
+    mockUseExtractProductFromImages.mockReturnValue({
+      mutate,
+      isPending: false,
+    });
+
+    const { container, unmount } = renderWithProviders(
+      <PhotosTab onResolved={onResolved} />,
+    );
+
+    await user.upload(
+      getProductInput(container),
+      new File(['product'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+    await user.upload(
+      getLabelInput(container),
+      new File(['label'], 'label.jpg', { type: 'image/jpeg' }),
+    );
+    await user.click(
+      screen.getByRole('button', { name: /extract from photos/i }),
+    );
+
+    unmount();
+
+    await act(async () => {
+      resolveExtraction?.(RESOLVED_RESULT);
+      await Promise.resolve();
+    });
+
+    expect(onResolved).not.toHaveBeenCalled();
   });
 });

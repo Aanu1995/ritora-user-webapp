@@ -12,6 +12,11 @@ type IntlContextValue = {
   messages: MessageTree;
 };
 
+type TranslationValues = Record<
+  string,
+  string | number | ((chunks: React.ReactNode) => React.ReactNode)
+>;
+
 let currentIntl: IntlContextValue = {
   locale: 'en',
   messages: defaultMessages as unknown as MessageTree,
@@ -37,23 +42,48 @@ function formatMessage(
     return template;
   }
 
+  const withPlurals = template.replace(
+    /\{(\w+), plural, one \{([^{}]*)\} other \{([^{}]*)\}\}/g,
+    (_match, key: string, one: string, other: string) => {
+      const rawValue = values[key];
+      const count = Number(rawValue);
+      const templateValue = count === 1 ? one : other;
+      return templateValue.replaceAll('#', String(rawValue));
+    },
+  );
+
   return Object.entries(values).reduce(
     (output, [key, value]) => output.replaceAll(`{${key}}`, String(value)),
-    template,
+    withPlurals,
   );
 }
 
+function createTranslator(namespace?: string) {
+  const resolve = (key: string) =>
+    resolveMessage(
+      currentIntl.messages,
+      namespace ? `${namespace}.${key}` : key,
+    );
+
+  const translate = (key: string, values?: Record<string, string | number>) =>
+    formatMessage(resolve(key), values);
+
+  translate.rich = (key: string, values?: TranslationValues) => {
+    const scalarValues = Object.fromEntries(
+      Object.entries(values ?? {}).filter(
+        (entry): entry is [string, string | number] =>
+          typeof entry[1] !== 'function',
+      ),
+    );
+
+    return formatMessage(resolve(key).replace(/<\/?[^>]+>/g, ''), scalarValues);
+  };
+
+  return translate;
+}
+
 jest.mock('next-intl', () => ({
-  useTranslations:
-    (namespace?: string) => (key: string, values?: Record<string, string | number>) => {
-      return formatMessage(
-        resolveMessage(
-          currentIntl.messages,
-          namespace ? `${namespace}.${key}` : key,
-        ),
-        values,
-      );
-    },
+  useTranslations: (namespace?: string) => createTranslator(namespace),
   useLocale: () => currentIntl.locale,
   NextIntlClientProvider: ({
     children,
@@ -105,6 +135,18 @@ if (!global.PointerEvent) {
     configurable: true,
     value: PointerEventMock,
   });
+}
+
+if (!Element.prototype.hasPointerCapture) {
+  Element.prototype.hasPointerCapture = jest.fn(() => false);
+}
+
+if (!Element.prototype.setPointerCapture) {
+  Element.prototype.setPointerCapture = jest.fn();
+}
+
+if (!Element.prototype.releasePointerCapture) {
+  Element.prototype.releasePointerCapture = jest.fn();
 }
 
 if (!Element.prototype.scrollIntoView) {

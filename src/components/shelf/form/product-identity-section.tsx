@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import { useRef } from 'react';
 import { ImagePlus, RefreshCw, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ProductFormReviewFields } from '../product-form-body';
 import { ProductIllustration } from '../product-illustration';
 import { Button } from '@/components/ui/button';
+import { SmoothImage } from '@/components/ui/smooth-image';
 import {
   Select,
   SelectContent,
@@ -166,13 +166,11 @@ function PhotoUploadPreview({
           : 'border-border'
       }`}
     >
-      <Image
+      <SmoothImage
         src={imageUrl}
         alt={`${identity.brand} ${identity.name}`.trim() || tField('name')}
-        fill
-        unoptimized
         sizes="160px"
-        className="object-cover"
+        className="h-full w-full"
       />
     </div>
   ) : (
@@ -180,7 +178,7 @@ function PhotoUploadPreview({
       type="button"
       onClick={() => fileInputRef.current?.click()}
       disabled={photoUpload.isUploading}
-      className="flex aspect-[4/5] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-surface-muted/40 px-4 text-center text-muted transition hover:border-border-strong hover:bg-surface-muted/70 disabled:cursor-not-allowed disabled:opacity-60"
+      className="flex aspect-[4/5] w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-surface-muted/40 px-4 text-center text-muted transition hover:border-border-strong hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-60"
     >
       <ImagePlus className="h-8 w-8" />
       <span className="text-sm font-medium text-foreground">
@@ -202,14 +200,11 @@ function ReadonlyPhoto({
   return (
     <div className="flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl bg-surface-muted">
       {imageUrl ? (
-        <Image
+        <SmoothImage
           src={imageUrl}
           alt={`${identity.brand} ${identity.name}`.trim() || tField('name')}
-          width={320}
-          height={320}
-          unoptimized
           sizes="160px"
-          className="h-full w-full object-cover"
+          className="h-full w-full"
         />
       ) : (
         <ProductIllustration

@@ -77,7 +77,7 @@ const PRODUCT: ShelfProduct = {
     preferredTimeOfDay: null,
   },
   status: ShelfStatus.Active,
-  provenance: DataProvenance.UserEntered,
+  provenance: DataProvenance.PhotoLookup,
   createdAt: '2026-04-17T00:00:00.000Z',
   updatedAt: '2026-04-17T00:00:00.000Z',
 };
@@ -88,7 +88,7 @@ beforeEach(() => {
 });
 
 describe('ProductEditPage', () => {
-  it('renders a skeleton while loading', () => {
+  it('renders the product-form shaped skeleton while loading', () => {
     mockUseShelfProduct.mockReturnValue({
       isPending: true,
       isError: false,
@@ -96,7 +96,12 @@ describe('ProductEditPage', () => {
     });
 
     const { container } = renderWithProviders(<ProductEditPage productId="product-1" />);
-    expect(container.querySelector('.animate-pulse')).toBeInTheDocument();
+    const skeleton = screen.getByTestId('product-form-skeleton');
+
+    expect(skeleton).toHaveAttribute('data-skeleton-mode', 'edit');
+    expect(screen.getByTestId('product-form-skeleton-identity')).toBeInTheDocument();
+    expect(screen.getByTestId('product-form-skeleton-guidance')).toBeInTheDocument();
+    expect(container.querySelector('.sticky.top-0')).toBeInTheDocument();
   });
 
   it('renders a retry state on error', () => {

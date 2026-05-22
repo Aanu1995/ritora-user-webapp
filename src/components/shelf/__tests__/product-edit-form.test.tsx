@@ -1,19 +1,35 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { toast } from 'sonner';
 import {
   getStepInput,
   mockCreateObjectUrl,
   mockMutate,
+  mockUploadForProductMutate,
   mockPush,
   mockRevokeObjectUrl,
-  mockUploadMutate,
   renderProductEditForm,
   resetProductEditFormMocks,
 } from '@/test/shelf/product-edit-form.test-harness';
+import { ApiError } from '@/lib/api-error';
 import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
+
+function setInputValue(label: RegExp, value: string): void {
+  fireEvent.change(screen.getByLabelText(label), {
+    target: { value },
+  });
+}
+
+jest.mock('sonner', () => ({
+  toast: {
+    error: jest.fn(),
+    success: jest.fn(),
+  },
+}));
 
 beforeEach(() => {
   resetProductEditFormMocks();
+  jest.clearAllMocks();
 });
 
 describe('ProductEditForm', () => {
@@ -21,7 +37,7 @@ describe('ProductEditForm', () => {
     const user = userEvent.setup();
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/product name/i));
+    setInputValue(/product name/i, '');
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     expect(screen.getByText(/product name is required/i)).toBeInTheDocument();
@@ -37,11 +53,7 @@ describe('ProductEditForm', () => {
     const user = userEvent.setup();
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/product url/i));
-    await user.type(
-      screen.getByLabelText(/product url/i),
-      'ftp://example.com/product',
-    );
+    setInputValue(/product url/i, 'ftp://example.com/product');
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     expect(
@@ -82,10 +94,10 @@ describe('ProductEditForm', () => {
     const user = userEvent.setup();
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/^description$/i));
-    await user.clear(screen.getByLabelText(/^benefits$/i));
-    await user.clear(screen.getByLabelText(/^suited for$/i));
-    await user.clear(screen.getByLabelText(/^ingredients \(inci\)$/i));
+    setInputValue(/^description$/i, '');
+    setInputValue(/^benefits$/i, '');
+    setInputValue(/^suited for$/i, '');
+    setInputValue(/^ingredients \(inci\)$/i, '');
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     expect(screen.getByText(/description is required/i)).toBeInTheDocument();
@@ -106,9 +118,11 @@ describe('ProductEditForm', () => {
 
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/^ingredients \(inci\)$/i));
+    setInputValue(/^ingredients \(inci\)$/i, '');
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {
@@ -119,18 +133,22 @@ describe('ProductEditForm', () => {
     ).toEqual([]);
   });
 
-  it('lets the user choose a photo first and upload it before saving', async () => {
+  it('persists an uploaded photo immediately and clears the photo-only dirty state', async () => {
     const user = userEvent.setup();
-    mockUploadMutate.mockImplementation((_file, options) => {
+    mockUploadForProductMutate.mockImplementation((_input, options) => {
       options?.onSuccess?.({
-        imageUrl: 'https://cdn.example.com/product-images/processed/photo.webp',
+        identity: {
+          imageUrls: [
+            'https://cdn.example.com/product-images/processed/photo.webp',
+          ],
+        },
       });
     });
     mockMutate.mockImplementation((_input, options) => {
       options?.onSuccess?.();
     });
 
-    renderProductEditForm();
+    renderProductEditForm({ withUnsavedDialog: true });
 
     await user.upload(
       screen.getByLabelText(/choose product photo/i),
@@ -144,20 +162,94 @@ describe('ProductEditForm', () => {
     await user.click(screen.getByRole('button', { name: /upload photo/i }));
 
     await waitFor(() => {
-      expect(mockUploadMutate).toHaveBeenCalled();
+      expect(mockUploadForProductMutate).toHaveBeenCalledWith(
+        {
+          id: 'product-1',
+          file: expect.any(File),
+        },
+        expect.any(Object),
+      );
+      expect(mockMutate).not.toHaveBeenCalled();
+      expect(useUnsavedChangesStore.getState().hasUnsavedChanges).toBe(false);
     });
 
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalled();
+      expect(mockMutate).toHaveBeenCalledTimes(1);
     });
 
     expect(mockMutate.mock.calls[0]?.[0].patch.identity.imageUrls).toEqual([
       'https://cdn.example.com/product-images/processed/photo.webp',
     ]);
+  });
+
+  it('keeps the unsaved warning after photo upload when other fields are dirty', async () => {
+    const user = userEvent.setup();
+    mockUploadForProductMutate.mockImplementation((_input, options) => {
+      options?.onSuccess?.({
+        identity: {
+          imageUrls: [
+            'https://cdn.example.com/product-images/processed/photo.webp',
+          ],
+        },
+      });
+    });
+    mockMutate.mockImplementation((_input, options) => {
+      options?.onSuccess?.();
+    });
+
+    renderProductEditForm({ withUnsavedDialog: true });
+
+    setInputValue(/product name/i, 'Updated Serum');
+    await user.upload(
+      screen.getByLabelText(/choose product photo/i),
+      new File(['photo'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+    await user.click(screen.getByRole('button', { name: /upload photo/i }));
+
+    await waitFor(() => {
+      expect(mockUploadForProductMutate).toHaveBeenCalledWith(
+        {
+          id: 'product-1',
+          file: expect.any(File),
+        },
+        expect.any(Object),
+      );
+      expect(useUnsavedChangesStore.getState().hasUnsavedChanges).toBe(true);
+    });
+  });
+
+  it('shows the server upload reason when product photo upload fails', async () => {
+    const user = userEvent.setup();
+    mockUploadForProductMutate.mockImplementation((_input, options) => {
+      options?.onError?.(
+        new ApiError('Product image signing is not configured correctly', {
+          status: 503,
+          body: {
+            message: 'Product image signing is not configured correctly',
+          },
+        }),
+      );
+    });
+
+    renderProductEditForm();
+
+    await user.upload(
+      screen.getByLabelText(/choose product photo/i),
+      new File(['photo'], 'product.jpg', { type: 'image/jpeg' }),
+    );
+    await user.click(screen.getByRole('button', { name: /upload photo/i }));
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        'Product image signing is not configured correctly',
+      );
+    });
   });
 
   it('treats a selected but not yet uploaded photo as an unsaved change', async () => {
@@ -204,11 +296,12 @@ describe('ProductEditForm', () => {
 
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/product name/i));
-    await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+    setInputValue(/product name/i, 'Updated Serum');
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
-    await user.type(screen.getByLabelText(/^opened on$/i), '2026-04-15');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
+    setInputValue(/^opened on$/i, '2026-04-15');
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {
@@ -225,10 +318,11 @@ describe('ProductEditForm', () => {
 
     renderProductEditForm();
 
-    await user.clear(screen.getByLabelText(/product name/i));
-    await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+    setInputValue(/product name/i, 'Updated Serum');
     await user.click(screen.getByRole('button', { name: /add step/i }));
-    await user.type(getStepInput(1), 'Pat onto clean skin.');
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
     await user.click(screen.getByRole('button', { name: /save changes/i }));
 
     await waitFor(() => {
@@ -244,8 +338,7 @@ describe('ProductEditForm', () => {
       const user = userEvent.setup();
       renderProductEditForm({ withUnsavedDialog: true });
 
-      await user.clear(screen.getByLabelText(/product name/i));
-      await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+      setInputValue(/product name/i, 'Updated Serum');
 
       await user.click(screen.getByLabelText(/back to shelf/i));
 
@@ -260,8 +353,7 @@ describe('ProductEditForm', () => {
       const user = userEvent.setup();
       renderProductEditForm({ withUnsavedDialog: true });
 
-      await user.clear(screen.getByLabelText(/product name/i));
-      await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+      setInputValue(/product name/i, 'Updated Serum');
       await user.click(screen.getByLabelText(/back to shelf/i));
       await user.click(screen.getByRole('button', { name: /keep editing/i }));
 
@@ -278,8 +370,7 @@ describe('ProductEditForm', () => {
       const user = userEvent.setup();
       renderProductEditForm({ withUnsavedDialog: true });
 
-      await user.clear(screen.getByLabelText(/product name/i));
-      await user.type(screen.getByLabelText(/product name/i), 'Updated Serum');
+      setInputValue(/product name/i, 'Updated Serum');
       await user.click(screen.getByLabelText(/back to shelf/i));
       await user.click(
         screen.getByRole('button', { name: /discard changes/i }),

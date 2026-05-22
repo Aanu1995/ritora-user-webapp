@@ -86,7 +86,7 @@ const SORT_KEY: Record<ShelfSort, string> = {
 };
 
 const PILL_TRIGGER =
-  'h-10 w-auto min-w-0 rounded-full border-border-strong bg-surface px-3 text-sm font-medium hover:bg-surface-muted';
+  'h-10 w-auto min-w-0 rounded-full border-border-strong bg-surface px-3 text-sm font-medium hover:bg-accent-soft';
 
 export function ShelfFilterBar({
   search,

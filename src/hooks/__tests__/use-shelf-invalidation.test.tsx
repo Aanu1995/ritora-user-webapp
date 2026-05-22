@@ -30,7 +30,12 @@ jest.mock('@/services/shelf.service', () => ({
   uploadProductImage: jest.fn(),
 }));
 
-import * as shelfService from '@/services/shelf.service';
+import {
+  archiveProducts,
+  createProduct,
+  markProductsFinished,
+  removeProducts,
+} from '@/services/shelf.service';
 import {
   useArchiveProducts,
   useCreateProduct,
@@ -80,7 +85,7 @@ const PRODUCT: ShelfProduct = {
     preferredTimeOfDay: null,
   },
   status: ShelfStatus.Active,
-  provenance: DataProvenance.UserEntered,
+  provenance: DataProvenance.PhotoLookup,
   createdAt: '2026-04-17T00:00:00.000Z',
   updatedAt: '2026-04-17T00:00:00.000Z',
 };
@@ -131,7 +136,7 @@ beforeEach(() => {
 describe('shelf mutations invalidate ingredient queries', () => {
   it('createProduct invalidates shelf-summary and focus-product analyses', async () => {
     const { queryClient, wrapper } = setup();
-    (shelfService.createProduct as jest.Mock).mockResolvedValue(PRODUCT);
+    (createProduct as jest.Mock).mockResolvedValue(PRODUCT);
 
     const { result } = renderHook(() => useCreateProduct(), { wrapper });
 
@@ -153,7 +158,7 @@ describe('shelf mutations invalidate ingredient queries', () => {
 
   it('bulk archive invalidates ingredient queries', async () => {
     const { queryClient, wrapper } = setup();
-    (shelfService.archiveProducts as jest.Mock).mockResolvedValue(undefined);
+    (archiveProducts as jest.Mock).mockResolvedValue(undefined);
 
     const { result } = renderHook(() => useArchiveProducts(), { wrapper });
 
@@ -168,7 +173,7 @@ describe('shelf mutations invalidate ingredient queries', () => {
 
   it('bulk mark-finished invalidates ingredient queries', async () => {
     const { queryClient, wrapper } = setup();
-    (shelfService.markProductsFinished as jest.Mock).mockResolvedValue(
+    (markProductsFinished as jest.Mock).mockResolvedValue(
       undefined,
     );
 
@@ -185,7 +190,7 @@ describe('shelf mutations invalidate ingredient queries', () => {
 
   it('bulk delete invalidates ingredient queries', async () => {
     const { queryClient, wrapper } = setup();
-    (shelfService.removeProducts as jest.Mock).mockResolvedValue(undefined);
+    (removeProducts as jest.Mock).mockResolvedValue(undefined);
 
     const { result } = renderHook(() => useDeleteProducts(), { wrapper });
 

@@ -1,38 +1,51 @@
-import { screen } from '@testing-library/react';
-import { UnsavedChangesDialog } from '@/components/app/unsaved-changes-dialog';
-import { useUnsavedChangesStore } from '@/stores/unsaved-changes-store';
-import { renderWithProviders } from '@/test/utils';
+import { screen } from "@testing-library/react";
+import { UnsavedChangesDialog } from "@/components/app/unsaved-changes-dialog";
+import { useUnsavedChangesStore } from "@/stores/unsaved-changes-store";
+import { renderWithProviders } from "@/test/utils";
+import {
+  CatalogueSource,
+  DataProvenance,
+  LookupConfidence,
+  type ResolvedLookup,
+} from "@/types/shelf";
 
 export const mockPush = jest.fn();
 export const mockMutate = jest.fn();
+export const mockCreateWithImageMutate = jest.fn();
 export const mockExtractFromImagesMutate = jest.fn();
 export const mockToastSuccess = jest.fn();
 export const mockToastError = jest.fn();
 
-let mockLookupResolve: ((onResult: (value: unknown) => void) => void) | null =
-  null;
+let mockLookupResolve:
+  | ((onResult: (value: ResolvedLookup) => void) => void)
+  | null = null;
+let mockLookupProductPhotoFile: File | null = null;
 
-jest.mock('next/navigation', () => ({
+jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
     replace: jest.fn(),
     back: jest.fn(),
     prefetch: jest.fn(),
   }),
-  usePathname: () => '/shelf/new',
+  usePathname: () => "/shelf/new",
   useSearchParams: () => new URLSearchParams(),
 }));
 
-jest.mock('sonner', () => ({
+jest.mock("sonner", () => ({
   toast: {
     success: (...args: unknown[]) => mockToastSuccess(...args),
     error: (...args: unknown[]) => mockToastError(...args),
   },
 }));
 
-jest.mock('@/hooks/use-shelf', () => ({
+jest.mock("@/hooks/use-shelf", () => ({
   useCreateProduct: () => ({
     mutate: mockMutate,
+    isPending: false,
+  }),
+  useCreateProductWithImage: () => ({
+    mutate: mockCreateWithImageMutate,
     isPending: false,
   }),
   useExtractProductFromImages: () => ({
@@ -41,15 +54,27 @@ jest.mock('@/hooks/use-shelf', () => ({
   }),
 }));
 
-jest.mock('@/components/shelf/add-product/quick-lookup-card', () => ({
-  QuickLookupCard: ({ onResult }: { onResult: (value: unknown) => void }) => (
-    <button type="button" onClick={() => mockLookupResolve?.(onResult)}>
+jest.mock("@/components/shelf/add-product/quick-lookup-card", () => ({
+  QuickLookupCard: ({
+    onProductPhotoChange,
+    onResult,
+  }: {
+    onProductPhotoChange?: (file: File | null) => void;
+    onResult: (value: ResolvedLookup) => void;
+  }) => (
+    <button
+      type="button"
+      onClick={() => {
+        onProductPhotoChange?.(mockLookupProductPhotoFile);
+        mockLookupResolve?.(onResult);
+      }}
+    >
       import lookup
     </button>
   ),
 }));
 
-jest.mock('@/components/ui/date-picker', () => ({
+jest.mock("@/components/ui/date-picker", () => ({
   DatePicker: ({
     value,
     onChange,
@@ -68,15 +93,17 @@ jest.mock('@/components/ui/date-picker', () => ({
   ),
 }));
 
-import { AddProductPage } from '@/components/shelf/add-product-page';
+import { AddProductPage } from "@/components/shelf/add-product-page";
 
 export function resetAddProductPageMocks(): void {
   mockPush.mockReset();
   mockMutate.mockReset();
+  mockCreateWithImageMutate.mockReset();
   mockExtractFromImagesMutate.mockReset();
   mockToastSuccess.mockReset();
   mockToastError.mockReset();
   mockLookupResolve = null;
+  mockLookupProductPhotoFile = null;
   useUnsavedChangesStore.setState({
     hasUnsavedChanges: false,
     isDialogOpen: false,
@@ -84,10 +111,33 @@ export function resetAddProductPageMocks(): void {
   });
 }
 
+export function setMockLookupProductPhotoFile(file: File | null): void {
+  mockLookupProductPhotoFile = file;
+}
+
 export function setMockLookupResolve(
-  resolver: (onResult: (value: unknown) => void) => void,
+  resolver: (onResult: (value: ResolvedLookup) => void) => void,
 ): void {
   mockLookupResolve = resolver;
+}
+
+export function setSuccessfulPhotoExtraction(
+  overrides: Partial<ResolvedLookup> = {},
+): void {
+  setMockLookupResolve((onResult) => {
+    onResult({
+      identity: {},
+      guidance: {},
+      manufacturer: {},
+      provenance: DataProvenance.PhotoLookup,
+      source: CatalogueSource.UserPhotos,
+      confidence: LookupConfidence.High,
+      reviewRequired: false,
+      warnings: [],
+      evidence: [],
+      ...overrides,
+    });
+  });
 }
 
 export function renderAddProductPage(options?: {
@@ -107,6 +157,6 @@ export function renderAddProductPage(options?: {
 
 export function getStepInput(index: number) {
   return screen
-    .getAllByLabelText(new RegExp(`step ${index}`, 'i'))
-    .find((element) => element.tagName === 'INPUT') as HTMLInputElement;
+    .getAllByLabelText(new RegExp(`step ${index}`, "i"))
+    .find((element) => element.tagName === "INPUT") as HTMLInputElement;
 }

@@ -1,5 +1,11 @@
 import { useAuthStore } from '@/stores/auth-store';
-import * as api from '@/lib/api';
+import { QueryKey } from '@/constants/query-keys';
+import {
+  isDevSelfReferentialApiBase,
+  setAccessToken,
+  warnIfDevApiTargetsFrontend,
+} from '@/lib/api';
+import { appQueryClient } from '@/lib/query-client';
 
 jest.mock('@/lib/api', () => ({
   setAccessToken: jest.fn(),
@@ -14,11 +20,15 @@ jest.mock('@/services/auth.service', () => ({
   logout: jest.fn(),
 }));
 
-import * as authService from '@/services/auth.service';
-import { isDevSelfReferentialApiBase, warnIfDevApiTargetsFrontend } from '@/lib/api';
+import {
+  getCurrentUser,
+  logout as logoutRequest,
+  refreshTokens,
+} from '@/services/auth.service';
 
 afterEach(() => {
   jest.clearAllMocks();
+  appQueryClient.clear();
   document.documentElement.lang = 'en';
   document.cookie = 'NEXT_LOCALE=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
   useAuthStore.setState({
@@ -48,7 +58,7 @@ describe('useAuthStore', () => {
       expect(state.user).toEqual(mockUser);
       expect(state.isAuthenticated).toBe(true);
       expect(state.isLoading).toBe(false);
-      expect(api.setAccessToken).toHaveBeenCalledWith('access-token-123');
+      expect(setAccessToken).toHaveBeenCalledWith('access-token-123');
     });
   });
 
@@ -61,16 +71,28 @@ describe('useAuthStore', () => {
       expect(state.user).toBeNull();
       expect(state.isAuthenticated).toBe(false);
       expect(state.isLoading).toBe(false);
-      expect(api.setAccessToken).toHaveBeenLastCalledWith(null);
+      expect(setAccessToken).toHaveBeenLastCalledWith(null);
+    });
+
+    it('removes cached user data while preserving mutation status', () => {
+      appQueryClient.setQueryData([QueryKey.AuthMe], mockUser);
+      const mutation = appQueryClient.getMutationCache().build(appQueryClient, {
+        mutationFn: async () => 'done',
+      });
+
+      useAuthStore.getState().logout();
+
+      expect(appQueryClient.getQueryData([QueryKey.AuthMe])).toBeUndefined();
+      expect(appQueryClient.getMutationCache().getAll()).toContain(mutation);
     });
   });
 
   describe('hydrate', () => {
     it('refreshes token and fetches user on success', async () => {
-      (authService.refreshTokens as jest.Mock).mockResolvedValue({
+      (refreshTokens as jest.Mock).mockResolvedValue({
         accessToken: 'new-token',
       });
-      (authService.getCurrentUser as jest.Mock).mockResolvedValue(mockUser);
+      (getCurrentUser as jest.Mock).mockResolvedValue(mockUser);
 
       const localeChanged = await useAuthStore.getState().hydrate();
 
@@ -78,16 +100,16 @@ describe('useAuthStore', () => {
       expect(state.user).toEqual(mockUser);
       expect(state.isAuthenticated).toBe(true);
       expect(state.isLoading).toBe(false);
-      expect(api.setAccessToken).toHaveBeenCalledWith('new-token');
+      expect(setAccessToken).toHaveBeenCalledWith('new-token');
       expect(localeChanged).toBe(false);
     });
 
     it('returns localeChanged when the hydrated user language differs', async () => {
       document.documentElement.lang = 'en';
-      (authService.refreshTokens as jest.Mock).mockResolvedValue({
+      (refreshTokens as jest.Mock).mockResolvedValue({
         accessToken: 'new-token',
       });
-      (authService.getCurrentUser as jest.Mock).mockResolvedValue({
+      (getCurrentUser as jest.Mock).mockResolvedValue({
         ...mockUser,
         preferredLanguage: 'sv',
       });
@@ -99,7 +121,7 @@ describe('useAuthStore', () => {
     });
 
     it('clears state on refresh failure', async () => {
-      (authService.refreshTokens as jest.Mock).mockRejectedValue(
+      (refreshTokens as jest.Mock).mockRejectedValue(
         new Error('No session'),
       );
 
@@ -109,26 +131,26 @@ describe('useAuthStore', () => {
       expect(state.user).toBeNull();
       expect(state.isAuthenticated).toBe(false);
       expect(state.isLoading).toBe(false);
-      expect(api.setAccessToken).toHaveBeenLastCalledWith(null);
+      expect(setAccessToken).toHaveBeenLastCalledWith(null);
       expect(localeChanged).toBe(false);
     });
 
     it('clears state when the refreshed user has not verified email', async () => {
-      (authService.refreshTokens as jest.Mock).mockResolvedValue({
+      (refreshTokens as jest.Mock).mockResolvedValue({
         accessToken: 'new-token',
       });
-      (authService.getCurrentUser as jest.Mock).mockResolvedValue({
+      (getCurrentUser as jest.Mock).mockResolvedValue({
         ...mockUser,
         emailVerified: false,
       });
-      (authService.logout as jest.Mock).mockResolvedValue(undefined);
+      (logoutRequest as jest.Mock).mockResolvedValue(undefined);
 
       const localeChanged = await useAuthStore.getState().hydrate();
 
-      expect(authService.logout).toHaveBeenCalled();
+      expect(logoutRequest).toHaveBeenCalled();
       expect(useAuthStore.getState().isAuthenticated).toBe(false);
       expect(useAuthStore.getState().user).toBeNull();
-      expect(api.setAccessToken).toHaveBeenLastCalledWith(null);
+      expect(setAccessToken).toHaveBeenLastCalledWith(null);
       expect(localeChanged).toBe(false);
     });
 
@@ -138,7 +160,7 @@ describe('useAuthStore', () => {
       const localeChanged = await useAuthStore.getState().hydrate();
 
       expect(warnIfDevApiTargetsFrontend).toHaveBeenCalled();
-      expect(authService.refreshTokens).not.toHaveBeenCalled();
+      expect(refreshTokens).not.toHaveBeenCalled();
       expect(useAuthStore.getState().isAuthenticated).toBe(false);
       expect(useAuthStore.getState().isLoading).toBe(false);
       expect(localeChanged).toBe(false);

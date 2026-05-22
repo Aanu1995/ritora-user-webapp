@@ -1,12 +1,19 @@
-const AUTH_BASE = '/auth';
-const USERS_BASE = '/users';
+const AUTH_BASE = "/auth";
+const USERS_BASE = "/users";
 const USERS_ME_BASE = `${USERS_BASE}/me`;
-const SKIN_PROFILE_BASE = '/skin-profile';
-const CATALOGUE_PRODUCTS_BASE = '/catalogue/products';
-const INVENTORY_PRODUCTS_BASE = '/inventory/products';
-const SCHEDULE_BASE = '/schedule';
+const SKIN_PROFILE_BASE = "/skin-profile";
+const CATALOGUE_PRODUCTS_BASE = "/catalogue/products";
+const INVENTORY_PRODUCTS_BASE = "/inventory/products";
+const SCHEDULE_BASE = "/schedule";
 const SCHEDULE_SLOTS_BASE = `${SCHEDULE_BASE}/slots`;
-const INGREDIENTS_BASE = '/ingredients';
+const INGREDIENTS_BASE = "/ingredients";
+const SKIN_JOURNAL_BASE = "/skin-journal";
+const NOTIFICATIONS_BASE = "/notifications";
+const APP_BASE = "/app";
+const SUGGESTIONS_BASE = "/suggestions";
+const SMART_PICKS_BASE = "/smart-picks";
+const APPLICATION_LOGS_BASE = "/application-logs";
+const SUGGESTIONS_HISTORY_BASE = "/suggestions/history";
 
 const buildInventoryProductPath = (id: string) =>
   `${INVENTORY_PRODUCTS_BASE}/${id}`;
@@ -15,6 +22,8 @@ const buildScheduleSlotPath = (id: string) => `${SCHEDULE_SLOTS_BASE}/${id}`;
 
 export const ApiPath = {
   AuthLogin: `${AUTH_BASE}/login`,
+  AuthGoogle: `${AUTH_BASE}/google`,
+  AuthApple: `${AUTH_BASE}/apple`,
   AuthRegister: `${AUTH_BASE}/register`,
   AuthRefresh: `${AUTH_BASE}/refresh`,
   AuthLogout: `${AUTH_BASE}/logout`,
@@ -27,6 +36,8 @@ export const ApiPath = {
   AuthResetPassword: `${AUTH_BASE}/reset-password`,
   AuthExport: `${AUTH_BASE}/export`,
   AuthAccount: `${AUTH_BASE}/account`,
+  AuthAccountDeletionConfirm: `${AUTH_BASE}/account/deletion/confirm`,
+  AuthAccountDeletionCancel: `${AUTH_BASE}/account/deletion/cancel`,
 
   UsersMe: USERS_ME_BASE,
   UsersMeLanguage: `${USERS_ME_BASE}/language`,
@@ -34,10 +45,14 @@ export const ApiPath = {
 
   SkinProfile: SKIN_PROFILE_BASE,
   SkinProfileOptions: `${SKIN_PROFILE_BASE}/options`,
+  SkinProfileAccessLogs: `${SKIN_PROFILE_BASE}/access-logs`,
+  SkinProfileHealthContext: `${SKIN_PROFILE_BASE}/health-context`,
+  SkinProfileHormonalContext: `${SKIN_PROFILE_BASE}/hormonal-context`,
 
   CatalogueProductsExtractFromImages: `${CATALOGUE_PRODUCTS_BASE}/extract-from-images`,
 
   InventoryProducts: INVENTORY_PRODUCTS_BASE,
+  InventoryProductsWithImage: `${INVENTORY_PRODUCTS_BASE}/with-image`,
   InventoryProductsUploadImage: `${INVENTORY_PRODUCTS_BASE}/upload-image`,
   InventoryProductsStats: `${INVENTORY_PRODUCTS_BASE}/stats`,
   InventoryProductsBulkArchive: `${INVENTORY_PRODUCTS_BASE}/bulk/archive`,
@@ -45,6 +60,8 @@ export const ApiPath = {
   InventoryProductsBulkMarkFinished: `${INVENTORY_PRODUCTS_BASE}/bulk/mark-finished`,
   InventoryProductsBulkDelete: `${INVENTORY_PRODUCTS_BASE}/bulk-delete`,
   InventoryProduct: buildInventoryProductPath,
+  InventoryProductUploadImage: (id: string) =>
+    `${buildInventoryProductPath(id)}/upload-image`,
   InventoryProductArchive: (id: string) =>
     `${buildInventoryProductPath(id)}/archive`,
   InventoryProductRestore: (id: string) =>
@@ -62,4 +79,80 @@ export const ApiPath = {
   ScheduleSlotMove: (id: string) => `${buildScheduleSlotPath(id)}/move`,
 
   IngredientsAnalyze: `${INGREDIENTS_BASE}/analyze`,
+  IngredientsCheckProduct: `${INGREDIENTS_BASE}/check-product`,
+  IngredientsCompareProducts: `${INGREDIENTS_BASE}/compare-products`,
+
+  AppNavBadges: `${APP_BASE}/nav-badges`,
+  AppCapabilities: `${APP_BASE}/capabilities`,
+
+  SkinJournalToday: `${SKIN_JOURNAL_BASE}/today`,
+  SkinJournalCalendar: `${SKIN_JOURNAL_BASE}/calendar`,
+  SkinJournalEntries: `${SKIN_JOURNAL_BASE}/entries`,
+  SkinJournalPhotos: `${SKIN_JOURNAL_BASE}/photos`,
+  SkinJournalPhotoFilters: `${SKIN_JOURNAL_BASE}/photo-filters`,
+  SkinJournalPhotoDates: `${SKIN_JOURNAL_BASE}/photo-dates`,
+  SkinJournalDay: (date: string) => `${SKIN_JOURNAL_BASE}/days/${date}`,
+  SkinJournalEntry: (id: string) => `${SKIN_JOURNAL_BASE}/entries/${id}`,
+  SkinJournalEntryRetry: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/entries/${id}/analyze/retry`,
+  SkinJournalCompare: `${SKIN_JOURNAL_BASE}/compare`,
+  SkinJournalEvents: `${SKIN_JOURNAL_BASE}/events`,
+  SkinJournalEventAck: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/events/${id}/acknowledge`,
+  SkinJournalInsights: `${SKIN_JOURNAL_BASE}/insights`,
+  SkinJournalInsightDismiss: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/insights/${id}/dismiss`,
+  SkinJournalInsightSeen: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/insights/${id}/seen`,
+  SkinJournalInsightInteractions: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/insights/${id}/interactions`,
+  SkinJournalWrappedList: `${SKIN_JOURNAL_BASE}/wrapped`,
+  SkinJournalWrapped: (id: string) => `${SKIN_JOURNAL_BASE}/wrapped/${id}`,
+  SkinJournalSimplificationActive: `${SKIN_JOURNAL_BASE}/simplification/active`,
+  SkinJournalSimplificationStart: `${SKIN_JOURNAL_BASE}/simplification/start`,
+  SkinJournalSimplification: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/simplification/${id}`,
+  SkinJournalSimplificationAck: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/simplification/${id}/acknowledge`,
+  SkinJournalStats: `${SKIN_JOURNAL_BASE}/stats`,
+  SkinJournalExport: `${SKIN_JOURNAL_BASE}/export`,
+  SkinJournalExportJob: (id: string) => `${SKIN_JOURNAL_BASE}/export/${id}`,
+
+  Notifications: NOTIFICATIONS_BASE,
+  NotificationRead: (id: string) => `${NOTIFICATIONS_BASE}/${id}/read`,
+  NotificationsReadAll: `${NOTIFICATIONS_BASE}/read-all`,
+  NotificationPreferences: `${NOTIFICATIONS_BASE}/preferences`,
+  NotificationPushPublicKey: `${NOTIFICATIONS_BASE}/push/public-key`,
+  NotificationPushSubscriptions: `${NOTIFICATIONS_BASE}/push/subscriptions`,
+  NotificationPushStatus: `${NOTIFICATIONS_BASE}/push/status`,
+  NotificationPushSubscription: (id: string) =>
+    `${NOTIFICATIONS_BASE}/push/subscriptions/${id}`,
+
+  SuggestionsToday: `${SUGGESTIONS_BASE}/today`,
+  SuggestionsAiConsent: `${SUGGESTIONS_BASE}/ai-consent`,
+  SuggestionsOnDemand: `${SUGGESTIONS_BASE}/on-demand`,
+  SuggestionOnDemandRetry: (id: string) =>
+    `${SUGGESTIONS_BASE}/on-demand/${id}/retry`,
+  SuggestionsTodayNormalRoutine: `${SUGGESTIONS_BASE}/today/reaction/normal-routine`,
+  SuggestionsTodayReminderLater: `${SUGGESTIONS_BASE}/today/reminders/later`,
+  SuggestionGapActions: `${SUGGESTIONS_BASE}/gap-actions`,
+  SuggestionsBreak: `${SUGGESTIONS_BASE}/break`,
+  SuggestionsBreakResume: `${SUGGESTIONS_BASE}/break/resume`,
+  SuggestionBreak: (id: string) => `${SUGGESTIONS_BASE}/break/${id}`,
+  SuggestionRegenerate: (id: string) => `${SUGGESTIONS_BASE}/${id}/regenerate`,
+  Suggestion: (id: string) => `${SUGGESTIONS_BASE}/${id}`,
+  SuggestionsHistory: SUGGESTIONS_HISTORY_BASE,
+  SuggestionsHistoryExport: `${SUGGESTIONS_HISTORY_BASE}/export`,
+  SuggestionsHistoryDay: (date: string) =>
+    `${SUGGESTIONS_HISTORY_BASE}/${date}`,
+
+  SmartPicksOverview: `${SMART_PICKS_BASE}/overview`,
+  SmartPicksWishlist: `${SMART_PICKS_BASE}/wishlist`,
+  SmartPicksWishlistItem: (id: string) => `${SMART_PICKS_BASE}/wishlist/${id}`,
+  SmartPicksBudget: `${SMART_PICKS_BASE}/budget`,
+
+  ApplicationLogs: APPLICATION_LOGS_BASE,
+  ApplicationLog: (id: string) => `${APPLICATION_LOGS_BASE}/${id}`,
+  ApplicationLogVersions: (id: string) =>
+    `${APPLICATION_LOGS_BASE}/${id}/versions`,
 } as const;

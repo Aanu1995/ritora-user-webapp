@@ -18,6 +18,16 @@
       "placeholder": "Pick a date",
       "clear": "Clear date"
     },
+    "birthdayPicker": {
+      "label": "Date of birth",
+      "day": "Day",
+      "month": "Month",
+      "year": "Year",
+      "hint": "For example, 27 4 1985",
+      "dayPlaceholder": "DD",
+      "monthPlaceholder": "MM",
+      "yearPlaceholder": "YYYY"
+    },
     "countrySelect": {
       "placeholder": "Select a country",
       "searchPlaceholder": "Search countries",
@@ -37,6 +47,7 @@
     "whyRitora": "Why Ritora",
     "howItWorks": "How it works",
     "features": "Features",
+    "privacy": "Privacy",
     "faq": "FAQ",
     "login": "Log in",
     "signUp": "Sign up",
@@ -45,176 +56,245 @@
     "settings": "Settings",
     "logout": "Log out",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "primaryNavigation": "Primary navigation"
   },
   "landing": {
     "hero": {
-      "badge": "Skincare without the second guessing",
-      "headline": "Your calmer routine starts with the shelf you already own.",
-      "subheadline": "Ritora reads your shelf, catches ingredient clashes, and turns the chaos into a calm morning and night plan shaped by your skin.",
-      "ctaPrimary": "Create an account",
+      "badge": "Inventory-first skincare decision support",
+      "headlineLead": "Build safer skincare routines from the",
+      "headlineAccent": "products you already own.",
+      "lead": "Ritora catches ingredient clashes in the products you already own and turns them into a calm morning, midday, and evening plan tuned to your skin. No shopping needed.",
+      "ctaPrimary": "Create your free account",
       "ctaSecondary": "See how it works",
-      "imageAlt": "An open medicine cabinet in warm light, shelves filled with real everyday skincare bottles from different brands.",
+      "imageAlt": "Today's Suggestion app card with morning routine and Skin Journal preview.",
       "pills": {
-        "a": "Built around your shelf",
+        "a": "Inventory first",
         "b": "Ingredient guardrails",
         "c": "Private by design"
       }
     },
+    "trust": [
+      "Privacy first",
+      "Works with every brand",
+      "Free to use",
+      "Photo analysis included",
+      "Export or delete anytime"
+    ],
     "problem": {
       "eyebrow": "Why routines break",
       "headline": "Good products, still guessing.",
-      "body": "You own the right bottles and still wake up unsure what to layer or skip. Ritora gives you the decision layer that was missing."
-    },
-    "problems": [
-      {
-        "title": "Shelf confusion",
-        "body": "You own great products and still guess each morning what to apply and what to skip."
-      },
-      {
-        "title": "Silent ingredient stacking",
-        "body": "Strong actives pile up between cleansers, toners, and serums. Irritation shows up long before you spot the cause."
-      },
-      {
-        "title": "Buying over building",
-        "body": "Most routines don't need another serum. They need structure, sequencing, and safer choices with what you already own."
-      }
-    ],
-    "privacy": {
-      "eyebrow": "Private by design",
-      "headline": "Your shelf stays yours.",
-      "body": "Ritora is built in the EU with explicit consent and essential cookies only. The points below reflect safeguards already present in the product today.",
-      "points": [
+      "body": "You own the right bottles and still wake up unsure what to layer or skip. Ritora gives you the decision layer that was missing.",
+      "problems": [
         {
-          "title": "GDPR from day one",
-          "body": "Your data is stored and processed under European privacy law. No exceptions, no loopholes."
+          "title": "Shelf confusion",
+          "body": "You own great products and still guess each morning what to apply and what to skip."
         },
         {
-          "title": "Essential cookies only",
-          "body": "Authentication and preference cookies only. No ad tech, no social pixels, and no hidden trackers."
+          "title": "Silent ingredient stacking",
+          "body": "Strong actives pile up between cleansers, toners, and serums. Irritation shows up long before you spot the cause."
         },
         {
-          "title": "Sensitive context is opt-in",
-          "body": "Location and profile context only help your guidance when you choose to provide them."
+          "title": "Buying over building",
+          "body": "Most routines don't need another serum. They need structure, sequencing, and safer choices with what you already own."
+        }
+      ],
+      "stats": [
+        {
+          "figure": "10+",
+          "body": "The average enthusiast owns ten or more skincare products. Most of them sit on the shelf, underused."
         },
         {
-          "title": "Verified account access",
-          "body": "Email verification and secure sign-in flows help protect access to your routine and profile data."
+          "figure": "#1",
+          "body": "Over-exfoliation is the most common self-inflicted barrier injury. Quietly stacked actives are usually the cause."
         }
       ]
     },
     "howItWorks": {
       "eyebrow": "How it works",
       "headline": "Three calm steps from shelf clutter to daily clarity.",
-      "illustrationTitle": "From morning to night, on repeat",
-      "illustrationBody": "Ritora treats your routine as a living cycle. Every step carries last night's actives forward into this morning, so your plan stays safe without you having to think about it."
+      "lead": "Tell Ritora about your skin, map the products you already own, and follow a plan tuned to today. Not last month. Not someone else's.",
+      "steps": [
+        {
+          "title": "Tell Ritora about your skin.",
+          "body": "Skin type, concerns, sensitivities, climate. Every answer shapes the guidance you get.",
+          "hint": "Skin tone, ethnicity, and climate aware from the first step"
+        },
+        {
+          "title": "Add what's already on your shelf.",
+          "body": "Add what you use today. Ritora spots overlap and flags risky pairings.",
+          "hint": "Add by photo or manual entry"
+        },
+        {
+          "title": "Follow a calmer daily plan.",
+          "body": "Wake up to clear guidance for morning and evening, tuned to your shelf.",
+          "hint": "Morning, midday, and evening, with on-demand help any time"
+        }
+      ]
     },
-    "steps": [
-      {
-        "title": "Tell Ritora about your skin",
-        "body": "Share your skin type, concerns, sensitivities, goals, and how involved you want your routine to be. Every answer shapes the guidance you get."
-      },
-      {
-        "title": "Map what's already on your shelf",
-        "body": "Add the products you use today so Ritora can spot ingredient overlap, flag risky pairings, and tell you what's genuinely missing."
-      },
-      {
-        "title": "Follow a calmer daily plan",
-        "body": "Wake up to clear morning and evening guidance. Safety rules come first, and everything else is tuned to your goals and your shelf."
-      }
-    ],
     "features": {
-      "eyebrow": "What you get",
-      "headline": "Everything you need to make calmer skincare decisions.",
-      "illustrationTitle": "Safety rules first, personalisation second",
-      "illustrationBody": "Every recommendation passes through a deterministic safety layer before it meets your goals. No surprises, no clashing actives, no regret purchases."
-    },
-    "featureItems": [
-      {
-        "title": "Your shelf comes first",
-        "body": "Guidance always begins with the products you already own, never with a shopping cart.",
-        "icon": "package"
-      },
-      {
-        "title": "Ingredient safety guardrails",
-        "body": "Conflict checks and overlap detection protect sensitive skin and take the guesswork out of stacking actives.",
-        "icon": "shield-check"
-      },
-      {
-        "title": "Tuned to your skin",
-        "body": "Your goals, sensitivities, skin tone, age, and ethnicity all shape every recommendation you see.",
-        "icon": "user"
-      },
-      {
-        "title": "Private by default",
-        "body": "Explicit consent, careful data boundaries, and EU friendly handling. Built in from day one, never bolted on later.",
-        "icon": "lock"
-      },
-      {
-        "title": "Learn in the open",
-        "body": "Open, searchable pages for the basics. Private, personal routines once you sign in.",
-        "icon": "globe"
-      },
-      {
-        "title": "Calmer daily rituals",
-        "body": "A morning and night view that keeps your routine steady even on the busiest days.",
-        "icon": "sunrise"
-      }
-    ],
-    "differentiators": {
-      "eyebrow": "What makes Ritora different",
-      "headline": "Built for your whole routine, not one brand.",
+      "eyebrow": "What's inside",
+      "headline": "Every part of your routine, intelligently aware of the others.",
+      "lead": "Six capabilities working together so your plan stays safe, even on the messy days.",
       "items": [
         {
-          "title": "Every brand, not one ecosystem",
-          "body": "Ritora works with anything you already own. No brand loyalty required, no upsells, no sponsored picks."
+          "key": "shelf",
+          "eyebrow": "Inventory first",
+          "title": "Your shelf comes first. Always.",
+          "bullets": [
+            "Add by photo or manually, with ingredients pulled from the label",
+            "Full lifecycle: started, active, finished, repurchased",
+            "Cleansers, actives, SPF, body, lip, hand. Every category."
+          ]
         },
         {
-          "title": "Your whole routine, not one product",
-          "body": "Ingredient checks run across every bottle at once, so conflicts cannot hide between steps."
+          "key": "ingredients",
+          "eyebrow": "Ingredient intelligence",
+          "title": "Conflict checks across every bottle at once.",
+          "bullets": [
+            "Retinoid + AHA, BP + retinol, vitamin C + niacinamide",
+            "Spots when the same active hides in two products",
+            "Safety score for every suggested routine"
+          ]
         },
         {
-          "title": "Your skin, your climate, your season",
-          "body": "Guidance adapts to your ethnicity, the climate you live in, and the season you are in today."
+          "key": "suggestions",
+          "eyebrow": "Today's Suggestion",
+          "title": "Daily suggestions, not rigid routines.",
+          "bullets": [
+            "Prepared before you wake up",
+            "On-demand suggestions any time of day",
+            "Evening plan reacts to what you actually applied earlier"
+          ]
         },
         {
-          "title": "Full body, not just your face",
-          "body": "Body wash, shampoo, lip care, and hand cream are part of the plan, the same way your face is."
+          "key": "journal",
+          "eyebrow": "Skin Journal",
+          "title": "Photo journal with AI analysis built in.",
+          "bullets": [
+            "Multi-angle capture with private, encrypted storage",
+            "Reaction detection auto-pauses risky actives",
+            "Compare any two dates. Export a dermatologist report.",
+            "Monthly Skin Wrapped: a private recap from your photos"
+          ]
+        },
+        {
+          "key": "quickCheck",
+          "eyebrow": "Quick Check",
+          "title": "Vet any product before you buy or use it.",
+          "bullets": [
+            "Paste the ingredients or snap the label",
+            "Verdict in seconds with safety score and confidence",
+            "Compare straight against products on your shelf"
+          ]
+        },
+        {
+          "key": "smartPicks",
+          "eyebrow": "Smart Picks",
+          "title": "Gap analysis, not shopping ads.",
+          "bullets": [
+            "Four budget tiers: drugstore, mid, premium, luxury",
+            "Redundancy checks so you never duplicate an active you already own",
+            "Save picks to your wishlist. No upsells, no sponsored placements."
+          ]
+        },
+        {
+          "key": "climate",
+          "eyebrow": "Climate aware",
+          "title": "Your skin, your climate, your season.",
+          "bullets": [
+            "Local weather, humidity, and UV index",
+            "Seasonal shifts handled automatically",
+            "Aware of your ethnicity and skin tone from the start"
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "eyebrow": "Private by design",
+      "headline": "Your shelf stays yours.",
+      "lead": "Ritora runs on explicit consent and essential cookies only. Every step of how your data moves is something you can see, and undo.",
+      "points": [
+        {
+          "title": "Consent before anything sensitive.",
+          "body": "Photo analysis, AI personalisation, and location each ask for separate, explicit consent."
+        },
+        {
+          "title": "Essential cookies only.",
+          "body": "No ad tech, no social pixels, no hidden trackers."
+        },
+        {
+          "title": "Sensitive context is opt-in.",
+          "body": "Location and health context help only when you provide them."
+        },
+        {
+          "title": "Export and delete at any time.",
+          "body": "Take your photos and profile with you in one click."
+        }
+      ],
+      "flow": [
+        {
+          "title": "You capture a photo",
+          "detail": "Ritora never opens the camera in the background."
+        },
+        {
+          "title": "Encrypted in transit",
+          "detail": "TLS the whole way. Image bytes are never logged."
+        },
+        {
+          "title": "Stored privately, encrypted at rest",
+          "detail": "Scoped to your account, never shared."
+        },
+        {
+          "title": "Used only for your routine",
+          "detail": "AI runs on your data only after explicit, separate consent."
+        },
+        {
+          "title": "Yours to export, or delete",
+          "detail": "30-day cancellation window before any deletion is final."
         }
       ]
     },
     "faq": {
       "eyebrow": "FAQ",
-      "headline": "Built to earn your trust before it asks for it."
+      "headline": "Built to earn your trust before it asks for it.",
+      "items": [
+        {
+          "question": "Is Ritora a medical product?",
+          "answer": "No. Ritora helps you make safer daily routine choices with the products you already own. It does not diagnose, treat, or replace a dermatologist."
+        },
+        {
+          "question": "Do I need to buy new products to use it well?",
+          "answer": "Not at all. Ritora starts with your shelf. It helps you get more out of the products you already own before it suggests anything new."
+        },
+        {
+          "question": "Will it work for beginners?",
+          "answer": "Yes. Beginners and collectors overwhelmed by their own shelf are exactly who Ritora is built for. It's a simpler path to a routine that actually works."
+        },
+        {
+          "question": "Do I need to upload photos?",
+          "answer": "No. The Skin Journal is optional. Routines, ingredient checks, and Smart Picks all work without a single photo. Uploading just makes the guidance more adaptive."
+        },
+        {
+          "question": "Is it free?",
+          "answer": "Yes, the core experience is free. No card required to sign up. Optional paid tiers may arrive later for advanced features, but the 'stop buying, start using' experience stays free."
+        },
+        {
+          "question": "How is my data handled?",
+          "answer": "With care. Ritora runs on explicit consent, careful data boundaries, and secure authentication. Privacy-conscious handling is built in from day one. See the data flow above."
+        },
+        {
+          "question": "Which languages are supported?",
+          "answer": "English and Swedish at launch. You can change your preferred language any time from settings."
+        }
+      ]
     },
-    "faqItems": [
-      {
-        "question": "Is Ritora a medical product?",
-        "answer": "No. Ritora helps you make safer daily routine choices with the products you already own. It does not diagnose, treat, or replace a dermatologist."
-      },
-      {
-        "question": "Do I need to buy new products to use it well?",
-        "answer": "Not at all. Ritora starts with your shelf. It helps you get more out of the products you already own before it suggests anything new."
-      },
-      {
-        "question": "Will it work for beginners?",
-        "answer": "Yes. Beginners and collectors overwhelmed by their own shelf are exactly who Ritora is built for. It's a simpler path to a routine that actually works."
-      },
-      {
-        "question": "How is my data handled?",
-        "answer": "With care. Ritora runs on explicit consent, careful data boundaries, and secure authentication. EU friendly handling is built in from day one."
-      },
-      {
-        "question": "Which languages are supported?",
-        "answer": "English and Swedish are available at launch. You can change your preferred language any time from the settings page."
-      }
-    ],
     "finalCta": {
-      "eyebrow": "Ready when you are",
-      "headline": "Turn your shelf into a calmer daily routine.",
-      "body": "Create an account in under a minute, or log in to pick up where you left off. Your skin profile, preferences, and routine setup stay in one place.",
-      "ctaPrimary": "Create an account",
-      "ctaSecondary": "Log in"
+      "headline": "Your shelf, your skin, your routine.",
+      "body": "Create your account in under a minute. Add a few products, answer a few questions about your skin, and you'll have a calmer plan for tomorrow morning, built from what's already in your bathroom.",
+      "ctaPrimary": "Create your free account",
+      "ctaSecondary": "Log in",
+      "trust": ["Free to use", "No card required", "Delete your data anytime"]
     }
   },
   "footer": {
@@ -231,9 +311,9 @@
     "register": "Create account",
     "createAccount": "Create account",
     "signInTitle": "Welcome back",
-    "signInSubtitle": "Log in to continue your calmer skincare routine.",
+    "signInSubtitle": "Your shelf, routine, and skin journal are ready when you are.",
     "signUpTitle": "Create your account",
-    "signUpSubtitle": "One minute to set up. No new products required.",
+    "signUpSubtitle": "Add your products, build your routine, and track your progress.",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm password",
@@ -280,9 +360,67 @@
     "invalidResetTokenHelp": "This reset link is missing, expired, or already used. Request a fresh reset email to continue.",
     "invalidVerificationToken": "Invalid or missing verification token.",
     "invalidVerificationTokenHelp": "This verification link is missing, expired, or already used. Request a fresh verification email to continue.",
+    "accountDeletionConfirmTitle": "Confirm account deletion",
+    "accountDeletionCancelTitle": "Cancel account deletion",
+    "accountDeletionConfirming": "Verifying your link",
+    "accountDeletionCancelling": "Stopping your deletion",
+    "accountDeletionConfirmSuccessTitle": "Deletion scheduled",
+    "accountDeletionConfirmSuccessBody": "Your Ritora account is now scheduled to be permanently deleted in 30 days. Sign in any time before then and your account stays.",
+    "accountDeletionCancelSuccessTitle": "Welcome back",
+    "accountDeletionCancelSuccessBody": "Your account is staying active and nothing has been deleted. You can keep using Ritora as usual.",
+    "accountDeletionConfirmFailedTitle": "We could not confirm",
+    "accountDeletionConfirmFailedBody": "This confirmation link is invalid or has expired. Confirmation links work for one hour. Start the deletion again from settings to get a new one.",
+    "accountDeletionCancelFailedTitle": "We could not cancel",
+    "accountDeletionCancelFailedBody": "This cancellation link is invalid or already used. If your account is still scheduled for deletion, sign in to cancel it.",
+    "accountDeletionInvalidToken": "Link not recognised",
+    "accountDeletionInvalidTokenHelp": "This account deletion link is missing, expired, or already used. Sign in to check your account status or cancel a pending deletion.",
+    "accountDeletionGoToLogin": "Sign in to my account",
+    "accountDeletionGoToSettings": "Open settings",
+    "accountDeletionContactSupport": "Contact support",
+    "accountDeletionRedirecting": "Taking you to sign in in a moment...",
+    "accountDeletionRequestTimedOutTitle": "Request timed out",
+    "accountDeletionRequestTimedOutBody": "Ritora did not receive a completed response in this browser. Try again to check the link status, or sign in to check your account.",
+    "accountDeletionTryAgain": "Try again",
+    "accountDeletionStillHereTitle": "Still safely here",
+    "accountDeletionStillHerePhotos": "Your photos",
+    "accountDeletionStillHerePhotosDesc": "Every skin photo, exactly as you left it",
+    "accountDeletionStillHereRoutine": "Your routine",
+    "accountDeletionStillHereRoutineDesc": "Schedule, suggestions, and history intact",
+    "accountDeletionStillHereShelf": "Your shelf",
+    "accountDeletionStillHereShelfDesc": "Every product you've added, still saved",
+    "accountDeletionCancelPrivacyTitle": "Your data, your terms",
+    "accountDeletionCancelPrivacyBody": "Your account was paused, not used. Ritora never shares or sells your data.",
+    "accountDeletionCancelChecksAllSafe": "All checks passed. Your account is back to normal.",
+    "accountDeletionConfirmTimelineTodayLabel": "Today",
+    "accountDeletionConfirmTimelineTodayBody": "Signed out everywhere",
+    "accountDeletionConfirmTimelineGraceLabel": "30 days",
+    "accountDeletionConfirmTimelineGraceBody": "Cancel anytime",
+    "accountDeletionConfirmTimelineFinalLabel": "Day 31",
+    "accountDeletionConfirmTimelineFinalBody": "Permanently erased",
+    "accountDeletionConfirmStatusTitle": "Happening right now",
+    "accountDeletionConfirmStatusSignedOut": "Signed out everywhere",
+    "accountDeletionConfirmStatusSignedOutDesc": "No one can access your account, including you",
+    "accountDeletionConfirmStatusDataHeld": "Your data is on hold",
+    "accountDeletionConfirmStatusDataHeldDesc": "Held safely, never used, never shared",
+    "accountDeletionConfirmStatusEmail": "Cancellation link emailed",
+    "accountDeletionConfirmStatusEmailDesc": "Use it any time in the next 30 days",
+    "accountDeletionConfirmChangedMindTitle": "Changed your mind?",
+    "accountDeletionConfirmChangedMindBody": "Two ways back: sign in again, or tap the cancellation link in the email we just sent.",
+    "accountDeletionConfirmFinalPromise": "After day 30 your profile, photos, shelf, and history are permanently erased. Until then, you're in control.",
+    "accountDeletionErrorReasonsTitle": "Common reasons this happens",
+    "accountDeletionErrorReason1": "The link was already used",
+    "accountDeletionErrorReason2": "The link expired",
+    "accountDeletionErrorReason3": "The link was copied incompletely from your email",
+    "accountDeletionInvalidTokenWhatTitle": "What to do",
+    "accountDeletionInvalidTokenWhatItem1": "Sign in to check whether your deletion is still scheduled",
+    "accountDeletionInvalidTokenWhatItem2": "Start a fresh deletion from settings if you still want to proceed",
+    "accountDeletionInvalidTokenWhatItem3": "Reach out to support if something looks off",
     "verificationFailed": "Verification failed. The link may have expired.",
     "verifyingEmail": "Verifying your email...",
     "emailVerifiedSuccess": "Email verified successfully!",
+    "verifyEmailRequestTimedOutTitle": "Request timed out",
+    "verifyEmailRequestTimedOutBody": "Ritora did not receive a completed verification response in this browser. Try again to check the link status, or request a new verification link.",
+    "verifyEmailTryAgain": "Try again",
     "passwordResetSuccess": "Password reset successfully.",
     "registrationFailed": "Registration failed",
     "resetFailed": "Reset failed",
@@ -291,6 +429,12 @@
     "signingIn": "Signing in...",
     "creatingAccount": "Creating account...",
     "loading": "Loading...",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "orContinueWithEmail": "or continue with email",
+    "openingGoogle": "Opening Google…",
+    "openingApple": "Opening Apple…",
+    "legalDisclosurePrefix": "By continuing, you agree to our",
     "errors": {
       "invalidCredentials": "The email or password is incorrect. Please try again.",
       "emailInUse": "An account with this email already exists. Try logging in instead.",
@@ -319,12 +463,17 @@
       "privacyRequired": "Please accept the Privacy Policy to continue.",
       "fieldRequired": "This field is required.",
       "tokenRequired": "Reset token is missing."
-    }
+    },
+    "emailPlaceholder": "you@example.com"
   },
   "dashboard": {
     "welcome": "Welcome back, {firstName}",
     "subtitle": "A calm look at today and your shelf.",
-    "upcomingHeading": "Coming soon",
+    "greeting": {
+      "morning": "Good morning, {firstName}.",
+      "afternoon": "Good afternoon, {firstName}.",
+      "evening": "Good evening, {firstName}."
+    },
     "profileCard": {
       "title": "Skin Profile",
       "complete": "Your skin profile is ready. AI recommendations will use this context.",
@@ -350,6 +499,137 @@
       "title": "Recent Activity",
       "empty": "No recent activity yet. Start by adding products to your shelf.",
       "viewHistory": "View history"
+    },
+    "setup": {
+      "title": "Finish setting up",
+      "progress": "{completed}/{total} done",
+      "steps": {
+        "profile": {
+          "title": "Skin Profile",
+          "todo": "Tell us about your skin",
+          "done": "Profile set"
+        },
+        "shelf": {
+          "title": "Shelf",
+          "todo": "Add the products you already own",
+          "done": "Shelf has products"
+        },
+        "routine": {
+          "title": "Routine",
+          "todo": "Set up morning and evening times",
+          "done": "Routine ready"
+        }
+      }
+    },
+    "fresh": {
+      "welcome": "Welcome to Ritora, {firstName}.",
+      "subtitle": "A few minutes of setup and your routine starts getting smarter.",
+      "eyebrow": "Step 1 of 2",
+      "title": "Tell us about your skin.",
+      "body": "Type, concerns, climate, and anything you have reacted to. We use it to read your Shelf and build calmer routines.",
+      "progress": "{completed} of {total} done",
+      "primaryCta": "Build skin profile",
+      "secondary": "Already holding a product?",
+      "secondaryCta": "Try Quick Check first"
+    },
+    "promises": {
+      "privateTitle": "Private by design",
+      "privateBody": "Your reaction history, medical notes, and hormonal data are encrypted, saved only with your consent, and never sold or shared. Yours to delete anytime.",
+      "ownedTitle": "Owned products first",
+      "ownedBody": "We read what's on your Shelf and build routines from there. New product suggestions only appear when there is a real gap to fill.",
+      "toneTitle": "Skin tone aware",
+      "toneBody": "Tested across Fitzpatrick types I to VI. Ingredient warnings and product picks account for darker skin where most apps miss."
+    },
+    "latestSuggestion": {
+      "ariaLabel": "{routine} · ready to record",
+      "eyebrow": "Next up · {routine}",
+      "moreSteps": "+ {count, plural, one {# more step} other {# more steps}}",
+      "openRoutine": "Open routine"
+    }
+  },
+  "currentContext": {
+    "localTime": "Local time",
+    "timeZone": "Time zone",
+    "city": "City",
+    "country": "Country",
+    "notSet": "Not set",
+    "unknown": "Unknown",
+    "loading": "Loading",
+    "climateData": "Climate data",
+    "lastUpdated": "Last updated {time}",
+    "cityLevelClimate": "City-level",
+    "profileOnlyClimate": "Profile only",
+    "weather": "Weather",
+    "seasonLabel": "Season",
+    "temperature": "Temp",
+    "uv": "UV",
+    "uvValue": "{risk} · UV {index}",
+    "uvIndexOnly": "UV {index}",
+    "humidity": "Humidity",
+    "humidityValue": "{band} · {value}%",
+    "airQuality": "Air",
+    "airQualityValue": "{risk} · AQI {index}",
+    "airQualityIndexOnly": "AQI {index}",
+    "pm25": "PM2.5",
+    "pm10": "PM10",
+    "micrograms": "{value} µg/m³",
+    "pollen": "Pollen",
+    "water": "Water",
+    "waterValue": "{hardness} · {sensitivity}",
+    "sensitivities": "Sensitive to",
+    "seasons": {
+      "spring": "Spring",
+      "summer": "Summer",
+      "autumn": "Autumn",
+      "winter": "Winter"
+    },
+    "temperatureBand": {
+      "freezing": "Freezing",
+      "cold": "Cold",
+      "mild": "Mild",
+      "warm": "Warm",
+      "hot": "Hot"
+    },
+    "uvRisk": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "high": "High",
+      "veryHigh": "Very high",
+      "extreme": "Extreme"
+    },
+    "humidityBand": {
+      "veryDry": "Very dry",
+      "dry": "Dry",
+      "balanced": "Balanced",
+      "humid": "Humid",
+      "veryHumid": "Very humid"
+    },
+    "airRisk": {
+      "good": "Good",
+      "fair": "Fair",
+      "moderate": "Moderate",
+      "poor": "Poor",
+      "veryPoor": "Very poor"
+    },
+    "waterHardness": {
+      "unknown": "Unknown hardness",
+      "soft": "Soft water",
+      "moderate": "Moderate water",
+      "hard": "Hard water"
+    },
+    "waterSensitivity": {
+      "none": "No sensitivity",
+      "suspected": "Sensitivity suspected",
+      "confirmed": "Sensitivity confirmed"
+    },
+    "sensitivity": {
+      "dryAir": "dry air",
+      "humidity": "humidity",
+      "pollution": "pollution",
+      "cold": "cold",
+      "heat": "heat",
+      "sun": "sun",
+      "seasonalChange": "seasonal change"
     }
   },
   "workspace": {
@@ -430,7 +710,8 @@
       "account": "Account",
       "appearance": "Appearance",
       "language": "Language",
-      "privacy": "Privacy"
+      "privacy": "Privacy",
+      "notifications": "Notifications"
     },
     "account": {
       "profileTitle": "Profile",
@@ -572,7 +853,7 @@
         "title": "Skin profile",
         "kicker": "Hand off into profile setup",
         "headline": "Finish the skin context that unlocks the workspace",
-        "description": "You have not started your skin profile yet. Use the profile flow to add your basics, priorities, and routine preference before inventory and routines go live.",
+        "description": "You have not started your skin profile yet. Use the profile flow to add your baseline, priorities, sun behavior, routine capacity, and preferences before inventory and routines go live.",
         "inProgressDescription": "You already started your skin profile. Continue from where you left off so Ritora can treat the rest of the workspace as personal, not generic.",
         "startCta": "Start skin profile",
         "continueCta": "Continue skin profile",
@@ -604,7 +885,7 @@
         "items": {
           "profile": {
             "title": "Complete the core profile",
-            "description": "Skin type, tone, age range, concerns, goals, and routine preference are the minimum useful setup."
+            "description": "Skin type, tone, phototype, concerns, sun behavior, routine capacity, and preferences are the minimum useful setup."
           },
           "dashboard": {
             "title": "Return to the workspace",
@@ -628,60 +909,472 @@
       "save": "Save profile",
       "saving": "Saving...",
       "stepOf": "Step {current} of {total}",
-      "skinType": {
-        "heading": "What best describes your skin?",
-        "description": "This helps Ritora understand your baseline and avoid ingredient conflicts."
+      "baseline": {
+        "heading": "Tell us your skin baseline",
+        "description": "The basics that anchor every suggestion. You can update this anytime."
       },
-      "concerns": {
+      "concernsPriority": {
         "heading": "What concerns you most?",
-        "description": "Select everything that applies. This shapes which ingredients Ritora prioritises."
+        "description": "Pick what applies, then choose the one Ritora should prioritise."
       },
-      "goals": {
-        "heading": "What are your skincare goals?",
-        "description": "Pick what matters most. Ritora uses this to suggest the right products and routines."
+      "sunPigmentStep": {
+        "heading": "How does your skin react to sun?",
+        "description": "Sun reaction matters more than skin tone. It shapes which actives are safe for you."
       },
-      "routine": {
-        "heading": "When do you usually do your skincare?",
-        "description": "Ritora will suggest the right products from your shelf at these times. The AI picks what to use based on your goals."
+      "routineBaseline": {
+        "heading": "How do you do skincare?",
+        "description": "Tell us your pace. We use your Schedule for time and frequency."
       },
-      "context": {
-        "heading": "A bit more about you",
-        "description": "Optional details that help Ritora give more climate-aware and skin-aware guidance."
+      "environment": {
+        "heading": "Your water context",
+        "description": "Optional details that help Ritora adjust suggestions when water seems to trigger dryness, tightness, or irritation."
+      },
+      "preferences": {
+        "heading": "What are your shopping preferences?",
+        "description": "Your preferences. Ritora only suggests products that match."
       }
+    },
+    "concernsPriority": {
+      "concernsLabel": "Concerns",
+      "concernsHint": "Pick everything you'd like Ritora to address.",
+      "primaryGoalLabel": "Top priority",
+      "primaryGoalHint": "Pick one. Ritora optimises for this first.",
+      "severityLabel": "{concern} severity",
+      "severityHint": "Roughly how strong it feels day to day."
+    },
+    "sunPigmentStep": {
+      "phototypeQuestion": "After a full day outside, your skin usually:",
+      "pihQuestion": "How often do dark marks linger after a pimple heals?",
+      "pihHint": "Also called PIH (post-inflammatory hyperpigmentation).",
+      "melasmaQuestion": "How often do you get melasma or persistent dark patches?",
+      "melasmaHint": "Hormone-driven dark patches, often symmetric on cheeks or forehead.",
+      "keloidQuestion": "How often does your skin scar with raised marks?",
+      "keloidHint": "Keloids are scars that grow thicker than the original wound.",
+      "sunscreenHabitQuestion": "How often do you wear sunscreen?",
+      "sunscreenToleranceQuestion": "How do most sunscreens feel on your skin?"
+    },
+    "routineBaseline": {
+      "paceLabel": "Routine pace",
+      "paceHint": "How quickly you want to introduce new products."
+    },
+    "environment": {
+      "waterHardnessLabel": "Water hardness",
+      "waterHardnessHint": "Use what you know. Unknown is fine.",
+      "waterSensitivityLabel": "Water sensitivity",
+      "waterSensitivityHint": "Choose suspected or confirmed only if water seems to trigger dryness, stinging, or irritation.",
+      "waterNotesLabel": "Water reaction note",
+      "waterNotesHint": "Optional. Keep it short and only add what you want Ritora to use.",
+      "waterNotesPlaceholder": "e.g. Face feels tight after washing at home"
+    },
+    "preferences": {
+      "fragranceFreeLabel": "Fragrance-free only?",
+      "fragranceFreeHint": "Skip products with added scent. Often gentler on sensitive skin.",
+      "nonComedogenicLabel": "Non-comedogenic only?",
+      "nonComedogenicHint": "Skip ingredients known to clog pores. Useful for acne-prone skin.",
+      "sunscreenFilterLabel": "Sunscreen filter preference",
+      "sunscreenFilterHint": "Chemical filters absorb UV; mineral filters reflect it. Hybrids combine both.",
+      "sunscreenFinishLabel": "Sunscreen finish preference",
+      "sunscreenFinishHint": "How the formula looks and feels once applied.",
+      "budgetTierLabel": "Budget",
+      "budgetTierHint": "Your typical comfort range per product.",
+      "allowSmartPicksLabel": "Let Smart Picks suggest new products?",
+      "allowSmartPicksHint": "Lets Ritora recommend products beyond what's already on your shelf.",
+      "yes": "Yes",
+      "no": "No",
+      "noPreference": "No preference"
+    },
+    "baselineLabels": {
+      "skinType": "Skin type",
+      "skinTypeHint": "How your skin tends to feel by midday.",
+      "skinTone": "Skin tone",
+      "dateOfBirth": "Date of birth",
+      "sexAtBirth": "Sex at birth",
+      "sexAtBirthHint": "Some ingredients have different safety profiles depending on biological sex.",
+      "ethnicity": "Ethnicity",
+      "ethnicityHint": "Helps tailor advice. Some skin patterns are more common in certain backgrounds.",
+      "countryCode": "Country code",
+      "city": "City"
     },
     "overview": {
       "title": "Skin Profile",
       "description": "Tell Ritora about your skin so every suggestion fits you.",
       "edit": "Edit",
-      "notSet": "Not set"
+      "notSet": "Not set",
+      "essentialsTitle": "Essentials",
+      "essentialsHint": "The basics that drive every suggestion.",
+      "completenessTitle": "Profile completeness",
+      "completenessHint": "Add the optional sections below for more personalised suggestions.",
+      "completenessPercent": "{value}% complete",
+      "optionalSectionsTitle": "Optional sections",
+      "optionalSectionsHint": "Each one helps Ritora in a specific way. Skip what you're not comfortable sharing.",
+      "allOptionalLabel": "All optional",
+      "allMandatoryLabel": "All mandatory",
+      "addNow": "Add now",
+      "notApplicable": "Not applicable",
+      "review": "Review",
+      "reactionEntriesCount": "{count} entries",
+      "noKnownReactions": "No known reactions",
+      "activeToleranceCount": "{count} tracked",
+      "encryptedBadge": "Encrypted",
+      "consentRequired": "Asks for consent first",
+      "controlBannerTitle": "You're in control",
+      "controlBannerBody": "Sensitive sections are encrypted, never sold, and only used for your suggestions. Delete any section in one tap from Settings · Privacy."
+    },
+    "optionalCards": {
+      "medicalSafetyTitle": "Medical & Safety",
+      "medicalSafetyDesc": "So Ritora knows what to leave out. Pregnancy, skin conditions, medications, recent procedures.",
+      "medicalSafetyTime": "About 3 min",
+      "sunPigmentTitle": "Sun & pigment behavior",
+      "sunPigmentDesc": "Sun reaction matters more than skin tone. Sharpens irritation and pigmentation guidance.",
+      "sunPigmentTime": "About 2 min",
+      "reactionHistoryTitle": "Reaction history",
+      "reactionHistoryDesc": "Things you've reacted to before, so Ritora won't suggest them.",
+      "reactionHistoryTime": "About 2 min",
+      "activeToleranceTitle": "Active tolerance",
+      "activeToleranceDesc": "Have you used retinol, AHAs, or vitamin C before? Ritora will start at the right strength.",
+      "activeToleranceTime": "About 2 min",
+      "lifestyleTitle": "Lifestyle",
+      "lifestyleDesc": "Sleep, stress, water, diet. Some breakouts have non-product causes.",
+      "lifestyleTime": "About 2 min",
+      "hormonalTitle": "Hormonal context",
+      "hormonalDesc": "For people who get cyclical breakouts. Easy to skip.",
+      "hormonalTime": "About 1 min"
+    },
+    "essentials": {
+      "skinType": "Skin type",
+      "phototype": "Phototype",
+      "dateOfBirth": "Date of birth",
+      "topConcern": "Top concern",
+      "sunscreen": "Sunscreen",
+      "routinePace": "Routine pace",
+      "edit": "Edit essentials",
+      "ageYears": "{age} years"
+    },
+    "sunPigment": {
+      "pageTitle": "Sun & pigment behavior",
+      "pageDesc": "Sun reaction matters more than skin tone. It shapes which actives are safe for you.",
+      "questionPhototype": "After a full day outside, your skin usually:",
+      "whyPhototype": "Phototype is the standard way clinicians describe sun reaction. It guides how aggressively Ritora can suggest actives.",
+      "questionPih": "After a pimple heals, do dark marks linger?",
+      "whyPih": "Post-inflammatory hyperpigmentation makes irritation cost more. Ritora will pick gentler actives and emphasise sunscreen.",
+      "questionMelasma": "Do you experience melasma or persistent dark patches?",
+      "whyMelasma": "Melasma needs special handling. Ritora will avoid heat-triggering actives and lean on tinted sunscreens.",
+      "questionKeloid": "Does your skin scar with raised marks (keloids)?",
+      "whyKeloid": "Keloid-prone skin needs gentler exfoliation choices.",
+      "questionSunscreen": "How often do you wear sunscreen?",
+      "whySunscreen": "Daily sunscreen use lowers irritation risk and slows photoaging.",
+      "questionTolerance": "How do most sunscreens feel on your skin?",
+      "whyTolerance": "If sunscreens irritate you, Ritora will favour mineral filters and tinted finishes.",
+      "questionFilter": "Which sunscreen filter do you prefer?",
+      "whyFilter": "Mineral, chemical, and hybrid filters feel different on skin. Ritora will respect your preference.",
+      "questionFinish": "Which sunscreen finish do you prefer?",
+      "whyFinish": "Adherence is higher when textures match your preference.",
+      "save": "Save",
+      "saved": "Sun & pigment preferences saved.",
+      "preferNotToSay": "Prefer not to say"
+    },
+    "reactions": {
+      "pageTitle": "Reaction history",
+      "pageDesc": "List ingredients or products that have triggered reactions before. Ritora will avoid suggesting them.",
+      "logged": "Logged reactions",
+      "entriesCount": "{count} entries",
+      "entriesNone": "No reactions logged yet.",
+      "historyQuestion": "Have you had skin reactions before?",
+      "historyQuestionHint": "Answering no still counts. Ritora should know whether this was skipped or truly does not apply to you.",
+      "hasReactions": "Yes, I have reacted before",
+      "noKnownReactions": "No known reactions",
+      "noKnownReactionsHint": "Ritora will not treat reaction history as missing. You can come back and add a reaction later if this changes.",
+      "addDisabledNoHistory": "Change your answer to add a reaction.",
+      "addNew": "Add a reaction",
+      "addNewHint": "Be specific where you can.",
+      "fieldTrigger": "What triggered it?",
+      "fieldTriggerHint": "If Ritora knows the ingredient, it'll link to your Shelf warnings.",
+      "fieldTriggerPlaceholder": "e.g. Salicylic acid, lavender oil",
+      "fieldTriggerType": "Trigger type",
+      "fieldCertainty": "How sure are you?",
+      "fieldReactions": "Reaction type",
+      "fieldSeverity": "Severity",
+      "fieldPatchTest": "Confirmed by patch test or clinician",
+      "addReaction": "Add reaction",
+      "remove": "Remove",
+      "saved": "Reaction added.",
+      "removed": "Reaction removed.",
+      "saveAll": "Save changes",
+      "savedChanges": "Changes saved.",
+      "consentTitle": "Protect reaction history",
+      "consentDescription": "Reaction history is health-context data. Ritora stores it encrypted and uses it only to personalize your suggestions.",
+      "consentAccept": "Allow and save",
+      "consentDecline": "Not now"
+    },
+    "activeTolerance": {
+      "pageTitle": "Active tolerance",
+      "pageDesc": "Have you used these actives before? Ritora will start at the right strength.",
+      "introHint": "Tap each active to set your tolerance. Skip what you haven't tried.",
+      "save": "Save",
+      "saved": "Active tolerance saved.",
+      "lastUsed": "Last used",
+      "lastUsedPlaceholder": "Optional"
+    },
+    "lifestyle": {
+      "pageTitle": "Lifestyle",
+      "pageDesc": "Sleep, stress, water, diet. Some breakouts have non-product causes.",
+      "questionSleep": "How much sleep do you get on average?",
+      "whySleep": "Less than 6 hours raises cortisol and oil production. Ritora will note this in suggestions.",
+      "questionStress": "What's your typical stress level?",
+      "whyStress": "Stress drives cortisol-related breakouts. Ritora will favour calming actives if stress is high.",
+      "questionWater": "How much water do you drink daily?",
+      "whyWater": "Hydration helps barrier function. Low intake may explain dehydrated skin.",
+      "questionDiet": "Any of these in your diet often?",
+      "whyDiet": "High sugar and dairy correlate with acne for some people. Ritora won't lecture, but will surface lifestyle hints.",
+      "questionSmoking": "How often do you smoke?",
+      "whySmoking": "Smoking accelerates skin aging. Ritora will weight antioxidants higher.",
+      "questionAlcohol": "How often do you drink alcohol?",
+      "whyAlcohol": "Alcohol dehydrates the skin. Ritora may suggest extra hydration steps.",
+      "questionSweat": "Do you sweat a lot during exercise?",
+      "whySweat": "Sweat-prone skin needs different cleansing strategies.",
+      "questionMask": "Do you wear a mask often (e.g. work)?",
+      "whyMask": "Mask wear can trigger maskne. Ritora will avoid heavy occlusives in mask zones.",
+      "questionShaving": "Do you shave your face?",
+      "whyShaving": "Shaving affects barrier and exfoliation tolerance.",
+      "questionClimate": "Which environmental conditions bother your skin?",
+      "whyClimate": "Ritora will tailor occlusives and barrier care to your climate sensitivities.",
+      "save": "Save",
+      "saved": "Lifestyle saved."
+    },
+    "hormonal": {
+      "pageTitle": "Hormonal context",
+      "pageDesc": "For people who get cyclical breakouts. Every question is optional.",
+      "encryptedBadge": "Encrypted",
+      "consentTitle": "Before you share hormonal context",
+      "consentLede": "This can reveal sensitive health information. Ritora only uses it to make cycle-aware suggestions safer and more relevant.",
+      "consentAskTitle": "What we'll ask",
+      "consentAsk1": "Whether breakouts follow a cycle pattern.",
+      "consentAsk2": "When breakouts usually happen.",
+      "consentAsk3": "Optional hormone-related context such as contraception or menopause changes.",
+      "consentSafety": "You can skip any question and delete this data anytime. It is encrypted, never sold, and never used for advertising.",
+      "consentDecline": "Not now",
+      "consentAccept": "I understand. Continue.",
+      "consentPromptTitle": "Consent required before saving",
+      "consentPromptBody": "Hormonal context is optional and sensitive, so Ritora asks separately before storing it.",
+      "reviewConsent": "Review consent",
+      "consentRequiredError": "Please review consent before saving hormonal context.",
+      "questionCyclePattern": "How predictable is your cycle pattern?",
+      "whyCyclePattern": "Predictability helps Ritora avoid overfitting suggestions to a pattern that may not apply.",
+      "questionBreakoutPattern": "When do breakouts usually appear?",
+      "whyBreakoutPattern": "Timing helps Ritora suggest gentler support before expected flare windows.",
+      "questionCycleRelated": "Do breakouts seem cycle-related?",
+      "whyCycleRelated": "If breakouts are cyclical, Ritora can treat them differently from product-triggered reactions.",
+      "questionHormonalContraception": "Do you use hormonal contraception?",
+      "whyHormonalContraception": "Hormonal contraception can change oiliness and breakout patterns for some people.",
+      "questionMenopause": "Are menopause or perimenopause changes affecting your skin?",
+      "whyMenopause": "Hormone shifts can change dryness, sensitivity, and breakout patterns.",
+      "yes": "Yes",
+      "no": "No",
+      "save": "Save",
+      "saving": "Saving",
+      "saved": "Hormonal context saved.",
+      "deleteThisData": "Delete this data",
+      "deleteConfirmTitle": "Delete your hormonal context?",
+      "deleteConfirmBody": "Removes cycle pattern, breakout timing, and hormone-related context. Withdraws hormonal-context consent. This can't be undone.",
+      "deleted": "Hormonal context deleted.",
+      "footerHint": "Save only what you are comfortable sharing."
+    },
+    "medicalSafety": {
+      "pageTitle": "Medical & Safety",
+      "pageDesc": "Helps Ritora avoid suggesting things your body shouldn't have. Every question is optional.",
+      "encryptedBadge": "Encrypted",
+      "consentActiveTitle": "Health-data consent active",
+      "consentActiveBody": "Granted on {date}. Withdraw anytime in Settings · Privacy.",
+      "consentDialogTitle": "Before you share medical context",
+      "consentDialogEncryptedBadge": "Encrypted",
+      "consentDialogLede": "This is sensitive data. Read what we'll ask, why, and how it's protected before you decide.",
+      "consentDialogAskTitle": "What we'll ask",
+      "consentDialogAsk1": "Pregnancy or breastfeeding. Some ingredients aren't safe.",
+      "consentDialogAsk2": "Skin conditions like rosacea or eczema. Different routines work better.",
+      "consentDialogAsk3": "Medications affecting skin. Some interact with skincare.",
+      "consentDialogAsk4": "Recent procedures like peels or laser. Your skin barrier may need gentler care.",
+      "consentDialogSafety": "You can skip any question. You can delete this data anytime. If you skip, Ritora gives general suggestions instead.",
+      "consentDialogProtectionTitle": "How is this protected?",
+      "consentDialogProtection1": "Encrypted at rest. Only Ritora's own AI suggestion engine reads it.",
+      "consentDialogProtection2": "Never sold. Never used for advertising. Never sent to third parties.",
+      "consentDialogProtection3": "Activity log available in Settings · Privacy.",
+      "consentDialogProtection4": "Delete anytime in one tap.",
+      "consentDialogPrivacyLink": "Read the full Privacy Notice for Health Data",
+      "consentDialogDecline": "Not now",
+      "consentDialogAccept": "I understand. Continue.",
+      "questionPregnancy": "Are you currently pregnant, breastfeeding, or trying to conceive?",
+      "pregnancyNotApplicableHint": "Auto-set based on your sex at birth.",
+      "whyPregnancy": "Some common ingredients aren't safe in pregnancy or breastfeeding. Examples: retinoids, high-strength salicylic acid, hydroquinone. Ritora will leave them out of your suggestions.",
+      "questionConditions": "Have any of these been diagnosed by a clinician?",
+      "questionConditionsHint": "Tap all that apply, or \"None\".",
+      "whyConditions": "Conditions like rosacea react badly to common actives. Knowing your diagnoses lets Ritora bias toward gentler routines.",
+      "questionMedications": "Are you taking any of these?",
+      "whyMedications": "Some medications make skin extremely sensitive. Some cause photosensitivity, which changes sunscreen guidance.",
+      "questionPhotosensitizingOther": "I take other medications that may cause photosensitivity",
+      "questionProcedures": "Any procedures in the last 90 days?",
+      "whyProcedures": "Recent peels, lasers, or microneedling compromise the skin barrier. Ritora will downgrade routine intensity for the recovery window.",
+      "questionDermCare": "Are you currently under a dermatologist's care?",
+      "whyDermCare": "If you're under active treatment, your dermatologist's plan takes precedence.",
+      "preferNotToSay": "Prefer not to say",
+      "none": "None",
+      "noneOrPreferNotToSay": "None / prefer not to say",
+      "whyWeAsk": "Why we ask",
+      "skipRemaining": "Skip remaining",
+      "save": "Save",
+      "questionsAnswered": "{answered} of {total} questions answered",
+      "questionsAnsweredHint": "You can leave the rest blank.",
+      "deleteThisData": "Delete this data",
+      "deleteConfirmTitle": "Delete your medical context?",
+      "deleteConfirmBody": "Removes pregnancy status, conditions, medications, and recent procedures. Withdraws health-data consent. This can't be undone.",
+      "deleteConfirmAction": "Delete",
+      "deleteCancel": "Keep",
+      "deleted": "Medical context deleted.",
+      "saved": "Saved."
+    },
+    "consentCenter": {
+      "title": "Consent Center",
+      "description": "Withdrawing a consent immediately deletes the underlying data and writes an audit entry.",
+      "active": "Active",
+      "notGranted": "Not granted",
+      "activeCount": "{count} active",
+      "encrypted": "Encrypted",
+      "aiSuggestionLabel": "AI suggestion processing",
+      "aiSuggestionDesc": "Allows Ritora to use AI for scheduled and quick suggestions. Sensitive profile or journal context is only used when the matching consent is also active.",
+      "grantAiSuggestion": "Allow AI suggestions",
+      "revokeAiSuggestion": "Revoke",
+      "healthLabel": "Health context processing",
+      "healthDesc": "Pregnancy, conditions, medications, recent procedures, dermatologist care.",
+      "locationLabel": "Location processing",
+      "locationDesc": "Country and city let Ritora adapt suggestions to humidity, UV, air quality, and seasonal shifts.",
+      "hormonalLabel": "Hormonal context processing",
+      "hormonalDesc": "Cycle awareness for cyclical breakouts.",
+      "grantedOn": "Granted",
+      "noticeVersion": "Notice version",
+      "noticeVersionValue": "v2026.01",
+      "lastAccessed": "Last accessed",
+      "viewStored": "View what's stored",
+      "hideStored": "Hide",
+      "viewLog": "View access log",
+      "revoke": "Revoke and delete",
+      "grant": "Grant consent",
+      "comingSoon": "Coming soon",
+      "neverAccessed": "Not accessed yet",
+      "auditLogComingSoon": "Activity log will appear here once Ritora's recommendation engine starts using your data.",
+      "noStoredData": "No data stored under this consent.",
+      "yourDataTitle": "Your data",
+      "yourDataDesc": "Export or delete everything, anytime.",
+      "downloadTitle": "Download all your data",
+      "downloadDesc": "Profile, health context (decrypted), consent history. Coming soon.",
+      "downloadAction": "Download",
+      "deleteTitle": "Delete your account",
+      "deleteDesc": "Schedules deletion of your profile, health context, shelf, schedule, and audit log after a 30-day grace period.",
+      "deleteAction": "Delete account",
+      "deleteUnavailable": "Account deletion is coming soon. For now, contact support.",
+      "deleteDialogTitle": "Delete your Ritora account?",
+      "deleteDialogPasswordBody": "Confirm your password to schedule deletion. We'll sign you out of every device right away.",
+      "deleteDialogOAuthBody": "We'll send a confirmation link to your inbox. Once you confirm, we'll sign you out of every device right away.",
+      "deleteDialogWhatHappensTitle": "What gets deleted",
+      "deleteDialogWhatHappensItem1": "Your profile, skin photos, and routine history",
+      "deleteDialogWhatHappensItem2": "Your shelf, schedule, and saved suggestions",
+      "deleteDialogWhatHappensItem3": "All sessions across every signed-in device",
+      "deleteDialogGraceTitle": "You have 30 days to change your mind",
+      "deleteDialogGraceBody": "We'll hold everything for 30 days. Sign in again or use the link in our email to cancel anytime before then. After day 30, deletion is permanent and cannot be undone.",
+      "deletePasswordLabel": "Current password",
+      "deletePasswordRequired": "Enter your password to continue.",
+      "deleteCancel": "Keep my account",
+      "deleteScheduleAction": "Schedule deletion",
+      "deleteOAuthAction": "Send confirmation email",
+      "deleteScheduling": "Scheduling...",
+      "deleteConfirmationSending": "Sending...",
+      "deleteScheduledToast": "Deletion scheduled. We sent you an email with a cancellation link.",
+      "deleteConfirmationRequiredToast": "Check your inbox to confirm account deletion.",
+      "deleteFailed": "We could not start account deletion. Please try again.",
+      "grantLocationTitle": "Grant location consent",
+      "grantLocationBody": "Add city-level location so Ritora can account for humidity, UV, air quality, and seasonal changes.",
+      "grantLocationConfirm": "Grant and save",
+      "grantLocationCancel": "Cancel",
+      "cityPlaceholder": "Stockholm",
+      "grantLocationConsentLabel": "I consent to Ritora processing my country and city.",
+      "grantHealthTitle": "Grant health-context consent",
+      "grantHealthBody": "Open Medical & Safety to add your medical context. You'll be asked for explicit consent before any data is saved.",
+      "grantHealthConfirm": "Open Medical & Safety",
+      "revokeLocationTitle": "Revoke location consent?",
+      "revokeLocationBody": "We'll clear your country and city, and revoke the consent. Suggestions will no longer be climate-aware.",
+      "revokeSuccess": "Consent revoked.",
+      "grantSuccess": "Consent granted.",
+      "errorMissingFields": "Country code is required.",
+      "errorConsentRequired": "Consent is required before saving location data.",
+      "yes": "Yes",
+      "no": "No",
+      "storedPregnancy": "Pregnancy",
+      "storedConditions": "Conditions",
+      "storedMedications": "Medications",
+      "storedRecentProcedures": "Recent procedures",
+      "storedDermatologistCare": "Dermatologist care",
+      "storedCountry": "Country",
+      "storedCity": "City",
+      "storedCyclePattern": "Cycle pattern",
+      "storedBreakoutPattern": "Breakout timing",
+      "storedCycleRelated": "Cycle-related breakouts",
+      "storedHormonalContraception": "Hormonal contraception",
+      "storedMenopause": "Menopause-related changes",
+      "storedAiSuggestionProcessing": "AI suggestion processing",
+      "loadingLog": "Loading access log...",
+      "noAccessLog": "No audit entries yet.",
+      "accessEventDataAccessed": "Data accessed",
+      "accessEventConsentGranted": "Consent granted",
+      "accessEventConsentRevoked": "Consent revoked",
+      "accessPurposeSkinProfileRead": "Skin Profile read",
+      "accessPurposeRecommendationAnalysis": "Recommendation analysis",
+      "accessPurposeAccountExport": "Account export",
+      "accessPurposeConsentGrant": "Consent grant",
+      "accessPurposeConsentRevoke": "Consent revoke"
     },
     "fieldLabels": {
       "skinType": "Skin type",
       "skinTone": "Skin tone",
-      "ageRange": "Age range",
+      "fitzpatrickPhototype": "Fitzpatrick phototype",
       "ethnicity": "Ethnicity",
       "concerns": "Concerns",
-      "sensitivities": "Sensitivities",
-      "goals": "Goals",
-      "routine": "Routine",
+      "primaryGoal": "Top priority",
+      "sunBehavior": "Sun and pigment behavior",
+      "routinePace": "Routine pace",
+      "waterContext": "Water context",
+      "preferences": "Preferences",
       "aboutYou": "About you",
+      "location": "Location",
       "countryCode": "Country code",
       "city": "City"
     },
-    "sensitivitiesLabel": "Known sensitivities",
-    "sensitivitiesHint": "Ingredients or products that have caused reactions in the past.",
-    "sensitivitiesPlaceholder": "e.g. Fragrance, Niacinamide",
-    "sensitivitiesAdd": "Add",
-    "sensitivitiesRemove": "Remove {value}",
-    "routineDescriptions": {
-      "minimal": "The essentials. AM routine for protection, PM routine for repair.",
-      "moderate": "Adds a midday refresh between your main routines.",
-      "comprehensive": "Full flexibility. Morning, midday, evening, plus situational suggestions."
-    },
     "validation": {
-      "invalidCountryCode": "Country code must be 2 letters (e.g. SE).",
-      "locationConsentRequired": "Location consent is required when country or city is provided.",
-      "cityTooLong": "City name is too long."
+      "invalidCountryCode": "Use a 2-letter country code, like SE.",
+      "locationConsentRequired": "Allow location to save a country or city.",
+      "cityTooLong": "City name is too long.",
+      "required": "Please complete this field.",
+      "invalidDate": "Enter a real date, like 27 4 1985.",
+      "birthDateOutOfRange": "Use a date for someone between 5 and 80 years old.",
+      "skinTypeRequired": "Pick a skin type.",
+      "skinToneRequired": "Pick a skin tone.",
+      "phototypeRequired": "Pick a phototype.",
+      "dateOfBirthRequired": "Enter your date of birth.",
+      "sexAtBirthRequired": "Pick a sex at birth.",
+      "ethnicityRequired": "Pick an ethnicity.",
+      "concernsRequired": "Pick at least one concern.",
+      "primaryGoalRequired": "Pick your top priority.",
+      "severityRequired": "Pick a severity.",
+      "tendencyRequired": "Pick how often.",
+      "sunscreenHabitRequired": "Pick how often you wear sunscreen.",
+      "sunscreenToleranceRequired": "Pick how sunscreens feel on your skin.",
+      "routinePaceRequired": "Pick a routine pace.",
+      "fragranceFreeRequired": "Pick yes or no for fragrance-free.",
+      "nonComedogenicRequired": "Pick yes or no for non-comedogenic.",
+      "sunscreenFilterRequired": "Pick a sunscreen filter.",
+      "sunscreenFinishRequired": "Pick a sunscreen finish.",
+      "budgetTierRequired": "Pick a budget.",
+      "allowSmartPicksRequired": "Pick yes or no for Smart Picks.",
+      "waterHardnessRequired": "Pick a water hardness option.",
+      "waterSensitivityRequired": "Pick a water sensitivity option.",
+      "waterNotesTooLong": "Keep the water note under 180 characters."
     },
     "options": {
       "oily": "Oily",
@@ -709,6 +1402,10 @@
       "middle_eastern": "Middle Eastern",
       "mixed": "Mixed",
       "other": "Other",
+      "unknown": "Unknown",
+      "soft": "Soft",
+      "hard": "Hard",
+      "confirmed": "Confirmed",
       "acne": "Acne",
       "dark_marks": "Dark marks",
       "dryness": "Dryness",
@@ -720,6 +1417,7 @@
       "barrier_damage": "Barrier damage",
       "eczema": "Eczema",
       "uneven_tone": "Uneven tone",
+      "post-breakout marks": "Post-breakout marks",
       "clear_acne": "Clear acne",
       "fade_dark_marks": "Fade dark marks",
       "improve_texture": "Improve texture",
@@ -728,9 +1426,142 @@
       "minimize_pores": "Minimize pores",
       "even_tone": "Even tone",
       "general_maintenance": "General maintenance",
-      "minimal": "Morning and evening",
-      "moderate": "Morning, midday, and evening",
-      "comprehensive": "Whenever Ritora suggests"
+      "moderate": "Moderate",
+      "I": "Always burns, never tans. Phototype I.",
+      "II": "Usually burns, tans a little. Phototype II.",
+      "III": "Sometimes burns, tans gradually. Phototype III.",
+      "IV": "Rarely burns, tans well. Phototype IV.",
+      "V": "Very rarely burns, tans deeply. Phototype V.",
+      "VI": "Never burns, deeply pigmented. Phototype VI.",
+      "low": "Low",
+      "moderate_level": "Moderate",
+      "high": "High",
+      "very_high": "Very high",
+      "well_hydrated": "Well hydrated",
+      "dehydrated": "Dehydrated",
+      "very_dehydrated": "Very dehydrated",
+      "not_pregnant": "Not pregnant",
+      "trying_to_conceive": "Trying to conceive",
+      "pregnant": "Pregnant",
+      "breastfeeding": "Breastfeeding",
+      "prefer_not_to_say": "Prefer not to say",
+      "female": "Female",
+      "male": "Male",
+      "intersex": "Intersex",
+      "rosacea": "Rosacea",
+      "psoriasis": "Psoriasis",
+      "perioral_dermatitis": "Perioral dermatitis",
+      "seborrheic_dermatitis": "Seborrheic dermatitis",
+      "melasma": "Melasma",
+      "vitiligo": "Vitiligo",
+      "keratosis_pilaris": "Keratosis pilaris",
+      "isotretinoin": "Isotretinoin (Accutane)",
+      "topical_retinoid": "Topical retinoid",
+      "topical_antibiotic": "Topical antibiotic",
+      "oral_antibiotic": "Oral antibiotic",
+      "hormonal_contraceptive": "Hormonal contraceptive",
+      "hrt": "HRT",
+      "topical_corticosteroid": "Topical corticosteroid",
+      "other_photosensitizing": "Other photosensitizing",
+      "chemical_peel": "Chemical peel",
+      "laser": "Laser treatment",
+      "microneedling": "Microneedling",
+      "microdermabrasion": "Microdermabrasion",
+      "botox": "Botox",
+      "filler": "Filler",
+      "yes_actively": "Yes, actively",
+      "yes_occasional": "Yes, occasionally",
+      "no": "No",
+      "never": "Never",
+      "sometimes": "Sometimes",
+      "often": "Often",
+      "always": "Always",
+      "rarely": "Rarely",
+      "when_outside": "When outside",
+      "most_days": "Most days",
+      "every_day": "Every day",
+      "fine": "Fine",
+      "a_bit_irritating": "A bit irritating",
+      "often_irritating": "Often irritating",
+      "havent_tried_many": "Haven't tried many",
+      "chemical": "Chemical",
+      "mineral": "Mineral",
+      "hybrid": "Hybrid",
+      "matte": "Matte",
+      "dewy": "Dewy",
+      "tinted": "Tinted",
+      "natural": "Natural",
+      "ingredient": "Ingredient",
+      "product": "Product",
+      "category": "Category",
+      "fragrance": "Fragrance",
+      "preservative": "Preservative",
+      "redness_reaction": "Redness",
+      "itch": "Itch",
+      "stinging": "Stinging",
+      "dryness_reaction": "Dryness",
+      "breakout": "Breakout",
+      "breakout_reaction": "Breakout",
+      "hives": "Hives",
+      "swelling": "Swelling",
+      "mild": "Mild",
+      "severe": "Severe",
+      "suspected": "Suspected",
+      "confirmed_repeat": "Confirmed (repeat exposure)",
+      "confirmed_patch_test": "Confirmed (patch test)",
+      "under_6": "Under 6 hours",
+      "6_to_8": "6 to 8 hours",
+      "over_8": "Over 8 hours",
+      "high_sugar": "High sugar",
+      "high_dairy": "High dairy",
+      "low_sugar": "Low sugar",
+      "low_dairy": "Low dairy",
+      "vegan_diet": "Vegan",
+      "vegetarian": "Vegetarian",
+      "occasional": "Occasional",
+      "regular": "Regular",
+      "dry_air": "Dry air",
+      "humidity": "Humidity",
+      "cold": "Cold",
+      "pollution": "Pollution",
+      "heat": "Heat",
+      "retinoids": "Retinoids (retinol, tretinoin)",
+      "aha": "AHAs (glycolic, lactic)",
+      "bha": "BHA (salicylic acid)",
+      "pha": "PHAs",
+      "benzoyl_peroxide": "Benzoyl peroxide",
+      "vitamin_c": "Vitamin C",
+      "niacinamide": "Niacinamide",
+      "azelaic_acid": "Azelaic acid",
+      "exfoliation": "Physical exfoliation",
+      "never_tried": "Never tried",
+      "tolerates_well": "Tolerates well",
+      "sensitive_to_it": "Sensitive to it",
+      "cannot_use": "Cannot use",
+      "slow": "Slow",
+      "cautious": "Cautious",
+      "aggressive": "Aggressive",
+      "drugstore": "Drugstore",
+      "mid": "Mid-range",
+      "premium": "Premium",
+      "luxury": "Luxury",
+      "lightweight": "Lightweight",
+      "rich": "Rich",
+      "gel": "Gel",
+      "cream": "Cream",
+      "oil_free": "Oil-free",
+      "vegan": "Vegan",
+      "cruelty_free": "Cruelty-free",
+      "fragrance_free": "Fragrance-free",
+      "clean": "Clean",
+      "none": "None",
+      "irregular": "Irregular",
+      "not_applicable": "Not applicable",
+      "not_sure": "Not sure",
+      "before_period": "Before period",
+      "during_period": "During period",
+      "ovulation": "Around ovulation",
+      "random": "Random"
     }
   },
   "shelf": {
@@ -802,6 +1633,14 @@
       "cta": "Add your first product",
       "filtered": "No products match your current filter."
     },
+    "prerequisites": {
+      "profile": {
+        "title": "Finish your skin profile first",
+        "body": "Ritora needs your skin profile before product details can safely shape routines, analysis, or suggestions.",
+        "cta": "Open skin profile",
+        "loadError": "We couldn't reach your skin profile right now. Check your connection and try again."
+      }
+    },
     "errors": {
       "retry": "Try again",
       "loadShelfTitle": "We couldn't load your shelf",
@@ -844,7 +1683,7 @@
     },
     "dialog": {
       "title": "Add to your shelf",
-      "subtitle": "Upload a product photo plus label photos, or enter the details yourself.",
+      "subtitle": "Upload a product photo plus label photos so Ritora can read the product before saving.",
       "close": "Close",
       "step": "Step {current} of 2",
       "photos": {
@@ -874,7 +1713,7 @@
         "extracting": "Reading your photos…",
         "partial": "Some fields still need review — see the highlighted fields below.",
         "errorTitle": "Couldn't read those photos",
-        "error": "Try clearer label photos, or enter details manually.",
+        "error": "Try clearer product and label photos.",
         "serviceUnavailableTitle": "Couldn't reach the photo reader",
         "serviceUnavailableDescription": "Check your connection and try again. Your photos are still here.",
         "serviceUnavailable": "Couldn't reach the photo reader. Check your connection and try again.",
@@ -888,7 +1727,8 @@
       "lookupImport": {
         "title": "Details filled in",
         "description": "Edit anything before saving.",
-        "reviewDescription": "Review the highlighted fields before saving."
+        "reviewDescription": "Review the highlighted fields before saving.",
+        "requiredError": "Extract product details from photos before saving."
       },
       "lookupReview": {
         "title": "Imported details to review",
@@ -897,7 +1737,7 @@
         "confidenceLabel": "Confidence",
         "warningsLabel": "What to review",
         "evidenceLabel": "Grounded sources",
-        "lowConfidenceError": "We couldn't verify enough product details to fill this form safely. Try clearer photos or enter the details manually."
+        "lowConfidenceError": "We couldn't verify enough product details to fill this form safely. Try clearer photos."
       },
       "manual": {
         "heading": "Add manually",
@@ -1088,6 +1928,7 @@
         "source": "Data resolved from {source}, confirmed by you on {date}."
       },
       "actions": {
+        "compare": "Compare",
         "edit": "Edit",
         "archive": "Archive",
         "markFinished": "Mark finished",
@@ -1148,11 +1989,7 @@
       "either": "morning or evening"
     },
     "provenance": {
-      "photo-lookup": "photo extraction",
-      "barcode-lookup": "barcode lookup",
-      "url-fetch": "manufacturer link",
-      "catalogue": "Ritora catalogue",
-      "user-entered": "your own input"
+      "photo-lookup": "photo extraction"
     },
     "templates": {
       "pickOne": "Pick a starter template",
@@ -1261,6 +2098,18 @@
     "accept": "Accept",
     "reject": "Reject"
   },
+  "mobileNav": {
+    "ariaLabel": "Primary navigation",
+    "menuAriaLabel": "Open menu",
+    "badge": "{count, plural, one {# unread} other {# unread}}",
+    "items": {
+      "home": "Home",
+      "check": "Check",
+      "today": "Today",
+      "notifications": "Alerts",
+      "more": "More"
+    }
+  },
   "sidebar": {
     "toggleSidebar": "Toggle sidebar",
     "navigation": "Navigation",
@@ -1270,12 +2119,14 @@
       "account": "Account"
     },
     "soonBadge": "Soon",
+    "badgeLabel": "{count, plural, one {# item needs attention} other {# items need attention}}",
     "items": {
       "home": "Home",
+      "checkProduct": "Quick Check",
       "skinProfile": "Skin Profile",
       "shelf": "Shelf",
       "todaysSuggestion": "Today's Suggestion",
-      "schedule": "Schedule",
+      "schedule": "Routine",
       "skinJournal": "Skin Journal",
       "smartPicks": "Smart Picks",
       "history": "History",
@@ -1285,6 +2136,7 @@
     },
     "descriptions": {
       "homeDescription": "Daily overview with setup progress and what needs attention.",
+      "checkProductDescription": "A fast read on whether a product suits you before you buy or use it.",
       "skinProfileDescription": "Your skin type, concerns, goals, and location context.",
       "shelfDescription": "Add and manage the skincare products you own.",
       "todaysSuggestionDescription": "AI-curated product pairings for your morning and evening care.",
@@ -1345,6 +2197,294 @@
       "description": "Routine reminders, product expiry alerts, low stock warnings, progress check-ins, and rest day reminders. All configurable to your schedule."
     }
   },
+  "checkProduct": {
+    "page": {
+      "title": "Quick Check",
+      "body": "See if a product suits your skin and routine before you buy or use it. Paste the ingredients or snap a label."
+    },
+    "tabsLabel": "Quick check method",
+    "tabs": {
+      "paste": "Paste ingredients",
+      "photos": "Photos"
+    },
+    "compare": {
+      "checkedProductFallback": "Checked product",
+      "cardTitle": "Compare with your Shelf",
+      "cardBody": "See how this stacks up against products you already own.",
+      "cardAction": "Open comparison"
+    },
+    "paste": {
+      "brandLabel": "Brand",
+      "brandPlaceholder": "Product brand",
+      "nameLabel": "Product name",
+      "namePlaceholder": "For example, Barrier Repair Serum",
+      "categoryLabel": "Category",
+      "ingredientsLabel": "Ingredients",
+      "ingredientsPlaceholder": "Paste INCI ingredients separated by commas or new lines.",
+      "parsedCount": "{count, plural, =0 {No ingredients detected yet} one {# ingredient detected} other {# ingredients detected}}",
+      "checkingAction": "Checking...",
+      "checkAction": "Run quick check"
+    },
+    "photos": {
+      "heading": "Photos",
+      "helper": {
+        "needLabels": "Add a photo so Ritora can read the INCI list.",
+        "ready": "Looks good. Run Quick Check when you're ready."
+      },
+      "addAction": "Add photo",
+      "removeAction": "Remove photo",
+      "shapeTips": {
+        "heading": "Tips by container shape",
+        "rectangular": "Box or rectangular: capture the front and back, or the side with the most text.",
+        "cylindrical": "Bottle, tube, or cylinder: take 3 to 4 overlapping photos while rotating around the body. Keep important text away from curved edges.",
+        "roundJar": "Jar, sphere, or round: capture the top or lid, plus 2–3 side sections with a quarter turn between shots.",
+        "pouch": "Pouch or sachet: lay it flat and take one photo per printed side."
+      },
+      "extractingAction": "Reading photos...",
+      "checkingAction": "Checking...",
+      "checkAction": "Run quick check"
+    },
+    "result": {
+      "eyebrow": "Product verdict",
+      "scoreLabel": "Safety score",
+      "scoreUnknown": "Not enough data",
+      "confidence": {
+        "high": "High confidence",
+        "medium": "Medium confidence",
+        "low": "Low confidence"
+      },
+      "labels": {
+        "good_fit": "Good fit",
+        "good_with_limits": "Good with limits",
+        "use_carefully": "Use carefully",
+        "avoid_for_profile": "Avoid for your profile",
+        "ingredients_only": "Ingredient guide only",
+        "not_enough_data": "Not enough data"
+      },
+      "nextActions": {
+        "add_to_shelf": "Add it to your shelf if you use it.",
+        "use_as_planned": "Looks suitable to use if it fits your routine.",
+        "review_and_patch_test": "Review the ingredients and patch test before using.",
+        "review_ingredients": "Check the ingredient list before deciding.",
+        "review_smart_picks": "Compare with Smart Picks before buying.",
+        "complete_profile": "Add your skin context before trusting this for reaction risk.",
+        "skip_product": "Skip this product for now."
+      },
+      "reasons": {
+        "insufficient_ingredients": "The ingredient list is missing or too sparse.",
+        "high_conflict": "A serious conflict matched your profile.",
+        "medium_conflict": "A moderate conflict needs attention.",
+        "low_conflict": "A mild finding is worth noting.",
+        "duplicate_exposure": "This duplicates an active already in your routine.",
+        "product_reaction_signal": "A similar product has reaction signals near logged use.",
+        "missing_personal_context": "Ritora does not have enough personal context to predict your reaction risk.",
+        "missing_reaction_context": "No reaction history is available, so this cannot rule out a personal trigger.",
+        "recent_journal_reaction": "Recent Skin Journal entries include reaction signals.",
+        "suggestion_history_reaction": "Past suggestions were simplified because reaction risk was detected.",
+        "low_confidence": "The analysis confidence is low.",
+        "review_required": "The extracted ingredient list needs review.",
+        "sensitive_profile": "Your sensitive skin context changes the recommendation.",
+        "reaction_trigger": "An ingredient may overlap with your reaction history.",
+        "photosensitizing_active": "A photosensitizing active needs careful timing."
+      },
+      "reasonIngredients": "({ingredients})",
+      "noReasons": "No major ingredient concerns matched your profile."
+    },
+    "details": {
+      "findingsHeading": "Ingredient reasons",
+      "findingsBody": "These are the specific pairings behind the verdict.",
+      "reactionHeading": "Reaction evidence",
+      "reactionBody": "Ritora checked consented reaction history and recent routine signals without using raw journal notes or photos.",
+      "reactionStats": "{reactions, plural, one {# reaction signal} other {# reaction signals}} near {usageDays, plural, one {# logged use day} other {# logged use days}}.",
+      "evidenceIngredients": "Ingredient match: {ingredients}",
+      "evidence": {
+        "profile_reaction_trigger": "Matches your reaction history",
+        "shelf_reaction_signal": "Similar Shelf product had reaction signals"
+      },
+      "routineHeading": "Money-saving context",
+      "routineBody": "Ritora checked this product against active Shelf products to catch duplicates before you buy.",
+      "smartPicksTitle": "Compare before buying",
+      "smartPicksBody": "Smart Picks can help you find alternatives that fit your routine and budget.",
+      "smartPicksCta": "Open Smart Picks",
+      "alternativeCategory": "For: {category}",
+      "alternativeSellers": "Available from: {sellers}",
+      "context": {
+        "educationalTitle": "Ingredient education mode",
+        "educationalBody": "Ritora can explain the ingredients, but it cannot predict your personal reaction risk until you add skin context, Shelf, journal, or suggestion history.",
+        "personalizedTitle": "Personalized with your Ritora data",
+        "personalizedBody": "This check used available account context to make the verdict more specific.",
+        "signals": {
+          "skin_profile": "Skin profile",
+          "reaction_history": "Reaction history",
+          "active_shelf": "Active Shelf",
+          "skin_journal": "Skin Journal",
+          "suggestion_history": "Suggestion history"
+        }
+      }
+    },
+    "empty": {
+      "title": "Your verdict appears here",
+      "body": "Paste a product's ingredients or scan a label and Ritora will tell you whether it suits your skin and routine."
+    },
+    "errors": {
+      "checkFailed": "We couldn't check this product. Try again in a moment.",
+      "incompletePhotoProduct": "We need readable ingredients before checking these photos."
+    },
+    "categories": {
+      "cleanser": "Cleanser",
+      "toner": "Toner",
+      "essence": "Essence",
+      "serum": "Serum",
+      "moisturizer": "Moisturizer",
+      "sun-protection": "Sun protection",
+      "mask": "Mask",
+      "exfoliant": "Exfoliant",
+      "eye-care": "Eye care",
+      "lip-care": "Lip care",
+      "treatment": "Treatment",
+      "other": "Other"
+    }
+  },
+  "productCompare": {
+    "quickCheck": {
+      "sheet": {
+        "trigger": "Compare with Shelf",
+        "title": "Compare before buying",
+        "description": "Pick Shelf products to weigh against this one before you buy.",
+        "info": {
+          "trigger": "About this comparison",
+          "title": "What we check before you buy",
+          "body": "This weighs the product you just checked against products on your Shelf so you can decide whether to buy it.",
+          "bullet1": "Is this product a duplicate of something on your Shelf?",
+          "bullet2": "Will it clash with what you already use?",
+          "bullet3": "Does it fill a real gap, or add more of the same?",
+          "bullet4": "Would it make more sense as a replacement than an extra?"
+        },
+        "anchorLabel": "New product",
+        "selectionCount": "{count}/{max} selected",
+        "pickHeading": "Products you already own",
+        "clearSelection": "Clear",
+        "ingredientCount": "{count, plural, one {# ingredient} other {# ingredients}}",
+        "emptyShelf": "Add products with ingredients to your Shelf before comparing.",
+        "emptyShelfAction": "Go to Shelf",
+        "compareCta": "Pick Shelf products",
+        "compareSelected": "{count, plural, one {Compare with # Shelf product} other {Compare with # Shelf products}}",
+        "compareAgain": "Compare again",
+        "compareAction": "Run buying check",
+        "comparing": "Comparing with Shelf...",
+        "error": "We couldn't compare this product with your Shelf. Try again in a moment."
+      },
+      "result": {
+        "eyebrow": "Before you buy",
+        "winner": "Better choice",
+        "noWinnerProduct": "No clear buying reason",
+        "unknownScore": "unknown",
+        "itemMeta": "Score {score} · {confidence}",
+        "keyActives": "Key actives: {actives}",
+        "ingredients": "({ingredients})",
+        "stats": {
+          "conflicts": "{count, plural, one {# conflict} other {# conflicts}}",
+          "overlaps": "{count, plural, one {# overlap} other {# overlaps}}",
+          "reactions": "{count, plural, one {# reaction signal} other {# reaction signals}}"
+        },
+        "confidence": {
+          "high": "high confidence",
+          "medium": "medium confidence",
+          "low": "low confidence"
+        },
+        "outcomes": {
+          "choose_anchor": "{product} looks worth considering",
+          "choose_candidate": "Keep using {product} instead",
+          "no_clear_winner": "No clear reason to buy",
+          "not_enough_data": "Not enough data"
+        },
+        "reasons": {
+          "better_fit": "This option has the stronger overall fit.",
+          "lower_conflict": "It has fewer or milder ingredient conflicts.",
+          "less_duplicate_exposure": "It adds less duplicate exposure to your routine.",
+          "reaction_risk": "Reaction risk signals make the other option less comfortable.",
+          "missing_personal_context": "More personal context would improve this comparison.",
+          "not_enough_data": "One product does not have enough reliable ingredient data.",
+          "similar_tradeoffs": "The products have similar tradeoffs.",
+          "already_owned": "This overlaps heavily with something already on your Shelf.",
+          "replacement_only": "Buying it makes most sense as a replacement, not an extra product.",
+          "different_routine_roles": "These products serve different routine roles, so this is not a direct replacement decision.",
+          "routine_conflict": "This may clash with something you already use.",
+          "use_together_carefully": "Do not layer these together unless you have a clear spacing plan.",
+          "fills_routine_gap": "This appears to fill a different role from the Shelf products you selected."
+        }
+      }
+    },
+    "shelf": {
+      "sheet": {
+        "trigger": "Compare owned products",
+        "title": "Compare owned products",
+        "description": "Pick another Shelf product to weigh how they work together.",
+        "info": {
+          "trigger": "About this comparison",
+          "title": "What we check for products you own",
+          "body": "This weighs products already on your Shelf so you can decide how to use them, not whether to buy more.",
+          "bullet1": "Which one fits your skin better right now",
+          "bullet2": "If they overlap enough that one is enough",
+          "bullet3": "Whether you can use both safely together",
+          "bullet4": "If one may share triggers with past reactions"
+        },
+        "anchorLabel": "Shelf product",
+        "selectionCount": "{count}/{max} selected",
+        "pickHeading": "Compare with",
+        "clearSelection": "Clear",
+        "ingredientCount": "{count, plural, one {# ingredient} other {# ingredients}}",
+        "emptyShelf": "Add another active product with ingredients before comparing owned products.",
+        "emptyShelfAction": "Go to Shelf",
+        "compareCta": "Pick owned products",
+        "compareSelected": "{count, plural, one {Review # owned product} other {Review # owned products}}",
+        "compareAgain": "Review again",
+        "compareAction": "Review owned products",
+        "comparing": "Reviewing products...",
+        "error": "We couldn't review these Shelf products. Try again in a moment."
+      },
+      "result": {
+        "eyebrow": "Shelf decision",
+        "winner": "Main choice",
+        "noWinnerProduct": "No product needs to win",
+        "unknownScore": "unknown",
+        "itemMeta": "Score {score} · {confidence}",
+        "keyActives": "Key actives: {actives}",
+        "ingredients": "({ingredients})",
+        "stats": {
+          "conflicts": "{count, plural, one {# conflict} other {# conflicts}}",
+          "overlaps": "{count, plural, one {# overlap} other {# overlaps}}",
+          "reactions": "{count, plural, one {# reaction signal} other {# reaction signals}}"
+        },
+        "confidence": {
+          "high": "high confidence",
+          "medium": "medium confidence",
+          "low": "low confidence"
+        },
+        "outcomes": {
+          "choose_anchor": "{product} is stronger to keep using",
+          "choose_candidate": "{product} is stronger to keep using",
+          "no_clear_winner": "No single product needs to win",
+          "not_enough_data": "Not enough data"
+        },
+        "reasons": {
+          "better_fit": "This option has the stronger overall fit for continued use.",
+          "lower_conflict": "It has fewer or milder ingredient conflicts.",
+          "less_duplicate_exposure": "It creates less duplicate exposure in your routine.",
+          "reaction_risk": "Reaction risk signals make the other option less comfortable.",
+          "missing_personal_context": "More personal context would improve this Shelf decision.",
+          "not_enough_data": "One product does not have enough reliable ingredient data.",
+          "similar_tradeoffs": "The products have similar tradeoffs.",
+          "already_owned": "These already-owned products overlap heavily.",
+          "replacement_only": "Use one as the main product or replace one with the other; keeping both may not add much.",
+          "different_routine_roles": "They serve different routine roles, so do not treat them as substitutes.",
+          "routine_conflict": "These products may clash if used together.",
+          "use_together_carefully": "Separate them in your routine instead of layering them together.",
+          "fills_routine_gap": "One product fills a role the other does not cover."
+        }
+      }
+    }
+  },
   "ingredients": {
     "panel": {
       "heading": "Ingredient intelligence",
@@ -1356,6 +2496,19 @@
       "low": "Low",
       "medium": "Medium",
       "high": "High"
+    },
+    "conflict": {
+      "title": "{ingredientA} + {ingredientB}",
+      "showWhy": "Show why",
+      "hideWhy": "Hide why",
+      "mitigation": "Safer plan"
+    },
+    "overlap": {
+      "title": "{ingredient}",
+      "productCountSingle": "Found in {count} product",
+      "productCountPlural": "Found in {count} products",
+      "showWhy": "Show why",
+      "hideWhy": "Hide why"
     },
     "actives": {
       "heading": "Key actives",
@@ -1397,7 +2550,7 @@
     }
   },
   "schedule": {
-    "title": "Schedule",
+    "title": "Routine",
     "subtitle": "Set up your daily skincare routines.",
     "timeZone": {
       "label": "Schedule timezone: {timeZone}"
@@ -1415,6 +2568,13 @@
     "empty": {
       "headline": "Build your weekly rhythm",
       "body": "Apply one time to all days, or build each day separately."
+    },
+    "prerequisites": {
+      "product": {
+        "title": "Add a product first",
+        "body": "Routines schedule the products on your shelf. Add one to get started.",
+        "cta": "Add product"
+      }
     },
     "days": {
       "mon": "Monday",
@@ -1463,11 +2623,25 @@
       "aiShort": "AI",
       "aiDescription": "Smart picks"
     },
+    "aiConsentNudge": {
+      "title": "Personalized routines, made for your skin",
+      "body": "Turn on AI suggestions and Ritora will tailor each scheduled routine to your skin profile, shelf, and recent journal entries.",
+      "benefits": {
+        "matchProfile": "Routines that match your goals and tolerances",
+        "adaptToShelf": "Adapts to the products you actually own",
+        "revokeAnytime": "You stay in control. Turn it off anytime in Settings."
+      },
+      "privacy": "Your data stays encrypted and is never sold.",
+      "action": "Allow AI suggestions",
+      "dismiss": "Maybe later",
+      "saved": "AI suggestions enabled.",
+      "error": "We couldn't save that consent. Please try again."
+    },
     "addDialog": {
       "titleSingle": "Add time",
       "titleEveryDay": "Apply to every day",
       "subtitleSingle": "When should this routine run?",
-      "subtitleEveryDay": "Pick a time. We\u2019ll apply it to all seven days.",
+      "subtitleEveryDay": "Pick a time. We’ll apply it to all seven days.",
       "sheetDescription": "Create a scheduled time slot",
       "daysLabel": "Apply to days",
       "daysHintSingle": "Tap a day to toggle",
@@ -1499,15 +2673,25 @@
       "notesPlaceholderAI": "e.g. Skin feels tight today, go gentle on actives.",
       "notesEmpty": "No notes yet. Anything you add here travels with the routine.",
       "notesCounter": "{current} / {max}",
+      "specialist": {
+        "title": "Specialist routine",
+        "body": "Use this when a dermatologist, esthetician, or clinic gave instructions for this slot.",
+        "providerName": "Specialist name",
+        "clinicName": "Clinic",
+        "activeSince": "Active since",
+        "safetyNotes": "Specialist safety notes",
+        "safetyNotesPlaceholder": "e.g. Keep tretinoin on Monday/Thursday only. Do not add exfoliants around this step.",
+        "privacyHint": "Only add details you want Ritora to use when protecting specialist-locked steps."
+      },
       "stepsLabel": "Steps",
       "stepsDescription": "Your routine in application order. Cleansers first, SPF last. Drag to reorder.",
       "stepsCount": "{current} / {max}",
       "addStep": "Add step",
-      "stepsMaxReached": "You\u2019ve reached the maximum of {max} steps",
+      "stepsMaxReached": "You’ve reached the maximum of {max} steps",
       "manualEmpty": "No steps yet. Add a product to start building your routine.",
       "aiPlaceholderTitle": "AI suggestions coming soon",
       "aiPlaceholderBody": "When the AI engine launches, it will pick products from your Shelf using your notes above as context.",
-      "switchToManual": "Switch to Manual for now →",
+      "switchToManual": "Switch to Manual for now",
       "confirmDeleteTitle": "Delete this time?",
       "confirmDeleteBody": "This will remove the time and any steps you've added. This cannot be undone.",
       "confirmDelete": "Delete",
@@ -1524,6 +2708,9 @@
       "productMissing": "Missing product — pick again",
       "notesPlaceholder": "Notes (optional)",
       "optionalLabel": "Optional step",
+      "optionalHint": "Skipping this won't be flagged as a missed routine.",
+      "specialistLockedLabel": "Prescribed by my specialist",
+      "specialistLockedHint": "AI keeps this step exactly as you set it. No reordering, swapping, or removing.",
       "delete": "Remove step",
       "dragHandle": "Drag to reorder"
     },
@@ -1561,7 +2748,7 @@
       "noteCalloutLabel": "Context the AI will use",
       "aiPlaceholder": "AI suggestions coming soon",
       "aiPlaceholderBody": "We'll pick from your Shelf.",
-      "manualEmpty": "Add steps on Schedule →",
+      "manualEmpty": "Add steps on Schedule",
       "nothingScheduled": "Nothing scheduled today",
       "nothingScheduledBody": "Add your first routine on the Schedule page.",
       "goToSchedule": "Open Schedule"
@@ -1582,9 +2769,2062 @@
       "customLabelRequired": "Custom label is required.",
       "customLabelMax": "Custom label is too long.",
       "slotNotesMax": "Notes are too long.",
+      "specialistProviderNameMax": "Specialist name is too long.",
+      "specialistClinicNameMax": "Clinic name is too long.",
+      "specialistActiveSinceFormat": "Use a valid YYYY-MM-DD date.",
+      "specialistSafetyNotesMax": "Specialist safety notes are too long.",
       "stepNotesMax": "Step notes are too long.",
       "productsNotOwned": "Only products from your shelf can be added.",
       "maxSteps": "You can only have up to 10 steps."
     }
+  },
+  "site": {
+    "title": "Ritora · A calmer skincare routine from the shelf you already own",
+    "description": "Ritora turns the skincare products you already own into a calmer morning and evening routine, with ingredient safety checks and guidance shaped by your skin."
+  },
+  "legalPages": {
+    "cookies": {
+      "metadataTitle": "Cookie Notice",
+      "metadataDescription": "Cookie notice foundations for the Ritora web experience.",
+      "eyebrow": "Cookie Notice",
+      "title": "Cookie foundations for Ritora",
+      "paragraphs": [
+        "The product direction aims to keep cookie use minimal and transparent. Authentication cookies and carefully scoped preference cookies are preferred over unnecessary tracking.",
+        "A fuller cookie notice will document what is essential, what is optional, and how user consent affects analytics or preference storage as more features ship."
+      ]
+    },
+    "privacy": {
+      "metadataTitle": "Privacy Policy",
+      "metadataDescription": "Privacy foundations for the Ritora web experience.",
+      "eyebrow": "Privacy Policy",
+      "title": "Privacy foundations for Ritora",
+      "paragraphs": [
+        "Ritora is being built with privacy-by-design principles from the start. The product direction prioritizes data minimization, clear consent, and a boundary between public education features and private personalized routines.",
+        "As implementation expands, this page will be replaced with a full policy that documents lawful basis, retention periods, processor relationships, and export and deletion rights in more detail.",
+        "For now, this page establishes the intent behind the current technical improvements: secure auth foundations, explicit consent versioning, and a privacy-aware backend baseline."
+      ]
+    },
+    "terms": {
+      "metadataTitle": "Terms of Service",
+      "metadataDescription": "Terms foundations for the Ritora web experience.",
+      "eyebrow": "Terms of Service",
+      "title": "Terms foundations for Ritora",
+      "paragraphs": [
+        "Ritora is intended as a skincare decision-support experience, not a diagnostic or medical tool. The platform direction focuses on safer routine decisions, inventory clarity, and calmer product use.",
+        "As the product matures, these terms will be expanded to cover account responsibilities, acceptable use, disclaimer language, and service boundaries in production detail.",
+        "The current page exists so the public experience already has a real legal route structure instead of placeholder links."
+      ]
+    }
+  },
+  "journal": {
+    "title": "Skin Journal",
+    "subtitle": "One entry per day. Photo, ratings, observations and insights, all in one place.",
+    "eyebrow": "Your skin journey",
+    "fab": "Add today's photo",
+    "exportForDermatologist": "Export for dermatologist",
+    "prerequisites": {
+      "profile": {
+        "title": "Finish your skin profile first",
+        "body": "Ritora needs your skin profile before it can safely analyse photos, check-ins, and skin progress.",
+        "cta": "Open skin profile",
+        "loadError": "We couldn't reach your skin profile right now. Check your connection and try again."
+      }
+    },
+    "tabs": {
+      "calendar": "Calendar",
+      "photos": "Photos",
+      "insights": "Insights",
+      "wrapped": "Wrapped"
+    },
+    "stats": {
+      "currentStreak": "Current streak",
+      "currentStreakValue": "{days, plural, one {# day} other {# days}}",
+      "totalEntries": "Total entries",
+      "weeklyUploadRate": "Weekly upload rate",
+      "weeklyUploadValue": "{count} of {target} days",
+      "streakDelta": "+{count} vs last week",
+      "sinceDate": "since {date}",
+      "loadingLabel": "Loading journal stats"
+    },
+    "calendar": {
+      "selectMonth": "Pick month",
+      "selectTrackedMonth": "Jump to tracked month",
+      "trackedMonthLabel": "{month} · {count, plural, one {# photo} other {# photos}}",
+      "previous": "Previous month",
+      "next": "Next month",
+      "loading": "Loading calendar",
+      "monthlyWrapped": "Monthly Wrapped",
+      "weekdays": ["M", "T", "W", "T", "F", "S", "S"],
+      "legend": {
+        "completed": "Done",
+        "noEntry": "None",
+        "pending": "Analysing",
+        "reaction": "Reaction",
+        "insight": "Insight"
+      },
+      "tooltip": {
+        "completed": "Photo & analysis done",
+        "no_entry": "No entry",
+        "entry_no_photo": "Entry without photo",
+        "pending": "Analysis pending",
+        "reaction": "Reaction flagged",
+        "failed": "Analysis failed"
+      }
+    },
+    "dayDetail": {
+      "today": "today",
+      "metaToday": "{weekday} · {date} · today",
+      "meta": "{weekday} · {date}",
+      "reactionFlagged": "Reaction flagged",
+      "dayDetailSubtitle": "Day detail",
+      "backToJournal": "Back to Skin Journal",
+      "loadingLabel": "Loading day detail",
+      "title": "{date} entry",
+      "todayTitle": "Today's entry",
+      "noEntry": "No entry for this day",
+      "noEntryBody": "Add a photo or quick check-in for this day.",
+      "lockedNoEntryBody": "Entries can only be added on the day itself, and this isn't today.",
+      "addPhoto": "Add photo",
+      "editEntry": "Edit photo",
+      "editEntryTitle": "Edit today's photo",
+      "editEntryBody": "Update the photo, ratings, context, or note before the day ends.",
+      "deleteToday": "Delete entry",
+      "replace": "Replace",
+      "delete": "Delete",
+      "retryAnalysis": "Retry analysis",
+      "replacePhoto": "Replace photo",
+      "addPhotoForDay": "Add a photo for this day",
+      "ratingsTitle": "Your check-in",
+      "ratingsRecorded": "Ratings recorded",
+      "noteLabel": "Complaint / note",
+      "feelLabel": "Skin feel",
+      "contextLabel": "Today's context",
+      "preRoutineTag": "pre-routine",
+      "photoSavedTag": "photo saved",
+      "noPhotoTag": "No photo",
+      "photoAlt": "Skin journal photo for {date}",
+      "photoAngleAlt": "{angle} skin journal photo for {date}",
+      "angles": {
+        "head_on": "Front",
+        "left_profile": "Left side",
+        "right_profile": "Right side"
+      },
+      "captured": "Captured",
+      "notCaptured": "Not captured",
+      "optionalAngleMissing": "Optional side photo not captured",
+      "angleCount": "{count, plural, one {# angle} other {# angles}}",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "closePhoto": "Close photo",
+      "openPhoto": "Open photo full size",
+      "statusCompleted": "Analysis complete",
+      "statusAnalysing": "Analysing…",
+      "statusFailed": "Analysis failed",
+      "statusNeedsReview": "Needs review",
+      "noPhotoTitle": "Check-in only",
+      "noPhotoBody": "You logged how your skin felt without a photo. AI analysis is skipped for this day."
+    },
+    "referenceQuality": {
+      "status": {
+        "good_reference": "Good reference photo",
+        "limited_reference": "Limited reference photo",
+        "not_trend_safe": "Not trend-safe"
+      },
+      "comparedWith": "Compared with {date}",
+      "reason": {
+        "no_photo": "No photo yet",
+        "analysis_pending": "Analysis is still running",
+        "analysis_failed": "Analysis failed",
+        "analysis_unavailable": "Analysis is not available yet",
+        "face_missing": "Face not clear",
+        "needs_retake": "Needs retake",
+        "poor_lighting": "Lighting limits comparison",
+        "poor_framing": "Framing limits comparison",
+        "blur": "Blur limits comparison",
+        "quality_limited": "Quality limits comparison",
+        "reaction_day": "Reaction day",
+        "not_comparable": "Not comparable"
+      }
+    },
+    "analysis": {
+      "title": "Skin observations today",
+      "modelBadge": "AI · {model}",
+      "confidence": "Confidence {value}",
+      "concernsLabel": "Detected concerns",
+      "imageQualityLabel": "Image quality",
+      "lightingGood": "Lighting good",
+      "lightingFair": "Lighting fair",
+      "lightingPoor": "Lighting poor",
+      "framingGood": "Framing good",
+      "framingFair": "Framing fair",
+      "framingPoor": "Framing poor",
+      "sharp": "Sharp",
+      "blurry": "Blurry",
+      "perAngleQualityLabel": "Angle quality",
+      "angles": {
+        "head_on": "Front",
+        "left_profile": "Left side",
+        "right_profile": "Right side"
+      },
+      "quality": {
+        "poor": "poor",
+        "fair": "fair",
+        "good": "good",
+        "excellent": "excellent"
+      },
+      "qualityUsable": "Usable",
+      "qualityReview": "Review",
+      "perAngleQualityRow": "Lighting {lighting}, framing {framing}, {sharpness}.",
+      "retakeTitle": "Photo quality was too low",
+      "retakeBody": "Upload another photo today if possible, ideally in natural daylight with your face centered.",
+      "safetyTitle": "Consider professional review",
+      "safetyBody": "Ritora noticed visible safety signals. This is not a diagnosis, but it may be worth contacting a dermatologist or clinician.",
+      "safetyReasons": {
+        "possible_swelling": "Possible swelling",
+        "hive_like_appearance": "Hive-like appearance",
+        "widespread_severe_irritation": "Widespread severe irritation",
+        "rapid_worsening": "Rapid worsening",
+        "eye_area_involvement": "Eye-area involvement",
+        "cracking_or_open_skin_appearance": "Cracking or open-skin appearance",
+        "possible_infection_signs": "Possible infection signs"
+      },
+      "disclaimer": "Not a medical diagnosis. Ritora is decision support. Consult a dermatologist for medical concerns.",
+      "indicators": "Indicators",
+      "comparedToPrevious": "Compared to previous",
+      "interpretation": {
+        "retakeNeeded": {
+          "summary": "This photo is not clear enough for a reliable reading.",
+          "guidance": "Try another photo today if you can. Use natural light, keep your face centered, and avoid filters or makeup."
+        },
+        "urgentReview": {
+          "summary": "Ritora noticed visible signs that may need urgent medical attention.",
+          "guidance": "If you have swelling, trouble breathing, fast spreading hives, eye area changes, or feel unwell, seek medical care now."
+        },
+        "professionalReview": {
+          "summary": "This entry has visible signs worth reviewing with a clinician if they persist or feel uncomfortable.",
+          "guidance": "Keep tracking calmly, but consider contacting a dermatologist if the pattern continues, spreads, or feels painful."
+        },
+        "barrierSupport": {
+          "summary": "Your skin barrier may need a calmer routine right now.",
+          "guidance": "This pattern fits a gentle support moment. Keep the routine simple, avoid adding new actives, and watch whether redness or tightness settles."
+        },
+        "acneProgressTiming": {
+          "summary": "Your breakout pattern is best judged across several weeks, not one photo.",
+          "guidance": "Use today as one data point. The trend becomes more useful when Ritora can compare entries across a longer window."
+        },
+        "hyperpigmentationTracking": {
+          "summary": "Dark marks and uneven tone need a longer tracking window.",
+          "guidance": "Use consistent daylight and sunscreen context when logging. These changes can be slow, so Ritora will read this as a trend rather than a one day result."
+        },
+        "retinoidIrritationContext": {
+          "summary": "This looks like a moment to be careful with a new retinoid or retinol product.",
+          "guidance": "If this followed a recent retinoid change, keep the routine gentle and watch whether peeling, tightness, or redness settles before adding anything new."
+        },
+        "stableBaseline": {
+          "summary": "Today looks like a useful baseline for future comparison.",
+          "guidance": "Keep using similar lighting and framing so Ritora can compare changes more fairly over time."
+        },
+        "caveats": {
+          "notDiagnosis": "This is not a diagnosis. Ritora uses visible signals to support tracking and reflection.",
+          "qualityLimited": "Low photo quality can hide or exaggerate visible changes.",
+          "progressNeedsTime": "Skin progress can move slowly, so single day changes should be read with care."
+        }
+      },
+      "sources": {
+        "label": "Grounded sources",
+        "lastVerified": "Verified {date}",
+        "aad_skin_photo_quality": {
+          "title": "How to take skin photos",
+          "summary": "AAD explains that good lighting, focus, and clear framing help photos show color and texture accurately."
+        },
+        "aad_acne_treatment_timing": {
+          "title": "Acne progress timing",
+          "summary": "AAD explains that acne improvement is usually judged across weeks of consistent care."
+        },
+        "aad_dark_spots_skin_tones": {
+          "title": "Dark spots and uneven tone",
+          "summary": "AAD describes how dark marks can fade slowly and why sunscreen matters when tracking them."
+        },
+        "aad_skin_of_color": {
+          "title": "Skin of color guidance",
+          "summary": "AAD covers how acne and dark marks may show differently across deeper skin tones."
+        },
+        "aad_retinoid_retinol_guidance": {
+          "title": "Retinoid and retinol guidance",
+          "summary": "AAD explains how retinoid products are introduced and why irritation context matters."
+        },
+        "aad_contact_dermatitis_symptoms": {
+          "title": "Contact dermatitis signs",
+          "summary": "AAD describes signs that can appear when skin reacts to something that touched it."
+        },
+        "aad_contact_dermatitis_patch_testing": {
+          "title": "Patch testing for repeated rashes",
+          "summary": "AAD explains that clinicians may use patch testing to investigate repeated rash patterns."
+        },
+        "aad_hives_emergency": {
+          "title": "When hives need urgent care",
+          "summary": "AAD highlights symptoms such as swelling or breathing trouble as reasons to seek urgent help."
+        },
+        "aad_dry_skin_relief": {
+          "title": "Dry skin and barrier support",
+          "summary": "AAD recommends gentle care when skin is dry, irritated, or uncomfortable."
+        },
+        "mayo_acne_treatment_timing": {
+          "title": "Acne progress timing",
+          "summary": "Mayo Clinic notes that acne care is usually judged over weeks, not from one day alone."
+        }
+      }
+    },
+    "severity": {
+      "none": "None",
+      "mild": "Mild",
+      "moderate": "Moderate",
+      "severe": "Severe"
+    },
+    "concerns": {
+      "oiliness": "Oiliness",
+      "dryness": "Dryness",
+      "redness": "Redness",
+      "breakouts": "Breakouts",
+      "texture": "Texture",
+      "irritation": "Irritation",
+      "sensitivity": "Sensitivity",
+      "acne": "Acne",
+      "hyperpigmentation": "Hyperpigmentation",
+      "redness_inflammation": "Redness · inflammation",
+      "fine_lines": "Fine lines",
+      "skin_barrier_damage": "Skin barrier damage",
+      "eczema_indicator": "Eczema indicator",
+      "uneven_tone": "Uneven tone",
+      "under_eye_darkness": "Under-eye darkness",
+      "large_pores": "Large pores"
+    },
+    "feels": {
+      "awful": "Awful",
+      "bad": "Bad",
+      "ok": "OK",
+      "good": "Good",
+      "great": "Great"
+    },
+    "context": {
+      "sleepLabel": "Sleep last night",
+      "sleep_lt5h": "<5h",
+      "sleep_5to7h": "5–7h",
+      "sleep_7to9h": "7–9h",
+      "sleep_gt9h": ">9h",
+      "stressLabel": "Stress today",
+      "stress_low": "Low",
+      "stress_mid": "Mid",
+      "stress_high": "High",
+      "sunLabel": "Sun exposure",
+      "sun_none": "None",
+      "sun_brief": "Brief",
+      "sun_lots": "Lots",
+      "sweatLabel": "Sweat / exercise",
+      "sweat_no": "No",
+      "sweat_yes": "Yes",
+      "cycleLabel": "Period day",
+      "cycleFromProfileBadge": "from skin profile",
+      "cycle_not_on": "Not on period",
+      "cycle_day_1_3": "Day 1–3",
+      "cycle_day_4_7": "Day 4–7",
+      "cycle_late_cycle": "Late cycle",
+      "cycle_dont_track": "Don't track"
+    },
+    "recentChange": {
+      "label": "Anything change today?",
+      "hint": "High-signal: a new product, a stopped product, a treatment, illness, or travel.",
+      "typeLabel": "Type of change",
+      "kinds": {
+        "started_new_product": "Started new product",
+        "stopped_a_product": "Stopped a product",
+        "changed_frequency": "Changed frequency",
+        "got_a_treatment": "Got a treatment",
+        "felt_unwell": "Felt unwell",
+        "travelled": "Travelled",
+        "other": "Other"
+      },
+      "productLabel": "Related product (optional)",
+      "productPlaceholder": "Search inventory…"
+    },
+    "upload": {
+      "eyebrow": "Skin Journal · new entry",
+      "title": "Add today's photo",
+      "subtitle": "Take a photo in good daylight. Your future self will thank you for the consistency.",
+      "editTitle": "Edit today's photo",
+      "editSubtitle": "Replace today's photo or update the check-in before the day ends.",
+      "dateLabel": "Date",
+      "dateToday": "Today · {date}",
+      "dateBackfill": "{date} (backfill)",
+      "guidanceTitle": "Tips for clearer comparisons",
+      "guidanceSubtitle": "Same time, same place gives the AI the strongest trend signal.",
+      "hideTips": "Hide tips",
+      "showTips": "Show tips",
+      "tips": {
+        "naturalLight": {
+          "title": "Natural daylight",
+          "body": "Face a window, no overhead light."
+        },
+        "noMirror": {
+          "title": "Skip the mirror",
+          "body": "Reflections distort skin tone."
+        },
+        "neutralFace": {
+          "title": "Neutral face",
+          "body": "No makeup, relaxed."
+        },
+        "sameTime": {
+          "title": "Same time daily",
+          "body": "Better trend accuracy."
+        },
+        "distance": {
+          "title": "~30 cm away",
+          "body": "Square-on, fill the frame."
+        }
+      },
+      "photoLabel": "Photos",
+      "angles": {
+        "head_on": "Front",
+        "left_profile": "Left side",
+        "right_profile": "Right side"
+      },
+      "angleRequired": "Required",
+      "angleOptional": "Optional",
+      "angleAlt": "{angle} journal photo",
+      "dropZoneTitle": "Tap to choose a photo",
+      "dropZoneDesc": "Or drag and drop · JPG, PNG, HEIC, WebP up to 10 MB",
+      "dropZoneTitleFront": "Add front photo",
+      "dropZoneTitleSide": "Add {angle}",
+      "dropZoneDescFront": "Required for AI analysis",
+      "dropZoneDescSide": "Optional side coverage",
+      "noWebcam": "A photo taken in natural light makes day-to-day comparison cleaner.",
+      "unsupportedPhotoType": "Choose a JPG, PNG, HEIC, or WebP photo.",
+      "photoTooLarge": "Choose a photo under 10 MB.",
+      "replace": "Replace",
+      "crop": "Crop photo",
+      "remove": "Remove",
+      "fileMeta": "{name} · {size}",
+      "processedKind": "WebP after upload · EXIF stripped",
+      "photoPreviewAlt": "Selected journal photo",
+      "currentPhotoAlt": "Current journal photo for {date}",
+      "currentPhotoBadge": "Current photo",
+      "currentPhotoHint": "Choose a new photo only if you want to replace today's saved photo.",
+      "cropBadge": "Square preview",
+      "replaceAngle": "Replace {angle} photo",
+      "removeAngle": "Remove {angle} photo",
+      "cropAngle": "Crop {angle} photo",
+      "cropDialog": {
+        "title": "Crop photo",
+        "body": "Center your face and remove background before upload. Ritora will save the cropped square version.",
+        "previewAlt": "Photo crop preview",
+        "dragLabel": "Drag photo to adjust crop",
+        "zoom": "Zoom",
+        "moveX": "Move left or right",
+        "moveY": "Move up or down",
+        "reset": "Reset",
+        "apply": "Apply",
+        "applying": "Cropping…",
+        "error": "We could not crop this photo. Try another photo or upload it without cropping."
+      },
+      "photoProcessingConsent": "I consent to analysis of this photo set.",
+      "preRoutine": "Taken before today's products (pre-routine)",
+      "nextStepHint": "Your check-in is on the next step. You can also save just the photo and add ratings later.",
+      "frontRequired": "Add a front photo to save photo analysis.",
+      "frontRequiredWithSides": "Side photos need a front photo so Ritora can analyse the set.",
+      "savePhotoOnly": "Save photo only",
+      "saveChanges": "Save changes",
+      "continueToCheckIn": "Continue to check-in",
+      "saveEntry": "Save entry",
+      "back": "Back",
+      "cancel": "Cancel",
+      "deleteToday": "Delete entry",
+      "saving": "Saving…",
+      "deleting": "Deleting…",
+      "saveFailed": "We couldn't save this entry. Please try again.",
+      "savedToast": "Photo saved. Ritora is taking a look (about 10–20s)…",
+      "noPhotoSaved": "Check-in saved without photo.",
+      "futureDateError": "Cannot create entries for future dates.",
+      "checkInTitle": "Today's check-in",
+      "editCheckInTitle": "Edit today's check-in",
+      "validationTitle": "Complete the check-in to save",
+      "validationBody": "Choose skin feel, all seven concern ratings, and today's context. To skip the check-in, go back and save the photo only.",
+      "privacyLabel": "Privacy",
+      "privacyBody": "Photos and ratings are stored encrypted. Only the image is sent for analysis.",
+      "privacyLink": "How we protect your data",
+      "privacyLinkHref": "/privacy",
+      "feelQuestion": "How does your skin feel today?",
+      "concernsQuestion": "Concern severity (1 = none, 5 = severe)",
+      "contextQuestion": "Today's context",
+      "noteLabel": "Complaint or note (optional)",
+      "addNote": "Add complaint or note",
+      "notePlaceholder": "Tell us anything. Feels tight, itches, looks dull…",
+      "privacyNote": "Your photo and ratings are encrypted at rest. The AI only sees the photo. Never your name, email, or user id."
+    },
+    "compare": {
+      "title": "Compare two days",
+      "subtitle": "Synchronised zoom and pan · tap to flip on mobile.",
+      "swap": "Swap",
+      "fromLabel": "From",
+      "toLabel": "To",
+      "pickPhotoDate": "Pick photo date",
+      "notEnoughTitle": "At least two uploaded-photo days are needed",
+      "notEnoughBody": "Add another daily photo before comparing progress. Only days with uploaded photos can be selected.",
+      "deltaTitle": "What's changed in {days, plural, one {# day} other {# days}}",
+      "noBaseline": "Pick two dates to compare.",
+      "events": "Routine events between these dates",
+      "concernsThen": "Concerns then",
+      "concernsNow": "Concerns now",
+      "fromPhotoAlt": "Skin journal photo from {date}",
+      "toPhotoAlt": "Skin journal photo from {date}",
+      "aiDeltaBadge": "AI delta",
+      "angleCount": "{count, plural, one {# angle} other {# angles}}",
+      "openFullViewer": "Open all angles",
+      "none": "None",
+      "delta": {
+        "ratingImproved": "{concern} eased from {from} to {to}",
+        "ratingWorsened": "{concern} increased from {from} to {to}",
+        "reactionCleared": "Reaction signs are no longer flagged",
+        "reactionSignalIncreased": "Reaction signals increased in the photo analysis.",
+        "reactionSignalReduced": "Reaction signals reduced in the photo analysis.",
+        "barrierSignalWorsened": "Barrier-stress signs increased in the photo analysis.",
+        "barrierSignalImproved": "Barrier-stress signs reduced in the photo analysis.",
+        "photoConcernImproved": "{concern} looks less noticeable in the photo analysis.",
+        "photoConcernWorsened": "{concern} looks more noticeable in the photo analysis.",
+        "photoConcernNew": "{concern} newly appears in the photo analysis.",
+        "photoConcernCleared": "{concern} is no longer visible in the photo analysis.",
+        "notComparable": "Photo comparison is limited by {reason}.",
+        "noMajorChange": "No major visible change",
+        "unknownConcern": "Concern",
+        "qualityReasons": {
+          "no_photo": "missing photo data",
+          "analysis_pending": "analysis still running",
+          "analysis_failed": "failed analysis",
+          "analysis_unavailable": "missing analysis",
+          "face_missing": "face clarity",
+          "needs_retake": "retake guidance",
+          "poor_lighting": "lighting",
+          "poor_framing": "framing",
+          "blur": "blur",
+          "quality_limited": "photo quality",
+          "reaction_day": "reaction-day context",
+          "not_comparable": "photo quality"
+        }
+      },
+      "medicalDisclaimerStrong": "Not a medical diagnosis.",
+      "medicalDisclaimerBody": "Visible changes may have many causes."
+    },
+    "photos": {
+      "compareCta": "Compare",
+      "filtersAll": "All photos",
+      "filterReaction": "Has reaction",
+      "filterConcern": "Concern · {concern}",
+      "unknownConcern": "Unknown concern",
+      "reactionTag": "reaction",
+      "noFilterMatches": "No photos match this filter yet.",
+      "empty": "No photos yet",
+      "emptyTitle": "Your photos will appear here",
+      "emptyBody": "Once you start adding daily photos they'll show up here so you can scan back through your shelf at a glance.",
+      "loadMore": "Load more photos",
+      "loadingMore": "Loading more photos",
+      "angleBadge": "{count, plural, one {# angle} other {# angles}}"
+    },
+    "insightsTab": {
+      "subtitle": "Plain language suggestions from your photos, check-ins, and trusted dermatology sources.",
+      "kinds": {
+        "onboarding_progress": "Progress",
+        "trend": "Trend",
+        "correlation": "Correlation",
+        "effectiveness": "Effectiveness",
+        "referral": "Doctor referral",
+        "daily": "Daily insight",
+        "weekly": "Weekly summary",
+        "monthly": "Monthly summary",
+        "reaction_recovery": "Recovery",
+        "photo_quality_drift": "Photo quality",
+        "face_zone_pattern": "Face zone pattern",
+        "routine_adherence": "Routine use",
+        "cycle": "Cycle pattern",
+        "ai_summary": "AI summary",
+        "ai_pattern": "AI pattern"
+      },
+      "severity": {
+        "info": "Info",
+        "warning": "Watch",
+        "critical": "Important"
+      },
+      "showHow": "Show me how",
+      "dismiss": "Dismiss",
+      "exportHistory": "Export skin history",
+      "notNow": "Not now",
+      "refresh": "Check for updates",
+      "refreshing": "Refreshing",
+      "trendsTitle": "Trend deck",
+      "generatedLine": "Generated {date}",
+      "basedOnLine": "Based on {start} to {end}",
+      "windows": {
+        "all": "All",
+        "week": "This week",
+        "month": "This month"
+      },
+      "directions": {
+        "improved": "eased",
+        "increased": "increased"
+      },
+      "locations": {
+        "forehead": "forehead",
+        "left_cheek": "left cheek",
+        "right_cheek": "right cheek",
+        "chin": "chin",
+        "nose": "nose",
+        "under_eyes": "under eyes",
+        "jawline": "jawline",
+        "upper_lip": "upper lip",
+        "temples": "temples",
+        "neck": "neck"
+      },
+      "cycle": {
+        "day_1_3": "days 1 to 3",
+        "day_4_7": "days 4 to 7",
+        "late_cycle": "late cycle",
+        "not_on": "not on period"
+      },
+      "factors": {
+        "highStress": "High stress days",
+        "travelled": "Travel days",
+        "stress_today": "stress"
+      },
+      "categories": {
+        "cleanser": "cleanser",
+        "toner": "toner",
+        "essence": "essence",
+        "serum": "serum",
+        "moisturizer": "moisturizer",
+        "sun-protection": "sun protection",
+        "mask": "mask",
+        "exfoliant": "exfoliant",
+        "eye-care": "eye care",
+        "lip-care": "lip care",
+        "treatment": "treatment",
+        "other": "other routine step",
+        "custom": "custom routine step"
+      },
+      "metric": {
+        "previous": "{value} before",
+        "sampleCount": "{count, plural, one {# entry} other {# entries}}",
+        "units": {
+          "entries": "entries",
+          "rating": "rating"
+        }
+      },
+      "progress": {
+        "title": "{count, plural, one {# journal entry} other {# journal entries}} tracked",
+        "next": "{count, plural, one {# more entry} other {# more entries}} until the next insight unlocks",
+        "ready": "Your data is ready for richer insight suggestions.",
+        "generating": "Ritora is preparing new insight suggestions from your latest journal data."
+      },
+      "headlines": {
+        "onboarding_progress": "{count} entries logged. Your next insight unlocks at {nextUnlock}.",
+        "daily": "Today’s journal entry is ready to review.",
+        "weekly": "{entriesCount} recent entries are enough for a first pattern check.",
+        "trend": "{concern} has {direction} in your recent entries.",
+        "monthly": "Your month has {entriesCount} entries and {photosCount} photos.",
+        "reaction_recovery": "Your skin looks calmer after {days} tracked days.",
+        "referral": "{referralCount} recent entries need a closer safety review.",
+        "effectiveness": "{concern} {direction} after a product change.",
+        "face_zone_pattern": "{concern} appears most often around your {location}.",
+        "routine_adherence": "{category} was skipped on {skippedCount} logged routine days.",
+        "photo_quality_drift": "{poorCount} recent photos need better light for analysis.",
+        "correlation": "{factor} appears alongside changes in {concern}.",
+        "cycle": "{concern} looks higher around {phase}.",
+        "ai_summary": "Ritora found a short pattern across {entriesCount} entries.",
+        "ai_pattern": "{factor} may be worth watching in your journal."
+      },
+      "blocks": {
+        "unknown": "New insight format",
+        "unknownSource": "Source details are not available yet.",
+        "onboarding_progress": {
+          "text": "Keep adding daily photos and check-ins. The suggestion engine gets more useful as your personal baseline grows."
+        },
+        "daily": {
+          "analysis": "This uses your latest saved entry from {date} and its analysis status: {status}."
+        },
+        "weekly": {
+          "recap": "Ritora reviewed {entriesCount} recent entries. {reactionCount} had moderate or stronger reaction signals."
+        },
+        "trend": {
+          "explanation": "Your {concern} rating has {direction} compared with your earlier entries in this window."
+        },
+        "monthly": {
+          "recap": "This month includes {entriesCount} journal entries and {photosCount} photos."
+        },
+        "reaction_recovery": {
+          "text": "Reaction signals eased across {days} tracked days. Keep using gentle, simple routines while the skin settles."
+        },
+        "referral": {
+          "text": "{referralCount} of the last 7 entries showed moderate or stronger reaction signals, or repeated doctor review flags."
+        },
+        "effectiveness": {
+          "text": "After a product change, {concern} moved enough to be worth watching. This is a correlation, not proof.",
+          "marker": "Product change"
+        },
+        "face_zone_pattern": {
+          "text": "The repeated zone is your {location}. This can help you compare photos without scanning every entry."
+        },
+        "routine_adherence": {
+          "text": "Your routine records show {category} was skipped {skippedCount} times across {loggedCount} logged steps. This is useful context for future skin pattern checks."
+        },
+        "photo_quality_drift": {
+          "text": "{poorCount} recent photos had low light or retake flags. Natural daylight gives the analysis a clearer view."
+        },
+        "correlation": {
+          "text": "{factor} appears alongside a change in {concern}. Treat this as a clue to watch, not a conclusion."
+        },
+        "cycle": {
+          "text": "Your entries suggest a possible cycle pattern around {phase}. Confidence grows when more cycles are logged."
+        },
+        "ai_summary": {
+          "text": "This summary connects the strongest recent patterns into one plain language suggestion."
+        },
+        "ai_pattern": {
+          "text": "Ritora noticed {factor} in entries that may deserve closer tracking."
+        }
+      },
+      "evidenceGrade": {
+        "strong": "Strong evidence",
+        "moderate": "Moderate evidence",
+        "limited": "Limited evidence",
+        "anecdotal": "Your logs only",
+        "basis": {
+          "trend": "based on a {windowDays} day personal trend",
+          "reaction_recovery": "based on reaction and recovery markers",
+          "referral": "based on repeated safety flags",
+          "effectiveness": "based on a product change window",
+          "routine_adherence": "based on {loggedCount} logged routine steps",
+          "ownLogs": "based only on your journal entries",
+          "cycle": "based on cycle markers in your journal"
+        }
+      },
+      "actions": {
+        "viewEntries": "View entries",
+        "openCompare": "Open compare",
+        "openExport": "Export skin history",
+        "openTodayUpload": "Add today's photo",
+        "openProduct": "Open product",
+        "openSettings": "Open settings"
+      },
+      "disclaimers": {
+        "medical": "Ritora is skincare decision support, not medical advice. If symptoms feel severe, spread quickly, or include swelling or breathing trouble, seek medical care.",
+        "correlation": "This is a pattern in your entries, not proof that one thing made another happen."
+      },
+      "ai": {
+        "chip": "AI refined",
+        "chipStrong": "AI insight",
+        "whyThis": "Why this?",
+        "whyThisTitle": "Why Ritora is saying this",
+        "whyThisBody": "This shows the facts, sources, and generation details behind the suggestion.",
+        "trigger": "Trigger",
+        "model": "Model",
+        "promptVersion": "Prompt version",
+        "cache": "Cache",
+        "notUsed": "Not used",
+        "cacheHit": "hit",
+        "cacheMiss": "miss",
+        "sources": "Sources",
+        "provenance": "Wording was refined by AI using only the facts and vetted sources shown here."
+      },
+      "kb": {
+        "lastVerified": "Verified {date}",
+        "derm_6_8_week_acne_window": {
+          "title": "Acne treatment timing",
+          "summary": "AAD guidance explains that acne care takes time and visible change is usually judged across weeks."
+        },
+        "derm_acne_types": {
+          "title": "Types of breakouts",
+          "summary": "AAD explains common acne types and why patterns across the face can matter."
+        },
+        "derm_hives_emergency": {
+          "title": "When hives need urgent care",
+          "summary": "AAD highlights symptoms that deserve urgent medical attention."
+        },
+        "derm_dry_skin_relief": {
+          "title": "Dry skin relief",
+          "summary": "AAD recommends gentle barrier support when skin feels dry or irritated."
+        },
+        "derm_contact_dermatitis_patch_testing": {
+          "title": "Contact dermatitis and patch testing",
+          "summary": "AAD describes patch testing as a way clinicians investigate repeated rash-like reactions."
+        },
+        "derm_skin_of_color_acne": {
+          "title": "Skin of color and acne",
+          "summary": "AAD notes that acne and dark spots can appear differently across skin tones."
+        },
+        "derm_retinoid_retinol_guidance": {
+          "title": "Retinoid and retinol guidance",
+          "summary": "AAD explains how retinoids are used and why irritation should be watched carefully."
+        },
+        "derm_hormonal_acne_therapy": {
+          "title": "Hormonal acne therapy",
+          "summary": "AAD discusses hormonal patterns that can affect acne for some people."
+        },
+        "pubmed_niacinamide_review": {
+          "title": "Niacinamide review",
+          "summary": "A PubMed indexed review summarizes evidence on topical niacinamide in skin care."
+        },
+        "pubmed_menstrual_cycle_acne": {
+          "title": "Menstrual cycle acne study",
+          "summary": "A PubMed indexed study describes acne pattern changes across the menstrual cycle."
+        }
+      },
+      "charts": {
+        "trendTitle": "Concern severity over time",
+        "reactionsTitle": "Reaction frequency · weekly",
+        "checkInTitle": "Check-in averages · 7-axis",
+        "thisWeek": "This week",
+        "lastWeek": "Last week"
+      },
+      "empty": {
+        "title": "Insights appear after ~2 weeks of tracking",
+        "body": "We need a baseline before drawing trends. Keep adding daily photos and the AI will catch up.",
+        "openCalendar": "Open Calendar tab"
+      }
+    },
+    "wrapped": {
+      "title": "Your Skin Wrapped",
+      "subtitle": "We turn your daily photos into a private Wrapped each month, quarter, and year. They appear here when ready.",
+      "save": "Save",
+      "play": "Play",
+      "almostReady": "Almost ready",
+      "notYet": "Coming soon",
+      "status": {
+        "ready": "Ready · {photos} photos",
+        "generating": "Preparing… · {photos} photos",
+        "ready_to_generate": "Almost ready · {photos} photos",
+        "not_enough_photos": "We'll prepare this once you have {min}+ photos",
+        "failed": "Couldn't prepare this Wrapped. We'll try again.",
+        "pending": "Queued"
+      },
+      "empty": {
+        "title": "Your Skin Wrapped appears here",
+        "body": "Each month we look back on your daily photos and put together a private Wrapped. Keep adding photos and your first one will be ready soon."
+      },
+      "periodKind": {
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "yearly": "Yearly"
+      },
+      "viewer": {
+        "title": "Wrapped",
+        "subtitle": "{kind} · {period}",
+        "notFound": "Wrapped not found.",
+        "noFrames": "No frames available.",
+        "frameAlt": "Skin journal photo from {date}",
+        "frameCaption": "{date} · {caption}",
+        "captionsAuto": "{count} photos · {label} · captions written by AI",
+        "play": "Play",
+        "pause": "Pause",
+        "previous": "Previous",
+        "next": "Next",
+        "close": "Close"
+      }
+    },
+    "reaction": {
+      "modalTitle": "We noticed possible irritation",
+      "modalLede": "Your photo from {date} shows signs that may indicate a reaction. {comparedNote}",
+      "comparedWorse": "Compared to your previous entry: appears worse on cheeks and chin.",
+      "indicatorsTitle": "Indicators",
+      "disclaimer": "Not a medical diagnosis. If symptoms worsen or persist, consult a dermatologist.",
+      "primaryCta": "Simplify routine until this clears (recommended)",
+      "secondaryCta": "Keep my routine",
+      "howWeDecide": "How does Ritora decide?",
+      "severeTitle": "Strong reaction signals detected",
+      "severeLede": "Several indicators of significant irritation. We've already paused your active treatments and switched to barrier-repair until you confirm.",
+      "severeWarning": "If symptoms include difficulty breathing or facial swelling, seek emergency care.",
+      "severePrimary": "Acknowledge & keep simplified",
+      "severeSecondary": "Restore my routine anyway",
+      "simplificationReason": "Reaction detected on {date}"
+    },
+    "indicators": {
+      "redness_spike": "Redness spike",
+      "swelling_appearance": "Swelling appearance",
+      "rash_appearance": "Rash appearance",
+      "new_breakouts_cluster": "New breakouts cluster",
+      "peeling": "Peeling",
+      "burning_appearance": "Burning appearance",
+      "hives_appearance": "Hives appearance",
+      "diffuse_inflammation": "Diffuse inflammation",
+      "flaking": "Flaking",
+      "tightness_appearance": "Tightness appearance",
+      "cracking_appearance": "Cracking appearance"
+    },
+    "simplification": {
+      "bannerTitle": "Routine simplified to barrier-repair mode",
+      "bannerBody": "We detected possible irritation in your photo from {date}. Your usual routine is paused until you acknowledge.",
+      "viewDetails": "View details",
+      "restoreRoutine": "Restore routine",
+      "keepSimplified": "Keep simplified",
+      "compactAlert": "Routine simplified. View in Journal",
+      "compactAlertSubtitle": "Since {date} · barrier-repair mode active",
+      "viewInJournal": "View in Journal",
+      "detail": {
+        "eyebrow": "Skin Journal · safety",
+        "title": "Routine simplification · {start} – {endLabel}",
+        "ongoing": "ongoing",
+        "subtitle": "Started from a journal safety event on {date}",
+        "noticedTitle": "What we noticed",
+        "noticedFallback": "A journal safety event suggested simplifying your routine while your skin settles.",
+        "presetTitle": "Barrier-repair preset (active)",
+        "presetSubtitle": "A conservative barrier-support routine to use while you review the alert.",
+        "presetAm": "AM",
+        "presetPm": "PM",
+        "presetAmBody": "Gentle cleanse, moisturise, and sunscreen.",
+        "presetPmBody": "Gentle cleanse and moisturise.",
+        "pausedTitle": "What was paused",
+        "pausedSubtitle": "If a schedule snapshot was captured on {date}, it appears below.",
+        "pausedAmTitle": "AM (paused)",
+        "pausedPmTitle": "PM (paused)",
+        "noSnapshot": "No schedule was active when this simplification started.",
+        "unsupportedSnapshot": "A schedule snapshot was captured, but its details could not be displayed safely.",
+        "snapshotSlotsLabel": "Routine slots",
+        "snapshotStepsLabel": "Routine steps",
+        "snapshotCapturedLabel": "Captured",
+        "snapshotCapturedUnknown": "Unknown"
+      }
+    },
+    "events": {
+      "kinds": {
+        "reaction_detected": "Reaction detected",
+        "worsening": "Worsening",
+        "recovery": "Recovery",
+        "dermatologist_referral": "Dermatologist referral",
+        "product_effectiveness": "Product effectiveness"
+      }
+    },
+    "deleteConfirm": {
+      "title": "Delete this entry?",
+      "body": "Your photo and ratings for this day will be removed permanently.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "empty": {
+      "title": "Your skin journey starts here",
+      "body": "Take a photo in good daylight to begin tracking. We'll handle the rest: analysis, trends, and a monthly Wrapped.",
+      "addFirst": "+ Add your first photo"
+    },
+    "errors": {
+      "analysisFailedTitle": "Couldn't analyse this photo",
+      "analysisFailedBody": "Network hiccup · or lighting too low. Your photo is saved either way.",
+      "analysisFailedProviderUnavailable": "The photo AI service is temporarily unavailable. Your photo is saved and you can retry shortly.",
+      "analysisFailedProviderTimeout": "The photo AI service took too long to respond. Your photo is saved and you can retry shortly.",
+      "analysisFailedProviderInvalidResponse": "The photo AI response did not pass our safety checks. Your photo is saved and you can retry.",
+      "analysisFailedPhotoPreflight": "This photo could not pass the local quality check. Try a larger, clearer face photo in even light.",
+      "analysisFailedPayloadTooLarge": "This photo set is too large to analyse safely. Try replacing it with smaller cropped photos.",
+      "analysisFailedCostLimit": "Photo AI is temporarily capped for safety. Your photo is saved and you can retry later.",
+      "analysisFailedConfiguration": "Photo AI is not configured right now. Your photo is saved and support can review this.",
+      "analysisFailedInvalidPhoto": "A front face photo is required before Photo AI can analyse this entry.",
+      "tooDark": "We had trouble seeing your skin clearly. Try natural daylight next time.",
+      "futureDate": "Cannot pick a future date.",
+      "uploadFailed": "Upload failed. Please try again."
+    },
+    "export": {
+      "title": "Export for dermatologist",
+      "body": "Pick a date range. We'll bundle your entries, photos, AI observations, events, and insights into a sharable summary.",
+      "fromLabel": "From",
+      "toLabel": "To",
+      "submit": "Generate export",
+      "cancel": "Cancel",
+      "generating": "Generating…",
+      "readyTitle": "Export is ready",
+      "readyBody": "{entries, plural, one {# entry} other {# entries}} included. You'll also receive a notification with the secure export.",
+      "validation": {
+        "invalidDate": "Choose a valid date.",
+        "endBeforeStart": "The end date must be after the start date."
+      }
+    }
+  },
+  "dashboardJournal": {
+    "missingPhotoTitle": "Add today's photo",
+    "missingPhotoBody": "It's after your usual reminder. A daily photo keeps your trend going.",
+    "openJournal": "Open Skin Journal"
+  },
+  "settingsNotifications": {
+    "eyebrow": "Settings",
+    "title": "Notifications",
+    "subtitle": "Photo reminder, alerts, and channels.",
+    "saving": "Saving",
+    "updateFailed": "Could not save notification settings.",
+    "errors": {
+      "loadTitle": "We couldn't load notification settings",
+      "loadBody": "Please try again. Your notification preferences are unchanged.",
+      "retry": "Try again"
+    },
+    "validation": {
+      "invalidReminderTime": "Enter a valid reminder time.",
+      "invalidChannels": "Choose valid notification channels.",
+      "invalidLeadTime": "Lead time must be between 30 minutes and 12 hours.",
+      "invalidExpiryNoticeDays": "Expiry notice days must be between 1 and 90.",
+      "invalidQuietHours": "Quiet hours must use a 24-hour format like 22:30."
+    },
+    "photoReminderTitle": "Photo reminder",
+    "photoReminderBody": "Daily prompt to add today's photo",
+    "reminderTime": "Reminder time",
+    "reminderTimeNote": "Time is in your timezone · {timeZone}",
+    "channels": "Channels",
+    "channelInApp": "In-app",
+    "channelEmail": "Email",
+    "channelPush": "Push",
+    "channelToggleLabel": "{channel} for {notification}",
+    "noChannelsWarning": "Won't deliver until you pick a channel",
+    "browserPushTitle": "Browser push",
+    "browserPushBody": "Send device notifications from this browser for enabled notification types.",
+    "browserPushOn": "Push is enabled for this browser.",
+    "browserPushOnNeedsBrowser": "Push is enabled, but this browser is not connected yet.",
+    "browserPushOff": "Push is off.",
+    "browserPushUnsupported": "This browser does not support web push.",
+    "browserPushInsecureContext": "Browser push requires HTTPS or localhost.",
+    "browserPushDenied": "Browser permission is blocked. Enable notifications in your browser settings.",
+    "browserPushConnect": "Connect this browser",
+    "browserPushEnabled": "Browser push enabled.",
+    "browserPushDisabled": "Browser push disabled.",
+    "browserPushEnableFailed": "Could not enable browser push.",
+    "browserPushNotConfigured": "Push unavailable.",
+    "browserPushInvalidPublicKey": "The server's browser push key is invalid.",
+    "browserPushPermissionNotGranted": "Browser notification permission was not granted.",
+    "browserPushSubscriptionFailed": "Subscription failed.",
+    "browserPushRegistrationFailed": "Browser push subscription could not be saved.",
+    "browserPushDisableFailed": "Could not disable browser push.",
+    "browserPushDevicesTitle": "Connected devices",
+    "browserPushDevicesEmpty": "No devices are connected for push.",
+    "browserPushDeviceCurrent": "This browser",
+    "browserPushDeviceWeb": "Web browser",
+    "browserPushDeviceIos": "iOS device",
+    "browserPushDeviceAndroid": "Android device",
+    "browserPushDeviceUnknown": "Push device",
+    "browserPushDeviceLastSeen": "Last seen {date}",
+    "browserPushDeviceNeverSeen": "Last seen unknown",
+    "browserPushDeviceFailures": "{count, plural, one {# recent failure} other {# recent failures}}",
+    "browserPushDeviceRemove": "Remove",
+    "browserPushDeviceRemoving": "Removing",
+    "browserPushDeviceRemoved": "Push device removed.",
+    "browserPushDeviceRemoveFailed": "Could not remove push device.",
+    "browserPushDeliveryIssues": "{failing, plural, =0 {No failing devices} one {# failing device} other {# failing devices}} · {retries, plural, =0 {no pending retries} one {# pending retry} other {# pending retries}}",
+    "reactionAlertsTitle": "Reaction alerts",
+    "reactionDetectedTitle": "Possible reaction",
+    "reactionAlertsBody": "Notify me when AI flags a possible reaction",
+    "routineSimplificationTitle": "Routine simplification",
+    "autoSimplifyBody": "Auto-simplify routine on moderate/severe reactions",
+    "autoSimplifyNote": "When off, you'll still get an alert but your routine is never changed automatically.",
+    "insightsTitle": "Insights & Wrapped",
+    "insightAlertsBody": "Insight notifications",
+    "insightCadenceLabel": "Insight cadence",
+    "insightCadence": {
+      "weekly": "Weekly digest",
+      "fewer": "Fewer insights"
+    },
+    "insightDigestDayLabel": "Digest day",
+    "insightDigestDays": {
+      "1": "Monday",
+      "2": "Tuesday",
+      "3": "Wednesday",
+      "4": "Thursday",
+      "5": "Friday",
+      "6": "Saturday",
+      "7": "Sunday"
+    },
+    "insightDigestTimeLabel": "Digest time",
+    "wrappedAlertsBody": "Wrapped ready notifications",
+    "newPill": "New",
+    "todaysSuggestionTitle": "Today's Suggestion",
+    "todaysSuggestionBody": "Three reminders that keep your routine on track.",
+    "suggestionReadyTitle": "Suggestion ready",
+    "suggestionReadyBody": "When a suggestion becomes visible, your lead time before the scheduled time.",
+    "smartPicksTitle": "Smart Picks",
+    "smartPicksBody": "Updates from your shelf gap analysis.",
+    "smartPickReadyTitle": "Smart Picks ready",
+    "smartPickReadyBody": "Optional alert when your shelf changes and a new product gap is available.",
+    "slotStartTitle": "Routine time",
+    "slotStartBody": "At the scheduled time, so you remember to apply your routine.",
+    "recordingReminderTitle": "Recording reminder",
+    "recordingReminderBody": "30 minutes after a routine time if no record exists yet. Quiet at night, retried the following morning.",
+    "leadTimeLabel": "Lead time before each suggestion",
+    "leadTimeOption": "{minutes, plural, =60 {1 hour} =120 {2 hours} =180 {3 hours} =240 {4 hours} =360 {6 hours} =480 {8 hours} =720 {12 hours} other {# minutes}}",
+    "leadTimeNote": "Used by all three reminder kinds. Range 30 minutes to 12 hours.",
+    "productExpiryTitle": "Shelf expiry alerts",
+    "productExpiryBody": "Alerts for products that are approaching their expiry date or have already expired.",
+    "productExpiryAlertsTitle": "Product expiry alerts",
+    "productExpiryAlertsBody": "Reminders before and on a product's expiry date.",
+    "productExpiryNoticeDaysLabel": "Notify me days before expiry",
+    "productExpiryNoticeDaysHint": "Choose any whole number from {min} to {max}.",
+    "productExpiryNoticeDaysError": "Enter a whole number from {min} to {max}.",
+    "quietHoursTitle": "Quiet hours",
+    "quietHoursBody": "Hold non urgent reminders inside this window. Reaction alerts always come through.",
+    "quietHoursActive": "Quiet hours active",
+    "from": "From",
+    "to": "to",
+    "quietHoursTzNote": "Times are in your time zone · {timeZone}"
+  },
+  "notificationsPage": {
+    "eyebrow": "Inbox",
+    "title": "Notifications",
+    "subtitle": "Suggestions, reminders, reactions, insights, and your Skin Wrapped, all in one place.",
+    "markAllRead": "Mark all read",
+    "markingAllRead": "Marking all read",
+    "unreadHeading": "Unread",
+    "readHeading": "Read",
+    "view": "View",
+    "play": "Play",
+    "empty": "All caught up.",
+    "emptyTitle": "All quiet for now",
+    "emptyBody": "When something needs your attention, like a possible reaction, a new insight, or your monthly Skin Wrapped, it will show up here.",
+    "managePreferences": "Manage notification preferences",
+    "preferencesAction": "Preferences",
+    "loadingMore": "Loading more",
+    "sourceSkinJournal": "Skin Journal",
+    "sourceTodaysSuggestion": "Today's Suggestion",
+    "sourceSmartPicks": "Smart Picks",
+    "sourceShelf": "Shelf",
+    "fallbackProductName": "A product",
+    "unknownDate": "an unknown date",
+    "errors": {
+      "loadTitle": "We couldn't load notifications",
+      "loadBody": "Please try again. Your notification preferences and journal data are unchanged.",
+      "loadMore": "We couldn't load more notifications.",
+      "retry": "Try again"
+    },
+    "kinds": {
+      "photo_reminder": {
+        "title": "Time for today's photo",
+        "body": "Capture your morning baseline in natural daylight."
+      },
+      "reaction_detected": {
+        "title": "Possible reaction detected",
+        "body": "Increased redness, new breakouts. Routine simplified to barrier-repair until you acknowledge."
+      },
+      "simplification_started": {
+        "title": "Routine simplified",
+        "body": "Barrier repair mode active. Restore any time."
+      },
+      "doctor_referral": {
+        "title": "Doctor referral nudge",
+        "body": "Persistent reaction signals. Consider a dermatologist visit."
+      },
+      "insight_ready": {
+        "title": "New insight",
+        "body": "Tap to see what's working."
+      },
+      "wrapped_ready": {
+        "title": "Your Wrapped is ready",
+        "body": "Your private recap is ready with AI captions on visible changes."
+      },
+      "analysis_failed": {
+        "title": "Analysis failed",
+        "body": "Tap to retry on the entry."
+      },
+      "export_ready": {
+        "title": "Your export is ready",
+        "body": "Tap to download."
+      },
+      "suggestion_ready": {
+        "title": "Your suggestion is ready",
+        "body": "Tap to review the steps before you apply."
+      },
+      "slot_start": {
+        "title": "Time to start your routine",
+        "body": "Your routine is ready. Mark each step as you go."
+      },
+      "recording_reminder": {
+        "title": "How did your routine go?",
+        "body": "Record what you applied so the rest of today knows what to build on."
+      },
+      "product_nearing_expiry": {
+        "title": "Product nearing expiry",
+        "body": "{productName} expires in {daysUntilExpiry, plural, one {# day} other {# days}} on {expiresDate}.",
+        "bodyFallback": "{productName} is nearing expiry on {expiresDate}."
+      },
+      "product_expired": {
+        "title": "Product expired",
+        "body": "{productName} expired on {expiresDate}."
+      },
+      "smart_pick_ready": {
+        "title": "New Smart Pick available",
+        "body": "Your shelf changed. Review the latest gap before buying anything new."
+      }
+    }
+  },
+  "smartPicks": {
+    "page": {
+      "title": "Smart Picks",
+      "subtitle": "What to buy, what to skip, and what to replace.",
+      "refreshing": "Refreshing picks",
+      "footer": {
+        "title": "Ritora won't recommend something you don't need.",
+        "body": "A gap only appears here when there's a real reason for your skin. We suggest a replacement only when your use logs and photos are clear. The best pick is often nothing new."
+      },
+      "trust": {
+        "title": "Use this as guidance, not a diagnosis.",
+        "photos": "Photos and logs help Ritora spot patterns over time, but they are not clinical proof. Lighting, timing, makeup, and skipped logs can change the picture.",
+        "shopping": "Ritora suggests product names and reputable places to check, not prices or shopping links. Compare sellers yourself and confirm the ingredient list before buying.",
+        "consistency": "Ritora gets more useful when your logs and photos stay consistent. When the evidence is thin, it will say so rather than guess."
+      },
+      "mode": {
+        "label": "Smart Picks mode",
+        "refine": "Refine my shelf",
+        "starter": "Starter kit"
+      },
+      "actions": {
+        "wishlist": "Wishlist",
+        "back": "Back to Smart Picks",
+        "save": "Save",
+        "saving": "Saving",
+        "saved": "Saved",
+        "dismiss": "Dismiss",
+        "dismissing": "Dismissing",
+        "whyThis": "Why this",
+        "remove": "Remove",
+        "removing": "Removing"
+      },
+      "feedback": {
+        "saved": "Saved. You can find it in your wishlist.",
+        "dismissed": "Dismissed for now.",
+        "removed": "Removed from your wishlist.",
+        "failed": "That did not save. Please try again.",
+        "removeFailed": "That did not remove. Please try again."
+      },
+      "error": {
+        "title": "We could not load Smart Picks",
+        "body": "Try again. Your shelf and profile data are unchanged.",
+        "retry": "Try again"
+      },
+      "recap": {
+        "goal": "Goal",
+        "skinType": "Skin type",
+        "location": "Location",
+        "budget": "Budget",
+        "unset": "Unset"
+      },
+      "budget": {
+        "drugstore": "Drugstore",
+        "mid": "Mid",
+        "premium": "Premium",
+        "luxury": "Luxury"
+      },
+      "coverage": {
+        "title": "Coverage meter",
+        "summary": "{filled} of {total} goal steps covered",
+        "states": {
+          "filled": "Covered",
+          "missing": "Optional gap",
+          "missing-priority": "Priority gap"
+        }
+      },
+      "roles": {
+        "cleanse": "Cleanse",
+        "hydrate": "Hydrate",
+        "treat": "Treat",
+        "moisturise": "Moisturise",
+        "spf": "SPF",
+        "eye": "Eye",
+        "treatment-secondary": "Second treatment",
+        "dark-spot-treatment": "Pigment serum",
+        "antioxidant": "Vitamin C",
+        "exfoliation-mask": "Mask or peel",
+        "acne-treatment": "Acne treatment",
+        "barrier-support": "Barrier support",
+        "congestion-mask": "Congestion mask",
+        "texture-exfoliant": "Texture exfoliant",
+        "retinoid": "Retinoid",
+        "peptide": "Peptide support",
+        "recovery-mask": "Recovery mask",
+        "goal-primary": "Goal product",
+        "goal-support": "Goal support"
+      },
+      "activeTags": {
+        "retinoid": "Retinoid",
+        "aha": "AHA",
+        "bha": "BHA",
+        "pha": "PHA",
+        "vitamin-c": "Vitamin C",
+        "benzoyl-peroxide": "Benzoyl peroxide",
+        "azelaic-acid": "Azelaic acid",
+        "niacinamide": "Niacinamide",
+        "ceramide": "Ceramide",
+        "humectant": "Humectant",
+        "barrier-support": "Barrier support",
+        "spf": "SPF",
+        "salicylic-acid": "Salicylic acid"
+      },
+      "priority": {
+        "priority": "Priority gap",
+        "consider": "Worth considering"
+      },
+      "sections": {
+        "priority": "Priority gaps",
+        "consider": "Worth considering"
+      },
+      "gap": {
+        "whyPrefix": "Why:",
+        "noPickTitle": "Product name is still being matched.",
+        "noPick": "The gap is clear. Ritora is still choosing the product name for this item, so check back in a few minutes.",
+        "noPickFailedTitle": "Product name could not be matched yet.",
+        "noPickFailed": "The gap is still useful, but the product match did not finish. Check back later and Ritora will try again."
+      },
+      "starterKit": {
+        "eyebrow": "Starter Kit",
+        "title": "Starter routine",
+        "stepCount": "{count, plural, one {1 step} other {# steps}}",
+        "step": "Step {order}",
+        "pickFallback": "Chosen to keep the first routine simple and low-risk.",
+        "noPickTitle": "Product name is still being matched for this step.",
+        "noPick": "Keep this step in the routine. The specific product name will appear here when matching finishes.",
+        "noPickFailedTitle": "Product name could not be matched for this step yet.",
+        "noPickFailed": "Keep the step. The product match did not finish, so check back later and Ritora will try again.",
+        "footer": "Starter Kit keeps the routine small on purpose. Start with the covered and recommended basics here; use Refine later when you want to replace, simplify, or compare products.",
+        "status": {
+          "covered": "Already covered",
+          "recommended": "Recommended",
+          "wait": "Wait"
+        }
+      },
+      "replacement": {
+        "title": "Replacement for {productName}",
+        "usage90": "{count} use days in 90d",
+        "photos": "{count} photo checkpoints",
+        "reactions": "{count} reaction signals",
+        "caveat": "Photos can support a replacement decision, but they do not prove a product failed. Ritora waits for enough logged use and repeat photo checkpoints before suggesting a swap."
+      },
+      "product": {
+        "bestMatch": "Best match"
+      },
+      "sellers": {
+        "whereToCheck": "Places to check",
+        "compare": "Seller names are a starting point. Check more than one reputable seller before you decide."
+      },
+      "drawer": {
+        "title": "Why this pick",
+        "description": "The reasoning behind the recommendation and the products ruled out.",
+        "facts": "Reasoning facts",
+        "alternatives": "Alternatives",
+        "ruledOut": "Ruled out"
+      },
+      "covered": {
+        "title": "You're set here",
+        "empty": "Covered roles will appear here once your shelf has enough active products."
+      },
+      "redundancy": {
+        "title": "Duplicate active check",
+        "empty": "No obvious active-ingredient duplicates detected."
+      },
+      "empty": {
+        "profileRequired": {
+          "title": "Smart Picks needs your skin profile first",
+          "body": "A few profile details are still missing. Fill those in first so Smart Picks can stay specific to your skin, your budget, and what you are trying to change."
+        },
+        "consentRequired": {
+          "title": "Smart Picks is off",
+          "body": "Product picks are turned off in Privacy settings. Ritora will not use your shelf, profile, routine history, or photo trends for shopping suggestions unless you switch this back on."
+        },
+        "allGapsDismissed": {
+          "title": "Nothing new today",
+          "body": "You passed on the current picks, so we are keeping them out of the way for now. Smart Picks will check again when your shelf changes or the pause ends."
+        },
+        "redundancyOnly": {
+          "title": "No new products to buy",
+          "body": "There is no useful gap to shop for right now. The helpful move is to look at overlap in your routine before adding anything else."
+        },
+        "historyInsufficient": {
+          "title": "Keep using what you have for now",
+          "body": "Your shelf covers the basics, but there is not enough routine history yet to say a product should be replaced. Keep logging use and clear check-in photos before buying more."
+        },
+        "productGenerationUnavailable": {
+          "title": "Your product picks are being prepared",
+          "body": "You do not need to keep this page open. Ritora is matching product names in the background; check back in a few minutes."
+        },
+        "fullyCovered": {
+          "title": "Nothing useful to add",
+          "body": "Your core routine is covered and we do not see a clear reason to buy something else right now. Keep using what you have and Smart Picks will re-check as your shelf, logs, and photos change."
+        },
+        "fullyCoveredStarter": {
+          "title": "Add a product to start",
+          "body": "Smart Picks needs at least one shelf item before it can compare what you own with what is missing. Add your first product and we will keep the starter routine small."
+        },
+        "profileCta": "Start skin profile",
+        "consentCta": "Turn Smart Picks back on",
+        "starterCta": "Open shelf",
+        "fullyCoveredCta": "Open Today's Suggestion",
+        "todayCta": "Open Today's Suggestion",
+        "shelfCta": "Review shelf",
+        "journalCta": "Open journal",
+        "facts": {
+          "coverage": "Coverage {filled}/{total}",
+          "activeProducts": "{count, plural, =0 {No active products} one {1 active product} other {# active products}}",
+          "hiddenPicks": "{count, plural, one {1 hidden pick} other {# hidden picks}}",
+          "pauseEnds": "Paused until {date}"
+        },
+        "history": {
+          "ready": "{days} use days, {photos} clear photo checks",
+          "needs_usage_logs": "{photos} clear photo checks. More use logs needed.",
+          "needs_clear_photos": "{days} use days. Add clearer photo checks.",
+          "needs_usage_and_photos": "Need more use logs and clear photos before replacement checks."
+        },
+        "missingFields": {
+          "date_of_birth": "Date of birth",
+          "sex_at_birth": "Sex at birth",
+          "skin_type": "Skin type",
+          "skin_tone": "Skin tone",
+          "fitzpatrick_phototype": "Fitzpatrick type",
+          "ethnicity": "Ethnicity",
+          "current_concerns": "Current concerns",
+          "primary_goal": "Primary goal",
+          "concern_severity": "Concern severity",
+          "pih_tendency": "Dark-mark tendency",
+          "melasma_tendency": "Melasma tendency",
+          "keloid_tendency": "Keloid tendency",
+          "sunscreen_habit": "Sunscreen habit",
+          "sunscreen_tolerance": "Sunscreen tolerance",
+          "routine_pace": "Routine pace",
+          "fragrance_free": "Fragrance preference",
+          "non_comedogenic": "Pore-clogging preference",
+          "sunscreen_filter": "Sunscreen filter",
+          "sunscreen_finish": "Sunscreen finish",
+          "water_hardness": "Water hardness",
+          "water_sensitivity": "Water sensitivity",
+          "budget_tier": "Budget",
+          "smart_picks_consent": "Smart Picks choice",
+          "more": "{count, plural, one {+1 more} other {+# more}}"
+        }
+      },
+      "wishlist": {
+        "title": "Smart Picks wishlist",
+        "subtitle": "Picks you saved to revisit before buying.",
+        "emptyTitle": "No saved Smart Picks yet",
+        "emptyBody": "Tap the heart on any Smart Pick recommendation to save it here. You can review saved products before comparing sellers.",
+        "emptyCta": "Browse Smart Picks",
+        "savedForGoal": "Saved for your {goal} goal.",
+        "savedFallback": "Saved from a recent Smart Pick.",
+        "savedOn": "Saved {date}",
+        "savedBadge": "Saved"
+      }
+    }
+  },
+  "todaysSuggestion": {
+    "page": {
+      "title": "Today's Suggestion",
+      "history": "History",
+      "takeBreak": "Take a break",
+      "loading": "Loading today's plan",
+      "errorTitle": "We could not load today's plan",
+      "error": "Something went wrong loading your suggestions. You can try again.",
+      "retry": "Try again",
+      "worthConsidering": "Worth considering",
+      "nextSlotTomorrow": "tomorrow",
+      "normalRoutineRestored": "Normal routine restored for future suggestions.",
+      "routineBreakStarted": "Routine paused. No new suggestions will be generated until you resume.",
+      "routineBreakResumed": "Routine resumed. Suggestions will appear when each routine time approaches.",
+      "routineBreakResumeUpdated": "Resume date updated.",
+      "routineBreakActionFailed": "We couldn't update your routine break. Please try again.",
+      "quickSuggestion": "Quick suggestion",
+      "quickSuggestionQueued": "Quick suggestion is being prepared.",
+      "quickSuggestionFailed": "We couldn't start that suggestion. Please try again.",
+      "quickSuggestionConsentRequired": "Allow AI suggestions before requesting a quick suggestion.",
+      "aiConsentGranted": "AI suggestions enabled.",
+      "aiConsentFailed": "We couldn't save that consent. Please try again.",
+      "gapSaved": "Saved to your Today wishlist.",
+      "gapDismissed": "Recommendation dismissed for now."
+    },
+    "aiConsentDialog": {
+      "title": "Allow AI suggestions",
+      "body": "Quick suggestions use AI to read your shelf, schedule, skin profile, journals, and past application history. Sensitive profile or journal context is only used when the matching consent is also active.",
+      "controlTitle": "You stay in control",
+      "controlBody": "You can revoke this anytime in Settings → Privacy. Ritora keeps these requests encrypted and does not use raw journal photos for suggestions.",
+      "cancel": "Not now",
+      "confirm": "Allow AI suggestions"
+    },
+    "aiConsentCard": {
+      "title": "Personalized routines, made for your skin",
+      "body": "Turn on AI suggestions and Ritora will tailor each one to your skin profile, shelf, and recent journal entries. Without this, suggestions still arrive but stay basic.",
+      "benefits": {
+        "matchProfile": "Routines that match your goals and tolerances",
+        "adaptToShelf": "Adapts to the products you actually own",
+        "revokeAnytime": "You stay in control. Turn it off anytime in Settings."
+      },
+      "privacy": "Your data stays encrypted and is never sold.",
+      "grant": "Allow AI suggestions",
+      "dismiss": "Maybe later"
+    },
+    "routineBreak": {
+      "statusLabel": "On a break",
+      "title": "You're on a routine break",
+      "body": "Ritora will keep your schedule intact, pause new suggestions, and stop routine reminders until you resume.",
+      "resumeOn": "Planned resume: {date}",
+      "resumeIndefinite": "Paused until you resume",
+      "resumeDateLabel": "Resume date",
+      "saveResumeDate": "Save resume date",
+      "resumeNow": "Resume routine",
+      "changeResumeDate": "Change",
+      "cancelEdit": "Cancel",
+      "validation": {
+        "resumeDateInvalid": "Choose a valid resume date.",
+        "resumeDatePast": "Choose a future resume date."
+      }
+    },
+    "routineBreakStart": {
+      "title": "Take a routine break",
+      "body": "Your schedule stays intact, but Ritora will pause new suggestions, routine reminders, and missed-routine backfill.",
+      "resumeDateLabel": "Resume date",
+      "resumeDateHint": "Optional. Leave blank to pause until you resume manually.",
+      "cancel": "Cancel",
+      "start": "Start break",
+      "validation": {
+        "resumeDateInvalid": "Choose a valid resume date.",
+        "resumeDatePast": "Choose a future resume date."
+      }
+    },
+    "onDemandDialog": {
+      "title": "Quick suggestion",
+      "body": "Tell Ritora what is happening right now. It will use your shelf and recent records.",
+      "intentLabel": "What is happening?",
+      "intensityLabel": "How much do you want to do?",
+      "noteLabel": "Short note (optional)",
+      "notePlaceholder": "For example, just came back sweaty and want a quick reset.",
+      "cancel": "Cancel",
+      "submit": "Generate suggestion",
+      "noteTooLong": "Keep this under 280 characters.",
+      "intensity": {
+        "minimal": "Minimal",
+        "minimalDescription": "Just the essentials",
+        "standard": "Standard",
+        "standardDescription": "Full mini-routine"
+      }
+    },
+    "onDemand": {
+      "sectionTitle": "Quick suggestions",
+      "label": "On-demand",
+      "newRequest": "New",
+      "retry": "Try again",
+      "retrying": "Retrying...",
+      "qualityTitle": "Product data is limited",
+      "intent": {
+        "post_workout": "After workout",
+        "post_sun": "After sun",
+        "post_swim": "After swimming",
+        "travel_refresh": "Travel refresh",
+        "quick_refresh": "Quick refresh",
+        "event_prep": "Event prep",
+        "post_makeup_or_shower": "After makeup or shower",
+        "other": "Other"
+      }
+    },
+    "lockedDay": {
+      "title": "How suggestions arrive",
+      "body": "Each routine is prepared shortly before it arrives, using your latest photo, shelf, and skin profile.",
+      "leadFact": "Visible {leadTime} before each suggestion arrives.",
+      "notifyFact": "We notify you when ready and at the scheduled time. Manage in <link>Notifications</link>.",
+      "leadTimeHour": "{count} hour",
+      "leadTimeHours": "{count} hours",
+      "leadTimeMinute": "{count} minute",
+      "leadTimeMinutes": "{count} minutes"
+    },
+    "section": {
+      "morning": "Morning",
+      "noon": "Mid-day",
+      "evening": "Evening"
+    },
+    "summary": {
+      "applied": "{count, plural, one {# applied} other {# applied}}",
+      "ready": "{count, plural, one {# ready} other {# ready}}",
+      "locked": "{count, plural, one {# locked} other {# locked}}",
+      "weatherWithTemperature": "{condition} · {temperature}°C",
+      "temperature": "{temperature}°C",
+      "uvIndex": "UV {index}",
+      "uvRisk": "UV {index} · {risk}",
+      "humidity": "{band} · {value}% humidity",
+      "airQuality": "Air {risk}",
+      "waterContext": "{hardness} water",
+      "environment": {
+        "unknown": "Unknown",
+        "uv": {
+          "low": "low",
+          "moderate": "moderate",
+          "high": "high",
+          "very_high": "very high",
+          "extreme": "extreme",
+          "unknown": "unknown"
+        },
+        "humidity": {
+          "very_dry": "Very dry",
+          "dry": "Dry",
+          "balanced": "Balanced",
+          "humid": "Humid",
+          "very_humid": "Very humid"
+        },
+        "air": {
+          "good": "good",
+          "fair": "fair",
+          "moderate": "moderate",
+          "poor": "poor",
+          "very_poor": "very poor",
+          "unknown": "unknown"
+        },
+        "water": {
+          "unknown": "Unknown",
+          "soft": "Soft",
+          "moderate": "Moderate",
+          "hard": "Hard"
+        }
+      },
+      "photoNudge": "Photo logged today",
+      "logPhoto": "Log photo",
+      "photoLoggedAt": "Photo logged at {time}",
+      "notifications": "{count, plural, one {# notification} other {# notifications}}",
+      "adherence": "{percent}% adherence"
+    },
+    "environment": {
+      "climateAwareTitle": "Make suggestions climate-aware",
+      "climateAwareBody": "Add city-level location consent so Ritora can adjust for humidity, UV, air quality, and seasonal shifts.",
+      "grantLocation": "Manage location consent"
+    },
+    "modeBadge": {
+      "ai": "AI",
+      "manual": "Manual",
+      "mixed": "Mixed"
+    },
+    "provenance": {
+      "specialistLocked": "Locked by specialist",
+      "yourRoutine": "Your routine",
+      "aiAdded": "Added by AI"
+    },
+    "climate": {
+      "weatherWithTemperature": "{condition} · {temperature}°C",
+      "temperature": "{temperature}°C",
+      "uvIndex": "UV {index}",
+      "uvRisk": "UV {index} · {risk}",
+      "humidity": "{band} · {value}% humidity",
+      "airQuality": "AQI · {risk}",
+      "airQualityWithIndex": "AQI {index} · {risk}",
+      "environment": {
+        "uv": {
+          "low": "low",
+          "moderate": "moderate",
+          "high": "high",
+          "very_high": "very high",
+          "extreme": "extreme",
+          "unknown": "unknown"
+        },
+        "humidity": {
+          "very_dry": "Very dry",
+          "dry": "Dry",
+          "balanced": "Balanced",
+          "humid": "Humid",
+          "very_humid": "Very humid"
+        },
+        "air": {
+          "good": "good",
+          "fair": "fair",
+          "moderate": "moderate",
+          "poor": "poor",
+          "very_poor": "very poor",
+          "unknown": "unknown"
+        }
+      }
+    },
+    "step": {
+      "routineNote": "Routine note:"
+    },
+    "slot": {
+      "stepCount": "{count, plural, one {# step} other {# steps}}",
+      "ready": "Ready",
+      "generating": "Preparing",
+      "failed": "Needs retry",
+      "missed": "Missed",
+      "applied": "Applied",
+      "appliedSummary": "{count} of {total} applied",
+      "awaitingRecord": "Awaiting record",
+      "simplified": "Simplified",
+      "specialist": "Specialist",
+      "basicSuggestion": "Basic suggestion",
+      "personalizationOffTitle": "Personalization is off.",
+      "personalizationOffBody": "This suggestion avoids profile, journal, and history context until AI suggestion consent is granted.",
+      "morningLabel": "Morning routine",
+      "noonLabel": "Mid-day reminder",
+      "eveningLabel": "Evening routine",
+      "availableAt": "Available {time}",
+      "unlocksIn": "Unlocks in {eta}.",
+      "unlocksInRich": "Unlocks in <strong>{eta}</strong>.",
+      "lockedExplainer": "We only show suggestions when your configured arrival window opens so they reflect your latest photo, sleep, and check-in.",
+      "generatingExplainer": "Ritora is preparing this suggestion with your latest schedule, shelf, skin profile, and recent records.",
+      "failedExplainer": "This suggestion could not be prepared. It stays visible so the issue does not disappear from the day.",
+      "missedExplainer": "This suggestion passed without a saved application record. You can still record or edit it from History after today.",
+      "whyThisRoutine": "Why this routine",
+      "markAsApplied": "Mark as applied",
+      "recordWhatIApplied": "Record what I applied",
+      "more": "More",
+      "edit": "Edit",
+      "edited": "Edited",
+      "appliedAt": "Applied at {time}",
+      "recordedSummary": "Applied {time} · {count} of {total}",
+      "recordedAt": "Recorded {time}.",
+      "editedAt": "Edited at {time}.",
+      "editedSubstitutionSummary": "Substituted {from} with {to}.",
+      "recordedMatchesSuggestion": "Matches the suggestion.",
+      "recordedItem": {
+        "applied": "Applied",
+        "skipped": "Skipped",
+        "substituted": "Substituted",
+        "insteadOf": "Instead of {name}",
+        "addedByYou": "Added by you",
+        "itemAppliedAt": "Applied {time}",
+        "unknownProduct": "Product"
+      }
+    },
+    "reactionBanner": {
+      "title": "Possible reaction in this morning's photo",
+      "paused": "Paused while it settles: {names}",
+      "confidence": "{percent}% confidence",
+      "photosUntilClear": "{count, plural, =0 {Clear criteria met} one {# more photo to clear} other {# more photos to clear}}",
+      "clearCriteria": "Barrier-clear criteria",
+      "viewPhoto": "View photo",
+      "resetRoutine": "Use my normal routine"
+    },
+    "gapRecommendation": {
+      "title": "Consider adding a {ingredient}",
+      "browse": "Browse options",
+      "saveToWishlist": "Save to wishlist",
+      "saved": "Saved",
+      "dismiss": "Not now"
+    },
+    "recordSheet": {
+      "recordTitle": "Record what you applied",
+      "editTitle": "Edit application",
+      "recordSubtitle": "Suggestion at {time}, {count} suggested steps",
+      "editSubtitle": "Suggestion at {time}. Originally recorded {firstRecordedAt}.",
+      "appliedAt": "Applied at",
+      "rowSuggestedTag": "Suggested",
+      "rowAddedTag": "Added by you",
+      "rowActionApplied": "Mark applied",
+      "rowActionSkipped": "Mark skipped",
+      "rowActionSubstituted": "Mark substituted",
+      "rowActionRemove": "Remove product",
+      "tooltips": {
+        "applied": "I used this product",
+        "skipped": "I skipped this step",
+        "substituted": "I used something else",
+        "remove": "Remove this product from the record"
+      },
+      "rowNotesPlaceholder": "Item note",
+      "addProduct": {
+        "title": "Add a product I used",
+        "body": "Search your shelf or type a name",
+        "panelTitle": "Add what you actually used",
+        "panelBody": "Choose an active shelf product or add a one-time off-shelf item.",
+        "close": "Close add product",
+        "offShelfTitle": "Off-shelf product",
+        "brandPlaceholder": "Brand",
+        "namePlaceholder": "Product name",
+        "addOffShelf": "Add off-shelf"
+      },
+      "productPicker": {
+        "searchPlaceholder": "Search shelf products",
+        "loading": "Loading products",
+        "empty": "No matching shelf products.",
+        "statusActive": "Active",
+        "statusArchived": "Archived",
+        "statusFinished": "Finished"
+      },
+      "substitution": {
+        "chooseProduct": "What did you use instead?",
+        "selected": "Substituted with {name}",
+        "selectedShelf": "selected shelf product",
+        "offShelfBrand": "Off-shelf brand",
+        "offShelfName": "Off-shelf product",
+        "reasonPlaceholder": "Why did you substitute? For example, irritation, finished product, or texture."
+      },
+      "notesLabel": "Notes (optional)",
+      "notesPlaceholder": "Anything Ritora should remember? For example, it stung a little near the cheek.",
+      "editReasonLabel": "Why are you editing? (optional)",
+      "editReasonPlaceholder": "Helpful so AI can learn. For example, ran out of product, or wrong product earlier.",
+      "saveRecord": "Save record",
+      "saveChanges": "Save changes",
+      "discard": "Discard changes",
+      "recordLegal": "You can edit this anytime. Every change is timestamped.",
+      "editHistory": {
+        "willMarkAsEdited": "This record will be marked as",
+        "editedMarker": "Edited",
+        "firstSavedAt": "First saved {time} by you",
+        "versionsAreKept": "Every prior version is kept, so we never recommend something based on a changed record. You can review older versions on the day's History page."
+      }
+    },
+    "reminderBanner": {
+      "title": "Record your {time} routine",
+      "body": "This suggestion is ready to log. Recording what actually happened keeps afternoon and evening suggestions accurate.",
+      "recordNow": "Record morning now",
+      "skippedToday": "Skipped today",
+      "remindLater": "Remind me later",
+      "skippedNote": "Marked skipped from Today's Suggestion reminder.",
+      "skippedItemNote": "Skipped today."
+    },
+    "detailDrawer": {
+      "eyebrow": "Why this routine",
+      "title": "{daypart}, {time}",
+      "description": "Reasoning behind today's suggested routine.",
+      "generatedAt": "Generated {time}",
+      "aiModel": "Model {model}",
+      "daypart": {
+        "morning": "Morning",
+        "noon": "Mid-day",
+        "evening": "Evening"
+      },
+      "sections": {
+        "intent": "What I am trying to do",
+        "whyEach": "Why each step",
+        "whatISkipped": "What I skipped today and why",
+        "inputs": "What this used",
+        "environment": "Environmental context",
+        "evidence": "Trusted evidence"
+      },
+      "environment": {
+        "weather": "Weather",
+        "uv": "UV",
+        "uvDetail": "UV {index}, {risk}",
+        "humidity": "Humidity",
+        "humidityDetail": "{value}% humidity, {band}",
+        "air": "Air quality",
+        "water": "Water context",
+        "waterDetail": "{hardness} water may make gentle cleansing and barrier support more important.",
+        "uvRisk": {
+          "low": "low risk",
+          "moderate": "moderate risk",
+          "high": "high risk",
+          "very_high": "very high risk",
+          "extreme": "extreme risk",
+          "unknown": "unknown risk"
+        },
+        "humidityBand": {
+          "very_dry": "very dry air",
+          "dry": "dry air",
+          "balanced": "balanced air",
+          "humid": "humid air",
+          "very_humid": "very humid air"
+        },
+        "airRisk": {
+          "good": "Good",
+          "fair": "Fair",
+          "moderate": "Moderate",
+          "poor": "Poor",
+          "very_poor": "Very poor",
+          "unknown": "Unknown"
+        },
+        "waterHardness": {
+          "unknown": "Unknown",
+          "soft": "Soft",
+          "moderate": "Moderate",
+          "hard": "Hard"
+        }
+      },
+      "evidenceReviewed": "reviewed {date}",
+      "noRationale": "No rationale captured for this suggestion.",
+      "markApplied": "Mark as applied",
+      "tryAnotherSuggestion": "Try another suggestion"
+    },
+    "empty": {
+      "skinProfile": {
+        "title": "Tell us about your skin first",
+        "body": "We need your skin type, concerns, and goal before we can suggest anything safely. The setup takes about three minutes.",
+        "cta": "Start skin profile",
+        "privacy": "Encrypted at rest. Only Ritora's own AI suggestion engine reads it."
+      },
+      "shelf": {
+        "title": "Add a few products to your shelf",
+        "body": "Suggestions only use products you actually own. Take a photo of the bottle and its label, and Ritora pulls the brand, ingredients, and how to use it.",
+        "cta": "Add a product",
+        "note": "You can add as many as you want. Active, finished, and wishlist all count."
+      },
+      "schedule": {
+        "title": "Build your weekly rhythm",
+        "body": "Tell Ritora when you usually do your morning and evening routine. Suggestions only appear ahead of each scheduled routine time.",
+        "ctaEveryDay": "Apply one time to every day",
+        "ctaScratch": "Build from scratch",
+        "note": "You can change times anytime from Schedule."
+      },
+      "recoverable": {
+        "title": "Nothing scheduled for now",
+        "body": "Your next routine is {nextSlotLabel}. While you wait, log a photo so the AI has fresh data when it generates.",
+        "ctaPhoto": "Add today's photo",
+        "ctaAddSlot": "Add routine time"
+      }
+    }
+  },
+  "history": {
+    "page": {
+      "title": "History",
+      "subtitle": "Past suggestions and what you actually applied. Edit any record anytime.",
+      "export": "Export",
+      "loading": "Loading history",
+      "errorTitle": "We could not load history",
+      "error": "Something went wrong loading your history. You can try again.",
+      "retry": "Try again",
+      "exportError": "We couldn't export your history. Try again.",
+      "loadMore": "Load more",
+      "loadingMore": "Loading more",
+      "loadMoreError": "We couldn't load more history."
+    },
+    "filters": {
+      "range": "Date range",
+      "daypart": "Time of day",
+      "daypart_all": "Show all times",
+      "mode": "Routine type",
+      "mode_all": "Show all types",
+      "source": "Source",
+      "source_all": "Show all sources",
+      "status": "Status",
+      "status_all": "Show all statuses",
+      "last7d": "Last 7 days",
+      "last30d": "Last 30 days",
+      "custom": "Custom range",
+      "from": "From",
+      "to": "To",
+      "apply": "Apply",
+      "clear": "Clear",
+      "rangeInvalid": "End date must be on or after the start date.",
+      "morning": "Morning",
+      "noon": "Mid-day",
+      "evening": "Evening",
+      "ai": "AI",
+      "manual": "Manual",
+      "mixed": "Mixed",
+      "scheduled": "Scheduled",
+      "on_demand": "On-demand",
+      "applied": "Applied",
+      "partial": "Partial",
+      "skipped": "Skipped",
+      "simplified": "Simplified",
+      "missed": "Missed",
+      "edited": "Edited"
+    },
+    "summary": {
+      "appliedOf": "{applied} of {total} applied",
+      "edited": "{count} edited",
+      "adherence": "{percent}% adherence"
+    },
+    "dayCard": {
+      "mood": "Mood {score} of 5",
+      "hydration": {
+        "up": "Hydration up",
+        "flat": "Hydration steady",
+        "down": "Hydration down"
+      },
+      "mildRedness": "Mild redness",
+      "daypart": {
+        "morning": "Morning",
+        "noon": "Mid-day",
+        "evening": "Evening"
+      },
+      "onDemandLabel": "On-demand · {intent}",
+      "onDemandIntent": {
+        "post_workout": "After workout",
+        "post_sun": "After sun",
+        "post_swim": "After swimming",
+        "travel_refresh": "Travel refresh",
+        "quick_refresh": "Quick refresh",
+        "event_prep": "Event prep",
+        "post_makeup_or_shower": "After makeup or shower",
+        "other": "Other"
+      },
+      "status": {
+        "applied": "Applied",
+        "partial": "Partial",
+        "skipped": "Skipped",
+        "simplified": "Simplified",
+        "missed": "Missed",
+        "edited": "Edited"
+      }
+    },
+    "day": {
+      "loading": "Loading the day's record",
+      "errorTitle": "We could not load this day",
+      "error": "Something went wrong loading this day. You can try again.",
+      "retry": "Try again",
+      "backLabel": "All history",
+      "subtitle": "{slots} slots, {applied} of {total} applied",
+      "viewPhoto": "View photo",
+      "export": "Export",
+      "appliedSummary": "{applied} of {total} applied",
+      "daypart": {
+        "morning": "Morning",
+        "noon": "Mid-day",
+        "evening": "Evening"
+      },
+      "compare": {
+        "suggested": "Suggested",
+        "applied": "Applied",
+        "suggestedPlaceholder": "Detail loading from the day's record.",
+        "appliedPlaceholder": "Detail loading from the day's record.",
+        "noSuggested": "No suggested steps were returned for this slot.",
+        "noApplied": "No application record has been saved for this slot."
+      },
+      "appliedStatus": {
+        "applied": "Applied",
+        "skipped": "Skipped",
+        "substituted": "Substituted"
+      },
+      "itemSource": {
+        "recommended": "Recommended step",
+        "added_shelf": "Added from shelf",
+        "added_off_shelf": "Added off-shelf"
+      },
+      "substitutedFor": "Substituted for {product}",
+      "outcomeNote": "Outcome insights use what you actually applied, not what was suggested.",
+      "aiSawContext": "This is the same record your AI saw when learning from this day.",
+      "itemAppliedAt": "Applied {time}",
+      "whyThisRoutine": "Why this routine",
+      "editRecord": "Edit record"
+    },
+    "empty": {
+      "title": "Nothing in history yet",
+      "body": "Past suggestions and what you applied appear here once a day completes. Edit any record anytime.",
+      "cta": "Open Today's Suggestion"
+    },
+    "popovers": {
+      "overview": {
+        "aria": "What appears in history",
+        "title": "What appears here",
+        "rows": {
+          "compare": {
+            "title": "Suggested next to applied",
+            "body": "Each past slot shows the routine we suggested next to the one you actually applied, so you can spot patterns over time."
+          },
+          "editAnytime": {
+            "title": "Edit a record anytime",
+            "body": "Forgot to record yesterday? Add it now. Used a different product than you logged? Change it. Every edit is timestamped and the original is kept."
+          },
+          "insights": {
+            "title": "Insights and adherence",
+            "body": "With a few weeks of records, Ritora highlights patterns like products you regularly skip and how your skin responds."
+          }
+        }
+      },
+      "qa": {
+        "aria": "Common questions",
+        "title": "Common questions",
+        "losingData": {
+          "q": "Will I lose data if I edit a record?",
+          "a": "No. We keep every prior version, so future suggestions never silently rely on a changed record."
+        },
+        "whenItShows": {
+          "q": "When does today's suggestion show up here?",
+          "a": "When the calendar date rolls over in your time zone. Until then, today stays on the Today's Suggestion page."
+        },
+        "export": {
+          "q": "Can I export my history?",
+          "a": "Yes, with the Export button. Hand it to a dermatologist or keep a copy."
+        }
+      }
+    },
+    "patternNotice": {
+      "title": "Pattern noticed",
+      "body": "Your adherence is at {percent}% across this period. Want me to adapt next week's plan based on what you actually apply most?"
+    }
+  },
+  "validation": {
+    "invalidLeadTime": "Lead time must be between 30 minutes and 12 hours.",
+    "invalidQuietHours": "Quiet hours must use a 24-hour format like 22:30."
   }
 }

@@ -1,30 +1,9 @@
 import Image, { type StaticImageData } from 'next/image';
 
-/**
- * LandingImage
- *
- * Shared visual treatment for every photo on the landing page. Centralising the
- * frame, border, shadow, and dark-mode tone correction here means individual
- * sections cannot drift out of sync.
- *
- * Accessibility rule (enforced by the discriminated union below):
- *   - `meaningful`: a descriptive `alt` string is required.
- *   - `decorative`: `alt` must be absent, the image renders with `alt=""` and
- *     `role="presentation"` so assistive tech skips it.
- *
- * Usage:
- *   <LandingImage meaningful src={heroShelf} alt={t('landing.hero.imageAlt')} … />
- *   <LandingImage decorative src={problemShelf} … />
- */
-
 type BaseProps = {
   src: StaticImageData;
   sizes: string;
   priority?: boolean;
-  /**
-   * Extra classes applied to the outer frame (e.g. aspect ratio, max width).
-   * The wrapper already provides rounded corners, border, shadow, and overflow.
-   */
   className?: string;
   reveal?: 'none' | 'fade-up' | 'fade-up-delay-1' | 'fade-up-delay-2';
 };

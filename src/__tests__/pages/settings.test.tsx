@@ -7,9 +7,11 @@ import { renderWithProviders } from "@/test/utils";
 
 const mockLogoutMutate = jest.fn();
 const mockLogoutAllMutate = jest.fn();
+const mockDeleteAccountMutate = jest.fn();
 const mockUpdateProfileMutate = jest.fn();
 const mockUpdatePreferredLanguageMutate = jest.fn();
 const mockUpdateTimeZoneMutate = jest.fn();
+const mockUpdateAiConsentMutate = jest.fn();
 const mockRouterRefresh = jest.fn();
 
 jest.mock("next/navigation", () => ({
@@ -17,6 +19,7 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({
     refresh: mockRouterRefresh,
   }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 jest.mock("@/hooks/use-auth", () => ({
@@ -26,6 +29,10 @@ jest.mock("@/hooks/use-auth", () => ({
   }),
   useLogoutAll: () => ({
     mutate: mockLogoutAllMutate,
+    isPending: false,
+  }),
+  useDeleteAccount: () => ({
+    mutate: mockDeleteAccountMutate,
     isPending: false,
   }),
   useUpdateProfile: () => ({
@@ -38,6 +45,37 @@ jest.mock("@/hooks/use-auth", () => ({
   }),
   useUpdateTimeZone: () => ({
     mutate: mockUpdateTimeZoneMutate,
+    isPending: false,
+  }),
+}));
+
+jest.mock("@/hooks/use-skin-profile", () => ({
+  useSkinProfile: () => ({ data: null }),
+  useSkinProfileAccessLogs: () => ({ data: [], isLoading: false }),
+  useUpdateSkinProfile: () => ({ mutate: jest.fn(), isPending: false }),
+  useDeleteSkinProfileHealthContext: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+  }),
+  useDeleteSkinProfileHormonalContext: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+  }),
+}));
+
+jest.mock("@/hooks/use-suggestions", () => ({
+  useSuggestionAiConsent: () => ({
+    data: {
+      granted: false,
+      grantedAt: null,
+      canReadSensitiveContext: false,
+      blockedReason: "ai_suggestion_processing_consent_missing",
+      activeSensitiveConsentTypes: [],
+    },
+    isLoading: false,
+  }),
+  useUpdateSuggestionAiConsent: () => ({
+    mutate: mockUpdateAiConsentMutate,
     isPending: false,
   }),
 }));
@@ -72,6 +110,7 @@ describe("SettingsPage", () => {
         firstName: "Ada",
         lastName: "Lovelace",
         emailVerified: true,
+        hasPassword: true,
         preferredLanguage: "en",
         timeZone: "Europe/Stockholm",
         createdAt: "2026-04-15T10:00:00.000Z",
@@ -89,6 +128,25 @@ describe("SettingsPage", () => {
     expect(screen.getByRole("tab", { name: /appearance/i })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: /language/i })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: /privacy/i })).toBeInTheDocument();
+  });
+
+  it("uses the same underline indicator rail as journal tabs", () => {
+    renderWithProviders(<SettingsPage />);
+
+    const tabList = screen.getByRole("tablist");
+    const rail = screen.getByTestId("settings-tab-indicator-rail");
+    const scrollRegion = screen.getByTestId("settings-tab-scroll-region");
+    const activeTab = screen.getByRole("tab", { selected: true });
+
+    expect(rail).toHaveClass("border-b", "border-border");
+    expect(rail).not.toHaveClass("overflow-x-auto");
+    expect(scrollRegion).toHaveClass("overflow-x-auto", "pb-px");
+    expect(tabList).toHaveClass("border-b-0");
+    expect(activeTab).toHaveClass(
+      "after:h-[2px]",
+      "data-[state=active]:after:opacity-100",
+    );
+    expect(rail).toContainElement(tabList);
   });
 
   it("shows account info on the default Account tab", () => {
@@ -216,6 +274,57 @@ describe("SettingsPage", () => {
     expect(screen.getByText("ada@example.com")).toBeInTheDocument();
   });
 
+  it("requires the current password before scheduling account deletion", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /^delete account$/i }),
+    );
+    await user.type(screen.getByLabelText(/current password/i), "NewPass1!");
+    await user.click(
+      screen.getByRole("button", { name: /^schedule deletion$/i }),
+    );
+
+    expect(mockDeleteAccountMutate).toHaveBeenCalledWith(
+      { password: "NewPass1!" },
+      expect.objectContaining({
+        onError: expect.any(Function),
+        onSuccess: expect.any(Function),
+      }),
+    );
+  });
+
+  it("requests an email confirmation for OAuth-only account deletion", async () => {
+    useAuthStore.setState({
+      user: {
+        ...(useAuthStore.getState().user as User),
+        hasPassword: false,
+      },
+    });
+
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /^delete account$/i }),
+    );
+
+    expect(
+      screen.getByText(/send a confirmation link to your inbox/i),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /^send confirmation email$/i }),
+    );
+
+    expect(mockDeleteAccountMutate).toHaveBeenCalledWith(
+      { password: "" },
+      expect.objectContaining({
+        onError: expect.any(Function),
+        onSuccess: expect.any(Function),
+      }),
+    );
+  });
+
   it("switches to Appearance tab and shows theme controls", async () => {
     renderWithProviders(<SettingsPage />);
 
@@ -229,7 +338,8 @@ describe("SettingsPage", () => {
     renderWithProviders(<SettingsPage />);
 
     await user.click(screen.getByRole("tab", { name: /language/i }));
-    await user.click(screen.getByRole("button", { name: /svenska/i }));
+    await user.click(screen.getByRole("combobox", { name: /language/i }));
+    await user.click(await screen.findByRole("option", { name: /svenska/i }));
 
     expect(mockUpdatePreferredLanguageMutate).toHaveBeenCalledWith(
       { preferredLanguage: "sv" },
@@ -254,7 +364,8 @@ describe("SettingsPage", () => {
     renderWithProviders(<SettingsPage />);
 
     await user.click(screen.getByRole("tab", { name: /language/i }));
-    await user.click(screen.getByRole("button", { name: /svenska/i }));
+    await user.click(screen.getByRole("combobox", { name: /language/i }));
+    await user.click(await screen.findByRole("option", { name: /svenska/i }));
 
     expect(mockUpdatePreferredLanguageMutate).toHaveBeenCalledWith(
       { preferredLanguage: "sv" },
@@ -286,6 +397,22 @@ describe("SettingsPage", () => {
         onSuccess: expect.any(Function),
         onError: expect.any(Function),
       }),
+    );
+  });
+
+  it("lets users grant AI suggestion consent from Privacy settings", async () => {
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(screen.getByRole("tab", { name: /privacy/i }));
+    expect(screen.getByText("AI suggestion processing")).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: /allow ai suggestions/i }),
+    );
+
+    expect(mockUpdateAiConsentMutate).toHaveBeenCalledWith(
+      { granted: true },
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
   });
 });

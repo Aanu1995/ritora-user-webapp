@@ -16,28 +16,46 @@ type AddSlotDialogProps = {
   preselectDay: DayOfWeek | null;
   onOpenChange: (open: boolean) => void;
   onCreated?: () => void;
+  onProductPickerClose?: () => void;
+  suppressAutoClose?: boolean;
 };
 
-/**
- * Mobile-only wrapper that presents the "Add slot" form as a bottom sheet.
- * On desktop the SchedulePage renders <AddSlotContent /> inline in the
- * right-hand split-pane column instead of using this component.
- */
 export function AddSlotDialog({
   open,
   presetMode,
   preselectDay,
   onOpenChange,
   onCreated,
+  onProductPickerClose,
+  suppressAutoClose = false,
 }: AddSlotDialogProps) {
   const t = useTranslations('schedule');
+  const handleOpenChange = (next: boolean) => {
+    if (next) {
+      onOpenChange(true);
+      return;
+    }
+    if (!suppressAutoClose) {
+      onOpenChange(false);
+    }
+  };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       {open ? (
         <SheetContent
           side="bottom"
           className="flex h-[85vh] w-full max-w-none flex-col gap-0 rounded-t-3xl border-t border-border p-0"
+          showCloseButton={!suppressAutoClose}
+          onPointerDownOutside={(event) => {
+            if (suppressAutoClose) event.preventDefault();
+          }}
+          onInteractOutside={(event) => {
+            if (suppressAutoClose) event.preventDefault();
+          }}
+          onEscapeKeyDown={(event) => {
+            if (suppressAutoClose) event.preventDefault();
+          }}
         >
           <SheetTitle className="sr-only">
             {presetMode === AddSlotPresetMode.EveryDay
@@ -53,6 +71,7 @@ export function AddSlotDialog({
             preselectDay={preselectDay}
             onClose={() => onOpenChange(false)}
             onCreated={onCreated}
+            onProductPickerClose={onProductPickerClose}
           />
         </SheetContent>
       ) : null}

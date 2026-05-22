@@ -63,7 +63,7 @@ function createProduct(
       preferredTimeOfDay: null,
     },
     status: overrides.status ?? ShelfStatus.Active,
-    provenance: overrides.provenance ?? 'user-entered',
+    provenance: overrides.provenance ?? 'photo-lookup',
     createdAt: overrides.createdAt ?? '2026-04-22T00:00:00.000Z',
     updatedAt: overrides.updatedAt ?? '2026-04-22T00:00:00.000Z',
   };

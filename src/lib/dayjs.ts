@@ -11,6 +11,8 @@ dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 
+export { dayjs };
+
 const DATE_INPUT_FORMAT = 'YYYY-MM-DD';
 
 function parseUtcValue(value: string | Date): dayjs.Dayjs {

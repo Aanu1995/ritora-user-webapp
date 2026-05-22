@@ -1,18 +1,24 @@
 import type { SVGProps } from 'react';
 
-export function IngredientCheckIllustration(props: SVGProps<SVGSVGElement>) {
+type IllustrationProps = SVGProps<SVGSVGElement> & {
+  title?: string;
+};
+
+export function IngredientCheckIllustration({
+  title,
+  ...props
+}: IllustrationProps) {
   return (
     <svg
       viewBox="0 0 480 320"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-labelledby="ingredient-check-title"
+      role={title ? 'img' : undefined}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
       {...props}
     >
-      <title id="ingredient-check-title">
-        An ingredient safety checklist with green ticks and a warning flag
-      </title>
+      {title ? <title>{title}</title> : null}
       <defs>
         <linearGradient id="check-bg" x1="0" y1="0" x2="480" y2="320" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="var(--color-secondary-glow)" />
@@ -22,7 +28,6 @@ export function IngredientCheckIllustration(props: SVGProps<SVGSVGElement>) {
 
       <rect width="480" height="320" rx="28" fill="url(#check-bg)" />
 
-      {/* Background leaves */}
       <g opacity="0.5">
         <path
           d="M36 80 Q18 52 46 26 Q72 58 64 96 Q46 114 36 80 Z"
@@ -42,7 +47,6 @@ export function IngredientCheckIllustration(props: SVGProps<SVGSVGElement>) {
         />
       </g>
 
-      {/* Clipboard */}
       <g>
         <rect
           x="96"
@@ -54,15 +58,12 @@ export function IngredientCheckIllustration(props: SVGProps<SVGSVGElement>) {
           stroke="var(--color-border)"
           strokeWidth="1.5"
         />
-        {/* Top clip */}
         <rect x="196" y="40" width="88" height="24" rx="6" fill="var(--color-foreground)" opacity="0.88" />
         <rect x="206" y="44" width="68" height="4" rx="2" fill="var(--color-background)" opacity="0.35" />
 
-        {/* Header */}
         <rect x="120" y="82" width="132" height="8" rx="4" fill="var(--color-accent-strong)" />
         <rect x="120" y="98" width="180" height="4" rx="2" fill="var(--color-muted)" />
 
-        {/* Row 1 — safe */}
         <g>
           <circle cx="132" cy="138" r="11" fill="var(--color-accent)" opacity="0.22" />
           <path
@@ -77,7 +78,6 @@ export function IngredientCheckIllustration(props: SVGProps<SVGSVGElement>) {
           <rect x="152" y="142" width="88" height="4" rx="2" fill="var(--color-muted)" />
         </g>
 
-        {/* Row 2 — safe */}
         <g>
           <circle cx="132" cy="178" r="11" fill="var(--color-accent)" opacity="0.22" />
           <path
@@ -92,7 +92,6 @@ export function IngredientCheckIllustration(props: SVGProps<SVGSVGElement>) {
           <rect x="152" y="182" width="104" height="4" rx="2" fill="var(--color-muted)" />
         </g>
 
-        {/* Row 3 — warning */}
         <g>
           <circle cx="132" cy="218" r="11" fill="#b8540a" opacity="0.22" />
           <path
@@ -105,7 +104,6 @@ export function IngredientCheckIllustration(props: SVGProps<SVGSVGElement>) {
           <rect x="152" y="222" width="132" height="4" rx="2" fill="#b8540a" opacity="0.7" />
         </g>
 
-        {/* Row 4 — safe */}
         <g>
           <circle cx="132" cy="258" r="11" fill="var(--color-accent)" opacity="0.22" />
           <path
@@ -121,7 +119,6 @@ export function IngredientCheckIllustration(props: SVGProps<SVGSVGElement>) {
         </g>
       </g>
 
-      {/* Floating shield badge */}
       <g transform="translate(360 80)">
         <circle r="40" fill="var(--color-accent-glow)" />
         <path
@@ -138,7 +135,6 @@ export function IngredientCheckIllustration(props: SVGProps<SVGSVGElement>) {
         />
       </g>
 
-      {/* Sparkles */}
       <g fill="var(--color-accent-strong)">
         <path d="M72 200 l1.6 4 l4 1.6 l-4 1.6 l-1.6 4 l-1.6 -4 l-4 -1.6 l4 -1.6 Z" opacity="0.8" />
         <path d="M420 160 l1.2 3.2 l3.2 1.2 l-3.2 1.2 l-1.2 3.2 l-1.2 -3.2 l-3.2 -1.2 l3.2 -1.2 Z" opacity="0.7" />

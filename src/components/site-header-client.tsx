@@ -18,6 +18,7 @@ interface SiteHeaderClientProps {
   signUpLabel: string;
   openMenuLabel: string;
   closeMenuLabel: string;
+  primaryNavLabel: string;
 }
 
 export function SiteHeaderClient({
@@ -26,6 +27,7 @@ export function SiteHeaderClient({
   signUpLabel,
   openMenuLabel,
   closeMenuLabel,
+  primaryNavLabel,
 }: SiteHeaderClientProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -127,7 +129,7 @@ export function SiteHeaderClient({
             aria-expanded={open}
             aria-controls={panelId}
             onClick={() => setOpen((value) => !value)}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-foreground transition hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden"
           >
             {open ? (
               <X className="h-5 w-5" aria-hidden="true" />
@@ -138,7 +140,6 @@ export function SiteHeaderClient({
         </div>
       </div>
 
-      {/* Mobile dropdown panel */}
       <div
         id={panelId}
         role="dialog"
@@ -151,7 +152,7 @@ export function SiteHeaderClient({
         }`}
       >
         <div className="mx-auto w-full max-w-7xl px-5 pb-8 pt-4 sm:px-6">
-          <nav aria-label="Primary">
+          <nav aria-label={primaryNavLabel}>
             <ul className="flex flex-col divide-y divide-border">
               {navLinks.map((item) => (
                 <li key={item.href}>

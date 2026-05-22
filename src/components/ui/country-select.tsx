@@ -3,7 +3,8 @@
 import { Check, ChevronDown, Search } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useMemo, useRef, useState } from 'react';
-import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Content as PopoverContent } from '@radix-ui/react-popover';
+import { Popover, PopoverTrigger } from './popover';
 import { cn } from '@/lib/utils';
 import { COUNTRIES, flagEmoji, getCountry } from '@/constants/countries';
 
@@ -16,11 +17,6 @@ type Props = {
   disabled?: boolean;
 };
 
-/**
- * Searchable country picker. Renders the current selection as a button with
- * flag emoji + country name; clicking opens a popover with a filter input
- * and the full country list. Stores the ISO 3166-1 alpha-2 code.
- */
 export function CountrySelect({
   value,
   onChange,
@@ -72,7 +68,7 @@ export function CountrySelect({
           aria-haspopup="listbox"
           aria-expanded={open}
           className={cn(
-            'flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-surface px-3 text-left text-sm outline-none transition hover:bg-surface-muted focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-not-allowed disabled:opacity-50',
+            'flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-surface px-3 text-left text-sm outline-none transition hover:bg-accent-soft focus-visible:ring-2 focus-visible:ring-accent/30 disabled:cursor-not-allowed disabled:opacity-50',
             !selected && 'text-muted',
             className,
           )}
@@ -89,10 +85,10 @@ export function CountrySelect({
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-[--radix-popover-trigger-width] min-w-[260px] p-0"
         align="start"
+        sideOffset={6}
+        className="z-[80] w-[--radix-popover-trigger-width] min-w-[260px] rounded-2xl border border-border bg-surface p-0 text-foreground shadow-[var(--shadow-hero)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-1"
         onOpenAutoFocus={(e) => {
-          // Focus will move to the search input via the input's autoFocus
           e.preventDefault();
         }}
       >

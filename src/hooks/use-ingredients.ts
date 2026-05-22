@@ -1,13 +1,24 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useLocale } from 'next-intl';
 import { QueryKey } from '@/constants/query-keys';
 import { useAuthEnabled } from '@/hooks/use-auth-enabled';
 import { normalizeLocale } from '@/i18n/config';
-import * as ingredientsService from '@/services/ingredients.service';
+import {
+  analyzeProducts,
+  checkProduct,
+  compareProducts,
+} from '@/services/ingredients.service';
+import type {
+  ProductCheckInput,
+  ProductCheckResponse,
+  ProductCompareInput,
+  ProductCompareResponse,
+} from '@/types/ingredients';
 
 const STALE_MS = 60_000;
+const MISSING_PRODUCT_ID_ERROR = 'MISSING_PRODUCT_ID';
 
 enum IngredientsAnalysisQueryScope {
   FocusProduct = 'focus-product',
@@ -37,15 +48,29 @@ export function useFocusProductAnalysis(
     ],
     queryFn: ({ signal }) => {
       if (!productId) {
-        throw new Error('Product id is required');
+        throw new Error(MISSING_PRODUCT_ID_ERROR);
       }
 
-      return ingredientsService.analyzeProducts(
+      return analyzeProducts(
         { focusProductId: productId, language: locale, withExplanations },
         signal,
       );
     },
     enabled: isEnabled,
     staleTime: STALE_MS,
+  });
+}
+
+export function useCheckProduct() {
+  return useMutation<ProductCheckResponse, Error, ProductCheckInput>({
+    mutationKey: [QueryKey.ProductCheck],
+    mutationFn: (input) => checkProduct(input),
+  });
+}
+
+export function useCompareProducts() {
+  return useMutation<ProductCompareResponse, Error, ProductCompareInput>({
+    mutationKey: [QueryKey.ProductCompare],
+    mutationFn: (input) => compareProducts(input),
   });
 }

@@ -1,50 +1,60 @@
-'use client';
+"use client";
 
-import { useForm } from '@tanstack/react-form';
-import { useLocale, useTranslations } from 'next-intl';
-import Link from 'next/link';
-import { useState } from 'react';
-import { ConsentCheckbox } from '@/components/auth/consent-checkbox';
-import { PasswordInputField } from '@/components/auth/password-input-field';
-import { TextInputField } from '@/components/auth/text-input-field';
-import { Button } from '@/components/ui/button';
-import { LoadingIndicator } from '@/components/ui/loading-indicator';
-import { AppRoute } from '@/constants/app-routes';
-import { useRegister } from '@/hooks/use-auth';
-import { normalizeLocale } from '@/i18n/config';
-import { getRegisterSubmitError } from '@/lib/auth-submit-errors';
-import { firstFieldError } from '@/lib/form-errors';
+import { useForm } from "@tanstack/react-form";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
+import { useState } from "react";
+import { AppleSignInButton } from "@/components/auth/apple-sign-in-button";
+import { AuthDivider } from "@/components/auth/auth-divider";
+import { AuthLegalDisclosure } from "@/components/auth/auth-legal-disclosure";
+import { ConsentCheckbox } from "@/components/auth/consent-checkbox";
+import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
+import { PasswordInputField } from "@/components/auth/password-input-field";
+import { RegisterVerificationMessage } from "@/components/auth/register-verification-message";
+import { TextInputField } from "@/components/auth/text-input-field";
+import { Button } from "@/components/ui/button";
+import { LoadingIndicator } from "@/components/ui/loading-indicator";
+import { AppRoute } from "@/constants/app-routes";
+import { useAppCapabilities } from "@/hooks/use-app-capabilities";
+import { useRegister } from "@/hooks/use-auth";
+import { isCapabilityDisabled } from "@/hooks/use-user-capabilities";
+import { normalizeLocale } from "@/i18n/config";
+import { getRegisterSubmitError } from "@/lib/auth-submit-errors";
+import { navigateToUrl } from "@/lib/browser-navigation";
+import { firstFieldError } from "@/lib/form-errors";
+import {
+  getAppleOAuthStartUrl,
+  getGoogleOAuthStartUrl,
+} from "@/services/auth.service";
 import {
   clearSubmitErrors,
   executeMutation,
   readSubmissionErrorMessage,
-} from '@/lib/form-submission';
-import {
-  registerSchema,
-  type RegisterValues,
-} from './register-form.constants';
+} from "@/lib/form-submission";
+import { registerSchema, type RegisterValues } from "./register-form.constants";
 
 const DEFAULT_VALUES: RegisterValues = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
   termsAccepted: false,
   privacyPolicyAccepted: false,
 };
 
-function buildResendVerificationHref(email: string) {
-  const params = new URLSearchParams({ email });
-  return `${AppRoute.ResendVerification}?${params.toString()}`;
-}
-
 export function RegisterForm() {
-  const t = useTranslations('auth');
+  const t = useTranslations("auth");
   const locale = normalizeLocale(useLocale());
   const registerUser = useRegister();
+  const appCapabilities = useAppCapabilities();
+  const isAccountCreationDisabled = isCapabilityDisabled(
+    appCapabilities.data?.accountCreation,
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
+  const [isGoogleRedirecting, setIsGoogleRedirecting] = useState(false);
+  const [isAppleRedirecting, setIsAppleRedirecting] = useState(false);
 
   const form = useForm({
     defaultValues: DEFAULT_VALUES,
@@ -57,6 +67,10 @@ export function RegisterForm() {
       onChange: registerSchema,
       onSubmit: registerSchema,
       onSubmitAsync: async ({ value }) => {
+        if (isAccountCreationDisabled) {
+          return undefined;
+        }
+
         const result = await executeMutation(registerUser.mutate, {
           email: value.email,
           password: value.password,
@@ -79,262 +93,302 @@ export function RegisterForm() {
     },
   });
 
-  if (submittedEmail) {
-    return (
-      <div className="space-y-6 text-center sm:text-left">
-        <div className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-            {t('verifyEmail')}
-          </h1>
-          <p className="text-sm text-muted">
-            {t('verifyEmailAfterRegistrationDescription', {
-              email: submittedEmail,
-            })}
-          </p>
-        </div>
+  const handleGoogleSignUp = () => {
+    if (isAccountCreationDisabled) {
+      return;
+    }
 
-        <div className="rounded-2xl border border-accent/20 bg-accent-soft/60 p-4">
-          <p className="text-sm font-medium text-accent-strong">
-            {t('verifyEmailSent')}
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button asChild className="w-full sm:w-auto">
-            <Link href={AppRoute.Login}>{t('backToLogin')}</Link>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            className="w-full rounded-full sm:w-auto"
-          >
-            <Link href={buildResendVerificationHref(submittedEmail)}>
-              {t('resendVerification')}
-            </Link>
-          </Button>
-        </div>
-      </div>
+    setIsGoogleRedirecting(true);
+    navigateToUrl(
+      getGoogleOAuthStartUrl({
+        preferredLanguage: locale,
+        termsAccepted: true,
+        privacyPolicyAccepted: true,
+      }),
     );
+  };
+
+  const handleAppleSignUp = () => {
+    if (isAccountCreationDisabled) {
+      return;
+    }
+
+    setIsAppleRedirecting(true);
+    navigateToUrl(
+      getAppleOAuthStartUrl({
+        preferredLanguage: locale,
+        termsAccepted: true,
+        privacyPolicyAccepted: true,
+      }),
+    );
+  };
+
+  if (submittedEmail) {
+    return <RegisterVerificationMessage submittedEmail={submittedEmail} />;
   }
 
   return (
     <div>
       <div className="space-y-2 text-center sm:text-left">
         <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          {t('signUpTitle')}
+          {t("signUpTitle")}
         </h1>
-        <p className="text-sm text-muted">{t('signUpSubtitle')}</p>
+        <p className="text-sm text-muted">{t("signUpSubtitle")}</p>
       </div>
 
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          void form.handleSubmit();
-        }}
-        className="mt-8 space-y-5"
-        noValidate
-      >
-        <div className="grid gap-4 sm:grid-cols-2">
-          <form.Field name="firstName">
-            {(field) => (
-              <TextInputField
-                id={field.name}
-                label={t('firstName')}
-                value={field.state.value}
-                errorText={
-                  field.state.meta.isTouched || field.state.meta.isDirty
-                    ? firstFieldError(field.state.meta.errors, t)
-                    : undefined
-                }
-                autoComplete="given-name"
-                onBlur={field.handleBlur}
-                onChange={field.handleChange}
-              />
-            )}
-          </form.Field>
+      <div className="mt-8 space-y-5">
+        <AuthLegalDisclosure />
 
-          <form.Field name="lastName">
-            {(field) => (
-              <TextInputField
-                id={field.name}
-                label={t('lastName')}
-                value={field.state.value}
-                errorText={
-                  field.state.meta.isTouched || field.state.meta.isDirty
-                    ? firstFieldError(field.state.meta.errors, t)
-                    : undefined
+        <form.Subscribe selector={(state) => state.isSubmitting}>
+          {(isSubmitting) => (
+            <div className="flex flex-col gap-3">
+              <GoogleSignInButton
+                isDisabled={
+                  isSubmitting ||
+                  registerUser.isPending ||
+                  isGoogleRedirecting ||
+                  isAppleRedirecting ||
+                  isAccountCreationDisabled
                 }
-                autoComplete="family-name"
-                onBlur={field.handleBlur}
-                onChange={field.handleChange}
+                isLoading={isGoogleRedirecting}
+                onClick={handleGoogleSignUp}
               />
-            )}
-          </form.Field>
-        </div>
-
-        <form.Field name="email">
-          {(field) => (
-            <TextInputField
-              id={field.name}
-              label={t('email')}
-              value={field.state.value}
-              errorText={
-                field.state.meta.isTouched || field.state.meta.isDirty
-                  ? firstFieldError(field.state.meta.errors, t)
-                  : undefined
-              }
-              type="email"
-              autoComplete="email"
-              placeholder="you@example.com"
-              onBlur={field.handleBlur}
-              onChange={field.handleChange}
-            />
+              <AppleSignInButton
+                isDisabled={
+                  isSubmitting ||
+                  registerUser.isPending ||
+                  isGoogleRedirecting ||
+                  isAppleRedirecting ||
+                  isAccountCreationDisabled
+                }
+                isLoading={isAppleRedirecting}
+                onClick={handleAppleSignUp}
+              />
+            </div>
           )}
-        </form.Field>
+        </form.Subscribe>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <form.Field name="password">
-            {(field) => (
-              <PasswordInputField
-                id={field.name}
-                label={t('password')}
-                value={field.state.value}
-                errorText={
-                  field.state.meta.isTouched || field.state.meta.isDirty
-                    ? firstFieldError(field.state.meta.errors, t)
-                    : undefined
-                }
-                autoComplete="new-password"
-                showPassword={showPassword}
-                showLabel={t('showPassword')}
-                hideLabel={t('hidePassword')}
-                onBlur={field.handleBlur}
-                onChange={field.handleChange}
-                onToggleVisibility={() =>
-                  setShowPassword((current) => !current)
-                }
-              />
-            )}
-          </form.Field>
+        <AuthDivider label={t("orContinueWithEmail")} />
 
-          <form.Field name="confirmPassword">
-            {(field) => (
-              <TextInputField
-                id={field.name}
-                label={t('confirmPassword')}
-                value={field.state.value}
-                errorText={
-                  field.state.meta.isTouched || field.state.meta.isDirty
-                    ? firstFieldError(field.state.meta.errors, t)
-                    : undefined
-                }
-                type="password"
-                autoComplete="new-password"
-                onBlur={field.handleBlur}
-                onChange={field.handleChange}
-              />
-            )}
-          </form.Field>
-        </div>
-
-        <div className="space-y-3 rounded-2xl border border-border bg-surface/50 p-4">
-          <form.Field name="termsAccepted">
-            {(field) => (
-              <ConsentCheckbox
-                id={field.name}
-                checked={field.state.value}
-                errorText={
-                  field.state.meta.isTouched || field.state.meta.isDirty
-                    ? firstFieldError(field.state.meta.errors, t)
-                    : undefined
-                }
-                onBlur={field.handleBlur}
-                onChange={field.handleChange}
-                prefix={t('acceptTermsPrefix')}
-                linkLabel={t('termsOfService')}
-                href={AppRoute.Terms}
-              />
-            )}
-          </form.Field>
-
-          <form.Field name="privacyPolicyAccepted">
-            {(field) => (
-              <ConsentCheckbox
-                id={field.name}
-                checked={field.state.value}
-                errorText={
-                  field.state.meta.isTouched || field.state.meta.isDirty
-                    ? firstFieldError(field.state.meta.errors, t)
-                    : undefined
-                }
-                onBlur={field.handleBlur}
-                onChange={field.handleChange}
-                prefix={t('acceptPrivacyPrefix')}
-                linkLabel={t('privacyPolicy')}
-                href={AppRoute.Privacy}
-              />
-            )}
-          </form.Field>
-        </div>
-
-        <form.Subscribe selector={(state) => state.errorMap.onSubmit}>
-          {(submitError) => {
-            const message = readSubmissionErrorMessage(submitError);
-
-            return message ? (
-              <div
-                className="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3"
-                role="alert"
-              >
-                <p className="text-sm text-danger">{message}</p>
-              </div>
-            ) : null;
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (isAccountCreationDisabled) {
+              return;
+            }
+            void form.handleSubmit();
           }}
-        </form.Subscribe>
-
-        <form.Subscribe
-          selector={(state) => ({
-            canSubmit: state.canSubmit,
-            isSubmitting: state.isSubmitting,
-            termsAccepted: state.values.termsAccepted,
-            privacyPolicyAccepted: state.values.privacyPolicyAccepted,
-          })}
+          className="space-y-5"
+          noValidate
         >
-          {({ canSubmit, isSubmitting, termsAccepted, privacyPolicyAccepted }) => (
-            <Button
-              type="submit"
-              disabled={
-                !canSubmit ||
-                isSubmitting ||
-                registerUser.isPending ||
-                !termsAccepted ||
-                !privacyPolicyAccepted
-              }
-              className="w-full"
-            >
-              {isSubmitting || registerUser.isPending ? (
-                <LoadingIndicator
-                  label={t('creatingAccount')}
-                  className="inline-flex items-center gap-2"
+          <div className="grid gap-4 sm:grid-cols-2">
+            <form.Field name="firstName">
+              {(field) => (
+                <TextInputField
+                  id={field.name}
+                  label={t("firstName")}
+                  value={field.state.value}
+                  errorText={
+                    field.state.meta.isTouched || field.state.meta.isDirty
+                      ? firstFieldError(field.state.meta.errors, t)
+                      : undefined
+                  }
+                  autoComplete="given-name"
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
                 />
-              ) : (
-                t('createAccount')
               )}
-            </Button>
-          )}
-        </form.Subscribe>
+            </form.Field>
 
-        <p className="text-center text-sm text-muted">
-          {t('hasAccount')}{' '}
-          <Link
-            href={AppRoute.Login}
-            className="font-semibold text-accent-strong hover:underline"
+            <form.Field name="lastName">
+              {(field) => (
+                <TextInputField
+                  id={field.name}
+                  label={t("lastName")}
+                  value={field.state.value}
+                  errorText={
+                    field.state.meta.isTouched || field.state.meta.isDirty
+                      ? firstFieldError(field.state.meta.errors, t)
+                      : undefined
+                  }
+                  autoComplete="family-name"
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                />
+              )}
+            </form.Field>
+          </div>
+
+          <form.Field name="email">
+            {(field) => (
+              <TextInputField
+                id={field.name}
+                label={t("email")}
+                value={field.state.value}
+                errorText={
+                  field.state.meta.isTouched || field.state.meta.isDirty
+                    ? firstFieldError(field.state.meta.errors, t)
+                    : undefined
+                }
+                type="email"
+                autoComplete="email"
+                placeholder={t("emailPlaceholder")}
+                onBlur={field.handleBlur}
+                onChange={field.handleChange}
+              />
+            )}
+          </form.Field>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <form.Field name="password">
+              {(field) => (
+                <PasswordInputField
+                  id={field.name}
+                  label={t("password")}
+                  value={field.state.value}
+                  errorText={
+                    field.state.meta.isTouched || field.state.meta.isDirty
+                      ? firstFieldError(field.state.meta.errors, t)
+                      : undefined
+                  }
+                  autoComplete="new-password"
+                  showPassword={showPassword}
+                  showLabel={t("showPassword")}
+                  hideLabel={t("hidePassword")}
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                  onToggleVisibility={() =>
+                    setShowPassword((current) => !current)
+                  }
+                />
+              )}
+            </form.Field>
+
+            <form.Field name="confirmPassword">
+              {(field) => (
+                <TextInputField
+                  id={field.name}
+                  label={t("confirmPassword")}
+                  value={field.state.value}
+                  errorText={
+                    field.state.meta.isTouched || field.state.meta.isDirty
+                      ? firstFieldError(field.state.meta.errors, t)
+                      : undefined
+                  }
+                  type="password"
+                  autoComplete="new-password"
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                />
+              )}
+            </form.Field>
+          </div>
+
+          <form.Subscribe selector={(state) => state.errorMap.onSubmit}>
+            {(submitError) => {
+              const message = readSubmissionErrorMessage(submitError);
+
+              return message ? (
+                <div
+                  className="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3"
+                  role="alert"
+                >
+                  <p className="text-sm text-danger">{message}</p>
+                </div>
+              ) : null;
+            }}
+          </form.Subscribe>
+
+          <div className="space-y-3">
+            <form.Field name="termsAccepted">
+              {(field) => (
+                <ConsentCheckbox
+                  id={field.name}
+                  checked={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                  prefix={t("acceptTermsPrefix")}
+                  linkLabel={t("termsOfService")}
+                  href={AppRoute.Terms}
+                  errorText={
+                    field.state.meta.isTouched || field.state.meta.isDirty
+                      ? firstFieldError(field.state.meta.errors, t)
+                      : undefined
+                  }
+                />
+              )}
+            </form.Field>
+            <form.Field name="privacyPolicyAccepted">
+              {(field) => (
+                <ConsentCheckbox
+                  id={field.name}
+                  checked={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                  prefix={t("acceptPrivacyPrefix")}
+                  linkLabel={t("privacyPolicy")}
+                  href={AppRoute.Privacy}
+                  errorText={
+                    field.state.meta.isTouched || field.state.meta.isDirty
+                      ? firstFieldError(field.state.meta.errors, t)
+                      : undefined
+                  }
+                />
+              )}
+            </form.Field>
+          </div>
+
+          <form.Subscribe
+            selector={(state) => ({
+              canSubmit: state.canSubmit,
+              isSubmitting: state.isSubmitting,
+              privacyPolicyAccepted: state.values.privacyPolicyAccepted,
+              termsAccepted: state.values.termsAccepted,
+            })}
           >
-            {t('signIn')}
-          </Link>
-        </p>
-      </form>
+            {({
+              canSubmit,
+              isSubmitting,
+              privacyPolicyAccepted,
+              termsAccepted,
+            }) => (
+              <Button
+                type="submit"
+                size="lg"
+                disabled={
+                  !canSubmit ||
+                  !termsAccepted ||
+                  !privacyPolicyAccepted ||
+                  isSubmitting ||
+                  registerUser.isPending ||
+                  isAccountCreationDisabled
+                }
+                className="w-full"
+              >
+                {isSubmitting || registerUser.isPending ? (
+                  <LoadingIndicator
+                    label={t("creatingAccount")}
+                    className="inline-flex items-center gap-2"
+                  />
+                ) : (
+                  t("createAccount")
+                )}
+              </Button>
+            )}
+          </form.Subscribe>
+
+          <p className="text-center text-sm text-muted">
+            {t("hasAccount")}{" "}
+            <Link
+              href={AppRoute.Login}
+              className="font-semibold text-accent-strong hover:underline"
+            >
+              {t("signIn")}
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

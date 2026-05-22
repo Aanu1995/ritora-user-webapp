@@ -44,7 +44,6 @@ export function RetryPanel({
         <Button
           type="button"
           variant="secondary"
-          size="lg"
           className="mt-5 sm:mt-7"
           onClick={onAction}
         >

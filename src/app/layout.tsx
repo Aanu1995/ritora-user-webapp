@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
+import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 import './globals.css';
 import { CookieConsent } from '@/components/cookie-consent';
 import { COOKIE_CONSENT_NAME } from '@/constants/cookies';
@@ -27,31 +27,44 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  metadataBase: getSiteUrl(),
-  title: {
-    default: siteConfig.title,
-    template: `%s | ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  applicationName: siteConfig.name,
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    title: siteConfig.title,
-    description: siteConfig.description,
-    url: '/',
-    siteName: siteConfig.name,
-    locale: 'en_US',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: siteConfig.title,
-    description: siteConfig.description,
-  },
-};
+function getOpenGraphLocale(locale: string) {
+  return locale === 'sv' ? 'sv_SE' : 'en_US';
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const [locale, t] = await Promise.all([
+    getLocale(),
+    getTranslations('site'),
+  ]);
+  const title = t('title');
+  const description = t('description');
+
+  return {
+    metadataBase: getSiteUrl(),
+    title: {
+      default: title,
+      template: `%s | ${siteConfig.name}`,
+    },
+    description,
+    applicationName: siteConfig.name,
+    alternates: {
+      canonical: '/',
+    },
+    openGraph: {
+      title,
+      description,
+      url: '/',
+      siteName: siteConfig.name,
+      locale: getOpenGraphLocale(locale),
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
+}
 
 export const viewport = {
   themeColor: [

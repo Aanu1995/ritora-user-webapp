@@ -18,6 +18,7 @@ export async function SiteHeader() {
         signUpLabel={t("signUp")}
         openMenuLabel={t("openMenu")}
         closeMenuLabel={t("closeMenu")}
+        primaryNavLabel={t("primaryNavigation")}
       />
       <div aria-hidden="true" className="h-18" />
     </>

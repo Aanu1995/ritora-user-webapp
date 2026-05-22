@@ -12,8 +12,8 @@ export function StepProgressBar({ currentStep, totalSteps }: StepProgressBarProp
   const t = useTranslations("skinProfile");
 
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex flex-1 gap-1.5">
+    <div className="w-full">
+      <div className="flex gap-1.5">
         {Array.from({ length: totalSteps }, (_, i) => (
           <div
             key={i}
@@ -24,9 +24,9 @@ export function StepProgressBar({ currentStep, totalSteps }: StepProgressBarProp
           />
         ))}
       </div>
-      <span className="shrink-0 text-xs text-muted">
+      <p className="mt-2 text-xs text-muted">
         {t("steps.stepOf", { current: currentStep, total: totalSteps })}
-      </span>
+      </p>
     </div>
   );
 }

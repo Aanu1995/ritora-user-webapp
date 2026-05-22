@@ -8,6 +8,7 @@ const mockArchive = jest.fn();
 const mockRestore = jest.fn();
 const mockFinish = jest.fn();
 const mockDelete = jest.fn();
+const mockCompare = jest.fn();
 const mockPush = jest.fn();
 
 jest.mock('next/navigation', () => ({
@@ -22,6 +23,10 @@ jest.mock('next/navigation', () => ({
 }));
 
 jest.mock('@/hooks/use-shelf', () => ({
+  useShelfProducts: () => ({
+    data: [],
+    isLoading: false,
+  }),
   useArchiveProduct: () => ({
     mutate: mockArchive,
     isPending: false,
@@ -40,7 +45,16 @@ jest.mock('@/hooks/use-shelf', () => ({
   }),
 }));
 
+jest.mock('@/hooks/use-ingredients', () => ({
+  useCompareProducts: () => ({
+    mutate: mockCompare,
+    isPending: false,
+    data: null,
+  }),
+}));
+
 import { ProductDetailView } from '@/components/shelf/detail/product-detail-view';
+import { getAppScrollPosition } from '@/lib/app-scroll-restoration';
 import {
   ApplicationMethod,
   DataProvenance,
@@ -92,7 +106,7 @@ const PRODUCT: ShelfProduct = {
     preferredTimeOfDay: null,
   },
   status: ShelfStatus.Active,
-  provenance: DataProvenance.BarcodeLookup,
+  provenance: DataProvenance.PhotoLookup,
   createdAt: '2026-03-27T00:00:00.000Z',
   updatedAt: '2026-04-14T09:00:00.000Z',
 };
@@ -102,6 +116,8 @@ beforeEach(() => {
   mockRestore.mockReset();
   mockFinish.mockReset();
   mockDelete.mockReset();
+  mockCompare.mockReset();
+  window.sessionStorage.clear();
 });
 
 describe('ProductDetailView', () => {
@@ -118,9 +134,10 @@ describe('ProductDetailView', () => {
     expect(screen.getByText('Serum')).toBeInTheDocument();
   });
 
-  it('renders Edit, Archive, Mark finished, Delete actions', () => {
+  it('renders Compare, Edit, Archive, Mark finished, Delete actions', () => {
     renderWithProviders(<ProductDetailView product={PRODUCT} />);
 
+    expect(screen.getByRole('button', { name: /compare/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /edit/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /archive/i })).toBeInTheDocument();
     expect(
@@ -140,6 +157,45 @@ describe('ProductDetailView', () => {
     expect(
       screen.getByRole('tab', { name: /manufacturer/i }),
     ).toBeInTheDocument();
+  });
+
+  it('restores the active tab for the product detail page', async () => {
+    const user = userEvent.setup();
+    const { unmount } = renderWithProviders(
+      <ProductDetailView product={PRODUCT} />,
+    );
+
+    await user.click(screen.getByRole('tab', { name: /manufacturer/i }));
+    expect(screen.getByRole('tab', { name: /manufacturer/i })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+
+    unmount();
+    renderWithProviders(<ProductDetailView product={PRODUCT} />);
+
+    expect(screen.getByRole('tab', { name: /manufacturer/i })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+  });
+
+  it('saves product detail scroll before opening edit', async () => {
+    const user = userEvent.setup();
+    const scrollRoot = document.createElement('main');
+    scrollRoot.setAttribute('data-app-scroll-root', '');
+    Object.defineProperty(scrollRoot, 'scrollTop', {
+      configurable: true,
+      value: 420,
+    });
+    document.body.appendChild(scrollRoot);
+
+    renderWithProviders(<ProductDetailView product={PRODUCT} />);
+
+    await user.click(screen.getByRole('link', { name: /edit/i }));
+
+    expect(getAppScrollPosition('/shelf/p1')).toBe(420);
+    scrollRoot.remove();
   });
 
   it('does not render any AM/PM/step chips next to the title', () => {

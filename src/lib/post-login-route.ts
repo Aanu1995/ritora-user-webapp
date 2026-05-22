@@ -4,7 +4,7 @@ import { QueryKey } from '@/constants/query-keys';
 import { appQueryClient } from '@/lib/query-client';
 import { getSkinProfileSetupStatus } from '@/lib/skin-profile-setup';
 import { useAuthStore } from '@/stores/auth-store';
-import * as skinProfileService from '@/services/skin-profile.service';
+import { getSkinProfile } from '@/services/skin-profile.service';
 
 type PostLoginResolution = {
   route: AppRoute;
@@ -54,7 +54,7 @@ async function fetchPostLoginResolution(
   const generation = postLoginStateGeneration;
 
   try {
-    const profile = await skinProfileService.getSkinProfile();
+    const profile = await getSkinProfile();
 
     if (generation === postLoginStateGeneration) {
       appQueryClient.setQueryData([QueryKey.SkinProfile], profile);

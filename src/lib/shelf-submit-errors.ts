@@ -1,8 +1,6 @@
-import {
-  getApiErrorMessages,
-} from '@/lib/api-error';
-import type { SubmissionValidationResult } from '@/lib/form-submission';
-import type { ShelfFormFieldName } from '@/lib/shelf-form';
+import { getApiErrorBody, getApiErrorMessages } from "@/lib/api-error";
+import type { SubmissionValidationResult } from "@/lib/form-submission";
+import type { ShelfFormFieldName } from "@/lib/shelf-form";
 
 type ShelfTranslator = (key: string) => string;
 
@@ -10,13 +8,16 @@ const FIELD_PATTERNS: ReadonlyArray<{
   field: ShelfFormFieldName;
   pattern: RegExp;
 }> = [
-  { field: 'identity.brand', pattern: /\bbrand\b/i },
-  { field: 'identity.name', pattern: /\bname\b|product\s*name/i },
-  { field: 'identity.sizeMl', pattern: /\bsize\b|\bml\b/i },
-  { field: 'userFields.pricePaid', pattern: /\bprice\b/i },
-  { field: 'manufacturer.supportEmail', pattern: /\bemail\b/i },
-  { field: 'manufacturer.productUrl', pattern: /\burl\b|\blink\b|\bwebsite\b/i },
-  { field: 'userFields.expiresAt', pattern: /\bexpire/i },
+  { field: "identity.brand", pattern: /\bbrand\b/i },
+  { field: "identity.name", pattern: /\bname\b|product\s*name/i },
+  { field: "identity.sizeMl", pattern: /\bsize\b|\bml\b/i },
+  { field: "userFields.pricePaid", pattern: /\bprice\b/i },
+  { field: "manufacturer.supportEmail", pattern: /\bemail\b/i },
+  {
+    field: "manufacturer.productUrl",
+    pattern: /\burl\b|\blink\b|\bwebsite\b/i,
+  },
+  { field: "userFields.expiresAt", pattern: /\bexpire/i },
 ];
 
 function firstMatchingMessage(
@@ -24,6 +25,20 @@ function firstMatchingMessage(
   pattern: RegExp,
 ): string | undefined {
   return messages.find((message) => pattern.test(message));
+}
+
+function firstUserFacingApiMessage(error: unknown): string | undefined {
+  const body = getApiErrorBody(error);
+  if (!body) {
+    return undefined;
+  }
+
+  const message = getApiErrorMessages(error)[0];
+  if (!message || message === "Internal server error") {
+    return undefined;
+  }
+
+  return message;
 }
 
 export function getShelfSubmitError(
@@ -46,7 +61,7 @@ export function getShelfSubmitError(
   }
 
   return {
-    form: t('dialog.genericError'),
+    form: firstUserFacingApiMessage(error) ?? t("dialog.genericError"),
     fields: {},
   };
 }

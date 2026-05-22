@@ -1,10 +1,12 @@
 import type { SkinProfile } from '@/types/skin-profile';
 
 export type SkinProfileSetupSectionKey =
-  | 'basics'
-  | 'priorities'
+  | 'baseline'
+  | 'concerns'
+  | 'sun'
   | 'routine'
-  | 'context';
+  | 'preferences'
+  | 'location';
 
 export type SkinProfileSetupSection = {
   key: SkinProfileSetupSectionKey;
@@ -27,33 +29,80 @@ export type SkinProfileSetupStatus = {
 export function getSkinProfileSetupStatus(
   profile?: SkinProfile | null,
 ): SkinProfileSetupStatus {
+  const hasText = (value: string | null | undefined) => Boolean(value);
+  const hasNumber = (value: number | null | undefined) =>
+    typeof value === 'number' && Number.isFinite(value);
+  const hasBoolean = (value: boolean | null | undefined) =>
+    typeof value === 'boolean';
+  const concernDetails = profile?.concernDetails?.per_concern ?? [];
+  const concerns = profile?.currentConcerns ?? [];
+  const hasConcernDetails =
+    concerns.length > 0 &&
+    concerns.every((concern) => {
+      const detail = concernDetails.find((entry) => entry.concern === concern);
+      return Boolean(detail?.severity && hasNumber(detail.priority));
+    });
+  const skinBehavior = profile?.skinBehavior ?? {};
+  const routinePreferences = profile?.routinePreferences ?? {};
+
   const sections: SkinProfileSetupSection[] = [
     {
-      key: 'basics',
+      key: 'baseline',
       required: true,
       complete: Boolean(
-        profile?.skinType && profile.skinTone && profile.ageRange,
+        profile?.skinType &&
+          profile.skinTone &&
+          profile.fitzpatrickPhototype &&
+          profile.dateOfBirth &&
+          profile.sexAtBirth &&
+          profile.ethnicity,
       ),
     },
     {
-      key: 'priorities',
+      key: 'concerns',
       required: true,
       complete: Boolean(
-        (profile?.currentConcerns.length ?? 0) > 0 &&
-          (profile?.skinGoals.length ?? 0) > 0,
+        concerns.length > 0 && profile?.primaryGoal && hasConcernDetails,
+      ),
+    },
+    {
+      key: 'sun',
+      required: true,
+      complete: Boolean(
+        skinBehavior.burn_tendency &&
+          skinBehavior.pih_tendency &&
+          skinBehavior.melasma_tendency &&
+          skinBehavior.keloid_tendency &&
+          skinBehavior.sunscreen_habit &&
+          skinBehavior.sunscreen_tolerance,
       ),
     },
     {
       key: 'routine',
       required: true,
-      complete: Boolean(profile?.routineComplexity),
+      complete: Boolean(
+        routinePreferences.pace &&
+          hasNumber(routinePreferences.am_minutes) &&
+          hasNumber(routinePreferences.pm_minutes) &&
+          hasNumber(routinePreferences.max_active_nights_per_week),
+      ),
     },
     {
-      key: 'context',
-      required: false,
+      key: 'preferences',
+      required: true,
       complete: Boolean(
-        profile?.ethnicity && (profile.countryCode || profile.city),
+        hasBoolean(profile?.allowSmartPicks) &&
+          hasBoolean(routinePreferences.fragrance_free) &&
+          hasBoolean(routinePreferences.non_comedogenic) &&
+          profile?.budgetTier &&
+          routinePreferences.sunscreen_filter &&
+          routinePreferences.sunscreen_finish,
       ),
+    },
+    {
+      key: 'location',
+      required: false,
+      complete: Boolean(hasText(profile?.countryCode) || hasText(profile?.city)),
     },
   ];
 

@@ -18,6 +18,16 @@
       "placeholder": "Välj datum",
       "clear": "Rensa datum"
     },
+    "birthdayPicker": {
+      "label": "Födelsedatum",
+      "day": "Dag",
+      "month": "Månad",
+      "year": "År",
+      "hint": "Till exempel 27 4 1985",
+      "dayPlaceholder": "DD",
+      "monthPlaceholder": "MM",
+      "yearPlaceholder": "ÅÅÅÅ"
+    },
     "countrySelect": {
       "placeholder": "Välj land",
       "searchPlaceholder": "Sök land",
@@ -37,6 +47,7 @@
     "whyRitora": "Varför Ritora",
     "howItWorks": "Så fungerar det",
     "features": "Funktioner",
+    "privacy": "Integritet",
     "faq": "Vanliga frågor",
     "login": "Logga in",
     "signUp": "Skapa konto",
@@ -45,176 +56,249 @@
     "settings": "Inställningar",
     "logout": "Logga ut",
     "openMenu": "Öppna meny",
-    "closeMenu": "Stäng meny"
+    "closeMenu": "Stäng meny",
+    "primaryNavigation": "Primär navigering"
   },
   "landing": {
     "hero": {
-      "badge": "Hudvård utan tvekan",
-      "headline": "Din lugnare rutin börjar med hyllan du redan äger.",
-      "subheadline": "Ritora läser din hylla, fångar ingredienskrockar och förvandlar kaoset till en lugn morgon och kväll formad av just din hud.",
-      "ctaPrimary": "Skapa ett konto",
+      "badge": "Hyllbaserat beslutsstöd för hudvård",
+      "headlineLead": "Bygg tryggare hudvårdsrutiner med",
+      "headlineAccent": "produkterna du redan äger.",
+      "lead": "Ritora fångar ingredienskrockar i produkterna du redan äger och bygger en lugn morgon-, middags- och kvällsplan anpassad till din hud. Ingen shopping behövs.",
+      "ctaPrimary": "Skapa ditt konto",
       "ctaSecondary": "Så fungerar det",
-      "imageAlt": "Ett öppet badrumsskåp i varmt ljus, hyllorna fyllda med riktiga vardagsflaskor från olika märken.",
+      "imageAlt": "Dagens förslag-kort i appen med morgonrutin och förhandsvisning av huddagboken.",
       "pills": {
-        "a": "Byggd runt din hylla",
+        "a": "Hylla först",
         "b": "Trygga ingredienser",
         "c": "Privat som standard"
       }
     },
+    "trust": [
+      "Privat först",
+      "Fungerar med varje märke",
+      "Gratis att använda",
+      "Fotoanalys ingår",
+      "Exportera eller radera när som helst"
+    ],
     "problem": {
       "eyebrow": "Varför rutiner spricker",
       "headline": "Bra produkter, ändå en gissningslek.",
-      "body": "Du äger rätt flaskor och vaknar ändå osäker på vad du ska lägga på lager och vad du ska hoppa över. Ritora ger dig beslutsagret som saknades."
-    },
-    "problems": [
-      {
-        "title": "Hyllförvirring",
-        "body": "Du äger riktigt bra produkter och gissar ändå varje morgon vad du ska ta och vad du ska hoppa över."
-      },
-      {
-        "title": "Tyst ingredienskrock",
-        "body": "Starka aktiva ingredienser staplas mellan rengöringar, toners och serum. Irritationen dyker upp långt innan du hinner se orsaken."
-      },
-      {
-        "title": "Köp före struktur",
-        "body": "De flesta rutiner behöver inte ännu ett serum. De behöver struktur, ordning och tryggare beslut med produkterna du redan äger."
-      }
-    ],
-    "privacy": {
-      "eyebrow": "Privat som standard",
-      "headline": "Din hylla förblir din.",
-      "body": "Ritora byggs i EU med uttryckligt samtycke och endast nödvändiga cookies. Punkterna nedan speglar skydd som redan finns i produkten i dag.",
-      "points": [
+      "body": "Du äger rätt flaskor och vaknar ändå osäker på vad du ska lägga på lager och vad du ska hoppa över. Ritora ger dig beslutsagret som saknades.",
+      "problems": [
         {
-          "title": "GDPR från dag ett",
-          "body": "Dina uppgifter lagras och behandlas under europeisk dataskyddslag. Inga undantag, inga kryphål."
+          "title": "Hyllförvirring",
+          "body": "Du äger riktigt bra produkter och gissar ändå varje morgon vad du ska ta och vad du ska hoppa över."
         },
         {
-          "title": "Bara nödvändiga cookies",
-          "body": "Endast cookies för autentisering och inställningar. Ingen ad tech, inga sociala pixlar och inga dolda spårare."
+          "title": "Tyst ingredienskrock",
+          "body": "Starka aktiva ingredienser staplas mellan rengöringar, toners och serum. Irritationen dyker upp långt innan du hinner se orsaken."
         },
         {
-          "title": "Känslig kontext är frivillig",
-          "body": "Plats och profilkontext används bara för vägledning när du själv väljer att lämna den."
+          "title": "Köp före struktur",
+          "body": "De flesta rutiner behöver inte ännu ett serum. De behöver struktur, ordning och tryggare beslut med produkterna du redan äger."
+        }
+      ],
+      "stats": [
+        {
+          "figure": "10+",
+          "body": "Den genomsnittliga entusiasten äger tio eller fler hudvårdsprodukter. De flesta står redan på hyllan, underanvända."
         },
         {
-          "title": "Verifierad kontoåtkomst",
-          "body": "E-postverifiering och säkra inloggningsflöden hjälper till att skydda åtkomsten till din rutin- och profildata."
+          "figure": "#1",
+          "body": "Överexfoliering är den vanligaste självpåtagna barriärskadan. Tyst staplade aktiva ingredienser är oftast orsaken."
         }
       ]
     },
     "howItWorks": {
       "eyebrow": "Så fungerar det",
       "headline": "Tre lugna steg från hyllkaos till daglig klarhet.",
-      "illustrationTitle": "Från morgon till kväll, om och om igen",
-      "illustrationBody": "Ritora behandlar din rutin som en levande cykel. Varje steg för med sig vad gårdagens aktiva ingredienser betyder för den här morgonen, så planen förblir trygg utan att du behöver tänka på det."
+      "lead": "Berätta om din hud för Ritora, kartlägg produkterna du redan äger och följ en plan anpassad till idag. Inte förra månaden. Inte någon annans.",
+      "steps": [
+        {
+          "title": "Berätta om din hud för Ritora.",
+          "body": "Hudtyp, besvär, känsligheter, klimat. Varje svar formar vägledningen.",
+          "hint": "Hudton, etnicitet och klimat medveten från första steget"
+        },
+        {
+          "title": "Lägg till det som redan står på din hylla.",
+          "body": "Lägg till det du använder idag. Ritora upptäcker överlapp och flaggar riskfyllda kombinationer.",
+          "hint": "Lägg till via foto eller manuell inmatning"
+        },
+        {
+          "title": "Följ en lugnare daglig plan.",
+          "body": "Vakna till tydlig vägledning för morgon och kväll, anpassad efter din hylla.",
+          "hint": "Morgon, middags och kväll, med hjälp på begäran när som helst"
+        }
+      ]
     },
-    "steps": [
-      {
-        "title": "Berätta om din hud för Ritora",
-        "body": "Dela din hudtyp, dina besvär, dina känsligheter, dina mål och hur mycket tid du vill lägga. Varje svar formar vägledningen du får."
-      },
-      {
-        "title": "Kartlägg din hylla",
-        "body": "Lägg till produkterna du använder idag så kan Ritora upptäcka ingrediensöverlapp, flagga riskfyllda kombinationer och berätta vad som faktiskt saknas."
-      },
-      {
-        "title": "Följ en lugnare daglig plan",
-        "body": "Vakna till tydlig morgon och kvällsvägledning. Säkerhet kommer först, och resten är anpassat efter dina mål och din hylla."
-      }
-    ],
     "features": {
-      "eyebrow": "Det här får du",
-      "headline": "Allt du behöver för lugnare hudvårdsbeslut.",
-      "illustrationTitle": "Säkerhet först, anpassning sedan",
-      "illustrationBody": "Varje rekommendation går genom ett deterministiskt säkerhetslager innan den möter dina mål. Inga överraskningar, inga krockande aktiva ingredienser, inga ångerköp."
-    },
-    "featureItems": [
-      {
-        "title": "Din hylla kommer först",
-        "body": "Vägledningen börjar alltid med produkterna du redan äger, aldrig med en varukorg.",
-        "icon": "package"
-      },
-      {
-        "title": "Trygga ingredienser",
-        "body": "Konfliktkontroller och överlappsdetektion skyddar känslig hud och tar bort gissningarna när du staplar aktiva ingredienser.",
-        "icon": "shield-check"
-      },
-      {
-        "title": "Anpassad efter din hud",
-        "body": "Dina mål, dina känsligheter, din hudton, din ålder och din etnicitet formar varje rekommendation du ser.",
-        "icon": "user"
-      },
-      {
-        "title": "Privat som standard",
-        "body": "Uttryckligt samtycke, tydliga dataramar och EU vänlig hantering. Inbyggt från dag ett, aldrig påklistrat efteråt.",
-        "icon": "lock"
-      },
-      {
-        "title": "Lär dig öppet",
-        "body": "Öppna och sökbara sidor för grunderna. Privata och personliga rutiner när du är inloggad.",
-        "icon": "globe"
-      },
-      {
-        "title": "Lugnare dagliga ritualer",
-        "body": "En morgon och kvällsvy som håller din rutin stadig även under de mest stressiga dagarna.",
-        "icon": "sunrise"
-      }
-    ],
-    "differentiators": {
-      "eyebrow": "Det här skiljer Ritora",
-      "headline": "Byggd för hela din rutin, inte ett enda märke.",
+      "eyebrow": "Vad som ingår",
+      "headline": "Varje del av din rutin, intelligent medveten om de andra.",
+      "lead": "Sex förmågor som arbetar tillsammans så din plan förblir trygg, även på röriga dagar.",
       "items": [
         {
-          "title": "Varje märke, inte ett ekosystem",
-          "body": "Ritora fungerar med allt du redan äger. Ingen märkeslojalitet krävs, inga merförsäljningar, inga sponsrade val."
+          "key": "shelf",
+          "eyebrow": "Hylla först",
+          "title": "Din hylla kommer först. Alltid.",
+          "bullets": [
+            "Lägg till via foto eller manuellt, med ingredienser hämtade från etiketten",
+            "Hela livscykeln: startad, aktiv, slut, återköpt",
+            "Rengöring, aktiva, SPF, kropp, läppar, händer. Varje kategori."
+          ]
         },
         {
-          "title": "Hela din rutin, inte en produkt",
-          "body": "Ingredienskontroller körs över varje flaska samtidigt, så konflikter kan inte gömma sig mellan stegen."
+          "key": "ingredients",
+          "eyebrow": "Ingrediensintelligens",
+          "title": "Krockkontroller över varje flaska samtidigt.",
+          "bullets": [
+            "Retinoid + AHA, BP + retinol, vitamin C + niacinamid",
+            "Upptäcker när samma aktiva ingrediens gömmer sig i två produkter",
+            "Säkerhetspoäng för varje föreslagen rutin"
+          ]
         },
         {
-          "title": "Din hud, ditt klimat, din säsong",
-          "body": "Vägledningen anpassar sig efter din etnicitet, klimatet du lever i och säsongen du är i idag."
+          "key": "suggestions",
+          "eyebrow": "Dagens förslag",
+          "title": "Dagliga förslag, inte stela rutiner.",
+          "bullets": [
+            "Förberett innan du vaknar",
+            "Förslag på begäran när som helst",
+            "Kvällsplanen reagerar på vad du faktiskt applicerade tidigare"
+          ]
         },
         {
-          "title": "Hela kroppen, inte bara ansiktet",
-          "body": "Duschkräm, schampo, läppvård och handkräm är en del av planen, precis som ansiktet är det."
+          "key": "journal",
+          "eyebrow": "Huddagbok",
+          "title": "Fotodagbok med inbyggd AI-analys.",
+          "bullets": [
+            "Flervinklad fotografering med privat, krypterad lagring",
+            "Reaktionsdetektering pausar automatiskt riskfyllda aktiva ingredienser",
+            "Jämför två datum. Exportera en hudläkarrapport.",
+            "Månatlig Skin Wrapped: en privat återblick från dina foton"
+          ]
+        },
+        {
+          "key": "quickCheck",
+          "eyebrow": "Snabbkoll",
+          "title": "Granska vilken produkt som helst innan du köper eller använder den.",
+          "bullets": [
+            "Klistra in ingredienserna eller fota etiketten",
+            "Omdöme på några sekunder med säkerhetspoäng och tillförlitlighet",
+            "Jämför direkt mot produkterna på din hylla"
+          ]
+        },
+        {
+          "key": "smartPicks",
+          "eyebrow": "Smarta val",
+          "title": "Gap-analys, inte shoppingreklam.",
+          "bullets": [
+            "Fyra budgetnivåer: drugstore, mid, premium, lyx",
+            "Redundanskontroller så du aldrig dubblerar en aktiv ingrediens du redan äger",
+            "Spara val till din önskelista. Inga merförsäljningar, inga sponsrade placeringar."
+          ]
+        },
+        {
+          "key": "climate",
+          "eyebrow": "Klimatmedveten",
+          "title": "Din hud, ditt klimat, din säsong.",
+          "bullets": [
+            "Lokalt väder, luftfuktighet och UV-index",
+            "Säsongsförändringar hanteras automatiskt",
+            "Medveten om din etnicitet och hudton från start"
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "eyebrow": "Privat som standard",
+      "headline": "Din hylla förblir din.",
+      "lead": "Ritora bygger på uttryckligt samtycke och endast nödvändiga cookies. Varje steg av hur dina uppgifter rör sig är något du kan se, och ångra.",
+      "points": [
+        {
+          "title": "Samtycke före allt känsligt.",
+          "body": "Fotoanalys, AI-personalisering och plats ber var och en om separat, uttryckligt samtycke."
+        },
+        {
+          "title": "Endast nödvändiga cookies.",
+          "body": "Ingen ad tech, inga sociala pixlar, inga dolda spårare."
+        },
+        {
+          "title": "Känslig kontext är frivillig.",
+          "body": "Plats och hälsokontext hjälper bara när du själv väljer att lämna den."
+        },
+        {
+          "title": "Exportera och radera när som helst.",
+          "body": "Ta med dig dina foton och din profil i ett klick."
+        }
+      ],
+      "flow": [
+        {
+          "title": "Du tar ett foto",
+          "detail": "Ritora öppnar aldrig kameran i bakgrunden."
+        },
+        {
+          "title": "Krypterat under överföring",
+          "detail": "TLS hela vägen. Bildbytes loggas aldrig."
+        },
+        {
+          "title": "Privat lagrat, krypterat i vila",
+          "detail": "Knuten till ditt konto, aldrig delad."
+        },
+        {
+          "title": "Används bara för din rutin",
+          "detail": "AI körs på dina uppgifter först efter uttryckligt, separat samtycke."
+        },
+        {
+          "title": "Ditt att exportera, eller radera",
+          "detail": "30-dagars ångerfönster innan någon radering är slutgiltig."
         }
       ]
     },
     "faq": {
       "eyebrow": "Vanliga frågor",
-      "headline": "Byggt för att förtjäna ditt förtroende innan det ber om det."
+      "headline": "Byggt för att förtjäna ditt förtroende innan det ber om det.",
+      "items": [
+        {
+          "question": "Är Ritora en medicinsk produkt?",
+          "answer": "Nej. Ritora hjälper dig att göra tryggare dagliga rutinval med produkterna du redan äger. Den diagnostiserar, behandlar eller ersätter inte en hudläkare."
+        },
+        {
+          "question": "Måste jag köpa nya produkter för att använda den?",
+          "answer": "Inte alls. Ritora utgår från din hylla. Den hjälper dig att få ut mer av det du redan äger innan den föreslår något nytt."
+        },
+        {
+          "question": "Fungerar det för nybörjare?",
+          "answer": "Ja. Nybörjare och samlare som blivit överväldigade av sin egen hylla är precis vilka Ritora är byggt för. En enklare väg till en rutin som faktiskt fungerar."
+        },
+        {
+          "question": "Måste jag ladda upp foton?",
+          "answer": "Nej. Huddagboken är frivillig. Rutiner, ingredienskontroller och Smarta val fungerar utan ett enda foto. Uppladdning gör bara vägledningen mer anpassningsbar."
+        },
+        {
+          "question": "Är det gratis?",
+          "answer": "Ja, kärnupplevelsen är gratis. Inget kort krävs för att registrera dig. Frivilliga betalda nivåer kan komma senare för avancerade funktioner, men 'sluta köpa, börja använda' förblir gratis."
+        },
+        {
+          "question": "Hur hanteras mina uppgifter?",
+          "answer": "Med omsorg. Ritora bygger på uttryckligt samtycke, tydliga dataramar och säker inloggning. Integritetsmedveten hantering är inbyggd från dag ett. Se dataflödet ovan."
+        },
+        {
+          "question": "Vilka språk stöds?",
+          "answer": "Engelska och svenska från lansering. Du kan byta föredraget språk när som helst från inställningar."
+        }
+      ]
     },
-    "faqItems": [
-      {
-        "question": "Är Ritora en medicinsk produkt?",
-        "answer": "Nej. Ritora hjälper dig att göra tryggare dagliga rutinval med produkterna du redan äger. Den diagnostiserar, behandlar eller ersätter inte en hudläkare."
-      },
-      {
-        "question": "Måste jag köpa nya produkter för att använda den?",
-        "answer": "Inte alls. Ritora utgår från din hylla. Den hjälper dig att få ut mer av det du redan äger innan den föreslår något nytt."
-      },
-      {
-        "question": "Fungerar det för nybörjare?",
-        "answer": "Ja. Nybörjare och samlare som blivit överväldigade av sin egen hylla är precis vilka Ritora är byggt för. En enklare väg till en rutin som faktiskt fungerar."
-      },
-      {
-        "question": "Hur hanteras mina uppgifter?",
-        "answer": "Med omsorg. Ritora bygger på uttryckligt samtycke, tydliga dataramar och säker inloggning. EU vänlig hantering är inbyggd från dag ett."
-      },
-      {
-        "question": "Vilka språk stöds?",
-        "answer": "Engelska och svenska är tillgängliga från lansering. Du kan byta föredraget språk när som helst från inställningssidan."
-      }
-    ],
     "finalCta": {
-      "eyebrow": "När du är redo",
-      "headline": "Förvandla din hylla till en lugnare daglig rutin.",
-      "body": "Skapa ett konto på under en minut, eller logga in för att fortsätta där du slutade. Din hudprofil, dina inställningar och din rutinuppsättning hålls samlade på ett ställe.",
-      "ctaPrimary": "Skapa ett konto",
-      "ctaSecondary": "Logga in"
+      "headline": "Din hylla, din hud, din rutin.",
+      "body": "Skapa ditt konto på under en minut. Lägg till några produkter, svara på några frågor om din hud, och du har en lugnare plan till morgondagen, byggd från det som redan finns i ditt badrum.",
+      "ctaPrimary": "Skapa ditt konto",
+      "ctaSecondary": "Logga in",
+      "trust": [
+        "Gratis att använda",
+        "Inget kort krävs",
+        "Radera dina uppgifter när som helst"
+      ]
     }
   },
   "footer": {
@@ -231,9 +315,9 @@
     "register": "Skapa konto",
     "createAccount": "Skapa konto",
     "signInTitle": "Välkommen tillbaka",
-    "signInSubtitle": "Logga in för att fortsätta din lugnare hudvårdsrutin.",
+    "signInSubtitle": "Din hylla, rutin och huddagbok är redo när du är.",
     "signUpTitle": "Skapa ditt konto",
-    "signUpSubtitle": "En minut att sätta upp. Inga nya produkter krävs.",
+    "signUpSubtitle": "Lägg till dina produkter, bygg din rutin och spåra dina framsteg.",
     "email": "E-post",
     "password": "Lösenord",
     "confirmPassword": "Bekräfta lösenord",
@@ -280,9 +364,67 @@
     "invalidResetTokenHelp": "Den här återställningslänken saknas, har gått ut eller har redan använts. Begär ett nytt återställningsmejl för att fortsätta.",
     "invalidVerificationToken": "Ogiltig eller saknad verifieringstoken.",
     "invalidVerificationTokenHelp": "Den här verifieringslänken saknas, har gått ut eller har redan använts. Begär ett nytt verifieringsmejl för att fortsätta.",
+    "accountDeletionConfirmTitle": "Bekräfta kontoradering",
+    "accountDeletionCancelTitle": "Avbryt kontoradering",
+    "accountDeletionConfirming": "Verifierar din länk",
+    "accountDeletionCancelling": "Stoppar din radering",
+    "accountDeletionConfirmSuccessTitle": "Radering schemalagd",
+    "accountDeletionConfirmSuccessBody": "Ditt Ritora-konto är nu schemalagt att raderas permanent om 30 dagar. Logga in när som helst innan dess så avbryts raderingen.",
+    "accountDeletionCancelSuccessTitle": "Välkommen tillbaka",
+    "accountDeletionCancelSuccessBody": "Ditt konto är fortsatt aktivt och ingenting har raderats. Du kan fortsätta använda Ritora som vanligt.",
+    "accountDeletionConfirmFailedTitle": "Vi kunde inte bekräfta",
+    "accountDeletionConfirmFailedBody": "Den här bekräftelselänken är ogiltig eller har gått ut. Bekräftelselänkar gäller i en timme. Starta raderingen igen från inställningar för att få en ny.",
+    "accountDeletionCancelFailedTitle": "Vi kunde inte avbryta",
+    "accountDeletionCancelFailedBody": "Den här avbryt-länken är ogiltig eller redan använd. Om ditt konto fortfarande är schemalagt för radering kan du logga in för att avbryta.",
+    "accountDeletionInvalidToken": "Länken känns inte igen",
+    "accountDeletionInvalidTokenHelp": "Den här länken saknas, har gått ut eller är redan använd. Logga in för att kontrollera din kontostatus eller avbryta en väntande radering.",
+    "accountDeletionGoToLogin": "Logga in på mitt konto",
+    "accountDeletionGoToSettings": "Öppna inställningar",
+    "accountDeletionContactSupport": "Kontakta support",
+    "accountDeletionRedirecting": "Tar dig till inloggning om ett ögonblick...",
+    "accountDeletionRequestTimedOutTitle": "Begäran tog för lång tid",
+    "accountDeletionRequestTimedOutBody": "Ritora fick inget färdigt svar i den här webbläsaren. Försök igen för att kontrollera länkens status, eller logga in för att kontrollera ditt konto.",
+    "accountDeletionTryAgain": "Försök igen",
+    "accountDeletionStillHereTitle": "Tryggt kvar",
+    "accountDeletionStillHerePhotos": "Dina bilder",
+    "accountDeletionStillHerePhotosDesc": "Varje hudbild, precis som du lämnade dem",
+    "accountDeletionStillHereRoutine": "Din rutin",
+    "accountDeletionStillHereRoutineDesc": "Schema, förslag och historik orörda",
+    "accountDeletionStillHereShelf": "Din hylla",
+    "accountDeletionStillHereShelfDesc": "Varje produkt du lagt till finns kvar",
+    "accountDeletionCancelPrivacyTitle": "Din data, dina villkor",
+    "accountDeletionCancelPrivacyBody": "Ditt konto pausades, det användes inte. Ritora delar eller säljer aldrig din data.",
+    "accountDeletionCancelChecksAllSafe": "Alla kontroller godkända. Ditt konto är tillbaka som vanligt.",
+    "accountDeletionConfirmTimelineTodayLabel": "Idag",
+    "accountDeletionConfirmTimelineTodayBody": "Utloggad överallt",
+    "accountDeletionConfirmTimelineGraceLabel": "30 dagar",
+    "accountDeletionConfirmTimelineGraceBody": "Avbryt när som helst",
+    "accountDeletionConfirmTimelineFinalLabel": "Dag 31",
+    "accountDeletionConfirmTimelineFinalBody": "Permanent raderat",
+    "accountDeletionConfirmStatusTitle": "Händer just nu",
+    "accountDeletionConfirmStatusSignedOut": "Utloggad överallt",
+    "accountDeletionConfirmStatusSignedOutDesc": "Ingen kan komma åt ditt konto, inte ens du",
+    "accountDeletionConfirmStatusDataHeld": "Din data är pausad",
+    "accountDeletionConfirmStatusDataHeldDesc": "Sparas säkert, används aldrig, delas aldrig",
+    "accountDeletionConfirmStatusEmail": "Avbryt-länk skickad",
+    "accountDeletionConfirmStatusEmailDesc": "Använd den när som helst inom 30 dagar",
+    "accountDeletionConfirmChangedMindTitle": "Ångrat dig?",
+    "accountDeletionConfirmChangedMindBody": "Två vägar tillbaka: logga in igen, eller tryck på avbryt-länken i mejlet vi just skickat.",
+    "accountDeletionConfirmFinalPromise": "Efter dag 30 raderas din profil, dina bilder, hylla och historik permanent. Innan dess har du kontrollen.",
+    "accountDeletionErrorReasonsTitle": "Vanliga orsaker",
+    "accountDeletionErrorReason1": "Länken är redan använd",
+    "accountDeletionErrorReason2": "Länken har gått ut",
+    "accountDeletionErrorReason3": "Länken kopierades inte helt från mejlet",
+    "accountDeletionInvalidTokenWhatTitle": "Vad du kan göra",
+    "accountDeletionInvalidTokenWhatItem1": "Logga in för att se om din radering fortfarande är schemalagd",
+    "accountDeletionInvalidTokenWhatItem2": "Starta en ny radering från inställningar om du fortfarande vill fortsätta",
+    "accountDeletionInvalidTokenWhatItem3": "Kontakta support om något ser konstigt ut",
     "verificationFailed": "Verifiering misslyckades. Länken kan ha gått ut.",
     "verifyingEmail": "Verifierar din e-post...",
     "emailVerifiedSuccess": "E-post verifierad!",
+    "verifyEmailRequestTimedOutTitle": "Begäran tog för lång tid",
+    "verifyEmailRequestTimedOutBody": "Ritora fick inget färdigt verifieringssvar i den här webbläsaren. Försök igen för att kontrollera länkens status, eller begär en ny verifieringslänk.",
+    "verifyEmailTryAgain": "Försök igen",
     "passwordResetSuccess": "Lösenordet har återställts.",
     "registrationFailed": "Registrering misslyckades",
     "resetFailed": "Återställning misslyckades",
@@ -291,6 +433,12 @@
     "signingIn": "Loggar in...",
     "creatingAccount": "Skapar konto...",
     "loading": "Laddar...",
+    "continueWithGoogle": "Fortsätt med Google",
+    "continueWithApple": "Fortsätt med Apple",
+    "orContinueWithEmail": "eller fortsätt med e-post",
+    "openingGoogle": "Öppnar Google…",
+    "openingApple": "Öppnar Apple…",
+    "legalDisclosurePrefix": "Genom att fortsätta godkänner du våra",
     "errors": {
       "invalidCredentials": "Fel e-post eller lösenord. Försök igen.",
       "emailInUse": "Ett konto med denna e-post finns redan. Försök logga in istället.",
@@ -319,12 +467,17 @@
       "privacyRequired": "Acceptera integritetspolicyn för att fortsätta.",
       "fieldRequired": "Detta fält krävs.",
       "tokenRequired": "Återställningstoken saknas."
-    }
+    },
+    "emailPlaceholder": "du@example.com"
   },
   "dashboard": {
     "welcome": "Välkommen tillbaka, {firstName}",
     "subtitle": "En lugn överblick över idag och din hylla.",
-    "upcomingHeading": "Kommer snart",
+    "greeting": {
+      "morning": "God morgon, {firstName}.",
+      "afternoon": "God eftermiddag, {firstName}.",
+      "evening": "God kväll, {firstName}."
+    },
     "profileCard": {
       "title": "Hudprofil",
       "complete": "Din hudprofil är redo. AI-rekommendationer kommer att använda detta.",
@@ -350,6 +503,137 @@
       "title": "Senaste aktivitet",
       "empty": "Ingen senaste aktivitet ännu. Börja med att lägga till produkter på din hylla.",
       "viewHistory": "Visa historik"
+    },
+    "setup": {
+      "title": "Slutför uppsättningen",
+      "progress": "{completed}/{total} klart",
+      "steps": {
+        "profile": {
+          "title": "Hudprofil",
+          "todo": "Berätta om din hud",
+          "done": "Profil klar"
+        },
+        "shelf": {
+          "title": "Hylla",
+          "todo": "Lägg till produkter du redan äger",
+          "done": "Hyllan har produkter"
+        },
+        "routine": {
+          "title": "Rutin",
+          "todo": "Bestäm tider för morgon och kväll",
+          "done": "Rutin klar"
+        }
+      }
+    },
+    "fresh": {
+      "welcome": "Välkommen till Ritora, {firstName}.",
+      "subtitle": "Några minuters uppsättning så blir din rutin smartare.",
+      "eyebrow": "Steg 1 av 2",
+      "title": "Berätta om din hud.",
+      "body": "Hudtyp, bekymmer, klimat och allt du har reagerat på. Vi använder det för att läsa din hylla och bygga lugnare rutiner.",
+      "progress": "{completed} av {total} klart",
+      "primaryCta": "Bygg hudprofil",
+      "secondary": "Har du en produkt i handen?",
+      "secondaryCta": "Prova Snabbkoll först"
+    },
+    "promises": {
+      "privateTitle": "Privat som standard",
+      "privateBody": "Din reaktionshistorik, medicinska anteckningar och hormonella data är krypterade, sparas bara med ditt samtycke, och säljs eller delas aldrig. Kan raderas när du vill.",
+      "ownedTitle": "Ägda produkter först",
+      "ownedBody": "Vi läser vad som finns på din hylla och bygger rutinerna därifrån. Nya produktförslag dyker upp först när det finns ett verkligt gap att fylla.",
+      "toneTitle": "Anpassad för hudton",
+      "toneBody": "Testad mot Fitzpatrick-typerna I till VI. Ingrediensvarningar och produktval tar hänsyn till mörkare hud där de flesta appar missar."
+    },
+    "latestSuggestion": {
+      "ariaLabel": "{routine} · redo att registreras",
+      "eyebrow": "Nästa · {routine}",
+      "moreSteps": "+ {count, plural, one {# steg till} other {# steg till}}",
+      "openRoutine": "Öppna rutin"
+    }
+  },
+  "currentContext": {
+    "localTime": "Lokal tid",
+    "timeZone": "Tidszon",
+    "city": "Stad",
+    "country": "Land",
+    "notSet": "Inte angivet",
+    "unknown": "Okänt",
+    "loading": "Laddar",
+    "climateData": "Klimatdata",
+    "lastUpdated": "Senast uppdaterad {time}",
+    "cityLevelClimate": "Stadsnivå",
+    "profileOnlyClimate": "Endast profil",
+    "weather": "Väder",
+    "seasonLabel": "Säsong",
+    "temperature": "Temp",
+    "uv": "UV",
+    "uvValue": "{risk} · UV {index}",
+    "uvIndexOnly": "UV {index}",
+    "humidity": "Luftfuktighet",
+    "humidityValue": "{band} · {value}%",
+    "airQuality": "Luft",
+    "airQualityValue": "{risk} · AQI {index}",
+    "airQualityIndexOnly": "AQI {index}",
+    "pm25": "PM2.5",
+    "pm10": "PM10",
+    "micrograms": "{value} µg/m³",
+    "pollen": "Pollen",
+    "water": "Vatten",
+    "waterValue": "{hardness} · {sensitivity}",
+    "sensitivities": "Känslig för",
+    "seasons": {
+      "spring": "Vår",
+      "summer": "Sommar",
+      "autumn": "Höst",
+      "winter": "Vinter"
+    },
+    "temperatureBand": {
+      "freezing": "Frysande",
+      "cold": "Kallt",
+      "mild": "Milt",
+      "warm": "Varmt",
+      "hot": "Hett"
+    },
+    "uvRisk": {
+      "low": "Låg",
+      "moderate": "Måttlig",
+      "high": "Hög",
+      "veryHigh": "Mycket hög",
+      "extreme": "Extrem"
+    },
+    "humidityBand": {
+      "veryDry": "Mycket torr",
+      "dry": "Torr",
+      "balanced": "Balanserad",
+      "humid": "Fuktig",
+      "veryHumid": "Mycket fuktig"
+    },
+    "airRisk": {
+      "good": "Bra",
+      "fair": "Okej",
+      "moderate": "Måttlig",
+      "poor": "Dålig",
+      "veryPoor": "Mycket dålig"
+    },
+    "waterHardness": {
+      "unknown": "Okänd hårdhet",
+      "soft": "Mjukt vatten",
+      "moderate": "Måttligt vatten",
+      "hard": "Hårt vatten"
+    },
+    "waterSensitivity": {
+      "none": "Ingen känslighet",
+      "suspected": "Känslighet misstänks",
+      "confirmed": "Känslighet bekräftad"
+    },
+    "sensitivity": {
+      "dryAir": "torr luft",
+      "humidity": "luftfuktighet",
+      "pollution": "föroreningar",
+      "cold": "kyla",
+      "heat": "värme",
+      "sun": "sol",
+      "seasonalChange": "säsongsskifte"
     }
   },
   "workspace": {
@@ -430,7 +714,8 @@
       "account": "Konto",
       "appearance": "Utseende",
       "language": "Språk",
-      "privacy": "Integritet"
+      "privacy": "Integritet",
+      "notifications": "Aviseringar"
     },
     "account": {
       "profileTitle": "Profil",
@@ -572,7 +857,7 @@
         "title": "Hudprofil",
         "kicker": "Lämna över till profilsetup",
         "headline": "Slutför hudkontexten som låser upp arbetsytan",
-        "description": "Du har inte startat din hudprofil ännu. Använd profilflödet för att lägga till grunder, prioriteringar och rutinpreferens innan lager och rutiner går live.",
+        "description": "Du har inte startat din hudprofil ännu. Använd profilflödet för att lägga till baslinje, prioriteringar, solbeteende, rutinkapacitet och preferenser innan lager och rutiner går live.",
         "inProgressDescription": "Du har redan börjat på din hudprofil. Fortsätt där du slutade så att Ritora kan behandla resten av arbetsytan som personlig, inte generell.",
         "startCta": "Starta hudprofil",
         "continueCta": "Fortsätt hudprofil",
@@ -604,7 +889,7 @@
         "items": {
           "profile": {
             "title": "Slutför kärnprofilen",
-            "description": "Hudtyp, hudton, åldersintervall, hudproblem, mål och rutinpreferens är den minsta användbara setupen."
+            "description": "Hudtyp, hudton, fototyp, hudproblem, solbeteende, rutinkapacitet och preferenser är den minsta användbara setupen."
           },
           "dashboard": {
             "title": "Gå tillbaka till arbetsytan",
@@ -628,60 +913,472 @@
       "save": "Spara profil",
       "saving": "Sparar...",
       "stepOf": "Steg {current} av {total}",
-      "skinType": {
-        "heading": "Vad beskriver din hud bäst?",
-        "description": "Det här hjälper Ritora att förstå din baslinje och undvika ingredienskonflikter."
+      "baseline": {
+        "heading": "Berätta om din hudbas",
+        "description": "Grunderna som varje förslag bygger på. Du kan uppdatera när som helst."
       },
-      "concerns": {
+      "concernsPriority": {
         "heading": "Vad oroar dig mest?",
-        "description": "Välj allt som gäller. Det här påverkar vilka ingredienser Ritora prioriterar."
+        "description": "Välj det som gäller, och välj sedan vad Ritora ska prioritera."
       },
-      "goals": {
-        "heading": "Vilka är dina hudvårdsmål?",
-        "description": "Välj det som betyder mest. Ritora använder det för att föreslå rätt produkter."
+      "sunPigmentStep": {
+        "heading": "Hur reagerar din hud på sol?",
+        "description": "Solreaktion betyder mer än hudton. Det formar vilka aktiva ämnen som är säkra för dig."
       },
-      "routine": {
-        "heading": "När brukar du göra din hudvård?",
-        "description": "Ritora föreslår rätt produkter från din hylla vid dessa tider. AI:n väljer vad du ska använda baserat på dina mål."
+      "routineBaseline": {
+        "heading": "Hur gör du hudvård?",
+        "description": "Berätta ditt tempo. Tid och frekvens hämtar vi från ditt Schema."
       },
-      "context": {
-        "heading": "Lite mer om dig",
-        "description": "Valfria detaljer som hjälper Ritora ge mer klimat- och hudmedveten vägledning."
+      "environment": {
+        "heading": "Din vattenkontext",
+        "description": "Valfria detaljer som hjälper Ritora anpassa förslag när vatten verkar trigga torrhet, stramhet eller irritation."
+      },
+      "preferences": {
+        "heading": "Vad är dina shoppingpreferenser?",
+        "description": "Dina preferenser. Ritora föreslår bara produkter som matchar."
       }
+    },
+    "concernsPriority": {
+      "concernsLabel": "Hudproblem",
+      "concernsHint": "Välj allt du vill att Ritora ska ta hänsyn till.",
+      "primaryGoalLabel": "Främsta prioritet",
+      "primaryGoalHint": "Välj ett. Ritora optimerar för detta först.",
+      "severityLabel": "Allvarlighet för {concern}",
+      "severityHint": "Hur starkt det känns i vardagen."
+    },
+    "sunPigmentStep": {
+      "phototypeQuestion": "Efter en hel dag ute brukar din hud:",
+      "pihQuestion": "Hur ofta dröjer mörka märken kvar efter att en finne läkt?",
+      "pihHint": "Kallas även PIH (post-inflammatorisk hyperpigmentering).",
+      "melasmaQuestion": "Hur ofta får du melasma eller varaktiga mörka fläckar?",
+      "melasmaHint": "Hormonrelaterade mörka fläckar, ofta symmetriska på kinder eller panna.",
+      "keloidQuestion": "Hur ofta får din hud upphöjda ärr?",
+      "keloidHint": "Keloider är ärr som växer tjockare än det ursprungliga såret.",
+      "sunscreenHabitQuestion": "Hur ofta använder du solskydd?",
+      "sunscreenToleranceQuestion": "Hur känns de flesta solskydd på din hud?"
+    },
+    "routineBaseline": {
+      "paceLabel": "Rutintempo",
+      "paceHint": "Hur snabbt du vill introducera nya produkter."
+    },
+    "environment": {
+      "waterHardnessLabel": "Vattnets hårdhet",
+      "waterHardnessHint": "Välj det du vet. Okänt går bra.",
+      "waterSensitivityLabel": "Vattenkänslighet",
+      "waterSensitivityHint": "Välj misstänkt eller bekräftad bara om vatten verkar trigga torrhet, sveda eller irritation.",
+      "waterNotesLabel": "Anteckning om vattenreaktion",
+      "waterNotesHint": "Valfritt. Håll det kort och lägg bara till det du vill att Ritora använder.",
+      "waterNotesPlaceholder": "t.ex. Ansiktet känns stramt efter tvätt hemma"
+    },
+    "preferences": {
+      "fragranceFreeLabel": "Endast doftfritt?",
+      "fragranceFreeHint": "Hoppa över produkter med tillsatt doft. Ofta skonsammare för känslig hud.",
+      "nonComedogenicLabel": "Endast icke-komedogent?",
+      "nonComedogenicHint": "Hoppa över ingredienser som täpper till porer. Bra för aknebenägen hud.",
+      "sunscreenFilterLabel": "Solskyddsfilter",
+      "sunscreenFilterHint": "Kemiska filter absorberar UV; mineralfilter reflekterar. Hybrider kombinerar båda.",
+      "sunscreenFinishLabel": "Solskyddsfinish",
+      "sunscreenFinishHint": "Hur formulan ser ut och känns efter applicering.",
+      "budgetTierLabel": "Budget",
+      "budgetTierHint": "Ditt vanliga prisspann per produkt.",
+      "allowSmartPicksLabel": "Låt Smart Picks föreslå nya produkter?",
+      "allowSmartPicksHint": "Låter Ritora rekommendera produkter utöver dem som redan finns i din hylla.",
+      "yes": "Ja",
+      "no": "Nej",
+      "noPreference": "Ingen preferens"
+    },
+    "baselineLabels": {
+      "skinType": "Hudtyp",
+      "skinTypeHint": "Hur din hud brukar kännas mitt på dagen.",
+      "skinTone": "Hudton",
+      "dateOfBirth": "Födelsedatum",
+      "sexAtBirth": "Kön vid födseln",
+      "sexAtBirthHint": "Vissa ingredienser har olika säkerhetsprofil beroende på biologiskt kön.",
+      "ethnicity": "Etnicitet",
+      "ethnicityHint": "Hjälper oss anpassa råd. Vissa hudmönster är vanligare i vissa bakgrunder.",
+      "countryCode": "Landskod",
+      "city": "Stad"
     },
     "overview": {
       "title": "Hudprofil",
       "description": "Berätta för Ritora om din hud så att varje förslag passar dig.",
       "edit": "Redigera",
-      "notSet": "Inte angiven"
+      "notSet": "Inte angiven",
+      "essentialsTitle": "Grundläggande",
+      "essentialsHint": "Det viktigaste som styr varje förslag.",
+      "completenessTitle": "Profilens fullständighet",
+      "completenessHint": "Lägg till de valfria avsnitten nedan för mer personliga förslag.",
+      "completenessPercent": "{value}% klart",
+      "optionalSectionsTitle": "Valfria avsnitt",
+      "optionalSectionsHint": "Varje avsnitt hjälper Ritora på ett särskilt sätt. Hoppa över det du inte vill dela.",
+      "allOptionalLabel": "Alla valfria",
+      "allMandatoryLabel": "Alla obligatoriska",
+      "addNow": "Lägg till nu",
+      "notApplicable": "Ej tillämpligt",
+      "review": "Granska",
+      "reactionEntriesCount": "{count} poster",
+      "noKnownReactions": "Inga kända reaktioner",
+      "activeToleranceCount": "{count} följs",
+      "encryptedBadge": "Krypterad",
+      "consentRequired": "Frågar om samtycke först",
+      "controlBannerTitle": "Du har kontrollen",
+      "controlBannerBody": "Känsliga avsnitt är krypterade, säljs aldrig och används bara för dina förslag. Radera valfritt avsnitt med ett tryck via Inställningar · Sekretess."
+    },
+    "optionalCards": {
+      "medicalSafetyTitle": "Medicinskt & Säkerhet",
+      "medicalSafetyDesc": "Så att Ritora vet vad som ska undvikas. Graviditet, hudåkommor, mediciner, nyliga behandlingar.",
+      "medicalSafetyTime": "Cirka 3 min",
+      "sunPigmentTitle": "Sol & pigmentbeteende",
+      "sunPigmentDesc": "Solreaktion betyder mer än hudton. Skarpare vägledning kring irritation och pigmentering.",
+      "sunPigmentTime": "Cirka 2 min",
+      "reactionHistoryTitle": "Reaktionshistorik",
+      "reactionHistoryDesc": "Saker du har reagerat på tidigare, så att Ritora inte föreslår dem.",
+      "reactionHistoryTime": "Cirka 2 min",
+      "activeToleranceTitle": "Aktiv tolerans",
+      "activeToleranceDesc": "Har du använt retinol, AHA eller C-vitamin tidigare? Ritora börjar då på rätt styrka.",
+      "activeToleranceTime": "Cirka 2 min",
+      "lifestyleTitle": "Livsstil",
+      "lifestyleDesc": "Sömn, stress, vatten, kost. Vissa utbrott har orsaker som inte handlar om produkter.",
+      "lifestyleTime": "Cirka 2 min",
+      "hormonalTitle": "Hormonell kontext",
+      "hormonalDesc": "För dig som får cykliska utbrott. Lätt att hoppa över.",
+      "hormonalTime": "Cirka 1 min"
+    },
+    "essentials": {
+      "skinType": "Hudtyp",
+      "phototype": "Fototyp",
+      "dateOfBirth": "Födelsedatum",
+      "topConcern": "Främsta hudproblem",
+      "sunscreen": "Solskydd",
+      "routinePace": "Rutintempo",
+      "edit": "Redigera grundläggande",
+      "ageYears": "{age} år"
+    },
+    "sunPigment": {
+      "pageTitle": "Sol & pigmentbeteende",
+      "pageDesc": "Solreaktion betyder mer än hudton. Det formar vilka aktiva ämnen som är säkra för dig.",
+      "questionPhototype": "Efter en hel dag ute brukar din hud:",
+      "whyPhototype": "Fototyp är klinikers standard för att beskriva solreaktion. Den styr hur kraftfulla aktiva ämnen Ritora föreslår.",
+      "questionPih": "Efter att en finne läkt, dröjer mörka märken kvar?",
+      "whyPih": "Postinflammatorisk hyperpigmentering gör irritation kostsam. Ritora väljer mildare aktiva ämnen och prioriterar solskydd.",
+      "questionMelasma": "Har du melasma eller varaktiga mörka fläckar?",
+      "whyMelasma": "Melasma kräver särskild omsorg. Ritora undviker värmetriggande aktiva ämnen och föredrar tonade solskydd.",
+      "questionKeloid": "Får din hud upphöjda ärr (keloider)?",
+      "whyKeloid": "Keloidbenägen hud behöver mildare exfoliering.",
+      "questionSunscreen": "Hur ofta använder du solskydd?",
+      "whySunscreen": "Daglig användning sänker irritationsrisk och bromsar fotoåldring.",
+      "questionTolerance": "Hur känns de flesta solskydd på din hud?",
+      "whyTolerance": "Om solskydd irriterar föreslår Ritora mineralfilter och tonade finishar.",
+      "questionFilter": "Vilket solskyddsfilter föredrar du?",
+      "whyFilter": "Mineral, kemisk och hybrid känns olika. Ritora respekterar din preferens.",
+      "questionFinish": "Vilken finish på solskydd föredrar du?",
+      "whyFinish": "Det är lättare att hålla i en rutin när konsistensen passar dig.",
+      "save": "Spara",
+      "saved": "Sparat.",
+      "preferNotToSay": "Vill inte svara"
+    },
+    "reactions": {
+      "pageTitle": "Reaktionshistorik",
+      "pageDesc": "Lista ingredienser eller produkter som tidigare orsakat reaktioner. Ritora kommer undvika att föreslå dem.",
+      "logged": "Loggade reaktioner",
+      "entriesCount": "{count} poster",
+      "entriesNone": "Inga reaktioner loggade ännu.",
+      "historyQuestion": "Har du haft hudreaktioner tidigare?",
+      "historyQuestionHint": "Att svara nej räknas också. Ritora behöver veta om detta hoppades över eller verkligen inte gäller dig.",
+      "hasReactions": "Ja, jag har reagerat tidigare",
+      "noKnownReactions": "Inga kända reaktioner",
+      "noKnownReactionsHint": "Ritora behandlar inte reaktionshistoriken som saknad. Du kan lägga till en reaktion senare om det ändras.",
+      "addDisabledNoHistory": "Ändra ditt svar för att lägga till en reaktion.",
+      "addNew": "Lägg till en reaktion",
+      "addNewHint": "Var specifik där du kan.",
+      "fieldTrigger": "Vad utlöste den?",
+      "fieldTriggerHint": "Om Ritora känner ingrediensen länkas den till varningar i din Hylla.",
+      "fieldTriggerPlaceholder": "t.ex. Salicylsyra, lavendelolja",
+      "fieldTriggerType": "Typ av utlösare",
+      "fieldCertainty": "Hur säker är du?",
+      "fieldReactions": "Reaktionstyp",
+      "fieldSeverity": "Allvarlighet",
+      "fieldPatchTest": "Bekräftad genom plåstertest eller läkare",
+      "addReaction": "Lägg till reaktion",
+      "remove": "Ta bort",
+      "saved": "Reaktion tillagd.",
+      "removed": "Reaktion borttagen.",
+      "saveAll": "Spara ändringar",
+      "savedChanges": "Ändringar sparade.",
+      "consentTitle": "Skydda reaktionshistorik",
+      "consentDescription": "Reaktionshistorik är hälsorelaterad data. Ritora lagrar den krypterad och använder den bara för att anpassa dina förslag.",
+      "consentAccept": "Tillåt och spara",
+      "consentDecline": "Inte nu"
+    },
+    "activeTolerance": {
+      "pageTitle": "Aktiv tolerans",
+      "pageDesc": "Har du använt dessa aktiva ämnen tidigare? Ritora börjar på rätt styrka.",
+      "introHint": "Tryck på varje aktivt ämne för att ange din tolerans. Hoppa över det du inte testat.",
+      "save": "Spara",
+      "saved": "Aktiv tolerans sparad.",
+      "lastUsed": "Senast använd",
+      "lastUsedPlaceholder": "Valfritt"
+    },
+    "lifestyle": {
+      "pageTitle": "Livsstil",
+      "pageDesc": "Sömn, stress, vatten, kost. Vissa utbrott har orsaker som inte handlar om produkter.",
+      "questionSleep": "Hur mycket sömn får du i snitt?",
+      "whySleep": "Mindre än 6 timmar höjer kortisol och oljeproduktion. Ritora noterar det i förslagen.",
+      "questionStress": "Vad är din typiska stressnivå?",
+      "whyStress": "Stress driver kortisolrelaterade utbrott. Ritora föredrar lugnande aktiva ämnen vid hög stress.",
+      "questionWater": "Hur mycket vatten dricker du dagligen?",
+      "whyWater": "Hydrering hjälper barriären. Lågt intag kan förklara uttorkad hud.",
+      "questionDiet": "Något av detta ofta i kosten?",
+      "whyDiet": "Mycket socker och mejeri korrelerar med akne hos vissa. Ritora kommenterar inte, men ger livsstilstips.",
+      "questionSmoking": "Hur ofta röker du?",
+      "whySmoking": "Rökning påskyndar hudens åldrande. Ritora prioriterar antioxidanter.",
+      "questionAlcohol": "Hur ofta dricker du alkohol?",
+      "whyAlcohol": "Alkohol uttorkar huden. Ritora kan föreslå extra hydrering.",
+      "questionSweat": "Svettas du mycket vid träning?",
+      "whySweat": "Svettbenägen hud behöver andra rengöringsstrategier.",
+      "questionMask": "Bär du mask ofta (t.ex. på jobbet)?",
+      "whyMask": "Maskbärande kan trigga maskakne. Ritora undviker tunga occlusiva i maskzoner.",
+      "questionShaving": "Rakar du ditt ansikte?",
+      "whyShaving": "Rakning påverkar barriären och toleransen för exfoliering.",
+      "questionClimate": "Vilka miljöförhållanden besvärar din hud?",
+      "whyClimate": "Ritora anpassar occlusiva och barriärvård efter dina klimatkänsligheter.",
+      "save": "Spara",
+      "saved": "Livsstil sparad."
+    },
+    "hormonal": {
+      "pageTitle": "Hormonell kontext",
+      "pageDesc": "För dig som får cykliska utbrott. Varje fråga är valfri.",
+      "encryptedBadge": "Krypterad",
+      "consentTitle": "Innan du delar hormonell kontext",
+      "consentLede": "Detta kan avslöja känslig hälsoinformation. Ritora använder det bara för att göra cykelmedvetna förslag säkrare och mer relevanta.",
+      "consentAskTitle": "Vad vi frågar om",
+      "consentAsk1": "Om utbrott följer ett cykelmönster.",
+      "consentAsk2": "När utbrott vanligtvis uppstår.",
+      "consentAsk3": "Valfri hormonrelaterad kontext som preventivmedel eller klimakterieförändringar.",
+      "consentSafety": "Du kan hoppa över vilken fråga som helst och radera datan när som helst. Den är krypterad, säljs aldrig och används aldrig för annonser.",
+      "consentDecline": "Inte nu",
+      "consentAccept": "Jag förstår. Fortsätt.",
+      "consentPromptTitle": "Samtycke krävs innan sparande",
+      "consentPromptBody": "Hormonell kontext är valfri och känslig, så Ritora frågar separat innan den lagras.",
+      "reviewConsent": "Granska samtycke",
+      "consentRequiredError": "Granska samtycket innan hormonell kontext sparas.",
+      "questionCyclePattern": "Hur förutsägbart är ditt cykelmönster?",
+      "whyCyclePattern": "Förutsägbarhet hjälper Ritora att inte övertolka ett mönster som kanske inte gäller.",
+      "questionBreakoutPattern": "När brukar utbrott dyka upp?",
+      "whyBreakoutPattern": "Timing hjälper Ritora föreslå mildare stöd före väntade perioder med utbrott.",
+      "questionCycleRelated": "Verkar utbrotten vara cykelrelaterade?",
+      "whyCycleRelated": "Om utbrott är cykliska kan Ritora hantera dem annorlunda än produktutlösta reaktioner.",
+      "questionHormonalContraception": "Använder du hormonellt preventivmedel?",
+      "whyHormonalContraception": "Hormonella preventivmedel kan påverka fetthet och utbrottsmönster hos vissa.",
+      "questionMenopause": "Påverkar klimakteriet eller perimenopaus din hud?",
+      "whyMenopause": "Hormonskiften kan ändra torrhet, känslighet och utbrottsmönster.",
+      "yes": "Ja",
+      "no": "Nej",
+      "save": "Spara",
+      "saving": "Sparar",
+      "saved": "Hormonell kontext sparad.",
+      "deleteThisData": "Radera denna data",
+      "deleteConfirmTitle": "Radera din hormonella kontext?",
+      "deleteConfirmBody": "Tar bort cykelmönster, tidpunkt för utbrott och hormonrelaterad kontext. Återkallar samtycket för hormonell kontext. Detta kan inte ångras.",
+      "deleted": "Hormonell kontext raderad.",
+      "footerHint": "Spara bara det du vill dela."
+    },
+    "medicalSafety": {
+      "pageTitle": "Medicinskt & Säkerhet",
+      "pageDesc": "Hjälper Ritora att undvika att föreslå sådant som din kropp inte tål. Varje fråga är valfri.",
+      "encryptedBadge": "Krypterad",
+      "consentActiveTitle": "Samtycke för hälsodata aktivt",
+      "consentActiveBody": "Beviljat {date}. Återkalla när som helst i Inställningar · Sekretess.",
+      "consentDialogTitle": "Innan du delar medicinsk information",
+      "consentDialogEncryptedBadge": "Krypterad",
+      "consentDialogLede": "Det här är känslig data. Läs vad vi frågar, varför, och hur det skyddas innan du bestämmer dig.",
+      "consentDialogAskTitle": "Vad vi frågar om",
+      "consentDialogAsk1": "Graviditet eller amning. Vissa ingredienser är inte säkra.",
+      "consentDialogAsk2": "Hudåkommor som rosacea eller eksem. Olika rutiner fungerar bättre.",
+      "consentDialogAsk3": "Mediciner som påverkar huden. Vissa interagerar med hudvård.",
+      "consentDialogAsk4": "Nyliga behandlingar som peeling eller laser. Din hudbarriär kan behöva mildare omsorg.",
+      "consentDialogSafety": "Du kan hoppa över vilken fråga som helst. Du kan radera den här datan när som helst. Hoppar du över ger Ritora generella förslag istället.",
+      "consentDialogProtectionTitle": "Hur skyddas detta?",
+      "consentDialogProtection1": "Krypterad i vila. Endast Ritoras egna AI-motor läser den.",
+      "consentDialogProtection2": "Säljs aldrig. Används aldrig för annonser. Skickas aldrig till tredje part.",
+      "consentDialogProtection3": "Aktivitetslogg finns i Inställningar · Sekretess.",
+      "consentDialogProtection4": "Radera när som helst med ett tryck.",
+      "consentDialogPrivacyLink": "Läs hela sekretessmeddelandet för hälsodata",
+      "consentDialogDecline": "Inte nu",
+      "consentDialogAccept": "Jag förstår. Fortsätt.",
+      "questionPregnancy": "Är du gravid, ammar eller försöker bli gravid?",
+      "pregnancyNotApplicableHint": "Förinställt baserat på ditt kön vid födseln.",
+      "whyPregnancy": "Vissa vanliga ingredienser är inte säkra under graviditet eller amning. Exempel: retinoider, salicylsyra i hög styrka, hydrokinon. Ritora utelämnar dem ur dina förslag.",
+      "questionConditions": "Har någon av dessa diagnostiserats av en läkare?",
+      "questionConditionsHint": "Tryck på alla som gäller, eller \"Ingen\".",
+      "whyConditions": "Tillstånd som rosacea reagerar dåligt på vanliga aktiva ämnen. Att veta dina diagnoser låter Ritora luta sig mot mildare rutiner.",
+      "questionMedications": "Tar du någon av dessa?",
+      "whyMedications": "Vissa mediciner gör huden mycket känslig. Andra orsakar fotokänslighet, vilket ändrar solskyddsråden.",
+      "questionPhotosensitizingOther": "Jag tar andra mediciner som kan ge fotokänslighet",
+      "questionProcedures": "Några behandlingar de senaste 90 dagarna?",
+      "whyProcedures": "Nyliga peelingar, laser eller microneedling försvagar hudbarriären. Ritora sänker rutinens intensitet under läkningsperioden.",
+      "questionDermCare": "Är du under en dermatologs vård just nu?",
+      "whyDermCare": "Om du är under aktiv behandling går din dermatologs plan före.",
+      "preferNotToSay": "Vill inte svara",
+      "none": "Ingen",
+      "noneOrPreferNotToSay": "Ingen / vill inte svara",
+      "whyWeAsk": "Varför vi frågar",
+      "skipRemaining": "Hoppa över resten",
+      "save": "Spara",
+      "questionsAnswered": "{answered} av {total} frågor besvarade",
+      "questionsAnsweredHint": "Du kan lämna resten tomt.",
+      "deleteThisData": "Radera denna data",
+      "deleteConfirmTitle": "Radera din medicinska kontext?",
+      "deleteConfirmBody": "Tar bort graviditetsstatus, åkommor, mediciner och nyliga behandlingar. Återkallar samtycket för hälsodata. Detta kan inte ångras.",
+      "deleteConfirmAction": "Radera",
+      "deleteCancel": "Behåll",
+      "deleted": "Medicinsk kontext raderad.",
+      "saved": "Sparat."
+    },
+    "consentCenter": {
+      "title": "Samtyckescenter",
+      "description": "När du återkallar ett samtycke raderas underliggande data omedelbart och en granskningspost skapas.",
+      "active": "Aktivt",
+      "notGranted": "Inte beviljat",
+      "activeCount": "{count} aktiva",
+      "encrypted": "Krypterad",
+      "aiSuggestionLabel": "AI-behandling av förslag",
+      "aiSuggestionDesc": "Tillåter Ritora att använda AI för schemalagda och snabba förslag. Känslig profil- eller journalkontext används bara när motsvarande samtycke också är aktivt.",
+      "grantAiSuggestion": "Tillåt AI-förslag",
+      "revokeAiSuggestion": "Återkalla",
+      "healthLabel": "Behandling av hälsokontext",
+      "healthDesc": "Graviditet, åkommor, mediciner, nyliga behandlingar, dermatologvård.",
+      "locationLabel": "Behandling av plats",
+      "locationDesc": "Land och stad låter Ritora anpassa förslag efter luftfuktighet, UV, luftkvalitet och säsongsskiften.",
+      "hormonalLabel": "Behandling av hormonell kontext",
+      "hormonalDesc": "Cykelmedvetenhet för cykliska utbrott.",
+      "grantedOn": "Beviljat",
+      "noticeVersion": "Meddelandeversion",
+      "noticeVersionValue": "v2026.01",
+      "lastAccessed": "Senast använt",
+      "viewStored": "Visa vad som lagras",
+      "hideStored": "Dölj",
+      "viewLog": "Visa åtkomstlogg",
+      "revoke": "Återkalla och radera",
+      "grant": "Bevilja samtycke",
+      "comingSoon": "Kommer snart",
+      "neverAccessed": "Inte använd ännu",
+      "auditLogComingSoon": "Aktivitetslogg visas här när Ritoras rekommendationsmotor börjar använda din data.",
+      "noStoredData": "Ingen data lagrad under detta samtycke.",
+      "yourDataTitle": "Din data",
+      "yourDataDesc": "Exportera eller radera allt när som helst.",
+      "downloadTitle": "Ladda ner all din data",
+      "downloadDesc": "Profil, hälsokontext (dekrypterad), samtyckeshistorik. Kommer snart.",
+      "downloadAction": "Ladda ner",
+      "deleteTitle": "Radera ditt konto",
+      "deleteDesc": "Schemalägger radering av din profil, hälsokontext, hylla, schema och granskningslogg efter en frist på 30 dagar.",
+      "deleteAction": "Radera konto",
+      "deleteUnavailable": "Kontoborttagning kommer snart. Kontakta support tills vidare.",
+      "deleteDialogTitle": "Radera ditt Ritora-konto?",
+      "deleteDialogPasswordBody": "Bekräfta ditt lösenord för att schemalägga raderingen. Vi loggar ut alla dina enheter direkt.",
+      "deleteDialogOAuthBody": "Vi skickar en bekräftelselänk till din inkorg. När du bekräftar loggar vi ut alla dina enheter direkt.",
+      "deleteDialogWhatHappensTitle": "Detta raderas",
+      "deleteDialogWhatHappensItem1": "Din profil, dina hudbilder och rutinhistorik",
+      "deleteDialogWhatHappensItem2": "Din hylla, ditt schema och sparade förslag",
+      "deleteDialogWhatHappensItem3": "Alla sessioner på alla inloggade enheter",
+      "deleteDialogGraceTitle": "Du har 30 dagar att ångra dig",
+      "deleteDialogGraceBody": "Vi sparar allt i 30 dagar. Logga in igen eller använd länken i mejlet för att avbryta innan dess. Efter dag 30 är raderingen permanent och kan inte ångras.",
+      "deletePasswordLabel": "Nuvarande lösenord",
+      "deletePasswordRequired": "Ange ditt lösenord för att fortsätta.",
+      "deleteCancel": "Behåll mitt konto",
+      "deleteScheduleAction": "Schemalägg radering",
+      "deleteOAuthAction": "Skicka bekräftelsemejl",
+      "deleteScheduling": "Schemalägger...",
+      "deleteConfirmationSending": "Skickar...",
+      "deleteScheduledToast": "Radering schemalagd. Vi har skickat ett mejl med en avbryt-länk.",
+      "deleteConfirmationRequiredToast": "Kontrollera din inkorg för att bekräfta kontoraderingen.",
+      "deleteFailed": "Vi kunde inte starta kontoraderingen. Försök igen.",
+      "grantLocationTitle": "Bevilja platssamtycke",
+      "grantLocationBody": "Lägg till plats på stadsnivå så Ritora kan ta hänsyn till luftfuktighet, UV, luftkvalitet och säsong.",
+      "grantLocationConfirm": "Bevilja och spara",
+      "grantLocationCancel": "Avbryt",
+      "cityPlaceholder": "Stockholm",
+      "grantLocationConsentLabel": "Jag samtycker till att Ritora behandlar mitt land och min stad.",
+      "grantHealthTitle": "Bevilja samtycke för hälsodata",
+      "grantHealthBody": "Öppna Medicinskt & Säkerhet för att lägga till din medicinska information. Du blir tillfrågad om uttryckligt samtycke innan något sparas.",
+      "grantHealthConfirm": "Öppna Medicinskt & Säkerhet",
+      "revokeLocationTitle": "Återkalla platssamtycke?",
+      "revokeLocationBody": "Vi rensar ditt land och din stad och återkallar samtycket. Förslagen blir inte längre klimatmedvetna.",
+      "revokeSuccess": "Samtycke återkallat.",
+      "grantSuccess": "Samtycke beviljat.",
+      "errorMissingFields": "Landskod krävs.",
+      "errorConsentRequired": "Samtycke krävs innan platsdata sparas.",
+      "yes": "Ja",
+      "no": "Nej",
+      "storedPregnancy": "Graviditet",
+      "storedConditions": "Tillstånd",
+      "storedMedications": "Mediciner",
+      "storedRecentProcedures": "Nyliga behandlingar",
+      "storedDermatologistCare": "Dermatologvård",
+      "storedCountry": "Land",
+      "storedCity": "Stad",
+      "storedCyclePattern": "Cykelmönster",
+      "storedBreakoutPattern": "Tidpunkt för utbrott",
+      "storedCycleRelated": "Cykelrelaterade utbrott",
+      "storedHormonalContraception": "Hormonellt preventivmedel",
+      "storedMenopause": "Klimakterierelaterade förändringar",
+      "storedAiSuggestionProcessing": "AI-behandling av förslag",
+      "loadingLog": "Läser in åtkomstlogg...",
+      "noAccessLog": "Inga granskningsposter ännu.",
+      "accessEventDataAccessed": "Data användes",
+      "accessEventConsentGranted": "Samtycke beviljades",
+      "accessEventConsentRevoked": "Samtycke återkallades",
+      "accessPurposeSkinProfileRead": "Hudprofil lästes",
+      "accessPurposeRecommendationAnalysis": "Rekommendationsanalys",
+      "accessPurposeAccountExport": "Kontodataexport",
+      "accessPurposeConsentGrant": "Samtycke beviljades",
+      "accessPurposeConsentRevoke": "Samtycke återkallades"
     },
     "fieldLabels": {
       "skinType": "Hudtyp",
       "skinTone": "Hudton",
-      "ageRange": "Åldersintervall",
+      "fitzpatrickPhototype": "Fitzpatrick-fototyp",
       "ethnicity": "Etnicitet",
       "concerns": "Hudproblem",
-      "sensitivities": "Känsligheter",
-      "goals": "Mål",
-      "routine": "Rutin",
+      "primaryGoal": "Främsta prioritet",
+      "sunBehavior": "Sol- och pigmentbeteende",
+      "routinePace": "Rutintempo",
+      "waterContext": "Vattenkontext",
+      "preferences": "Preferenser",
       "aboutYou": "Om dig",
+      "location": "Plats",
       "countryCode": "Landskod",
       "city": "Stad"
     },
-    "sensitivitiesLabel": "Kända känsligheter",
-    "sensitivitiesHint": "Ingredienser eller produkter som orsakat reaktioner tidigare.",
-    "sensitivitiesPlaceholder": "t.ex. Doft, Niacinamid",
-    "sensitivitiesAdd": "Lägg till",
-    "sensitivitiesRemove": "Ta bort {value}",
-    "routineDescriptions": {
-      "minimal": "Det viktigaste. Morgonrutin för skydd, kvällsrutin för reparation.",
-      "moderate": "Lägger till en uppfräschning mitt på dagen mellan dina huvudrutiner.",
-      "comprehensive": "Full flexibilitet. Morgon, mitt på dagen, kväll, plus situationsförslag."
-    },
     "validation": {
-      "invalidCountryCode": "Landskoden måste vara 2 bokstäver (t.ex. SE).",
-      "locationConsentRequired": "Platssamtycke krävs när land eller stad anges.",
-      "cityTooLong": "Stadens namn är för långt."
+      "invalidCountryCode": "Använd en 2-bokstavskod, t.ex. SE.",
+      "locationConsentRequired": "Tillåt plats för att spara land eller stad.",
+      "cityTooLong": "Stadens namn är för långt.",
+      "required": "Fyll i detta fält.",
+      "invalidDate": "Ange ett verkligt datum, t.ex. 27 4 1985.",
+      "birthDateOutOfRange": "Använd ett datum för någon mellan 5 och 80 år.",
+      "skinTypeRequired": "Välj en hudtyp.",
+      "skinToneRequired": "Välj en hudton.",
+      "phototypeRequired": "Välj en fototyp.",
+      "dateOfBirthRequired": "Ange ditt födelsedatum.",
+      "sexAtBirthRequired": "Välj kön vid födseln.",
+      "ethnicityRequired": "Välj etnicitet.",
+      "concernsRequired": "Välj minst ett hudproblem.",
+      "primaryGoalRequired": "Välj din främsta prioritet.",
+      "severityRequired": "Välj en allvarlighetsgrad.",
+      "tendencyRequired": "Välj hur ofta.",
+      "sunscreenHabitRequired": "Välj hur ofta du använder solskydd.",
+      "sunscreenToleranceRequired": "Välj hur solskydd känns på din hud.",
+      "routinePaceRequired": "Välj ett rutintempo.",
+      "fragranceFreeRequired": "Välj ja eller nej för doftfritt.",
+      "nonComedogenicRequired": "Välj ja eller nej för icke-komedogent.",
+      "sunscreenFilterRequired": "Välj ett solskyddsfilter.",
+      "sunscreenFinishRequired": "Välj en solskyddsfinish.",
+      "budgetTierRequired": "Välj en budget.",
+      "allowSmartPicksRequired": "Välj ja eller nej för Smart Picks.",
+      "waterHardnessRequired": "Välj ett alternativ för vattnets hårdhet.",
+      "waterSensitivityRequired": "Välj ett alternativ för vattenkänslighet.",
+      "waterNotesTooLong": "Håll vattenanteckningen under 180 tecken."
     },
     "options": {
       "oily": "Fet",
@@ -709,6 +1406,10 @@
       "middle_eastern": "Mellanöstern",
       "mixed": "Blandad",
       "other": "Annat",
+      "unknown": "Okänt",
+      "soft": "Mjukt",
+      "hard": "Hårt",
+      "confirmed": "Bekräftad",
       "acne": "Akne",
       "dark_marks": "Mörka märken",
       "dryness": "Torrhet",
@@ -720,6 +1421,7 @@
       "barrier_damage": "Barriärskada",
       "eczema": "Eksem",
       "uneven_tone": "Ojämn ton",
+      "post-breakout marks": "Märken efter utbrott",
       "clear_acne": "Ren akne",
       "fade_dark_marks": "Tona ut mörka märken",
       "improve_texture": "Förbättra struktur",
@@ -728,9 +1430,142 @@
       "minimize_pores": "Minimera porer",
       "even_tone": "Jämn ton",
       "general_maintenance": "Allmänt underhåll",
-      "minimal": "Morgon och kväll",
-      "moderate": "Morgon, mitt på dagen och kväll",
-      "comprehensive": "När Ritora föreslår"
+      "moderate": "Måttlig",
+      "I": "Bränns alltid, blir aldrig brun. Fototyp I.",
+      "II": "Bränns oftast, blir lite brun. Fototyp II.",
+      "III": "Bränns ibland, blir gradvis brun. Fototyp III.",
+      "IV": "Bränns sällan, blir bra brun. Fototyp IV.",
+      "V": "Bränns mycket sällan, blir djupt brun. Fototyp V.",
+      "VI": "Bränns aldrig, djupt pigmenterad. Fototyp VI.",
+      "low": "Låg",
+      "moderate_level": "Måttlig",
+      "high": "Hög",
+      "very_high": "Mycket hög",
+      "well_hydrated": "Välhydrerad",
+      "dehydrated": "Uttorkad",
+      "very_dehydrated": "Mycket uttorkad",
+      "not_pregnant": "Inte gravid",
+      "trying_to_conceive": "Försöker bli gravid",
+      "pregnant": "Gravid",
+      "breastfeeding": "Ammar",
+      "prefer_not_to_say": "Vill inte svara",
+      "female": "Kvinna",
+      "male": "Man",
+      "intersex": "Intersexuell",
+      "rosacea": "Rosacea",
+      "psoriasis": "Psoriasis",
+      "perioral_dermatitis": "Perioral dermatit",
+      "seborrheic_dermatitis": "Seborroisk dermatit",
+      "melasma": "Melasma",
+      "vitiligo": "Vitiligo",
+      "keratosis_pilaris": "Keratosis pilaris",
+      "isotretinoin": "Isotretinoin (Accutane)",
+      "topical_retinoid": "Topisk retinoid",
+      "topical_antibiotic": "Topisk antibiotika",
+      "oral_antibiotic": "Oral antibiotika",
+      "hormonal_contraceptive": "Hormonellt preventivmedel",
+      "hrt": "Hormonbehandling",
+      "topical_corticosteroid": "Topisk kortikosteroid",
+      "other_photosensitizing": "Annat fotokänsligt",
+      "chemical_peel": "Kemisk peeling",
+      "laser": "Laserbehandling",
+      "microneedling": "Microneedling",
+      "microdermabrasion": "Mikrodermabrasion",
+      "botox": "Botox",
+      "filler": "Filler",
+      "yes_actively": "Ja, aktivt",
+      "yes_occasional": "Ja, ibland",
+      "no": "Nej",
+      "never": "Aldrig",
+      "sometimes": "Ibland",
+      "often": "Ofta",
+      "always": "Alltid",
+      "rarely": "Sällan",
+      "when_outside": "När jag är ute",
+      "most_days": "De flesta dagar",
+      "every_day": "Varje dag",
+      "fine": "Bra",
+      "a_bit_irritating": "Lite irriterande",
+      "often_irritating": "Ofta irriterande",
+      "havent_tried_many": "Har inte testat många",
+      "chemical": "Kemisk",
+      "mineral": "Mineral",
+      "hybrid": "Hybrid",
+      "matte": "Matt",
+      "dewy": "Dewy",
+      "tinted": "Tonad",
+      "natural": "Naturlig",
+      "ingredient": "Ingrediens",
+      "product": "Produkt",
+      "category": "Kategori",
+      "fragrance": "Doft",
+      "preservative": "Konserveringsmedel",
+      "redness_reaction": "Rodnad",
+      "itch": "Klåda",
+      "stinging": "Sveda",
+      "dryness_reaction": "Torrhet",
+      "breakout": "Utbrott",
+      "breakout_reaction": "Utbrott",
+      "hives": "Nässelutslag",
+      "swelling": "Svullnad",
+      "mild": "Mild",
+      "severe": "Allvarlig",
+      "suspected": "Misstänkt",
+      "confirmed_repeat": "Bekräftad (upprepad exponering)",
+      "confirmed_patch_test": "Bekräftad (plåstertest)",
+      "under_6": "Under 6 timmar",
+      "6_to_8": "6 till 8 timmar",
+      "over_8": "Över 8 timmar",
+      "high_sugar": "Mycket socker",
+      "high_dairy": "Mycket mejeri",
+      "low_sugar": "Lite socker",
+      "low_dairy": "Lite mejeri",
+      "vegan_diet": "Vegan",
+      "vegetarian": "Vegetarian",
+      "occasional": "Ibland",
+      "regular": "Regelbundet",
+      "dry_air": "Torr luft",
+      "humidity": "Luftfuktighet",
+      "cold": "Kyla",
+      "pollution": "Föroreningar",
+      "heat": "Värme",
+      "retinoids": "Retinoider (retinol, tretinoin)",
+      "aha": "AHA (glykolsyra, mjölksyra)",
+      "bha": "BHA (salicylsyra)",
+      "pha": "PHA",
+      "benzoyl_peroxide": "Benzoylperoxid",
+      "vitamin_c": "C-vitamin",
+      "niacinamide": "Niacinamid",
+      "azelaic_acid": "Azelainsyra",
+      "exfoliation": "Fysisk exfoliering",
+      "never_tried": "Aldrig provat",
+      "tolerates_well": "Tolererar bra",
+      "sensitive_to_it": "Känslig för det",
+      "cannot_use": "Kan inte använda",
+      "slow": "Långsam",
+      "cautious": "Försiktig",
+      "aggressive": "Aggressiv",
+      "drugstore": "Apotek",
+      "mid": "Mellansegment",
+      "premium": "Premium",
+      "luxury": "Lyx",
+      "lightweight": "Lätt",
+      "rich": "Rik",
+      "gel": "Gel",
+      "cream": "Kräm",
+      "oil_free": "Oljefri",
+      "vegan": "Vegansk",
+      "cruelty_free": "Cruelty-free",
+      "fragrance_free": "Doftfri",
+      "clean": "Clean",
+      "none": "Ingen",
+      "irregular": "Oregelbunden",
+      "not_applicable": "Inte tillämpligt",
+      "not_sure": "Osäker",
+      "before_period": "Före mens",
+      "during_period": "Under mens",
+      "ovulation": "Vid ägglossning",
+      "random": "Slumpmässigt"
     }
   },
   "shelf": {
@@ -802,6 +1637,14 @@
       "cta": "Lägg till din första produkt",
       "filtered": "Inga produkter matchar ditt nuvarande filter."
     },
+    "prerequisites": {
+      "profile": {
+        "title": "Färdigställ din hudprofil först",
+        "body": "Ritora behöver din hudprofil innan produktdetaljer kan användas säkert i rutiner, analys eller förslag.",
+        "cta": "Öppna hudprofil",
+        "loadError": "Vi kan inte nå din hudprofil just nu. Kontrollera anslutningen och försök igen."
+      }
+    },
     "errors": {
       "retry": "Försök igen",
       "loadShelfTitle": "Vi kunde inte läsa din hylla",
@@ -844,7 +1687,7 @@
     },
     "dialog": {
       "title": "Lägg till på din hylla",
-      "subtitle": "Ladda upp en produktbild och etikettbilder, eller fyll i manuellt.",
+      "subtitle": "Ladda upp en produktbild och etikettbilder så att Ritora kan läsa produkten innan du sparar.",
       "close": "Stäng",
       "step": "Steg {current} av 2",
       "photos": {
@@ -874,7 +1717,7 @@
         "extracting": "Läser dina foton…",
         "partial": "Vissa fält behöver fortfarande granskas — se de markerade fälten nedan.",
         "errorTitle": "Kunde inte läsa fotona",
-        "error": "Prova tydligare etikettfoton eller fyll i manuellt.",
+        "error": "Prova tydligare produkt- och etikettbilder.",
         "serviceUnavailableTitle": "Kunde inte nå fotoläsaren",
         "serviceUnavailableDescription": "Kontrollera din anslutning och försök igen. Dina foton finns kvar.",
         "serviceUnavailable": "Kunde inte nå fotoläsaren. Kontrollera din anslutning och försök igen.",
@@ -888,7 +1731,8 @@
       "lookupImport": {
         "title": "Detaljer ifyllda",
         "description": "Ändra något innan du sparar.",
-        "reviewDescription": "Granska de markerade fälten innan du sparar."
+        "reviewDescription": "Granska de markerade fälten innan du sparar.",
+        "requiredError": "Extrahera produktdetaljer från foton innan du sparar."
       },
       "lookupReview": {
         "title": "Importerade detaljer att granska",
@@ -897,7 +1741,7 @@
         "confidenceLabel": "Tillförlitlighet",
         "warningsLabel": "Det här bör du granska",
         "evidenceLabel": "Underliggande källor",
-        "lowConfidenceError": "Vi kunde inte verifiera tillräckligt med produktdetaljer för att fylla i formuläret på ett säkert sätt. Prova tydligare bilder eller fyll i uppgifterna manuellt."
+        "lowConfidenceError": "Vi kunde inte verifiera tillräckligt med produktdetaljer för att fylla i formuläret på ett säkert sätt. Prova tydligare bilder."
       },
       "manual": {
         "heading": "Lägg till manuellt",
@@ -1088,6 +1932,7 @@
         "source": "Data från {source}, bekräftad av dig {date}."
       },
       "actions": {
+        "compare": "Jämför",
         "edit": "Redigera",
         "archive": "Arkivera",
         "markFinished": "Markera som förbrukad",
@@ -1148,11 +1993,7 @@
       "either": "morgon eller kväll"
     },
     "provenance": {
-      "photo-lookup": "fotoextraktion",
-      "barcode-lookup": "streckkodsuppslag",
-      "url-fetch": "tillverkarens länk",
-      "catalogue": "Ritoras katalog",
-      "user-entered": "egna uppgifter"
+      "photo-lookup": "fotoextraktion"
     },
     "templates": {
       "pickOne": "Välj en mall",
@@ -1264,6 +2105,18 @@
     "accept": "Acceptera",
     "reject": "Avvisa"
   },
+  "mobileNav": {
+    "ariaLabel": "Primär navigation",
+    "menuAriaLabel": "Öppna meny",
+    "badge": "{count, plural, one {# oläst} other {# olästa}}",
+    "items": {
+      "home": "Hem",
+      "check": "Kolla",
+      "today": "Idag",
+      "notifications": "Notiser",
+      "more": "Mer"
+    }
+  },
   "sidebar": {
     "toggleSidebar": "Växla sidofält",
     "navigation": "Navigation",
@@ -1273,12 +2126,14 @@
       "account": "Konto"
     },
     "soonBadge": "Snart",
+    "badgeLabel": "{count, plural, one {# sak behöver uppmärksamhet} other {# saker behöver uppmärksamhet}}",
     "items": {
       "home": "Hem",
+      "checkProduct": "Snabbkoll",
       "skinProfile": "Hudprofil",
       "shelf": "Hylla",
       "todaysSuggestion": "Dagens förslag",
-      "schedule": "Schema",
+      "schedule": "Rutin",
       "skinJournal": "Huddagbok",
       "smartPicks": "Smarta val",
       "history": "Historik",
@@ -1288,6 +2143,7 @@
     },
     "descriptions": {
       "homeDescription": "Daglig översikt med installationsframsteg och vad som behöver uppmärksamhet.",
+      "checkProductDescription": "En snabb läsning av om en produkt passar dig innan du köper eller använder den.",
       "skinProfileDescription": "Din hudtyp, bekymmer, mål och platskontext.",
       "shelfDescription": "Lägg till och hantera de hudvårdsprodukter du äger.",
       "todaysSuggestionDescription": "AI-kurerade produktpar för din morgon- och kvällsvård.",
@@ -1348,6 +2204,294 @@
       "description": "Rutinpåminnelser, produktutgångsvarningar, låg lagernivåvarningar, framstegsincheckningar och vilopåminnelser. Allt konfigurerbart efter ditt schema."
     }
   },
+  "checkProduct": {
+    "page": {
+      "title": "Snabbkoll",
+      "body": "Se om en produkt passar din hud och rutin innan du köper eller använder den. Klistra in ingredienserna eller fota en etikett."
+    },
+    "tabsLabel": "Metod för snabbkoll",
+    "tabs": {
+      "paste": "Klistra in ingredienser",
+      "photos": "Foton"
+    },
+    "compare": {
+      "checkedProductFallback": "Kontrollerad produkt",
+      "cardTitle": "Jämför med din hylla",
+      "cardBody": "Se hur den står sig mot produkter du redan äger.",
+      "cardAction": "Öppna jämförelse"
+    },
+    "paste": {
+      "brandLabel": "Varumärke",
+      "brandPlaceholder": "Produktens varumärke",
+      "nameLabel": "Produktnamn",
+      "namePlaceholder": "Till exempel Barrier Repair Serum",
+      "categoryLabel": "Kategori",
+      "ingredientsLabel": "Ingredienser",
+      "ingredientsPlaceholder": "Klistra in INCI-ingredienser separerade med kommatecken eller nya rader.",
+      "parsedCount": "{count, plural, =0 {Inga ingredienser hittade ännu} one {# ingrediens hittad} other {# ingredienser hittade}}",
+      "checkingAction": "Kontrollerar...",
+      "checkAction": "Kör snabbkoll"
+    },
+    "photos": {
+      "heading": "Foton",
+      "helper": {
+        "needLabels": "Lägg till ett foto så att Ritora kan läsa INCI-listan.",
+        "ready": "Ser bra ut. Kör snabbkollen när du är redo."
+      },
+      "addAction": "Lägg till foto",
+      "removeAction": "Ta bort foto",
+      "shapeTips": {
+        "heading": "Tips per förpackningstyp",
+        "rectangular": "Kartong eller rektangulär: fånga fram- och baksidan, eller sidan med mest text.",
+        "cylindrical": "Flaska, tub eller cylinder: ta 3 till 4 överlappande foton medan du roterar runt förpackningen. Håll viktig text borta från böjda kanter.",
+        "roundJar": "Burk, sfär eller rund: fånga ovansidan eller locket, plus 2 till 3 sidosektioner med ett kvarts varv mellan bilderna.",
+        "pouch": "Påse eller sachet: lägg den platt och ta ett foto per tryckt sida."
+      },
+      "extractingAction": "Läser foton...",
+      "checkingAction": "Kontrollerar...",
+      "checkAction": "Kör snabbkoll"
+    },
+    "result": {
+      "eyebrow": "Produktomdöme",
+      "scoreLabel": "Säkerhetspoäng",
+      "scoreUnknown": "Inte tillräckligt med data",
+      "confidence": {
+        "high": "Hög tillförlitlighet",
+        "medium": "Medel tillförlitlighet",
+        "low": "Låg tillförlitlighet"
+      },
+      "labels": {
+        "good_fit": "Bra matchning",
+        "good_with_limits": "Bra med begränsningar",
+        "use_carefully": "Använd försiktigt",
+        "avoid_for_profile": "Undvik för din profil",
+        "ingredients_only": "Endast ingrediensguide",
+        "not_enough_data": "Inte tillräckligt med data"
+      },
+      "nextActions": {
+        "add_to_shelf": "Lägg till på hyllan om du använder den.",
+        "use_as_planned": "Ser lämplig ut att använda om den passar din rutin.",
+        "review_and_patch_test": "Granska ingredienserna och lapptesta före användning.",
+        "review_ingredients": "Kontrollera ingredienslistan innan du bestämmer dig.",
+        "review_smart_picks": "Jämför med Smart Picks innan du köper.",
+        "complete_profile": "Lägg till din hudkontext innan du litar på detta för reaktionsrisk.",
+        "skip_product": "Hoppa över produkten tills vidare."
+      },
+      "reasons": {
+        "insufficient_ingredients": "Ingredienslistan saknas eller är för tunn.",
+        "high_conflict": "En allvarlig konflikt matchade din profil.",
+        "medium_conflict": "En måttlig konflikt behöver uppmärksamhet.",
+        "low_conflict": "Ett milt fynd är värt att notera.",
+        "duplicate_exposure": "Det här duplicerar en aktiv ingrediens som redan finns i din rutin.",
+        "product_reaction_signal": "En liknande produkt har reaktionssignaler nära loggad användning.",
+        "missing_personal_context": "Ritora har inte tillräckligt med personlig kontext för att bedöma din reaktionsrisk.",
+        "missing_reaction_context": "Ingen reaktionshistorik är tillgänglig, så detta kan inte utesluta en personlig trigger.",
+        "recent_journal_reaction": "Nya Skin Journal-poster innehåller reaktionssignaler.",
+        "suggestion_history_reaction": "Tidigare förslag förenklades eftersom reaktionsrisk upptäcktes.",
+        "low_confidence": "Analysen har låg tillförlitlighet.",
+        "review_required": "Den extraherade ingredienslistan behöver granskas.",
+        "sensitive_profile": "Din känsliga hudkontext påverkar rekommendationen.",
+        "reaction_trigger": "En ingrediens kan överlappa med din reaktionshistorik.",
+        "photosensitizing_active": "En fotosensibiliserande aktiv ingrediens kräver försiktig timing."
+      },
+      "reasonIngredients": "({ingredients})",
+      "noReasons": "Inga större ingrediensrisker matchade din profil."
+    },
+    "details": {
+      "findingsHeading": "Ingrediensskäl",
+      "findingsBody": "Det här är de specifika kombinationerna bakom omdömet.",
+      "reactionHeading": "Reaktionsevidens",
+      "reactionBody": "Ritora kontrollerade samtyckt reaktionshistorik och nya rutinsignaler utan att använda råa journalanteckningar eller foton.",
+      "reactionStats": "{reactions, plural, one {# reaktionssignal} other {# reaktionssignaler}} nära {usageDays, plural, one {# loggad användningsdag} other {# loggade användningsdagar}}.",
+      "evidenceIngredients": "Ingrediensmatchning: {ingredients}",
+      "evidence": {
+        "profile_reaction_trigger": "Matchar din reaktionshistorik",
+        "shelf_reaction_signal": "Liknande hyllprodukt hade reaktionssignaler"
+      },
+      "routineHeading": "Pengasparande kontext",
+      "routineBody": "Ritora jämförde produkten med aktiva hyllprodukter för att fånga dupliceringar innan du köper.",
+      "smartPicksTitle": "Jämför innan köp",
+      "smartPicksBody": "Smart Picks kan hjälpa dig hitta alternativ som passar din rutin och budget.",
+      "smartPicksCta": "Öppna Smart Picks",
+      "alternativeCategory": "För: {category}",
+      "alternativeSellers": "Finns hos: {sellers}",
+      "context": {
+        "educationalTitle": "Ingrediensutbildningsläge",
+        "educationalBody": "Ritora kan förklara ingredienserna, men kan inte bedöma din personliga reaktionsrisk förrän du lägger till hudkontext, hylla, journal eller förslagshistorik.",
+        "personalizedTitle": "Personligt med dina Ritora-data",
+        "personalizedBody": "Den här kontrollen använde tillgänglig kontokontext för att göra omdömet mer specifikt.",
+        "signals": {
+          "skin_profile": "Hudprofil",
+          "reaction_history": "Reaktionshistorik",
+          "active_shelf": "Aktiv hylla",
+          "skin_journal": "Skin Journal",
+          "suggestion_history": "Förslagshistorik"
+        }
+      }
+    },
+    "empty": {
+      "title": "Ditt omdöme visas här",
+      "body": "Klistra in en produkts ingredienser eller fota en etikett, så säger Ritora om den passar din hud och rutin."
+    },
+    "errors": {
+      "checkFailed": "Vi kunde inte kontrollera produkten. Försök igen om en stund.",
+      "incompletePhotoProduct": "Vi behöver läsbara ingredienser innan fotona kan kontrolleras."
+    },
+    "categories": {
+      "cleanser": "Rengöring",
+      "toner": "Toner",
+      "essence": "Essence",
+      "serum": "Serum",
+      "moisturizer": "Fuktkräm",
+      "sun-protection": "Solskydd",
+      "mask": "Mask",
+      "exfoliant": "Exfoliant",
+      "eye-care": "Ögonvård",
+      "lip-care": "Läppvård",
+      "treatment": "Behandling",
+      "other": "Annat"
+    }
+  },
+  "productCompare": {
+    "quickCheck": {
+      "sheet": {
+        "trigger": "Jämför med hyllan",
+        "title": "Jämför före köp",
+        "description": "Välj hyllprodukter att väga mot den här innan du köper.",
+        "info": {
+          "trigger": "Om jämförelsen",
+          "title": "Vad vi kollar innan du köper",
+          "body": "Detta väger produkten du just kontrollerat mot produkter på din hylla så att du kan avgöra om du ska köpa den.",
+          "bullet1": "Är produkten en dubblett av något på din hylla?",
+          "bullet2": "Krockar den med något du redan använder?",
+          "bullet3": "Fyller den ett verkligt gap eller bara mer av samma sak?",
+          "bullet4": "Passar den bättre som ersättning än som extra?"
+        },
+        "anchorLabel": "Ny produkt",
+        "selectionCount": "{count}/{max} valda",
+        "pickHeading": "Produkter du redan äger",
+        "clearSelection": "Rensa",
+        "ingredientCount": "{count, plural, one {# ingrediens} other {# ingredienser}}",
+        "emptyShelf": "Lägg till produkter med ingredienser på hyllan innan du jämför.",
+        "emptyShelfAction": "Till hyllan",
+        "compareCta": "Välj hyllprodukter",
+        "compareSelected": "{count, plural, one {Jämför med # hyllprodukt} other {Jämför med # hyllprodukter}}",
+        "compareAgain": "Jämför igen",
+        "compareAction": "Kör köpkontroll",
+        "comparing": "Jämför med hyllan...",
+        "error": "Vi kunde inte jämföra produkten med din hylla. Försök igen om en stund."
+      },
+      "result": {
+        "eyebrow": "Före köp",
+        "winner": "Bättre val",
+        "noWinnerProduct": "Ingen tydlig köpanledning",
+        "unknownScore": "okänt",
+        "itemMeta": "Poäng {score} · {confidence}",
+        "keyActives": "Viktiga aktiva: {actives}",
+        "ingredients": "({ingredients})",
+        "stats": {
+          "conflicts": "{count, plural, one {# konflikt} other {# konflikter}}",
+          "overlaps": "{count, plural, one {# överlapp} other {# överlapp}}",
+          "reactions": "{count, plural, one {# reaktionssignal} other {# reaktionssignaler}}"
+        },
+        "confidence": {
+          "high": "hög tillförlitlighet",
+          "medium": "medel tillförlitlighet",
+          "low": "låg tillförlitlighet"
+        },
+        "outcomes": {
+          "choose_anchor": "{product} verkar värd att överväga",
+          "choose_candidate": "Fortsätt med {product} istället",
+          "no_clear_winner": "Ingen tydlig anledning att köpa",
+          "not_enough_data": "Inte tillräckligt med data"
+        },
+        "reasons": {
+          "better_fit": "Det här alternativet har starkare helhetspassform.",
+          "lower_conflict": "Det har färre eller mildare ingredienskonflikter.",
+          "less_duplicate_exposure": "Det ger mindre dubblettexponering i rutinen.",
+          "reaction_risk": "Reaktionssignaler gör det andra alternativet mindre tryggt.",
+          "missing_personal_context": "Mer personlig kontext skulle förbättra jämförelsen.",
+          "not_enough_data": "En produkt saknar tillräckligt tillförlitlig ingrediensdata.",
+          "similar_tradeoffs": "Produkterna har liknande tradeoffs.",
+          "already_owned": "Detta överlappar mycket med något som redan finns på din hylla.",
+          "replacement_only": "Köpet passar bäst som ersättning, inte som extra produkt.",
+          "different_routine_roles": "Produkterna fyller olika roller i rutinen, så detta är inte ett direkt ersättningsbeslut.",
+          "routine_conflict": "Detta kan krocka med något du redan använder.",
+          "use_together_carefully": "Lägg inte dessa ovanpå varandra utan en tydlig plan för att separera dem.",
+          "fills_routine_gap": "Detta verkar fylla en annan roll än hyllprodukterna du valde."
+        }
+      }
+    },
+    "shelf": {
+      "sheet": {
+        "trigger": "Jämför ägda produkter",
+        "title": "Jämför ägda produkter",
+        "description": "Välj en hyllprodukt för att se hur de fungerar tillsammans.",
+        "info": {
+          "trigger": "Om jämförelsen",
+          "title": "Vad vi kollar för produkter du äger",
+          "body": "Detta väger produkter som redan finns på din hylla så att du kan avgöra hur du använder dem, inte om du ska köpa fler.",
+          "bullet1": "Vilken passar din hud bättre just nu",
+          "bullet2": "Om de överlappar så mycket att en räcker",
+          "bullet3": "Om du kan använda båda tillsammans",
+          "bullet4": "Om någon kan dela triggers med tidigare reaktioner"
+        },
+        "anchorLabel": "Hyllprodukt",
+        "selectionCount": "{count}/{max} valda",
+        "pickHeading": "Jämför med",
+        "clearSelection": "Rensa",
+        "ingredientCount": "{count, plural, one {# ingrediens} other {# ingredienser}}",
+        "emptyShelf": "Lägg till en annan aktiv produkt med ingredienser innan du jämför ägda produkter.",
+        "emptyShelfAction": "Till hyllan",
+        "compareCta": "Välj ägda produkter",
+        "compareSelected": "{count, plural, one {Granska # ägd produkt} other {Granska # ägda produkter}}",
+        "compareAgain": "Granska igen",
+        "compareAction": "Granska ägda produkter",
+        "comparing": "Granskar produkter...",
+        "error": "Vi kunde inte granska hyllprodukterna. Försök igen om en stund."
+      },
+      "result": {
+        "eyebrow": "Hyllbeslut",
+        "winner": "Huvudval",
+        "noWinnerProduct": "Ingen produkt behöver vinna",
+        "unknownScore": "okänt",
+        "itemMeta": "Poäng {score} · {confidence}",
+        "keyActives": "Viktiga aktiva: {actives}",
+        "ingredients": "({ingredients})",
+        "stats": {
+          "conflicts": "{count, plural, one {# konflikt} other {# konflikter}}",
+          "overlaps": "{count, plural, one {# överlapp} other {# överlapp}}",
+          "reactions": "{count, plural, one {# reaktionssignal} other {# reaktionssignaler}}"
+        },
+        "confidence": {
+          "high": "hög tillförlitlighet",
+          "medium": "medel tillförlitlighet",
+          "low": "låg tillförlitlighet"
+        },
+        "outcomes": {
+          "choose_anchor": "{product} är starkare att fortsätta använda",
+          "choose_candidate": "{product} är starkare att fortsätta använda",
+          "no_clear_winner": "Ingen enskild produkt behöver vinna",
+          "not_enough_data": "Inte tillräckligt med data"
+        },
+        "reasons": {
+          "better_fit": "Det här alternativet har starkare helhetspassform för fortsatt användning.",
+          "lower_conflict": "Det har färre eller mildare ingredienskonflikter.",
+          "less_duplicate_exposure": "Det ger mindre dubblettexponering i rutinen.",
+          "reaction_risk": "Reaktionssignaler gör det andra alternativet mindre tryggt.",
+          "missing_personal_context": "Mer personlig kontext skulle förbättra hyllbeslutet.",
+          "not_enough_data": "En produkt saknar tillräckligt tillförlitlig ingrediensdata.",
+          "similar_tradeoffs": "Produkterna har liknande tradeoffs.",
+          "already_owned": "De här ägda produkterna överlappar mycket.",
+          "replacement_only": "Använd en som huvudprodukt eller ersätt den ena med den andra; båda kanske inte tillför mycket.",
+          "different_routine_roles": "De fyller olika roller i rutinen, så behandla dem inte som ersättare.",
+          "routine_conflict": "Produkterna kan krocka om de används tillsammans.",
+          "use_together_carefully": "Separera dem i rutinen istället för att lägga dem ovanpå varandra.",
+          "fills_routine_gap": "En produkt fyller en roll som den andra inte täcker."
+        }
+      }
+    }
+  },
   "ingredients": {
     "panel": {
       "heading": "Ingrediensintelligens",
@@ -1359,6 +2503,19 @@
       "low": "Låg",
       "medium": "Medel",
       "high": "Hög"
+    },
+    "conflict": {
+      "title": "{ingredientA} + {ingredientB}",
+      "showWhy": "Visa varför",
+      "hideWhy": "Dölj varför",
+      "mitigation": "Säkrare plan"
+    },
+    "overlap": {
+      "title": "{ingredient}",
+      "productCountSingle": "Finns i {count} produkt",
+      "productCountPlural": "Finns i {count} produkter",
+      "showWhy": "Visa varför",
+      "hideWhy": "Dölj varför"
     },
     "actives": {
       "heading": "Aktiva ingredienser",
@@ -1400,7 +2557,7 @@
     }
   },
   "schedule": {
-    "title": "Schema",
+    "title": "Rutin",
     "subtitle": "Sätt upp dina dagliga hudvårdsrutiner.",
     "timeZone": {
       "label": "Schematidszon: {timeZone}"
@@ -1418,6 +2575,13 @@
     "empty": {
       "headline": "Bygg din veckorutin",
       "body": "Lägg till en tid för alla dagar, eller bygg varje dag separat."
+    },
+    "prerequisites": {
+      "product": {
+        "title": "Lägg till en produkt först",
+        "body": "Rutiner schemalägger produkterna på din hylla. Lägg till en för att komma igång.",
+        "cta": "Lägg till produkt"
+      }
     },
     "days": {
       "mon": "Måndag",
@@ -1466,6 +2630,20 @@
       "aiShort": "AI",
       "aiDescription": "Smarta val"
     },
+    "aiConsentNudge": {
+      "title": "Personliga rutiner anpassade efter din hud",
+      "body": "Slå på AI-förslag och Ritora anpassar varje schemalagd rutin efter din hudprofil, hylla och senaste journalanteckningar.",
+      "benefits": {
+        "matchProfile": "Rutiner som matchar dina mål och toleranser",
+        "adaptToShelf": "Anpassar sig efter produkterna du faktiskt äger",
+        "revokeAnytime": "Du har kontrollen. Stäng av när som helst i Inställningar."
+      },
+      "privacy": "Dina data är krypterade och säljs aldrig.",
+      "action": "Tillåt AI-förslag",
+      "dismiss": "Kanske senare",
+      "saved": "AI-förslag aktiverade.",
+      "error": "Vi kunde inte spara samtycket. Försök igen."
+    },
     "addDialog": {
       "titleSingle": "Lägg till tid",
       "titleEveryDay": "Lägg till varje dag",
@@ -1502,6 +2680,16 @@
       "notesPlaceholderAI": "t.ex. Huden känns stram idag, var försiktig med aktiva.",
       "notesEmpty": "Inga anteckningar ännu. Det du lägger till följer med rutinen.",
       "notesCounter": "{current} / {max}",
+      "specialist": {
+        "title": "Specialistrutin",
+        "body": "Använd detta när en dermatolog, hudterapeut eller klinik har gett instruktioner för denna tid.",
+        "providerName": "Specialistens namn",
+        "clinicName": "Klinik",
+        "activeSince": "Aktiv sedan",
+        "safetyNotes": "Säkerhetsanteckningar från specialist",
+        "safetyNotesPlaceholder": "t.ex. Behåll tretinoin måndag/torsdag. Lägg inte till peeling runt detta steg.",
+        "privacyHint": "Lägg bara till detaljer du vill att Ritora ska använda för att skydda specialistlåsta steg."
+      },
       "stepsLabel": "Steg",
       "stepsDescription": "Din rutin i appliceringsordning. Rengöringar först, SPF sist. Dra för att ändra ordning.",
       "stepsCount": "{current} / {max}",
@@ -1510,7 +2698,7 @@
       "manualEmpty": "Inga steg ännu. Lägg till en produkt för att börja bygga din rutin.",
       "aiPlaceholderTitle": "AI-förslag kommer snart",
       "aiPlaceholderBody": "När AI-motorn lanseras kommer den att välja produkter från din Hylla med dina anteckningar som kontext.",
-      "switchToManual": "Växla till Manuell för nu →",
+      "switchToManual": "Växla till Manuell för nu",
       "confirmDeleteTitle": "Radera denna tid?",
       "confirmDeleteBody": "Detta tar bort tiden och alla steg du har lagt till. Detta kan inte ångras.",
       "confirmDelete": "Radera",
@@ -1527,6 +2715,9 @@
       "productMissing": "Saknad produkt — välj igen",
       "notesPlaceholder": "Anteckningar (valfritt)",
       "optionalLabel": "Valfritt steg",
+      "optionalHint": "Att hoppa över räknas inte som missad rutin.",
+      "specialistLockedLabel": "Ordinerat av min specialist",
+      "specialistLockedHint": "AI behåller steget exakt som du satt det. Ingen omordning, ersättning eller borttagning.",
       "delete": "Ta bort steg",
       "dragHandle": "Dra för att ordna om"
     },
@@ -1564,7 +2755,7 @@
       "noteCalloutLabel": "Kontext AI kommer att använda",
       "aiPlaceholder": "AI-förslag kommer snart",
       "aiPlaceholderBody": "Vi väljer från din Hylla.",
-      "manualEmpty": "Lägg till steg på Schema →",
+      "manualEmpty": "Lägg till steg på Schema",
       "nothingScheduled": "Inget schemalagt idag",
       "nothingScheduledBody": "Lägg till din första rutin på Schema-sidan.",
       "goToSchedule": "Öppna Schema"
@@ -1585,9 +2776,2062 @@
       "customLabelRequired": "Anpassad etikett krävs.",
       "customLabelMax": "Anpassad etikett är för lång.",
       "slotNotesMax": "Anteckningarna är för långa.",
+      "specialistProviderNameMax": "Specialistens namn är för långt.",
+      "specialistClinicNameMax": "Kliniknamnet är för långt.",
+      "specialistActiveSinceFormat": "Använd ett giltigt datum i formatet ÅÅÅÅ-MM-DD.",
+      "specialistSafetyNotesMax": "Specialistens säkerhetsanteckningar är för långa.",
       "stepNotesMax": "Steganteckningarna är för långa.",
       "productsNotOwned": "Endast produkter från din hylla kan läggas till.",
       "maxSteps": "Du kan bara ha upp till 10 steg."
     }
+  },
+  "site": {
+    "title": "Ritora · En lugnare hudvårdsrutin från hyllan du redan äger",
+    "description": "Ritora gör hudvårdsprodukterna du redan äger till en lugnare morgon- och kvällsrutin, med ingredienskontroller och vägledning formad av din hud."
+  },
+  "legalPages": {
+    "cookies": {
+      "metadataTitle": "Cookieinformation",
+      "metadataDescription": "Grunderna för cookies i Ritoras webbupplevelse.",
+      "eyebrow": "Cookieinformation",
+      "title": "Cookiegrunder för Ritora",
+      "paragraphs": [
+        "Produktinriktningen är att hålla cookieanvändningen minimal och transparent. Autentiseringscookies och tydligt avgränsade preferenscookies prioriteras framför onödig spårning.",
+        "En mer komplett cookieinformation kommer att beskriva vad som är nödvändigt, vad som är valfritt och hur användarens samtycke påverkar analys eller lagring av preferenser när fler funktioner lanseras."
+      ]
+    },
+    "privacy": {
+      "metadataTitle": "Integritetspolicy",
+      "metadataDescription": "Integritetsgrunder för Ritoras webbupplevelse.",
+      "eyebrow": "Integritetspolicy",
+      "title": "Integritetsgrunder för Ritora",
+      "paragraphs": [
+        "Ritora byggs med privacy-by-design från början. Produktinriktningen prioriterar dataminimering, tydligt samtycke och en gräns mellan offentlig utbildning och privata personliga rutiner.",
+        "När implementationen växer kommer den här sidan att ersättas av en fullständig policy som beskriver rättslig grund, lagringstider, personuppgiftsbiträden samt export- och raderingsrättigheter mer detaljerat.",
+        "För tillfället beskriver sidan avsikten bakom de aktuella tekniska förbättringarna: säkra autentiseringsgrunder, tydlig samtyckesversionering och en integritetsmedveten backendbas."
+      ]
+    },
+    "terms": {
+      "metadataTitle": "Användarvillkor",
+      "metadataDescription": "Villkorsgrunder för Ritoras webbupplevelse.",
+      "eyebrow": "Användarvillkor",
+      "title": "Villkorsgrunder för Ritora",
+      "paragraphs": [
+        "Ritora är tänkt som ett beslutsstöd för hudvård, inte som ett diagnostiskt eller medicinskt verktyg. Plattformens inriktning fokuserar på tryggare rutinbeslut, tydligare produktöversikt och lugnare produktanvändning.",
+        "När produkten mognar kommer villkoren att utökas med kontoansvar, acceptabel användning, ansvarsfriskrivningar och tjänstens gränser i produktionsdetalj.",
+        "Den nuvarande sidan finns så att den publika upplevelsen redan har en riktig juridisk routestruktur i stället för platshållarlänkar."
+      ]
+    }
+  },
+  "journal": {
+    "title": "Hudjournal",
+    "subtitle": "En post per dag. Foto, betyg, observationer och insikter, allt på ett ställe.",
+    "eyebrow": "Din hudresa",
+    "fab": "Lägg till dagens foto",
+    "exportForDermatologist": "Exportera för hudläkare",
+    "prerequisites": {
+      "profile": {
+        "title": "Slutför din hudprofil först",
+        "body": "Ritora behöver din hudprofil innan foton, avstämningar och hudprogress kan analyseras säkert.",
+        "cta": "Öppna hudprofil",
+        "loadError": "Vi kan inte nå din hudprofil just nu. Kontrollera anslutningen och försök igen."
+      }
+    },
+    "tabs": {
+      "calendar": "Kalender",
+      "photos": "Foton",
+      "insights": "Insikter",
+      "wrapped": "Wrapped"
+    },
+    "stats": {
+      "currentStreak": "Nuvarande streak",
+      "currentStreakValue": "{days, plural, one {# dag} other {# dagar}}",
+      "totalEntries": "Totala poster",
+      "weeklyUploadRate": "Veckovis uppladdning",
+      "weeklyUploadValue": "{count} av {target} dagar",
+      "streakDelta": "+{count} mot förra veckan",
+      "sinceDate": "sedan {date}",
+      "loadingLabel": "Laddar journalstatistik"
+    },
+    "calendar": {
+      "selectMonth": "Välj månad",
+      "selectTrackedMonth": "Hoppa till spårad månad",
+      "trackedMonthLabel": "{month} · {count, plural, one {# foto} other {# foton}}",
+      "previous": "Föregående månad",
+      "next": "Nästa månad",
+      "loading": "Laddar kalender",
+      "monthlyWrapped": "Månads-Wrapped",
+      "weekdays": ["M", "T", "O", "T", "F", "L", "S"],
+      "legend": {
+        "completed": "Klar",
+        "noEntry": "Ingen",
+        "pending": "Analyserar",
+        "reaction": "Reaktion",
+        "insight": "Insikt"
+      },
+      "tooltip": {
+        "completed": "Foto & analys klar",
+        "no_entry": "Ingen post",
+        "entry_no_photo": "Post utan foto",
+        "pending": "Analys pågår",
+        "reaction": "Reaktion flaggad",
+        "failed": "Analys misslyckades"
+      }
+    },
+    "dayDetail": {
+      "today": "idag",
+      "metaToday": "{weekday} · {date} · idag",
+      "meta": "{weekday} · {date}",
+      "reactionFlagged": "Reaktion flaggad",
+      "dayDetailSubtitle": "Dagsdetalj",
+      "backToJournal": "Tillbaka till Hudjournal",
+      "loadingLabel": "Laddar dagsdetalj",
+      "title": "{date}-post",
+      "todayTitle": "Dagens post",
+      "noEntry": "Ingen post för denna dag",
+      "noEntryBody": "Lägg till ett foto eller en snabb avstämning för denna dag.",
+      "lockedNoEntryBody": "Inlägg kan bara läggas till samma dag, och det här är inte i dag.",
+      "addPhoto": "Lägg till foto",
+      "editEntry": "Redigera foto",
+      "editEntryTitle": "Redigera dagens foto",
+      "editEntryBody": "Uppdatera foto, betyg, kontext eller anteckning innan dagen är slut.",
+      "deleteToday": "Radera post",
+      "replace": "Ersätt",
+      "delete": "Radera",
+      "retryAnalysis": "Försök igen",
+      "replacePhoto": "Ersätt foto",
+      "addPhotoForDay": "Lägg till foto för denna dag",
+      "ratingsTitle": "Din avstämning",
+      "ratingsRecorded": "Inspelade betyg",
+      "noteLabel": "Klagomål / anteckning",
+      "feelLabel": "Hudkänsla",
+      "contextLabel": "Dagens kontext",
+      "preRoutineTag": "före rutin",
+      "photoSavedTag": "foto sparat",
+      "noPhotoTag": "Inget foto",
+      "photoAlt": "Hudjournalfoto för {date}",
+      "photoAngleAlt": "{angle} hudjournalfoto för {date}",
+      "angles": {
+        "head_on": "Framifrån",
+        "left_profile": "Vänster sida",
+        "right_profile": "Höger sida"
+      },
+      "captured": "Fångad",
+      "notCaptured": "Saknas",
+      "optionalAngleMissing": "Valfritt sidofoto saknas",
+      "angleCount": "{count, plural, one {# vinkel} other {# vinklar}}",
+      "zoomIn": "Zooma in",
+      "zoomOut": "Zooma ut",
+      "closePhoto": "Stäng foto",
+      "openPhoto": "Öppna foto i fullstorlek",
+      "statusCompleted": "Analys klar",
+      "statusAnalysing": "Analyserar…",
+      "statusFailed": "Analys misslyckades",
+      "statusNeedsReview": "Behöver granskas",
+      "noPhotoTitle": "Endast avstämning",
+      "noPhotoBody": "Du loggade hur huden kändes utan foto. AI-analys hoppas över denna dag."
+    },
+    "referenceQuality": {
+      "status": {
+        "good_reference": "Bra referensfoto",
+        "limited_reference": "Begränsat referensfoto",
+        "not_trend_safe": "Inte trendsäkert"
+      },
+      "comparedWith": "Jämfört med {date}",
+      "reason": {
+        "no_photo": "Inget foto än",
+        "analysis_pending": "Analysen pågår fortfarande",
+        "analysis_failed": "Analysen misslyckades",
+        "analysis_unavailable": "Analys saknas ännu",
+        "face_missing": "Ansiktet är inte tydligt",
+        "needs_retake": "Behöver tas om",
+        "poor_lighting": "Ljuset begränsar jämförelsen",
+        "poor_framing": "Inramningen begränsar jämförelsen",
+        "blur": "Oskärpa begränsar jämförelsen",
+        "quality_limited": "Kvaliteten begränsar jämförelsen",
+        "reaction_day": "Reaktionsdag",
+        "not_comparable": "Inte jämförbart"
+      }
+    },
+    "analysis": {
+      "title": "Hudobservationer idag",
+      "modelBadge": "AI · {model}",
+      "confidence": "Säkerhet {value}",
+      "concernsLabel": "Detekterade problem",
+      "imageQualityLabel": "Bildkvalitet",
+      "lightingGood": "Bra ljus",
+      "lightingFair": "Ok ljus",
+      "lightingPoor": "Dåligt ljus",
+      "framingGood": "Bra inramning",
+      "framingFair": "Ok inramning",
+      "framingPoor": "Dålig inramning",
+      "sharp": "Skarp",
+      "blurry": "Suddig",
+      "perAngleQualityLabel": "Kvalitet per vinkel",
+      "angles": {
+        "head_on": "Framifrån",
+        "left_profile": "Vänster sida",
+        "right_profile": "Höger sida"
+      },
+      "quality": {
+        "poor": "dåligt",
+        "fair": "ok",
+        "good": "bra",
+        "excellent": "utmärkt"
+      },
+      "qualityUsable": "Användbar",
+      "qualityReview": "Granska",
+      "perAngleQualityRow": "Ljus {lighting}, inramning {framing}, {sharpness}.",
+      "retakeTitle": "Fotokvaliteten var för låg",
+      "retakeBody": "Ladda upp ett nytt foto idag om möjligt, helst i naturligt dagsljus med ansiktet centrerat.",
+      "safetyTitle": "Överväg professionell bedömning",
+      "safetyBody": "Ritora noterade synliga säkerhetssignaler. Detta är inte en diagnos, men det kan vara värt att kontakta en hudläkare eller vårdgivare.",
+      "safetyReasons": {
+        "possible_swelling": "Möjlig svullnad",
+        "hive_like_appearance": "Nässelutslagsliknande utseende",
+        "widespread_severe_irritation": "Utbredd kraftig irritation",
+        "rapid_worsening": "Snabb försämring",
+        "eye_area_involvement": "Område runt ögonen påverkat",
+        "cracking_or_open_skin_appearance": "Sprucken eller öppen hudliknande yta",
+        "possible_infection_signs": "Möjliga infektionstecken"
+      },
+      "disclaimer": "Inte en medicinsk diagnos. Ritora är beslutsstöd. Kontakta en hudläkare för medicinska frågor.",
+      "indicators": "Indikatorer",
+      "comparedToPrevious": "Jämfört med tidigare",
+      "interpretation": {
+        "retakeNeeded": {
+          "summary": "Det här fotot är inte tillräckligt tydligt för en pålitlig läsning.",
+          "guidance": "Ta gärna ett nytt foto idag om du kan. Använd naturligt ljus, centrera ansiktet och undvik filter eller smink."
+        },
+        "urgentReview": {
+          "summary": "Ritora såg synliga tecken som kan behöva snabb medicinsk bedömning.",
+          "guidance": "Om du har svullnad, svårt att andas, nässelutslag som sprider sig snabbt, förändringar runt ögonen eller känner dig sjuk, sök vård nu."
+        },
+        "professionalReview": {
+          "summary": "Den här posten har synliga tecken som kan vara värda att visa för vården om de fortsätter eller känns obehagliga.",
+          "guidance": "Fortsätt följa lugnt, men överväg att kontakta en hudläkare om mönstret fortsätter, sprider sig eller gör ont."
+        },
+        "barrierSupport": {
+          "summary": "Din hudbarriär kan behöva en lugnare rutin just nu.",
+          "guidance": "Det här mönstret passar ett tillfälle för mildare stöd. Håll rutinen enkel, undvik nya aktiva ingredienser och följ om rodnad eller stramhet lugnar sig."
+        },
+        "acneProgressTiming": {
+          "summary": "Ditt utbrottsmönster bedöms bäst över flera veckor, inte från ett enda foto.",
+          "guidance": "Se dagens bild som en datapunkt. Trenden blir mer användbar när Ritora kan jämföra poster över en längre period."
+        },
+        "hyperpigmentationTracking": {
+          "summary": "Mörka märken och ojämn hudton behöver följas över längre tid.",
+          "guidance": "Använd konsekvent dagsljus och logga solskyddskontext när du följer detta. Förändringar kan gå långsamt, så Ritora läser det som en trend snarare än ett resultat från en dag."
+        },
+        "retinoidIrritationContext": {
+          "summary": "Det här ser ut som ett tillfälle att vara försiktig med en ny retinoid eller retinolprodukt.",
+          "guidance": "Om detta följde en ny retinoidförändring, håll rutinen mild och följ om fjällning, stramhet eller rodnad lugnar sig innan du lägger till något nytt."
+        },
+        "stableBaseline": {
+          "summary": "Dagens bild ser ut som en användbar baslinje för framtida jämförelse.",
+          "guidance": "Fortsätt använda liknande ljus och inramning så kan Ritora jämföra förändringar mer rättvist över tid."
+        },
+        "caveats": {
+          "notDiagnosis": "Detta är inte en diagnos. Ritora använder synliga signaler för att stödja uppföljning och reflektion.",
+          "qualityLimited": "Låg fotokvalitet kan dölja eller förstärka synliga förändringar.",
+          "progressNeedsTime": "Hudförändringar kan gå långsamt, så enskilda dagsförändringar bör läsas med omsorg."
+        }
+      },
+      "sources": {
+        "label": "Grundade källor",
+        "lastVerified": "Verifierad {date}",
+        "aad_skin_photo_quality": {
+          "title": "Så tar du hudfoton",
+          "summary": "AAD förklarar att bra ljus, fokus och tydlig inramning hjälper foton att visa färg och textur korrekt."
+        },
+        "aad_acne_treatment_timing": {
+          "title": "Tidsram för akneförändring",
+          "summary": "AAD förklarar att akneförbättring vanligen bedöms över veckor med konsekvent vård."
+        },
+        "aad_dark_spots_skin_tones": {
+          "title": "Mörka märken och ojämn hudton",
+          "summary": "AAD beskriver hur mörka märken kan blekna långsamt och varför solskydd är viktigt när de följs."
+        },
+        "aad_skin_of_color": {
+          "title": "Vägledning för hud med mer pigment",
+          "summary": "AAD tar upp hur akne och mörka märken kan synas annorlunda på djupare hudtoner."
+        },
+        "aad_retinoid_retinol_guidance": {
+          "title": "Vägledning om retinoid och retinol",
+          "summary": "AAD förklarar hur retinoidprodukter introduceras och varför irritationskontext är viktig."
+        },
+        "aad_contact_dermatitis_symptoms": {
+          "title": "Tecken på kontakteksem",
+          "summary": "AAD beskriver tecken som kan uppstå när huden reagerar på något den har rört vid."
+        },
+        "aad_contact_dermatitis_patch_testing": {
+          "title": "Lapptest vid återkommande utslag",
+          "summary": "AAD förklarar att vården kan använda lapptest för att undersöka återkommande utslagsmönster."
+        },
+        "aad_hives_emergency": {
+          "title": "När nässelutslag behöver snabb vård",
+          "summary": "AAD lyfter symtom som svullnad eller andningsbesvär som skäl att söka snabb hjälp."
+        },
+        "aad_dry_skin_relief": {
+          "title": "Torr hud och barriärstöd",
+          "summary": "AAD rekommenderar mild hudvård när huden är torr, irriterad eller obekväm."
+        },
+        "mayo_acne_treatment_timing": {
+          "title": "Tidsram för akneförändring",
+          "summary": "Mayo Clinic beskriver att akneförändring ofta bedöms över veckor, inte från en enda dag."
+        }
+      }
+    },
+    "severity": {
+      "none": "Ingen",
+      "mild": "Mild",
+      "moderate": "Måttlig",
+      "severe": "Svår"
+    },
+    "concerns": {
+      "oiliness": "Fetthet",
+      "dryness": "Torrhet",
+      "redness": "Rodnad",
+      "breakouts": "Utbrott",
+      "texture": "Textur",
+      "irritation": "Irritation",
+      "sensitivity": "Känslighet",
+      "acne": "Akne",
+      "hyperpigmentation": "Hyperpigmentering",
+      "redness_inflammation": "Rodnad · inflammation",
+      "fine_lines": "Fina linjer",
+      "skin_barrier_damage": "Skadad hudbarriär",
+      "eczema_indicator": "Eksemtecken",
+      "uneven_tone": "Ojämn ton",
+      "under_eye_darkness": "Mörkhet under ögon",
+      "large_pores": "Stora porer"
+    },
+    "feels": {
+      "awful": "Hemskt",
+      "bad": "Dåligt",
+      "ok": "OK",
+      "good": "Bra",
+      "great": "Toppen"
+    },
+    "context": {
+      "sleepLabel": "Sömn i natt",
+      "sleep_lt5h": "<5h",
+      "sleep_5to7h": "5–7h",
+      "sleep_7to9h": "7–9h",
+      "sleep_gt9h": ">9h",
+      "stressLabel": "Stress idag",
+      "stress_low": "Låg",
+      "stress_mid": "Medel",
+      "stress_high": "Hög",
+      "sunLabel": "Solexponering",
+      "sun_none": "Ingen",
+      "sun_brief": "Kort",
+      "sun_lots": "Mycket",
+      "sweatLabel": "Svett / motion",
+      "sweat_no": "Nej",
+      "sweat_yes": "Ja",
+      "cycleLabel": "Cykeldag",
+      "cycleFromProfileBadge": "från hudprofil",
+      "cycle_not_on": "Inte i cykel",
+      "cycle_day_1_3": "Dag 1–3",
+      "cycle_day_4_7": "Dag 4–7",
+      "cycle_late_cycle": "Sen cykel",
+      "cycle_dont_track": "Spårar ej"
+    },
+    "recentChange": {
+      "label": "Något som ändrats idag?",
+      "hint": "Hög signal: ny produkt, slutad produkt, behandling, sjukdom eller resa.",
+      "typeLabel": "Typ av ändring",
+      "kinds": {
+        "started_new_product": "Började med ny produkt",
+        "stopped_a_product": "Slutade med en produkt",
+        "changed_frequency": "Ändrade frekvens",
+        "got_a_treatment": "Fick en behandling",
+        "felt_unwell": "Mått dåligt",
+        "travelled": "Reste",
+        "other": "Övrigt"
+      },
+      "productLabel": "Relaterad produkt (valfritt)",
+      "productPlaceholder": "Sök i hyllan…"
+    },
+    "upload": {
+      "eyebrow": "Hudjournal · ny post",
+      "title": "Lägg till dagens foto",
+      "subtitle": "Ta ett foto i bra dagsljus. Ditt framtida jag tackar dig för konsekvensen.",
+      "editTitle": "Redigera dagens foto",
+      "editSubtitle": "Byt dagens foto eller uppdatera avstämningen innan dagen är slut.",
+      "dateLabel": "Datum",
+      "dateToday": "Idag · {date}",
+      "dateBackfill": "{date} (fyller i)",
+      "guidanceTitle": "Tips för tydligare jämförelser",
+      "guidanceSubtitle": "Samma tid, samma plats ger AI:n den starkaste trendsignalen.",
+      "hideTips": "Dölj tips",
+      "showTips": "Visa tips",
+      "tips": {
+        "naturalLight": {
+          "title": "Naturligt dagsljus",
+          "body": "Stå mot ett fönster, inte under taklampa."
+        },
+        "noMirror": {
+          "title": "Hoppa över spegeln",
+          "body": "Reflektioner förvränger hudtonen."
+        },
+        "neutralFace": {
+          "title": "Neutralt ansikte",
+          "body": "Inget smink, avslappnat."
+        },
+        "sameTime": {
+          "title": "Samma tid varje dag",
+          "body": "Bättre trendprecision."
+        },
+        "distance": {
+          "title": "~30 cm bort",
+          "body": "Rakt på, fyll bilden."
+        }
+      },
+      "photoLabel": "Foton",
+      "angles": {
+        "head_on": "Framifrån",
+        "left_profile": "Vänster sida",
+        "right_profile": "Höger sida"
+      },
+      "angleRequired": "Krävs",
+      "angleOptional": "Valfritt",
+      "angleAlt": "{angle} journalfoto",
+      "dropZoneTitle": "Tryck för att välja ett foto",
+      "dropZoneDesc": "Eller dra och släpp · JPG, PNG, HEIC, WebP upp till 10 MB",
+      "dropZoneTitleFront": "Lägg till foto framifrån",
+      "dropZoneTitleSide": "Lägg till {angle}",
+      "dropZoneDescFront": "Krävs för AI-analys",
+      "dropZoneDescSide": "Valfri sidotäckning",
+      "noWebcam": "Ett foto i naturligt ljus gör det enklare att jämföra dag för dag.",
+      "unsupportedPhotoType": "Välj ett JPG-, PNG-, HEIC- eller WebP-foto.",
+      "photoTooLarge": "Välj ett foto under 10 MB.",
+      "replace": "Ersätt",
+      "crop": "Beskär foto",
+      "remove": "Ta bort",
+      "fileMeta": "{name} · {size}",
+      "processedKind": "WebP efter uppladdning · EXIF borttaget",
+      "photoPreviewAlt": "Valt journalfoto",
+      "currentPhotoAlt": "Nuvarande journalfoto för {date}",
+      "currentPhotoBadge": "Nuvarande foto",
+      "currentPhotoHint": "Välj ett nytt foto bara om du vill ersätta dagens sparade foto.",
+      "cropBadge": "Kvadratisk förhandsvisning",
+      "replaceAngle": "Ersätt foto {angle}",
+      "removeAngle": "Ta bort foto {angle}",
+      "cropAngle": "Beskär foto {angle}",
+      "cropDialog": {
+        "title": "Beskär foto",
+        "body": "Centrera ansiktet och ta bort bakgrund innan uppladdning. Ritora sparar den beskurna kvadratiska versionen.",
+        "previewAlt": "Förhandsvisning av beskärning",
+        "dragLabel": "Dra fotot för att justera beskärningen",
+        "zoom": "Zoom",
+        "moveX": "Flytta åt vänster eller höger",
+        "moveY": "Flytta upp eller ner",
+        "reset": "Återställ",
+        "apply": "Använd",
+        "applying": "Beskär…",
+        "error": "Vi kunde inte beskära fotot. Försök med ett annat foto eller ladda upp utan beskärning."
+      },
+      "photoProcessingConsent": "Jag samtycker till analys av denna fotouppsättning.",
+      "preRoutine": "Tagit före dagens produkter (före rutin)",
+      "nextStepHint": "Din avstämning finns i nästa steg. Du kan också spara endast fotot och lägga till betyg senare.",
+      "frontRequired": "Lägg till ett foto framifrån för att spara fotoanalys.",
+      "frontRequiredWithSides": "Sidofoton behöver ett foto framifrån så att Ritora kan analysera uppsättningen.",
+      "savePhotoOnly": "Spara endast foto",
+      "saveChanges": "Spara ändringar",
+      "continueToCheckIn": "Fortsätt till avstämning",
+      "saveEntry": "Spara post",
+      "back": "Tillbaka",
+      "cancel": "Avbryt",
+      "deleteToday": "Radera post",
+      "saving": "Sparar…",
+      "deleting": "Raderar…",
+      "saveFailed": "Vi kunde inte spara posten. Försök igen.",
+      "savedToast": "Foto sparat. Ritora tittar på det (cirka 10–20s)…",
+      "noPhotoSaved": "Avstämning sparad utan foto.",
+      "futureDateError": "Kan inte skapa poster för framtida datum.",
+      "checkInTitle": "Dagens avstämning",
+      "editCheckInTitle": "Redigera dagens avstämning",
+      "validationTitle": "Slutför avstämningen för att spara",
+      "validationBody": "Välj hudkänsla, alla sju orosbetyg och dagens kontext. Gå tillbaka och spara endast fotot om du vill hoppa över avstämningen.",
+      "privacyLabel": "Integritet",
+      "privacyBody": "Foton och betyg lagras krypterade. Endast bilden skickas för analys.",
+      "privacyLink": "Så skyddar vi din data",
+      "privacyLinkHref": "/privacy",
+      "feelQuestion": "Hur känns din hud idag?",
+      "concernsQuestion": "Allvarlighetsgrad (1 = ingen, 5 = svår)",
+      "contextQuestion": "Dagens kontext",
+      "noteLabel": "Klagomål eller anteckning (valfritt)",
+      "addNote": "Lägg till anteckning",
+      "notePlaceholder": "Berätta vad som helst. Sträv, kliar, ser tråkig ut…",
+      "privacyNote": "Ditt foto och dina betyg är krypterade. AI:n ser bara fotot. Aldrig namn, e-post eller användar-id."
+    },
+    "compare": {
+      "title": "Jämför två dagar",
+      "subtitle": "Synkroniserad zoom · tryck för att växla på mobil.",
+      "swap": "Byt plats",
+      "fromLabel": "Från",
+      "toLabel": "Till",
+      "pickPhotoDate": "Välj fotodatum",
+      "notEnoughTitle": "Minst två dagar med uppladdade foton behövs",
+      "notEnoughBody": "Lägg till ett till dagligt foto innan du jämför progress. Endast dagar med uppladdade foton kan väljas.",
+      "deltaTitle": "Vad har ändrats på {days, plural, one {# dag} other {# dagar}}",
+      "noBaseline": "Välj två datum att jämföra.",
+      "events": "Rutinhändelser mellan dessa datum",
+      "concernsThen": "Problem då",
+      "concernsNow": "Problem nu",
+      "fromPhotoAlt": "Hudjournalfoto från {date}",
+      "toPhotoAlt": "Hudjournalfoto från {date}",
+      "aiDeltaBadge": "AI-delta",
+      "angleCount": "{count, plural, one {# vinkel} other {# vinklar}}",
+      "openFullViewer": "Öppna alla vinklar",
+      "none": "Inga",
+      "delta": {
+        "ratingImproved": "{concern} minskade från {from} till {to}",
+        "ratingWorsened": "{concern} ökade från {from} till {to}",
+        "reactionCleared": "Reaktionstecken flaggas inte längre",
+        "reactionSignalIncreased": "Reaktionssignaler ökade i fotoanalysen.",
+        "reactionSignalReduced": "Reaktionssignaler minskade i fotoanalysen.",
+        "barrierSignalWorsened": "Tecken på barriärstress ökade i fotoanalysen.",
+        "barrierSignalImproved": "Tecken på barriärstress minskade i fotoanalysen.",
+        "photoConcernImproved": "{concern} ser mindre tydligt ut i fotoanalysen.",
+        "photoConcernWorsened": "{concern} ser mer tydligt ut i fotoanalysen.",
+        "photoConcernNew": "{concern} syns nu i fotoanalysen.",
+        "photoConcernCleared": "{concern} syns inte längre i fotoanalysen.",
+        "notComparable": "Fotojämförelsen begränsas av {reason}.",
+        "noMajorChange": "Ingen större synlig förändring",
+        "unknownConcern": "Problem",
+        "qualityReasons": {
+          "no_photo": "saknat foto",
+          "analysis_pending": "analys som fortfarande pågår",
+          "analysis_failed": "misslyckad analys",
+          "analysis_unavailable": "saknad analys",
+          "face_missing": "ansiktets tydlighet",
+          "needs_retake": "behov av nytt foto",
+          "poor_lighting": "ljuset",
+          "poor_framing": "inramningen",
+          "blur": "oskärpa",
+          "quality_limited": "fotokvaliteten",
+          "reaction_day": "reaktionsdagens kontext",
+          "not_comparable": "fotokvaliteten"
+        }
+      },
+      "medicalDisclaimerStrong": "Inte en medicinsk diagnos.",
+      "medicalDisclaimerBody": "Synliga förändringar kan ha många orsaker."
+    },
+    "photos": {
+      "compareCta": "Jämför",
+      "filtersAll": "Alla foton",
+      "filterReaction": "Har reaktion",
+      "filterConcern": "Problem · {concern}",
+      "unknownConcern": "Okänt problem",
+      "reactionTag": "reaktion",
+      "noFilterMatches": "Inga foton matchar det här filtret än.",
+      "empty": "Inga foton än",
+      "emptyTitle": "Dina foton dyker upp här",
+      "emptyBody": "När du börjar lägga till dagliga foton visas de här så att du kan bläddra tillbaka i din samling med ett ögonkast.",
+      "loadMore": "Ladda fler foton",
+      "loadingMore": "Laddar fler foton",
+      "angleBadge": "{count, plural, one {# vinkel} other {# vinklar}}"
+    },
+    "insightsTab": {
+      "subtitle": "Förslag i vanligt språk från dina foton, avstämningar och betrodda hudkällor.",
+      "kinds": {
+        "onboarding_progress": "Progress",
+        "trend": "Trend",
+        "correlation": "Korrelation",
+        "effectiveness": "Effektivitet",
+        "referral": "Hudläkarremiss",
+        "daily": "Daglig insikt",
+        "weekly": "Veckosammanfattning",
+        "monthly": "Månadssammanfattning",
+        "reaction_recovery": "Återhämtning",
+        "photo_quality_drift": "Fotokvalitet",
+        "face_zone_pattern": "Ansiktszon",
+        "routine_adherence": "Rutindata",
+        "cycle": "Cykelmönster",
+        "ai_summary": "AI sammanfattning",
+        "ai_pattern": "AI mönster"
+      },
+      "severity": {
+        "info": "Info",
+        "warning": "Bevaka",
+        "critical": "Viktigt"
+      },
+      "showHow": "Visa mig hur",
+      "dismiss": "Avfärda",
+      "exportHistory": "Exportera hudhistorik",
+      "notNow": "Inte nu",
+      "refresh": "Sök efter uppdateringar",
+      "refreshing": "Uppdaterar",
+      "trendsTitle": "Trendöversikt",
+      "generatedLine": "Skapad {date}",
+      "basedOnLine": "Baserat på {start} till {end}",
+      "windows": {
+        "all": "Alla",
+        "week": "Denna vecka",
+        "month": "Denna månad"
+      },
+      "directions": {
+        "improved": "minskat",
+        "increased": "ökat"
+      },
+      "locations": {
+        "forehead": "pannan",
+        "left_cheek": "vänster kind",
+        "right_cheek": "höger kind",
+        "chin": "hakan",
+        "nose": "näsan",
+        "under_eyes": "under ögonen",
+        "jawline": "käklinjen",
+        "upper_lip": "överläppen",
+        "temples": "tinningarna",
+        "neck": "halsen"
+      },
+      "cycle": {
+        "day_1_3": "dag 1 till 3",
+        "day_4_7": "dag 4 till 7",
+        "late_cycle": "sen cykel",
+        "not_on": "inte mens"
+      },
+      "factors": {
+        "highStress": "Dagar med hög stress",
+        "travelled": "Resdagar",
+        "stress_today": "stress"
+      },
+      "categories": {
+        "cleanser": "rengöring",
+        "toner": "toner",
+        "essence": "essence",
+        "serum": "serum",
+        "moisturizer": "fuktkräm",
+        "sun-protection": "solskydd",
+        "mask": "mask",
+        "exfoliant": "exfoliering",
+        "eye-care": "ögonvård",
+        "lip-care": "läppvård",
+        "treatment": "behandling",
+        "other": "annat rutinsteg",
+        "custom": "anpassat rutinsteg"
+      },
+      "metric": {
+        "previous": "{value} tidigare",
+        "sampleCount": "{count, plural, one {# post} other {# poster}}",
+        "units": {
+          "entries": "poster",
+          "rating": "betyg"
+        }
+      },
+      "progress": {
+        "title": "{count, plural, one {# journalpost} other {# journalposter}} spårade",
+        "next": "{count, plural, one {# post till} other {# poster till}} innan nästa insikt låses upp",
+        "ready": "Din data är redo för rikare förslag.",
+        "generating": "Ritora förbereder nya insiktsförslag från din senaste journaldata."
+      },
+      "headlines": {
+        "onboarding_progress": "{count} poster loggade. Nästa insikt låses upp vid {nextUnlock}.",
+        "daily": "Dagens journalpost är redo att granskas.",
+        "weekly": "{entriesCount} nya poster räcker för en första mönsterkontroll.",
+        "trend": "{concern} har {direction} i dina senaste poster.",
+        "monthly": "Din månad har {entriesCount} poster och {photosCount} foton.",
+        "reaction_recovery": "Din hud ser lugnare ut efter {days} spårade dagar.",
+        "referral": "{referralCount} nya poster behöver en närmare säkerhetsgranskning.",
+        "effectiveness": "{concern} har {direction} efter en produktändring.",
+        "face_zone_pattern": "{concern} syns oftast runt {location}.",
+        "routine_adherence": "{category} hoppades över på {skippedCount} loggade rutindagar.",
+        "photo_quality_drift": "{poorCount} nya foton behöver bättre ljus för analysen.",
+        "correlation": "{factor} syns tillsammans med förändringar i {concern}.",
+        "cycle": "{concern} ser högre ut runt {phase}.",
+        "ai_summary": "Ritora hittade ett kort mönster över {entriesCount} poster.",
+        "ai_pattern": "{factor} kan vara värt att följa i din journal."
+      },
+      "blocks": {
+        "unknown": "Nytt insiktsformat",
+        "unknownSource": "Källdetaljer är inte tillgängliga än.",
+        "onboarding_progress": {
+          "text": "Fortsätt lägga till dagliga foton och avstämningar. Förslagsmotorn blir mer användbar när din personliga baslinje växer."
+        },
+        "daily": {
+          "analysis": "Detta använder din senaste sparade post från {date} och analysstatusen: {status}."
+        },
+        "weekly": {
+          "recap": "Ritora granskade {entriesCount} nya poster. {reactionCount} hade måttliga eller starkare reaktionssignaler."
+        },
+        "trend": {
+          "explanation": "Ditt värde för {concern} har {direction} jämfört med tidigare poster i detta fönster."
+        },
+        "monthly": {
+          "recap": "Denna månad innehåller {entriesCount} journalposter och {photosCount} foton."
+        },
+        "reaction_recovery": {
+          "text": "Reaktionssignaler minskade över {days} spårade dagar. Fortsätt med milda, enkla rutiner medan huden lugnar sig."
+        },
+        "referral": {
+          "text": "{referralCount} av de senaste 7 posterna visade måttliga eller starkare reaktionssignaler, eller upprepade flaggor för läkarkontroll."
+        },
+        "effectiveness": {
+          "text": "Efter en produktändring rörde sig {concern} tillräckligt för att vara värt att följa. Det är en korrelation, inte bevis.",
+          "marker": "Produktändring"
+        },
+        "face_zone_pattern": {
+          "text": "Den återkommande zonen är {location}. Det kan hjälpa dig jämföra foton utan att gå igenom varje post."
+        },
+        "routine_adherence": {
+          "text": "Dina rutinloggar visar att {category} hoppades över {skippedCount} gånger över {loggedCount} loggade steg. Det är användbar kontext för kommande hudmönster."
+        },
+        "photo_quality_drift": {
+          "text": "{poorCount} nya foton hade svagt ljus eller flaggades för omtagning. Naturligt dagsljus ger analysen en tydligare bild."
+        },
+        "correlation": {
+          "text": "{factor} syns tillsammans med en förändring i {concern}. Se detta som en ledtråd att följa, inte en slutsats."
+        },
+        "cycle": {
+          "text": "Dina poster tyder på ett möjligt cykelmönster runt {phase}. Säkerheten växer när fler cykler loggas."
+        },
+        "ai_summary": {
+          "text": "Denna sammanfattning kopplar ihop de starkaste nya mönstren till ett förslag i vanligt språk."
+        },
+        "ai_pattern": {
+          "text": "Ritora noterade {factor} i poster som kan vara värda att följa närmare."
+        }
+      },
+      "evidenceGrade": {
+        "strong": "Starkt stöd",
+        "moderate": "Måttligt stöd",
+        "limited": "Begränsat stöd",
+        "anecdotal": "Endast dina loggar",
+        "basis": {
+          "trend": "baserat på en personlig trend över {windowDays} dagar",
+          "reaction_recovery": "baserat på reaktions- och återhämtningsmarkörer",
+          "referral": "baserat på upprepade säkerhetsflaggor",
+          "effectiveness": "baserat på ett fönster efter produktändring",
+          "routine_adherence": "baserat på {loggedCount} loggade rutinsteg",
+          "ownLogs": "endast baserat på dina journalposter",
+          "cycle": "baserat på cykelmarkörer i din journal"
+        }
+      },
+      "actions": {
+        "viewEntries": "Visa poster",
+        "openCompare": "Öppna jämförelse",
+        "openExport": "Exportera hudhistorik",
+        "openTodayUpload": "Lägg till dagens foto",
+        "openProduct": "Öppna produkt",
+        "openSettings": "Öppna inställningar"
+      },
+      "disclaimers": {
+        "medical": "Ritora är beslutsstöd för hudvård, inte medicinsk rådgivning. Om symtom känns svåra, sprider sig snabbt eller innefattar svullnad eller andningsbesvär, sök vård.",
+        "correlation": "Detta är ett mönster i dina poster, inte bevis för att en sak fick en annan att hända."
+      },
+      "ai": {
+        "chip": "AI förfinad",
+        "chipStrong": "AI insikt",
+        "whyThis": "Varför detta?",
+        "whyThisTitle": "Varför Ritora säger detta",
+        "whyThisBody": "Här visas fakta, källor och skapandedetaljer bakom förslaget.",
+        "trigger": "Utlösare",
+        "model": "Modell",
+        "promptVersion": "Promptversion",
+        "cache": "Cache",
+        "notUsed": "Inte använd",
+        "cacheHit": "träff",
+        "cacheMiss": "miss",
+        "sources": "Källor",
+        "provenance": "Texten förfinades av AI med endast fakta och granskade källor som visas här."
+      },
+      "kb": {
+        "lastVerified": "Verifierad {date}",
+        "derm_6_8_week_acne_window": {
+          "title": "Tidshorisont för aknebehandling",
+          "summary": "AAD beskriver att aknevård tar tid och att synlig förändring oftast bedöms över flera veckor."
+        },
+        "derm_acne_types": {
+          "title": "Typer av utbrott",
+          "summary": "AAD förklarar vanliga aknetyper och varför mönster i ansiktet kan spela roll."
+        },
+        "derm_hives_emergency": {
+          "title": "När nässelutslag kräver akut vård",
+          "summary": "AAD lyfter symtom som bör få snabb medicinsk uppmärksamhet."
+        },
+        "derm_dry_skin_relief": {
+          "title": "Lindring vid torr hud",
+          "summary": "AAD rekommenderar milt barriärstöd när huden känns torr eller irriterad."
+        },
+        "derm_contact_dermatitis_patch_testing": {
+          "title": "Kontakteksem och lapptest",
+          "summary": "AAD beskriver lapptest som ett sätt för kliniker att undersöka återkommande utslagsliknande reaktioner."
+        },
+        "derm_skin_of_color_acne": {
+          "title": "Hudton och akne",
+          "summary": "AAD noterar att akne och mörka märken kan se olika ut mellan hudtoner."
+        },
+        "derm_retinoid_retinol_guidance": {
+          "title": "Vägledning om retinoid och retinol",
+          "summary": "AAD förklarar hur retinoider används och varför irritation bör följas noggrant."
+        },
+        "derm_hormonal_acne_therapy": {
+          "title": "Hormonell aknebehandling",
+          "summary": "AAD beskriver hormonella mönster som kan påverka akne hos vissa personer."
+        },
+        "pubmed_niacinamide_review": {
+          "title": "Översikt om niacinamid",
+          "summary": "En PubMed-indexerad översikt sammanfattar evidens för topikal niacinamid i hudvård."
+        },
+        "pubmed_menstrual_cycle_acne": {
+          "title": "Studie om menscykel och akne",
+          "summary": "En PubMed-indexerad studie beskriver hur aknemönster kan ändras över menscykeln."
+        }
+      },
+      "charts": {
+        "trendTitle": "Allvarlighetsgrad över tid",
+        "reactionsTitle": "Reaktionsfrekvens · veckovis",
+        "checkInTitle": "Avstämning genomsnitt · 7-axel",
+        "thisWeek": "Denna vecka",
+        "lastWeek": "Förra veckan"
+      },
+      "empty": {
+        "title": "Insikter dyker upp efter ~2 veckors spårning",
+        "body": "Vi behöver en baslinje innan trender kan ritas. Fortsätt lägga till dagliga foton och AI:n hinner ifatt.",
+        "openCalendar": "Öppna Kalender-fliken"
+      }
+    },
+    "wrapped": {
+      "title": "Din Skin Wrapped",
+      "subtitle": "Vi förvandlar dina dagliga foton till en privat Wrapped varje månad, kvartal och år. De dyker upp här när de är klara.",
+      "save": "Spara",
+      "play": "Spela",
+      "almostReady": "Nästan klar",
+      "notYet": "Snart tillgänglig",
+      "status": {
+        "ready": "Klar · {photos} foton",
+        "generating": "Förbereder… · {photos} foton",
+        "ready_to_generate": "Nästan klar · {photos} foton",
+        "not_enough_photos": "Vi förbereder denna när du har {min}+ foton",
+        "failed": "Kunde inte förbereda denna Wrapped. Vi försöker igen.",
+        "pending": "I kö"
+      },
+      "empty": {
+        "title": "Din Skin Wrapped dyker upp här",
+        "body": "Varje månad ser vi tillbaka på dina dagliga foton och sätter ihop en privat Wrapped. Fortsätt lägga till foton och din första är snart klar."
+      },
+      "periodKind": {
+        "monthly": "Månadsvis",
+        "quarterly": "Kvartalsvis",
+        "yearly": "Årlig"
+      },
+      "viewer": {
+        "title": "Wrapped",
+        "subtitle": "{kind} · {period}",
+        "notFound": "Wrapped hittades inte.",
+        "noFrames": "Inga bildrutor tillgängliga.",
+        "frameAlt": "Hudjournalfoto från {date}",
+        "frameCaption": "{date} · {caption}",
+        "captionsAuto": "{count} foton · {label} · texter skrivna av AI",
+        "play": "Spela",
+        "pause": "Pausa",
+        "previous": "Föregående",
+        "next": "Nästa",
+        "close": "Stäng"
+      }
+    },
+    "reaction": {
+      "modalTitle": "Vi noterade möjlig irritation",
+      "modalLede": "Ditt foto från {date} visar tecken som kan tyda på en reaktion. {comparedNote}",
+      "comparedWorse": "Jämfört med tidigare post: ser värre ut på kinder och haka.",
+      "indicatorsTitle": "Indikatorer",
+      "disclaimer": "Inte en medicinsk diagnos. Om symtom förvärras eller kvarstår, kontakta en hudläkare.",
+      "primaryCta": "Förenkla rutin tills detta klingar (rekommenderas)",
+      "secondaryCta": "Behåll min rutin",
+      "howWeDecide": "Hur bestämmer Ritora?",
+      "severeTitle": "Starka reaktionssignaler upptäckta",
+      "severeLede": "Flera indikatorer på betydande irritation. Vi har redan pausat dina aktiva behandlingar och bytt till barriär-reparation tills du bekräftar.",
+      "severeWarning": "Om symtomen inkluderar andningssvårigheter eller svullnad i ansiktet, sök akutvård.",
+      "severePrimary": "Bekräfta & håll förenklat",
+      "severeSecondary": "Återställ ändå",
+      "simplificationReason": "Reaktion upptäckt {date}"
+    },
+    "indicators": {
+      "redness_spike": "Rodnadsspik",
+      "swelling_appearance": "Svullnadsutseende",
+      "rash_appearance": "Utslagsutseende",
+      "new_breakouts_cluster": "Nytt utbrottskluster",
+      "peeling": "Fjällning",
+      "burning_appearance": "Brännande utseende",
+      "hives_appearance": "Nässelutslagsutseende",
+      "diffuse_inflammation": "Diffus inflammation",
+      "flaking": "Flagning",
+      "tightness_appearance": "Stramhetsutseende",
+      "cracking_appearance": "Sprickbildning"
+    },
+    "simplification": {
+      "bannerTitle": "Rutin förenklad till barriär-reparation",
+      "bannerBody": "Vi upptäckte möjlig irritation i ditt foto från {date}. Din vanliga rutin är pausad tills du bekräftar.",
+      "viewDetails": "Visa detaljer",
+      "restoreRoutine": "Återställ rutin",
+      "keepSimplified": "Behåll förenklat",
+      "compactAlert": "Rutin förenklad. Visa i Journal",
+      "compactAlertSubtitle": "Sedan {date} · barriär-reparation aktiv",
+      "viewInJournal": "Visa i Journal",
+      "detail": {
+        "eyebrow": "Hudjournal · säkerhet",
+        "title": "Rutinförenkling · {start} – {endLabel}",
+        "ongoing": "pågår",
+        "subtitle": "Startad från en säkerhetshändelse i journalen {date}",
+        "noticedTitle": "Vad vi märkte",
+        "noticedFallback": "En säkerhetshändelse i journalen föreslog att förenkla rutinen medan huden lugnar sig.",
+        "presetTitle": "Barriär-reparation (aktiv)",
+        "presetSubtitle": "En konservativ barriärstödjande rutin att använda medan du granskar varningen.",
+        "presetAm": "FM",
+        "presetPm": "EM",
+        "presetAmBody": "Mild rengöring, fukt och solskydd.",
+        "presetPmBody": "Mild rengöring och fukt.",
+        "pausedTitle": "Vad som pausades",
+        "pausedSubtitle": "Om en schemakopia sparades {date} visas den nedan.",
+        "pausedAmTitle": "FM (pausad)",
+        "pausedPmTitle": "EM (pausad)",
+        "noSnapshot": "Inget schema var aktivt när förenklingen startade.",
+        "unsupportedSnapshot": "En schemakopia sparades, men detaljerna kunde inte visas säkert.",
+        "snapshotSlotsLabel": "Rutintider",
+        "snapshotStepsLabel": "Rutinsteg",
+        "snapshotCapturedLabel": "Sparad",
+        "snapshotCapturedUnknown": "Okänt"
+      }
+    },
+    "events": {
+      "kinds": {
+        "reaction_detected": "Reaktion upptäckt",
+        "worsening": "Försämring",
+        "recovery": "Återhämtning",
+        "dermatologist_referral": "Hudläkarremiss",
+        "product_effectiveness": "Produkteffektivitet"
+      }
+    },
+    "deleteConfirm": {
+      "title": "Radera denna post?",
+      "body": "Ditt foto och dina betyg för denna dag tas bort permanent.",
+      "cancel": "Avbryt",
+      "confirm": "Radera"
+    },
+    "empty": {
+      "title": "Din hudresa börjar här",
+      "body": "Ta ett foto i bra dagsljus för att börja spåra. Vi sköter resten: analys, trender och en månads-Wrapped.",
+      "addFirst": "+ Lägg till ditt första foto"
+    },
+    "errors": {
+      "analysisFailedTitle": "Kunde inte analysera detta foto",
+      "analysisFailedBody": "Nätverksproblem eller för dåligt ljus. Ditt foto är sparat ändå.",
+      "analysisFailedProviderUnavailable": "Foto AI-tjänsten är tillfälligt otillgänglig. Ditt foto är sparat och du kan försöka igen snart.",
+      "analysisFailedProviderTimeout": "Foto AI-tjänsten tog för lång tid att svara. Ditt foto är sparat och du kan försöka igen snart.",
+      "analysisFailedProviderInvalidResponse": "Foto AI-svaret klarade inte våra säkerhetskontroller. Ditt foto är sparat och du kan försöka igen.",
+      "analysisFailedPhotoPreflight": "Fotot klarade inte den lokala kvalitetskontrollen. Prova ett större och tydligare ansiktsfoto i jämnt ljus.",
+      "analysisFailedPayloadTooLarge": "Denna fotouppsättning är för stor för att analyseras säkert. Prova mindre beskurna foton.",
+      "analysisFailedCostLimit": "Foto AI är tillfälligt begränsat av säkerhetsskäl. Ditt foto är sparat och du kan försöka igen senare.",
+      "analysisFailedConfiguration": "Foto AI är inte konfigurerat just nu. Ditt foto är sparat och supporten kan granska detta.",
+      "analysisFailedInvalidPhoto": "Ett ansiktsfoto framifrån krävs innan Foto AI kan analysera posten.",
+      "tooDark": "Vi hade svårt att se din hud tydligt. Prova naturligt ljus nästa gång.",
+      "futureDate": "Kan inte välja ett framtida datum.",
+      "uploadFailed": "Uppladdning misslyckades. Försök igen."
+    },
+    "export": {
+      "title": "Exportera för hudläkare",
+      "body": "Välj datumintervall. Vi paketerar dina poster, foton, AI-observationer, händelser och insikter till en delbar sammanfattning.",
+      "fromLabel": "Från",
+      "toLabel": "Till",
+      "submit": "Generera export",
+      "cancel": "Avbryt",
+      "generating": "Genererar…",
+      "readyTitle": "Exporten är klar",
+      "readyBody": "{entries, plural, one {# post} other {# poster}} ingår. Du får också en avisering med den säkra exporten.",
+      "validation": {
+        "invalidDate": "Välj ett giltigt datum.",
+        "endBeforeStart": "Slutdatumet måste vara efter startdatumet."
+      }
+    }
+  },
+  "dashboardJournal": {
+    "missingPhotoTitle": "Lägg till dagens foto",
+    "missingPhotoBody": "Det är efter din vanliga påminnelse. Ett dagligt foto håller din trend igång.",
+    "openJournal": "Öppna Hudjournal"
+  },
+  "settingsNotifications": {
+    "eyebrow": "Inställningar",
+    "title": "Aviseringar",
+    "subtitle": "Fotopåminnelse, varningar och kanaler.",
+    "saving": "Sparar",
+    "updateFailed": "Det gick inte att spara aviseringsinställningarna.",
+    "errors": {
+      "loadTitle": "Vi kunde inte ladda aviseringsinställningarna",
+      "loadBody": "Försök igen. Dina aviseringsinställningar är oförändrade.",
+      "retry": "Försök igen"
+    },
+    "validation": {
+      "invalidReminderTime": "Ange en giltig påminnelsetid.",
+      "invalidChannels": "Välj giltiga aviseringskanaler.",
+      "invalidLeadTime": "Ledtid måste vara mellan 30 minuter och 12 timmar.",
+      "invalidExpiryNoticeDays": "Dagar före utgång måste vara mellan 1 och 90.",
+      "invalidQuietHours": "Tysta timmar måste använda 24-timmarsformat som 22:30."
+    },
+    "photoReminderTitle": "Fotopåminnelse",
+    "photoReminderBody": "Daglig uppmaning att lägga till dagens foto",
+    "reminderTime": "Påminnelsetid",
+    "reminderTimeNote": "Tiden är i din tidszon · {timeZone}",
+    "channels": "Kanaler",
+    "channelInApp": "I appen",
+    "channelEmail": "E-post",
+    "channelPush": "Push",
+    "channelToggleLabel": "{channel} för {notification}",
+    "noChannelsWarning": "Levereras inte förrän du väljer en kanal",
+    "browserPushTitle": "Webbläsarpush",
+    "browserPushBody": "Skicka enhetsaviseringar från den här webbläsaren för aktiverade aviseringstyper.",
+    "browserPushOn": "Push är aktiverat för den här webbläsaren.",
+    "browserPushOnNeedsBrowser": "Push är aktiverat, men den här webbläsaren är inte ansluten än.",
+    "browserPushOff": "Push är av.",
+    "browserPushUnsupported": "Den här webbläsaren stöder inte web push.",
+    "browserPushInsecureContext": "Webbläsarpush kräver HTTPS eller localhost.",
+    "browserPushDenied": "Webbläsarbehörighet är blockerad. Aktivera aviseringar i webbläsarens inställningar.",
+    "browserPushConnect": "Anslut den här webbläsaren",
+    "browserPushEnabled": "Webbläsarpush aktiverat.",
+    "browserPushDisabled": "Webbläsarpush inaktiverat.",
+    "browserPushEnableFailed": "Det gick inte att aktivera webbläsarpush.",
+    "browserPushNotConfigured": "Push är inte tillgängligt.",
+    "browserPushInvalidPublicKey": "Serverns webbläsarpushnyckel är ogiltig.",
+    "browserPushPermissionNotGranted": "Webbläsarens aviseringsbehörighet gavs inte.",
+    "browserPushSubscriptionFailed": "Prenumerationen misslyckades.",
+    "browserPushRegistrationFailed": "Webbläsarens push-prenumeration kunde inte sparas.",
+    "browserPushDisableFailed": "Det gick inte att inaktivera webbläsarpush.",
+    "browserPushDevicesTitle": "Anslutna enheter",
+    "browserPushDevicesEmpty": "Inga enheter är anslutna för push.",
+    "browserPushDeviceCurrent": "Den här webbläsaren",
+    "browserPushDeviceWeb": "Webbläsare",
+    "browserPushDeviceIos": "iOS-enhet",
+    "browserPushDeviceAndroid": "Android-enhet",
+    "browserPushDeviceUnknown": "Push-enhet",
+    "browserPushDeviceLastSeen": "Senast sedd {date}",
+    "browserPushDeviceNeverSeen": "Senast sedd okänd",
+    "browserPushDeviceFailures": "{count, plural, one {# nyligt fel} other {# nyliga fel}}",
+    "browserPushDeviceRemove": "Ta bort",
+    "browserPushDeviceRemoving": "Tar bort",
+    "browserPushDeviceRemoved": "Push-enhet borttagen.",
+    "browserPushDeviceRemoveFailed": "Det gick inte att ta bort push-enheten.",
+    "browserPushDeliveryIssues": "{failing, plural, =0 {Inga felande enheter} one {# felande enhet} other {# felande enheter}} · {retries, plural, =0 {inga väntande försök} one {# väntande försök} other {# väntande försök}}",
+    "reactionAlertsTitle": "Reaktionsvarningar",
+    "reactionDetectedTitle": "Möjlig reaktion",
+    "reactionAlertsBody": "Notifiera mig när AI flaggar en möjlig reaktion",
+    "routineSimplificationTitle": "Rutinförenkling",
+    "autoSimplifyBody": "Förenkla rutin automatiskt vid måttlig/svår reaktion",
+    "autoSimplifyNote": "När av får du fortfarande en varning, men din rutin ändras aldrig automatiskt.",
+    "insightsTitle": "Insikter & Wrapped",
+    "insightAlertsBody": "Insiktsaviseringar",
+    "insightCadenceLabel": "Insiktsfrekvens",
+    "insightCadence": {
+      "weekly": "Veckosammanfattning",
+      "fewer": "Färre insikter"
+    },
+    "insightDigestDayLabel": "Sammanfattningsdag",
+    "insightDigestDays": {
+      "1": "Måndag",
+      "2": "Tisdag",
+      "3": "Onsdag",
+      "4": "Torsdag",
+      "5": "Fredag",
+      "6": "Lördag",
+      "7": "Söndag"
+    },
+    "insightDigestTimeLabel": "Sammanfattningstid",
+    "wrappedAlertsBody": "Wrapped-klar-aviseringar",
+    "newPill": "Nytt",
+    "todaysSuggestionTitle": "Dagens förslag",
+    "todaysSuggestionBody": "Tre påminnelser som håller din rutin på rätt spår.",
+    "suggestionReadyTitle": "Förslag redo",
+    "suggestionReadyBody": "När ett förslag blir synligt, din ledtid före schemalagd tid.",
+    "smartPicksTitle": "Smart Picks",
+    "smartPicksBody": "Uppdateringar från din hylluckanalys.",
+    "smartPickReadyTitle": "Smart Picks redo",
+    "smartPickReadyBody": "Valfri avisering när din hylla ändras och en ny produktlucka finns.",
+    "slotStartTitle": "Rutintid",
+    "slotStartBody": "Vid schemalagd tid, så att du kommer ihåg att applicera din rutin.",
+    "recordingReminderTitle": "Inspelningspåminnelse",
+    "recordingReminderBody": "30 minuter efter en rutintid om ingen registrering finns. Tyst på natten, försöker igen nästa morgon.",
+    "leadTimeLabel": "Ledtid före varje förslag",
+    "leadTimeOption": "{minutes, plural, =60 {1 timme} =120 {2 timmar} =180 {3 timmar} =240 {4 timmar} =360 {6 timmar} =480 {8 timmar} =720 {12 timmar} other {# minuter}}",
+    "leadTimeNote": "Används av alla tre påminnelsetyper. Intervall 30 minuter till 12 timmar.",
+    "productExpiryTitle": "Utgångsaviseringar för hyllan",
+    "productExpiryBody": "Aviseringar för produkter som närmar sig utgångsdatum eller redan har gått ut.",
+    "productExpiryAlertsTitle": "Produktutgångsaviseringar",
+    "productExpiryAlertsBody": "Påminnelser före och på en produkts utgångsdatum.",
+    "productExpiryNoticeDaysLabel": "Avisera mig dagar före utgång",
+    "productExpiryNoticeDaysHint": "Välj ett heltal från {min} till {max}.",
+    "productExpiryNoticeDaysError": "Ange ett heltal från {min} till {max}.",
+    "quietHoursTitle": "Tysta timmar",
+    "quietHoursBody": "Pausa icke-brådskande påminnelser inom det här fönstret. Reaktionsvarningar kommer alltid igenom.",
+    "quietHoursActive": "Tysta timmar aktiva",
+    "from": "Från",
+    "to": "till",
+    "quietHoursTzNote": "Tider visas i din tidszon · {timeZone}"
+  },
+  "notificationsPage": {
+    "eyebrow": "Inkorg",
+    "title": "Aviseringar",
+    "subtitle": "Förslag, påminnelser, reaktioner, insikter och din Skin Wrapped, samlat på en plats.",
+    "markAllRead": "Markera alla som lästa",
+    "markingAllRead": "Markerar alla som lästa",
+    "unreadHeading": "Olästa",
+    "readHeading": "Lästa",
+    "view": "Visa",
+    "play": "Spela",
+    "empty": "Allt ikapp.",
+    "emptyTitle": "Lugnt här just nu",
+    "emptyBody": "När något behöver din uppmärksamhet, som en möjlig reaktion, en ny insikt eller din månatliga Skin Wrapped, dyker det upp här.",
+    "managePreferences": "Hantera aviseringar",
+    "preferencesAction": "Preferenser",
+    "loadingMore": "Laddar fler",
+    "sourceSkinJournal": "Hudjournal",
+    "sourceTodaysSuggestion": "Dagens förslag",
+    "sourceSmartPicks": "Smart Picks",
+    "sourceShelf": "Hylla",
+    "fallbackProductName": "En produkt",
+    "unknownDate": "ett okänt datum",
+    "errors": {
+      "loadTitle": "Vi kunde inte ladda aviseringar",
+      "loadBody": "Försök igen. Dina aviseringsinställningar och journaldata är oförändrade.",
+      "loadMore": "Vi kunde inte ladda fler aviseringar.",
+      "retry": "Försök igen"
+    },
+    "kinds": {
+      "photo_reminder": {
+        "title": "Dags för dagens foto",
+        "body": "Fånga din morgonbaslinje i naturligt dagsljus."
+      },
+      "reaction_detected": {
+        "title": "Möjlig reaktion upptäckt",
+        "body": "Ökad rodnad, nya utbrott. Rutin förenklad till barriär-reparation tills du bekräftar."
+      },
+      "simplification_started": {
+        "title": "Rutin förenklad",
+        "body": "Barriärreparation aktiv. Återställ när som helst."
+      },
+      "doctor_referral": {
+        "title": "Hudläkarremiss",
+        "body": "Kvarstående reaktionssignaler. Överväg ett hudläkarbesök."
+      },
+      "insight_ready": {
+        "title": "Ny insikt",
+        "body": "Tryck för att se vad som fungerar."
+      },
+      "wrapped_ready": {
+        "title": "Din Wrapped är klar",
+        "body": "Din privata sammanfattning är klar med AI-texter om synliga förändringar."
+      },
+      "analysis_failed": {
+        "title": "Analys misslyckades",
+        "body": "Tryck för att försöka igen."
+      },
+      "export_ready": {
+        "title": "Din export är klar",
+        "body": "Tryck för att ladda ner."
+      },
+      "suggestion_ready": {
+        "title": "Ditt förslag är klart",
+        "body": "Tryck för att granska stegen innan du applicerar."
+      },
+      "slot_start": {
+        "title": "Dags att starta din rutin",
+        "body": "Din rutin är redo. Markera varje steg när du gör det."
+      },
+      "recording_reminder": {
+        "title": "Hur gick din rutin?",
+        "body": "Registrera vad du applicerade så att resten av dagen vet vad det ska bygga på."
+      },
+      "product_nearing_expiry": {
+        "title": "Produkt närmar sig utgång",
+        "body": "{productName} går ut om {daysUntilExpiry, plural, one {# dag} other {# dagar}} den {expiresDate}.",
+        "bodyFallback": "{productName} närmar sig utgång den {expiresDate}."
+      },
+      "product_expired": {
+        "title": "Produkt har gått ut",
+        "body": "{productName} gick ut den {expiresDate}."
+      },
+      "smart_pick_ready": {
+        "title": "Nytt Smart Pick finns",
+        "body": "Din hylla har ändrats. Granska den senaste luckan innan du köper något nytt."
+      }
+    }
+  },
+  "smartPicks": {
+    "page": {
+      "title": "Smart Picks",
+      "subtitle": "Vad du ska köpa, hoppa över eller byta ut.",
+      "refreshing": "Uppdaterar val",
+      "footer": {
+        "title": "Ritora rekommenderar inget du inte behöver.",
+        "body": "En lucka dyker bara upp här när det finns en verklig anledning för din hud. Vi föreslår en ersättning bara när dina användningsloggar och foton är tydliga. Det bästa valet är ofta inget nytt alls."
+      },
+      "trust": {
+        "title": "Använd detta som vägledning, inte som diagnos.",
+        "photos": "Foton och loggar hjälper Ritora att se mönster över tid, men de är inte kliniska bevis. Ljus, tidpunkt, smink och missade loggar kan ändra bilden.",
+        "shopping": "Ritora föreslår produktnamn och seriösa ställen att kontrollera, inte priser eller köplänkar. Jämför säljare själv och kontrollera ingredienslistan innan köp.",
+        "consistency": "Ritora blir mer användbar när dina loggar och foton är jämna. När underlaget är tunt säger den det hellre än att gissa."
+      },
+      "mode": {
+        "label": "Smart Picks-läge",
+        "refine": "Förfina min hylla",
+        "starter": "Startkit"
+      },
+      "actions": {
+        "wishlist": "Önskelista",
+        "back": "Tillbaka till Smart Picks",
+        "save": "Spara",
+        "saving": "Sparar",
+        "saved": "Sparad",
+        "dismiss": "Dölj",
+        "dismissing": "Döljer",
+        "whyThis": "Varför detta",
+        "remove": "Ta bort",
+        "removing": "Tar bort"
+      },
+      "feedback": {
+        "saved": "Sparad. Du hittar den i din önskelista.",
+        "dismissed": "Dold tills vidare.",
+        "removed": "Borttagen från din önskelista.",
+        "failed": "Det gick inte att spara. Försök igen.",
+        "removeFailed": "Det gick inte att ta bort. Försök igen."
+      },
+      "error": {
+        "title": "Vi kunde inte ladda Smart Picks",
+        "body": "Försök igen. Din hylla och profildata är oförändrade.",
+        "retry": "Försök igen"
+      },
+      "recap": {
+        "goal": "Mål",
+        "skinType": "Hudtyp",
+        "location": "Plats",
+        "budget": "Budget",
+        "unset": "Ej valt"
+      },
+      "budget": {
+        "drugstore": "Budget",
+        "mid": "Mellan",
+        "premium": "Premium",
+        "luxury": "Lyx"
+      },
+      "coverage": {
+        "title": "Täckningsmätare",
+        "summary": "{filled} av {total} målsteg täckta",
+        "states": {
+          "filled": "Täckt",
+          "missing": "Valfri lucka",
+          "missing-priority": "Prioriterad lucka"
+        }
+      },
+      "roles": {
+        "cleanse": "Rengör",
+        "hydrate": "Återfukta",
+        "treat": "Behandla",
+        "moisturise": "Mjukgör",
+        "spf": "SPF",
+        "eye": "Ögon",
+        "treatment-secondary": "Andra behandling",
+        "dark-spot-treatment": "Pigmentserum",
+        "antioxidant": "Vitamin C",
+        "exfoliation-mask": "Mask eller peeling",
+        "acne-treatment": "Aknebehandling",
+        "barrier-support": "Barriärstöd",
+        "congestion-mask": "Tilltäppthetsmask",
+        "texture-exfoliant": "Texturpeeling",
+        "retinoid": "Retinoid",
+        "peptide": "Peptidstöd",
+        "recovery-mask": "Återhämtningsmask",
+        "goal-primary": "Målprodukt",
+        "goal-support": "Målstöd"
+      },
+      "activeTags": {
+        "retinoid": "Retinoid",
+        "aha": "AHA",
+        "bha": "BHA",
+        "pha": "PHA",
+        "vitamin-c": "Vitamin C",
+        "benzoyl-peroxide": "Bensoylperoxid",
+        "azelaic-acid": "Azelainsyra",
+        "niacinamide": "Niacinamid",
+        "ceramide": "Ceramid",
+        "humectant": "Fuktbindare",
+        "barrier-support": "Barriärstöd",
+        "spf": "SPF",
+        "salicylic-acid": "Salicylsyra"
+      },
+      "priority": {
+        "priority": "Prioriterad lucka",
+        "consider": "Värt att överväga"
+      },
+      "sections": {
+        "priority": "Prioriterade luckor",
+        "consider": "Värt att överväga"
+      },
+      "gap": {
+        "whyPrefix": "Varför:",
+        "noPickTitle": "Produktnamnet matchas fortfarande.",
+        "noPick": "Luckan är tydlig. Ritora väljer fortfarande produktnamnet för den här punkten, så kom tillbaka om några minuter.",
+        "noPickFailedTitle": "Produktnamnet kunde inte matchas än.",
+        "noPickFailed": "Luckan är fortfarande användbar, men produktmatchningen blev inte klar. Kom tillbaka senare så försöker Ritora igen."
+      },
+      "starterKit": {
+        "eyebrow": "Startkit",
+        "title": "Startrutin",
+        "stepCount": "{count, plural, one {1 steg} other {# steg}}",
+        "step": "Steg {order}",
+        "pickFallback": "Vald för att hålla den första rutinen enkel och låg risk.",
+        "noPickTitle": "Produktnamnet matchas fortfarande för det här steget.",
+        "noPick": "Behåll det här steget i rutinen. Det specifika produktnamnet visas här när matchningen är klar.",
+        "noPickFailedTitle": "Produktnamnet kunde inte matchas för det här steget än.",
+        "noPickFailed": "Behåll steget. Produktmatchningen blev inte klar, så kom tillbaka senare så försöker Ritora igen.",
+        "footer": "Startkit håller rutinen liten med flit. Börja med grunderna som är täckta och rekommenderade här; använd Förfina senare när du vill byta ut, förenkla eller jämföra produkter.",
+        "status": {
+          "covered": "Redan täckt",
+          "recommended": "Rekommenderad",
+          "wait": "Vänta"
+        }
+      },
+      "replacement": {
+        "title": "Ersättning för {productName}",
+        "usage90": "{count} användningsdagar på 90 d",
+        "photos": "{count} fotokontroller",
+        "reactions": "{count} reaktionssignaler",
+        "caveat": "Foton kan stödja ett bytesbeslut, men de bevisar inte att en produkt har misslyckats. Ritora väntar på tillräckligt med loggad användning och upprepade fotokontroller innan ett byte föreslås."
+      },
+      "product": {
+        "bestMatch": "Bästa matchning"
+      },
+      "sellers": {
+        "whereToCheck": "Ställen att kontrollera",
+        "compare": "Säljarnamn är en startpunkt. Kontrollera fler än en seriös säljare innan du bestämmer dig."
+      },
+      "drawer": {
+        "title": "Varför detta val",
+        "description": "Resonemanget bakom rekommendationen och produkterna som valdes bort.",
+        "facts": "Resonemang",
+        "alternatives": "Alternativ",
+        "ruledOut": "Bortvalda"
+      },
+      "covered": {
+        "title": "Här är du täckt",
+        "empty": "Täckta roller visas här när din hylla har tillräckligt många aktiva produkter."
+      },
+      "redundancy": {
+        "title": "Dubblettkontroll av aktiva ämnen",
+        "empty": "Inga tydliga dubbletter av aktiva ingredienser hittades."
+      },
+      "empty": {
+        "profileRequired": {
+          "title": "Smart Picks behöver din hudprofil först",
+          "body": "Några profildetaljer saknas fortfarande. Fyll i dem först så att Smart Picks kan vara specifikt för din hud, din budget och det du vill förändra."
+        },
+        "consentRequired": {
+          "title": "Smart Picks är av",
+          "body": "Produktval är avstängda i sekretessinställningarna. Ritora använder inte din hylla, profil, rutinhistorik eller fototrender för köpförslag om du inte slår på detta igen."
+        },
+        "allGapsDismissed": {
+          "title": "Inget nytt idag",
+          "body": "Du valde bort de nuvarande förslagen, så vi håller dem undan ett tag. Smart Picks kontrollerar igen när din hylla ändras eller pausen tar slut."
+        },
+        "redundancyOnly": {
+          "title": "Inga nya produkter att köpa",
+          "body": "Det finns ingen användbar lucka att handla för just nu. Det hjälpsamma nästa steget är att titta på överlapp i rutinen innan du lägger till något mer."
+        },
+        "historyInsufficient": {
+          "title": "Fortsätt med det du har",
+          "body": "Din hylla täcker grunderna, men det finns inte tillräckligt med rutinhistorik ännu för att säga att en produkt bör bytas ut. Fortsätt logga användning och tydliga check-in-bilder innan du köper mer."
+        },
+        "productGenerationUnavailable": {
+          "title": "Dina produktval förbereds",
+          "body": "Du behöver inte hålla sidan öppen. Ritora matchar produktnamn i bakgrunden; kom tillbaka om några minuter."
+        },
+        "fullyCovered": {
+          "title": "Inget användbart att lägga till",
+          "body": "Din grundrutin är täckt och vi ser ingen tydlig anledning att köpa något mer just nu. Fortsätt använda det du har så kontrollerar Smart Picks igen när din hylla, dina loggar och dina bilder ändras."
+        },
+        "fullyCoveredStarter": {
+          "title": "Lägg till en produkt för att börja",
+          "body": "Smart Picks behöver minst en hyllprodukt innan det kan jämföra det du äger med det som saknas. Lägg till din första produkt så håller vi startrutinen liten."
+        },
+        "profileCta": "Starta hudprofil",
+        "consentCta": "Slå på Smart Picks igen",
+        "starterCta": "Öppna hyllan",
+        "fullyCoveredCta": "Öppna Dagens förslag",
+        "todayCta": "Öppna Dagens förslag",
+        "shelfCta": "Granska hyllan",
+        "journalCta": "Öppna journalen",
+        "facts": {
+          "coverage": "Täckning {filled}/{total}",
+          "activeProducts": "{count, plural, =0 {Inga aktiva produkter} one {1 aktiv produkt} other {# aktiva produkter}}",
+          "hiddenPicks": "{count, plural, one {1 dolt val} other {# dolda val}}",
+          "pauseEnds": "Pausad till {date}"
+        },
+        "history": {
+          "ready": "{days} användningsdagar, {photos} tydliga fotokontroller",
+          "needs_usage_logs": "{photos} tydliga fotokontroller. Fler användningsloggar behövs.",
+          "needs_clear_photos": "{days} användningsdagar. Lägg till tydligare fotokontroller.",
+          "needs_usage_and_photos": "Mer användningslogg och tydliga foton behövs före ersättningskontroller."
+        },
+        "missingFields": {
+          "date_of_birth": "Födelsedatum",
+          "sex_at_birth": "Kön vid födseln",
+          "skin_type": "Hudtyp",
+          "skin_tone": "Hudton",
+          "fitzpatrick_phototype": "Fitzpatrick-typ",
+          "ethnicity": "Etnicitet",
+          "current_concerns": "Aktuella bekymmer",
+          "primary_goal": "Främsta mål",
+          "concern_severity": "Allvarlighetsgrad",
+          "pih_tendency": "Tendens till mörka märken",
+          "melasma_tendency": "Melasmatendens",
+          "keloid_tendency": "Keloidtendens",
+          "sunscreen_habit": "Solskyddsvana",
+          "sunscreen_tolerance": "Solskyddstolerans",
+          "routine_pace": "Rutintakt",
+          "fragrance_free": "Doftpreferens",
+          "non_comedogenic": "Preferens för porer",
+          "sunscreen_filter": "Solskyddsfilter",
+          "sunscreen_finish": "Solskyddsfinish",
+          "water_hardness": "Vattenhårdhet",
+          "water_sensitivity": "Vattenkänslighet",
+          "budget_tier": "Budget",
+          "smart_picks_consent": "Smart Picks-val",
+          "more": "{count, plural, one {+1 till} other {+# till}}"
+        }
+      },
+      "wishlist": {
+        "title": "Smart Picks-önskelista",
+        "subtitle": "Val du sparat för att titta på igen innan du köper.",
+        "emptyTitle": "Inga sparade Smart Picks än",
+        "emptyBody": "Tryck på hjärtat på en Smart Pick-rekommendation för att spara den här. Du kan granska sparade produkter innan du jämför säljare.",
+        "emptyCta": "Bläddra i Smart Picks",
+        "savedForGoal": "Sparad för ditt mål: {goal}.",
+        "savedFallback": "Sparad från en nyligen Smart Pick.",
+        "savedOn": "Sparad {date}",
+        "savedBadge": "Sparad"
+      }
+    }
+  },
+  "todaysSuggestion": {
+    "page": {
+      "title": "Dagens förslag",
+      "history": "Historik",
+      "takeBreak": "Ta en paus",
+      "loading": "Laddar dagens plan",
+      "errorTitle": "Vi kunde inte ladda dagens plan",
+      "error": "Något gick fel när vi laddade dina förslag. Du kan försöka igen.",
+      "retry": "Försök igen",
+      "worthConsidering": "Värt att överväga",
+      "nextSlotTomorrow": "imorgon",
+      "normalRoutineRestored": "Vanlig rutin återställd för kommande förslag.",
+      "routineBreakStarted": "Rutinen pausad. Inga nya förslag skapas förrän du återupptar.",
+      "routineBreakResumed": "Rutinen har återupptagits. Förslag visas när varje rutintid närmar sig.",
+      "routineBreakResumeUpdated": "Återupptagningsdatum uppdaterat.",
+      "routineBreakActionFailed": "Vi kunde inte uppdatera din rutinpaus. Försök igen.",
+      "quickSuggestion": "Snabbt förslag",
+      "quickSuggestionQueued": "Snabbt förslag förbereds.",
+      "quickSuggestionFailed": "Vi kunde inte starta förslaget. Försök igen.",
+      "quickSuggestionConsentRequired": "Tillåt AI-förslag innan du ber om ett snabbt förslag.",
+      "aiConsentGranted": "AI-förslag aktiverade.",
+      "aiConsentFailed": "Vi kunde inte spara samtycket. Försök igen.",
+      "gapSaved": "Sparat i dagens önskelista.",
+      "gapDismissed": "Rekommendationen dold tills vidare."
+    },
+    "aiConsentDialog": {
+      "title": "Tillåt AI-förslag",
+      "body": "Snabba förslag använder AI för att läsa din hylla, ditt schema, din hudprofil, dina journaler och tidigare registreringar. Känslig profil- eller journalkontext används bara när motsvarande samtycke också är aktivt.",
+      "controlTitle": "Du har kontroll",
+      "controlBody": "Du kan återkalla detta när som helst i Inställningar → Integritet. Ritora håller dessa förfrågningar krypterade och använder inte råa journalbilder för förslag.",
+      "cancel": "Inte nu",
+      "confirm": "Tillåt AI-förslag"
+    },
+    "aiConsentCard": {
+      "title": "Personliga rutiner anpassade efter din hud",
+      "body": "Slå på AI-förslag och Ritora anpassar varje förslag efter din hudprofil, hylla och senaste journalanteckningar. Utan detta visas förslag men förblir grundläggande.",
+      "benefits": {
+        "matchProfile": "Rutiner som matchar dina mål och toleranser",
+        "adaptToShelf": "Anpassar sig efter produkterna du faktiskt äger",
+        "revokeAnytime": "Du har kontrollen. Stäng av när som helst i Inställningar."
+      },
+      "privacy": "Dina data är krypterade och säljs aldrig.",
+      "grant": "Tillåt AI-förslag",
+      "dismiss": "Kanske senare"
+    },
+    "routineBreak": {
+      "statusLabel": "Pausad",
+      "title": "Du har en rutinpaus",
+      "body": "Ritora behåller ditt schema, pausar nya förslag och stoppar rutinpåminnelser tills du återupptar.",
+      "resumeOn": "Planerad återstart: {date}",
+      "resumeIndefinite": "Pausad tills du återupptar",
+      "resumeDateLabel": "Återupptagningsdatum",
+      "saveResumeDate": "Spara datum",
+      "resumeNow": "Återuppta rutin",
+      "changeResumeDate": "Ändra",
+      "cancelEdit": "Avbryt",
+      "validation": {
+        "resumeDateInvalid": "Välj ett giltigt datum.",
+        "resumeDatePast": "Välj ett framtida datum."
+      }
+    },
+    "routineBreakStart": {
+      "title": "Ta en rutinpaus",
+      "body": "Ditt schema finns kvar, men Ritora pausar nya förslag, rutinpåminnelser och missade rutiner.",
+      "resumeDateLabel": "Återupptagningsdatum",
+      "resumeDateHint": "Valfritt. Lämna tomt för att pausa tills du återupptar manuellt.",
+      "cancel": "Avbryt",
+      "start": "Starta paus",
+      "validation": {
+        "resumeDateInvalid": "Välj ett giltigt datum.",
+        "resumeDatePast": "Välj ett framtida datum."
+      }
+    },
+    "onDemandDialog": {
+      "title": "Snabbt förslag",
+      "body": "Berätta vad som händer just nu. Ritora använder din hylla och senaste registreringar.",
+      "intentLabel": "Vad händer?",
+      "intensityLabel": "Hur mycket vill du göra?",
+      "noteLabel": "Kort anteckning (valfritt)",
+      "notePlaceholder": "Till exempel, kom precis hem svettig och vill göra en snabb återställning.",
+      "cancel": "Avbryt",
+      "submit": "Generera förslag",
+      "noteTooLong": "Håll detta under 280 tecken.",
+      "intensity": {
+        "minimal": "Minimal",
+        "minimalDescription": "Bara det viktigaste",
+        "standard": "Standard",
+        "standardDescription": "Hela minirutinen"
+      }
+    },
+    "onDemand": {
+      "sectionTitle": "Snabba förslag",
+      "label": "På begäran",
+      "newRequest": "Nytt",
+      "retry": "Försök igen",
+      "retrying": "Försöker igen...",
+      "qualityTitle": "Produktdata är begränsad",
+      "intent": {
+        "post_workout": "Efter träning",
+        "post_sun": "Efter sol",
+        "post_swim": "Efter simning",
+        "travel_refresh": "Resefräschning",
+        "quick_refresh": "Snabb uppfräschning",
+        "event_prep": "Inför event",
+        "post_makeup_or_shower": "Efter makeup eller dusch",
+        "other": "Annat"
+      }
+    },
+    "lockedDay": {
+      "title": "Så kommer förslagen",
+      "body": "Varje rutin förbereds strax innan den kommer, utifrån ditt senaste foto, din hylla och din hudprofil.",
+      "leadFact": "Visas {leadTime} innan varje förslag kommer.",
+      "notifyFact": "Vi notiserar dig när det är klart och vid den schemalagda tiden. Hantera i <link>Notifikationer</link>.",
+      "leadTimeHour": "{count} timme",
+      "leadTimeHours": "{count} timmar",
+      "leadTimeMinute": "{count} minut",
+      "leadTimeMinutes": "{count} minuter"
+    },
+    "section": {
+      "morning": "Morgon",
+      "noon": "Mitt på dagen",
+      "evening": "Kväll"
+    },
+    "summary": {
+      "applied": "{count, plural, one {# applicerad} other {# applicerade}}",
+      "ready": "{count, plural, one {# redo} other {# redo}}",
+      "locked": "{count, plural, one {# låst} other {# låsta}}",
+      "weatherWithTemperature": "{condition} · {temperature}°C",
+      "temperature": "{temperature}°C",
+      "uvIndex": "UV {index}",
+      "uvRisk": "UV {index} · {risk}",
+      "humidity": "{band} · {value}% luftfuktighet",
+      "airQuality": "Luft {risk}",
+      "waterContext": "{hardness} vatten",
+      "environment": {
+        "unknown": "Okänt",
+        "uv": {
+          "low": "låg",
+          "moderate": "måttlig",
+          "high": "hög",
+          "very_high": "mycket hög",
+          "extreme": "extrem",
+          "unknown": "okänd"
+        },
+        "humidity": {
+          "very_dry": "Mycket torrt",
+          "dry": "Torrt",
+          "balanced": "Balanserat",
+          "humid": "Fuktigt",
+          "very_humid": "Mycket fuktigt"
+        },
+        "air": {
+          "good": "bra",
+          "fair": "okej",
+          "moderate": "måttlig",
+          "poor": "dålig",
+          "very_poor": "mycket dålig",
+          "unknown": "okänd"
+        },
+        "water": {
+          "unknown": "Okänt",
+          "soft": "Mjukt",
+          "moderate": "Måttligt",
+          "hard": "Hårt"
+        }
+      },
+      "photoNudge": "Foto loggat idag",
+      "logPhoto": "Logga foto",
+      "photoLoggedAt": "Foto loggat {time}",
+      "notifications": "{count, plural, one {# avisering} other {# aviseringar}}",
+      "adherence": "{percent}% följsamhet"
+    },
+    "environment": {
+      "climateAwareTitle": "Gör förslag klimatanpassade",
+      "climateAwareBody": "Lägg till samtycke för plats på stadsnivå så Ritora kan anpassa efter luftfuktighet, UV, luftkvalitet och säsongsskiften.",
+      "grantLocation": "Hantera platssamtycke"
+    },
+    "modeBadge": {
+      "ai": "AI",
+      "manual": "Manuellt",
+      "mixed": "Blandat"
+    },
+    "provenance": {
+      "specialistLocked": "Låst av specialist",
+      "yourRoutine": "Din rutin",
+      "aiAdded": "Tillagt av AI"
+    },
+    "climate": {
+      "weatherWithTemperature": "{condition} · {temperature}°C",
+      "temperature": "{temperature}°C",
+      "uvIndex": "UV {index}",
+      "uvRisk": "UV {index} · {risk}",
+      "humidity": "{band} · {value}% luftfuktighet",
+      "airQuality": "AQI · {risk}",
+      "airQualityWithIndex": "AQI {index} · {risk}",
+      "environment": {
+        "uv": {
+          "low": "låg",
+          "moderate": "måttlig",
+          "high": "hög",
+          "very_high": "mycket hög",
+          "extreme": "extrem",
+          "unknown": "okänd"
+        },
+        "humidity": {
+          "very_dry": "Mycket torrt",
+          "dry": "Torrt",
+          "balanced": "Balanserat",
+          "humid": "Fuktigt",
+          "very_humid": "Mycket fuktigt"
+        },
+        "air": {
+          "good": "bra",
+          "fair": "okej",
+          "moderate": "måttlig",
+          "poor": "dålig",
+          "very_poor": "mycket dålig",
+          "unknown": "okänd"
+        }
+      }
+    },
+    "step": {
+      "routineNote": "Rutinanteckning:"
+    },
+    "slot": {
+      "stepCount": "{count, plural, one {# steg} other {# steg}}",
+      "ready": "Redo",
+      "generating": "Förbereds",
+      "failed": "Behöver nytt försök",
+      "missed": "Missad",
+      "applied": "Applicerad",
+      "appliedSummary": "{count} av {total} applicerade",
+      "awaitingRecord": "Väntar på registrering",
+      "simplified": "Förenklad",
+      "specialist": "Specialist",
+      "basicSuggestion": "Grundförslag",
+      "personalizationOffTitle": "Personalisering är av.",
+      "personalizationOffBody": "Detta förslag undviker profil-, journal- och historikkontext tills samtycke för AI-förslag har beviljats.",
+      "morningLabel": "Morgonrutin",
+      "noonLabel": "Påminnelse mitt på dagen",
+      "eveningLabel": "Kvällsrutin",
+      "availableAt": "Tillgänglig {time}",
+      "unlocksIn": "Låser upp om {eta}.",
+      "unlocksInRich": "Låser upp om <strong>{eta}</strong>.",
+      "lockedExplainer": "Vi visar bara förslag när ditt inställda ankomstfönster öppnas så de speglar ditt senaste foto, sömn och incheckning.",
+      "generatingExplainer": "Ritora förbereder detta förslag med ditt senaste schema, din hylla, hudprofil och senaste registreringar.",
+      "failedExplainer": "Detta förslag kunde inte förberedas. Det förblir synligt så att problemet inte försvinner från dagen.",
+      "missedExplainer": "Detta förslag passerade utan en sparad appliceringsregistrering. Du kan fortfarande registrera eller redigera det från Historik efter idag.",
+      "whyThisRoutine": "Varför denna rutin",
+      "markAsApplied": "Markera som applicerad",
+      "recordWhatIApplied": "Registrera vad jag applicerade",
+      "more": "Mer",
+      "edit": "Redigera",
+      "edited": "Redigerad",
+      "appliedAt": "Applicerad kl. {time}",
+      "recordedSummary": "Applicerad {time} · {count} av {total}",
+      "recordedAt": "Registrerad {time}.",
+      "editedAt": "Redigerad {time}.",
+      "editedSubstitutionSummary": "Ersatte {from} med {to}.",
+      "recordedMatchesSuggestion": "Matchar förslaget.",
+      "recordedItem": {
+        "applied": "Applicerad",
+        "skipped": "Överhoppad",
+        "substituted": "Ersatt",
+        "insteadOf": "I stället för {name}",
+        "addedByYou": "Tillagd av dig",
+        "itemAppliedAt": "Applicerad {time}",
+        "unknownProduct": "Produkt"
+      }
+    },
+    "reactionBanner": {
+      "title": "Möjlig reaktion på dagens foto",
+      "paused": "Pausat medan det lugnar sig: {names}",
+      "confidence": "{percent}% säkerhet",
+      "photosUntilClear": "{count, plural, =0 {Kriterier uppfyllda} one {# foto kvar} other {# foton kvar}}",
+      "clearCriteria": "Kriterier för barriäråterhämtning",
+      "viewPhoto": "Visa foto",
+      "resetRoutine": "Använd min vanliga rutin"
+    },
+    "gapRecommendation": {
+      "title": "Överväg att lägga till {ingredient}",
+      "browse": "Bläddra alternativ",
+      "saveToWishlist": "Spara i önskelistan",
+      "saved": "Sparad",
+      "dismiss": "Inte nu"
+    },
+    "recordSheet": {
+      "recordTitle": "Registrera vad du applicerade",
+      "editTitle": "Redigera applicering",
+      "recordSubtitle": "Förslag kl. {time}, {count} föreslagna steg",
+      "editSubtitle": "Förslag kl. {time}. Ursprungligen registrerat {firstRecordedAt}.",
+      "appliedAt": "Applicerad kl.",
+      "rowSuggestedTag": "Föreslaget",
+      "rowAddedTag": "Tillagd av dig",
+      "rowActionApplied": "Markera applicerad",
+      "rowActionSkipped": "Markera överhoppad",
+      "rowActionSubstituted": "Markera ersatt",
+      "rowActionRemove": "Ta bort produkt",
+      "tooltips": {
+        "applied": "Jag använde denna produkt",
+        "skipped": "Jag hoppade över detta steg",
+        "substituted": "Jag använde något annat",
+        "remove": "Ta bort denna produkt från registreringen"
+      },
+      "rowNotesPlaceholder": "Anteckning",
+      "addProduct": {
+        "title": "Lägg till en produkt jag använde",
+        "body": "Sök i din hylla eller skriv ett namn",
+        "panelTitle": "Lägg till vad du faktiskt använde",
+        "panelBody": "Välj en aktiv hyllprodukt eller lägg till en engångsprodukt utanför hyllan.",
+        "close": "Stäng lägg till produkt",
+        "offShelfTitle": "Produkt utanför hyllan",
+        "brandPlaceholder": "Märke",
+        "namePlaceholder": "Produktnamn",
+        "addOffShelf": "Lägg till utanför hyllan"
+      },
+      "productPicker": {
+        "searchPlaceholder": "Sök hyllprodukter",
+        "loading": "Laddar produkter",
+        "empty": "Inga matchande hyllprodukter.",
+        "statusActive": "Aktiv",
+        "statusArchived": "Arkiverad",
+        "statusFinished": "Slut"
+      },
+      "substitution": {
+        "chooseProduct": "Vad använde du i stället?",
+        "selected": "Ersatt med {name}",
+        "selectedShelf": "vald hyllprodukt",
+        "offShelfBrand": "Märke utanför hyllan",
+        "offShelfName": "Produkt utanför hyllan",
+        "reasonPlaceholder": "Varför ersatte du? Till exempel irritation, slut produkt eller konsistens."
+      },
+      "notesLabel": "Anteckningar (valfritt)",
+      "notesPlaceholder": "Något Ritora bör komma ihåg? Till exempel att det stack lite på kinden.",
+      "editReasonLabel": "Varför redigerar du? (valfritt)",
+      "editReasonPlaceholder": "Hjälper AI att lära sig. Till exempel slut på produkten eller fel produkt tidigare.",
+      "saveRecord": "Spara registrering",
+      "saveChanges": "Spara ändringar",
+      "discard": "Förkasta ändringar",
+      "recordLegal": "Du kan redigera detta när som helst. Varje ändring tidsstämplas.",
+      "editHistory": {
+        "willMarkAsEdited": "Denna registrering kommer markeras som",
+        "editedMarker": "Redigerad",
+        "firstSavedAt": "Först sparad {time} av dig",
+        "versionsAreKept": "Varje tidigare version sparas, så vi rekommenderar aldrig något baserat på en ändrad registrering. Du kan granska äldre versioner på dagens historiksida."
+      }
+    },
+    "reminderBanner": {
+      "title": "Registrera din rutin kl. {time}",
+      "body": "Det här förslaget är redo att loggas. Det du faktiskt gjorde gör eftermiddagens och kvällens förslag mer träffsäkra.",
+      "recordNow": "Registrera morgonen nu",
+      "skippedToday": "Överhoppad idag",
+      "remindLater": "Påminn mig senare",
+      "skippedNote": "Markerad som överhoppad från Dagens förslag.",
+      "skippedItemNote": "Överhoppad idag."
+    },
+    "detailDrawer": {
+      "eyebrow": "Varför denna rutin",
+      "title": "{daypart}, {time}",
+      "description": "Resonemanget bakom dagens föreslagna rutin.",
+      "generatedAt": "Genererad {time}",
+      "aiModel": "Modell {model}",
+      "daypart": {
+        "morning": "Morgon",
+        "noon": "Mitt på dagen",
+        "evening": "Kväll"
+      },
+      "sections": {
+        "intent": "Vad jag försöker göra",
+        "whyEach": "Varför varje steg",
+        "whatISkipped": "Vad jag hoppade över idag och varför",
+        "inputs": "Vad detta använde",
+        "environment": "Miljökontext",
+        "evidence": "Betrodd evidens"
+      },
+      "environment": {
+        "weather": "Väder",
+        "uv": "UV",
+        "uvDetail": "UV {index}, {risk}",
+        "humidity": "Luftfuktighet",
+        "humidityDetail": "{value}% luftfuktighet, {band}",
+        "air": "Luftkvalitet",
+        "water": "Vattenkontext",
+        "waterDetail": "{hardness} vatten kan göra skonsam rengöring och barriärstöd viktigare.",
+        "uvRisk": {
+          "low": "låg risk",
+          "moderate": "måttlig risk",
+          "high": "hög risk",
+          "very_high": "mycket hög risk",
+          "extreme": "extrem risk",
+          "unknown": "okänd risk"
+        },
+        "humidityBand": {
+          "very_dry": "mycket torr luft",
+          "dry": "torr luft",
+          "balanced": "balanserad luft",
+          "humid": "fuktig luft",
+          "very_humid": "mycket fuktig luft"
+        },
+        "airRisk": {
+          "good": "Bra",
+          "fair": "Okej",
+          "moderate": "Måttlig",
+          "poor": "Dålig",
+          "very_poor": "Mycket dålig",
+          "unknown": "Okänd"
+        },
+        "waterHardness": {
+          "unknown": "Okänt",
+          "soft": "Mjukt",
+          "moderate": "Måttligt",
+          "hard": "Hårt"
+        }
+      },
+      "evidenceReviewed": "granskad {date}",
+      "noRationale": "Inget resonemang sparat för detta förslag.",
+      "markApplied": "Markera som applicerad",
+      "tryAnotherSuggestion": "Prova ett annat förslag"
+    },
+    "empty": {
+      "skinProfile": {
+        "title": "Berätta först om din hud",
+        "body": "Vi behöver din hudtyp, dina bekymmer och ditt mål innan vi kan föreslå något säkert. Det tar cirka tre minuter.",
+        "cta": "Starta hudprofil",
+        "privacy": "Krypterad i vila. Endast Ritoras egen AI-förslagsmotor läser den."
+      },
+      "shelf": {
+        "title": "Lägg till några produkter på din hylla",
+        "body": "Förslag använder bara produkter du faktiskt äger. Ta ett foto av flaskan och dess etikett, så hämtar Ritora varumärke, ingredienser och hur den används.",
+        "cta": "Lägg till en produkt",
+        "note": "Du kan lägga till så många du vill. Aktiva, slutförda och önskelista räknas alla."
+      },
+      "schedule": {
+        "title": "Bygg ditt veckorytm",
+        "body": "Berätta för Ritora när du brukar göra din morgon- och kvällsrutin. Förslag visas bara inför varje schemalagd rutintid.",
+        "ctaEveryDay": "Tillämpa en gång på varje dag",
+        "ctaScratch": "Bygg från grunden",
+        "note": "Du kan ändra tider när som helst från Schema."
+      },
+      "recoverable": {
+        "title": "Inget schemalagt just nu",
+        "body": "Din nästa rutin är {nextSlotLabel}. Medan du väntar, logga ett foto så att AI har färska data när det genererar.",
+        "ctaPhoto": "Lägg till dagens foto",
+        "ctaAddSlot": "Lägg till rutintid"
+      }
+    }
+  },
+  "history": {
+    "page": {
+      "title": "Historik",
+      "subtitle": "Tidigare förslag och vad du faktiskt applicerade. Redigera vilken registrering som helst när som helst.",
+      "export": "Exportera",
+      "loading": "Laddar historik",
+      "errorTitle": "Vi kunde inte ladda historik",
+      "error": "Något gick fel när vi laddade din historik. Du kan försöka igen.",
+      "retry": "Försök igen",
+      "exportError": "Vi kunde inte exportera din historik. Försök igen.",
+      "loadMore": "Ladda mer",
+      "loadingMore": "Laddar mer",
+      "loadMoreError": "Vi kunde inte ladda mer historik."
+    },
+    "filters": {
+      "range": "Datumintervall",
+      "daypart": "Tid på dagen",
+      "daypart_all": "Visa alla tider",
+      "mode": "Rutintyp",
+      "mode_all": "Visa alla typer",
+      "source": "Källa",
+      "source_all": "Visa alla källor",
+      "status": "Status",
+      "status_all": "Visa alla statusar",
+      "last7d": "Senaste 7 dagarna",
+      "last30d": "Senaste 30 dagarna",
+      "custom": "Anpassat intervall",
+      "from": "Från",
+      "to": "Till",
+      "apply": "Använd",
+      "clear": "Rensa",
+      "rangeInvalid": "Slutdatum måste vara samma eller efter startdatum.",
+      "morning": "Morgon",
+      "noon": "Mitt på dagen",
+      "evening": "Kväll",
+      "ai": "AI",
+      "manual": "Manuell",
+      "mixed": "Blandad",
+      "scheduled": "Schemalagd",
+      "on_demand": "På begäran",
+      "applied": "Applicerad",
+      "partial": "Delvis",
+      "skipped": "Överhoppad",
+      "simplified": "Förenklad",
+      "missed": "Missad",
+      "edited": "Redigerad"
+    },
+    "summary": {
+      "appliedOf": "{applied} av {total} applicerade",
+      "edited": "{count} redigerade",
+      "adherence": "{percent}% följsamhet"
+    },
+    "dayCard": {
+      "mood": "Sinnesstämning {score} av 5",
+      "hydration": {
+        "up": "Hydrering upp",
+        "flat": "Hydrering stabil",
+        "down": "Hydrering ner"
+      },
+      "mildRedness": "Lätt rodnad",
+      "daypart": {
+        "morning": "Morgon",
+        "noon": "Mitt på dagen",
+        "evening": "Kväll"
+      },
+      "onDemandLabel": "På begäran · {intent}",
+      "onDemandIntent": {
+        "post_workout": "Efter träning",
+        "post_sun": "Efter sol",
+        "post_swim": "Efter simning",
+        "travel_refresh": "Resefräschning",
+        "quick_refresh": "Snabb uppfräschning",
+        "event_prep": "Inför event",
+        "post_makeup_or_shower": "Efter makeup eller dusch",
+        "other": "Annat"
+      },
+      "status": {
+        "applied": "Applicerad",
+        "partial": "Delvis",
+        "skipped": "Överhoppad",
+        "simplified": "Förenklad",
+        "missed": "Missad",
+        "edited": "Redigerad"
+      }
+    },
+    "day": {
+      "loading": "Laddar dagens registrering",
+      "errorTitle": "Vi kunde inte ladda denna dag",
+      "error": "Något gick fel när vi laddade denna dag. Du kan försöka igen.",
+      "retry": "Försök igen",
+      "backLabel": "All historik",
+      "subtitle": "{slots} platser, {applied} av {total} applicerade",
+      "viewPhoto": "Visa foto",
+      "export": "Exportera",
+      "appliedSummary": "{applied} av {total} applicerade",
+      "daypart": {
+        "morning": "Morgon",
+        "noon": "Mitt på dagen",
+        "evening": "Kväll"
+      },
+      "compare": {
+        "suggested": "Föreslaget",
+        "applied": "Applicerat",
+        "suggestedPlaceholder": "Detalj laddas från dagens registrering.",
+        "appliedPlaceholder": "Detalj laddas från dagens registrering.",
+        "noSuggested": "Inga föreslagna steg returnerades för denna plats.",
+        "noApplied": "Ingen appliceringsregistrering har sparats för denna plats."
+      },
+      "appliedStatus": {
+        "applied": "Applicerad",
+        "skipped": "Överhoppad",
+        "substituted": "Ersatt"
+      },
+      "itemSource": {
+        "recommended": "Rekommenderat steg",
+        "added_shelf": "Tillagd från hyllan",
+        "added_off_shelf": "Tillagd utanför hyllan"
+      },
+      "substitutedFor": "Ersatte {product}",
+      "outcomeNote": "Utfallsinsikter använder vad du faktiskt applicerade, inte vad som föreslogs.",
+      "aiSawContext": "Detta är samma registrering som AI:n såg när den lärde sig av dagen.",
+      "itemAppliedAt": "Applicerad {time}",
+      "whyThisRoutine": "Varför denna rutin",
+      "editRecord": "Redigera registrering"
+    },
+    "empty": {
+      "title": "Inget i historiken än",
+      "body": "Tidigare förslag och vad du applicerade visas här när en dag är klar. Redigera registreringar när som helst.",
+      "cta": "Öppna Dagens förslag"
+    },
+    "popovers": {
+      "overview": {
+        "aria": "Vad som visas i historiken",
+        "title": "Vad som visas här",
+        "rows": {
+          "compare": {
+            "title": "Föreslaget bredvid applicerat",
+            "body": "Varje tidigare plats visar rutinen vi föreslog bredvid den du faktiskt applicerade, så att du kan se mönster över tid."
+          },
+          "editAnytime": {
+            "title": "Redigera en registrering när som helst",
+            "body": "Glömde att registrera igår? Lägg till det nu. Använde du en annan produkt än du loggade? Ändra det. Varje ändring tidsstämplas och originalet bevaras."
+          },
+          "insights": {
+            "title": "Insikter och följsamhet",
+            "body": "Med några veckors registreringar lyfter Ritora fram mönster som produkter du regelbundet hoppar över och hur din hud reagerar."
+          }
+        }
+      },
+      "qa": {
+        "aria": "Vanliga frågor",
+        "title": "Vanliga frågor",
+        "losingData": {
+          "q": "Förlorar jag data om jag redigerar en registrering?",
+          "a": "Nej. Vi behåller varje tidigare version, så framtida förslag förlitar sig aldrig tyst på en ändrad registrering."
+        },
+        "whenItShows": {
+          "q": "När visas dagens förslag här?",
+          "a": "När kalenderdatumet rullar över i din tidszon. Tills dess stannar idag på sidan Dagens förslag."
+        },
+        "export": {
+          "q": "Kan jag exportera min historik?",
+          "a": "Ja, med Exportera-knappen. Lämna den till en hudläkare eller spara en kopia."
+        }
+      }
+    },
+    "patternNotice": {
+      "title": "Mönster märkt",
+      "body": "Din följsamhet är {percent}% under denna period. Vill du att jag anpassar nästa veckas plan baserat på vad du faktiskt applicerar mest?"
+    }
+  },
+  "validation": {
+    "invalidLeadTime": "Ledtid måste vara mellan 30 minuter och 12 timmar.",
+    "invalidQuietHours": "Tysta timmar måste använda 24-timmarsformat som 22:30."
   }
 }

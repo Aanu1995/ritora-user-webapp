@@ -3,6 +3,72 @@ import { renderWithProviders } from "@/test/utils";
 
 jest.mock("next/navigation", () => ({
   usePathname: () => "/todays-suggestion",
+  useSearchParams: () => new URLSearchParams(),
+  useRouter: () => ({
+    back: jest.fn(),
+    push: jest.fn(),
+    replace: jest.fn(),
+  }),
+}));
+
+jest.mock("@/hooks/use-smart-picks", () => ({
+  useSmartPicksOverview: () => ({
+    data: {
+      mode: "refine",
+      generatedAt: "2026-05-10T10:00:00.000Z",
+      inputsHash: "hash-1",
+      recap: {
+        primaryGoal: null,
+        skinType: null,
+        location: { city: null, countryCode: null },
+        budgetTier: null,
+        ethnicity: null,
+      },
+      coverage: { slots: [], filled: 0, total: 0 },
+      priorityGaps: [],
+      considerGaps: [],
+      covered: [],
+      redundancy: [],
+      consentRequired: false,
+      skinProfileRequired: false,
+      productSuggestionsUnavailable: false,
+      productGeneration: {
+        status: "ready",
+        reason: null,
+        missingPickCount: 0,
+        isProcessing: false,
+        attemptedAt: null,
+        retryAfter: null,
+      },
+      starterKit: { summary: null, steps: [] },
+      emptyState: {
+        reason: null,
+        dismissedGapCount: 0,
+        nextEligibleAt: null,
+        missingProfileFields: [],
+        activeProductCount: 0,
+        canAssessReplacements: false,
+        historyReadiness: {
+          usablePhotoCheckpoints: 0,
+          loggedUseDaysLast90: 0,
+          canAssessReplacements: false,
+          reason: "needs_usage_and_photos",
+        },
+      },
+    },
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    refetch: jest.fn(),
+  }),
+}));
+
+jest.mock("@/hooks/use-suggestions", () => ({
+  ...jest.requireActual("@/hooks/use-suggestions"),
+  useRecordSuggestionGapAction: () => ({
+    mutate: jest.fn(),
+    isPending: false,
+  }),
 }));
 
 import TodaysSuggestionPage from "@/app/(app)/todays-suggestion/page";

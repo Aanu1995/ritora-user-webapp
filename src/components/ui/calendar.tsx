@@ -1,21 +1,23 @@
 'use client';
 
-import * as React from 'react';
+import type { ComponentProps } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
 import { cn } from '@/lib/utils';
 
-type CalendarProps = React.ComponentProps<typeof DayPicker>;
+type CalendarProps = ComponentProps<typeof DayPicker>;
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  fixedWeeks = true,
   ...props
 }: CalendarProps) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      fixedWeeks={fixedWeeks}
       className={cn('p-2 font-sans text-sm text-foreground', className)}
       classNames={{
         months: 'flex flex-col gap-4',
@@ -24,10 +26,10 @@ function Calendar({
         caption_label: 'text-sm font-semibold',
         nav: 'absolute inset-x-0 flex items-center justify-between px-1',
         button_previous: cn(
-          'inline-flex h-7 w-7 items-center justify-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted hover:text-foreground',
+          'inline-flex h-7 w-7 items-center justify-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong',
         ),
         button_next: cn(
-          'inline-flex h-7 w-7 items-center justify-center rounded-full border border-border bg-surface text-muted transition hover:bg-surface-muted hover:text-foreground',
+          'inline-flex h-7 w-7 items-center justify-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong',
         ),
         month_grid: 'border-collapse',
         weekdays: 'flex',

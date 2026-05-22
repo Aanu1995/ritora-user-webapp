@@ -6,6 +6,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { z } from 'zod';
+import { AppleSignInButton } from '@/components/auth/apple-sign-in-button';
+import { AuthDivider } from '@/components/auth/auth-divider';
+import { AuthLegalDisclosure } from '@/components/auth/auth-legal-disclosure';
+import { GoogleSignInButton } from '@/components/auth/google-sign-in-button';
 import { PasswordInputField } from '@/components/auth/password-input-field';
 import { TextInputField } from '@/components/auth/text-input-field';
 import { Button } from '@/components/ui/button';
@@ -18,6 +22,10 @@ import { getLoginSubmitError } from '@/lib/auth-submit-errors';
 import { navigateToUrl } from '@/lib/browser-navigation';
 import { firstFieldError } from '@/lib/form-errors';
 import { resolvePostLoginRoute } from '@/lib/post-login-route';
+import {
+  getAppleOAuthStartUrl,
+  getGoogleOAuthStartUrl,
+} from '@/services/auth.service';
 import {
   clearSubmitErrors,
   executeMutation,
@@ -56,11 +64,47 @@ export default function LoginPage() {
   const currentLocale = normalizeLocale(useLocale());
   const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
+  const [isGoogleRedirecting, setIsGoogleRedirecting] = useState(false);
+  const [isAppleRedirecting, setIsAppleRedirecting] = useState(false);
   const successfulLoginLocaleRef = useRef<string | undefined>(undefined);
   const loginErrorCode = getApiErrorBody(login.error)?.code;
   const showResendVerificationLink =
     typeof loginErrorCode === 'string' &&
     loginErrorCode.toUpperCase() === 'EMAIL_NOT_VERIFIED';
+
+  const navigateAfterLogin = async (preferredLanguage?: string) => {
+    const preferredLocale = normalizeLocale(preferredLanguage);
+
+    if (preferredLocale !== currentLocale && typeof window !== 'undefined') {
+      navigateToUrl(AppRoute.PostLogin);
+      return;
+    }
+
+    const nextRoute = await resolvePostLoginRoute();
+    router.push(nextRoute);
+  };
+
+  const handleGoogleSignIn = () => {
+    setIsGoogleRedirecting(true);
+    navigateToUrl(
+      getGoogleOAuthStartUrl({
+        preferredLanguage: currentLocale,
+        termsAccepted: true,
+        privacyPolicyAccepted: true,
+      }),
+    );
+  };
+
+  const handleAppleSignIn = () => {
+    setIsAppleRedirecting(true);
+    navigateToUrl(
+      getAppleOAuthStartUrl({
+        preferredLanguage: currentLocale,
+        termsAccepted: true,
+        privacyPolicyAccepted: true,
+      }),
+    );
+  };
 
   const form = useForm({
     defaultValues: DEFAULT_LOGIN_VALUES,
@@ -85,15 +129,7 @@ export default function LoginPage() {
       },
     },
     onSubmit: async () => {
-      const preferredLocale = normalizeLocale(successfulLoginLocaleRef.current);
-
-      if (preferredLocale !== currentLocale && typeof window !== 'undefined') {
-        navigateToUrl(AppRoute.PostLogin);
-        return;
-      }
-
-      const nextRoute = await resolvePostLoginRoute();
-      router.push(nextRoute);
+      await navigateAfterLogin(successfulLoginLocaleRef.current);
     },
   });
 
@@ -106,15 +142,41 @@ export default function LoginPage() {
         <p className="text-sm text-muted">{t('signInSubtitle')}</p>
       </div>
 
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          void form.handleSubmit();
-        }}
-        className="mt-8 space-y-5"
-        noValidate
-      >
+      <div className="mt-8 space-y-5">
+        <AuthLegalDisclosure />
+
+        <form.Subscribe selector={(state) => state.isSubmitting}>
+          {(isSubmitting) => (
+            <div className="flex flex-col gap-3">
+              <GoogleSignInButton
+                isDisabled={
+                  isSubmitting || login.isPending || isAppleRedirecting
+                }
+                isLoading={isGoogleRedirecting}
+                onClick={handleGoogleSignIn}
+              />
+              <AppleSignInButton
+                isDisabled={
+                  isSubmitting || login.isPending || isGoogleRedirecting
+                }
+                isLoading={isAppleRedirecting}
+                onClick={handleAppleSignIn}
+              />
+            </div>
+          )}
+        </form.Subscribe>
+
+        <AuthDivider label={t('orContinueWithEmail')} />
+
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            void form.handleSubmit();
+          }}
+          className="space-y-5"
+          noValidate
+        >
         <form.Field name="email">
           {(field) => (
             <TextInputField
@@ -128,7 +190,7 @@ export default function LoginPage() {
               }
               type="email"
               autoComplete="email"
-              placeholder="you@example.com"
+              placeholder={t('emailPlaceholder')}
               onBlur={field.handleBlur}
               onChange={field.handleChange}
             />
@@ -199,6 +261,7 @@ export default function LoginPage() {
           {({ canSubmit, isSubmitting }) => (
             <Button
               type="submit"
+              size="lg"
               disabled={!canSubmit || isSubmitting || login.isPending}
               className="w-full"
             >
@@ -235,7 +298,8 @@ export default function LoginPage() {
             {t('signUp')}
           </Link>
         </p>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

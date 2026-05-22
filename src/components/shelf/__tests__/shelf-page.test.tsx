@@ -1,5 +1,7 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/utils';
+import { createReadySkinProfile } from '@/test/skin-profile';
 import { useShelfUiStore } from '@/stores/shelf-ui-store';
 import {
   DataProvenance,
@@ -55,7 +57,7 @@ const mockProducts: ShelfProduct[] = [
       preferredTimeOfDay: null,
     },
     status: ShelfStatus.Active,
-    provenance: DataProvenance.UserEntered,
+    provenance: DataProvenance.PhotoLookup,
     createdAt: '2026-03-27T00:00:00.000Z',
     updatedAt: '2026-03-27T00:00:00.000Z',
   },
@@ -76,6 +78,7 @@ jest.mock('next/navigation', () => ({
 
 const mockUseShelfProducts = jest.fn();
 const mockUseShelfStats = jest.fn();
+const mockUseSkinProfile = jest.fn();
 const mockFetchNextPage = jest.fn();
 const intersectionObservers: MockIntersectionObserverInstance[] = [];
 
@@ -159,13 +162,25 @@ jest.mock('@/hooks/use-shelf', () => ({
   useCreateProduct: () => ({ mutate: jest.fn(), isPending: false }),
 }));
 
+jest.mock('@/hooks/use-skin-profile', () => ({
+  useSkinProfile: () => mockUseSkinProfile(),
+}));
+
 import { ShelfPage } from '@/components/shelf/shelf-page';
 
 beforeEach(() => {
   installIntersectionObserverMock();
   mockUseShelfProducts.mockReset();
   mockUseShelfStats.mockReset();
+  mockUseSkinProfile.mockReset();
   mockFetchNextPage.mockReset();
+  mockUseSkinProfile.mockReturnValue({
+    data: createReadySkinProfile(),
+    error: null,
+    isError: false,
+    isPending: false,
+    refetch: jest.fn(),
+  });
 
   useShelfUiStore.setState({
     selectedIds: new Set<string>(),
@@ -178,6 +193,41 @@ beforeEach(() => {
 });
 
 describe('ShelfPage', () => {
+  it('opens a skin-profile prerequisite dialog when Add Product is clicked before profile completion', async () => {
+    const user = userEvent.setup();
+    mockUseSkinProfile.mockReturnValue({
+      data: createReadySkinProfile({ primaryGoal: null }),
+      error: null,
+      isError: false,
+      isPending: false,
+      refetch: jest.fn(),
+    });
+    mockUseShelfProducts.mockReturnValue({
+      data: mockProducts,
+      isPending: false,
+      isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+    mockUseShelfStats.mockReturnValue({
+      data: { all: 1 },
+      isPending: false,
+      isError: false,
+    });
+
+    renderWithProviders(<ShelfPage />);
+
+    await user.click(screen.getByRole('button', { name: /add product/i }));
+
+    expect(
+      screen.getByRole('heading', {
+        name: /finish your skin profile first/i,
+      }),
+    ).toBeInTheDocument();
+    expect(mockPush).not.toHaveBeenCalledWith('/shelf/new');
+  });
+
   it('renders the empty state when there are no products and not loading', () => {
     mockUseShelfProducts.mockReturnValue({
       data: [],
