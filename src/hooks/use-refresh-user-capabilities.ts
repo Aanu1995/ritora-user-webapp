@@ -18,7 +18,7 @@ export function useRefreshUserCapabilitiesOnRestriction() {
     void queryClient
       .fetchQuery({
         queryKey: [QueryKey.AuthMe],
-        queryFn: () => getCurrentUser(),
+        queryFn: ({ signal }) => getCurrentUser({ signal }),
       })
       .then((user) => {
         setUser(user);

@@ -1,4 +1,5 @@
 import {
+  type ApiRequestOptions,
   deleteRequest,
   getRequest,
   patchRequest,
@@ -12,18 +13,32 @@ import type {
   SkinProfileOptions,
 } from "@/types/skin-profile";
 
-export async function getSkinProfile(): Promise<SkinProfile> {
-  return getRequest<SkinProfile>(ApiPath.SkinProfile);
+function getWithOptions<T>(path: string, options?: ApiRequestOptions) {
+  return options ? getRequest<T>(path, options) : getRequest<T>(path);
 }
 
-export async function getSkinProfileOptions(): Promise<SkinProfileOptions> {
-  return getRequest<SkinProfileOptions>(ApiPath.SkinProfileOptions);
+export async function getSkinProfile(
+  options?: ApiRequestOptions,
+): Promise<SkinProfile> {
+  return getWithOptions<SkinProfile>(ApiPath.SkinProfile, options);
 }
 
-export async function getSkinProfileAccessLogs(): Promise<
-  SkinProfileAccessLog[]
-> {
-  return getRequest<SkinProfileAccessLog[]>(ApiPath.SkinProfileAccessLogs);
+export async function getSkinProfileOptions(
+  options?: ApiRequestOptions,
+): Promise<SkinProfileOptions> {
+  return getWithOptions<SkinProfileOptions>(
+    ApiPath.SkinProfileOptions,
+    options,
+  );
+}
+
+export async function getSkinProfileAccessLogs(
+  options?: ApiRequestOptions,
+): Promise<SkinProfileAccessLog[]> {
+  return getWithOptions<SkinProfileAccessLog[]>(
+    ApiPath.SkinProfileAccessLogs,
+    options,
+  );
 }
 
 export async function createSkinProfile(

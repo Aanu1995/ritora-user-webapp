@@ -46,7 +46,7 @@ export function useTodaysSuggestion() {
   const isEnabled = useAuthEnabled();
   return useQuery<TodaysSuggestionResponse>({
     queryKey: [QueryKey.SuggestionsToday],
-    queryFn: getTodaysSuggestion,
+    queryFn: ({ signal }) => getTodaysSuggestion({ signal }),
     enabled: isEnabled,
     refetchOnWindowFocus: true,
     refetchInterval: (query) =>
@@ -140,7 +140,7 @@ export function useSuggestion(id: string | null | undefined) {
   const isEnabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.Suggestion, id],
-    queryFn: () => getSuggestion(id as string),
+    queryFn: ({ signal }) => getSuggestion(id as string, { signal }),
     enabled: isEnabled && Boolean(id),
   });
 }
@@ -191,7 +191,7 @@ export function useSuggestionAiConsent() {
   const isEnabled = useAuthEnabled();
   return useQuery<SuggestionAiConsent>({
     queryKey: [QueryKey.SuggestionAiConsent],
-    queryFn: getSuggestionAiConsent,
+    queryFn: ({ signal }) => getSuggestionAiConsent({ signal }),
     enabled: isEnabled,
   });
 }
@@ -248,7 +248,7 @@ export function useRoutineBreak() {
   const isEnabled = useAuthEnabled();
   return useQuery<RoutineBreakState>({
     queryKey: [QueryKey.SuggestionBreak],
-    queryFn: getRoutineBreak,
+    queryFn: ({ signal }) => getRoutineBreak({ signal }),
     enabled: isEnabled,
   });
 }

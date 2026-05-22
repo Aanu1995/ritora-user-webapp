@@ -31,7 +31,7 @@ export function useSmartPicksOverview(
   const isEnabled = useAuthEnabled(options?.enabled ?? true);
   return useQuery<SmartPicksOverview>({
     queryKey: [QueryKey.SmartPicksOverview, mode ?? "auto"],
-    queryFn: () => getSmartPicksOverview(mode),
+    queryFn: ({ signal }) => getSmartPicksOverview(mode, { signal }),
     enabled: isEnabled,
     refetchInterval: (query) =>
       query.state.data?.productGeneration.status ===
@@ -46,7 +46,7 @@ export function useSmartPicksWishlist() {
   const isEnabled = useAuthEnabled();
   return useQuery<SmartPicksWishlistResponse>({
     queryKey: [QueryKey.SmartPicksWishlist],
-    queryFn: getSmartPicksWishlist,
+    queryFn: ({ signal }) => getSmartPicksWishlist({ signal }),
     enabled: isEnabled,
   });
 }

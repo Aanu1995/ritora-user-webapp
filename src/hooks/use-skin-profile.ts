@@ -24,7 +24,7 @@ export function useSkinProfile(options?: UseSkinProfileOptions) {
 
   return useQuery({
     queryKey: [QueryKey.SkinProfile],
-    queryFn: () => getSkinProfile(),
+    queryFn: ({ signal }) => getSkinProfile({ signal }),
     enabled: isEnabled,
     retry: (failureCount, error) => {
       if (getApiErrorStatus(error) === 404) {
@@ -39,7 +39,7 @@ export function useSkinProfile(options?: UseSkinProfileOptions) {
 export function useSkinProfileOptions() {
   return useQuery({
     queryKey: [QueryKey.SkinProfileOptions],
-    queryFn: () => getSkinProfileOptions(),
+    queryFn: ({ signal }) => getSkinProfileOptions({ signal }),
     staleTime: Infinity,
   });
 }
@@ -49,7 +49,7 @@ export function useSkinProfileAccessLogs(options?: UseSkinProfileOptions) {
 
   return useQuery({
     queryKey: [QueryKey.SkinProfileAccessLogs],
-    queryFn: () => getSkinProfileAccessLogs(),
+    queryFn: ({ signal }) => getSkinProfileAccessLogs({ signal }),
     enabled: isEnabled,
   });
 }

@@ -77,13 +77,19 @@ describe("application tracking hooks", () => {
 
     const log = renderHookWithProviders(() => useApplicationLog("log-1"));
     await waitFor(() => expect(log.result.current.isSuccess).toBe(true));
-    expect(mockGetLog).toHaveBeenCalledWith("log-1");
+    expect(mockGetLog).toHaveBeenCalledWith(
+      "log-1",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
 
     const versions = renderHookWithProviders(() =>
       useApplicationLogVersions("log-1"),
     );
     await waitFor(() => expect(versions.result.current.isSuccess).toBe(true));
-    expect(mockGetVersions).toHaveBeenCalledWith("log-1");
+    expect(mockGetVersions).toHaveBeenCalledWith(
+      "log-1",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
   });
 });
 

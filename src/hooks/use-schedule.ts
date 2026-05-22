@@ -65,7 +65,7 @@ export function useSchedule() {
   const isEnabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.Schedule],
-    queryFn: () => getSchedule(),
+    queryFn: ({ signal }) => getSchedule({ signal }),
     enabled: isEnabled,
   });
 }
@@ -74,7 +74,7 @@ export function useTodaysSchedule() {
   const isEnabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.ScheduleToday],
-    queryFn: () => getTodaysSchedule(),
+    queryFn: ({ signal }) => getTodaysSchedule({ signal }),
     enabled: isEnabled,
     refetchOnWindowFocus: true,
   });

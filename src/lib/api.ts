@@ -13,6 +13,8 @@ import type { RefreshResponse } from "@/types/auth";
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1";
 
+export type ApiRequestOptions = Pick<AxiosRequestConfig, "signal">;
+
 const ABSOLUTE_HTTP_URL_PATTERN = /^https?:\/\//i;
 const CREDENTIALLED_AUTH_PATHS = new Set<string>([
   ApiPath.AuthLogin,
@@ -330,6 +332,10 @@ apiClient.interceptors.response.use(
 );
 
 function throwServerError(error: unknown, fallbackMessage: string): never {
+  if (axios.isCancel(error)) {
+    throw error;
+  }
+
   if (axios.isAxiosError(error)) {
     const body = toApiErrorBody(error.response?.data);
     const message = Array.isArray(body?.message)

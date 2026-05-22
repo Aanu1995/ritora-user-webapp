@@ -1,4 +1,9 @@
-import { getRequest, patchRequest, postRequest } from "@/lib/api";
+import {
+  type ApiRequestOptions,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "@/lib/api";
 import { ApiPath } from "@/constants/api-paths";
 import type {
   CreateOnDemandSuggestionPayload,
@@ -20,12 +25,24 @@ import type {
   UpdateRoutineBreakPayload,
 } from "@/types/suggestions";
 
-export async function getTodaysSuggestion(): Promise<TodaysSuggestionResponse> {
-  return getRequest<TodaysSuggestionResponse>(ApiPath.SuggestionsToday);
+function getWithOptions<T>(path: string, options?: ApiRequestOptions) {
+  return options ? getRequest<T>(path, options) : getRequest<T>(path);
 }
 
-export async function getSuggestion(id: string): Promise<SuggestionInstance> {
-  return getRequest<SuggestionInstance>(ApiPath.Suggestion(id));
+export async function getTodaysSuggestion(
+  options?: ApiRequestOptions,
+): Promise<TodaysSuggestionResponse> {
+  return getWithOptions<TodaysSuggestionResponse>(
+    ApiPath.SuggestionsToday,
+    options,
+  );
+}
+
+export async function getSuggestion(
+  id: string,
+  options?: ApiRequestOptions,
+): Promise<SuggestionInstance> {
+  return getWithOptions<SuggestionInstance>(ApiPath.Suggestion(id), options);
 }
 
 export async function createOnDemandSuggestion(
@@ -34,8 +51,13 @@ export async function createOnDemandSuggestion(
   return postRequest<SuggestionInstance>(ApiPath.SuggestionsOnDemand, payload);
 }
 
-export async function getSuggestionAiConsent(): Promise<SuggestionAiConsent> {
-  return getRequest<SuggestionAiConsent>(ApiPath.SuggestionsAiConsent);
+export async function getSuggestionAiConsent(
+  options?: ApiRequestOptions,
+): Promise<SuggestionAiConsent> {
+  return getWithOptions<SuggestionAiConsent>(
+    ApiPath.SuggestionsAiConsent,
+    options,
+  );
 }
 
 export async function updateSuggestionAiConsent(
@@ -79,8 +101,13 @@ export async function recordSuggestionGapAction(
   );
 }
 
-export async function getRoutineBreak(): Promise<RoutineBreakState> {
-  return getRequest<RoutineBreakState>(ApiPath.SuggestionsBreak);
+export async function getRoutineBreak(
+  options?: ApiRequestOptions,
+): Promise<RoutineBreakState> {
+  return getWithOptions<RoutineBreakState>(
+    ApiPath.SuggestionsBreak,
+    options,
+  );
 }
 
 export async function startRoutineBreak(
@@ -111,9 +138,11 @@ export async function snoozeRecordingReminder(
 
 export async function getSuggestionHistory(
   query: SuggestionHistoryListQuery = {},
+  options?: ApiRequestOptions,
 ): Promise<SuggestionHistoryListResponse> {
-  return getRequest<SuggestionHistoryListResponse>(
+  return getWithOptions<SuggestionHistoryListResponse>(
     buildSuggestionHistoryPath(ApiPath.SuggestionsHistory, query, true),
+    options,
   );
 }
 
@@ -154,6 +183,10 @@ function buildSuggestionHistoryPath(
 
 export async function getSuggestionHistoryDay(
   date: string,
+  options?: ApiRequestOptions,
 ): Promise<SuggestionHistoryDay> {
-  return getRequest<SuggestionHistoryDay>(ApiPath.SuggestionsHistoryDay(date));
+  return getWithOptions<SuggestionHistoryDay>(
+    ApiPath.SuggestionsHistoryDay(date),
+    options,
+  );
 }

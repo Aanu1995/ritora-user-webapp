@@ -91,14 +91,17 @@ jest.mock("@/services/skin-journal.service", () => ({
 
 type QueryOptions = {
   queryKey: readonly unknown[];
-  queryFn: () => unknown;
+  queryFn: (context: { signal: AbortSignal }) => unknown;
   enabled?: boolean;
   refetchInterval?: (query: { state: { data: unknown } }) => number | false;
 };
 
 type InfiniteQueryOptions = {
   queryKey: readonly unknown[];
-  queryFn: (context: { pageParam: string | null }) => unknown;
+  queryFn: (context: {
+    pageParam: string | null;
+    signal: AbortSignal;
+  }) => unknown;
   getNextPageParam: (page: { nextCursor: string | null }) => string | null;
 };
 
@@ -121,61 +124,93 @@ function asMutation<TInput, TResult = unknown>(
   return value as MutationOptions<TInput, TResult>;
 }
 
+function queryContext() {
+  return { signal: new AbortController().signal };
+}
+
 describe("useSkinJournal hooks", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("wires read queries to the Skin Journal service layer", () => {
-    asQuery(useTodayEntry()).queryFn();
-    asQuery(useCalendar("2026-05")).queryFn();
-    asQuery(useDay("2026-05-02")).queryFn();
-    asQuery(useMonthEntries("2026-05")).queryFn();
-    asQuery(usePhotoFilters({ from: "2026-05-01" })).queryFn();
-    asQuery(usePhotoDates({ to: "2026-05-31" })).queryFn();
-    asQuery(useCompareDays("2026-05-01", "2026-05-02")).queryFn();
-    asQuery(useEvents({ acknowledged: false })).queryFn();
-    asQuery(useInsights({ window: "month", locale: "sv" })).queryFn();
-    asQuery(useWrappedList()).queryFn();
-    asQuery(useWrapped("wrapped-1")).queryFn();
-    asQuery(useActiveSimplification()).queryFn();
-    asQuery(useSimplification("simplification-1")).queryFn();
-    asQuery(useJournalStats()).queryFn();
-    asQuery(useJournalExport("export-1")).queryFn();
+    asQuery(useTodayEntry()).queryFn(queryContext());
+    asQuery(useCalendar("2026-05")).queryFn(queryContext());
+    asQuery(useDay("2026-05-02")).queryFn(queryContext());
+    asQuery(useMonthEntries("2026-05")).queryFn(queryContext());
+    asQuery(usePhotoFilters({ from: "2026-05-01" })).queryFn(queryContext());
+    asQuery(usePhotoDates({ to: "2026-05-31" })).queryFn(queryContext());
+    asQuery(useCompareDays("2026-05-01", "2026-05-02")).queryFn(
+      queryContext(),
+    );
+    asQuery(useEvents({ acknowledged: false })).queryFn(queryContext());
+    asQuery(useInsights({ window: "month", locale: "sv" })).queryFn(
+      queryContext(),
+    );
+    asQuery(useWrappedList()).queryFn(queryContext());
+    asQuery(useWrapped("wrapped-1")).queryFn(queryContext());
+    asQuery(useActiveSimplification()).queryFn(queryContext());
+    asQuery(useSimplification("simplification-1")).queryFn(queryContext());
+    asQuery(useJournalStats()).queryFn(queryContext());
+    asQuery(useJournalExport("export-1")).queryFn(queryContext());
 
-    expect(journalService.getTodayEntry).toHaveBeenCalled();
-    expect(journalService.getCalendar).toHaveBeenCalledWith("2026-05");
-    expect(journalService.getDay).toHaveBeenCalledWith("2026-05-02");
-    expect(journalService.listMonthEntries).toHaveBeenCalledWith("2026-05");
-    expect(journalService.listPhotoFilters).toHaveBeenCalledWith({
-      from: "2026-05-01",
-    });
-    expect(journalService.listPhotoDates).toHaveBeenCalledWith({
-      to: "2026-05-31",
-    });
+    expect(journalService.getTodayEntry).toHaveBeenCalledWith(
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    expect(journalService.getCalendar).toHaveBeenCalledWith(
+      "2026-05",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    expect(journalService.getDay).toHaveBeenCalledWith(
+      "2026-05-02",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    expect(journalService.listMonthEntries).toHaveBeenCalledWith(
+      "2026-05",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    expect(journalService.listPhotoFilters).toHaveBeenCalledWith(
+      { from: "2026-05-01" },
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    expect(journalService.listPhotoDates).toHaveBeenCalledWith(
+      { to: "2026-05-31" },
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
     expect(journalService.compareDays).toHaveBeenCalledWith(
       "2026-05-01",
       "2026-05-02",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
     );
-    expect(journalService.listEvents).toHaveBeenCalledWith({
-      acknowledged: false,
-    });
-    expect(journalService.listInsights).toHaveBeenCalledWith({
-      window: "month",
-      locale: "sv",
-    });
+    expect(journalService.listEvents).toHaveBeenCalledWith(
+      { acknowledged: false },
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    expect(journalService.listInsights).toHaveBeenCalledWith(
+      {
+        window: "month",
+        locale: "sv",
+      },
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
   });
 
   it("wires infinite photo pagination and normalizes the all filter", () => {
     const options = asInfinite(usePhotos({ filter: "all" }));
 
-    options.queryFn({ pageParam: "cursor-1" });
-
-    expect(journalService.listPhotos).toHaveBeenCalledWith({
-      filter: undefined,
-      limit: 24,
-      cursor: "cursor-1",
+    options.queryFn({
+      pageParam: "cursor-1",
+      signal: new AbortController().signal,
     });
+
+    expect(journalService.listPhotos).toHaveBeenCalledWith(
+      {
+        filter: undefined,
+        limit: 24,
+        cursor: "cursor-1",
+      },
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
     expect(options.getNextPageParam({ nextCursor: "cursor-2" })).toBe(
       "cursor-2",
     );

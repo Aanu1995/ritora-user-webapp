@@ -143,7 +143,10 @@ describe("suggestion hooks", () => {
 
     const detail = renderHookWithProviders(() => useSuggestion("suggestion-1"));
     await waitFor(() => expect(detail.result.current.isSuccess).toBe(true));
-    expect(mockGetSuggestion).toHaveBeenCalledWith("suggestion-1");
+    expect(mockGetSuggestion).toHaveBeenCalledWith(
+      "suggestion-1",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
   });
 
   it("runs regenerate through mutate and keeps history queries enabled", async () => {
@@ -168,13 +171,19 @@ describe("suggestion hooks", () => {
       useSuggestionHistory({ range: "7d" }),
     );
     await waitFor(() => expect(history.result.current.isSuccess).toBe(true));
-    expect(mockGetHistory).toHaveBeenCalledWith({ range: "7d" });
+    expect(mockGetHistory).toHaveBeenCalledWith(
+      { range: "7d" },
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
 
     const day = renderHookWithProviders(() =>
       useSuggestionHistoryDay("2026-05-03"),
     );
     await waitFor(() => expect(day.result.current.isSuccess).toBe(true));
-    expect(mockGetHistoryDay).toHaveBeenCalledWith("2026-05-03");
+    expect(mockGetHistoryDay).toHaveBeenCalledWith(
+      "2026-05-03",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
   });
 
   it("queues on-demand suggestions through mutate", async () => {

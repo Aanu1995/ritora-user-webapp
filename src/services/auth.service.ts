@@ -1,5 +1,6 @@
 import {
   API_BASE_URL,
+  type ApiRequestOptions,
   deleteRequest,
   getRequest,
   patchRequest,
@@ -25,6 +26,10 @@ import type {
 } from '@/types/auth';
 
 const ACCOUNT_DELETION_TOKEN_MAX_ATTEMPTS = 2;
+
+function getWithOptions<T>(path: string, options?: ApiRequestOptions) {
+  return options ? getRequest<T>(path, options) : getRequest<T>(path);
+}
 
 function isRetryableAccountDeletionTokenError(error: unknown): boolean {
   const status = getApiErrorStatus(error);
@@ -116,12 +121,16 @@ export async function logoutAll(): Promise<void> {
   return postRequest(ApiPath.AuthLogoutAll);
 }
 
-export async function getCurrentUser(): Promise<User> {
-  return getRequest<User>(ApiPath.AuthMe);
+export async function getCurrentUser(
+  options?: ApiRequestOptions,
+): Promise<User> {
+  return getWithOptions<User>(ApiPath.AuthMe, options);
 }
 
-export async function getActiveSessions(): Promise<Session[]> {
-  return getRequest<Session[]>(ApiPath.AuthSessions);
+export async function getActiveSessions(
+  options?: ApiRequestOptions,
+): Promise<Session[]> {
+  return getWithOptions<Session[]>(ApiPath.AuthSessions, options);
 }
 
 export async function verifyEmail(token: string): Promise<MessageResponse> {

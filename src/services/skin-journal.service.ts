@@ -1,4 +1,5 @@
 import {
+  type ApiRequestOptions,
   deleteRequest,
   getRequest,
   patchRequest,
@@ -67,25 +68,49 @@ function buildEntryFormData(
   return fd;
 }
 
-export async function getTodayEntry(): Promise<{
+function getWithOptions<T>(path: string, options?: ApiRequestOptions) {
+  return options ? getRequest<T>(path, options) : getRequest<T>(path);
+}
+
+export async function getTodayEntry(
+  options?: ApiRequestOptions,
+): Promise<{
   date: string;
   entry: JournalEntry | null;
 }> {
-  return getRequest(ApiPath.SkinJournalToday);
+  return getWithOptions<{
+    date: string;
+    entry: JournalEntry | null;
+  }>(ApiPath.SkinJournalToday, options);
 }
 
-export async function getCalendar(month: string): Promise<CalendarPayload> {
+export async function getCalendar(
+  month: string,
+  options?: ApiRequestOptions,
+): Promise<CalendarPayload> {
   const params = new URLSearchParams({ month });
-  return getRequest(`${ApiPath.SkinJournalCalendar}?${params.toString()}`);
+  return getWithOptions<CalendarPayload>(
+    `${ApiPath.SkinJournalCalendar}?${params.toString()}`,
+    options,
+  );
 }
 
-export async function getDay(date: string): Promise<DayDetail> {
-  return getRequest(ApiPath.SkinJournalDay(date));
+export async function getDay(
+  date: string,
+  options?: ApiRequestOptions,
+): Promise<DayDetail> {
+  return getWithOptions<DayDetail>(ApiPath.SkinJournalDay(date), options);
 }
 
-export async function listMonthEntries(month: string): Promise<JournalEntry[]> {
+export async function listMonthEntries(
+  month: string,
+  options?: ApiRequestOptions,
+): Promise<JournalEntry[]> {
   const params = new URLSearchParams({ month });
-  return getRequest(`${ApiPath.SkinJournalEntries}?${params.toString()}`);
+  return getWithOptions<JournalEntry[]>(
+    `${ApiPath.SkinJournalEntries}?${params.toString()}`,
+    options,
+  );
 }
 
 export async function listPhotos(filters: {
@@ -94,7 +119,7 @@ export async function listPhotos(filters: {
   filter?: PhotoFilterId;
   limit?: number;
   cursor?: string | null;
-}): Promise<PhotoPage> {
+}, options?: ApiRequestOptions): Promise<PhotoPage> {
   const params = new URLSearchParams();
   if (filters.from) params.append("from", filters.from);
   if (filters.to) params.append("to", filters.to);
@@ -104,38 +129,41 @@ export async function listPhotos(filters: {
   if (filters.limit) params.append("limit", String(filters.limit));
   if (filters.cursor) params.append("cursor", filters.cursor);
   const qs = params.toString();
-  return getRequest(
+  return getWithOptions<PhotoPage>(
     qs ? `${ApiPath.SkinJournalPhotos}?${qs}` : ApiPath.SkinJournalPhotos,
+    options,
   );
 }
 
 export async function listPhotoFilters(filters: {
   from?: string;
   to?: string;
-} = {}): Promise<PhotoFilterIndex> {
+} = {}, options?: ApiRequestOptions): Promise<PhotoFilterIndex> {
   const params = new URLSearchParams();
   if (filters.from) params.append("from", filters.from);
   if (filters.to) params.append("to", filters.to);
   const qs = params.toString();
-  return getRequest(
+  return getWithOptions<PhotoFilterIndex>(
     qs
       ? `${ApiPath.SkinJournalPhotoFilters}?${qs}`
       : ApiPath.SkinJournalPhotoFilters,
+    options,
   );
 }
 
 export async function listPhotoDates(filters: {
   from?: string;
   to?: string;
-} = {}): Promise<PhotoDateIndex> {
+} = {}, options?: ApiRequestOptions): Promise<PhotoDateIndex> {
   const params = new URLSearchParams();
   if (filters.from) params.append("from", filters.from);
   if (filters.to) params.append("to", filters.to);
   const qs = params.toString();
-  return getRequest(
+  return getWithOptions<PhotoDateIndex>(
     qs
       ? `${ApiPath.SkinJournalPhotoDates}?${qs}`
       : ApiPath.SkinJournalPhotoDates,
+    options,
   );
 }
 
@@ -173,13 +201,18 @@ export async function retryAnalysis(id: string): Promise<JournalEntry> {
 export async function compareDays(
   from: string,
   to: string,
+  options?: ApiRequestOptions,
 ): Promise<CompareResponse> {
   const params = new URLSearchParams({ from, to });
-  return getRequest(`${ApiPath.SkinJournalCompare}?${params.toString()}`);
+  return getWithOptions<CompareResponse>(
+    `${ApiPath.SkinJournalCompare}?${params.toString()}`,
+    options,
+  );
 }
 
 export async function listEvents(
   filters: JournalEventFilters = {},
+  options?: ApiRequestOptions,
 ): Promise<JournalEvent[]> {
   const params = new URLSearchParams();
   if (filters.kind) params.set("kind", filters.kind);
@@ -189,10 +222,11 @@ export async function listEvents(
     params.set("acknowledged", String(filters.acknowledged));
   }
   const query = params.toString();
-  return getRequest(
+  return getWithOptions<JournalEvent[]>(
     query
       ? `${ApiPath.SkinJournalEvents}?${query}`
       : ApiPath.SkinJournalEvents,
+    options,
   );
 }
 
@@ -214,12 +248,14 @@ function buildInsightQuery(params: InsightListParams = {}): string {
 
 export async function listInsights(
   params: InsightListParams = {},
+  options?: ApiRequestOptions,
 ): Promise<JournalInsightsResponse> {
   const query = buildInsightQuery(params);
-  return getRequest(
+  return getWithOptions<JournalInsightsResponse>(
     query
       ? `${ApiPath.SkinJournalInsights}?${query}`
       : ApiPath.SkinJournalInsights,
+    options,
   );
 }
 
@@ -238,22 +274,36 @@ export async function recordInsightAction(
   await postRequest<unknown>(ApiPath.SkinJournalInsightInteractions(id), payload);
 }
 
-export async function listWrapped(): Promise<Wrapped[]> {
-  return getRequest(ApiPath.SkinJournalWrappedList);
+export async function listWrapped(
+  options?: ApiRequestOptions,
+): Promise<Wrapped[]> {
+  return getWithOptions<Wrapped[]>(ApiPath.SkinJournalWrappedList, options);
 }
 
-export async function getWrapped(id: string): Promise<Wrapped> {
-  return getRequest(ApiPath.SkinJournalWrapped(id));
+export async function getWrapped(
+  id: string,
+  options?: ApiRequestOptions,
+): Promise<Wrapped> {
+  return getWithOptions<Wrapped>(ApiPath.SkinJournalWrapped(id), options);
 }
 
-export async function getActiveSimplification(): Promise<SimplificationEvent | null> {
-  return getRequest(ApiPath.SkinJournalSimplificationActive);
+export async function getActiveSimplification(
+  options?: ApiRequestOptions,
+): Promise<SimplificationEvent | null> {
+  return getWithOptions<SimplificationEvent | null>(
+    ApiPath.SkinJournalSimplificationActive,
+    options,
+  );
 }
 
 export async function getSimplification(
   id: string,
+  options?: ApiRequestOptions,
 ): Promise<SimplificationEvent> {
-  return getRequest(ApiPath.SkinJournalSimplification(id));
+  return getWithOptions<SimplificationEvent>(
+    ApiPath.SkinJournalSimplification(id),
+    options,
+  );
 }
 
 export async function startSimplification(payload: {
@@ -269,8 +319,10 @@ export async function acknowledgeSimplification(
   return postRequest(ApiPath.SkinJournalSimplificationAck(id), {});
 }
 
-export async function getJournalStats(): Promise<JournalStats> {
-  return getRequest(ApiPath.SkinJournalStats);
+export async function getJournalStats(
+  options?: ApiRequestOptions,
+): Promise<JournalStats> {
+  return getWithOptions<JournalStats>(ApiPath.SkinJournalStats, options);
 }
 
 export async function createJournalExport(payload: {
@@ -280,6 +332,12 @@ export async function createJournalExport(payload: {
   return postRequest(ApiPath.SkinJournalExport, payload);
 }
 
-export async function getJournalExport(id: string): Promise<JournalExportJob> {
-  return getRequest(ApiPath.SkinJournalExportJob(id));
+export async function getJournalExport(
+  id: string,
+  options?: ApiRequestOptions,
+): Promise<JournalExportJob> {
+  return getWithOptions<JournalExportJob>(
+    ApiPath.SkinJournalExportJob(id),
+    options,
+  );
 }

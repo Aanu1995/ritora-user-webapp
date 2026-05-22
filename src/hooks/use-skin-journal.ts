@@ -71,7 +71,7 @@ export function useTodayEntry() {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalToday],
-    queryFn: () => getTodayEntry(),
+    queryFn: ({ signal }) => getTodayEntry({ signal }),
     enabled,
     refetchInterval: (query) =>
       shouldPollTodayEntry(query.state.data)
@@ -84,7 +84,7 @@ export function useCalendar(month: string) {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalCalendar, month],
-    queryFn: () => getCalendar(month),
+    queryFn: ({ signal }) => getCalendar(month, { signal }),
     enabled: enabled && !!month,
     refetchInterval: (query) =>
       shouldPollCalendar(query.state.data)
@@ -97,7 +97,7 @@ export function useDay(date: string | null) {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalDay, date],
-    queryFn: () => getDay(date as string),
+    queryFn: ({ signal }) => getDay(date as string, { signal }),
     enabled: enabled && !!date,
     refetchInterval: (query) =>
       shouldPollDay(query.state.data)
@@ -110,7 +110,7 @@ export function useMonthEntries(month: string) {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalEntries, month],
-    queryFn: () => listMonthEntries(month),
+    queryFn: ({ signal }) => listMonthEntries(month, { signal }),
     enabled: enabled && !!month,
   });
 }
@@ -128,12 +128,12 @@ export function usePhotos(filters: {
   };
   return useInfiniteQuery({
     queryKey: [QueryKey.SkinJournalPhotos, normalizedFilters],
-    queryFn: ({ pageParam }) =>
+    queryFn: ({ pageParam, signal }) =>
       listPhotos({
         ...normalizedFilters,
         limit: JOURNAL_PHOTO_PAGE_SIZE,
         cursor: pageParam,
-    }),
+      }, { signal }),
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     enabled: enabled && options.enabled !== false,
@@ -144,7 +144,7 @@ export function usePhotoFilters(filters: { from?: string; to?: string } = {}) {
   const enabled = useAuthEnabled();
   return useQuery<PhotoFilterIndex>({
     queryKey: [QueryKey.SkinJournalPhotoFilters, filters],
-    queryFn: () => listPhotoFilters(filters),
+    queryFn: ({ signal }) => listPhotoFilters(filters, { signal }),
     enabled,
   });
 }
@@ -153,7 +153,7 @@ export function usePhotoDates(filters: { from?: string; to?: string } = {}) {
   const enabled = useAuthEnabled();
   return useQuery<PhotoDateIndex>({
     queryKey: [QueryKey.SkinJournalPhotoDates, filters],
-    queryFn: () => listPhotoDates(filters),
+    queryFn: ({ signal }) => listPhotoDates(filters, { signal }),
     enabled,
   });
 }
@@ -213,7 +213,8 @@ export function useCompareDays(
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalCompare, from, to],
-    queryFn: () => compareDays(from as string, to as string),
+    queryFn: ({ signal }) =>
+      compareDays(from as string, to as string, { signal }),
     enabled: enabled && options.enabled !== false && !!from && !!to,
   });
 }
@@ -222,7 +223,7 @@ export function useEvents(filters: JournalEventFilters = EMPTY_EVENT_FILTERS) {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalEvents, filters],
-    queryFn: () => listEvents(filters),
+    queryFn: ({ signal }) => listEvents(filters, { signal }),
     enabled,
   });
 }
@@ -244,7 +245,7 @@ export function useInsights(
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalInsights, params],
-    queryFn: () => listInsights(params),
+    queryFn: ({ signal }) => listInsights(params, { signal }),
     enabled,
     refetchInterval: (query) =>
       shouldPollInsights(query.state.data)
@@ -279,7 +280,7 @@ export function useWrappedList() {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalWrappedList],
-    queryFn: () => listWrapped(),
+    queryFn: ({ signal }) => listWrapped({ signal }),
     enabled,
   });
 }
@@ -288,7 +289,7 @@ export function useWrapped(id: string | null) {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalWrapped, id],
-    queryFn: () => getWrapped(id as string),
+    queryFn: ({ signal }) => getWrapped(id as string, { signal }),
     enabled: enabled && !!id,
   });
 }
@@ -297,7 +298,7 @@ export function useActiveSimplification() {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalSimplificationActive],
-    queryFn: () => getActiveSimplification(),
+    queryFn: ({ signal }) => getActiveSimplification({ signal }),
     enabled,
     refetchOnWindowFocus: true,
   });
@@ -307,7 +308,7 @@ export function useSimplification(id: string | null) {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalSimplification, id],
-    queryFn: () => getSimplification(id as string),
+    queryFn: ({ signal }) => getSimplification(id as string, { signal }),
     enabled: enabled && !!id,
   });
 }
@@ -348,7 +349,7 @@ export function useJournalStats() {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalStats],
-    queryFn: () => getJournalStats(),
+    queryFn: ({ signal }) => getJournalStats({ signal }),
     enabled,
   });
 }
@@ -369,7 +370,7 @@ export function useJournalExport(id: string | null) {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SkinJournalExport, id],
-    queryFn: () => getJournalExport(id as string),
+    queryFn: ({ signal }) => getJournalExport(id as string, { signal }),
     enabled: enabled && !!id,
   });
 }

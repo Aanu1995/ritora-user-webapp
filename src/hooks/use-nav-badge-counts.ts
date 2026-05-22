@@ -22,7 +22,7 @@ export function useNavBadgeCounts(): NavBadgeCounts {
   const enabled = useAuthEnabled();
   const query = useQuery({
     queryKey: [QueryKey.AppNavBadges],
-    queryFn: () => getAppNavBadges(),
+    queryFn: ({ signal }) => getAppNavBadges({ signal }),
     enabled,
     staleTime: 30_000,
     refetchInterval: NAV_BADGE_REFETCH_INTERVAL_MS,

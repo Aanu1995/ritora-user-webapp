@@ -1,4 +1,5 @@
 import {
+  type ApiRequestOptions,
   deleteRequest,
   getRequest,
   patchRequest,
@@ -34,6 +35,10 @@ function buildUploadConfig(
     : { timeout };
 }
 
+function getWithOptions<T>(path: string, options?: ApiRequestOptions) {
+  return options ? getRequest<T>(path, options) : getRequest<T>(path);
+}
+
 export async function listProducts(
   filters: ShelfListFilters,
   cursor?: string | null,
@@ -53,12 +58,20 @@ export async function listProducts(
   });
 }
 
-export async function countProductsByStat(): Promise<Record<string, number>> {
-  return getRequest<Record<string, number>>(ApiPath.InventoryProductsStats);
+export async function countProductsByStat(
+  options?: ApiRequestOptions,
+): Promise<Record<string, number>> {
+  return getWithOptions<Record<string, number>>(
+    ApiPath.InventoryProductsStats,
+    options,
+  );
 }
 
-export async function getProduct(id: string): Promise<ShelfProduct> {
-  return getRequest<ShelfProduct>(ApiPath.InventoryProduct(id));
+export async function getProduct(
+  id: string,
+  options?: ApiRequestOptions,
+): Promise<ShelfProduct> {
+  return getWithOptions<ShelfProduct>(ApiPath.InventoryProduct(id), options);
 }
 
 export async function createProduct(

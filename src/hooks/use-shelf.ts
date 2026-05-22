@@ -151,7 +151,7 @@ export function useShelfStats(dateContext: ShelfDateContext) {
 
   return useQuery({
     queryKey: buildShelfStatsQueryKey(dateContext),
-    queryFn: () => countProductsByStat(),
+    queryFn: ({ signal }) => countProductsByStat({ signal }),
     enabled: isEnabled,
   });
 }
@@ -161,11 +161,11 @@ export function useShelfProduct(id: string | null) {
 
   return useQuery({
     queryKey: [QueryKey.ShelfProduct, id],
-    queryFn: () => {
+    queryFn: ({ signal }) => {
       if (!id) {
         throw new Error(MISSING_PRODUCT_ID_ERROR);
       }
-      return getProduct(id);
+      return getProduct(id, { signal });
     },
     enabled: isEnabled,
   });

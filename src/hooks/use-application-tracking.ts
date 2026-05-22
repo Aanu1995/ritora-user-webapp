@@ -65,7 +65,7 @@ export function useApplicationLog(id: string | null | undefined) {
   const isEnabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.ApplicationLog, id],
-    queryFn: () => getApplicationLog(id as string),
+    queryFn: ({ signal }) => getApplicationLog(id as string, { signal }),
     enabled: isEnabled && Boolean(id),
   });
 }
@@ -74,7 +74,8 @@ export function useApplicationLogVersions(id: string | null | undefined) {
   const isEnabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.ApplicationLogVersions, id],
-    queryFn: () => getApplicationLogVersions(id as string),
+    queryFn: ({ signal }) =>
+      getApplicationLogVersions(id as string, { signal }),
     enabled: isEnabled && Boolean(id),
   });
 }

@@ -1,4 +1,5 @@
 import {
+  type ApiRequestOptions,
   deleteRequest,
   getRequest,
   patchRequest,
@@ -23,6 +24,10 @@ import {
   type UpdatePreferencesPayload,
 } from "@/types/notifications";
 
+function getWithOptions<T>(path: string, options?: ApiRequestOptions) {
+  return options ? getRequest<T>(path, options) : getRequest<T>(path);
+}
+
 export async function listNotifications(
   cursor?: string | null,
   signal?: AbortSignal,
@@ -43,9 +48,12 @@ export async function markAllNotificationsRead(): Promise<void> {
   await postRequest<unknown>(ApiPath.NotificationsReadAll, {});
 }
 
-export async function getNotificationPreferences(): Promise<NotificationPreferences> {
-  const preferences = await getRequest<NotificationPreferences>(
+export async function getNotificationPreferences(
+  options?: ApiRequestOptions,
+): Promise<NotificationPreferences> {
+  const preferences = await getWithOptions<NotificationPreferences>(
     ApiPath.NotificationPreferences,
+    options,
   );
   return normalizeNotificationPreferences(preferences);
 }
@@ -60,23 +68,32 @@ export async function updateNotificationPreferences(
   return normalizeNotificationPreferences(preferences);
 }
 
-export async function getPushPublicKey(): Promise<string> {
-  const response = await getRequest<{ publicKey: string }>(
+export async function getPushPublicKey(
+  options?: ApiRequestOptions,
+): Promise<string> {
+  const response = await getWithOptions<{ publicKey: string }>(
     ApiPath.NotificationPushPublicKey,
+    options,
   );
   return response.publicKey;
 }
 
-export async function listPushSubscriptions(): Promise<
-  PushSubscriptionSummary[]
-> {
-  return getRequest<PushSubscriptionSummary[]>(
+export async function listPushSubscriptions(
+  options?: ApiRequestOptions,
+): Promise<PushSubscriptionSummary[]> {
+  return getWithOptions<PushSubscriptionSummary[]>(
     ApiPath.NotificationPushSubscriptions,
+    options,
   );
 }
 
-export async function getPushStatus(): Promise<PushStatusSummary> {
-  return getRequest<PushStatusSummary>(ApiPath.NotificationPushStatus);
+export async function getPushStatus(
+  options?: ApiRequestOptions,
+): Promise<PushStatusSummary> {
+  return getWithOptions<PushStatusSummary>(
+    ApiPath.NotificationPushStatus,
+    options,
+  );
 }
 
 export async function registerPushSubscription(

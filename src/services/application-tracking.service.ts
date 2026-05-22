@@ -1,4 +1,9 @@
-import { getRequest, patchRequest, postRequest } from "@/lib/api";
+import {
+  type ApiRequestOptions,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "@/lib/api";
 import { ApiPath } from "@/constants/api-paths";
 import type {
   ApplicationLog,
@@ -6,6 +11,10 @@ import type {
   EditApplicationPayload,
   RecordApplicationPayload,
 } from "@/types/application-tracking";
+
+function getWithOptions<T>(path: string, options?: ApiRequestOptions) {
+  return options ? getRequest<T>(path, options) : getRequest<T>(path);
+}
 
 export async function recordApplication(
   payload: RecordApplicationPayload,
@@ -20,14 +29,19 @@ export async function editApplication(
   return patchRequest<ApplicationLog>(ApiPath.ApplicationLog(id), payload);
 }
 
-export async function getApplicationLog(id: string): Promise<ApplicationLog> {
-  return getRequest<ApplicationLog>(ApiPath.ApplicationLog(id));
+export async function getApplicationLog(
+  id: string,
+  options?: ApiRequestOptions,
+): Promise<ApplicationLog> {
+  return getWithOptions<ApplicationLog>(ApiPath.ApplicationLog(id), options);
 }
 
 export async function getApplicationLogVersions(
   id: string,
+  options?: ApiRequestOptions,
 ): Promise<ApplicationLogVersion[]> {
-  return getRequest<ApplicationLogVersion[]>(
+  return getWithOptions<ApplicationLogVersion[]>(
     ApiPath.ApplicationLogVersions(id),
+    options,
   );
 }

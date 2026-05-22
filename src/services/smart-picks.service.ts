@@ -1,4 +1,9 @@
-import { deleteRequest, getRequest, patchRequest } from "@/lib/api";
+import {
+  type ApiRequestOptions,
+  deleteRequest,
+  getRequest,
+  patchRequest,
+} from "@/lib/api";
 import { ApiPath } from "@/constants/api-paths";
 import type {
   SmartPicksMode,
@@ -7,19 +12,30 @@ import type {
   UpdateSmartPicksBudgetPayload,
 } from "@/types/smart-picks";
 
+function getWithOptions<T>(path: string, options?: ApiRequestOptions) {
+  return options ? getRequest<T>(path, options) : getRequest<T>(path);
+}
+
 export async function getSmartPicksOverview(
   mode?: SmartPicksMode,
+  options?: ApiRequestOptions,
 ): Promise<SmartPicksOverview> {
   const params = new URLSearchParams();
   if (mode) params.set("mode", mode);
   const query = params.toString();
-  return getRequest<SmartPicksOverview>(
+  return getWithOptions<SmartPicksOverview>(
     query ? `${ApiPath.SmartPicksOverview}?${query}` : ApiPath.SmartPicksOverview,
+    options,
   );
 }
 
-export async function getSmartPicksWishlist(): Promise<SmartPicksWishlistResponse> {
-  return getRequest<SmartPicksWishlistResponse>(ApiPath.SmartPicksWishlist);
+export async function getSmartPicksWishlist(
+  options?: ApiRequestOptions,
+): Promise<SmartPicksWishlistResponse> {
+  return getWithOptions<SmartPicksWishlistResponse>(
+    ApiPath.SmartPicksWishlist,
+    options,
+  );
 }
 
 export async function deleteSmartPicksWishlistItem(id: string): Promise<void> {

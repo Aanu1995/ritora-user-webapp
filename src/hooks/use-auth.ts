@@ -148,7 +148,7 @@ export function useCurrentUser() {
 
   return useQuery({
     queryKey: [QueryKey.AuthMe],
-    queryFn: () => getCurrentUser(),
+    queryFn: ({ signal }) => getCurrentUser({ signal }),
     enabled: isEnabled,
   });
 }
@@ -223,7 +223,7 @@ export function useActiveSessions() {
 
   return useQuery({
     queryKey: [QueryKey.AuthSessions],
-    queryFn: () => getActiveSessions(),
+    queryFn: ({ signal }) => getActiveSessions({ signal }),
     enabled: isEnabled,
   });
 }

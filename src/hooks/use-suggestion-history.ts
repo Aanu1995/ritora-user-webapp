@@ -33,8 +33,8 @@ export function useSuggestionHistory(
   const baseQuery = historyQueryWithoutCursor(query);
   const history = useInfiniteQuery({
     queryKey: [QueryKey.SuggestionsHistory, baseQuery],
-    queryFn: ({ pageParam }) =>
-      getSuggestionHistory(withHistoryCursor(baseQuery, pageParam)),
+    queryFn: ({ pageParam, signal }) =>
+      getSuggestionHistory(withHistoryCursor(baseQuery, pageParam), { signal }),
     enabled: isEnabled,
     initialPageParam: null as string | null,
     getNextPageParam: getNextSuggestionHistoryPageParam,
@@ -50,7 +50,8 @@ export function useSuggestionHistoryDay(date: string | null | undefined) {
   const isEnabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.SuggestionsHistoryDay, date],
-    queryFn: () => getSuggestionHistoryDay(date as string),
+    queryFn: ({ signal }) =>
+      getSuggestionHistoryDay(date as string, { signal }),
     enabled: isEnabled && Boolean(date),
   });
 }

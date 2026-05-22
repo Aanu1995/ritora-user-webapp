@@ -126,6 +126,18 @@ describe('auth.service', () => {
     expect(result).toEqual(user);
   });
 
+  it('getCurrentUser forwards cancellation signals for route-change cleanup', async () => {
+    const controller = new AbortController();
+    const user = { id: '1', email: 'a@b.com' };
+    (getRequest as jest.Mock).mockResolvedValue(user);
+
+    await getCurrentUser({ signal: controller.signal });
+
+    expect(getRequest).toHaveBeenCalledWith('/auth/me', {
+      signal: controller.signal,
+    });
+  });
+
   it('getActiveSessions calls getRequest with sessions path', async () => {
     const sessions = [{ id: 's1' }];
     (getRequest as jest.Mock).mockResolvedValue(sessions);

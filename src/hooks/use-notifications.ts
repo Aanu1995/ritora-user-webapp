@@ -110,7 +110,7 @@ export function useNotificationPreferences() {
   const enabled = useAuthEnabled();
   return useQuery({
     queryKey: [QueryKey.NotificationPreferences],
-    queryFn: () => getNotificationPreferences(),
+    queryFn: ({ signal }) => getNotificationPreferences({ signal }),
     enabled,
   });
 }

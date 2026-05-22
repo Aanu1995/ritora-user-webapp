@@ -62,7 +62,10 @@ describe("Smart Picks hooks", () => {
     await waitFor(() =>
       expect(overviewState.result.current.isSuccess).toBe(true),
     );
-    expect(mockGetOverview).toHaveBeenCalledWith("refine");
+    expect(mockGetOverview).toHaveBeenCalledWith(
+      "refine",
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
 
     const wishlistState = renderHookWithProviders(() =>
       useSmartPicksWishlist(),
@@ -70,7 +73,9 @@ describe("Smart Picks hooks", () => {
     await waitFor(() =>
       expect(wishlistState.result.current.isSuccess).toBe(true),
     );
-    expect(mockGetWishlist).toHaveBeenCalledTimes(1);
+    expect(mockGetWishlist).toHaveBeenCalledWith(
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
   });
 
   it("polls while product picks are being generated", async () => {
