@@ -1,0 +1,167 @@
+jest.mock("@/lib/api", () => ({
+  getRequest: jest.fn(),
+  patchRequest: jest.fn(),
+  postRequest: jest.fn(),
+}));
+
+import { getRequest, patchRequest, postRequest } from "@/lib/api";
+import {
+  acceptCommunityGuidelines,
+  adaptCommunityRoutine,
+  createCommunityReview,
+  createCommunityRoutine,
+  getCommunityHome,
+  getCommunityPostingEligibility,
+  getCommunityRoutine,
+  getPeopleLikeMe,
+  listCommunityReviews,
+  listCommunityRoutines,
+  listCommunityWarnings,
+  listMyCommunitySubmissions,
+  reportCommunityReview,
+  reportCommunityRoutine,
+  resubmitCommunityContent,
+  saveCommunityAdaptation,
+  updateCommunityReview,
+  updateCommunityRoutine,
+} from "@/services/community.service";
+
+afterEach(() => jest.clearAllMocks());
+
+describe("community.service", () => {
+  it("reads community discovery endpoints with abort signals", async () => {
+    const controller = new AbortController();
+    (getRequest as jest.Mock).mockResolvedValue({ items: [] });
+
+    await getCommunityHome(controller.signal);
+    await getCommunityPostingEligibility(controller.signal);
+    await getPeopleLikeMe(controller.signal);
+    await listCommunityRoutines(controller.signal);
+    await getCommunityRoutine("routine-1", controller.signal);
+    await listCommunityReviews(controller.signal);
+    await listCommunityWarnings(controller.signal);
+    await listMyCommunitySubmissions(controller.signal);
+
+    expect(getRequest).toHaveBeenNthCalledWith(1, "/community/home", {
+      signal: controller.signal,
+    });
+    expect(getRequest).toHaveBeenNthCalledWith(2, "/community/eligibility", {
+      signal: controller.signal,
+    });
+    expect(getRequest).toHaveBeenNthCalledWith(
+      3,
+      "/community/people-like-me",
+      { signal: controller.signal },
+    );
+    expect(getRequest).toHaveBeenNthCalledWith(4, "/community/routines", {
+      signal: controller.signal,
+    });
+    expect(getRequest).toHaveBeenNthCalledWith(
+      5,
+      "/community/routines/routine-1",
+      { signal: controller.signal },
+    );
+    expect(getRequest).toHaveBeenNthCalledWith(6, "/community/reviews", {
+      signal: controller.signal,
+    });
+    expect(getRequest).toHaveBeenNthCalledWith(7, "/community/warnings", {
+      signal: controller.signal,
+    });
+    expect(getRequest).toHaveBeenNthCalledWith(
+      8,
+      "/community/me/submissions",
+      { signal: controller.signal },
+    );
+  });
+
+  it("creates reviews and routines through guarded publish endpoints", async () => {
+    (postRequest as jest.Mock).mockResolvedValue({ moderationStatus: "published" });
+
+    await createCommunityReview({
+      productBrand: "Ritora",
+      productName: "Barrier Cream",
+      productCategory: "moisturizer",
+      disclosureType: "ordinary",
+      usageDuration: "4-weeks",
+      frequency: "daily",
+      outcomes: ["helped"],
+      repurchase: "yes",
+      routineContext: [{ category: "cleanser" }],
+      body: "Worked well in a simple routine.",
+    });
+    await createCommunityRoutine({
+      title: "Simple AM",
+      summary: "Gentle routine",
+      disclosureType: "ordinary",
+      concernTags: ["barrier"],
+      goalTags: ["maintenance"],
+      steps: [{ slot: "am", category: "cleanser", frequency: "daily" }],
+    });
+    await acceptCommunityGuidelines();
+
+    expect(postRequest).toHaveBeenNthCalledWith(
+      1,
+      "/community/reviews",
+      expect.objectContaining({ productName: "Barrier Cream" }),
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      2,
+      "/community/routines",
+      expect.objectContaining({ title: "Simple AM" }),
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      3,
+      "/community/guidelines/accept",
+    );
+  });
+
+  it("sends report, adaptation, save, edit, and resubmit actions to the expected routes", async () => {
+    (postRequest as jest.Mock).mockResolvedValue({ saved: true });
+    (patchRequest as jest.Mock).mockResolvedValue({ id: "content-1" });
+
+    await reportCommunityRoutine("routine-1", "unsafe_advice", "Layering risk");
+    await reportCommunityReview("review-1", "spam");
+    await adaptCommunityRoutine("routine-1");
+    await saveCommunityAdaptation("routine-1", "adaptation-1");
+    await resubmitCommunityContent("content-1");
+    await updateCommunityRoutine("routine-1", {
+      title: "Updated",
+      summary: "Safer wording",
+    });
+    await updateCommunityReview("review-1", { body: "Safer review" });
+
+    expect(postRequest).toHaveBeenNthCalledWith(
+      1,
+      "/community/routines/routine-1/report",
+      { reason: "unsafe_advice", note: "Layering risk" },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      2,
+      "/community/reviews/review-1/report",
+      { reason: "spam", note: undefined },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      3,
+      "/community/routines/routine-1/adapt-to-shelf",
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      4,
+      "/community/routines/routine-1/save-adaptation",
+      { adaptationId: "adaptation-1" },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      5,
+      "/community/content/content-1/resubmit",
+    );
+    expect(patchRequest).toHaveBeenNthCalledWith(
+      1,
+      "/community/routines/routine-1",
+      { title: "Updated", summary: "Safer wording" },
+    );
+    expect(patchRequest).toHaveBeenNthCalledWith(
+      2,
+      "/community/reviews/review-1",
+      { body: "Safer review" },
+    );
+  });
+});
