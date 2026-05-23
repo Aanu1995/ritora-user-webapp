@@ -11,6 +11,7 @@ import {
   Settings,
   Sparkles,
   Store,
+  Users,
   Wand,
 } from "lucide-react";
 import { AppRoute } from "./app-routes";
@@ -89,6 +90,14 @@ export const NAV_ITEMS: NavItem[] = [
     icon: Wand,
     labelKey: "smartPicks",
     descriptionKey: "smartPicksDescription",
+    group: NavGroup.Main,
+    status: NavItemStatus.Live,
+  },
+  {
+    route: AppRoute.Community,
+    icon: Users,
+    labelKey: "community",
+    descriptionKey: "communityDescription",
     group: NavGroup.Main,
     status: NavItemStatus.Live,
   },

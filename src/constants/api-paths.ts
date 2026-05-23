@@ -15,6 +15,7 @@ const SUGGESTIONS_BASE = "/suggestions";
 const SMART_PICKS_BASE = "/smart-picks";
 const APPLICATION_LOGS_BASE = "/application-logs";
 const SUGGESTIONS_HISTORY_BASE = "/suggestions/history";
+const COMMUNITY_BASE = "/community";
 
 const buildInventoryProductPath = (id: string) =>
   `${INVENTORY_PRODUCTS_BASE}/${id}`;
@@ -158,4 +159,30 @@ export const ApiPath = {
   ApplicationLog: (id: string) => `${APPLICATION_LOGS_BASE}/${id}`,
   ApplicationLogVersions: (id: string) =>
     `${APPLICATION_LOGS_BASE}/${id}/versions`,
+
+  CommunityHome: `${COMMUNITY_BASE}/home`,
+  CommunityEligibility: `${COMMUNITY_BASE}/eligibility`,
+  CommunityAcceptGuidelines: `${COMMUNITY_BASE}/guidelines/accept`,
+  CommunityPeopleLikeMe: `${COMMUNITY_BASE}/people-like-me`,
+  CommunityRoutines: `${COMMUNITY_BASE}/routines`,
+  CommunityRoutine: (id: string) => `${COMMUNITY_BASE}/routines/${id}`,
+  CommunityRoutineEdit: (id: string) => `${COMMUNITY_BASE}/routines/${id}`,
+  CommunityRoutineReport: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/report`,
+  CommunityRoutineHelpfulness: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/helpfulness`,
+  CommunityRoutineAdapt: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/adapt-to-shelf`,
+  CommunityRoutineSaveAdaptation: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/save-adaptation`,
+  CommunityReviews: `${COMMUNITY_BASE}/reviews`,
+  CommunityReviewEdit: (id: string) => `${COMMUNITY_BASE}/reviews/${id}`,
+  CommunityReviewReport: (id: string) =>
+    `${COMMUNITY_BASE}/reviews/${id}/report`,
+  CommunityReviewHelpfulness: (id: string) =>
+    `${COMMUNITY_BASE}/reviews/${id}/helpfulness`,
+  CommunityWarnings: `${COMMUNITY_BASE}/warnings`,
+  CommunityMySubmissions: `${COMMUNITY_BASE}/me/submissions`,
+  CommunityResubmitContent: (id: string) =>
+    `${COMMUNITY_BASE}/content/${id}/resubmit`,
 } as const;

@@ -60,8 +60,8 @@ describe("NAV_ITEMS", () => {
     expect(groups.has(NavGroup.Account)).toBe(true);
   });
 
-  it("has exactly 12 navigation items", () => {
-    expect(NAV_ITEMS).toHaveLength(12);
+  it("has exactly 13 navigation items", () => {
+    expect(NAV_ITEMS).toHaveLength(13);
   });
 
   it("marks implemented account and journal surfaces as live", () => {
@@ -72,6 +72,7 @@ describe("NAV_ITEMS", () => {
       NavItemStatus.Live,
     );
     expect(byRoute.get(AppRoute.SmartPicks)?.status).toBe(NavItemStatus.Live);
+    expect(byRoute.get(AppRoute.Community)?.status).toBe(NavItemStatus.Live);
     expect(byRoute.get(AppRoute.Notifications)?.status).toBe(
       NavItemStatus.Live,
     );
@@ -86,8 +87,8 @@ describe("getNavItemsByGroup", () => {
     }
   });
 
-  it("returns 8 items for the Main group", () => {
-    expect(getNavItemsByGroup(NavGroup.Main)).toHaveLength(8);
+  it("returns 9 items for the Main group", () => {
+    expect(getNavItemsByGroup(NavGroup.Main)).toHaveLength(9);
   });
 
   it("returns 2 items for the More group", () => {

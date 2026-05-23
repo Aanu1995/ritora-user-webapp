@@ -43,4 +43,12 @@ export enum QueryKey {
   SmartPicksWishlist = "smart-picks-wishlist",
   ApplicationLog = "application-log",
   ApplicationLogVersions = "application-log-versions",
+  CommunityHome = "community-home",
+  CommunityEligibility = "community-eligibility",
+  CommunityPeopleLikeMe = "community-people-like-me",
+  CommunityRoutines = "community-routines",
+  CommunityRoutine = "community-routine",
+  CommunityReviews = "community-reviews",
+  CommunityWarnings = "community-warnings",
+  CommunityMySubmissions = "community-my-submissions",
 }
