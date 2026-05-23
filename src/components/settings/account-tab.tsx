@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AccountDataSection } from "@/components/settings/account-data-section";
 import { AccountSessionsSection } from "@/components/settings/account-sessions-section";
+import { SupportSection } from "@/components/settings/support-section";
 import { useLogout, useLogoutAll, useUpdateProfile } from "@/hooks/use-auth";
 import { firstFieldError } from "@/lib/form-errors";
 import {
@@ -140,6 +141,8 @@ export function AccountTab() {
           isLogoutPending={logout.isPending}
           isLogoutAllPending={logoutAll.isPending}
         />
+
+        <SupportSection />
 
         <AccountDataSection />
       </div>
@@ -302,6 +305,8 @@ export function AccountTab() {
         isLogoutPending={logout.isPending}
         isLogoutAllPending={logoutAll.isPending}
       />
+
+      <SupportSection />
 
       <AccountDataSection />
     </div>

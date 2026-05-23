@@ -41,6 +41,10 @@
     "confirmDialog": {
       "cancel": "Cancel",
       "working": "Working..."
+    },
+    "retryPanel": {
+      "stillStuck": "Still stuck?",
+      "contactSupport": "Contact support"
     }
   },
   "nav": {
@@ -742,7 +746,39 @@
       "signOutAllConfirmBody": "This ends every active session for your account, including this device. You'll need to sign in again on each device.",
       "signOutAllConfirmAction": "Sign out all devices",
       "signOutAllConfirmCancel": "Keep sessions",
-      "signOutAllFailed": "We couldn't sign out all devices. Please try again."
+      "signOutAllFailed": "We couldn't sign out all devices. Please try again.",
+      "support": {
+        "title": "Support",
+        "description": "Send feedback or ask for help from the Ritora team.",
+        "contactTitle": "Contact support",
+        "contactDescription": "Share a bug, confusing result, product data issue, or account question.",
+        "contactAction": "Contact support",
+        "dialogTitle": "Contact Ritora support",
+        "dialogBody": "Send enough detail for the team to understand what happened. Avoid adding highly sensitive health information unless it is necessary for the issue.",
+        "typeLabel": "What is this about?",
+        "titleLabel": "Subject",
+        "detailsLabel": "Details",
+        "cancel": "Cancel",
+        "submit": "Send message",
+        "sending": "Sending...",
+        "sent": "Support message sent.",
+        "submitFailed": "We couldn't send your support message. Please try again.",
+        "rateLimited": "You've sent several support messages recently. Please try again later.",
+        "titleRequired": "Subject must be at least 3 characters.",
+        "titleTooLong": "Subject must be 160 characters or fewer.",
+        "descriptionRequired": "Details must be at least 8 characters.",
+        "descriptionTooLong": "Details must be 5000 characters or fewer.",
+        "types": {
+          "bug": "Bug",
+          "suggestion": "Suggestion",
+          "confusing_result": "Confusing result",
+          "unsafe_recommendation": "Unsafe recommendation",
+          "product_data_issue": "Product data issue",
+          "billing_pricing": "Billing or pricing",
+          "account": "Account",
+          "other": "Other"
+        }
+      }
     },
     "appearance": {
       "themeTitle": "Theme",
@@ -1702,16 +1738,16 @@
         },
         "shapeTips": {
           "heading": "Tips by container shape",
-          "rectangular": "Box or rectangular — front and back, or the side with the most text.",
-          "cylindrical": "Bottle, tube, or cylinder — take 3–4 overlapping photos while rotating around the body. Keep important text away from the edges; the curve distorts text there.",
-          "roundJar": "Jar, sphere, or round — top or lid, plus 2–3 side sections rotating ~90° between shots.",
-          "pouch": "Pouch or sachet — lay flat on a surface and take one photo per printed side."
+          "rectangular": "Box or rectangular: front and back, or the side with the most text.",
+          "cylindrical": "Bottle, tube, or cylinder: take 3 to 4 overlapping photos while rotating around the body. Keep important text away from the edges; the curve distorts text there.",
+          "roundJar": "Jar, sphere, or round: top or lid, plus 2 to 3 side sections rotating ~90° between shots.",
+          "pouch": "Pouch or sachet: lay flat on a surface and take one photo per printed side."
         },
         "incomplete": "Add a product photo and at least one label photo.",
         "ready": "Ready. Ritora will save your product photo and read the labels.",
         "maxReached": "You're at the 6-photo limit. Remove a label photo to add a different one.",
         "extracting": "Reading your photos…",
-        "partial": "Some fields still need review — see the highlighted fields below.",
+        "partial": "Some fields still need review. See the highlighted fields below.",
         "errorTitle": "Couldn't read those photos",
         "error": "Try clearer product and label photos.",
         "serviceUnavailableTitle": "Couldn't reach the photo reader",
@@ -1848,8 +1884,8 @@
         "expiresAtInvalid": "Expiry date must be on or after the opened date.",
         "waitMinutesInvalid": "Wait timer must be zero minutes or more.",
         "stepsRequired": "Add at least one step so Ritora can explain how to use this product.",
-        "stepsMax": "Keep each step short — under 280 characters.",
-        "cautionsMax": "Keep each caution short — under 200 characters."
+        "stepsMax": "Keep each step under 280 characters.",
+        "cautionsMax": "Keep each caution under 200 characters."
       },
       "genericError": "We could not save this product right now. Please try again."
     },
@@ -2645,9 +2681,9 @@
       "sheetDescription": "Create a scheduled time slot",
       "daysLabel": "Apply to days",
       "daysHintSingle": "Tap a day to toggle",
-      "daysHintEveryDay": "Every day — tap to deselect",
+      "daysHintEveryDay": "Every day. Tap to deselect.",
       "timeLabel": "At what time?",
-      "timeHint": "Any time — 07:30, 14:00, 22:15, etc.",
+      "timeHint": "Any time. For example, 07:30, 14:00, or 22:15.",
       "modeLabel": "Mode",
       "submitSingle": "Add time",
       "submitMultiple": "Add to {count} days",
@@ -2705,7 +2741,7 @@
       "customLabelPlaceholder": "Name your step",
       "customHint": "For non-product actions like face massage, gua sha, or LED sessions.",
       "productPlaceholder": "Pick a product",
-      "productMissing": "Missing product — pick again",
+      "productMissing": "Missing product. Pick again.",
       "notesPlaceholder": "Notes (optional)",
       "optionalLabel": "Optional step",
       "optionalHint": "Skipping this won't be flagged as a missed routine.",

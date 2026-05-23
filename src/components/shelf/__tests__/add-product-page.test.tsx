@@ -130,7 +130,9 @@ describe('AddProductPage', () => {
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 
-    expect(screen.getByText(/keep each step short/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/keep each step under 280 characters/i),
+    ).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
   });
 

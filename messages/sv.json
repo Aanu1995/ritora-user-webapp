@@ -41,6 +41,10 @@
     "confirmDialog": {
       "cancel": "Avbryt",
       "working": "Bearbetar..."
+    },
+    "retryPanel": {
+      "stillStuck": "Fortfarande problem?",
+      "contactSupport": "Kontakta support"
     }
   },
   "nav": {
@@ -746,7 +750,39 @@
       "signOutAllConfirmBody": "Detta avslutar alla aktiva sessioner för ditt konto, inklusive denna enhet. Du behöver logga in igen på varje enhet.",
       "signOutAllConfirmAction": "Logga ut alla enheter",
       "signOutAllConfirmCancel": "Behåll sessionerna",
-      "signOutAllFailed": "Vi kunde inte logga ut alla enheter. Försök igen."
+      "signOutAllFailed": "Vi kunde inte logga ut alla enheter. Försök igen.",
+      "support": {
+        "title": "Support",
+        "description": "Skicka feedback eller be Ritora-teamet om hjälp.",
+        "contactTitle": "Kontakta support",
+        "contactDescription": "Dela en bugg, ett förvirrande resultat, ett produktdatafel eller en kontofråga.",
+        "contactAction": "Kontakta support",
+        "dialogTitle": "Kontakta Ritora-support",
+        "dialogBody": "Skicka tillräckligt med detaljer för att teamet ska förstå vad som hände. Undvik mycket känslig hälsoinformation om den inte behövs för ärendet.",
+        "typeLabel": "Vad gäller det?",
+        "titleLabel": "Ämne",
+        "detailsLabel": "Detaljer",
+        "cancel": "Avbryt",
+        "submit": "Skicka meddelande",
+        "sending": "Skickar...",
+        "sent": "Supportmeddelandet har skickats.",
+        "submitFailed": "Vi kunde inte skicka ditt supportmeddelande. Försök igen.",
+        "rateLimited": "Du har skickat flera supportmeddelanden nyligen. Försök igen senare.",
+        "titleRequired": "Ämnet måste vara minst 3 tecken.",
+        "titleTooLong": "Ämnet får vara högst 160 tecken.",
+        "descriptionRequired": "Detaljer måste vara minst 8 tecken.",
+        "descriptionTooLong": "Detaljer får vara högst 5000 tecken.",
+        "types": {
+          "bug": "Bugg",
+          "suggestion": "Förslag",
+          "confusing_result": "Förvirrande resultat",
+          "unsafe_recommendation": "Osäker rekommendation",
+          "product_data_issue": "Produktdatafel",
+          "billing_pricing": "Fakturering eller pris",
+          "account": "Konto",
+          "other": "Annat"
+        }
+      }
     },
     "appearance": {
       "themeTitle": "Tema",
@@ -1706,16 +1742,16 @@
         },
         "shapeTips": {
           "heading": "Tips per förpackningstyp",
-          "rectangular": "Kartong eller rektangulär — fram och bak, eller sidan med mest text.",
-          "cylindrical": "Flaska, tub eller cylinder — ta 3–4 överlappande foton medan du roterar runt kroppen. Håll viktig text borta från kanterna; kurvan förvränger texten där.",
-          "roundJar": "Burk, sfär eller rund — ovansidan eller locket, plus 2–3 sidosektioner ~90° mellan bilderna.",
-          "pouch": "Påse eller sachet — lägg den platt på en yta och ta ett foto per tryckt sida."
+          "rectangular": "Kartong eller rektangulär: fram och bak, eller sidan med mest text.",
+          "cylindrical": "Flaska, tub eller cylinder: ta 3 till 4 överlappande foton medan du roterar runt kroppen. Håll viktig text borta från kanterna; kurvan förvränger texten där.",
+          "roundJar": "Burk, sfär eller rund: ovansidan eller locket, plus 2 till 3 sidosektioner ~90° mellan bilderna.",
+          "pouch": "Påse eller sachet: lägg den platt på en yta och ta ett foto per tryckt sida."
         },
         "incomplete": "Lägg till en produktbild och minst en etikettbild.",
         "ready": "Redo. Ritora sparar din produktbild och läser etiketterna.",
         "maxReached": "Du har nått gränsen på 6 bilder. Ta bort en etikettbild för att lägga till en annan.",
         "extracting": "Läser dina foton…",
-        "partial": "Vissa fält behöver fortfarande granskas — se de markerade fälten nedan.",
+        "partial": "Vissa fält behöver fortfarande granskas. Se de markerade fälten nedan.",
         "errorTitle": "Kunde inte läsa fotona",
         "error": "Prova tydligare produkt- och etikettbilder.",
         "serviceUnavailableTitle": "Kunde inte nå fotoläsaren",
@@ -2652,9 +2688,9 @@
       "sheetDescription": "Skapa en schemalagd rutinplats",
       "daysLabel": "Gäller dagar",
       "daysHintSingle": "Tryck på en dag för att växla",
-      "daysHintEveryDay": "Varje dag — tryck för att avmarkera",
+      "daysHintEveryDay": "Varje dag. Tryck för att avmarkera.",
       "timeLabel": "Vilken tid?",
-      "timeHint": "Vilken tid som helst — 07:30, 14:00, 22:15 osv.",
+      "timeHint": "Vilken tid som helst. Till exempel 07:30, 14:00 eller 22:15.",
       "modeLabel": "Läge",
       "submitSingle": "Lägg till tid",
       "submitMultiple": "Lägg till i {count} dagar",
@@ -2712,7 +2748,7 @@
       "customLabelPlaceholder": "Namnge ditt steg",
       "customHint": "För handlingar utan produkt, t.ex. ansiktsmassage, gua sha eller LED-behandling.",
       "productPlaceholder": "Välj en produkt",
-      "productMissing": "Saknad produkt — välj igen",
+      "productMissing": "Saknad produkt. Välj igen.",
       "notesPlaceholder": "Anteckningar (valfritt)",
       "optionalLabel": "Valfritt steg",
       "optionalHint": "Att hoppa över räknas inte som missad rutin.",

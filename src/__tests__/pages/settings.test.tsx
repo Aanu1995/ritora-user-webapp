@@ -12,6 +12,7 @@ const mockUpdateProfileMutate = jest.fn();
 const mockUpdatePreferredLanguageMutate = jest.fn();
 const mockUpdateTimeZoneMutate = jest.fn();
 const mockUpdateAiConsentMutate = jest.fn();
+const mockCreateSupportFeedbackMutate = jest.fn();
 const mockRouterRefresh = jest.fn();
 
 jest.mock("next/navigation", () => ({
@@ -76,6 +77,13 @@ jest.mock("@/hooks/use-suggestions", () => ({
   }),
   useUpdateSuggestionAiConsent: () => ({
     mutate: mockUpdateAiConsentMutate,
+    isPending: false,
+  }),
+}));
+
+jest.mock("@/hooks/use-support", () => ({
+  useCreateSupportFeedback: () => ({
+    mutate: mockCreateSupportFeedbackMutate,
     isPending: false,
   }),
 }));
@@ -154,6 +162,46 @@ describe("SettingsPage", () => {
 
     expect(screen.getByText("Ada Lovelace")).toBeInTheDocument();
     expect(screen.getByText("ada@example.com")).toBeInTheDocument();
+  });
+
+  it("submits support feedback from the account settings entry point", async () => {
+    mockCreateSupportFeedbackMutate.mockImplementation(
+      (
+        _values: unknown,
+        options?: { onSuccess?: () => void },
+      ) => {
+        options?.onSuccess?.();
+      },
+    );
+
+    renderWithProviders(<SettingsPage />);
+
+    await user.click(screen.getByRole("button", { name: /contact support/i }));
+    await user.click(
+      screen.getByRole("combobox", { name: "What is this about?" }),
+    );
+    await user.click(screen.getByRole("option", { name: "Suggestion" }));
+    await user.type(screen.getByLabelText("Subject"), "Settings did not save");
+    await user.type(
+      screen.getByLabelText("Details"),
+      "The settings page did not save my latest preference.",
+    );
+    await user.click(screen.getByRole("button", { name: /^send message$/i }));
+
+    expect(mockCreateSupportFeedbackMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        description: "The settings page did not save my latest preference.",
+        title: "Settings did not save",
+        type: "suggestion",
+      }),
+      expect.objectContaining({
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      }),
+    );
+    expect(
+      screen.queryByRole("dialog", { name: /contact ritora support/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("edits and saves the user name", async () => {

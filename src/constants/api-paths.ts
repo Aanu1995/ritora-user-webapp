@@ -9,6 +9,7 @@ const SCHEDULE_SLOTS_BASE = `${SCHEDULE_BASE}/slots`;
 const INGREDIENTS_BASE = "/ingredients";
 const SKIN_JOURNAL_BASE = "/skin-journal";
 const NOTIFICATIONS_BASE = "/notifications";
+const SUPPORT_BASE = "/support";
 const APP_BASE = "/app";
 const SUGGESTIONS_BASE = "/suggestions";
 const SMART_PICKS_BASE = "/smart-picks";
@@ -127,6 +128,8 @@ export const ApiPath = {
   NotificationPushStatus: `${NOTIFICATIONS_BASE}/push/status`,
   NotificationPushSubscription: (id: string) =>
     `${NOTIFICATIONS_BASE}/push/subscriptions/${id}`,
+
+  SupportFeedback: `${SUPPORT_BASE}/feedback`,
 
   SuggestionsToday: `${SUGGESTIONS_BASE}/today`,
   SuggestionsAiConsent: `${SUGGESTIONS_BASE}/ai-consent`,

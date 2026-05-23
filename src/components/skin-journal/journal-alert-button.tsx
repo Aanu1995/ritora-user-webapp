@@ -41,7 +41,7 @@ export function JournalAlertButton() {
           <button
             type="button"
             onClick={() => router.push(`/journal/simplification/${data.id}`)}
-            aria-label={`${t("bannerTitle")} — ${tooltipBody}`}
+            aria-label={`${t("bannerTitle")}. ${tooltipBody}`}
             className={cn(
               "relative grid h-9 w-9 cursor-pointer place-items-center rounded-full",
               "border border-[color:var(--warning-border)] bg-warning-soft text-[color:var(--warning)]",

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { HeaderContextSubtitle } from "@/components/app/header-context-subtitle";
 import { PageHeader } from "@/components/app/page-header";
+import { ContactSupportButton } from "@/components/support/contact-support-button";
 import { Button } from "@/components/ui/button";
 import { DashboardClimatePanel } from "@/components/dashboard/dashboard-climate-panel";
 import { DashboardFreshAccount } from "@/components/dashboard/dashboard-fresh-account";
@@ -66,6 +67,7 @@ function DashboardHeader({
           headline={headline}
         />
       }
+      action={<ContactSupportButton variant="outline" size="sm" />}
     />
   );
 }
@@ -144,6 +146,7 @@ export default function DashboardPage() {
         <PageHeader
           title={t("fresh.welcome", { firstName: user?.firstName ?? "" })}
           subtitle={t("fresh.subtitle")}
+          action={<ContactSupportButton variant="outline" size="sm" />}
         />
         <DashboardFreshAccount
           profileDone={profileDone}
