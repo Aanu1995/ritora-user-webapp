@@ -3,8 +3,6 @@ name: CI
 on:
   push:
     branches: [main, develop]
-  pull_request:
-    branches: [main]
 
 env:
   NEXT_PUBLIC_API_URL: http://localhost:3001/api/v1
