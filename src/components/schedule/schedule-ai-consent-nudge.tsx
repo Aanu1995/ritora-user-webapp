@@ -76,7 +76,7 @@ export function ScheduleAiConsentNudge({
           {t("privacy")}
         </p>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="mt-4 flex flex-wrap items-center justify-end gap-2">
           <Button
             type="button"
             size="sm"

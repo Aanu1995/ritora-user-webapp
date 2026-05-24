@@ -58,11 +58,16 @@ export function ContactSupportButton({
         size={size}
         disabled={supportDisabled}
         onClick={() => setOpen(true)}
-        aria-label={iconOnly ? resolvedLabel : undefined}
-        className={cn(className)}
+        aria-label={resolvedLabel}
+        className={cn(
+          !iconOnly && "px-2.5 sm:px-4",
+          className,
+        )}
       >
         <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
-        {iconOnly ? null : resolvedLabel}
+        {iconOnly ? null : (
+          <span className="hidden sm:inline">{resolvedLabel}</span>
+        )}
       </Button>
 
       {open ? <SupportDialog open={open} onOpenChange={setOpen} /> : null}

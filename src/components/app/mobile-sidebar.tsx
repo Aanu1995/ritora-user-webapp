@@ -9,7 +9,11 @@ import { NavBadge } from "@/components/app/nav-badge";
 import { RitoraMark } from "@/components/icons/ritora-mark";
 import { cn } from "@/lib/utils";
 import { AppRoute } from "@/constants/app-routes";
-import { getNavItemsByGroup, NavGroup, type NavItem } from "@/constants/nav-config";
+import {
+  getNavItemsByGroup,
+  NavGroup,
+  type NavItem,
+} from "@/constants/nav-config";
 import {
   useNavBadgeCounts,
   type NavBadgeCounts,
@@ -78,21 +82,30 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
   const badgeCounts = useNavBadgeCounts();
 
   useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    if (open) {
-      document.addEventListener("keydown", handleEscape);
-      document.body.style.overflow = "hidden";
-    }
+
+    document.addEventListener("keydown", handleEscape);
+    document.body.style.overflow = "hidden";
+
     return () => {
       document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
     };
   }, [open, onClose]);
 
   return (
-    <div className={cn("lg:hidden", !open && "pointer-events-none")}>
+    <div
+      className={cn("lg:hidden", !open && "pointer-events-none")}
+      aria-hidden={!open}
+      inert={!open}
+    >
       <div
         className={cn(
           "fixed inset-0 z-50 bg-foreground/30 backdrop-blur-sm transition-opacity duration-300",
@@ -103,6 +116,9 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
       />
 
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("navigation")}
         className={cn(
           "fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-surface transition-transform duration-300 ease-in-out",
           open ? "translate-x-0" : "-translate-x-full",
@@ -131,17 +147,30 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
           </button>
         </div>
 
-        <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-5">
+        {/* Keep the Account group above the fixed mobile nav and safe area. */}
+        <nav className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 pt-5 pb-[calc(6rem+env(safe-area-inset-bottom))]">
           <ul role="list" className="flex flex-1 flex-col gap-y-7">
             <li>
-              <MobileNavList items={mainItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
+              <MobileNavList
+                items={mainItems}
+                pathname={pathname}
+                t={t}
+                onClose={onClose}
+                badgeCounts={badgeCounts}
+              />
             </li>
             <li>
               <div className="text-xs font-semibold uppercase tracking-wider text-muted">
                 {t("groups.more")}
               </div>
               <div className="mt-2">
-                <MobileNavList items={moreItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
+                <MobileNavList
+                  items={moreItems}
+                  pathname={pathname}
+                  t={t}
+                  onClose={onClose}
+                  badgeCounts={badgeCounts}
+                />
               </div>
             </li>
             <li className="mt-auto">
@@ -149,7 +178,13 @@ export function MobileSidebar({ open, onClose }: MobileSidebarProps) {
                 {t("groups.account")}
               </div>
               <div className="mt-2">
-                <MobileNavList items={accountItems} pathname={pathname} t={t} onClose={onClose} badgeCounts={badgeCounts} />
+                <MobileNavList
+                  items={accountItems}
+                  pathname={pathname}
+                  t={t}
+                  onClose={onClose}
+                  badgeCounts={badgeCounts}
+                />
               </div>
             </li>
           </ul>

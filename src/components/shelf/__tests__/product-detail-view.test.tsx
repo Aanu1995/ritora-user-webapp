@@ -1,5 +1,5 @@
 import svMessages from '../../../../messages/sv.json';
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NextIntlClientProvider } from 'next-intl';
 import { renderWithProviders } from '@/test/utils';

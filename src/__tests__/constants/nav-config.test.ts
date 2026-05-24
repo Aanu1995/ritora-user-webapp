@@ -91,15 +91,15 @@ describe("getNavItemsByGroup", () => {
     }
   });
 
-  it("returns 9 items for the Main group", () => {
-    expect(getNavItemsByGroup(NavGroup.Main)).toHaveLength(9);
+  it("returns 8 items for the Main group", () => {
+    expect(getNavItemsByGroup(NavGroup.Main)).toHaveLength(8);
   });
 
   it("returns 1 item for the More group", () => {
     expect(getNavItemsByGroup(NavGroup.More)).toHaveLength(1);
   });
 
-  it("returns 2 items for the Account group", () => {
-    expect(getNavItemsByGroup(NavGroup.Account)).toHaveLength(2);
+  it("returns 3 items for the Account group", () => {
+    expect(getNavItemsByGroup(NavGroup.Account)).toHaveLength(3);
   });
 });

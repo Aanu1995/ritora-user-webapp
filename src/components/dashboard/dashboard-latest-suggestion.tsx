@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Check, Sparkles } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { AppRoute } from "@/constants/app-routes";
 import { SuggestionDaypartIcon } from "@/components/today-suggestion/daypart-icon";
@@ -10,13 +9,9 @@ import {
   SuggestionModeBadge,
   SuggestionStatusPill,
 } from "@/components/today-suggestion/mode-badge";
-import { RecordApplicationSheet } from "@/components/today-suggestion/record-application-sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatSlotTime12h } from "@/lib/suggestion-daypart";
-import type {
-  ApplicationLog,
-} from "@/types/application-tracking";
 import type {
   SuggestionStep,
   TodaysSuggestionSlot,
@@ -24,27 +19,16 @@ import type {
 
 type Props = {
   slot: TodaysSuggestionSlot;
-  timeZone?: string;
-  onSaved?: (log: ApplicationLog) => void;
 };
 
 const PREVIEW_STEP_COUNT = 3;
 
 /**
  * Compact "latest actionable suggestion" card surfaced on the dashboard.
- *
- * Tap on "Mark as applied" opens the EXACT same RecordApplicationSheet used by
- * /todays-suggestion — same component, same hooks, same mutations. The only
- * difference is the host: the dashboard renders one slot at a time and hides
- * itself once the user records.
  */
-export function DashboardLatestSuggestion({ slot, timeZone, onSaved }: Props) {
+export function DashboardLatestSuggestion({ slot }: Props) {
   const t = useTranslations("dashboard.latestSuggestion");
   const tSlot = useTranslations("todaysSuggestion.slot");
-
-  const [recordSlot, setRecordSlot] = useState<TodaysSuggestionSlot | null>(
-    null,
-  );
 
   const suggestion = slot.suggestion;
   if (!suggestion) return null;
@@ -60,9 +44,6 @@ export function DashboardLatestSuggestion({ slot, timeZone, onSaved }: Props) {
     suggestion.explanation?.headline?.trim() ||
     null;
   const routineLabel = tSlot(daypartRoutineLabelKey(suggestion.daypart));
-
-  const handleRecord = () => setRecordSlot(slot);
-  const closeRecord = () => setRecordSlot(null);
 
   return (
     <section
@@ -124,39 +105,14 @@ export function DashboardLatestSuggestion({ slot, timeZone, onSaved }: Props) {
         </ul>
       ) : null}
 
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <Button
-          type="button"
-          onClick={handleRecord}
-          className="flex-1 sm:flex-none"
-        >
-          <Check className="h-4 w-4" aria-hidden />
-          {isAwaitingRecord
-            ? tSlot("recordWhatIApplied")
-            : tSlot("markAsApplied")}
-        </Button>
-        <Button
-          asChild
-          variant="ghost"
-          className="flex-1 border border-border bg-transparent text-foreground hover:bg-surface-muted sm:flex-none"
-        >
+      <div className="mt-4 flex justify-end">
+        <Button asChild size="sm">
           <Link href={AppRoute.TodaysSuggestion}>
             <ArrowUpRight className="h-4 w-4" aria-hidden />
             {t("openRoutine")}
           </Link>
         </Button>
       </div>
-
-      <RecordApplicationSheet
-        open={recordSlot !== null}
-        onOpenChange={(open) => (open ? null : closeRecord())}
-        mode={recordSlot ? { kind: "record", slot: recordSlot } : null}
-        onSaved={(log) => {
-          closeRecord();
-          onSaved?.(log);
-        }}
-        timeZone={timeZone}
-      />
     </section>
   );
 }

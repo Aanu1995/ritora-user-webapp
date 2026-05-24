@@ -35,11 +35,14 @@ export function SiteHeaderClient({
   const panelId = 'site-header-mobile-panel';
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const search = searchParams.toString();
+  const lastRouteRef = useRef(`${pathname}?${search}`);
 
   useEffect(() => {
-    if (!open) {
+    const current = `${pathname}?${search}`;
+    if (current === lastRouteRef.current) {
       return;
     }
+    lastRouteRef.current = current;
 
     const frame = window.requestAnimationFrame(() => {
       setOpen(false);
@@ -48,7 +51,7 @@ export function SiteHeaderClient({
     return () => {
       window.cancelAnimationFrame(frame);
     };
-  }, [open, pathname, search]);
+  }, [pathname, search]);
 
   useEffect(() => {
     if (!open) {
@@ -142,9 +145,11 @@ export function SiteHeaderClient({
 
       <div
         id={panelId}
-        role="dialog"
-        aria-modal="true"
-        aria-label={openMenuLabel}
+        role={open ? 'dialog' : undefined}
+        aria-modal={open ? true : undefined}
+        aria-label={open ? openMenuLabel : undefined}
+        aria-hidden={!open}
+        inert={!open}
         className={`absolute inset-x-0 top-full origin-top border-b border-border bg-background/95 backdrop-blur-xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] lg:hidden ${
           open
             ? 'pointer-events-auto translate-y-0 scale-100 opacity-100'
@@ -159,7 +164,7 @@ export function SiteHeaderClient({
                   <Link
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className="block py-4 text-xl font-semibold tracking-tight text-foreground transition-colors hover:text-accent"
+                    className="block py-3 text-base font-semibold tracking-tight text-foreground transition-colors hover:text-accent"
                   >
                     {item.label}
                   </Link>
@@ -167,18 +172,18 @@ export function SiteHeaderClient({
               ))}
             </ul>
           </nav>
-          <div className="mt-6 flex flex-col gap-3">
+          <div className="mt-5 flex flex-col gap-2.5">
             <Link
               href={AppRoute.Register}
               onClick={() => setOpen(false)}
-              className="inline-flex w-full items-center justify-center rounded-full bg-foreground px-6 py-3.5 text-base font-semibold text-background transition hover:opacity-95"
+              className="inline-flex w-full items-center justify-center rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background transition hover:opacity-95"
             >
               {signUpLabel}
             </Link>
             <Link
               href={AppRoute.Login}
               onClick={() => setOpen(false)}
-              className="inline-flex w-full items-center justify-center rounded-full border border-border-strong bg-surface px-6 py-3.5 text-base font-semibold text-foreground transition hover:border-accent"
+              className="inline-flex w-full items-center justify-center rounded-full border border-border-strong bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-accent"
             >
               {loginLabel}
             </Link>

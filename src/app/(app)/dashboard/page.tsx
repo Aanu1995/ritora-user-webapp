@@ -176,10 +176,7 @@ export default function DashboardPage() {
           />
         ) : null}
         {latestSuggestionSlot ? (
-          <DashboardLatestSuggestion
-            slot={latestSuggestionSlot}
-            timeZone={timeZone}
-          />
+          <DashboardLatestSuggestion slot={latestSuggestionSlot} />
         ) : null}
         <CompactSimplificationAlert />
         <DashboardSetupChecklist

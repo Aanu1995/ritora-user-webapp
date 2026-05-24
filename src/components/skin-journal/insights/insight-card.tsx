@@ -121,7 +121,7 @@ export function InsightCard({
           ))}
         </div>
       ) : null}
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap justify-end gap-2">
         {isAi ? (
           <Button variant="outline" size="sm" onClick={() => setWhyOpen(true)}>
             <HelpCircle className="h-3.5 w-3.5" />

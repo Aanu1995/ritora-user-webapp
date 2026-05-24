@@ -239,14 +239,14 @@ export async function LandingHero() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href={AppRoute.Register}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-base font-semibold text-background shadow-soft transition hover:-translate-y-0.5 hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-soft transition hover:-translate-y-0.5 hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:px-7 sm:py-3.5 sm:text-base"
               >
                 {t('ctaPrimary')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
                 href="#how-it-works"
-                className="inline-flex items-center justify-center rounded-full border border-border-strong bg-surface px-7 py-3.5 text-base font-semibold text-foreground transition hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="inline-flex items-center justify-center rounded-full border border-border-strong bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:px-7 sm:py-3.5 sm:text-base"
               >
                 {t('ctaSecondary')}
               </Link>
@@ -836,14 +836,14 @@ export async function LandingFinalCta() {
         <div className="relative mt-8 flex flex-wrap justify-center gap-3">
           <Link
             href={AppRoute.Register}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-base font-semibold text-background shadow-soft transition hover:-translate-y-0.5 hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-soft transition hover:-translate-y-0.5 hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface sm:px-7 sm:py-3.5 sm:text-base"
           >
             {t('ctaPrimary')}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
           <Link
             href={AppRoute.Login}
-            className="inline-flex items-center justify-center rounded-full border border-border-strong bg-background px-7 py-3.5 text-base font-semibold text-foreground transition hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            className="inline-flex items-center justify-center rounded-full border border-border-strong bg-background px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface sm:px-7 sm:py-3.5 sm:text-base"
           >
             {t('ctaSecondary')}
           </Link>

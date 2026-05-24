@@ -1,5 +1,4 @@
 import { screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "@/test/utils";
 import { DashboardLatestSuggestion } from "@/components/dashboard/dashboard-latest-suggestion";
 import type {
@@ -7,19 +6,6 @@ import type {
   SuggestionStep,
   TodaysSuggestionSlot,
 } from "@/types/suggestions";
-
-const mockRecordApplicationMutate = jest.fn();
-
-jest.mock("@/hooks/use-application-tracking", () => ({
-  useRecordApplication: () => ({
-    mutate: mockRecordApplicationMutate,
-    isPending: false,
-  }),
-  useEditApplication: () => ({
-    mutate: jest.fn(),
-    isPending: false,
-  }),
-}));
 
 jest.mock("@/hooks/use-shelf", () => ({
   useShelfProducts: () => ({ data: [], isLoading: false }),
@@ -35,7 +21,7 @@ afterEach(() => {
 
 describe("DashboardLatestSuggestion", () => {
   it("renders the slot summary and step preview", () => {
-    renderWithProviders(<DashboardLatestSuggestion slot={slot()} timeZone="UTC" />);
+    renderWithProviders(<DashboardLatestSuggestion slot={slot()} />);
 
     expect(
       screen.getByRole("region", { name: /morning routine/i }),
@@ -46,38 +32,27 @@ describe("DashboardLatestSuggestion", () => {
     expect(screen.getByText(/barrier serum/i)).toBeInTheDocument();
   });
 
-  it("opens the same RecordApplicationSheet when the user taps Mark as applied", async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<DashboardLatestSuggestion slot={slot()} timeZone="UTC" />);
-
-    await user.click(screen.getByRole("button", { name: /mark as applied/i }));
-
-    // The same record sheet from Today's Suggestion identifies itself by this
-    // SheetTitle string. If the dashboard is rendering its own dialog instead
-    // of the shared sheet, this will fail.
-    expect(
-      await screen.findByText(/^Record what you applied$/),
-    ).toBeInTheDocument();
-  });
-
   it("links the Open routine action to /todays-suggestion", () => {
-    renderWithProviders(<DashboardLatestSuggestion slot={slot()} timeZone="UTC" />);
+    renderWithProviders(<DashboardLatestSuggestion slot={slot()} />);
 
     const link = screen.getByRole("link", { name: /open routine/i });
     expect(link).toHaveAttribute("href", "/todays-suggestion");
   });
 
-  it("uses 'Record what I applied' copy when the slot is recordable", () => {
+  it("does not render an inline record-application action", () => {
+    // The dashboard card is preview-only; recording lives on
+    // /todays-suggestion. If a record/applied button creeps back in,
+    // this catches it.
     renderWithProviders(
-      <DashboardLatestSuggestion
-        slot={slot({ status: "recordable" })}
-        timeZone="UTC"
-      />,
+      <DashboardLatestSuggestion slot={slot({ status: "recordable" })} />,
     );
 
     expect(
-      screen.getByRole("button", { name: /record what i applied/i }),
-    ).toBeInTheDocument();
+      screen.queryByRole("button", { name: /mark as applied/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /record what i applied/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("collapses extra steps into a +N more line", () => {
@@ -87,7 +62,6 @@ describe("DashboardLatestSuggestion", () => {
     renderWithProviders(
       <DashboardLatestSuggestion
         slot={slot({ suggestion: suggestionInstance({ steps }) })}
-        timeZone="UTC"
       />,
     );
 
