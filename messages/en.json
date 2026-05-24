@@ -76,6 +76,24 @@
         "a": "Inventory first",
         "b": "Ingredient guardrails",
         "c": "Private by design"
+      },
+      "preview": {
+        "suggestionTitle": "Today's Suggestion",
+        "suggestionTime": "Sunday · 6:30 AM",
+        "ready": "Ready",
+        "morning": "Morning",
+        "weather": "9°C · UV 4 later",
+        "photoLogged": "Photo logged 6:14",
+        "cleanserHint": "Gentle, fragrance-free",
+        "niacinamideHint": "Pairs safely with vitamin C",
+        "sunscreenHint": "UV 4 later, last step",
+        "suggestionNote": "Skipped retinol tonight. Yesterday's photo showed mild redness. Tomorrow's suggestion will reintroduce gently.",
+        "journalTitle": "Skin Journal",
+        "journalSubtitle": "Today · multi-angle",
+        "ai": "AI",
+        "photoLabels": ["Front", "Left", "Right"],
+        "redness": "Redness",
+        "dryness": "Dryness"
       }
     },
     "trust": [
@@ -85,6 +103,7 @@
       "Photo analysis included",
       "Export or delete anytime"
     ],
+    "trustLabel": "What Ritora gives you",
     "problem": {
       "eyebrow": "Why routines break",
       "headline": "Good products, still guessing.",
@@ -118,6 +137,7 @@
       "eyebrow": "How it works",
       "headline": "Three calm steps from shelf clutter to daily clarity.",
       "lead": "Tell Ritora about your skin, map the products you already own, and follow a plan tuned to today. Not last month. Not someone else's.",
+      "stepLabel": "Step {number}",
       "steps": [
         {
           "title": "Tell Ritora about your skin.",
@@ -134,7 +154,107 @@
           "body": "Wake up to clear guidance for morning and evening, tuned to your shelf.",
           "hint": "Morning, midday, and evening, with on-demand help any time"
         }
-      ]
+      ],
+      "visuals": {
+        "skinProfile": {
+          "title": "Your Skin Profile",
+          "step": "Step 4 of 7 · Lifestyle",
+          "chips": [
+            "Combination",
+            "Fitzpatrick IV",
+            "Your city",
+            "Hyperpigmentation",
+            "Sensitivity",
+            "Even tone",
+            "Barrier support"
+          ],
+          "progress": "64% complete"
+        },
+        "shelf": {
+          "title": "Your Shelf",
+          "subtitle": "8 active · 2 finished",
+          "items": [
+            {
+              "badge": "Active",
+              "shape": "pump",
+              "tone": "green",
+              "brand": "CeraVe",
+              "name": "Hydrating Cleanser",
+              "sub": "CeraVe · 2 mo"
+            },
+            {
+              "badge": "Active",
+              "shape": "dropper",
+              "tone": "cream",
+              "brand": "Ordinary",
+              "name": "Niacinamide 10%",
+              "sub": "The Ordinary · 6 wk"
+            },
+            {
+              "badge": "Active",
+              "shape": "tube",
+              "tone": "aqua",
+              "brand": "LRP SPF",
+              "name": "Anthelios SPF 50",
+              "sub": "La Roche-Posay"
+            },
+            {
+              "badge": "Active",
+              "shape": "dropper",
+              "tone": "blush",
+              "brand": "Paula's",
+              "name": "Retinol 0.3%",
+              "sub": "Paula's Choice"
+            },
+            {
+              "badge": "Finished",
+              "badgeTone": "finished",
+              "shape": "dropper",
+              "tone": "amber",
+              "brand": "AHA 7%",
+              "name": "Glycolic Toner",
+              "sub": "Lasted 4 months"
+            },
+            {
+              "badge": "Active",
+              "shape": "jar",
+              "tone": "lavender",
+              "brand": "Avène",
+              "name": "Ceramide Cream",
+              "sub": "Avene · 3 mo"
+            }
+          ]
+        },
+        "dayPlan": {
+          "title": "Today · Sunday",
+          "subtitle": "3 routines tuned to your skin",
+          "status": {
+            "ready": "Ready",
+            "locked": "Locked",
+            "done": "Done"
+          },
+          "slots": [
+            {
+              "daypart": "morning",
+              "time": "Morning",
+              "detail": "8:30 AM · 4 steps · ready",
+              "state": "ready"
+            },
+            {
+              "daypart": "noon",
+              "time": "Midday",
+              "detail": "Unlocks at 1:00 PM · SPF reapply",
+              "state": "locked"
+            },
+            {
+              "daypart": "evening",
+              "time": "Evening",
+              "detail": "Unlocks at 8:00 PM · barrier-first",
+              "state": "locked"
+            }
+          ]
+        }
+      }
     },
     "features": {
       "eyebrow": "What's inside",
@@ -212,7 +332,135 @@
             "Aware of your ethnicity and skin tone from the start"
           ]
         }
-      ]
+      ],
+      "visuals": {
+        "shelf": {
+          "title": "Shelf · CeraVe Hydrating Cleanser",
+          "subtitle": "Started Jan 14 · 4 mo old",
+          "status": "Active",
+          "chips": ["Ceramides", "Hyaluronic acid", "Fragrance-free"],
+          "usedLabel": "Used",
+          "lastedLabel": "Lasted"
+        },
+        "ingredients": {
+          "title": "Evening · ingredient check",
+          "subtitle": "Across 4 products",
+          "cleanserRole": "Cleanser",
+          "cleanserName": "Gentle, fragrance-free",
+          "tonerRole": "Glycolic toner",
+          "tonerName": "AHA 7%",
+          "tonerWarning": "Stacks with retinol below",
+          "treatmentRole": "Treatment",
+          "treatmentName": "Retinol 0.3%",
+          "treatmentWarning": "Pair-up too strong tonight",
+          "alertTitle": "Retinol + AHA flagged",
+          "alertBody": "Layering both tonight is a common cause of redness for sensitive skin.",
+          "swap": "Suggested swap: niacinamide tonight, retinol Wednesday."
+        },
+        "suggestions": {
+          "title": "Today's day plan",
+          "subtitle": "Sunday · adapted to today",
+          "aiTuned": "AI tuned",
+          "question": "\"Just back from the gym, what should I use?\"",
+          "ask": "Ask Ritora",
+          "status": {
+            "ready": "Ready",
+            "locked": "Locked",
+            "done": "Done"
+          },
+          "slots": [
+            {
+              "daypart": "morning",
+              "time": "Morning · 8:30",
+              "detail": "Cleanser · niacinamide · SPF 50",
+              "state": "done"
+            },
+            {
+              "daypart": "noon",
+              "time": "Midday · 1:30",
+              "detail": "SPF reapply · 2 steps",
+              "state": "ready"
+            },
+            {
+              "daypart": "evening",
+              "time": "Evening · 9:00",
+              "detail": "Barrier-first · skip retinol tonight",
+              "state": "locked"
+            }
+          ]
+        },
+        "journal": {
+          "title": "Today's analysis",
+          "subtitle": "3 photos · analysed 6:18 AM",
+          "ai": "AI",
+          "photoLabels": ["Front", "Left", "Right"],
+          "redness": "Redness",
+          "dryness": "Dryness",
+          "irritation": "Irritation",
+          "reactionTitle": "Reaction detected · tonight simplified",
+          "reactionBody": "Retinol paused while your skin recovers. Ritora switched the evening plan to barrier-first."
+        },
+        "quickCheck": {
+          "title": "Quick Check",
+          "subtitle": "Verdict in seconds",
+          "brand": "The Lab Co",
+          "product": "Brightening Serum 10%",
+          "ingredients": "12 ingredients detected",
+          "verdictLabel": "Product verdict",
+          "verdict": "Good with limits",
+          "confidence": "High confidence",
+          "safetyLabel": "Safety",
+          "warning": "Stacks with your evening retinol",
+          "friendly": "Niacinamide friendly",
+          "compare": "Compare with your Shelf"
+        },
+        "smartPicks": {
+          "title": "Smart Picks",
+          "subtitle": "Based on your profile + shelf",
+          "gapTitle": "Daily SPF · gap detected",
+          "gapBody": "You have evening retinol but no broad-spectrum SPF for daily wear.",
+          "save": "Save",
+          "picks": [
+            {
+              "shape": "tube",
+              "tone": "aqua",
+              "brand": "CeraVe",
+              "name": "Hydrating Mineral SPF 30",
+              "tier": "Drugstore",
+              "meta": "Fragrance-free · Zinc oxide"
+            },
+            {
+              "shape": "tube",
+              "tone": "cream",
+              "brand": "LRP UV",
+              "name": "Anthelios UVMune 400 SPF 50+",
+              "tier": "Mid · best match",
+              "tierTone": "mid",
+              "meta": "Sensitive-safe · UV 4 today",
+              "featured": true
+            },
+            {
+              "shape": "pump",
+              "tone": "blush",
+              "brand": "SC UV",
+              "name": "Daily Brightening UV Defense",
+              "tier": "Luxury",
+              "tierTone": "luxe",
+              "meta": "Niacinamide-rich · Antioxidant layer"
+            }
+          ]
+        },
+        "climate": {
+          "title": "Today's context",
+          "subtitle": "Adapted to where you are",
+          "city": "Your city",
+          "temperature": "9°C",
+          "climate": "cool, dry",
+          "uv": "UV 4 later · last frost expected this week",
+          "humidity": "Humidity 48%, barrier support recommended",
+          "note": "Ritora added an extra moisturising step tonight and shifted SPF earlier in your day. The climate engine reviews your context twice a day."
+        }
+      }
     },
     "privacy": {
       "eyebrow": "Private by design",
@@ -400,17 +648,17 @@
     "accountDeletionConfirmTimelineGraceLabel": "30 days",
     "accountDeletionConfirmTimelineGraceBody": "Cancel anytime",
     "accountDeletionConfirmTimelineFinalLabel": "Day 31",
-    "accountDeletionConfirmTimelineFinalBody": "Permanently erased",
+    "accountDeletionConfirmTimelineFinalBody": "Account and community posts erased",
     "accountDeletionConfirmStatusTitle": "Happening right now",
     "accountDeletionConfirmStatusSignedOut": "Signed out everywhere",
     "accountDeletionConfirmStatusSignedOutDesc": "No one can access your account, including you",
     "accountDeletionConfirmStatusDataHeld": "Your data is on hold",
-    "accountDeletionConfirmStatusDataHeldDesc": "Held safely, never used, never shared",
+    "accountDeletionConfirmStatusDataHeldDesc": "Private account data is held safely during the grace period",
     "accountDeletionConfirmStatusEmail": "Cancellation link emailed",
     "accountDeletionConfirmStatusEmailDesc": "Use it any time in the next 30 days",
     "accountDeletionConfirmChangedMindTitle": "Changed your mind?",
     "accountDeletionConfirmChangedMindBody": "Two ways back: sign in again, or tap the cancellation link in the email we just sent.",
-    "accountDeletionConfirmFinalPromise": "After day 30 your profile, photos, shelf, and history are permanently erased. Until then, you're in control.",
+    "accountDeletionConfirmFinalPromise": "After day 30 your profile, photos, shelf, history, and community posts are permanently erased. Until then, you're in control.",
     "accountDeletionErrorReasonsTitle": "Common reasons this happens",
     "accountDeletionErrorReason1": "The link was already used",
     "accountDeletionErrorReason2": "The link expired",
@@ -1304,7 +1552,7 @@
       "downloadDesc": "Profile, health context (decrypted), consent history. Coming soon.",
       "downloadAction": "Download",
       "deleteTitle": "Delete your account",
-      "deleteDesc": "Schedules deletion of your profile, health context, shelf, schedule, and audit log after a 30-day grace period.",
+      "deleteDesc": "Schedules deletion of your profile, health context, shelf, schedule, community posts, and audit log after a 30-day grace period.",
       "deleteAction": "Delete account",
       "deleteUnavailable": "Account deletion is coming soon. For now, contact support.",
       "deleteDialogTitle": "Delete your Ritora account?",
@@ -1313,7 +1561,8 @@
       "deleteDialogWhatHappensTitle": "What gets deleted",
       "deleteDialogWhatHappensItem1": "Your profile, skin photos, and routine history",
       "deleteDialogWhatHappensItem2": "Your shelf, schedule, and saved suggestions",
-      "deleteDialogWhatHappensItem3": "All sessions across every signed-in device",
+      "deleteDialogWhatHappensItem3": "Your community reviews and playbooks are removed from public evidence",
+      "deleteDialogWhatHappensItem4": "All sessions across every signed-in device",
       "deleteDialogGraceTitle": "You have 30 days to change your mind",
       "deleteDialogGraceBody": "We'll hold everything for 30 days. Sign in again or use the link in our email to cancel anytime before then. After day 30, deletion is permanent and cannot be undone.",
       "deletePasswordLabel": "Current password",
@@ -2777,6 +3026,7 @@
     "productPicker": {
       "title": "Pick a product",
       "searchPlaceholder": "Search your shelf",
+      "loadingProducts": "Loading products",
       "empty": "No products match your search.",
       "emptyShelf": "Add products to your Shelf first.",
       "addToShelf": "Add to Shelf",
@@ -4871,5 +5121,597 @@
   "validation": {
     "invalidLeadTime": "Lead time must be between 30 minutes and 12 hours.",
     "invalidQuietHours": "Quiet hours must use a 24-hour format like 22:30."
+  },
+  "community": {
+    "title": "Community",
+    "subtitle": "Products, playbooks, and what to skip, confirmed by people like you.",
+    "topMatches": "See top matches",
+    "tabs": {
+      "forYou": "For you",
+      "peopleLikeMe": "People like me",
+      "playbooks": "Playbooks",
+      "reviews": "Reviews",
+      "submissions": "Mine",
+      "warnings": "Warnings",
+      "sectionsLabel": "Community sections"
+    },
+    "facets": {
+      "matching": "Matching",
+      "privacy": "Privacy",
+      "privacyBody": "We only use the facets above to rank what you see. Your email, location, photos, medical context, and private notes all stay private.",
+      "emptyProfile": "Complete your skin profile for better matching. Once it's done, we can rank playbooks around what actually fits you."
+    },
+    "forYou": {
+      "patternsTitle": "What people with your shelf are doing",
+      "patternsEmptyTitle": "No shelf patterns yet",
+      "patternsEmptyBody": "Add a few products to your shelf, and we'll show what people with similar shelves are doing.",
+      "patterns": {
+        "similarUsers": {
+          "title": "Community evidence is ranked by similarity, not popularity",
+          "body": "{count, plural, one {# published item currently matches your profile facets.} other {# published items currently match your profile facets.}}"
+        },
+        "routineContext": {
+          "title": "Reviews with routine context rank higher",
+          "body": "Ritora requires product reviews to include the surrounding routine before they can influence matching."
+        },
+        "safeFacets": {
+          "title": "Your private profile stays private",
+          "body": "{count, plural, one {# concern tag is used without exposing exact location, email, photos, or medical history.} other {# concern tags are used without exposing exact location, email, photos, or medical history.}}"
+        }
+      }
+    },
+    "lists": {
+      "playbooksTitle": "Goal playbooks",
+      "playbooksEmptyTitle": "No goal playbooks yet",
+      "playbooksEmptyBody": "Goal playbooks show up here after they pass our safety check.",
+      "playbooksFilterEmptyTitle": "No playbooks match those filters",
+      "playbooksFilterEmptyBody": "Try a broader goal, result, or timeframe.",
+      "playbooksTopN": "Top {count}",
+      "playbooksShownTotal": "{shown}/{total} shown",
+      "reviewsTitle": "Reviews from people like you",
+      "reviewsEmptyTitle": "No published reviews yet",
+      "reviewsEmptyBody": "Once people share reviews with the required context, they show up here.",
+      "reviewsTopN": "Top {count}",
+      "reviewsTotal": "{count} total",
+      "peopleEmptyTitle": "No community evidence yet",
+      "peopleEmptyBody": "Once people with skin like yours share playbooks and reviews, you'll see them here."
+    },
+    "cards": {
+      "adapt": "Adapt to my shelf",
+      "reportRoutine": "Report routine",
+      "reportReview": "Report review",
+      "context": "Context:",
+      "moreSteps": "+{count} more"
+    },
+    "share": {
+      "playbookTitle": "Share a playbook",
+      "playbookDescription": "Walk through the goal, the routine, and the result. We safety-check it before it goes live.",
+      "playbookAction": "Share a playbook",
+      "reviewTitle": "Write a review",
+      "reviewDescription": "Add the context someone like you needs before they try this product.",
+      "reviewAction": "Write a review",
+      "submitReview": "Submit review",
+      "sharePlaybook": "Share playbook",
+      "submitting": "Submitting…",
+      "scanning": "Scanning…",
+      "saveEdits": "Save edits",
+      "saving": "Saving…"
+    },
+    "editability": {
+      "heading": "Heads up before you submit",
+      "reviewBody": "Once your review is live, you can only edit the review text — and only if our moderators ask you to. Ratings, the product, usage details, and tags are locked in.",
+      "playbookBody": "Once your playbook is live, you can only edit the title and summary — and only if our moderators ask you to. Steps, products, goals, and tags are locked in."
+    },
+    "confirm": {
+      "reviewTitle": "Submit this review?",
+      "reviewBody": "We'll safety-scan it and run AI moderation before it goes live. After that you can only edit the review text — and only if moderators ask you to.",
+      "playbookTitle": "Share this playbook?",
+      "playbookBody": "We'll safety-scan it and run AI moderation before it goes live. After that you can only edit the title and summary — and only if moderators ask you to.",
+      "keepEditing": "Keep editing"
+    },
+    "filters": {
+      "goal": "Goal",
+      "result": "Result",
+      "timeframe": "Timeframe",
+      "productRole": "Product role",
+      "avoided": "Avoided",
+      "habit": "Habit",
+      "warning": "Warning",
+      "all": "All"
+    },
+    "options": {
+      "disclosure": {
+        "ordinary": "I bought this",
+        "gifted": "Gifted",
+        "sponsored": "Sponsored",
+        "affiliate": "Affiliate",
+        "professional": "Professional",
+        "brand_rep": "Brand rep"
+      },
+      "disclosureDescription": {
+        "ordinary": "Ordinary user · I bought this",
+        "gifted": "Gifted · The product was provided for free",
+        "sponsored": "Sponsored · There is paid brand involvement",
+        "affiliate": "Affiliate · Links or purchases may benefit the author",
+        "professional": "Professional · Shared from a professional context",
+        "brand_rep": "Brand rep · The author represents the brand"
+      },
+      "reviewUsageDuration": {
+        "2-weeks": "2 weeks or less",
+        "4-weeks": "About 4 weeks",
+        "8-weeks": "About 8 weeks",
+        "3-months-plus": "3 months or more"
+      },
+      "reviewFrequency": {
+        "daily": "Daily",
+        "am-pm": "AM and PM",
+        "few-times-week": "A few times a week",
+        "weekly": "Weekly",
+        "as-needed": "As needed"
+      },
+      "reviewRoutineSlot": {
+        "am": "AM routine",
+        "pm": "PM routine",
+        "am-pm": "AM and PM",
+        "either": "Either / varies"
+      },
+      "reviewSkinResponse": {
+        "improved": "Improved",
+        "no_change": "No clear change",
+        "mixed": "Mixed",
+        "worsened": "Worsened"
+      },
+      "reviewRepurchase": {
+        "yes": "Yes",
+        "maybe": "Maybe",
+        "no": "No"
+      },
+      "productCategory": {
+        "cleanser": "Cleanser",
+        "moisturizer": "Moisturizer",
+        "treatment": "Treatment",
+        "serum": "Serum",
+        "sunscreen": "Sunscreen",
+        "exfoliant": "Exfoliant",
+        "toner": "Toner",
+        "mask": "Mask"
+      },
+      "goal": {
+        "acne-control": "Acne control",
+        "dark-marks": "Fewer dark marks",
+        "barrier-repair": "Barrier repair",
+        "less-dryness": "Less dryness",
+        "less-irritation": "Less irritation",
+        "smoother-texture": "Smoother texture",
+        "oil-control": "Oil control"
+      },
+      "goalResult": {
+        "achieved": "Achieved",
+        "mostly_improved": "Mostly improved",
+        "partially_improved": "Partially improved",
+        "maintained": "Maintained",
+        "mixed": "Mixed"
+      },
+      "goalTimeframe": {
+        "2-weeks": "2 weeks or less",
+        "4-weeks": "About 4 weeks",
+        "8-weeks": "About 8 weeks",
+        "3-months": "About 3 months",
+        "3-months-plus": "3+ months",
+        "6-months": "About 6 months",
+        "12-months-plus": "12+ months"
+      },
+      "avoidTag": {
+        "over-exfoliation": "Over-exfoliation",
+        "late-night-sugary-food": "Late-night sugary food",
+        "skipping-sunscreen": "Skipping sunscreen",
+        "sleeping-with-makeup": "Sleeping with makeup",
+        "picking-skin": "Picking skin",
+        "too-many-actives": "Too many actives",
+        "fragrance": "Fragrance"
+      },
+      "habitTag": {
+        "consistent-sleep": "Consistent sleep",
+        "changed-pillowcase": "Changed pillowcase",
+        "gentle-cleansing": "Gentle cleansing",
+        "daily-sunscreen": "Daily sunscreen",
+        "slow-introduction": "Slow product introduction"
+      },
+      "didNotWorkTag": {
+        "daily-acids": "Daily acids",
+        "harsh-cleanser": "Harsh cleanser",
+        "too-many-steps": "Too many steps",
+        "heavy-oils": "Heavy oils",
+        "skipping-moisturizer": "Skipping moisturizer"
+      },
+      "warningTag": {
+        "patch-test-first": "Patch test first",
+        "go-slow-if-sensitive": "Go slow if sensitive",
+        "irritation-possible": "Irritation possible",
+        "needs-sunscreen": "Needs sunscreen",
+        "professional-care-involved": "Professional care involved"
+      },
+      "outcomeSignal": {
+        "worked_for_me_too": "Worked for me too",
+        "worked_with_changes": "Worked with changes",
+        "mixed_result": "Mixed result",
+        "did_not_work": "Different result",
+        "caused_irritation": "Caused irritation",
+        "not_relevant": "Not relevant to me"
+      },
+      "outcomeTrialDuration": {
+        "under-2-weeks": "Less than 2 weeks",
+        "2-weeks": "About 2 weeks",
+        "4-weeks": "About 4 weeks",
+        "8-weeks": "About 8 weeks",
+        "3-months-plus": "3 months or more"
+      },
+      "outcomeFollowedPart": {
+        "products": "Products",
+        "routine-timing": "Routine timing",
+        "avoid-list": "Avoid list",
+        "habits": "Habits",
+        "partial": "Only parts of it"
+      },
+      "outcomeIrritation": {
+        "none": "No irritation",
+        "mild": "Mild irritation",
+        "moderate": "Moderate irritation",
+        "severe": "Severe irritation"
+      }
+    },
+    "forms": {
+      "review": {
+        "srTitle": "Write a review",
+        "submitFailed": "Review could not be submitted.",
+        "productSection": "Product reviewed",
+        "ratingsSection": "How well did it work?",
+        "ratingsDescription": "How the product performed for your skin. Required ratings on a 1–5 scale.",
+        "overallLabel": "Overall rating",
+        "overallHint": "Overall satisfaction.",
+        "overallPlaceholder": "Rate overall",
+        "effectivenessLabel": "Effectiveness",
+        "effectivenessHint": "How much it helped.",
+        "effectivenessPlaceholder": "Rate effectiveness",
+        "irritationLabel": "Irritation",
+        "irritationHint": "1 = none, 5 = severe.",
+        "irritationPlaceholder": "Rate irritation",
+        "skinResponseLabel": "Skin response",
+        "skinResponseHint": "The clearest change you saw.",
+        "skinResponsePlaceholder": "Choose response",
+        "textureLabel": "Texture / finish",
+        "textureHint": "Optional. How it felt and wore.",
+        "valueLabel": "Value",
+        "valueHint": "Optional. Felt worth the price.",
+        "optionalPlaceholder": "Optional",
+        "usageSection": "When and how you used it",
+        "usageDescription": "Same product, different routine — context changes the outcome.",
+        "usageDurationLabel": "Usage duration",
+        "usageDurationHint": "How long until you knew.",
+        "usageDurationPlaceholder": "Choose duration",
+        "frequencyLabel": "Frequency",
+        "frequencyHint": "How often you used it.",
+        "frequencyPlaceholder": "Choose frequency",
+        "routineSlotLabel": "Routine timing",
+        "routineSlotHint": "AM, PM, or both.",
+        "routineSlotPlaceholder": "Choose timing",
+        "repurchaseLabel": "Would repurchase",
+        "repurchaseHint": "Would you buy it again?",
+        "repurchasePlaceholder": "Choose answer",
+        "pairedSection": "What you paired it with",
+        "pairedDescription": "The product you used alongside it. Required so we can rank this as routine evidence.",
+        "pairedBrandHint": "Optional. Brand of the paired product.",
+        "pairedBrandPlaceholder": "e.g. CeraVe",
+        "pairedCategoryHint": "Role this product played in your routine.",
+        "pairedCategoryLabel": "Paired role",
+        "pairedLinkedMessage": "Linked to your shelf product.",
+        "pairedManualHeading": "Tell us what you paired with it",
+        "pairedProductHint": "The main product you layered or paired.",
+        "pairedProductLabel": "Paired product",
+        "pairedProductPlaceholder": "e.g. Hydrating Cleanser",
+        "pairedSelectHint": "Pick from your shelf, or choose Other.",
+        "pairedSelectLabel": "Paired product",
+        "outcomesLabel": "Outcome tags",
+        "outcomesHint": "Comma-separated keywords that make this searchable.",
+        "outcomesPlaceholder": "calmer, less stinging, no change",
+        "bodySection": "In your own words",
+        "bodyDescription": "Optional. Skip diagnoses and 'cured' claims — anything that reads as medical advice goes to moderation.",
+        "bodyHint": "Add nuance that ratings and tags can't show.",
+        "bodyLabel": "Review text",
+        "bodyPlaceholder": "What changed, what didn't, and what would you tell someone with similar skin before they try it?"
+      },
+      "playbook": {
+        "srTitle": "Share what worked",
+        "submitFailed": "Goal playbook could not be submitted.",
+        "goalSection": "Goal and result",
+        "titleLabel": "Title",
+        "titleHint": "A short name for what worked.",
+        "titlePlaceholder": "e.g. What calmed my breakouts",
+        "goalLabel": "Goal",
+        "goalHint": "What this playbook was for.",
+        "goalPlaceholder": "Choose goal",
+        "resultLabel": "Result",
+        "resultHint": "Optional. Pick the closest outcome.",
+        "resultPlaceholder": "Choose result",
+        "timeframeLabel": "Timeframe",
+        "timeframeHint": "How long until you knew it worked.",
+        "timeframePlaceholder": "Choose timeframe",
+        "routineSection": "Products and routine",
+        "routineDescription": "Add each step in order. Pick from your shelf where you can — manual entry is fine when a product isn't on your shelf.",
+        "changedSection": "What changed",
+        "changedDescription": "Optional. Tags make this playbook searchable for people chasing the same goal.",
+        "avoidLabel": "What I avoided",
+        "avoidHint": "Things that helped because you stopped doing them.",
+        "habitLabel": "Habits that helped",
+        "habitHint": "Habits that supported the result.",
+        "didNotWorkLabel": "What did not work before",
+        "didNotWorkHint": "Things you tried that didn't help.",
+        "warningLabel": "Warnings",
+        "warningHint": "Cautions for anyone copying this.",
+        "summaryLabel": "Lifestyle changes",
+        "summaryHint": "Optional. Sleep, food, activity, or anything else that may have helped.",
+        "summaryPlaceholder": "e.g. I stopped eating late and waited at least 3 hours before sleep. Breakouts settled within a few weeks."
+      }
+    },
+    "productPicker": {
+      "otherProduct": "Other (not on my shelf)",
+      "loadingShelf": "Loading shelf…",
+      "pickProduct": "Pick a product",
+      "selectLabel": "Which product are you reviewing?",
+      "selectHint": "Pick from your shelf so people see this in context. Choose Other if it isn't on your shelf yet.",
+      "brandLabel": "Brand",
+      "brandHint": "Brand name shown on the product.",
+      "brandPlaceholder": "e.g. La Roche-Posay",
+      "productLabel": "Product",
+      "productHint": "Exact product name people should recognize.",
+      "productPlaceholder": "e.g. Toleriane Fluid",
+      "categoryLabel": "Category",
+      "categoryHint": "Product role helps compare similar reviews.",
+      "linkedMessage": "This review will be linked to your shelf product.",
+      "manualHeading": "Tell us what you used"
+    },
+    "playbookSteps": {
+      "label": "Products and routine steps",
+      "hint": "Choose from your shelf where possible so evidence can connect back to product decisions.",
+      "otherProduct": "Other (not on my shelf)",
+      "step": "Step {number}",
+      "removeStep": "Remove step {number}",
+      "product": "Product",
+      "loadingShelf": "Loading shelf…",
+      "pickProduct": "Pick a product",
+      "productRole": "Product role",
+      "slot": "When you used it",
+      "frequency": "How often",
+      "linked": "Linked to your shelf product.",
+      "manualHeading": "Tell us what you used",
+      "brand": "Brand",
+      "brandPlaceholder": "e.g. CeraVe",
+      "productName": "Product",
+      "productPlaceholder": "e.g. Hydrating Cleanser",
+      "note": "Step note",
+      "noteHint": "Optional. Amount, order, or anything someone should know before copying this step.",
+      "addStep": "Add another step"
+    },
+    "playbookEvidence": {
+      "avoided": "Avoided",
+      "habits": "Habits",
+      "warnings": "Warnings"
+    },
+    "reviewEvidence": {
+      "overall": "Overall",
+      "effect": "Effect",
+      "irritation": "Irritation",
+      "notRated": "Not rated",
+      "repurchase": "Repurchase: {value}",
+      "unknown": "Unknown"
+    },
+    "outcomeSignals": {
+      "addedToast": "Your outcome was added to the evidence.",
+      "failedToast": "Could not save your outcome.",
+      "confirmed": "{worked}/{total} confirmed",
+      "helper": "Add your outcome without judging the original post.",
+      "chooseOutcomeFirst": "Choose an outcome first.",
+      "addFailed": "Could not add outcome.",
+      "dialogTitle": "Confirm your outcome",
+      "dialogDescription": "This makes the evidence more useful without turning someone else's post into a public score.",
+      "sameGoal": "Same goal?",
+      "sameGoalYes": "Yes, same goal",
+      "sameGoalNo": "No, related but different",
+      "trialDuration": "How long did you try it?",
+      "irritation": "Irritation",
+      "followedParts": "What did you follow?",
+      "choose": "Choose",
+      "chooseDuration": "Choose duration",
+      "chooseIrritation": "Choose irritation level",
+      "adding": "Adding…",
+      "addOutcome": "Add outcome"
+    },
+    "productEvidence": {
+      "loadError": "Community evidence could not load.",
+      "retry": "Retry",
+      "title": "Community evidence",
+      "description": "Structured reviews, playbooks, and confirmations from people with comparable skin facets.",
+      "noConfirmations": "No similar-user confirmations yet",
+      "similarConfirmations": "{count, plural, one {# similar-user confirmation} other {# similar-user confirmations}}",
+      "reviews": "Reviews",
+      "playbooks": "Playbooks",
+      "workedSignals": "Worked for them",
+      "averageEffectiveness": "Avg. effectiveness",
+      "notAvailable": "—",
+      "topGoals": "Top goals",
+      "topAvoids": "What people avoided",
+      "reviewOutcomes": "Review outcomes",
+      "noEvidence": "Nothing yet"
+    },
+    "routineDetail": {
+      "loadErrorTitle": "Routine could not load",
+      "loadErrorBody": "This community routine may be unavailable or under moderation.",
+      "tryAgain": "Try again",
+      "subtitle": "A goal playbook you can compare with people like you and adapt safely.",
+      "backToCommunity": "Community",
+      "report": "Report",
+      "reporting": "Reporting…",
+      "safetyScanned": "Safety scanned. No high-risk flags.",
+      "stepsTitle": "Products and routine pattern",
+      "stepsCount": "{count, plural, one {# step} other {# steps}}",
+      "categoryOnlyStep": "Category-only step",
+      "adaptLabel": "Adapt to my shelf",
+      "adaptTitle": "Translate this routine to what you already own",
+      "adaptBody": "We keep what you already own, swap in safe alternatives from your shelf, drop unsafe steps, and call out honest gaps by category. We never push a specific product on you.",
+      "adapting": "Adapting…",
+      "adaptAgain": "Adapt again",
+      "adaptAction": "Adapt to my shelf",
+      "saving": "Saving…",
+      "saveAdaptation": "Save adaptation",
+      "saveAdaptationHint": "Saving keeps the adapted version on your account. Your routine stays the same unless you pick to replace it.",
+      "adaptError": "Something went wrong adapting this routine. Try again, or report it if the problem keeps happening.",
+      "changeStep": "Step {step} · {label}",
+      "change": {
+        "kept": "Kept from your shelf",
+        "swapped": "Swapped to an equivalent",
+        "removed": "Removed for safety",
+        "gap": "Honest gap"
+      },
+      "changeType": {
+        "kept": "Kept",
+        "swapped": "Swapped",
+        "removed": "Removed",
+        "gap": "Gap"
+      },
+      "summary": {
+        "kept": "Kept from your shelf",
+        "swapped": "Swapped to alternative",
+        "removed": "Removed for safety",
+        "gaps": "Honest gaps"
+      },
+      "safetySeverity": {
+        "high": "High",
+        "note": "Note",
+        "watch": "Watch"
+      }
+    },
+    "trust": {
+      "disclosureTitle": "Disclosure labels",
+      "disclosureSubtitle": "How we label the different ways a user can be tied to a brand.",
+      "warningsTitle": "Active community warnings",
+      "warningsEmptyTitle": "No active warnings",
+      "warningsEmptyBody": "When something turns risky in the community (a reformulation, an unsafe routine, or hidden sponsorship), our moderators post warnings here."
+    },
+    "submissions": {
+      "title": "My community submissions",
+      "emptyTitle": "No community submissions yet",
+      "emptyBody": "Anything you share shows up here with its current moderation status.",
+      "edit": "Edit",
+      "cancelEdit": "Cancel edit",
+      "resubmit": "Resubmit unchanged",
+      "resubmitting": "Resubmitting…",
+      "withdraw": "Withdraw",
+      "withdrawing": "Withdrawing…",
+      "withdrawConfirmTitle": "Withdraw community submission?",
+      "withdrawConfirmBody": "This removes it from community views, matching, and evidence rankings. The moderation audit record is kept internally.",
+      "cancel": "Cancel",
+      "missingSnapshot": "This submission cannot be edited yet. Try refreshing the page.",
+      "status": {
+        "draft": "Draft",
+        "pending_review": "Pending review",
+        "published": "Published",
+        "needs_edit": "Needs edit",
+        "hidden": "Hidden",
+        "rejected": "Rejected"
+      },
+      "type": {
+        "routine": "Playbook",
+        "review": "Review"
+      }
+    },
+    "eligibility": {
+      "dialogTitle": "Community posting is not available yet",
+      "dialogDescription": "Browsing is open for everyone. To share a review or playbook, your account needs to pass the checks below first.",
+      "gateTitle": "What unlocks posting",
+      "gateIntro": "Browsing is on for everyone. To share something, your account needs to pass a few checks, including being at least {days} days old.",
+      "unlockDate": "Posting unlocks on {date}.",
+      "accountAgeNotice": "Your account is {accountAgeDays} days old. Posting unlocks at {minimumAccountAgeDays} days.",
+      "acceptRules": "Accept rules",
+      "accepting": "Accepting…",
+      "whyNotNow": "Why not now?",
+      "close": "Close",
+      "verifyEmail": "Verify email",
+      "completeProfile": "Complete profile",
+      "addShelfProduct": "Add shelf product",
+      "reasonTitles": {
+        "email_unverified": "Email verification required",
+        "skin_profile_required": "Skin profile required",
+        "shelf_product_required": "Shelf product required",
+        "community_guidelines_required": "Community rules required",
+        "account_too_new": "Account age requirement",
+        "recent_moderation_abuse": "Posting temporarily paused"
+      },
+      "items": {
+        "emailLabel": "Verified email",
+        "emailDetail": "Needed before you can post publicly.",
+        "profileLabel": "Completed skin profile",
+        "profileDetail": "Lets us match your skin to people like you.",
+        "shelfLabel": "Shelf product added",
+        "shelfDetail": "So your review or routine can point at a real product.",
+        "guidelinesLabel": "Guidelines accepted",
+        "guidelinesDetail": "Covers disclosure and safety rules.",
+        "ageLabel": "At least {days} days old",
+        "ageDetail": "Your account is {days, plural, one {# day} other {# days}} old.",
+        "abuseLabel": "No recent moderation abuse",
+        "abuseDetail": "Recent serious violations put posting on hold for a bit."
+      }
+    },
+    "toasts": {
+      "reportSubmitted": "Report submitted for moderation.",
+      "reportFailed": "Could not submit report.",
+      "guidelinesAccepted": "Community guidelines accepted.",
+      "guidelinesFailed": "Could not accept guidelines.",
+      "reviewPublished": "Review published.",
+      "reviewModerating": "Review sent to moderation.",
+      "playbookPublished": "Playbook published.",
+      "playbookModerating": "Playbook sent to moderation.",
+      "editsSaved": "Edits saved and sent through safety review.",
+      "editsFailed": "Could not save edits.",
+      "resubmitted": "Submission resubmitted for safety review.",
+      "resubmitFailed": "Could not resubmit this item.",
+      "withdrawn": "Submission withdrawn from community evidence.",
+      "withdrawFailed": "Could not withdraw this item.",
+      "routineAdapted": "Routine adapted to your shelf.",
+      "routineAdaptFailed": "Could not adapt this routine.",
+      "adaptationSaved": "Adaptation saved.",
+      "adaptationSaveFailed": "Could not save adaptation."
+    },
+    "errors": {
+      "couldNotLoadTitle": "Community could not load",
+      "couldNotLoadBody": "Ritora could not fetch community evidence right now.",
+      "tryAgain": "Try again"
+    },
+    "shared": {
+      "required": "Required",
+      "loading": "Loading",
+      "selectPlaceholder": "Select",
+      "matchBadge": "{score}% match",
+      "disclosureHint": "Tell people about any brand relationship.",
+      "disclosureLabel": "Disclosure",
+      "disclosurePlaceholder": "Choose disclosure",
+      "disclosureBadge": {
+        "ordinary": "Ordinary user",
+        "gifted": "Gifted",
+        "sponsored": "Sponsored",
+        "affiliate": "Affiliate",
+        "professional": "Professional",
+        "brand_rep": "Brand rep"
+      },
+      "outcomes": {
+        "helped-overall": "Helped overall",
+        "helped": "Helped",
+        "worsened": "Worsened",
+        "no-change": "No change",
+        "irritation": "Irritation",
+        "barrier-recovery": "Barrier recovery",
+        "repurchased": "Repurchased",
+        "stopped-using": "Stopped using"
+      }
+    }
   }
 }

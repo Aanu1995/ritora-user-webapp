@@ -103,7 +103,7 @@ export function ProductPickerContent({
 
       <div className="flex-1 overflow-y-auto px-3 py-2">
         {isLoading ? (
-          <ul className="space-y-1" aria-label="Loading products">
+          <ul className="space-y-1" aria-label={t('loadingProducts')}>
             {Array.from({ length: 5 }).map((_, i) => (
               <li
                 key={i}

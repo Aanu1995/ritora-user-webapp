@@ -2,18 +2,16 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
-  ArrowRightLeft,
   Bookmark,
   Check,
   Flag,
-  Info,
   ShieldCheck,
   Sparkles,
   Wand2,
-  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/app/page-header";
@@ -28,88 +26,38 @@ import {
   reportCommunityRoutine,
   saveCommunityAdaptation,
 } from "@/services/community.service";
+import { GoalPlaybookEvidence } from "./community-goal-playbook-evidence";
+import {
+  humaniseCommunityTag,
+  labelFromOptions,
+  useCommunityTranslatedOptions,
+} from "./community-i18n-options";
+import { CommunityOutcomeSignals } from "./community-outcome-signals";
+import {
+  changeMeta,
+  resolveChange,
+  SafetyBanner,
+  summaryLabels,
+  type ChangeKind,
+} from "./community-routine-detail-helpers";
 import type { CommunityAdaptation } from "@/types/community";
 import {
   Badge,
   Chip,
+  CommunityAdaptResultSkeleton,
   CommunityDetailSkeleton,
   InlineSpinner,
   MatchBadge,
-  SafetyChip,
 } from "./community-shared";
-
-/* ===========================================================
- * Adapt-to-shelf colour map. The change types are tone-coded
- * consistently — green for kept, indigo for swap, amber for
- * remove, muted for gap — so the diff reads at a glance.
- * ========================================================= */
-
-type ChangeKind = "kept" | "swapped" | "removed" | "gap";
-
-const changeMeta: Record<
-  ChangeKind,
-  {
-    Icon: typeof Check;
-    label: string;
-    accent: string;
-    badge: "accent" | "ai" | "warning" | "muted";
-  }
-> = {
-  kept: {
-    Icon: Check,
-    label: "Kept from your shelf",
-    accent: "border-accent/30 bg-accent-soft",
-    badge: "accent",
-  },
-  swapped: {
-    Icon: ArrowRightLeft,
-    label: "Swapped to an equivalent",
-    accent: "border-ai-border bg-ai-soft",
-    badge: "ai",
-  },
-  removed: {
-    Icon: X,
-    label: "Removed for safety",
-    accent: "border-warning/30 bg-warning-soft",
-    badge: "warning",
-  },
-  gap: {
-    Icon: Info,
-    label: "Honest gap",
-    accent: "border-border-strong bg-surface-muted/60",
-    badge: "muted",
-  },
-};
-
-function resolveChange(value: string): ChangeKind {
-  const normalised = value.toLowerCase();
-  if (normalised.includes("kept") || normalised.includes("match"))
-    return "kept";
-  if (normalised.includes("swap") || normalised.includes("substitut"))
-    return "swapped";
-  if (normalised.includes("remov") || normalised.includes("block"))
-    return "removed";
-  if (normalised.includes("gap") || normalised.includes("missing"))
-    return "gap";
-  return "kept";
-}
-
-const summaryLabels: Record<string, { label: string; kind: ChangeKind }> = {
-  matched: { label: "Kept from your shelf", kind: "kept" },
-  kept: { label: "Kept from your shelf", kind: "kept" },
-  swapped: { label: "Swapped to alternative", kind: "swapped" },
-  substituted: { label: "Swapped to alternative", kind: "swapped" },
-  removed: { label: "Removed for safety", kind: "removed" },
-  blocked: { label: "Removed for safety", kind: "removed" },
-  gaps: { label: "Honest gaps", kind: "gap" },
-  gap: { label: "Honest gaps", kind: "gap" },
-};
 
 export function CommunityRoutineDetailPage({
   routineId,
 }: {
   routineId: string;
 }) {
+  const t = useTranslations("community.routineDetail");
+  const tToast = useTranslations("community.toasts");
+  const options = useCommunityTranslatedOptions();
   const [adaptation, setAdaptation] = useState<CommunityAdaptation | null>(
     null,
   );
@@ -121,20 +69,20 @@ export function CommunityRoutineDetailPage({
     mutationFn: () => adaptCommunityRoutine(routineId),
     onSuccess: (result) => {
       setAdaptation(result);
-      toast.success("Routine adapted to your shelf.");
+      toast.success(tToast("routineAdapted"));
     },
-    onError: () => toast.error("Routine could not be adapted right now."),
+    onError: () => toast.error(tToast("routineAdaptFailed")),
   });
   const save = useMutation({
     mutationFn: (adaptationId: string) =>
       saveCommunityAdaptation(routineId, adaptationId),
-    onSuccess: () => toast.success("Adaptation saved."),
-    onError: () => toast.error("Could not save adaptation."),
+    onSuccess: () => toast.success(tToast("adaptationSaved")),
+    onError: () => toast.error(tToast("adaptationSaveFailed")),
   });
   const report = useMutation({
     mutationFn: () => reportCommunityRoutine(routineId, "unsafe_advice"),
-    onSuccess: () => toast.success("Report submitted for moderation."),
-    onError: () => toast.error("Could not submit report."),
+    onSuccess: () => toast.success(tToast("reportSubmitted")),
+    onError: () => toast.error(tToast("reportFailed")),
   });
 
   if (query.isLoading) {
@@ -144,9 +92,9 @@ export function CommunityRoutineDetailPage({
   if (query.isError || !query.data) {
     return (
       <RetryPanel
-        title="Routine could not load"
-        description="This community routine may be unavailable or under moderation."
-        actionLabel="Try again"
+        title={t("loadErrorTitle")}
+        description={t("loadErrorBody")}
+        actionLabel={t("tryAgain")}
         onAction={() => void query.refetch()}
         hideSupportLink
       />
@@ -157,16 +105,16 @@ export function CommunityRoutineDetailPage({
   const flagged = routine.safetyFlags.length > 0;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 pb-10">
+    <div className="mx-auto max-w-4xl space-y-6 pb-10 motion-safe:animate-in motion-safe:fade-in">
       <PageHeader
         title={routine.title}
-        subtitle="Community routine — adapt it safely to your shelf"
+        subtitle={t("subtitle")}
         action={
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline" size="sm">
               <Link href={AppRoute.Community}>
                 <ArrowLeft className="h-4 w-4" />
-                Community
+                {t("backToCommunity")}
               </Link>
             </Button>
             <Button
@@ -181,7 +129,7 @@ export function CommunityRoutineDetailPage({
               ) : (
                 <Flag className="h-4 w-4" />
               )}
-              {report.isPending ? "Reporting…" : "Report"}
+              {report.isPending ? t("reporting") : t("report")}
             </Button>
           </div>
         }
@@ -203,6 +151,12 @@ export function CommunityRoutineDetailPage({
             {routine.summary}
           </p>
         ) : null}
+        <GoalPlaybookEvidence routine={routine} />
+        <CommunityOutcomeSignals
+          contentId={routine.id}
+          contentType="routine"
+          counts={routine.outcomeSignalCounts}
+        />
 
         {/* Safety strip */}
         <div className="mt-4">
@@ -217,19 +171,19 @@ export function CommunityRoutineDetailPage({
           ) : (
             <div className="inline-flex items-center gap-2 rounded-xl border border-accent/30 bg-accent-soft px-3 py-2 text-sm font-medium text-accent-strong">
               <ShieldCheck className="h-4 w-4" />
-              Safety scanned — no high-risk flags detected.
+              {t("safetyScanned")}
             </div>
           )}
         </div>
       </section>
 
-      {/* Shared routine steps */}
+      {/* Shared playbook steps */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-lg font-bold tracking-tight text-foreground">
-            Shared routine
+            {t("stepsTitle")}
           </h2>
-          <Badge tone="muted">{routine.steps.length} steps</Badge>
+          <Badge tone="muted">{t("stepsCount", { count: routine.steps.length })}</Badge>
         </div>
         <div className="grid gap-2">
           {routine.steps.map((step) => (
@@ -245,10 +199,16 @@ export function CommunityRoutineDetailPage({
                   <span className="text-sm font-semibold text-foreground">
                     {[step.productBrand, step.productName]
                       .filter(Boolean)
-                      .join(" ") || "Category-only step"}
+                      .join(" ") || t("categoryOnlyStep")}
                   </span>
-                  <Badge tone="muted">{step.category}</Badge>
-                  <Badge tone="muted">{step.slot}</Badge>
+                  <Badge tone="muted">
+                    {labelFromOptions(options.productCategories, step.category) ??
+                      humaniseCommunityTag(step.category)}
+                  </Badge>
+                  <Badge tone="muted">
+                    {labelFromOptions(options.reviewRoutineSlots, step.slot) ??
+                      humaniseCommunityTag(step.slot)}
+                  </Badge>
                 </div>
                 {step.notes ? (
                   <p className="mt-2 text-sm leading-5 text-muted">
@@ -265,17 +225,15 @@ export function CommunityRoutineDetailPage({
       <section className="rounded-2xl border border-border bg-surface p-5 shadow-soft">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-ai-border bg-ai-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-ai-fg">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-ai-border bg-ai-soft px-2.5 py-1 text-xs font-semibold text-ai-fg">
               <Sparkles className="h-3 w-3" />
-              Hero · Adapt to my shelf
+              {t("adaptLabel")}
             </div>
             <h2 className="mt-3 font-display text-lg font-bold tracking-tight text-foreground">
-              Translate this routine to what you already own
+              {t("adaptTitle")}
             </h2>
             <p className="mt-1 max-w-xl text-sm leading-6 text-muted">
-              Ritora keeps exact matches, swaps in safe alternatives from your
-              shelf, removes unsafe steps and surfaces honest gaps as
-              categories — never as forced purchases.
+              {t("adaptBody")}
             </p>
           </div>
           <Button
@@ -289,26 +247,15 @@ export function CommunityRoutineDetailPage({
               <Wand2 className="h-4 w-4" />
             )}
             {adapt.isPending
-              ? "Adapting…"
+              ? t("adapting")
               : adaptation
-                ? "Adapt again"
-                : "Adapt to my shelf"}
+                ? t("adaptAgain")
+                : t("adaptAction")}
           </Button>
         </div>
 
         {adapt.isPending && !adaptation ? (
-          <div className="mt-5 grid gap-3">
-            <div className="grid gap-2 sm:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="h-20 animate-pulse rounded-2xl bg-surface-muted"
-                />
-              ))}
-            </div>
-            <div className="h-24 animate-pulse rounded-2xl bg-surface-muted" />
-            <div className="h-24 animate-pulse rounded-2xl bg-surface-muted" />
-          </div>
+          <CommunityAdaptResultSkeleton />
         ) : null}
 
         {adaptation ? (
@@ -318,7 +265,7 @@ export function CommunityRoutineDetailPage({
               {Object.entries(adaptation.summary).map(([key, value]) => {
                 const meta =
                   summaryLabels[key.toLowerCase()] ?? {
-                    label: key,
+                    labelKey: "summary.kept",
                     kind: "kept" as ChangeKind,
                   };
                 const palette = changeMeta[meta.kind];
@@ -333,8 +280,8 @@ export function CommunityRoutineDetailPage({
                     <div className="font-display text-3xl font-bold leading-none text-foreground">
                       {value}
                     </div>
-                    <div className="mt-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
-                      {meta.label}
+                    <div className="mt-2 text-xs font-medium text-muted">
+                      {t(meta.labelKey)}
                     </div>
                   </div>
                 );
@@ -348,7 +295,8 @@ export function CommunityRoutineDetailPage({
                 const palette = changeMeta[kind];
                 const productLabel = change.targetProductName
                   ? `${change.targetProductBrand ?? ""} ${change.targetProductName}`.trim()
-                  : change.category;
+                  : labelFromOptions(options.productCategories, change.category) ??
+                    humaniseCommunityTag(change.category);
                 return (
                   <article
                     key={`${change.stepOrder}-${change.changeType}`}
@@ -375,10 +323,13 @@ export function CommunityRoutineDetailPage({
                           <palette.Icon className="h-4 w-4" />
                         </div>
                         <span className="text-sm font-semibold text-foreground">
-                          Step {change.stepOrder} · {palette.label}
+                          {t("changeStep", {
+                            step: change.stepOrder,
+                            label: t(palette.labelKey),
+                          })}
                         </span>
                       </div>
-                      <Badge tone={palette.badge}>{change.changeType}</Badge>
+                      <Badge tone={palette.badge}>{t(`changeType.${kind}`)}</Badge>
                     </div>
                     <p className="mt-3 text-sm font-medium text-foreground">
                       {productLabel}
@@ -404,11 +355,10 @@ export function CommunityRoutineDetailPage({
                 ) : (
                   <Bookmark className="h-4 w-4" />
                 )}
-                {save.isPending ? "Saving…" : "Save adaptation"}
+                {save.isPending ? t("saving") : t("saveAdaptation")}
               </Button>
               <p className="text-xs leading-5 text-muted">
-                Saving keeps the adapted version on your account. Your routine
-                isn&apos;t replaced unless you choose to do it.
+                {t("saveAdaptationHint")}
               </p>
             </div>
           </div>
@@ -417,37 +367,10 @@ export function CommunityRoutineDetailPage({
             className="mt-4 rounded-xl border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-danger"
             role="alert"
           >
-            Something went wrong adapting this routine. Try again, or report it
-            if the problem keeps happening.
+            {t("adaptError")}
           </p>
         ) : null}
       </section>
-    </div>
-  );
-}
-
-function SafetyBanner({
-  children,
-  severity,
-}: {
-  children: React.ReactNode;
-  severity: "info" | "low" | "medium" | "high";
-}) {
-  const high = severity === "high";
-  return (
-    <div
-      className={cn(
-        "flex items-start gap-2 rounded-xl border px-3 py-2 text-sm leading-5",
-        high
-          ? "border-danger/30 bg-danger-soft text-danger"
-          : "border-warning/30 bg-warning-soft text-warning",
-      )}
-      role="alert"
-    >
-      <SafetyChip severity={severity}>
-        {high ? "High" : severity === "info" ? "Note" : "Watch"}
-      </SafetyChip>
-      <span className="flex-1 text-foreground">{children}</span>
     </div>
   );
 }

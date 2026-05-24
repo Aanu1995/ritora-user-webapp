@@ -1,13 +1,14 @@
+"use client";
+
 import { AlertTriangle, ShieldCheck } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { CommunityHome } from "@/types/community";
-import { disclosureOptions } from "./community-constants";
-import {
-  DisclosureBadge,
-  EmptyState,
-  disclosureLabel,
-} from "./community-shared";
+import { useCommunityTranslatedOptions } from "./community-i18n-options";
+import { DisclosureBadge, EmptyState } from "./community-shared";
 
 export function TrustPanel({ data }: { data: CommunityHome }) {
+  const t = useTranslations("community.trust");
+  const options = useCommunityTranslatedOptions();
   return (
     <div className="space-y-4">
       <section className="rounded-2xl border border-border bg-surface p-5 shadow-soft">
@@ -17,22 +18,22 @@ export function TrustPanel({ data }: { data: CommunityHome }) {
           </div>
           <div>
             <h2 className="font-display text-base font-bold tracking-tight text-foreground">
-              Disclosure labels
+              {t("disclosureTitle")}
             </h2>
             <p className="text-xs leading-5 text-muted">
-              How relationships with brands are labelled across Community.
+              {t("disclosureSubtitle")}
             </p>
           </div>
         </div>
         <ul className="mt-4 grid gap-3 md:grid-cols-2">
-          {disclosureOptions.map((item) => (
+          {options.disclosureDescriptions.map((item) => (
             <li
               key={item.value}
               className="flex items-start gap-3 rounded-xl border border-border bg-surface-muted/50 p-3"
             >
               <DisclosureBadge value={item.value} />
               <p className="flex-1 text-xs leading-5 text-muted">
-                {disclosureLabel(item.value)} · {item.label}
+                {item.label}
               </p>
             </li>
           ))}
@@ -42,13 +43,13 @@ export function TrustPanel({ data }: { data: CommunityHome }) {
       <section className="space-y-3">
         <h2 className="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-foreground">
           <AlertTriangle className="h-5 w-5 text-warning" />
-          Active community warnings
+          {t("warningsTitle")}
         </h2>
         {data.warnings.length === 0 ? (
           <EmptyState
             icon={ShieldCheck}
-            title="No active warnings"
-            body="Moderators publish warnings here when community patterns become risky — reformulations, unsafe routines or undisclosed sponsorship."
+            title={t("warningsEmptyTitle")}
+            body={t("warningsEmptyBody")}
           />
         ) : (
           <div className="grid gap-3">

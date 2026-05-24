@@ -91,6 +91,7 @@ export function AccountDeletionDialog({
     t("deleteDialogWhatHappensItem1"),
     t("deleteDialogWhatHappensItem2"),
     t("deleteDialogWhatHappensItem3"),
+    t("deleteDialogWhatHappensItem4"),
   ];
 
   return (

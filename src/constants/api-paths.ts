@@ -171,18 +171,25 @@ export const ApiPath = {
     `${COMMUNITY_BASE}/routines/${id}/report`,
   CommunityRoutineHelpfulness: (id: string) =>
     `${COMMUNITY_BASE}/routines/${id}/helpfulness`,
+  CommunityRoutineOutcomeSignal: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/outcome-signal`,
   CommunityRoutineAdapt: (id: string) =>
     `${COMMUNITY_BASE}/routines/${id}/adapt-to-shelf`,
   CommunityRoutineSaveAdaptation: (id: string) =>
     `${COMMUNITY_BASE}/routines/${id}/save-adaptation`,
+  CommunityProductEvidence: (id: string) =>
+    `${COMMUNITY_BASE}/products/${id}/evidence`,
   CommunityReviews: `${COMMUNITY_BASE}/reviews`,
   CommunityReviewEdit: (id: string) => `${COMMUNITY_BASE}/reviews/${id}`,
   CommunityReviewReport: (id: string) =>
     `${COMMUNITY_BASE}/reviews/${id}/report`,
   CommunityReviewHelpfulness: (id: string) =>
     `${COMMUNITY_BASE}/reviews/${id}/helpfulness`,
+  CommunityReviewOutcomeSignal: (id: string) =>
+    `${COMMUNITY_BASE}/reviews/${id}/outcome-signal`,
   CommunityWarnings: `${COMMUNITY_BASE}/warnings`,
   CommunityMySubmissions: `${COMMUNITY_BASE}/me/submissions`,
   CommunityResubmitContent: (id: string) =>
     `${COMMUNITY_BASE}/content/${id}/resubmit`,
+  CommunityWithdrawContent: (id: string) => `${COMMUNITY_BASE}/content/${id}`,
 } as const;

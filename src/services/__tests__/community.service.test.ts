@@ -1,10 +1,11 @@
 jest.mock("@/lib/api", () => ({
+  deleteRequest: jest.fn(),
   getRequest: jest.fn(),
   patchRequest: jest.fn(),
   postRequest: jest.fn(),
 }));
 
-import { getRequest, patchRequest, postRequest } from "@/lib/api";
+import { deleteRequest, getRequest, patchRequest, postRequest } from "@/lib/api";
 import {
   acceptCommunityGuidelines,
   adaptCommunityRoutine,
@@ -12,6 +13,7 @@ import {
   createCommunityRoutine,
   getCommunityHome,
   getCommunityPostingEligibility,
+  getCommunityProductEvidence,
   getCommunityRoutine,
   getPeopleLikeMe,
   listCommunityReviews,
@@ -22,8 +24,13 @@ import {
   reportCommunityRoutine,
   resubmitCommunityContent,
   saveCommunityAdaptation,
+  signalCommunityReviewOutcome,
+  signalCommunityRoutineOutcome,
   updateCommunityReview,
   updateCommunityRoutine,
+  voteCommunityReview,
+  voteCommunityRoutine,
+  withdrawCommunityContent,
 } from "@/services/community.service";
 
 afterEach(() => jest.clearAllMocks());
@@ -41,6 +48,7 @@ describe("community.service", () => {
     await listCommunityReviews(controller.signal);
     await listCommunityWarnings(controller.signal);
     await listMyCommunitySubmissions(controller.signal);
+    await getCommunityProductEvidence("product-1", controller.signal);
 
     expect(getRequest).toHaveBeenNthCalledWith(1, "/community/home", {
       signal: controller.signal,
@@ -72,6 +80,11 @@ describe("community.service", () => {
       "/community/me/submissions",
       { signal: controller.signal },
     );
+    expect(getRequest).toHaveBeenNthCalledWith(
+      9,
+      "/community/products/product-1/evidence",
+      { signal: controller.signal },
+    );
   });
 
   it("creates reviews and routines through guarded publish endpoints", async () => {
@@ -84,9 +97,14 @@ describe("community.service", () => {
       disclosureType: "ordinary",
       usageDuration: "4-weeks",
       frequency: "daily",
+      routineSlot: "pm",
+      skinResponse: "improved",
+      overallRating: 5,
+      effectivenessRating: 4,
+      irritationRating: 1,
       outcomes: ["helped"],
       repurchase: "yes",
-      routineContext: [{ category: "cleanser" }],
+      routineContext: [{ category: "cleanser", productName: "Milky Cleanser" }],
       body: "Worked well in a simple routine.",
     });
     await createCommunityRoutine({
@@ -94,8 +112,27 @@ describe("community.service", () => {
       summary: "Gentle routine",
       disclosureType: "ordinary",
       concernTags: ["barrier"],
-      goalTags: ["maintenance"],
-      steps: [{ slot: "am", category: "cleanser", frequency: "daily" }],
+      goalTags: ["barrier-repair"],
+      goalResult: "mostly_improved",
+      timeframe: "6-months",
+      avoidTags: ["over-exfoliation"],
+      habitTags: ["consistent-sleep"],
+      didNotWorkTags: ["daily-acids"],
+      warningTags: ["patch-test-first"],
+      steps: [
+        {
+          slot: "am",
+          productId: "product-1",
+          category: "cleanser",
+          frequency: "daily",
+        },
+        {
+          slot: "pm",
+          productName: "Barrier Cream",
+          category: "moisturizer",
+          frequency: "daily",
+        },
+      ],
     });
     await acceptCommunityGuidelines();
 
@@ -122,6 +159,22 @@ describe("community.service", () => {
     await reportCommunityRoutine("routine-1", "unsafe_advice", "Layering risk");
     await reportCommunityReview("review-1", "spam");
     await adaptCommunityRoutine("routine-1");
+    await voteCommunityRoutine("routine-1", "helpful");
+    await voteCommunityReview("review-1", "not_helpful");
+    await signalCommunityRoutineOutcome("routine-1", {
+      signal: "worked_for_me_too",
+      sameGoal: true,
+      trialDuration: "8-weeks",
+      followedParts: ["products"],
+      irritationLevel: "none",
+    });
+    await signalCommunityReviewOutcome("review-1", {
+      signal: "mixed_result",
+      sameGoal: false,
+      trialDuration: "4-weeks",
+      followedParts: ["products", "routine-timing"],
+      irritationLevel: "mild",
+    });
     await saveCommunityAdaptation("routine-1", "adaptation-1");
     await resubmitCommunityContent("content-1");
     await updateCommunityRoutine("routine-1", {
@@ -146,11 +199,43 @@ describe("community.service", () => {
     );
     expect(postRequest).toHaveBeenNthCalledWith(
       4,
+      "/community/routines/routine-1/helpfulness",
+      { vote: "helpful" },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      5,
+      "/community/reviews/review-1/helpfulness",
+      { vote: "not_helpful" },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      6,
+      "/community/routines/routine-1/outcome-signal",
+      {
+        signal: "worked_for_me_too",
+        sameGoal: true,
+        trialDuration: "8-weeks",
+        followedParts: ["products"],
+        irritationLevel: "none",
+      },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      7,
+      "/community/reviews/review-1/outcome-signal",
+      {
+        signal: "mixed_result",
+        sameGoal: false,
+        trialDuration: "4-weeks",
+        followedParts: ["products", "routine-timing"],
+        irritationLevel: "mild",
+      },
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      8,
       "/community/routines/routine-1/save-adaptation",
       { adaptationId: "adaptation-1" },
     );
     expect(postRequest).toHaveBeenNthCalledWith(
-      5,
+      9,
       "/community/content/content-1/resubmit",
     );
     expect(patchRequest).toHaveBeenNthCalledWith(
@@ -163,5 +248,15 @@ describe("community.service", () => {
       "/community/reviews/review-1",
       { body: "Safer review" },
     );
+  });
+
+  it("withdraws content through the delete endpoint", async () => {
+    (deleteRequest as jest.Mock).mockResolvedValue({ deleted: true });
+
+    await expect(withdrawCommunityContent("content-1")).resolves.toEqual({
+      deleted: true,
+    });
+
+    expect(deleteRequest).toHaveBeenCalledWith("/community/content/content-1");
   });
 });

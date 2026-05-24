@@ -1,12 +1,9 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
-import {
-  AlertTriangle,
-  Check,
-  LockKeyhole,
-  ShieldCheck,
-} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { AlertTriangle, Check, LockKeyhole } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -27,17 +24,52 @@ import type { CommunityPostingEligibility } from "@/types/community";
 import {
   InlineSpinner,
   formatEligibilityDate,
-  formatEligibilityReasonTitle,
 } from "./community-shared";
 import {
   PublishRoutineForm,
   WriteReviewForm,
 } from "./community-publish-forms";
 
-export function PublishPanel({
+export function WriteReviewPanel({
   eligibility,
   onExplainBlocked,
 }: {
+  eligibility: CommunityPostingEligibility;
+  onExplainBlocked: () => void;
+}) {
+  return (
+    <PostingPanel
+      eligibility={eligibility}
+      onExplainBlocked={onExplainBlocked}
+    >
+      <WriteReviewForm />
+    </PostingPanel>
+  );
+}
+
+export function ShareWhatWorkedPanel({
+  eligibility,
+  onExplainBlocked,
+}: {
+  eligibility: CommunityPostingEligibility;
+  onExplainBlocked: () => void;
+}) {
+  return (
+    <PostingPanel
+      eligibility={eligibility}
+      onExplainBlocked={onExplainBlocked}
+    >
+      <PublishRoutineForm />
+    </PostingPanel>
+  );
+}
+
+function PostingPanel({
+  children,
+  eligibility,
+  onExplainBlocked,
+}: {
+  children: ReactNode;
   eligibility: CommunityPostingEligibility;
   onExplainBlocked: () => void;
 }) {
@@ -47,12 +79,7 @@ export function PublishPanel({
         eligibility={eligibility}
         onExplainBlocked={onExplainBlocked}
       />
-      {eligibility.eligible ? (
-        <div className="grid gap-4 lg:grid-cols-2">
-          <WriteReviewForm />
-          <PublishRoutineForm />
-        </div>
-      ) : null}
+      {eligibility.eligible ? children : null}
     </div>
   );
 }
@@ -66,6 +93,9 @@ export function PostingEligibilityDialog({
   onOpenChange: (open: boolean) => void;
   open: boolean;
 }) {
+  const t = useTranslations("community.eligibility");
+  const tReason = useTranslations("community.eligibility.reasonTitles");
+  const tToast = useTranslations("community.toasts");
   const queryClient = useQueryClient();
   const needsGuidelines = eligibility.reasons.some(
     (reason) => reason.code === "community_guidelines_required",
@@ -77,10 +107,10 @@ export function PostingEligibilityDialog({
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.CommunityEligibility],
       });
-      toast.success("Community guidelines accepted.");
+      toast.success(tToast("guidelinesAccepted"));
     },
     onError: (error) =>
-      toast.error(getApiErrorMessage(error) ?? "Could not accept guidelines."),
+      toast.error(getApiErrorMessage(error) ?? tToast("guidelinesFailed")),
   });
   const primaryReason = eligibility.reasons[0];
 
@@ -88,11 +118,8 @@ export function PostingEligibilityDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xl">
         <DialogHeader>
-          <DialogTitle>Community posting is not available yet</DialogTitle>
-          <DialogDescription>
-            You can keep browsing Community, but reviews and routines can only
-            be shared after these launch safety checks pass.
-          </DialogDescription>
+          <DialogTitle>{t("dialogTitle")}</DialogTitle>
+          <DialogDescription>{t("dialogDescription")}</DialogDescription>
         </DialogHeader>
 
         <div className="mt-5 grid gap-2">
@@ -104,11 +131,13 @@ export function PostingEligibilityDialog({
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-foreground">
-                  {formatEligibilityReasonTitle(reason.code)}
+                  {tReason(reason.code)}
                 </p>
                 <p className="mt-1 text-xs leading-5 text-muted">
                   {reason.code === "account_too_new"
-                    ? `Posting unlocks on ${formatEligibilityDate(eligibility.eligibleAt)}.`
+                    ? t("unlockDate", {
+                        date: formatEligibilityDate(eligibility.eligibleAt),
+                      })
                     : reason.message}
                 </p>
               </div>
@@ -119,9 +148,10 @@ export function PostingEligibilityDialog({
         {primaryReason ? (
           <div className="mt-4 rounded-xl border border-warning/30 bg-warning-soft px-3 py-2 text-sm leading-6 text-warning">
             {primaryReason.code === "account_too_new"
-              ? `Your account is ${eligibility.accountAgeDays} day${
-                  eligibility.accountAgeDays === 1 ? "" : "s"
-                } old. Posting opens after ${eligibility.minimumAccountAgeDays} days.`
+              ? t("accountAgeNotice", {
+                  accountAgeDays: eligibility.accountAgeDays,
+                  minimumAccountAgeDays: eligibility.minimumAccountAgeDays,
+                })
               : primaryReason.message}
           </div>
         ) : null}
@@ -129,17 +159,17 @@ export function PostingEligibilityDialog({
         <div className="mt-4 flex flex-wrap gap-2">
           {!eligibility.emailVerified ? (
             <Button asChild size="sm" variant="outline">
-              <Link href={AppRoute.ResendVerification}>Verify email</Link>
+              <Link href={AppRoute.ResendVerification}>{t("verifyEmail")}</Link>
             </Button>
           ) : null}
           {!eligibility.hasCompletedSkinProfile ? (
             <Button asChild size="sm" variant="outline">
-              <Link href={AppRoute.SkinProfile}>Complete profile</Link>
+              <Link href={AppRoute.SkinProfile}>{t("completeProfile")}</Link>
             </Button>
           ) : null}
           {!eligibility.hasShelfProduct ? (
             <Button asChild size="sm" variant="outline">
-              <Link href={AppRoute.Shelf}>Add shelf product</Link>
+              <Link href={AppRoute.Shelf}>{t("addShelfProduct")}</Link>
             </Button>
           ) : null}
         </div>
@@ -151,7 +181,7 @@ export function PostingEligibilityDialog({
             variant="ghost"
             onClick={() => onOpenChange(false)}
           >
-            Close
+            {t("close")}
           </Button>
           {needsGuidelines ? (
             <Button
@@ -165,7 +195,7 @@ export function PostingEligibilityDialog({
               ) : (
                 <Check className="h-4 w-4" />
               )}
-              {accept.isPending ? "Accepting…" : "Accept rules"}
+              {accept.isPending ? t("accepting") : t("acceptRules")}
             </Button>
           ) : null}
         </DialogFooter>
@@ -181,6 +211,9 @@ function EligibilityGate({
   eligibility: CommunityPostingEligibility;
   onExplainBlocked: () => void;
 }) {
+  const t = useTranslations("community.eligibility");
+  const tItems = useTranslations("community.eligibility.items");
+  const tToast = useTranslations("community.toasts");
   const queryClient = useQueryClient();
   const needsGuidelines = eligibility.reasons.some(
     (reason) => reason.code === "community_guidelines_required",
@@ -192,29 +225,15 @@ function EligibilityGate({
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.CommunityEligibility],
       });
-      toast.success("Community guidelines accepted.");
+      toast.success(tToast("guidelinesAccepted"));
     },
     onError: (error) =>
-      toast.error(getApiErrorMessage(error) ?? "Could not accept guidelines."),
+      toast.error(getApiErrorMessage(error) ?? tToast("guidelinesFailed")),
   });
 
   if (eligibility.eligible) {
-    return (
-      <section className="flex items-start gap-3 rounded-2xl border border-accent/30 bg-accent-soft p-4 text-accent-strong">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent text-white">
-          <ShieldCheck className="h-5 w-5" />
-        </div>
-        <div>
-          <div className="font-display text-sm font-bold tracking-tight">
-            Posting is unlocked
-          </div>
-          <p className="mt-1 text-sm leading-6">
-            Your account meets Ritora&apos;s launch posting requirements. Share
-            a review or a routine — Ritora will scan it before publishing.
-          </p>
-        </div>
-      </section>
-    );
+    // No banner — the user can already see the publish forms below.
+    return null;
   }
 
   return (
@@ -223,12 +242,10 @@ function EligibilityGate({
         <div>
           <div className="flex items-center gap-2 font-display text-base font-bold tracking-tight text-foreground">
             <LockKeyhole className="h-5 w-5 text-accent" />
-            Posting unlock requirements
+            {t("gateTitle")}
           </div>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            You can browse Community now. Publishing unlocks after trust checks
-            pass, including a {eligibility.minimumAccountAgeDays}-day account
-            age.
+            {t("gateIntro", { days: eligibility.minimumAccountAgeDays })}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -244,7 +261,7 @@ function EligibilityGate({
               ) : (
                 <Check className="h-4 w-4" />
               )}
-              {accept.isPending ? "Accepting…" : "Accept rules"}
+              {accept.isPending ? t("accepting") : t("acceptRules")}
             </Button>
           ) : null}
           <Button
@@ -254,41 +271,41 @@ function EligibilityGate({
             onClick={onExplainBlocked}
           >
             <AlertTriangle className="h-4 w-4" />
-            Why not now?
+            {t("whyNotNow")}
           </Button>
         </div>
       </div>
       <div className="mt-4 grid gap-2 md:grid-cols-2">
         <EligibilityItem
-          detail="Required before public posting."
-          label="Verified email"
+          detail={tItems("emailDetail")}
+          label={tItems("emailLabel")}
           ok={eligibility.emailVerified}
         />
         <EligibilityItem
-          detail="Needed for privacy-safe matching facets."
-          label="Completed skin profile"
+          detail={tItems("profileDetail")}
+          label={tItems("profileLabel")}
           ok={eligibility.hasCompletedSkinProfile}
         />
         <EligibilityItem
-          detail="Required for product-linked reviews and routines."
-          label="Shelf product added"
+          detail={tItems("shelfDetail")}
+          label={tItems("shelfLabel")}
           ok={eligibility.hasShelfProduct}
         />
         <EligibilityItem
-          detail="Includes disclosure and safety rules."
-          label="Guidelines accepted"
+          detail={tItems("guidelinesDetail")}
+          label={tItems("guidelinesLabel")}
           ok={eligibility.hasAcceptedGuidelines}
         />
         <EligibilityItem
-          detail={`Current account age: ${eligibility.accountAgeDays} day${
-            eligibility.accountAgeDays === 1 ? "" : "s"
-          }.`}
-          label={`${eligibility.minimumAccountAgeDays}-day account age`}
+          detail={tItems("ageDetail", { days: eligibility.accountAgeDays })}
+          label={tItems("ageLabel", {
+            days: eligibility.minimumAccountAgeDays,
+          })}
           ok={eligibility.accountAgeDays >= eligibility.minimumAccountAgeDays}
         />
         <EligibilityItem
-          detail="Severe recent violations temporarily pause posting."
-          label="No recent moderation abuse"
+          detail={tItems("abuseDetail")}
+          label={tItems("abuseLabel")}
           ok={
             !eligibility.reasons.some(
               (reason) => reason.code === "recent_moderation_abuse",
@@ -299,7 +316,9 @@ function EligibilityGate({
       {eligibility.reasons.length > 0 ? (
         <div className="mt-4 rounded-xl border border-warning/30 bg-warning-soft px-3 py-2 text-sm leading-6 text-warning">
           {eligibility.reasons[0]?.code === "account_too_new"
-            ? `Posting unlocks on ${formatEligibilityDate(eligibility.eligibleAt)}.`
+            ? t("unlockDate", {
+                date: formatEligibilityDate(eligibility.eligibleAt),
+              })
             : eligibility.reasons[0]?.message}
         </div>
       ) : null}

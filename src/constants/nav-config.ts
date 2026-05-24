@@ -2,7 +2,6 @@ import type { LucideIcon } from "lucide-react";
 import {
   Bell,
   CalendarClock,
-  ChartLine,
   House,
   ListChecks,
   NotebookPen,
@@ -117,14 +116,16 @@ export const NAV_ITEMS: NavItem[] = [
     group: NavGroup.More,
     status: NavItemStatus.Planned,
   },
-  {
-    route: AppRoute.Insights,
-    icon: ChartLine,
-    labelKey: "insights",
-    descriptionKey: "insightsDescription",
-    group: NavGroup.More,
-    status: NavItemStatus.Planned,
-  },
+  // MVP: Insights remains implemented behind the route for future launch work,
+  // but it should not appear in the main app navigation yet.
+  // {
+  //   route: AppRoute.Insights,
+  //   icon: ChartLine,
+  //   labelKey: "insights",
+  //   descriptionKey: "insightsDescription",
+  //   group: NavGroup.More,
+  //   status: NavItemStatus.Planned,
+  // },
   {
     route: AppRoute.Notifications,
     icon: Bell,

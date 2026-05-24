@@ -1,49 +1,27 @@
 "use client";
-
-import { AlertTriangle, Check, FileCheck2, RefreshCw } from "lucide-react";
+import { AlertTriangle, FileCheck2, RefreshCw, Trash2 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { ConfirmDialog, ConfirmDialogTone } from "@/components/ui/confirm-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { QueryKey } from "@/constants/query-keys";
 import { getApiErrorMessage } from "@/lib/api-error";
 import {
-  executeMutation,
-  readSubmissionErrorMessage,
-} from "@/lib/form-submission";
-import { cn } from "@/lib/utils";
-import {
   listMyCommunitySubmissions,
   resubmitCommunityContent,
-  updateCommunityReview,
-  updateCommunityRoutine,
+  withdrawCommunityContent,
 } from "@/services/community.service";
-import type {
-  CommunityReview,
-  CommunityRoutine,
-  CommunitySubmission,
-} from "@/types/community";
-import {
-  communityEditReviewSubmissionSchema,
-  communityEditRoutineSubmissionSchema,
-  type CommunityEditSubmissionValues,
-} from "./community-form-schemas";
+import type { CommunitySubmission } from "@/types/community";
+import { CommunitySubmissionEditForm } from "./community-submission-edit-form";
 import {
   Badge,
-  CommunityFieldError,
   CommunityListSkeleton,
-  CommunityTextareaField,
   EmptyState,
-  Field,
   InlineSpinner,
 } from "./community-shared";
-
-type EditSubmissionInput = CommunityEditSubmissionValues & {
-  id: string;
-  type: "routine" | "review";
-};
 
 function statusTone(
   status: CommunitySubmission["status"],
@@ -64,34 +42,16 @@ function statusTone(
 }
 
 export function MySubmissions() {
+  const t = useTranslations("community.submissions");
+  const tStatus = useTranslations("community.submissions.status");
+  const tType = useTranslations("community.submissions.type");
+  const tToast = useTranslations("community.toasts");
   const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [withdrawId, setWithdrawId] = useState<string | null>(null);
   const query = useQuery({
     queryKey: [QueryKey.CommunityMySubmissions],
     queryFn: ({ signal }) => listMyCommunitySubmissions(signal),
-  });
-  const edit = useMutation<
-    CommunityRoutine | CommunityReview,
-    Error,
-    EditSubmissionInput
-  >({
-    mutationFn: (input) =>
-      input.type === "routine"
-        ? updateCommunityRoutine(input.id, {
-            title: input.title,
-            summary: input.text,
-          })
-        : updateCommunityReview(input.id, { body: input.text }),
-    onSuccess: () => {
-      setEditingId(null);
-      void queryClient.invalidateQueries({
-        queryKey: [QueryKey.CommunityMySubmissions],
-      });
-      void queryClient.invalidateQueries({ queryKey: [QueryKey.CommunityHome] });
-      toast.success("Edits saved and sent through safety review.");
-    },
-    onError: (error) =>
-      toast.error(getApiErrorMessage(error) ?? "Could not save edits."),
   });
   const resubmit = useMutation({
     mutationFn: (id: string) => resubmitCommunityContent(id),
@@ -100,16 +60,31 @@ export function MySubmissions() {
         queryKey: [QueryKey.CommunityMySubmissions],
       });
       void queryClient.invalidateQueries({ queryKey: [QueryKey.CommunityHome] });
-      toast.success("Submission resubmitted for safety review.");
+      toast.success(tToast("resubmitted"));
     },
     onError: (error) =>
-      toast.error(getApiErrorMessage(error) ?? "Could not resubmit this item."),
+      toast.error(getApiErrorMessage(error) ?? tToast("resubmitFailed")),
   });
-
+  const withdraw = useMutation({
+    mutationFn: (id: string) => withdrawCommunityContent(id),
+    onSuccess: () => {
+      setWithdrawId(null);
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityMySubmissions],
+      });
+      void queryClient.invalidateQueries({ queryKey: [QueryKey.CommunityHome] });
+      toast.success(tToast("withdrawn"));
+    },
+    onError: (error) =>
+      toast.error(getApiErrorMessage(error) ?? tToast("withdrawFailed")),
+  });
   if (query.isLoading) {
     return (
-      <section className="space-y-3">
-        <div className="h-6 w-56 animate-pulse rounded-md bg-surface-muted" />
+      <section
+        aria-busy
+        className="space-y-4 motion-safe:animate-in motion-safe:fade-in"
+      >
+        <Skeleton className="h-6 w-56 rounded-md" />
         <CommunityListSkeleton count={3} />
       </section>
     );
@@ -120,24 +95,30 @@ export function MySubmissions() {
     return (
       <EmptyState
         icon={FileCheck2}
-        title="No community submissions yet"
-        body="Reviews and routines you share will appear here with their moderation status."
+        title={t("emptyTitle")}
+        body={t("emptyBody")}
       />
     );
   }
-
   return (
     <section className="space-y-4">
       <h2 className="font-display text-lg font-bold tracking-tight text-foreground">
-        My community submissions
+        {t("title")}
       </h2>
       <div className="space-y-3">
         {items.map((item) => {
           const isEditing = editingId === item.id;
           const resubmitting =
             resubmit.isPending && resubmit.variables === item.id;
-          const showActions =
+          const canEdit =
+            item.status === "draft" ||
+            item.status === "pending_review" ||
             item.status === "needs_edit" || item.status === "rejected";
+          const canResubmit =
+            item.status === "needs_edit" || item.status === "rejected";
+          const showWithdraw = item.status === "published";
+          const withdrawing =
+            withdraw.isPending && withdraw.variables === item.id;
           return (
             <article
               key={item.id}
@@ -149,9 +130,9 @@ export function MySubmissions() {
                     <h3 className="font-display text-base font-bold tracking-tight text-foreground">
                       {item.title}
                     </h3>
-                    <Badge tone="muted">{item.type}</Badge>
+                    <Badge tone="muted">{tType(item.type)}</Badge>
                     <Badge tone={statusTone(item.status)}>
-                      {item.status.replace(/_/g, " ")}
+                      {tStatus(item.status)}
                     </Badge>
                   </div>
                   {item.safetyFlags.length > 0 ? (
@@ -163,185 +144,82 @@ export function MySubmissions() {
                     </div>
                   ) : null}
                 </div>
-                {showActions ? (
+                {canEdit || canResubmit || showWithdraw ? (
                   <div className="flex flex-wrap gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() =>
-                        setEditingId((current) =>
-                          current === item.id ? null : item.id,
-                        )
-                      }
-                    >
-                      {isEditing ? "Cancel edit" : "Edit"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => resubmit.mutate(item.id)}
-                      disabled={resubmit.isPending}
-                    >
-                      {resubmitting ? (
-                        <InlineSpinner />
-                      ) : (
-                        <RefreshCw className="h-4 w-4" />
-                      )}
-                      {resubmitting ? "Resubmitting…" : "Resubmit unchanged"}
-                    </Button>
+                    {canEdit ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          setEditingId((current) =>
+                            current === item.id ? null : item.id,
+                          )
+                        }
+                      >
+                        {isEditing ? t("cancelEdit") : t("edit")}
+                      </Button>
+                    ) : null}
+                    {canResubmit ? (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => resubmit.mutate(item.id)}
+                          disabled={resubmit.isPending}
+                        >
+                          {resubmitting ? (
+                            <InlineSpinner />
+                          ) : (
+                            <RefreshCw className="h-4 w-4" />
+                          )}
+                          {resubmitting ? t("resubmitting") : t("resubmit")}
+                        </Button>
+                      </>
+                    ) : null}
+                    {showWithdraw ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setWithdrawId(item.id)}
+                        disabled={withdrawing}
+                        className="text-danger hover:border-danger/40 hover:bg-danger-soft hover:text-danger"
+                      >
+                        {withdrawing ? (
+                          <InlineSpinner />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
+                        {withdrawing ? t("withdrawing") : t("withdraw")}
+                      </Button>
+                    ) : null}
                   </div>
                 ) : null}
               </div>
               {isEditing ? (
-                <SubmissionEditForm
+                <CommunitySubmissionEditForm
                   item={item}
-                  isPending={edit.isPending}
                   onCancel={() => setEditingId(null)}
-                  onSave={(values) =>
-                    executeMutation(edit.mutate, {
-                      id: item.id,
-                      text: values.text,
-                      title: values.title,
-                      type: item.type,
-                    })
-                  }
+                  onSaved={() => setEditingId(null)}
                 />
               ) : null}
             </article>
           );
         })}
       </div>
-    </section>
-  );
-}
-
-function SubmissionEditForm({
-  isPending,
-  item,
-  onCancel,
-  onSave,
-}: {
-  isPending: boolean;
-  item: CommunitySubmission;
-  onCancel: () => void;
-  onSave: (
-    values: CommunityEditSubmissionValues,
-  ) => ReturnType<
-    typeof executeMutation<
-      CommunityRoutine | CommunityReview,
-      Error,
-      EditSubmissionInput,
-      unknown
-    >
-  >;
-}) {
-  const form = useForm({
-    defaultValues: {
-      text: item.editableText ?? "",
-      title: item.title,
-    } satisfies CommunityEditSubmissionValues,
-    validators: {
-      onChange:
-        item.type === "routine"
-          ? communityEditRoutineSubmissionSchema
-          : communityEditReviewSubmissionSchema,
-      onSubmit:
-        item.type === "routine"
-          ? communityEditRoutineSubmissionSchema
-          : communityEditReviewSubmissionSchema,
-      onSubmitAsync: async ({ value }) => {
-        const result = await onSave(value);
-        if (result.error !== null) {
-          return {
-            form: getApiErrorMessage(result.error) ?? "Could not save edits.",
-            fields: {},
-          };
-        }
-        return undefined;
-      },
-    },
-    onSubmit: () => undefined,
-  });
-
-  return (
-    <form
-      className="mt-4 grid gap-4 rounded-xl border border-border bg-surface-muted/60 p-4"
-      onSubmit={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        void form.handleSubmit();
-      }}
-      noValidate
-    >
-      {item.type === "routine" ? (
-        <form.Field name="title">
-          {(field) => {
-            const invalid = field.state.meta.errors.length > 0;
-            return (
-              <Field label="Routine title" required>
-                <Input
-                  name={field.name}
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(event) => field.handleChange(event.target.value)}
-                  aria-invalid={invalid}
-                  className={cn(
-                    invalid && "border-danger focus-visible:ring-danger/30",
-                  )}
-                />
-                <CommunityFieldError errors={field.state.meta.errors} />
-              </Field>
-            );
-          }}
-        </form.Field>
-      ) : null}
-      <form.Field name="text">
-        {(field) => (
-          <CommunityTextareaField
-            field={field}
-            label={item.type === "routine" ? "Routine summary" : "Review text"}
-            hint="Remove medical claims, sponsorship ambiguity, unsafe layering and private details before resubmitting."
-            maxLength={item.type === "routine" ? 500 : 1200}
-            placeholder="Edit your submission so it passes the safety scan…"
-          />
-        )}
-      </form.Field>
-
-      <form.Subscribe selector={(state) => state.errorMap.onSubmit}>
-        {(submitError) => {
-          const message = readSubmissionErrorMessage(submitError);
-          return message ? (
-            <p
-              className="rounded-xl border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-danger"
-              role="alert"
-            >
-              {message}
-            </p>
-          ) : null;
+      <ConfirmDialog
+        open={withdrawId !== null}
+        onOpenChange={(open) => {
+          if (!open && !withdraw.isPending) setWithdrawId(null);
         }}
-      </form.Subscribe>
-
-      <div className="flex flex-wrap gap-2">
-        <form.Subscribe
-          selector={(state) => ({
-            canSubmit: state.canSubmit,
-            isSubmitting: state.isSubmitting,
-          })}
-        >
-          {({ canSubmit, isSubmitting }) => {
-            const busy = isSubmitting || isPending;
-            return (
-              <Button size="sm" type="submit" disabled={!canSubmit || busy}>
-                {busy ? <InlineSpinner /> : <Check className="h-4 w-4" />}
-                {busy ? "Saving…" : "Save edits"}
-              </Button>
-            );
-          }}
-        </form.Subscribe>
-        <Button size="sm" type="button" variant="ghost" onClick={onCancel}>
-          Cancel
-        </Button>
-      </div>
-    </form>
+        title={t("withdrawConfirmTitle")}
+        description={t("withdrawConfirmBody")}
+        confirmLabel={t("withdraw")}
+        onConfirm={() => {
+          if (withdrawId) withdraw.mutate(withdrawId);
+        }}
+        tone={ConfirmDialogTone.Danger}
+        isPending={withdraw.isPending}
+      />
+    </section>
   );
 }

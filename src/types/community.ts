@@ -16,6 +16,70 @@ export type CommunityDisclosureType =
 
 export type CommunitySafetySeverity = "info" | "low" | "medium" | "high";
 
+export type CommunityHelpfulnessVote = "helpful" | "not_helpful";
+
+export type CommunityOutcomeSignal =
+  | "worked_for_me_too"
+  | "worked_with_changes"
+  | "mixed_result"
+  | "did_not_work"
+  | "caused_irritation"
+  | "not_relevant";
+
+export type CommunityOutcomeSignalCounts = Record<CommunityOutcomeSignal, number>;
+
+export type CommunityOutcomeTrialDuration =
+  | "under-2-weeks"
+  | "2-weeks"
+  | "4-weeks"
+  | "8-weeks"
+  | "3-months-plus";
+
+export type CommunityOutcomeFollowedPart =
+  | "products"
+  | "routine-timing"
+  | "avoid-list"
+  | "habits"
+  | "partial";
+
+export type CommunityOutcomeIrritationLevel =
+  | "none"
+  | "mild"
+  | "moderate"
+  | "severe";
+
+export type CommunityOutcomeSignalInput = {
+  signal: CommunityOutcomeSignal;
+  sameGoal: boolean;
+  trialDuration: CommunityOutcomeTrialDuration;
+  followedParts: CommunityOutcomeFollowedPart[];
+  irritationLevel: CommunityOutcomeIrritationLevel;
+};
+
+export type CommunityGoalResult =
+  | "achieved"
+  | "mostly_improved"
+  | "partially_improved"
+  | "maintained"
+  | "mixed";
+
+export type CommunityGoalTimeframe =
+  | "2-weeks"
+  | "4-weeks"
+  | "8-weeks"
+  | "3-months"
+  | "3-months-plus"
+  | "6-months"
+  | "12-months-plus";
+
+export type CommunityReviewRoutineSlot = "am" | "pm" | "am-pm" | "either";
+
+export type CommunityReviewSkinResponse =
+  | "improved"
+  | "no_change"
+  | "mixed"
+  | "worsened";
+
 export type CommunitySafeProfileFacets = {
   skinType: string | null;
   concernTags: string[];
@@ -74,10 +138,17 @@ export type CommunityRoutine = {
   moderationStatus: CommunityModerationStatus;
   concernTags: string[];
   goalTags: string[];
+  goalResult: CommunityGoalResult | null;
+  timeframe: CommunityGoalTimeframe | null;
+  avoidTags: string[];
+  habitTags: string[];
+  didNotWorkTags: string[];
+  warningTags: string[];
   safeFacets: CommunitySafeProfileFacets;
   safetyFlags: CommunitySafetyFlag[];
   helpfulCount: number;
   notHelpfulCount: number;
+  outcomeSignalCounts: CommunityOutcomeSignalCounts;
   matchScore: number;
   relevanceReasons: string[];
   steps: CommunityRoutineStep[];
@@ -100,6 +171,13 @@ export type CommunityReview = {
   disclosureType: CommunityDisclosureType;
   usageDuration: string;
   frequency: string;
+  routineSlot: CommunityReviewRoutineSlot | null;
+  skinResponse: CommunityReviewSkinResponse | null;
+  overallRating: number | null;
+  effectivenessRating: number | null;
+  irritationRating: number | null;
+  textureRating: number | null;
+  valueRating: number | null;
   outcomes: string[];
   repurchase: string;
   body: string | null;
@@ -109,6 +187,7 @@ export type CommunityReview = {
   routineContext: CommunityReviewContextProduct[];
   helpfulCount: number;
   notHelpfulCount: number;
+  outcomeSignalCounts: CommunityOutcomeSignalCounts;
   matchScore: number;
   relevanceReasons: string[];
   createdAt: string;
@@ -135,6 +214,29 @@ export type CommunityHome = {
   patterns: Array<{ id: string; title: string; body: string }>;
 };
 
+export type CommunityEvidenceCount = {
+  value: string;
+  count: number;
+};
+
+export type CommunityProductEvidence = {
+  productId: string;
+  productBrand: string;
+  productName: string;
+  reviewCount: number;
+  playbookCount: number;
+  similarAuthorEvidenceCount: number;
+  similarOutcomeConfirmationCount: number;
+  averageOverallRating: number | null;
+  averageEffectivenessRating: number | null;
+  averageIrritationRating: number | null;
+  outcomeSignalCounts: CommunityOutcomeSignalCounts;
+  similarOutcomeSignalCounts: CommunityOutcomeSignalCounts;
+  topGoals: CommunityEvidenceCount[];
+  topAvoids: CommunityEvidenceCount[];
+  topOutcomes: CommunityEvidenceCount[];
+};
+
 export type CommunityList<T> = {
   items: T[];
 };
@@ -145,9 +247,17 @@ export type CreateCommunityRoutineInput = {
   disclosureType: CommunityDisclosureType;
   concernTags: string[];
   goalTags: string[];
+  goalResult?: CommunityGoalResult | null;
+  timeframe: CommunityGoalTimeframe;
+  avoidTags: string[];
+  habitTags: string[];
+  didNotWorkTags: string[];
+  warningTags: string[];
   steps: Array<{
     slot: "am" | "pm" | "either";
     productId?: string | null;
+    productBrand?: string | null;
+    productName?: string | null;
     category: string;
     frequency?: string | null;
     notes?: string | null;
@@ -162,10 +272,71 @@ export type CreateCommunityReviewInput = {
   disclosureType: CommunityDisclosureType;
   usageDuration: string;
   frequency: string;
+  routineSlot: CommunityReviewRoutineSlot;
+  skinResponse: CommunityReviewSkinResponse;
+  overallRating: number;
+  effectivenessRating: number;
+  irritationRating: number;
+  textureRating?: number | null;
+  valueRating?: number | null;
   outcomes: string[];
   repurchase: string;
-  routineContext: Array<{ productId?: string | null; category: string }>;
+  routineContext: Array<{
+    productId?: string | null;
+    productBrand?: string | null;
+    productName?: string | null;
+    category: string;
+  }>;
   body?: string | null;
+};
+
+export type CommunityEditableRoutine = {
+  title: string;
+  summary: string | null;
+  disclosureType: CommunityDisclosureType;
+  concernTags: string[];
+  goalTags: string[];
+  goalResult: CommunityGoalResult | null;
+  timeframe: CommunityGoalTimeframe | null;
+  avoidTags: string[];
+  habitTags: string[];
+  didNotWorkTags: string[];
+  warningTags: string[];
+  steps: Array<{
+    slot: "am" | "pm" | "either";
+    productId: string | null;
+    productBrand: string | null;
+    productName: string | null;
+    category: string;
+    frequency: string | null;
+    notes: string | null;
+  }>;
+};
+
+export type CommunityEditableReview = {
+  productId: string | null;
+  productBrand: string;
+  productName: string;
+  productCategory: string;
+  disclosureType: CommunityDisclosureType;
+  usageDuration: string;
+  frequency: string;
+  routineSlot: CommunityReviewRoutineSlot | null;
+  skinResponse: CommunityReviewSkinResponse | null;
+  overallRating: number | null;
+  effectivenessRating: number | null;
+  irritationRating: number | null;
+  textureRating: number | null;
+  valueRating: number | null;
+  outcomes: string[];
+  repurchase: string;
+  routineContext: Array<{
+    productId: string | null;
+    productBrand: string | null;
+    productName: string | null;
+    category: string;
+  }>;
+  body: string | null;
 };
 
 export type CommunityReportReason =
@@ -207,6 +378,8 @@ export type CommunitySubmission = {
   editableText: string | null;
   status: CommunityModerationStatus;
   disclosureType: CommunityDisclosureType;
+  editableReview?: CommunityEditableReview | null;
+  editableRoutine?: CommunityEditableRoutine | null;
   safetyFlags: CommunitySafetyFlag[];
   authorUserId: string;
   createdAt: string;

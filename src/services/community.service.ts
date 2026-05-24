@@ -1,10 +1,13 @@
 import { ApiPath } from "@/constants/api-paths";
-import { getRequest, patchRequest, postRequest } from "@/lib/api";
+import { deleteRequest, getRequest, patchRequest, postRequest } from "@/lib/api";
 import type {
   CommunityAdaptation,
   CommunityHome,
+  CommunityHelpfulnessVote,
   CommunityList,
+  CommunityOutcomeSignalInput,
   CommunityPostingEligibility,
+  CommunityProductEvidence,
   CommunityReportReason,
   CommunityReview,
   CommunityRoutine,
@@ -44,13 +47,23 @@ export function getCommunityRoutine(id: string, signal?: AbortSignal): Promise<C
   return getRequest<CommunityRoutine>(ApiPath.CommunityRoutine(id), { signal });
 }
 
+export function getCommunityProductEvidence(
+  id: string,
+  signal?: AbortSignal,
+): Promise<CommunityProductEvidence> {
+  return getRequest<CommunityProductEvidence>(
+    ApiPath.CommunityProductEvidence(id),
+    { signal },
+  );
+}
+
 export function createCommunityRoutine(input: CreateCommunityRoutineInput): Promise<CommunityRoutine> {
   return postRequest<CommunityRoutine>(ApiPath.CommunityRoutines, input);
 }
 
 export function updateCommunityRoutine(
   id: string,
-  input: { title?: string; summary?: string | null },
+  input: Partial<CreateCommunityRoutineInput>,
 ): Promise<CommunityRoutine> {
   return patchRequest<CommunityRoutine>(ApiPath.CommunityRoutineEdit(id), input);
 }
@@ -71,6 +84,20 @@ export function reportCommunityRoutine(
   return postRequest(ApiPath.CommunityRoutineReport(id), { reason, note });
 }
 
+export function voteCommunityRoutine(
+  id: string,
+  vote: CommunityHelpfulnessVote,
+): Promise<unknown> {
+  return postRequest(ApiPath.CommunityRoutineHelpfulness(id), { vote });
+}
+
+export function signalCommunityRoutineOutcome(
+  id: string,
+  input: CommunityOutcomeSignalInput,
+): Promise<unknown> {
+  return postRequest(ApiPath.CommunityRoutineOutcomeSignal(id), input);
+}
+
 export function listCommunityReviews(signal?: AbortSignal): Promise<CommunityList<CommunityReview>> {
   return getRequest<CommunityList<CommunityReview>>(ApiPath.CommunityReviews, { signal });
 }
@@ -84,7 +111,7 @@ export function createCommunityReview(input: CreateCommunityReviewInput): Promis
 
 export function updateCommunityReview(
   id: string,
-  input: { body?: string | null },
+  input: Partial<CreateCommunityReviewInput>,
 ): Promise<CommunityReview> {
   return patchRequest<CommunityReview>(ApiPath.CommunityReviewEdit(id), input);
 }
@@ -95,6 +122,20 @@ export function reportCommunityReview(
   note?: string,
 ): Promise<unknown> {
   return postRequest(ApiPath.CommunityReviewReport(id), { reason, note });
+}
+
+export function voteCommunityReview(
+  id: string,
+  vote: CommunityHelpfulnessVote,
+): Promise<unknown> {
+  return postRequest(ApiPath.CommunityReviewHelpfulness(id), { vote });
+}
+
+export function signalCommunityReviewOutcome(
+  id: string,
+  input: CommunityOutcomeSignalInput,
+): Promise<unknown> {
+  return postRequest(ApiPath.CommunityReviewOutcomeSignal(id), input);
 }
 
 export function listCommunityWarnings(signal?: AbortSignal): Promise<CommunityWarning[]> {
@@ -114,4 +155,10 @@ export function resubmitCommunityContent(
   id: string,
 ): Promise<CommunitySubmission> {
   return postRequest<CommunitySubmission>(ApiPath.CommunityResubmitContent(id));
+}
+
+export function withdrawCommunityContent(
+  id: string,
+): Promise<{ deleted: true }> {
+  return deleteRequest<{ deleted: true }>(ApiPath.CommunityWithdrawContent(id));
 }

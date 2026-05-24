@@ -60,8 +60,14 @@ describe("NAV_ITEMS", () => {
     expect(groups.has(NavGroup.Account)).toBe(true);
   });
 
-  it("has exactly 13 navigation items", () => {
-    expect(NAV_ITEMS).toHaveLength(13);
+  it("has exactly 12 MVP navigation items", () => {
+    expect(NAV_ITEMS).toHaveLength(12);
+  });
+
+  it("does not show Insights in MVP navigation", () => {
+    expect(NAV_ITEMS.some((item) => item.route === AppRoute.Insights)).toBe(
+      false,
+    );
   });
 
   it("marks implemented account and journal surfaces as live", () => {
@@ -89,8 +95,8 @@ describe("getNavItemsByGroup", () => {
     expect(getNavItemsByGroup(NavGroup.Main)).toHaveLength(9);
   });
 
-  it("returns 2 items for the More group", () => {
-    expect(getNavItemsByGroup(NavGroup.More)).toHaveLength(2);
+  it("returns 1 item for the More group", () => {
+    expect(getNavItemsByGroup(NavGroup.More)).toHaveLength(1);
   });
 
   it("returns 2 items for the Account group", () => {

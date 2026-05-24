@@ -76,6 +76,24 @@
         "a": "Hylla först",
         "b": "Trygga ingredienser",
         "c": "Privat som standard"
+      },
+      "preview": {
+        "suggestionTitle": "Dagens förslag",
+        "suggestionTime": "Söndag · 06:30",
+        "ready": "Redo",
+        "morning": "Morgon",
+        "weather": "9°C · UV 4 senare",
+        "photoLogged": "Foto loggat 06:14",
+        "cleanserHint": "Mild, parfymfri",
+        "niacinamideHint": "Passar säkert med vitamin C",
+        "sunscreenHint": "UV 4 senare, sista steget",
+        "suggestionNote": "Retinol hoppades över ikväll. Gårdagens foto visade mild rodnad. Morgondagens förslag återintroducerar den försiktigt.",
+        "journalTitle": "Huddagbok",
+        "journalSubtitle": "Idag · flera vinklar",
+        "ai": "AI",
+        "photoLabels": ["Fram", "Vänster", "Höger"],
+        "redness": "Rodnad",
+        "dryness": "Torrhet"
       }
     },
     "trust": [
@@ -85,6 +103,7 @@
       "Fotoanalys ingår",
       "Exportera eller radera när som helst"
     ],
+    "trustLabel": "Vad Ritora ger dig",
     "problem": {
       "eyebrow": "Varför rutiner spricker",
       "headline": "Bra produkter, ändå en gissningslek.",
@@ -118,6 +137,7 @@
       "eyebrow": "Så fungerar det",
       "headline": "Tre lugna steg från hyllkaos till daglig klarhet.",
       "lead": "Berätta om din hud för Ritora, kartlägg produkterna du redan äger och följ en plan anpassad till idag. Inte förra månaden. Inte någon annans.",
+      "stepLabel": "Steg {number}",
       "steps": [
         {
           "title": "Berätta om din hud för Ritora.",
@@ -134,7 +154,107 @@
           "body": "Vakna till tydlig vägledning för morgon och kväll, anpassad efter din hylla.",
           "hint": "Morgon, middags och kväll, med hjälp på begäran när som helst"
         }
-      ]
+      ],
+      "visuals": {
+        "skinProfile": {
+          "title": "Din hudprofil",
+          "step": "Steg 4 av 7 · Livsstil",
+          "chips": [
+            "Kombinerad",
+            "Fitzpatrick IV",
+            "Din stad",
+            "Hyperpigmentering",
+            "Känslighet",
+            "Jämn ton",
+            "Barriärstöd"
+          ],
+          "progress": "64% klart"
+        },
+        "shelf": {
+          "title": "Din hylla",
+          "subtitle": "8 aktiva · 2 slut",
+          "items": [
+            {
+              "badge": "Aktiv",
+              "shape": "pump",
+              "tone": "green",
+              "brand": "CeraVe",
+              "name": "Hydrating Cleanser",
+              "sub": "CeraVe · 2 mån"
+            },
+            {
+              "badge": "Aktiv",
+              "shape": "dropper",
+              "tone": "cream",
+              "brand": "Ordinary",
+              "name": "Niacinamide 10%",
+              "sub": "The Ordinary · 6 v"
+            },
+            {
+              "badge": "Aktiv",
+              "shape": "tube",
+              "tone": "aqua",
+              "brand": "LRP SPF",
+              "name": "Anthelios SPF 50",
+              "sub": "La Roche-Posay"
+            },
+            {
+              "badge": "Aktiv",
+              "shape": "dropper",
+              "tone": "blush",
+              "brand": "Paula's",
+              "name": "Retinol 0.3%",
+              "sub": "Paula's Choice"
+            },
+            {
+              "badge": "Slut",
+              "badgeTone": "finished",
+              "shape": "dropper",
+              "tone": "amber",
+              "brand": "AHA 7%",
+              "name": "Glycolic Toner",
+              "sub": "Räckte 4 månader"
+            },
+            {
+              "badge": "Aktiv",
+              "shape": "jar",
+              "tone": "lavender",
+              "brand": "Avène",
+              "name": "Ceramide Cream",
+              "sub": "Avene · 3 mån"
+            }
+          ]
+        },
+        "dayPlan": {
+          "title": "Idag · söndag",
+          "subtitle": "3 rutiner anpassade till din hud",
+          "status": {
+            "ready": "Redo",
+            "locked": "Låst",
+            "done": "Klar"
+          },
+          "slots": [
+            {
+              "daypart": "morning",
+              "time": "Morgon",
+              "detail": "08:30 · 4 steg · redo",
+              "state": "ready"
+            },
+            {
+              "daypart": "noon",
+              "time": "Middag",
+              "detail": "Låses upp 13:00 · applicera SPF igen",
+              "state": "locked"
+            },
+            {
+              "daypart": "evening",
+              "time": "Kväll",
+              "detail": "Låses upp 20:00 · barriär först",
+              "state": "locked"
+            }
+          ]
+        }
+      }
     },
     "features": {
       "eyebrow": "Vad som ingår",
@@ -212,7 +332,135 @@
             "Medveten om din etnicitet och hudton från start"
           ]
         }
-      ]
+      ],
+      "visuals": {
+        "shelf": {
+          "title": "Hylla · CeraVe Hydrating Cleanser",
+          "subtitle": "Startad 14 jan · 4 mån gammal",
+          "status": "Aktiv",
+          "chips": ["Ceramider", "Hyaluronsyra", "Parfymfri"],
+          "usedLabel": "Använd",
+          "lastedLabel": "Räckte"
+        },
+        "ingredients": {
+          "title": "Kväll · ingredienskontroll",
+          "subtitle": "Över 4 produkter",
+          "cleanserRole": "Rengöring",
+          "cleanserName": "Mild, parfymfri",
+          "tonerRole": "Glykolsyra-toner",
+          "tonerName": "AHA 7%",
+          "tonerWarning": "Staplas med retinol nedan",
+          "treatmentRole": "Behandling",
+          "treatmentName": "Retinol 0.3%",
+          "treatmentWarning": "För stark kombination ikväll",
+          "alertTitle": "Retinol + AHA flaggat",
+          "alertBody": "Att lägga båda på lager ikväll är en vanlig orsak till rodnad för känslig hud.",
+          "swap": "Föreslaget byte: niacinamid ikväll, retinol på onsdag."
+        },
+        "suggestions": {
+          "title": "Dagens plan",
+          "subtitle": "Söndag · anpassad till idag",
+          "aiTuned": "AI-anpassad",
+          "question": "\"Precis tillbaka från gymmet, vad ska jag använda?\"",
+          "ask": "Fråga Ritora",
+          "status": {
+            "ready": "Redo",
+            "locked": "Låst",
+            "done": "Klar"
+          },
+          "slots": [
+            {
+              "daypart": "morning",
+              "time": "Morgon · 08:30",
+              "detail": "Rengöring · niacinamid · SPF 50",
+              "state": "done"
+            },
+            {
+              "daypart": "noon",
+              "time": "Middag · 13:30",
+              "detail": "Applicera SPF igen · 2 steg",
+              "state": "ready"
+            },
+            {
+              "daypart": "evening",
+              "time": "Kväll · 21:00",
+              "detail": "Barriär först · hoppa över retinol ikväll",
+              "state": "locked"
+            }
+          ]
+        },
+        "journal": {
+          "title": "Dagens analys",
+          "subtitle": "3 foton · analyserat 06:18",
+          "ai": "AI",
+          "photoLabels": ["Fram", "Vänster", "Höger"],
+          "redness": "Rodnad",
+          "dryness": "Torrhet",
+          "irritation": "Irritation",
+          "reactionTitle": "Reaktion upptäckt · ikväll förenklad",
+          "reactionBody": "Retinol pausas medan huden återhämtar sig. Ritora bytte kvällsplanen till barriär först."
+        },
+        "quickCheck": {
+          "title": "Snabbkoll",
+          "subtitle": "Omdöme på några sekunder",
+          "brand": "The Lab Co",
+          "product": "Brightening Serum 10%",
+          "ingredients": "12 ingredienser upptäckta",
+          "verdictLabel": "Produktomdöme",
+          "verdict": "Bra med gränser",
+          "confidence": "Hög tillförlitlighet",
+          "safetyLabel": "Säkerhet",
+          "warning": "Staplas med ditt kvällsretinol",
+          "friendly": "Niacinamidvänlig",
+          "compare": "Jämför med din hylla"
+        },
+        "smartPicks": {
+          "title": "Smarta val",
+          "subtitle": "Baserat på din profil + hylla",
+          "gapTitle": "Daglig SPF · lucka upptäckt",
+          "gapBody": "Du har kvällsretinol men inget bredspektrum-SPF för daglig användning.",
+          "save": "Spara",
+          "picks": [
+            {
+              "shape": "tube",
+              "tone": "aqua",
+              "brand": "CeraVe",
+              "name": "Hydrating Mineral SPF 30",
+              "tier": "Apotek",
+              "meta": "Parfymfri · zinkoxid"
+            },
+            {
+              "shape": "tube",
+              "tone": "cream",
+              "brand": "LRP UV",
+              "name": "Anthelios UVMune 400 SPF 50+",
+              "tier": "Mellan · bästa matchning",
+              "tierTone": "mid",
+              "meta": "Känslig-säker · UV 4 idag",
+              "featured": true
+            },
+            {
+              "shape": "pump",
+              "tone": "blush",
+              "brand": "SC UV",
+              "name": "Daily Brightening UV Defense",
+              "tier": "Lyx",
+              "tierTone": "luxe",
+              "meta": "Niacinamidrik · antioxidantlager"
+            }
+          ]
+        },
+        "climate": {
+          "title": "Dagens kontext",
+          "subtitle": "Anpassad till var du är",
+          "city": "Din stad",
+          "temperature": "9°C",
+          "climate": "svalt, torrt",
+          "uv": "UV 4 senare · sista frosten väntas den här veckan",
+          "humidity": "Luftfuktighet 48%, barriärstöd rekommenderas",
+          "note": "Ritora lade till ett extra fuktgivande steg ikväll och flyttade SPF tidigare på dagen. Klimatmotorn granskar din kontext två gånger per dag."
+        }
+      }
     },
     "privacy": {
       "eyebrow": "Privat som standard",
@@ -404,17 +652,17 @@
     "accountDeletionConfirmTimelineGraceLabel": "30 dagar",
     "accountDeletionConfirmTimelineGraceBody": "Avbryt när som helst",
     "accountDeletionConfirmTimelineFinalLabel": "Dag 31",
-    "accountDeletionConfirmTimelineFinalBody": "Permanent raderat",
+    "accountDeletionConfirmTimelineFinalBody": "Konto och gemenskapsinlägg raderade",
     "accountDeletionConfirmStatusTitle": "Händer just nu",
     "accountDeletionConfirmStatusSignedOut": "Utloggad överallt",
     "accountDeletionConfirmStatusSignedOutDesc": "Ingen kan komma åt ditt konto, inte ens du",
     "accountDeletionConfirmStatusDataHeld": "Din data är pausad",
-    "accountDeletionConfirmStatusDataHeldDesc": "Sparas säkert, används aldrig, delas aldrig",
+    "accountDeletionConfirmStatusDataHeldDesc": "Privat kontodata sparas säkert under ångerfristen",
     "accountDeletionConfirmStatusEmail": "Avbryt-länk skickad",
     "accountDeletionConfirmStatusEmailDesc": "Använd den när som helst inom 30 dagar",
     "accountDeletionConfirmChangedMindTitle": "Ångrat dig?",
     "accountDeletionConfirmChangedMindBody": "Två vägar tillbaka: logga in igen, eller tryck på avbryt-länken i mejlet vi just skickat.",
-    "accountDeletionConfirmFinalPromise": "Efter dag 30 raderas din profil, dina bilder, hylla och historik permanent. Innan dess har du kontrollen.",
+    "accountDeletionConfirmFinalPromise": "Efter dag 30 raderas din profil, dina bilder, hylla, historik och gemenskapsinlägg permanent. Innan dess har du kontrollen.",
     "accountDeletionErrorReasonsTitle": "Vanliga orsaker",
     "accountDeletionErrorReason1": "Länken är redan använd",
     "accountDeletionErrorReason2": "Länken har gått ut",
@@ -752,7 +1000,7 @@
       "signOutAllConfirmCancel": "Behåll sessionerna",
       "signOutAllFailed": "Vi kunde inte logga ut alla enheter. Försök igen.",
       "support": {
-        "title": "Support",
+        "title": "Hjälp och support",
         "description": "Skicka feedback eller be Ritora-teamet om hjälp.",
         "contactTitle": "Kontakta support",
         "contactDescription": "Dela en bugg, ett förvirrande resultat, ett produktdatafel eller en kontofråga.",
@@ -1017,7 +1265,7 @@
       "sunscreenFinishHint": "Hur formulan ser ut och känns efter applicering.",
       "budgetTierLabel": "Budget",
       "budgetTierHint": "Ditt vanliga prisspann per produkt.",
-      "allowSmartPicksLabel": "Låt Smart Picks föreslå nya produkter?",
+      "allowSmartPicksLabel": "Låt Smarta val föreslå nya produkter?",
       "allowSmartPicksHint": "Låter Ritora rekommendera produkter utöver dem som redan finns i din hylla.",
       "yes": "Ja",
       "no": "Nej",
@@ -1308,7 +1556,7 @@
       "downloadDesc": "Profil, hälsokontext (dekrypterad), samtyckeshistorik. Kommer snart.",
       "downloadAction": "Ladda ner",
       "deleteTitle": "Radera ditt konto",
-      "deleteDesc": "Schemalägger radering av din profil, hälsokontext, hylla, schema och granskningslogg efter en frist på 30 dagar.",
+      "deleteDesc": "Schemalägger radering av din profil, hälsokontext, hylla, schema, gemenskapsinlägg och granskningslogg efter en frist på 30 dagar.",
       "deleteAction": "Radera konto",
       "deleteUnavailable": "Kontoborttagning kommer snart. Kontakta support tills vidare.",
       "deleteDialogTitle": "Radera ditt Ritora-konto?",
@@ -1317,7 +1565,8 @@
       "deleteDialogWhatHappensTitle": "Detta raderas",
       "deleteDialogWhatHappensItem1": "Din profil, dina hudbilder och rutinhistorik",
       "deleteDialogWhatHappensItem2": "Din hylla, ditt schema och sparade förslag",
-      "deleteDialogWhatHappensItem3": "Alla sessioner på alla inloggade enheter",
+      "deleteDialogWhatHappensItem3": "Dina gemenskapsrecensioner och spelplaner tas bort från offentliga bevis",
+      "deleteDialogWhatHappensItem4": "Alla sessioner på alla inloggade enheter",
       "deleteDialogGraceTitle": "Du har 30 dagar att ångra dig",
       "deleteDialogGraceBody": "Vi sparar allt i 30 dagar. Logga in igen eller använd länken i mejlet för att avbryta innan dess. Efter dag 30 är raderingen permanent och kan inte ångras.",
       "deletePasswordLabel": "Nuvarande lösenord",
@@ -1412,7 +1661,7 @@
       "sunscreenFilterRequired": "Välj ett solskyddsfilter.",
       "sunscreenFinishRequired": "Välj en solskyddsfinish.",
       "budgetTierRequired": "Välj en budget.",
-      "allowSmartPicksRequired": "Välj ja eller nej för Smart Picks.",
+      "allowSmartPicksRequired": "Välj ja eller nej för Smarta val.",
       "waterHardnessRequired": "Välj ett alternativ för vattnets hårdhet.",
       "waterSensitivityRequired": "Välj ett alternativ för vattenkänslighet.",
       "waterNotesTooLong": "Håll vattenanteckningen under 180 tecken."
@@ -1529,7 +1778,7 @@
       "mineral": "Mineral",
       "hybrid": "Hybrid",
       "matte": "Matt",
-      "dewy": "Dewy",
+      "dewy": "Daggig",
       "tinted": "Tonad",
       "natural": "Naturlig",
       "ingredient": "Ingrediens",
@@ -1592,9 +1841,9 @@
       "cream": "Kräm",
       "oil_free": "Oljefri",
       "vegan": "Vegansk",
-      "cruelty_free": "Cruelty-free",
+      "cruelty_free": "Ej testad på djur",
       "fragrance_free": "Doftfri",
-      "clean": "Clean",
+      "clean": "Clean beauty",
       "none": "Ingen",
       "irregular": "Oregelbunden",
       "not_applicable": "Inte tillämpligt",
@@ -1642,7 +1891,7 @@
       "serum": "Serum",
       "moisturizer": "Fuktkräm",
       "sun-protection": "Solskydd",
-      "mask": "Mask",
+      "mask": "Ansiktsmask",
       "exfoliant": "Peeling",
       "eye-care": "Ögonvård",
       "lip-care": "Läppvård",
@@ -1662,7 +1911,7 @@
     },
     "lookupWarning": {
       "review-required": "Granska innan du sparar",
-      "community-data": "Källan är community-baserad",
+      "community-data": "Källan är gemenskapsbaserad",
       "ai-normalized": "Vissa fält normaliserades från verifierbart sidinnehåll",
       "partial-data": "Bara delar av produktinformationen hittades",
       "ingredients-unverified": "Verifiera ingredienserna mot förpackningen",
@@ -1963,7 +2212,7 @@
         "brand": "Märke",
         "parent": "Moderbolag",
         "madeIn": "Tillverkad i",
-        "support": "Support",
+        "support": "Kundsupport",
         "productLink": "Öppna produktsidan på {domain}",
         "empty": "Inga tillverkaruppgifter än.",
         "source": "Data från {source}, bekräftad av dig {date}."
@@ -2156,7 +2405,7 @@
   },
   "sidebar": {
     "toggleSidebar": "Växla sidofält",
-    "navigation": "Navigation",
+    "navigation": "Navigering",
     "groups": {
       "main": "Huvud",
       "more": "Mer",
@@ -2173,7 +2422,7 @@
       "schedule": "Rutin",
       "skinJournal": "Huddagbok",
       "smartPicks": "Smarta val",
-      "community": "Community",
+      "community": "Gemenskap",
       "history": "Historik",
       "insights": "Insikter",
       "notifications": "Aviseringar",
@@ -2188,7 +2437,7 @@
       "scheduleDescription": "Sätt upp dina dagliga hudvårdsrutiner och när de körs.",
       "skinJournalDescription": "Spåra hudframsteg, ladda upp foton och logga reaktioner.",
       "smartPicksDescription": "AI-driven gapanalys och produktförslag.",
-      "communityDescription": "Lär av liknande användare och anpassa communityrutiner till din hylla.",
+      "communityDescription": "Lär av liknande användare och anpassa gemenskapsrutiner till din hylla.",
       "historyDescription": "Tidigare förslag, applicerade produkter och användningstidslinje.",
       "insightsDescription": "Utgiftsanalys, ingrediensrapporter och konsistenspoäng.",
       "notificationsDescription": "Rutinpåminnelser, utgångsdatumsvarningar och incheckningsprompts.",
@@ -2312,7 +2561,7 @@
         "use_as_planned": "Ser lämplig ut att använda om den passar din rutin.",
         "review_and_patch_test": "Granska ingredienserna och lapptesta före användning.",
         "review_ingredients": "Kontrollera ingredienslistan innan du bestämmer dig.",
-        "review_smart_picks": "Jämför med Smart Picks innan du köper.",
+        "review_smart_picks": "Jämför med Smarta val innan du köper.",
         "complete_profile": "Lägg till din hudkontext innan du litar på detta för reaktionsrisk.",
         "skip_product": "Hoppa över produkten tills vidare."
       },
@@ -2325,7 +2574,7 @@
         "product_reaction_signal": "En liknande produkt har reaktionssignaler nära loggad användning.",
         "missing_personal_context": "Ritora har inte tillräckligt med personlig kontext för att bedöma din reaktionsrisk.",
         "missing_reaction_context": "Ingen reaktionshistorik är tillgänglig, så detta kan inte utesluta en personlig trigger.",
-        "recent_journal_reaction": "Nya Skin Journal-poster innehåller reaktionssignaler.",
+        "recent_journal_reaction": "Nya huddagboksposter innehåller reaktionssignaler.",
         "suggestion_history_reaction": "Tidigare förslag förenklades eftersom reaktionsrisk upptäcktes.",
         "low_confidence": "Analysen har låg tillförlitlighet.",
         "review_required": "Den extraherade ingredienslistan behöver granskas.",
@@ -2350,8 +2599,8 @@
       "routineHeading": "Pengasparande kontext",
       "routineBody": "Ritora jämförde produkten med aktiva hyllprodukter för att fånga dupliceringar innan du köper.",
       "smartPicksTitle": "Jämför innan köp",
-      "smartPicksBody": "Smart Picks kan hjälpa dig hitta alternativ som passar din rutin och budget.",
-      "smartPicksCta": "Öppna Smart Picks",
+      "smartPicksBody": "Smarta val kan hjälpa dig hitta alternativ som passar din rutin och budget.",
+      "smartPicksCta": "Öppna Smarta val",
       "alternativeCategory": "För: {category}",
       "alternativeSellers": "Finns hos: {sellers}",
       "context": {
@@ -2363,7 +2612,7 @@
           "skin_profile": "Hudprofil",
           "reaction_history": "Reaktionshistorik",
           "active_shelf": "Aktiv hylla",
-          "skin_journal": "Skin Journal",
+          "skin_journal": "Huddagbok",
           "suggestion_history": "Förslagshistorik"
         }
       }
@@ -2379,12 +2628,12 @@
     "categories": {
       "cleanser": "Rengöring",
       "toner": "Toner",
-      "essence": "Essence",
+      "essence": "Essens",
       "serum": "Serum",
       "moisturizer": "Fuktkräm",
       "sun-protection": "Solskydd",
-      "mask": "Mask",
-      "exfoliant": "Exfoliant",
+      "mask": "Ansiktsmask",
+      "exfoliant": "Peeling",
       "eye-care": "Ögonvård",
       "lip-care": "Läppvård",
       "treatment": "Behandling",
@@ -2784,6 +3033,7 @@
     "productPicker": {
       "title": "Välj en produkt",
       "searchPlaceholder": "Sök på din hylla",
+      "loadingProducts": "Laddar produkter",
       "empty": "Inga produkter matchar din sökning.",
       "emptyShelf": "Lägg till produkter i din Hylla först.",
       "addToShelf": "Lägg till i Hylla",
@@ -3270,7 +3520,7 @@
         "body": "Centrera ansiktet och ta bort bakgrund innan uppladdning. Ritora sparar den beskurna kvadratiska versionen.",
         "previewAlt": "Förhandsvisning av beskärning",
         "dragLabel": "Dra fotot för att justera beskärningen",
-        "zoom": "Zoom",
+        "zoom": "Zooma",
         "moveX": "Flytta åt vänster eller höger",
         "moveY": "Flytta upp eller ner",
         "reset": "Återställ",
@@ -3383,7 +3633,7 @@
     "insightsTab": {
       "subtitle": "Förslag i vanligt språk från dina foton, avstämningar och betrodda hudkällor.",
       "kinds": {
-        "onboarding_progress": "Progress",
+        "onboarding_progress": "Framsteg",
         "trend": "Trend",
         "correlation": "Korrelation",
         "effectiveness": "Effektivitet",
@@ -3448,11 +3698,11 @@
       "categories": {
         "cleanser": "rengöring",
         "toner": "toner",
-        "essence": "essence",
+        "essence": "essens",
         "serum": "serum",
         "moisturizer": "fuktkräm",
         "sun-protection": "solskydd",
-        "mask": "mask",
+        "mask": "ansiktsmask",
         "exfoliant": "exfoliering",
         "eye-care": "ögonvård",
         "lip-care": "läppvård",
@@ -3823,7 +4073,7 @@
     "channels": "Kanaler",
     "channelInApp": "I appen",
     "channelEmail": "E-post",
-    "channelPush": "Push",
+    "channelPush": "Pushnotiser",
     "channelToggleLabel": "{channel} för {notification}",
     "noChannelsWarning": "Levereras inte förrän du väljer en kanal",
     "browserPushTitle": "Webbläsarpush",
@@ -3889,9 +4139,9 @@
     "todaysSuggestionBody": "Tre påminnelser som håller din rutin på rätt spår.",
     "suggestionReadyTitle": "Förslag redo",
     "suggestionReadyBody": "När ett förslag blir synligt, din ledtid före schemalagd tid.",
-    "smartPicksTitle": "Smart Picks",
+    "smartPicksTitle": "Smarta val",
     "smartPicksBody": "Uppdateringar från din hylluckanalys.",
-    "smartPickReadyTitle": "Smart Picks redo",
+    "smartPickReadyTitle": "Smarta val är redo",
     "smartPickReadyBody": "Valfri avisering när din hylla ändras och en ny produktlucka finns.",
     "slotStartTitle": "Rutintid",
     "slotStartBody": "Vid schemalagd tid, så att du kommer ihåg att applicera din rutin.",
@@ -3932,7 +4182,7 @@
     "loadingMore": "Laddar fler",
     "sourceSkinJournal": "Hudjournal",
     "sourceTodaysSuggestion": "Dagens förslag",
-    "sourceSmartPicks": "Smart Picks",
+    "sourceSmartPicks": "Smarta val",
     "sourceShelf": "Hylla",
     "fallbackProductName": "En produkt",
     "unknownDate": "ett okänt datum",
@@ -3997,14 +4247,14 @@
         "body": "{productName} gick ut den {expiresDate}."
       },
       "smart_pick_ready": {
-        "title": "Nytt Smart Pick finns",
+        "title": "Nytt smart val finns",
         "body": "Din hylla har ändrats. Granska den senaste luckan innan du köper något nytt."
       }
     }
   },
   "smartPicks": {
     "page": {
-      "title": "Smart Picks",
+      "title": "Smarta val",
       "subtitle": "Vad du ska köpa, hoppa över eller byta ut.",
       "refreshing": "Uppdaterar val",
       "footer": {
@@ -4018,13 +4268,13 @@
         "consistency": "Ritora blir mer användbar när dina loggar och foton är jämna. När underlaget är tunt säger den det hellre än att gissa."
       },
       "mode": {
-        "label": "Smart Picks-läge",
+        "label": "Läge för Smarta val",
         "refine": "Förfina min hylla",
         "starter": "Startkit"
       },
       "actions": {
         "wishlist": "Önskelista",
-        "back": "Tillbaka till Smart Picks",
+        "back": "Tillbaka till Smarta val",
         "save": "Spara",
         "saving": "Sparar",
         "saved": "Sparad",
@@ -4042,7 +4292,7 @@
         "removeFailed": "Det gick inte att ta bort. Försök igen."
       },
       "error": {
-        "title": "Vi kunde inte ladda Smart Picks",
+        "title": "Vi kunde inte ladda Smarta val",
         "body": "Försök igen. Din hylla och profildata är oförändrade.",
         "retry": "Försök igen"
       },
@@ -4167,16 +4417,16 @@
       },
       "empty": {
         "profileRequired": {
-          "title": "Smart Picks behöver din hudprofil först",
-          "body": "Några profildetaljer saknas fortfarande. Fyll i dem först så att Smart Picks kan vara specifikt för din hud, din budget och det du vill förändra."
+          "title": "Smarta val behöver din hudprofil först",
+          "body": "Några profildetaljer saknas fortfarande. Fyll i dem först så att Smarta val kan vara specifikt för din hud, din budget och det du vill förändra."
         },
         "consentRequired": {
-          "title": "Smart Picks är av",
+          "title": "Smarta val är av",
           "body": "Produktval är avstängda i sekretessinställningarna. Ritora använder inte din hylla, profil, rutinhistorik eller fototrender för köpförslag om du inte slår på detta igen."
         },
         "allGapsDismissed": {
           "title": "Inget nytt idag",
-          "body": "Du valde bort de nuvarande förslagen, så vi håller dem undan ett tag. Smart Picks kontrollerar igen när din hylla ändras eller pausen tar slut."
+          "body": "Du valde bort de nuvarande förslagen, så vi håller dem undan ett tag. Smarta val kontrollerar igen när din hylla ändras eller pausen tar slut."
         },
         "redundancyOnly": {
           "title": "Inga nya produkter att köpa",
@@ -4192,14 +4442,14 @@
         },
         "fullyCovered": {
           "title": "Inget användbart att lägga till",
-          "body": "Din grundrutin är täckt och vi ser ingen tydlig anledning att köpa något mer just nu. Fortsätt använda det du har så kontrollerar Smart Picks igen när din hylla, dina loggar och dina bilder ändras."
+          "body": "Din grundrutin är täckt och vi ser ingen tydlig anledning att köpa något mer just nu. Fortsätt använda det du har så kontrollerar Smarta val igen när din hylla, dina loggar och dina bilder ändras."
         },
         "fullyCoveredStarter": {
           "title": "Lägg till en produkt för att börja",
-          "body": "Smart Picks behöver minst en hyllprodukt innan det kan jämföra det du äger med det som saknas. Lägg till din första produkt så håller vi startrutinen liten."
+          "body": "Smarta val behöver minst en hyllprodukt innan det kan jämföra det du äger med det som saknas. Lägg till din första produkt så håller vi startrutinen liten."
         },
         "profileCta": "Starta hudprofil",
-        "consentCta": "Slå på Smart Picks igen",
+        "consentCta": "Slå på Smarta val igen",
         "starterCta": "Öppna hyllan",
         "fullyCoveredCta": "Öppna Dagens förslag",
         "todayCta": "Öppna Dagens förslag",
@@ -4240,18 +4490,18 @@
           "water_hardness": "Vattenhårdhet",
           "water_sensitivity": "Vattenkänslighet",
           "budget_tier": "Budget",
-          "smart_picks_consent": "Smart Picks-val",
+          "smart_picks_consent": "Val för Smarta val",
           "more": "{count, plural, one {+1 till} other {+# till}}"
         }
       },
       "wishlist": {
-        "title": "Smart Picks-önskelista",
+        "title": "Önskelista för Smarta val",
         "subtitle": "Val du sparat för att titta på igen innan du köper.",
-        "emptyTitle": "Inga sparade Smart Picks än",
-        "emptyBody": "Tryck på hjärtat på en Smart Pick-rekommendation för att spara den här. Du kan granska sparade produkter innan du jämför säljare.",
-        "emptyCta": "Bläddra i Smart Picks",
+        "emptyTitle": "Inga sparade Smarta val än",
+        "emptyBody": "Tryck på hjärtat på en rekommendation från Smarta val för att spara den här. Du kan granska sparade produkter innan du jämför säljare.",
+        "emptyCta": "Bläddra i Smarta val",
         "savedForGoal": "Sparad för ditt mål: {goal}.",
-        "savedFallback": "Sparad från en nyligen Smart Pick.",
+        "savedFallback": "Sparad från ett nyligt smart val.",
         "savedOn": "Sparad {date}",
         "savedBadge": "Sparad"
       }
@@ -4878,5 +5128,597 @@
   "validation": {
     "invalidLeadTime": "Ledtid måste vara mellan 30 minuter och 12 timmar.",
     "invalidQuietHours": "Tysta timmar måste använda 24-timmarsformat som 22:30."
+  },
+  "community": {
+    "title": "Gemenskap",
+    "subtitle": "Produkter, spelplaner och vad du bör hoppa över, bekräftat av personer som dig.",
+    "topMatches": "Visa bästa matchningar",
+    "tabs": {
+      "forYou": "För dig",
+      "peopleLikeMe": "Personer som jag",
+      "playbooks": "Spelplaner",
+      "reviews": "Recensioner",
+      "submissions": "Mina",
+      "warnings": "Varningar",
+      "sectionsLabel": "Gemenskapssektioner"
+    },
+    "facets": {
+      "matching": "Matchar",
+      "privacy": "Sekretess",
+      "privacyBody": "Vi använder bara faseterna ovan för att rangordna det du ser. Din e-post, plats, foton, medicinska sammanhang och privata anteckningar förblir privata.",
+      "emptyProfile": "Slutför din hudprofil för bättre matchning. När den är klar kan vi rangordna rutiner kring det som faktiskt passar dig."
+    },
+    "forYou": {
+      "patternsTitle": "Vad personer med din hylla gör",
+      "patternsEmptyTitle": "Inga hyllmönster ännu",
+      "patternsEmptyBody": "Lägg till några produkter i din hylla, så visar vi vad personer med liknande hyllor gör.",
+      "patterns": {
+        "similarUsers": {
+          "title": "Gemenskapsbevis rangordnas efter likhet, inte popularitet",
+          "body": "{count, plural, one {# publicerat inlägg matchar dina profilaspekter just nu.} other {# publicerade inlägg matchar dina profilaspekter just nu.}}"
+        },
+        "routineContext": {
+          "title": "Recensioner med rutinsammanhang rankas högre",
+          "body": "Ritora kräver att produktrecensioner innehåller den omgivande rutinen innan de kan påverka matchningen."
+        },
+        "safeFacets": {
+          "title": "Din privata profil förblir privat",
+          "body": "{count, plural, one {# hudbekymmer används utan att exponera exakt plats, e-post, foton eller medicinsk historik.} other {# hudbekymmer används utan att exponera exakt plats, e-post, foton eller medicinsk historik.}}"
+        }
+      }
+    },
+    "lists": {
+      "playbooksTitle": "Målspelplaner",
+      "playbooksEmptyTitle": "Inga målspelplaner ännu",
+      "playbooksEmptyBody": "Målspelplaner visas här efter att de godkänts av vår säkerhetskontroll.",
+      "playbooksFilterEmptyTitle": "Inga spelplaner matchar de filtren",
+      "playbooksFilterEmptyBody": "Pröva ett bredare mål, resultat eller tidsram.",
+      "playbooksTopN": "Topp {count}",
+      "playbooksShownTotal": "{shown}/{total} visade",
+      "reviewsTitle": "Recensioner från personer som dig",
+      "reviewsEmptyTitle": "Inga publicerade recensioner ännu",
+      "reviewsEmptyBody": "När personer delar recensioner med det krävda sammanhanget visas de här.",
+      "reviewsTopN": "Topp {count}",
+      "reviewsTotal": "{count} totalt",
+      "peopleEmptyTitle": "Inga gemenskapsbevis ännu",
+      "peopleEmptyBody": "När personer med hud som din delar spelplaner och recensioner ser du dem här."
+    },
+    "cards": {
+      "adapt": "Anpassa till min hylla",
+      "reportRoutine": "Rapportera rutin",
+      "reportReview": "Rapportera recension",
+      "context": "Sammanhang:",
+      "moreSteps": "+{count} fler"
+    },
+    "share": {
+      "playbookTitle": "Dela en spelplan",
+      "playbookDescription": "Gå igenom målet, rutinen och resultatet. Vi säkerhetskontrollerar det innan det publiceras.",
+      "playbookAction": "Dela en spelplan",
+      "reviewTitle": "Skriv en recension",
+      "reviewDescription": "Lägg till sammanhanget någon som du behöver innan de provar den här produkten.",
+      "reviewAction": "Skriv en recension",
+      "submitReview": "Skicka recension",
+      "sharePlaybook": "Dela spelplan",
+      "submitting": "Skickar…",
+      "scanning": "Skannar…",
+      "saveEdits": "Spara ändringar",
+      "saving": "Sparar…"
+    },
+    "editability": {
+      "heading": "Innan du skickar in",
+      "reviewBody": "När din recension är publicerad kan du bara redigera recensionstexten — och bara om våra moderatorer ber dig. Betyg, produkt, användningsuppgifter och taggar är låsta.",
+      "playbookBody": "När din spelplan är publicerad kan du bara redigera titel och sammanfattning — och bara om våra moderatorer ber dig. Steg, produkter, mål och taggar är låsta."
+    },
+    "confirm": {
+      "reviewTitle": "Skicka in den här recensionen?",
+      "reviewBody": "Vi säkerhetskontrollerar och kör AI-moderering innan den publiceras. Efter det kan du bara redigera recensionstexten — och bara om moderatorer ber dig.",
+      "playbookTitle": "Dela den här spelplanen?",
+      "playbookBody": "Vi säkerhetskontrollerar och kör AI-moderering innan den publiceras. Efter det kan du bara redigera titel och sammanfattning — och bara om moderatorer ber dig.",
+      "keepEditing": "Fortsätt redigera"
+    },
+    "filters": {
+      "goal": "Mål",
+      "result": "Resultat",
+      "timeframe": "Tidsram",
+      "productRole": "Produktroll",
+      "avoided": "Undvek",
+      "habit": "Vana",
+      "warning": "Varning",
+      "all": "Alla"
+    },
+    "options": {
+      "disclosure": {
+        "ordinary": "Jag köpte den själv",
+        "gifted": "Gåva",
+        "sponsored": "Sponsrad",
+        "affiliate": "Partnerlänk",
+        "professional": "Professionell",
+        "brand_rep": "Varumärkesrepresentant"
+      },
+      "disclosureDescription": {
+        "ordinary": "Vanlig användare · Jag köpte den själv",
+        "gifted": "Gåva · Produkten gavs gratis",
+        "sponsored": "Sponsrad · Varumärket har betalat eller medverkar",
+        "affiliate": "Partnerlänk · Länkar eller köp kan gynna författaren",
+        "professional": "Professionell · Delas från ett professionellt sammanhang",
+        "brand_rep": "Varumärkesrepresentant · Författaren representerar varumärket"
+      },
+      "reviewUsageDuration": {
+        "2-weeks": "2 veckor eller mindre",
+        "4-weeks": "Cirka 4 veckor",
+        "8-weeks": "Cirka 8 veckor",
+        "3-months-plus": "3 månader eller mer"
+      },
+      "reviewFrequency": {
+        "daily": "Dagligen",
+        "am-pm": "Morgon och kväll",
+        "few-times-week": "Några gånger i veckan",
+        "weekly": "Veckovis",
+        "as-needed": "Vid behov"
+      },
+      "reviewRoutineSlot": {
+        "am": "Morgonrutin",
+        "pm": "Kvällsrutin",
+        "am-pm": "Morgon och kväll",
+        "either": "Antingen / varierar"
+      },
+      "reviewSkinResponse": {
+        "improved": "Förbättrades",
+        "no_change": "Ingen tydlig förändring",
+        "mixed": "Blandat",
+        "worsened": "Försämrades"
+      },
+      "reviewRepurchase": {
+        "yes": "Ja",
+        "maybe": "Kanske",
+        "no": "Nej"
+      },
+      "productCategory": {
+        "cleanser": "Rengöring",
+        "moisturizer": "Fuktkräm",
+        "treatment": "Behandling",
+        "serum": "Serum",
+        "sunscreen": "Solskydd",
+        "exfoliant": "Exfoliering",
+        "toner": "Toner",
+        "mask": "Ansiktsmask"
+      },
+      "goal": {
+        "acne-control": "Aknekontroll",
+        "dark-marks": "Färre mörka märken",
+        "barrier-repair": "Barriärreparation",
+        "less-dryness": "Mindre torrhet",
+        "less-irritation": "Mindre irritation",
+        "smoother-texture": "Jämnare hudstruktur",
+        "oil-control": "Mindre oljighet"
+      },
+      "goalResult": {
+        "achieved": "Uppnått",
+        "mostly_improved": "Mest förbättrat",
+        "partially_improved": "Delvis förbättrat",
+        "maintained": "Bibehållet",
+        "mixed": "Blandat"
+      },
+      "goalTimeframe": {
+        "2-weeks": "2 veckor eller mindre",
+        "4-weeks": "Cirka 4 veckor",
+        "8-weeks": "Cirka 8 veckor",
+        "3-months": "Cirka 3 månader",
+        "3-months-plus": "3+ månader",
+        "6-months": "Cirka 6 månader",
+        "12-months-plus": "12+ månader"
+      },
+      "avoidTag": {
+        "over-exfoliation": "Överexfoliering",
+        "late-night-sugary-food": "Söt mat sent på kvällen",
+        "skipping-sunscreen": "Hoppa över solskydd",
+        "sleeping-with-makeup": "Sova med makeup",
+        "picking-skin": "Pilla på huden",
+        "too-many-actives": "För många aktiva ingredienser",
+        "fragrance": "Parfym"
+      },
+      "habitTag": {
+        "consistent-sleep": "Konsekvent sömn",
+        "changed-pillowcase": "Bytte örngott",
+        "gentle-cleansing": "Mild rengöring",
+        "daily-sunscreen": "Dagligt solskydd",
+        "slow-introduction": "Långsam introduktion av produkter"
+      },
+      "didNotWorkTag": {
+        "daily-acids": "Syror varje dag",
+        "harsh-cleanser": "Hård rengöring",
+        "too-many-steps": "För många steg",
+        "heavy-oils": "Tunga oljor",
+        "skipping-moisturizer": "Hoppa över fuktkräm"
+      },
+      "warningTag": {
+        "patch-test-first": "Gör lapptest först",
+        "go-slow-if-sensitive": "Gå långsamt om du är känslig",
+        "irritation-possible": "Irritation kan uppstå",
+        "needs-sunscreen": "Behöver solskydd",
+        "professional-care-involved": "Professionell vård ingick"
+      },
+      "outcomeSignal": {
+        "worked_for_me_too": "Fungerade för mig också",
+        "worked_with_changes": "Fungerade med ändringar",
+        "mixed_result": "Blandat resultat",
+        "did_not_work": "Annat resultat",
+        "caused_irritation": "Orsakade irritation",
+        "not_relevant": "Inte relevant för mig"
+      },
+      "outcomeTrialDuration": {
+        "under-2-weeks": "Mindre än 2 veckor",
+        "2-weeks": "Cirka 2 veckor",
+        "4-weeks": "Cirka 4 veckor",
+        "8-weeks": "Cirka 8 veckor",
+        "3-months-plus": "3 månader eller mer"
+      },
+      "outcomeFollowedPart": {
+        "products": "Produkter",
+        "routine-timing": "Rutintiming",
+        "avoid-list": "Undvik-lista",
+        "habits": "Vanor",
+        "partial": "Bara delar av den"
+      },
+      "outcomeIrritation": {
+        "none": "Ingen irritation",
+        "mild": "Mild irritation",
+        "moderate": "Måttlig irritation",
+        "severe": "Svår irritation"
+      }
+    },
+    "forms": {
+      "review": {
+        "srTitle": "Skriv en recension",
+        "submitFailed": "Recensionen kunde inte skickas.",
+        "productSection": "Recenserad produkt",
+        "ratingsSection": "Hur bra fungerade den?",
+        "ratingsDescription": "Hur produkten fungerade för din hud. Obligatoriska betyg på en skala 1–5.",
+        "overallLabel": "Helhetsbetyg",
+        "overallHint": "Din totala nöjdhet.",
+        "overallPlaceholder": "Betygsätt helheten",
+        "effectivenessLabel": "Effekt",
+        "effectivenessHint": "Hur mycket den hjälpte.",
+        "effectivenessPlaceholder": "Betygsätt effekten",
+        "irritationLabel": "Irritation",
+        "irritationHint": "1 = ingen, 5 = svår.",
+        "irritationPlaceholder": "Betygsätt irritation",
+        "skinResponseLabel": "Hudrespons",
+        "skinResponseHint": "Den tydligaste förändringen du såg.",
+        "skinResponsePlaceholder": "Välj respons",
+        "textureLabel": "Textur / finish",
+        "textureHint": "Valfritt. Hur den kändes och satt.",
+        "valueLabel": "Värde",
+        "valueHint": "Valfritt. Om den kändes värd priset.",
+        "optionalPlaceholder": "Valfritt",
+        "usageSection": "När och hur du använde den",
+        "usageDescription": "Samma produkt, olika rutin — sammanhanget ändrar resultatet.",
+        "usageDurationLabel": "Användningstid",
+        "usageDurationHint": "Hur länge tills du visste.",
+        "usageDurationPlaceholder": "Välj tidsperiod",
+        "frequencyLabel": "Frekvens",
+        "frequencyHint": "Hur ofta du använde den.",
+        "frequencyPlaceholder": "Välj frekvens",
+        "routineSlotLabel": "Rutintid",
+        "routineSlotHint": "Morgon, kväll eller båda.",
+        "routineSlotPlaceholder": "Välj tid",
+        "repurchaseLabel": "Skulle köpa igen",
+        "repurchaseHint": "Skulle du köpa den igen?",
+        "repurchasePlaceholder": "Välj svar",
+        "pairedSection": "Vad du använde den med",
+        "pairedDescription": "Produkten du använde tillsammans med den. Krävs för att vi ska kunna rangordna detta som rutinbevis.",
+        "pairedBrandHint": "Valfritt. Varumärke för den parade produkten.",
+        "pairedBrandPlaceholder": "t.ex. CeraVe",
+        "pairedCategoryHint": "Vilken roll produkten hade i din rutin.",
+        "pairedCategoryLabel": "Parad roll",
+        "pairedLinkedMessage": "Kopplad till din hyllprodukt.",
+        "pairedManualHeading": "Berätta vad du använde den med",
+        "pairedProductHint": "Den viktigaste produkten du lager-på-lager eller parade den med.",
+        "pairedProductLabel": "Parad produkt",
+        "pairedProductPlaceholder": "t.ex. Hydrating Cleanser",
+        "pairedSelectHint": "Välj från din hylla eller välj Annan.",
+        "pairedSelectLabel": "Parad produkt",
+        "outcomesLabel": "Resultattaggar",
+        "outcomesHint": "Kommaseparerade nyckelord som gör detta sökbart.",
+        "outcomesPlaceholder": "lugnare, mindre sveda, ingen förändring",
+        "bodySection": "Med dina egna ord",
+        "bodyDescription": "Valfritt. Undvik diagnoser och påståenden som \"botade\" — allt som låter som medicinsk rådgivning går till moderering.",
+        "bodyHint": "Lägg till nyanser som betyg och taggar inte kan visa.",
+        "bodyLabel": "Recensionstext",
+        "bodyPlaceholder": "Vad förändrades, vad gjorde det inte, och vad skulle du säga till någon med liknande hud innan de provar den?"
+      },
+      "playbook": {
+        "srTitle": "Dela vad som fungerade",
+        "submitFailed": "Målspelplanen kunde inte skickas.",
+        "goalSection": "Mål och resultat",
+        "titleLabel": "Titel",
+        "titleHint": "Ett kort namn för det som fungerade.",
+        "titlePlaceholder": "t.ex. Det som lugnade mina utbrott",
+        "goalLabel": "Mål",
+        "goalHint": "Vad spelplanen var till för.",
+        "goalPlaceholder": "Välj mål",
+        "resultLabel": "Resultat",
+        "resultHint": "Valfritt. Välj närmaste resultat.",
+        "resultPlaceholder": "Välj resultat",
+        "timeframeLabel": "Tidsram",
+        "timeframeHint": "Hur lång tid det tog innan du visste att det fungerade.",
+        "timeframePlaceholder": "Välj tidsram",
+        "routineSection": "Produkter och rutin",
+        "routineDescription": "Lägg till varje steg i ordning. Välj från din hylla när du kan — manuell inmatning fungerar när produkten inte finns på hyllan.",
+        "changedSection": "Vad förändrades",
+        "changedDescription": "Valfritt. Taggar gör spelplanen sökbar för personer med samma mål.",
+        "avoidLabel": "Vad jag undvek",
+        "avoidHint": "Saker som hjälpte eftersom du slutade göra dem.",
+        "habitLabel": "Vanor som hjälpte",
+        "habitHint": "Vanor som stödde resultatet.",
+        "didNotWorkLabel": "Vad som inte fungerade tidigare",
+        "didNotWorkHint": "Saker du provade som inte hjälpte.",
+        "warningLabel": "Varningar",
+        "warningHint": "Försiktighet för någon som kopierar detta.",
+        "summaryLabel": "Livsstilsförändringar",
+        "summaryHint": "Valfritt. Sömn, mat, aktivitet eller något annat som kan ha hjälpt.",
+        "summaryPlaceholder": "t.ex. Jag slutade äta sent och väntade minst 3 timmar innan jag sov. Utbrotten lugnade sig inom några veckor."
+      }
+    },
+    "productPicker": {
+      "otherProduct": "Annan (inte på min hylla)",
+      "loadingShelf": "Laddar hylla…",
+      "pickProduct": "Välj en produkt",
+      "selectLabel": "Vilken produkt recenserar du?",
+      "selectHint": "Välj från din hylla så att personer ser sammanhanget. Välj Annan om den inte finns på hyllan ännu.",
+      "brandLabel": "Varumärke",
+      "brandHint": "Varumärkesnamnet som står på produkten.",
+      "brandPlaceholder": "t.ex. La Roche-Posay",
+      "productLabel": "Produkt",
+      "productHint": "Exakt produktnamn som personer kan känna igen.",
+      "productPlaceholder": "t.ex. Toleriane Fluid",
+      "categoryLabel": "Kategori",
+      "categoryHint": "Produktrollen hjälper oss jämföra liknande recensioner.",
+      "linkedMessage": "Den här recensionen kopplas till din hyllprodukt.",
+      "manualHeading": "Berätta vad du använde"
+    },
+    "playbookSteps": {
+      "label": "Produkter och rutinsteg",
+      "hint": "Välj från din hylla när det går så att bevis kan kopplas tillbaka till produktbeslut.",
+      "otherProduct": "Annan (inte på min hylla)",
+      "step": "Steg {number}",
+      "removeStep": "Ta bort steg {number}",
+      "product": "Produkt",
+      "loadingShelf": "Laddar hylla…",
+      "pickProduct": "Välj en produkt",
+      "productRole": "Produktroll",
+      "slot": "När du använde den",
+      "frequency": "Hur ofta",
+      "linked": "Kopplad till din hyllprodukt.",
+      "manualHeading": "Berätta vad du använde",
+      "brand": "Varumärke",
+      "brandPlaceholder": "t.ex. CeraVe",
+      "productName": "Produkt",
+      "productPlaceholder": "t.ex. Hydrating Cleanser",
+      "note": "Steganteckning",
+      "noteHint": "Valfritt. Mängd, ordning eller något någon bör veta innan de kopierar steget.",
+      "addStep": "Lägg till ett steg"
+    },
+    "playbookEvidence": {
+      "avoided": "Undvek",
+      "habits": "Vanor",
+      "warnings": "Varningar"
+    },
+    "reviewEvidence": {
+      "overall": "Helhet",
+      "effect": "Effekt",
+      "irritation": "Irritation",
+      "notRated": "Inte betygsatt",
+      "repurchase": "Köp igen: {value}",
+      "unknown": "Okänt"
+    },
+    "outcomeSignals": {
+      "addedToast": "Ditt resultat lades till i bevisen.",
+      "failedToast": "Kunde inte spara ditt resultat.",
+      "confirmed": "{worked}/{total} bekräftade",
+      "helper": "Lägg till ditt resultat utan att bedöma originalinlägget.",
+      "chooseOutcomeFirst": "Välj ett resultat först.",
+      "addFailed": "Kunde inte lägga till resultat.",
+      "dialogTitle": "Bekräfta ditt resultat",
+      "dialogDescription": "Detta gör bevisen mer användbara utan att göra någon annans inlägg till en offentlig poäng.",
+      "sameGoal": "Samma mål?",
+      "sameGoalYes": "Ja, samma mål",
+      "sameGoalNo": "Nej, relaterat men annorlunda",
+      "trialDuration": "Hur länge provade du det?",
+      "irritation": "Irritation",
+      "followedParts": "Vad följde du?",
+      "choose": "Välj",
+      "chooseDuration": "Välj tidsperiod",
+      "chooseIrritation": "Välj irritationsnivå",
+      "adding": "Lägger till…",
+      "addOutcome": "Lägg till resultat"
+    },
+    "productEvidence": {
+      "loadError": "Gemenskapsbevis kunde inte laddas.",
+      "retry": "Försök igen",
+      "title": "Gemenskapsbevis",
+      "description": "Strukturerade recensioner, spelplaner och bekräftelser från personer med jämförbara hudfasetter.",
+      "noConfirmations": "Inga bekräftelser från liknande användare ännu",
+      "similarConfirmations": "{count, plural, one {# bekräftelse från liknande användare} other {# bekräftelser från liknande användare}}",
+      "reviews": "Recensioner",
+      "playbooks": "Spelplaner",
+      "workedSignals": "Fungerade för dem",
+      "averageEffectiveness": "Snitt-effekt",
+      "notAvailable": "—",
+      "topGoals": "Vanligaste mål",
+      "topAvoids": "Vad personer undvek",
+      "reviewOutcomes": "Recensionsresultat",
+      "noEvidence": "Inget ännu"
+    },
+    "routineDetail": {
+      "loadErrorTitle": "Rutinen kunde inte laddas",
+      "loadErrorBody": "Den här gemenskapsrutinen kan vara otillgänglig eller under moderering.",
+      "tryAgain": "Försök igen",
+      "subtitle": "En målspelplan som du kan jämföra med personer som dig och anpassa säkert.",
+      "backToCommunity": "Gemenskap",
+      "report": "Rapportera",
+      "reporting": "Rapporterar…",
+      "safetyScanned": "Säkerhetsskannad. Inga högriskflaggor.",
+      "stepsTitle": "Produkter och rutinmönster",
+      "stepsCount": "{count, plural, one {# steg} other {# steg}}",
+      "categoryOnlyStep": "Endast kategoristeg",
+      "adaptLabel": "Anpassa till min hylla",
+      "adaptTitle": "Översätt rutinen till det du redan äger",
+      "adaptBody": "Vi behåller det du redan äger, byter till säkra alternativ från din hylla, tar bort osäkra steg och visar ärliga luckor per kategori. Vi pressar aldrig en specifik produkt på dig.",
+      "adapting": "Anpassar…",
+      "adaptAgain": "Anpassa igen",
+      "adaptAction": "Anpassa till min hylla",
+      "saving": "Sparar…",
+      "saveAdaptation": "Spara anpassning",
+      "saveAdaptationHint": "När du sparar behålls den anpassade versionen på ditt konto. Din rutin ändras inte om du inte väljer att ersätta den.",
+      "adaptError": "Något gick fel när rutinen skulle anpassas. Försök igen eller rapportera den om problemet fortsätter.",
+      "changeStep": "Steg {step} · {label}",
+      "change": {
+        "kept": "Behöll från din hylla",
+        "swapped": "Bytte till motsvarande",
+        "removed": "Togs bort av säkerhetsskäl",
+        "gap": "Ärlig lucka"
+      },
+      "changeType": {
+        "kept": "Behöll",
+        "swapped": "Bytte",
+        "removed": "Tog bort",
+        "gap": "Lucka"
+      },
+      "summary": {
+        "kept": "Behöll från din hylla",
+        "swapped": "Bytte till alternativ",
+        "removed": "Togs bort av säkerhetsskäl",
+        "gaps": "Ärliga luckor"
+      },
+      "safetySeverity": {
+        "high": "Hög",
+        "note": "Notis",
+        "watch": "Bevaka"
+      }
+    },
+    "trust": {
+      "disclosureTitle": "Avslöjandeetiketter",
+      "disclosureSubtitle": "Hur vi märker de olika sätten en användare kan vara kopplad till ett varumärke.",
+      "warningsTitle": "Aktiva gemenskapsvarningar",
+      "warningsEmptyTitle": "Inga aktiva varningar",
+      "warningsEmptyBody": "När något blir riskabelt i gemenskapen (en omformulering, en osäker rutin eller dolt sponsorskap), publicerar våra moderatorer varningar här."
+    },
+    "submissions": {
+      "title": "Mina gemenskapsinlägg",
+      "emptyTitle": "Inga gemenskapsinlägg ännu",
+      "emptyBody": "Allt du delar visas här med aktuell modereringsstatus.",
+      "edit": "Redigera",
+      "cancelEdit": "Avbryt redigering",
+      "resubmit": "Skicka in oförändrat",
+      "resubmitting": "Skickar in igen…",
+      "withdraw": "Dra tillbaka",
+      "withdrawing": "Drar tillbaka…",
+      "withdrawConfirmTitle": "Dra tillbaka gemenskapsinlägg?",
+      "withdrawConfirmBody": "Detta tar bort det från gemenskapsvyer, matchning och bevisrankningar. Modereringsrevisionsposten behålls internt.",
+      "cancel": "Avbryt",
+      "missingSnapshot": "Det här inlägget kan inte redigeras ännu. Försök uppdatera sidan.",
+      "status": {
+        "draft": "Utkast",
+        "pending_review": "Väntar på granskning",
+        "published": "Publicerad",
+        "needs_edit": "Behöver ändras",
+        "hidden": "Dold",
+        "rejected": "Avvisad"
+      },
+      "type": {
+        "routine": "Spelplan",
+        "review": "Recension"
+      }
+    },
+    "eligibility": {
+      "dialogTitle": "Publicering i gemenskapen är inte tillgänglig ännu",
+      "dialogDescription": "Att bläddra är öppet för alla. För att dela en recension eller spelplan måste ditt konto klara kontrollerna nedan först.",
+      "gateTitle": "Det här låser upp publicering",
+      "gateIntro": "Att bläddra är på för alla. För att dela något måste ditt konto klara några kontroller, inklusive att vara minst {days} dagar gammalt.",
+      "unlockDate": "Publicering låses upp {date}.",
+      "accountAgeNotice": "Ditt konto är {accountAgeDays} dagar gammalt. Publicering låses upp vid {minimumAccountAgeDays} dagar.",
+      "acceptRules": "Godkänn regler",
+      "accepting": "Godkänner…",
+      "whyNotNow": "Varför inte nu?",
+      "close": "Stäng",
+      "verifyEmail": "Verifiera e-post",
+      "completeProfile": "Slutför profil",
+      "addShelfProduct": "Lägg till hyllprodukt",
+      "reasonTitles": {
+        "email_unverified": "E-postverifiering krävs",
+        "skin_profile_required": "Hudprofil krävs",
+        "shelf_product_required": "Hyllprodukt krävs",
+        "community_guidelines_required": "Gemenskapsregler krävs",
+        "account_too_new": "Krav på kontoålder",
+        "recent_moderation_abuse": "Publicering är tillfälligt pausad"
+      },
+      "items": {
+        "emailLabel": "Verifierad e-post",
+        "emailDetail": "Krävs innan du kan publicera offentligt.",
+        "profileLabel": "Slutförd hudprofil",
+        "profileDetail": "Låter oss matcha din hud med personer som dig.",
+        "shelfLabel": "Hyllprodukt tillagd",
+        "shelfDetail": "Så att din recension eller rutin kan peka på en riktig produkt.",
+        "guidelinesLabel": "Riktlinjer godkända",
+        "guidelinesDetail": "Täcker avslöjande- och säkerhetsregler.",
+        "ageLabel": "Minst {days} dagar gammalt",
+        "ageDetail": "Ditt konto är {days, plural, one {# dag} other {# dagar}} gammalt.",
+        "abuseLabel": "Inga senaste modereringsövergrepp",
+        "abuseDetail": "Senaste allvarliga överträdelser pausar publicering ett tag."
+      }
+    },
+    "toasts": {
+      "reportSubmitted": "Rapport skickad för moderering.",
+      "reportFailed": "Kunde inte skicka rapport.",
+      "guidelinesAccepted": "Gemenskapsriktlinjer godkända.",
+      "guidelinesFailed": "Kunde inte godkänna riktlinjer.",
+      "reviewPublished": "Recension publicerad.",
+      "reviewModerating": "Recension skickad till moderering.",
+      "playbookPublished": "Spelplan publicerad.",
+      "playbookModerating": "Spelplan skickad till moderering.",
+      "editsSaved": "Ändringar sparade och skickade till säkerhetsgranskning.",
+      "editsFailed": "Kunde inte spara ändringar.",
+      "resubmitted": "Inlägg återskickat för säkerhetsgranskning.",
+      "resubmitFailed": "Kunde inte återskicka detta.",
+      "withdrawn": "Inlägg tillbakadraget från gemenskapsbevis.",
+      "withdrawFailed": "Kunde inte dra tillbaka detta.",
+      "routineAdapted": "Rutinen anpassades till din hylla.",
+      "routineAdaptFailed": "Kunde inte anpassa rutinen.",
+      "adaptationSaved": "Anpassningen sparades.",
+      "adaptationSaveFailed": "Kunde inte spara anpassningen."
+    },
+    "errors": {
+      "couldNotLoadTitle": "Gemenskapen kunde inte laddas",
+      "couldNotLoadBody": "Ritora kunde inte hämta gemenskapsbevis just nu.",
+      "tryAgain": "Försök igen"
+    },
+    "shared": {
+      "required": "Obligatorisk",
+      "loading": "Laddar",
+      "selectPlaceholder": "Välj",
+      "matchBadge": "{score}% matchning",
+      "disclosureHint": "Berätta om eventuell koppling till varumärket.",
+      "disclosureLabel": "Avslöjande",
+      "disclosurePlaceholder": "Välj avslöjande",
+      "disclosureBadge": {
+        "ordinary": "Vanlig användare",
+        "gifted": "Gåva",
+        "sponsored": "Sponsrad",
+        "affiliate": "Partnerlänk",
+        "professional": "Professionell",
+        "brand_rep": "Varumärkesrepresentant"
+      },
+      "outcomes": {
+        "helped-overall": "Hjälpte överlag",
+        "helped": "Hjälpte",
+        "worsened": "Försämrades",
+        "no-change": "Ingen förändring",
+        "irritation": "Irritation",
+        "barrier-recovery": "Barriäråterhämtning",
+        "repurchased": "Köpte igen",
+        "stopped-using": "Slutade använda"
+      }
+    }
   }
 }
