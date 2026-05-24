@@ -259,28 +259,8 @@
     "features": {
       "eyebrow": "What's inside",
       "headline": "Every part of your routine, intelligently aware of the others.",
-      "lead": "Six capabilities working together so your plan stays safe, even on the messy days.",
+      "lead": "Eight capabilities working together so your plan stays safe, even on the messy days.",
       "items": [
-        {
-          "key": "shelf",
-          "eyebrow": "Inventory first",
-          "title": "Your shelf comes first. Always.",
-          "bullets": [
-            "Add by photo or manually, with ingredients pulled from the label",
-            "Full lifecycle: started, active, finished, repurchased",
-            "Cleansers, actives, SPF, body, lip, hand. Every category."
-          ]
-        },
-        {
-          "key": "ingredients",
-          "eyebrow": "Ingredient intelligence",
-          "title": "Conflict checks across every bottle at once.",
-          "bullets": [
-            "Retinoid + AHA, BP + retinol, vitamin C + niacinamide",
-            "Spots when the same active hides in two products",
-            "Safety score for every suggested routine"
-          ]
-        },
         {
           "key": "suggestions",
           "eyebrow": "Today's Suggestion",
@@ -292,6 +272,16 @@
           ]
         },
         {
+          "key": "community",
+          "eyebrow": "Community",
+          "title": "Routines that worked for people like you.",
+          "bullets": [
+            "Browse playbooks from users with your skin type and concerns",
+            "One tap adapts any playbook to the products on your shelf",
+            "Real outcome signals: worked, mixed, did not work"
+          ]
+        },
+        {
           "key": "journal",
           "eyebrow": "Skin Journal",
           "title": "Photo journal with AI analysis built in.",
@@ -300,6 +290,16 @@
             "Reaction detection auto-pauses risky actives",
             "Compare any two dates. Export a dermatologist report.",
             "Monthly Skin Wrapped: a private recap from your photos"
+          ]
+        },
+        {
+          "key": "ingredients",
+          "eyebrow": "Ingredient intelligence",
+          "title": "Conflict checks across every bottle at once.",
+          "bullets": [
+            "Retinoid + AHA, BP + retinol, vitamin C + niacinamide",
+            "Spots when the same active hides in two products",
+            "Safety score for every suggested routine"
           ]
         },
         {
@@ -320,6 +320,16 @@
             "Four budget tiers: drugstore, mid, premium, luxury",
             "Redundancy checks so you never duplicate an active you already own",
             "Save picks to your wishlist. No upsells, no sponsored placements."
+          ]
+        },
+        {
+          "key": "shelf",
+          "eyebrow": "Inventory first",
+          "title": "Your shelf comes first. Always.",
+          "bullets": [
+            "Add by photo or manually, with ingredients pulled from the label",
+            "Full lifecycle: started, active, finished, repurchased",
+            "Cleansers, actives, SPF, body, lip, hand. Every category."
           ]
         },
         {
@@ -459,6 +469,18 @@
           "uv": "UV 4 later · last frost expected this week",
           "humidity": "Humidity 48%, barrier support recommended",
           "note": "Ritora added an extra moisturising step tonight and shifted SPF earlier in your day. The climate engine reviews your context twice a day."
+        },
+        "community": {
+          "cardTitle": "Playbook",
+          "cardSubtitle": "Shared by someone like you",
+          "authorName": "Maya K.",
+          "authorTags": ["Combination", "Fitzpatrick IV", "Hyperpigmentation"],
+          "playbookTitle": "Calmer barrier rebuild",
+          "playbookSubtitle": "4 step evening routine for 6 weeks",
+          "steps": ["Cleanser", "Niacinamide", "Ceramide moisturiser", "SPF 50"],
+          "outcome": "32 said this worked",
+          "outcomeMixed": "4 mixed results",
+          "adaptCta": "Adapt to my shelf"
         }
       }
     },
@@ -526,6 +548,10 @@
         {
           "question": "Do I need to upload photos?",
           "answer": "No. The Skin Journal is optional. Routines, ingredient checks, and Smart Picks all work without a single photo. Uploading just makes the guidance more adaptive."
+        },
+        {
+          "question": "Is the community public? Do I have to share?",
+          "answer": "Sharing is opt-in. Your shelf and Skin Journal stay private by default. Only the playbooks and reviews you choose to publish go to the community, and you can withdraw any of them at any time."
         },
         {
           "question": "Is it free?",

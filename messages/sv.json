@@ -259,28 +259,8 @@
     "features": {
       "eyebrow": "Vad som ingår",
       "headline": "Varje del av din rutin, intelligent medveten om de andra.",
-      "lead": "Sex förmågor som arbetar tillsammans så din plan förblir trygg, även på röriga dagar.",
+      "lead": "Åtta förmågor som arbetar tillsammans så din plan förblir trygg, även på röriga dagar.",
       "items": [
-        {
-          "key": "shelf",
-          "eyebrow": "Hylla först",
-          "title": "Din hylla kommer först. Alltid.",
-          "bullets": [
-            "Lägg till via foto eller manuellt, med ingredienser hämtade från etiketten",
-            "Hela livscykeln: startad, aktiv, slut, återköpt",
-            "Rengöring, aktiva, SPF, kropp, läppar, händer. Varje kategori."
-          ]
-        },
-        {
-          "key": "ingredients",
-          "eyebrow": "Ingrediensintelligens",
-          "title": "Krockkontroller över varje flaska samtidigt.",
-          "bullets": [
-            "Retinoid + AHA, BP + retinol, vitamin C + niacinamid",
-            "Upptäcker när samma aktiva ingrediens gömmer sig i två produkter",
-            "Säkerhetspoäng för varje föreslagen rutin"
-          ]
-        },
         {
           "key": "suggestions",
           "eyebrow": "Dagens förslag",
@@ -292,6 +272,16 @@
           ]
         },
         {
+          "key": "community",
+          "eyebrow": "Community",
+          "title": "Rutiner som fungerat för personer som du.",
+          "bullets": [
+            "Bläddra bland playbooks från användare med din hudtyp och dina besvär",
+            "Anpassa vilken playbook som helst till produkterna på din hylla med ett tryck",
+            "Riktiga utfallssignaler: fungerade, blandat, fungerade inte"
+          ]
+        },
+        {
           "key": "journal",
           "eyebrow": "Huddagbok",
           "title": "Fotodagbok med inbyggd AI-analys.",
@@ -300,6 +290,16 @@
             "Reaktionsdetektering pausar automatiskt riskfyllda aktiva ingredienser",
             "Jämför två datum. Exportera en hudläkarrapport.",
             "Månatlig Skin Wrapped: en privat återblick från dina foton"
+          ]
+        },
+        {
+          "key": "ingredients",
+          "eyebrow": "Ingrediensintelligens",
+          "title": "Krockkontroller över varje flaska samtidigt.",
+          "bullets": [
+            "Retinoid + AHA, BP + retinol, vitamin C + niacinamid",
+            "Upptäcker när samma aktiva ingrediens gömmer sig i två produkter",
+            "Säkerhetspoäng för varje föreslagen rutin"
           ]
         },
         {
@@ -320,6 +320,16 @@
             "Fyra budgetnivåer: drugstore, mid, premium, lyx",
             "Redundanskontroller så du aldrig dubblerar en aktiv ingrediens du redan äger",
             "Spara val till din önskelista. Inga merförsäljningar, inga sponsrade placeringar."
+          ]
+        },
+        {
+          "key": "shelf",
+          "eyebrow": "Hylla först",
+          "title": "Din hylla kommer först. Alltid.",
+          "bullets": [
+            "Lägg till via foto eller manuellt, med ingredienser hämtade från etiketten",
+            "Hela livscykeln: startad, aktiv, slut, återköpt",
+            "Rengöring, aktiva, SPF, kropp, läppar, händer. Varje kategori."
           ]
         },
         {
@@ -459,6 +469,18 @@
           "uv": "UV 4 senare · sista frosten väntas den här veckan",
           "humidity": "Luftfuktighet 48%, barriärstöd rekommenderas",
           "note": "Ritora lade till ett extra fuktgivande steg ikväll och flyttade SPF tidigare på dagen. Klimatmotorn granskar din kontext två gånger per dag."
+        },
+        "community": {
+          "cardTitle": "Playbook",
+          "cardSubtitle": "Delad av någon som du",
+          "authorName": "Maya K.",
+          "authorTags": ["Kombinerad", "Fitzpatrick IV", "Hyperpigmentering"],
+          "playbookTitle": "Lugnare barriäråteruppbyggnad",
+          "playbookSubtitle": "4-stegs kvällsrutin i 6 veckor",
+          "steps": ["Rengöring", "Niacinamid", "Ceramidfuktkräm", "SPF 50"],
+          "outcome": "32 sa att det fungerade",
+          "outcomeMixed": "4 blandade resultat",
+          "adaptCta": "Anpassa till min hylla"
         }
       }
     },
@@ -526,6 +548,10 @@
         {
           "question": "Måste jag ladda upp foton?",
           "answer": "Nej. Huddagboken är frivillig. Rutiner, ingredienskontroller och Smarta val fungerar utan ett enda foto. Uppladdning gör bara vägledningen mer anpassningsbar."
+        },
+        {
+          "question": "Är community öppen för alla? Måste jag dela?",
+          "answer": "Att dela är frivilligt. Din hylla och din huddagbok är privata som standard. Endast de playbooks och recensioner du själv väljer att publicera går till community, och du kan ta bort dem när som helst."
         },
         {
           "question": "Är det gratis?",
