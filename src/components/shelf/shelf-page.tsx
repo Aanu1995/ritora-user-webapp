@@ -33,6 +33,7 @@ import {
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { getApiErrorStatus } from "@/lib/api-error";
 import { saveCurrentAppScrollPosition } from "@/lib/app-scroll-restoration";
+import { buildShelfReturnHref } from "@/lib/shelf-return-navigation";
 import { isSkinProfileReady } from "@/lib/skin-profile-readiness";
 import { useShelfUiStore } from "@/stores/shelf-ui-store";
 import {
@@ -156,7 +157,9 @@ export function ShelfPage() {
       return;
     }
 
-    navigateFromShelf(`${AppRoute.Shelf}/new`);
+    navigateFromShelf(
+      buildShelfReturnHref(`${AppRoute.Shelf}/new`, AppRoute.Shelf),
+    );
   };
 
   let content: ReactNode;

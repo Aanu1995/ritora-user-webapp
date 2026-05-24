@@ -215,8 +215,7 @@ export function getSkinProfileFormValues(
     countryCode: profile.countryCode ?? "",
     city: profile.city ?? "",
     locationConsent: profile.hasLocationContextConsent,
-    waterHardness:
-      lifestyle.water_hardness ?? SkinProfileWaterHardness.Unknown,
+    waterHardness: lifestyle.water_hardness ?? SkinProfileWaterHardness.Unknown,
     waterSensitivity:
       lifestyle.water_sensitivity ?? SkinProfileWaterSensitivity.None,
     waterReactionNotes: lifestyle.water_reaction_notes ?? "",
@@ -277,7 +276,10 @@ export function buildSkinProfilePayload(
   if (values.sunscreenTolerance)
     skinBehavior.sunscreen_tolerance = values.sunscreenTolerance;
 
-  const lifestyleContext: SkinProfileInput["lifestyleContext"] = {};
+  const lifestyleContext: SkinProfileInput["lifestyleContext"] =
+    isEdit && existingProfile?.lifestyleContext
+      ? { ...existingProfile.lifestyleContext }
+      : {};
   lifestyleContext.water_hardness = values.waterHardness;
   lifestyleContext.water_sensitivity = values.waterSensitivity;
   const waterReactionNotes = values.waterReactionNotes.trim();

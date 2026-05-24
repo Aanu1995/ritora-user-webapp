@@ -2,7 +2,7 @@
 
 import { useForm, useStore } from "@tanstack/react-form";
 import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -38,6 +38,10 @@ import {
   executeMutation,
   type SubmissionValidationResult,
 } from "@/lib/form-submission";
+import {
+  navigateAfterShelfSave,
+  readShelfReturnTo,
+} from "@/lib/shelf-return-navigation";
 import {
   createEmptyIdentity,
   createEmptyManufacturer,
@@ -132,6 +136,10 @@ export function AddProductPage() {
   const tLookupImport = useTranslations("shelf.dialog.lookupImport");
   const tLookupReview = useTranslations("shelf.dialog.lookupReview");
   const router = useRouter();
+  const pathname = usePathname() ?? `${AppRoute.Shelf}/new`;
+  const searchParams = useSearchParams();
+  const returnToHref = readShelfReturnTo(searchParams, pathname);
+  const backHref = returnToHref ?? AppRoute.Shelf;
   const createProduct = useCreateProduct();
   const createProductWithImage = useCreateProductWithImage();
   const capabilities = useUserCapabilities();
@@ -196,8 +204,12 @@ export function AddProductPage() {
 
       toast.success(tDialog("confirm.successToast"));
       setIsSaved(true);
-      releaseGuard();
-      router.push(`${AppRoute.Shelf}/${createdProductIdRef.current}`);
+      navigateAfterShelfSave({
+        router,
+        releaseGuard,
+        fallbackHref: AppRoute.Shelf,
+        returnToHref,
+      });
     },
   });
 
@@ -208,8 +220,8 @@ export function AddProductPage() {
 
   const leading = (
     <GuardedLink
-      href={AppRoute.Shelf}
-      restoreScrollTo={AppRoute.Shelf}
+      href={backHref}
+      restoreScrollTo={backHref}
       aria-label={t("detail.backLink")}
       className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-accent-soft"
     >

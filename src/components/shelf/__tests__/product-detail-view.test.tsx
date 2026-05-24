@@ -192,6 +192,11 @@ describe('ProductDetailView', () => {
 
     renderWithProviders(<ProductDetailView product={PRODUCT} />);
 
+    expect(screen.getByRole('link', { name: /edit/i })).toHaveAttribute(
+      'href',
+      '/shelf/p1/edit?returnTo=%2Fshelf%2Fp1',
+    );
+
     await user.click(screen.getByRole('link', { name: /edit/i }));
 
     expect(getAppScrollPosition('/shelf/p1')).toBe(420);

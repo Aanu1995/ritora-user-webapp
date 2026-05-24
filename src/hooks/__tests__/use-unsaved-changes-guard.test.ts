@@ -163,6 +163,38 @@ describe('useUnsavedChangesGuard', () => {
     backSpy.mockRestore();
   });
 
+  it('releaseGuard can clear dirty state without popping history for immediate route replacement', () => {
+    const { result } = renderHook(() =>
+      useUnsavedChangesGuard({ hasUnsavedChanges: true }),
+    );
+
+    const backSpy = jest.spyOn(window.history, 'back');
+
+    act(() => {
+      result.current.releaseGuard({ removeHistoryEntry: false });
+    });
+
+    expect(useUnsavedChangesStore.getState().hasUnsavedChanges).toBe(false);
+    expect(backSpy).not.toHaveBeenCalled();
+    backSpy.mockRestore();
+  });
+
+  it('releaseGuard prevents a same-tick beforeunload prompt during document navigation', () => {
+    const { result } = renderHook(() =>
+      useUnsavedChangesGuard({ hasUnsavedChanges: true }),
+    );
+    const event = new Event('beforeunload', {
+      cancelable: true,
+    }) as BeforeUnloadEvent;
+
+    act(() => {
+      result.current.releaseGuard({ removeHistoryEntry: false });
+      window.dispatchEvent(event);
+    });
+
+    expect(event.defaultPrevented).toBe(false);
+  });
+
   it('does not pop history twice when releaseGuard is followed by cleanup', () => {
     const { result, unmount } = renderHook(() =>
       useUnsavedChangesGuard({ hasUnsavedChanges: true }),

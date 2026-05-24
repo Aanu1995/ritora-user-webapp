@@ -278,7 +278,11 @@ export function CommunityRoutineDetailPage({
               categories — never as forced purchases.
             </p>
           </div>
-          <Button onClick={() => adapt.mutate()} disabled={adapt.isPending}>
+          <Button
+            size="sm"
+            onClick={() => adapt.mutate()}
+            disabled={adapt.isPending}
+          >
             {adapt.isPending ? (
               <InlineSpinner />
             ) : (
@@ -389,8 +393,9 @@ export function CommunityRoutineDetailPage({
               })}
             </div>
 
-            <div className="flex flex-wrap gap-2 border-t border-border pt-4">
+            <div className="flex flex-wrap items-center gap-2 border-t border-border pt-4">
               <Button
+                size="sm"
                 onClick={() => save.mutate(adaptation.id)}
                 disabled={save.isPending}
               >

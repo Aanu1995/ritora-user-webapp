@@ -10,6 +10,8 @@ import {
 } from "@/types/shelf";
 
 export const mockPush = jest.fn();
+export const mockReplace = jest.fn();
+export const mockBack = jest.fn();
 export const mockMutate = jest.fn();
 export const mockCreateWithImageMutate = jest.fn();
 export const mockExtractFromImagesMutate = jest.fn();
@@ -20,16 +22,17 @@ let mockLookupResolve:
   | ((onResult: (value: ResolvedLookup) => void) => void)
   | null = null;
 let mockLookupProductPhotoFile: File | null = null;
+let mockSearchParams = new URLSearchParams("returnTo=/shelf");
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
-    replace: jest.fn(),
-    back: jest.fn(),
+    replace: mockReplace,
+    back: mockBack,
     prefetch: jest.fn(),
   }),
   usePathname: () => "/shelf/new",
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => mockSearchParams,
 }));
 
 jest.mock("sonner", () => ({
@@ -97,6 +100,8 @@ import { AddProductPage } from "@/components/shelf/add-product-page";
 
 export function resetAddProductPageMocks(): void {
   mockPush.mockReset();
+  mockReplace.mockReset();
+  mockBack.mockReset();
   mockMutate.mockReset();
   mockCreateWithImageMutate.mockReset();
   mockExtractFromImagesMutate.mockReset();
@@ -104,11 +109,16 @@ export function resetAddProductPageMocks(): void {
   mockToastError.mockReset();
   mockLookupResolve = null;
   mockLookupProductPhotoFile = null;
+  mockSearchParams = new URLSearchParams("returnTo=/shelf");
   useUnsavedChangesStore.setState({
     hasUnsavedChanges: false,
     isDialogOpen: false,
     pendingProceed: null,
   });
+}
+
+export function setAddProductSearchParams(params: URLSearchParams): void {
+  mockSearchParams = params;
 }
 
 export function setMockLookupProductPhotoFile(file: File | null): void {

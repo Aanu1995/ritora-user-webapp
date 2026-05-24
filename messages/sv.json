@@ -1141,6 +1141,7 @@
       "removed": "Reaktion borttagen.",
       "saveAll": "Spara ändringar",
       "savedChanges": "Ändringar sparade.",
+      "draftUnsavedError": "Lägg till eller rensa reaktionsutkastet innan du sparar.",
       "consentTitle": "Skydda reaktionshistorik",
       "consentDescription": "Reaktionshistorik är hälsorelaterad data. Ritora lagrar den krypterad och använder den bara för att anpassa dina förslag.",
       "consentAccept": "Tillåt och spara",
@@ -2535,7 +2536,11 @@
       "heading": "Ingrediensintelligens",
       "errorTitle": "Kunde inte köra kontrollen",
       "errorBody": "Vi stötte på ett problem vid analysen. Försök igen om en stund.",
-      "retry": "Försök igen"
+      "retry": "Försök igen",
+      "emptyResultTitle": "Ingen ingrediensanalys ännu",
+      "emptyResultBody": "Produkten har ingredienser, men Ritora kunde inte skapa en användbar analys från det senaste försöket.",
+      "analyzeAgain": "Analysera igen",
+      "analyzingAgain": "Analyserar"
     },
     "severity": {
       "low": "Låg",
@@ -2562,6 +2567,8 @@
     "pairing": {
       "heading": "Så kombinerar du den",
       "avoidWith": "Undvik i samma rutin med:",
+      "avoidLabel": "Undvik att kombinera med",
+      "saferPlanLabel": "Säkrare plan",
       "mitigationHint": "Tips: {hint}"
     },
     "category": {

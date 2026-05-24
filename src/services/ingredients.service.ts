@@ -22,6 +22,7 @@ export async function analyzeProducts(
           focusProductId: input.focusProductId,
           language: input.language,
           withExplanations: input.withExplanations ?? false,
+          forceRefresh: input.forceRefresh ?? false,
         }
       : {
           productIds: input.productIds,

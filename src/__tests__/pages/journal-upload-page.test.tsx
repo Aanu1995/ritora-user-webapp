@@ -1,6 +1,7 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { toast } from "sonner";
 import { renderWithProviders } from "@/test/utils";
+import { consumeAppScrollRestoreRequest } from "@/lib/app-scroll-restoration";
 import {
   CYCLE_MARKER_DONT_TRACK,
   type DayDetail,
@@ -110,9 +111,8 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
 
 function selectPhoto(container: HTMLElement): File {
   const file = new File(["photo"], "today.jpg", { type: "image/jpeg" });
-  const fileInputs = container.querySelectorAll<HTMLInputElement>(
-    'input[type="file"]',
-  );
+  const fileInputs =
+    container.querySelectorAll<HTMLInputElement>('input[type="file"]');
   const fileInput = container.querySelector<HTMLInputElement>(
     'input[data-angle="head_on"]',
   );
@@ -128,7 +128,11 @@ function selectPhoto(container: HTMLElement): File {
   return file;
 }
 
-function selectAnglePhoto(container: HTMLElement, angle: string, name: string): File {
+function selectAnglePhoto(
+  container: HTMLElement,
+  angle: string,
+  name: string,
+): File {
   const file = new File([name], `${name}.jpg`, { type: "image/jpeg" });
   const input = container.querySelector<HTMLInputElement>(
     `input[data-angle="${angle}"]`,
@@ -346,6 +350,15 @@ describe("JournalUploadPage edit actions", () => {
       },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+
+    const [, options] = mockUpsertTodayMutate.mock.calls[0] as [
+      unknown,
+      { onSuccess: () => void },
+    ];
+    options.onSuccess();
+
+    expect(mockRouterPush).toHaveBeenCalledWith("/journal");
+    expect(consumeAppScrollRestoreRequest("/journal")).toBe(true);
   });
 
   it("shows a toast and keeps users on the page when save entry fails", () => {
@@ -357,10 +370,7 @@ describe("JournalUploadPage edit actions", () => {
       insights: [],
     };
     mockUpsertTodayMutate.mockImplementationOnce(
-      (
-        _input: unknown,
-        options?: { onError?: (error: unknown) => void },
-      ) => {
+      (_input: unknown, options?: { onError?: (error: unknown) => void }) => {
         options?.onError?.(new Error("Could not save entry"));
       },
     );
@@ -431,9 +441,7 @@ describe("JournalUploadPage edit actions", () => {
     mockSearchParams = new URLSearchParams();
     const { container } = renderWithProviders(<JournalUploadPage />);
     const file = selectPhoto(container);
-    fireEvent.click(
-      screen.getByRole("button", { name: /save photo only/i }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: /save photo only/i }));
 
     expect(mockUpsertTodayMutate).toHaveBeenCalledWith(
       {
@@ -465,9 +473,7 @@ describe("JournalUploadPage edit actions", () => {
       screen.getByRole("checkbox", { name: /analysis of this photo/i }),
     );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: /save photo only/i }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: /save photo only/i }));
 
     expect(mockUpsertTodayMutate).toHaveBeenCalledWith(
       {

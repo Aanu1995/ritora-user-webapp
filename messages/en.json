@@ -1137,6 +1137,7 @@
       "removed": "Reaction removed.",
       "saveAll": "Save changes",
       "savedChanges": "Changes saved.",
+      "draftUnsavedError": "Add or clear the draft reaction before saving.",
       "consentTitle": "Protect reaction history",
       "consentDescription": "Reaction history is health-context data. Ritora stores it encrypted and uses it only to personalize your suggestions.",
       "consentAccept": "Allow and save",
@@ -2528,7 +2529,11 @@
       "heading": "Ingredient intelligence",
       "errorTitle": "Couldn't run the check",
       "errorBody": "We hit a snag analysing this product. Try again in a moment.",
-      "retry": "Retry"
+      "retry": "Retry",
+      "emptyResultTitle": "No ingredient intelligence yet",
+      "emptyResultBody": "This product has ingredients, but Ritora could not produce a useful analysis from the last attempt.",
+      "analyzeAgain": "Analyze again",
+      "analyzingAgain": "Analyzing"
     },
     "severity": {
       "low": "Low",
@@ -2555,6 +2560,8 @@
     "pairing": {
       "heading": "How to pair it",
       "avoidWith": "Avoid in the same routine with:",
+      "avoidLabel": "Avoid pairing with",
+      "saferPlanLabel": "Safer plan",
       "mitigationHint": "Tip: {hint}"
     },
     "category": {

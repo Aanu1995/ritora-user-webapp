@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   AlertTriangle,
+  ChevronDown,
   Flag,
   GitBranch,
-  Info,
+  Lock,
   Sparkles,
   Star,
   TrendingUp,
@@ -30,7 +31,6 @@ import type {
   CommunityRoutine,
 } from "@/types/community";
 import {
-  Badge,
   Chip,
   DisclosureBadge,
   EmptyState,
@@ -41,7 +41,15 @@ import {
   type CommunityTab,
 } from "./community-shared";
 
-export function FacetPills({ data }: { data: CommunityHome }) {
+/* ===========================================================
+ * Facet strip — replaces the old hero card. A single low-key
+ * row that says "ranked for you" and lists what we're matching
+ * against. Privacy detail lives behind a tiny "What does this
+ * mean?" disclosure so it doesn't dominate the page.
+ * ========================================================= */
+
+export function FacetStrip({ data }: { data: CommunityHome }) {
+  const [open, setOpen] = useState(false);
   const facets = data.profileFacets;
   const pills = [
     facets.skinType,
@@ -54,9 +62,9 @@ export function FacetPills({ data }: { data: CommunityHome }) {
 
   if (pills.length === 0) {
     return (
-      <div className="mt-4 flex items-start gap-2 rounded-xl border border-warning/30 bg-warning-soft px-3 py-2 text-sm text-warning">
-        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-        <span>
+      <div className="mt-2 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning-soft px-3 py-2 text-xs text-warning">
+        <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+        <span className="text-foreground">
           Complete your skin profile for better matching. We&apos;ll start
           surfacing routines that fit you specifically.
         </span>
@@ -65,18 +73,57 @@ export function FacetPills({ data }: { data: CommunityHome }) {
   }
 
   return (
-    <div className="mt-4 flex flex-wrap gap-2">
-      {pills.map((pill) => (
-        <span
-          key={pill}
-          className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-foreground"
-        >
-          {pill}
+    <div className="mt-2">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs">
+        <span className="inline-flex items-center gap-1.5 font-semibold uppercase tracking-wide text-muted">
+          <UserCheck className="h-3.5 w-3.5 text-accent" aria-hidden />
+          Matching
         </span>
-      ))}
+        <div className="flex flex-wrap gap-1.5">
+          {pills.map((pill) => (
+            <span
+              key={pill}
+              className="inline-flex items-center rounded-md bg-surface-muted px-2 py-0.5 text-[11px] font-medium text-foreground"
+            >
+              {pill}
+            </span>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => setOpen((current) => !current)}
+          aria-expanded={open}
+          className="ml-auto inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium text-muted transition hover:text-foreground"
+        >
+          <Lock className="h-3 w-3" aria-hidden />
+          Privacy
+          <ChevronDown
+            className={cn(
+              "h-3 w-3 transition-transform",
+              open && "rotate-180",
+            )}
+            aria-hidden
+          />
+        </button>
+      </div>
+      {open ? (
+        <p className="mt-2 max-w-3xl rounded-md bg-surface-muted/60 px-3 py-2 text-[11px] leading-5 text-muted">
+          Only the facets above are used to rank community content for you.
+          Your email, exact location, photos, medical context and private
+          notes stay private.
+        </p>
+      ) : null}
     </div>
   );
 }
+
+/* ===========================================================
+ * Sticky tab bar.
+ *
+ * Sits right beneath the (already-sticky) PageHeader using a
+ * matching `top-` offset so the two-row sticky stack reads as a
+ * single page chrome unit while content scrolls underneath.
+ * ========================================================= */
 
 export function CommunityTabs({
   active,
@@ -97,107 +144,98 @@ export function CommunityTabs({
 
   return (
     <div
-      role="tablist"
-      aria-label="Community sections"
-      className="flex gap-1 overflow-x-auto rounded-2xl border border-border bg-surface-muted/60 p-1"
+      // -mx + matching px so the fade-on-scroll background bleeds across
+      // the section padding and the sticky offset clears the page header.
+      className="sticky top-14 z-[9] -mx-4 mt-3 bg-background/95 px-4 pt-1 pb-2 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:-mx-6 sm:top-[88px] sm:px-6 sm:pt-2 lg:-mx-8 lg:px-8"
     >
-      {tabs.map(([key, label, icon]) => {
-        const isActive = active === key;
-        return (
-          <button
-            key={key}
-            role="tab"
-            type="button"
-            aria-selected={isActive}
-            onClick={() => onChange(key)}
-            className={cn(
-              "inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl px-3 py-2 text-sm font-semibold transition outline-none focus-visible:ring-2 focus-visible:ring-accent/30",
-              isActive
-                ? "bg-surface text-foreground shadow-soft"
-                : "text-muted hover:bg-surface/60 hover:text-foreground",
-            )}
-          >
-            {icon}
-            {label}
-          </button>
-        );
-      })}
+      <nav
+        role="tablist"
+        aria-label="Community sections"
+        className="flex gap-1 overflow-x-auto rounded-xl border border-border bg-surface p-1 shadow-soft"
+      >
+        {tabs.map(([key, label, icon]) => {
+          const isActive = active === key;
+          return (
+            <button
+              key={key}
+              role="tab"
+              type="button"
+              aria-selected={isActive}
+              onClick={() => onChange(key)}
+              className={cn(
+                "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-semibold transition outline-none focus-visible:ring-2 focus-visible:ring-accent/30 sm:text-sm",
+                isActive
+                  ? "bg-accent-soft text-accent-strong"
+                  : "text-muted hover:bg-surface-muted hover:text-foreground",
+              )}
+            >
+              {icon}
+              {label}
+            </button>
+          );
+        })}
+      </nav>
     </div>
   );
 }
 
+/* ===========================================================
+ * For-you view — denser than before.
+ *
+ * Dropped the 3 redundant entry-tiles (the tab bar already has
+ * People / Routines / Warnings). Dropped the gradient info
+ * note. Patterns now render as a tight inline list, not a
+ * 3-card grid. Routine and review previews still appear but
+ * use the compact card variants.
+ * ========================================================= */
+
 export function ForYou({
   data,
-  onChangeTab,
 }: {
   data: CommunityHome;
-  onChangeTab: (tab: CommunityTab) => void;
+  /**
+   * Accepted but unused — kept so the call site doesn't have to change when
+   * we move navigation responsibilities back into the entry cards in future.
+   */
+  onChangeTab?: (tab: CommunityTab) => void;
 }) {
   return (
-    <div className="space-y-6">
-      <div className="grid gap-3 md:grid-cols-3">
-        <EntryCard
-          body={`${data.routines.length + data.reviews.length} matched routines and reviews.`}
-          icon={<UserCheck />}
-          onClick={() => onChangeTab("people")}
-          title="People like me"
-          tone="accent"
-        />
-        <EntryCard
-          body="Map shared routines onto products you already own."
-          icon={<Wand2 />}
-          onClick={() => onChangeTab("routines")}
-          title="Adapt a routine"
-          tone="ai"
-        />
-        <EntryCard
-          body={`${data.warnings.length} active warnings and safety notices.`}
-          icon={<AlertTriangle />}
-          onClick={() => onChangeTab("trust")}
-          title="Community warnings"
-          tone="warning"
-        />
-      </div>
-
-      {/* Informational note — uses the cool/AI palette tokens. */}
-      <div
-        role="note"
-        className="flex items-start gap-3 rounded-2xl border border-ai-border bg-ai-soft px-4 py-3 text-sm leading-6 text-ai-fg"
-      >
-        <Info className="mt-0.5 h-4 w-4 shrink-0" />
-        <span>
-          Community is signed-in only at launch. New reviews and routines may
-          publish instantly when low-risk, or enter moderation when Ritora
-          detects medical claims, sponsorship risk, or unsafe routine patterns.
-        </span>
-      </div>
-
+    <div className="space-y-8">
       <section>
-        <h2 className="mb-3 flex items-center gap-2 font-display text-lg font-bold tracking-tight text-foreground">
-          <TrendingUp className="h-5 w-5 text-accent" />
-          Patterns from shelves like yours
-        </h2>
+        <SectionTitle
+          icon={<TrendingUp />}
+          title="Patterns from shelves like yours"
+        />
         {data.patterns.length === 0 ? (
           <EmptyState
+            icon={TrendingUp}
             title="No shelf patterns yet"
             body="Add a few products to your shelf and Ritora will start surfacing what users like you do with them."
           />
         ) : (
-          <div className="grid gap-3 md:grid-cols-3">
+          <ul className="grid gap-2">
             {data.patterns.map((pattern) => (
-              <article
+              <li
                 key={pattern.id}
-                className="rounded-2xl border border-border bg-surface p-4 shadow-soft"
+                className="rounded-xl border border-border bg-surface px-4 py-3"
               >
-                <h3 className="font-display text-sm font-bold tracking-tight text-foreground">
-                  {pattern.title}
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-muted">
-                  {pattern.body}
-                </p>
-              </article>
+                <div className="flex items-start gap-3">
+                  <span
+                    aria-hidden
+                    className="mt-1 size-1.5 shrink-0 rounded-full bg-accent"
+                  />
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-semibold text-foreground">
+                      {pattern.title}
+                    </h3>
+                    <p className="mt-0.5 text-xs leading-5 text-muted">
+                      {pattern.body}
+                    </p>
+                  </div>
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </section>
 
@@ -257,12 +295,12 @@ export function RoutineList({
   }
 
   return (
-    <section className="space-y-3">
-      <h2 className="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-foreground">
-        <GitBranch className="h-5 w-5 text-accent" />
-        Community routines
-        {compact ? <Badge tone="muted">Top {routines.length}</Badge> : null}
-      </h2>
+    <section>
+      <SectionTitle
+        icon={<GitBranch />}
+        title="Community routines"
+        count={compact ? `Top ${routines.length}` : `${routines.length} total`}
+      />
       <div className="grid gap-3">
         {routines.map((routine) => (
           <RoutineCard key={routine.id} routine={routine} />
@@ -290,12 +328,12 @@ export function ReviewList({
   }
 
   return (
-    <section className="space-y-3">
-      <h2 className="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-foreground">
-        <Star className="h-5 w-5 text-accent" />
-        Product reviews with routine context
-        {compact ? <Badge tone="muted">Top {reviews.length}</Badge> : null}
-      </h2>
+    <section>
+      <SectionTitle
+        icon={<Star />}
+        title="Product reviews with routine context"
+        count={compact ? `Top ${reviews.length}` : `${reviews.length} total`}
+      />
       <div className="grid gap-3 md:grid-cols-2">
         {reviews.map((review) => (
           <ReviewCard key={review.id} review={review} />
@@ -305,66 +343,40 @@ export function ReviewList({
   );
 }
 
-const entryTone: Record<
-  "accent" | "ai" | "warning",
-  { iconBg: string; iconFg: string; border: string }
-> = {
-  accent: {
-    iconBg: "bg-accent",
-    iconFg: "text-white",
-    border: "hover:border-accent/50",
-  },
-  ai: {
-    iconBg: "bg-ai-bg",
-    iconFg: "text-ai-fg",
-    border: "hover:border-ai-border",
-  },
-  warning: {
-    iconBg: "bg-warning-soft",
-    iconFg: "text-warning",
-    border: "hover:border-warning/40",
-  },
-};
+/* ===========================================================
+ * Slim section header — used by lists and patterns. Replaces
+ * the over-styled `sub-title` from the dashboard pattern.
+ * ========================================================= */
 
-function EntryCard({
-  body,
+function SectionTitle({
+  count,
   icon,
-  onClick,
   title,
-  tone = "accent",
 }: {
-  body: string;
+  count?: string;
   icon: ReactNode;
-  onClick: () => void;
   title: string;
-  tone?: "accent" | "ai" | "warning";
 }) {
-  const palette = entryTone[tone];
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "group rounded-2xl border border-border bg-surface p-5 text-left shadow-soft transition outline-none focus-visible:ring-2 focus-visible:ring-accent/30 hover:shadow-hero",
-        palette.border,
-      )}
-    >
-      <div
-        className={cn(
-          "mb-3 flex h-11 w-11 items-center justify-center rounded-2xl [&_svg]:h-5 [&_svg]:w-5",
-          palette.iconBg,
-          palette.iconFg,
-        )}
-      >
+    <div className="mb-3 flex items-center justify-between gap-2">
+      <h2 className="inline-flex items-center gap-2 text-base font-bold tracking-tight text-foreground [&_svg]:h-4 [&_svg]:w-4 [&_svg]:text-accent">
         {icon}
-      </div>
-      <h3 className="font-display text-base font-bold tracking-tight text-foreground">
         {title}
-      </h3>
-      <p className="mt-1 text-sm leading-6 text-muted">{body}</p>
-    </button>
+      </h2>
+      {count ? (
+        <span className="text-[11px] font-semibold uppercase tracking-wide text-muted">
+          {count}
+        </span>
+      ) : null}
+    </div>
   );
 }
+
+/* ===========================================================
+ * Routine card — slimmer than before (p-4, lighter hover, no
+ * shadow promotion on hover). Step preview moved into a single
+ * compact line, not a 2×2 grid that made the card balloon.
+ * ========================================================= */
 
 function RoutineCard({ routine }: { routine: CommunityRoutine }) {
   const report = useMutation({
@@ -374,31 +386,36 @@ function RoutineCard({ routine }: { routine: CommunityRoutine }) {
   });
 
   return (
-    <article className="rounded-2xl border border-border bg-surface p-5 shadow-soft transition hover:shadow-hero">
+    <article className="rounded-xl border border-border bg-surface p-4 transition hover:border-border-strong">
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-display text-base font-bold tracking-tight text-foreground">
+            <h3 className="text-sm font-semibold text-foreground">
               {routine.title}
             </h3>
             <MatchBadge score={routine.matchScore} />
             <DisclosureBadge value={routine.disclosureType} />
           </div>
-          <p className="mt-2 text-sm leading-6 text-muted">
-            {routine.summary ?? "Shared routine with safety-scanned steps."}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {routine.relevanceReasons.map((reason) => (
-              <Chip key={reason}>{reason}</Chip>
-            ))}
-            {routine.safetyFlags.map((flag) => (
-              <SafetyChip key={flag.code} severity={flag.severity}>
-                {flag.message}
-              </SafetyChip>
-            ))}
-          </div>
+          {routine.summary ? (
+            <p className="mt-1.5 text-xs leading-5 text-muted">
+              {routine.summary}
+            </p>
+          ) : null}
+          {(routine.relevanceReasons.length > 0 ||
+            routine.safetyFlags.length > 0) && (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {routine.relevanceReasons.slice(0, 4).map((reason) => (
+                <Chip key={reason}>{reason}</Chip>
+              ))}
+              {routine.safetyFlags.map((flag) => (
+                <SafetyChip key={flag.code} severity={flag.severity}>
+                  {flag.message}
+                </SafetyChip>
+              ))}
+            </div>
+          )}
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 md:shrink-0">
           <Button asChild size="sm">
             <Link href={`${AppRoute.Community}/routines/${routine.id}`}>
               <Wand2 className="h-4 w-4" />
@@ -410,38 +427,43 @@ function RoutineCard({ routine }: { routine: CommunityRoutine }) {
             variant="ghost"
             onClick={() => report.mutate()}
             disabled={report.isPending}
+            aria-label="Report routine"
           >
             {report.isPending ? (
               <InlineSpinner />
             ) : (
               <Flag className="h-4 w-4" />
             )}
-            Report
           </Button>
         </div>
       </div>
       {routine.steps.length > 0 ? (
-        <div className="mt-4 grid gap-2 md:grid-cols-2">
-          {routine.steps.slice(0, 4).map((step) => (
-            <div
+        <div className="mt-3 flex flex-wrap gap-1.5 border-t border-border pt-3 text-[11px]">
+          {routine.steps.slice(0, 5).map((step) => (
+            <span
               key={`${routine.id}-${step.stepOrder}`}
-              className="rounded-xl border border-border bg-surface-muted/60 px-3 py-2 text-sm"
+              className="inline-flex items-center gap-1 rounded-md bg-surface-muted px-2 py-0.5"
             >
               <span className="font-semibold text-foreground">
-                {step.stepOrder}. {step.category}
+                {step.stepOrder}.
               </span>
-              <span className="ml-2 text-muted">
-                {[step.productBrand, step.productName]
-                  .filter(Boolean)
-                  .join(" ") || "Category gap"}
-              </span>
-            </div>
+              <span className="text-muted">{step.category}</span>
+            </span>
           ))}
+          {routine.steps.length > 5 ? (
+            <span className="text-[11px] font-medium text-muted">
+              +{routine.steps.length - 5} more
+            </span>
+          ) : null}
         </div>
       ) : null}
     </article>
   );
 }
+
+/* ===========================================================
+ * Review card — same compaction pass.
+ * ========================================================= */
 
 function ReviewCard({ review }: { review: CommunityReview }) {
   const report = useMutation({
@@ -451,53 +473,62 @@ function ReviewCard({ review }: { review: CommunityReview }) {
   });
 
   return (
-    <article className="rounded-2xl border border-border bg-surface p-5 shadow-soft transition hover:shadow-hero">
-      <div className="flex items-start justify-between gap-3">
+    <article className="rounded-xl border border-border bg-surface p-4 transition hover:border-border-strong">
+      <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="font-display text-base font-bold tracking-tight text-foreground">
+          <h3 className="text-sm font-semibold text-foreground">
             {review.productBrand} {review.productName}
           </h3>
-          <p className="mt-1 text-xs uppercase tracking-wide text-muted">
+          <p className="mt-0.5 text-[11px] uppercase tracking-wide text-muted">
             {review.usageDuration} · {review.frequency}
           </p>
         </div>
         <MatchBadge score={review.matchScore} />
       </div>
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-2 flex flex-wrap gap-1.5">
         <DisclosureBadge value={review.disclosureType} />
         {review.outcomes.map((outcome) => (
           <OutcomeChip key={outcome} value={outcome} />
         ))}
       </div>
       {review.body ? (
-        <p className="mt-3 text-sm leading-6 text-foreground">{review.body}</p>
+        <p className="mt-2 text-xs leading-5 text-foreground line-clamp-3">
+          {review.body}
+        </p>
       ) : null}
       {review.routineContext.length > 0 ? (
-        <div className="mt-3 rounded-xl border border-border bg-surface-muted/60 p-3 text-xs">
-          <div className="font-semibold uppercase tracking-wide text-muted">
-            Routine context
-          </div>
-          <div className="mt-1 text-foreground">
-            {review.routineContext
-              .map((item) => item.productName ?? item.category)
-              .join(" · ")}
-          </div>
-        </div>
+        <p className="mt-2 text-[11px] leading-5 text-muted">
+          <span className="font-semibold uppercase tracking-wide">
+            Context:{" "}
+          </span>
+          {review.routineContext
+            .map((item) => item.productName ?? item.category)
+            .join(" · ")}
+        </p>
       ) : null}
-      <Button
-        className="mt-4"
-        variant="ghost"
-        size="sm"
-        onClick={() => report.mutate()}
-        disabled={report.isPending}
-      >
-        {report.isPending ? (
-          <InlineSpinner />
-        ) : (
-          <Flag className="h-4 w-4" />
-        )}
-        Report
-      </Button>
+      <div className="mt-3 flex justify-end">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => report.mutate()}
+          disabled={report.isPending}
+          aria-label="Report review"
+        >
+          {report.isPending ? (
+            <InlineSpinner />
+          ) : (
+            <Flag className="h-4 w-4" />
+          )}
+        </Button>
+      </div>
     </article>
   );
 }
+
+/* ===========================================================
+ * Legacy export shim — `FacetPills` was renamed to `FacetStrip`.
+ * Keep this alias so existing call sites continue to compile
+ * without churn.
+ * ========================================================= */
+
+export const FacetPills = FacetStrip;

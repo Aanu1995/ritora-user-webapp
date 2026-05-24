@@ -15,7 +15,10 @@ import {
   useSkinProfileOptions,
 } from "@/hooks/use-skin-profile";
 import { getApiErrorStatus } from "@/lib/api-error";
-import { getAppScrollRoot } from "@/lib/app-scroll-restoration";
+import {
+  getAppScrollRoot,
+  restoreAppScrollPosition,
+} from "@/lib/app-scroll-restoration";
 import {
   consumeMissingSkinProfileHandoff,
   hasMissingSkinProfileHandoff,
@@ -33,6 +36,7 @@ export default function SkinProfilePage() {
   const [editStep, setEditStep] = useState<number | null>(null);
   const formRef = useRef<SkinProfileFormHandle>(null);
   const overviewScrollTopRef = useRef<number | null>(null);
+  const restoreScrollCancelRef = useRef<(() => void) | null>(null);
   const [pending, setPending] = useState(false);
   const requestLeave = useUnsavedChangesStore((state) => state.requestLeave);
 
@@ -49,6 +53,12 @@ export default function SkinProfilePage() {
       window.clearTimeout(timerId);
     };
   }, [hasMissingProfileHandoff]);
+
+  useEffect(() => {
+    return () => {
+      restoreScrollCancelRef.current?.();
+    };
+  }, []);
 
   const profileStatus = getApiErrorStatus(profile.error);
   const hasNoProfile =
@@ -73,6 +83,8 @@ export default function SkinProfilePage() {
   };
 
   const openEditStep = (step: number) => {
+    restoreScrollCancelRef.current?.();
+    restoreScrollCancelRef.current = null;
     overviewScrollTopRef.current = getAppScrollRoot()?.scrollTop ?? null;
     setEditStep(step);
 
@@ -90,13 +102,8 @@ export default function SkinProfilePage() {
       return;
     }
 
-    window.requestAnimationFrame(() => {
-      getAppScrollRoot()?.scrollTo({
-        top: scrollTop,
-        left: 0,
-        behavior: "auto",
-      });
-    });
+    restoreScrollCancelRef.current?.();
+    restoreScrollCancelRef.current = restoreAppScrollPosition(scrollTop);
   };
 
   if (isLoading) {

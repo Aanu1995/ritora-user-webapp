@@ -10,21 +10,24 @@ import {
 } from '@/types/shelf';
 
 export const mockPush = jest.fn();
+export const mockReplace = jest.fn();
+export const mockBack = jest.fn();
 export const mockMutate = jest.fn();
 export const mockUploadMutate = jest.fn();
 export const mockUploadForProductMutate = jest.fn();
 export const mockCreateObjectUrl = jest.fn(() => 'blob:product-photo-preview');
 export const mockRevokeObjectUrl = jest.fn();
+let mockSearchParams = new URLSearchParams('returnTo=/shelf/product-1');
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: mockPush,
-    replace: jest.fn(),
-    back: jest.fn(),
+    replace: mockReplace,
+    back: mockBack,
     prefetch: jest.fn(),
   }),
   usePathname: () => '/shelf/product-1/edit',
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => mockSearchParams,
 }));
 
 jest.mock('@/hooks/use-shelf', () => ({
@@ -112,6 +115,8 @@ export const PRODUCT: ShelfProduct = {
 
 export function resetProductEditFormMocks(): void {
   mockPush.mockReset();
+  mockReplace.mockReset();
+  mockBack.mockReset();
   mockMutate.mockReset();
   mockUploadMutate.mockReset();
   mockUploadForProductMutate.mockReset();
@@ -119,11 +124,16 @@ export function resetProductEditFormMocks(): void {
   mockRevokeObjectUrl.mockClear();
   URL.createObjectURL = mockCreateObjectUrl;
   URL.revokeObjectURL = mockRevokeObjectUrl;
+  mockSearchParams = new URLSearchParams('returnTo=/shelf/product-1');
   useUnsavedChangesStore.setState({
     hasUnsavedChanges: false,
     isDialogOpen: false,
     pendingProceed: null,
   });
+}
+
+export function setProductEditSearchParams(params: URLSearchParams): void {
+  mockSearchParams = params;
 }
 
 export function renderProductEditForm(options?: {

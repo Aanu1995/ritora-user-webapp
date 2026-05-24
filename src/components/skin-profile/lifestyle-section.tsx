@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useUpdateSkinProfile } from "@/hooks/use-skin-profile";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
+import type { UnsavedChangesGuardRelease } from "@/hooks/use-unsaved-changes-guard";
 import {
   clearSubmitErrors,
   executeMutation,
@@ -29,6 +30,7 @@ interface LifestyleSectionProps {
   profile: SkinProfile;
   options: SkinProfileOptions;
   onPendingChange?: (pending: boolean) => void;
+  onSaved?: (release: UnsavedChangesGuardRelease) => void;
 }
 
 const DIET_FLAG_TRANSLATION_KEYS: Record<string, string> = {
@@ -38,7 +40,10 @@ const DIET_FLAG_TRANSLATION_KEYS: Record<string, string> = {
 export const LifestyleSection = forwardRef<
   SectionFormHandle,
   LifestyleSectionProps
->(function LifestyleSection({ profile, options, onPendingChange }, ref) {
+>(function LifestyleSection(
+  { profile, options, onPendingChange, onSaved },
+  ref,
+) {
   const t = useTranslations("skinProfile.lifestyle");
   const tOptions = useTranslations("skinProfile.options");
   const updateMutation = useUpdateSkinProfile();
@@ -66,8 +71,9 @@ export const LifestyleSection = forwardRef<
     },
     onSubmit: ({ value }) => {
       form.reset(value);
-      releaseGuard();
+      const release = releaseGuard({ removeHistoryEntry: false });
       toast.success(t("saved"));
+      onSaved?.(release);
     },
   });
 

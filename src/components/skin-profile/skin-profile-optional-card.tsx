@@ -6,6 +6,7 @@ import { Lock } from "lucide-react";
 import type { MouseEvent, ReactNode } from "react";
 import { AppRoute } from "@/constants/app-routes";
 import { saveCurrentAppScrollPosition } from "@/lib/app-scroll-restoration";
+import { buildSkinProfileSectionHref } from "@/lib/skin-profile-section-return-navigation";
 
 interface OptionalCardProps {
   href?: string;
@@ -119,7 +120,7 @@ function OptionalCardAction({
   if (href) {
     return (
       <Link
-        href={href}
+        href={buildSkinProfileSectionHref(href, AppRoute.SkinProfile)}
         onClick={(event) => {
           if (isPlainLeftClick(event)) {
             saveCurrentAppScrollPosition(AppRoute.SkinProfile);

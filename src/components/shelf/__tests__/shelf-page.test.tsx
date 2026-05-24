@@ -228,6 +228,29 @@ describe('ShelfPage', () => {
     expect(mockPush).not.toHaveBeenCalledWith('/shelf/new');
   });
 
+  it('opens the add-product page with Shelf as the return target', async () => {
+    const user = userEvent.setup();
+    mockUseShelfProducts.mockReturnValue({
+      data: mockProducts,
+      isPending: false,
+      isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+    mockUseShelfStats.mockReturnValue({
+      data: { all: 1 },
+      isPending: false,
+      isError: false,
+    });
+
+    renderWithProviders(<ShelfPage />);
+
+    await user.click(screen.getByRole('button', { name: /add product/i }));
+
+    expect(mockPush).toHaveBeenCalledWith('/shelf/new?returnTo=%2Fshelf');
+  });
+
   it('renders the empty state when there are no products and not loading', () => {
     mockUseShelfProducts.mockReturnValue({
       data: [],

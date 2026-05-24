@@ -60,8 +60,43 @@ describe('ingredients.service', () => {
         focusProductId: 'product-1',
         language: 'sv',
         withExplanations: true,
+        forceRefresh: false,
       },
       { signal: controller.signal },
+    );
+  });
+
+  it('posts forced focus-product analysis requests when requested', async () => {
+    (postRequest as jest.Mock).mockResolvedValue({
+      mode: 'focus',
+      status: 'ok',
+      confidence: 'high',
+      safetyScore: null,
+      actives: [],
+      conflicts: [],
+      overlaps: [],
+      layeringOrder: [],
+      productsMissingInci: [],
+      engineVersion: 'v2',
+      generatedAt: '2026-04-24T09:00:00.000Z',
+    });
+
+    await analyzeProducts({
+      focusProductId: 'product-1',
+      language: 'en',
+      withExplanations: false,
+      forceRefresh: true,
+    });
+
+    expect(postRequest).toHaveBeenCalledWith(
+      '/ingredients/analyze',
+      {
+        focusProductId: 'product-1',
+        language: 'en',
+        withExplanations: false,
+        forceRefresh: true,
+      },
+      { signal: undefined },
     );
   });
 

@@ -126,7 +126,8 @@ export function consumeAppScrollRestoreRequest(pathname: string): boolean {
   }
 
   try {
-    const requestedPathname = window.sessionStorage.getItem(RESTORE_REQUEST_KEY);
+    const requestedPathname =
+      window.sessionStorage.getItem(RESTORE_REQUEST_KEY);
     if (requestedPathname === null) {
       return false;
     }
@@ -136,4 +137,75 @@ export function consumeAppScrollRestoreRequest(pathname: string): boolean {
   } catch {
     return false;
   }
+}
+
+type RestoreAppScrollPositionOptions = {
+  maxAttempts?: number;
+  retryDelayMs?: number;
+};
+
+export function restoreAppScrollPosition(
+  scrollTop: number,
+  options: RestoreAppScrollPositionOptions = {},
+): () => void {
+  if (typeof window === "undefined") {
+    return () => undefined;
+  }
+
+  const targetScrollTop = Math.max(0, Math.round(scrollTop));
+  const maxAttempts = options.maxAttempts ?? 80;
+  const retryDelayMs = options.retryDelayMs ?? 50;
+  let retryCount = 0;
+  let timeoutId = 0;
+  let animationFrameId = 0;
+  let isCanceled = false;
+
+  const restore = () => {
+    if (isCanceled) {
+      return;
+    }
+
+    const scrollRoot = getAppScrollRoot();
+    if (!scrollRoot) {
+      return;
+    }
+
+    scrollRoot.scrollTo({
+      top: targetScrollTop,
+      left: 0,
+      behavior: "auto",
+    });
+
+    const hasReachedTarget =
+      Math.abs(scrollRoot.scrollTop - targetScrollTop) <= 2;
+    const canReachTarget =
+      scrollRoot.scrollHeight - scrollRoot.clientHeight >= targetScrollTop - 2;
+
+    if (
+      targetScrollTop === 0 ||
+      hasReachedTarget ||
+      retryCount >= maxAttempts
+    ) {
+      return;
+    }
+
+    retryCount += 1;
+    timeoutId = window.setTimeout(
+      () => {
+        animationFrameId = window.requestAnimationFrame(restore);
+      },
+      canReachTarget ? 16 : retryDelayMs,
+    );
+  };
+
+  animationFrameId = window.requestAnimationFrame(restore);
+
+  return () => {
+    isCanceled = true;
+    window.cancelAnimationFrame(animationFrameId);
+
+    if (timeoutId !== 0) {
+      window.clearTimeout(timeoutId);
+    }
+  };
 }

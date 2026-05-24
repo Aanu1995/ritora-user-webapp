@@ -204,6 +204,7 @@ export function WriteReviewForm() {
           const busy = isSubmitting || mutation.isPending;
           return (
             <Button
+              size="sm"
               className="mt-5 w-full sm:w-auto"
               type="submit"
               disabled={!canSubmit || busy}
@@ -383,6 +384,7 @@ export function PublishRoutineForm() {
           const busy = isSubmitting || mutation.isPending;
           return (
             <Button
+              size="sm"
               className="mt-5 w-full sm:w-auto"
               type="submit"
               disabled={!canSubmit || busy}

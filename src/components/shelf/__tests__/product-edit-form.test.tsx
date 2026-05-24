@@ -7,6 +7,7 @@ import {
   mockMutate,
   mockUploadForProductMutate,
   mockPush,
+  mockReplace,
   mockRevokeObjectUrl,
   renderProductEditForm,
   resetProductEditFormMocks,
@@ -288,15 +289,21 @@ describe('ProductEditForm', () => {
     );
   });
 
-  it('saves and redirects to the detail page', async () => {
+  it('saves and returns to the source page', async () => {
     const user = userEvent.setup();
+    const historyBack = jest
+      .spyOn(window.history, 'back')
+      .mockImplementation(() => undefined);
     mockMutate.mockImplementation((_input, options) => {
       options?.onSuccess?.();
     });
 
-    renderProductEditForm();
+    renderProductEditForm({ withUnsavedDialog: true });
 
     setInputValue(/product name/i, 'Updated Serum');
+    await waitFor(() => {
+      expect(useUnsavedChangesStore.getState().hasUnsavedChanges).toBe(true);
+    });
     await user.click(screen.getByRole('button', { name: /add step/i }));
     fireEvent.change(getStepInput(1), {
       target: { value: 'Pat onto clean skin.' },
@@ -306,8 +313,11 @@ describe('ProductEditForm', () => {
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalled();
-      expect(mockPush).toHaveBeenCalledWith('/shelf/product-1');
+      expect(mockPush).not.toHaveBeenCalledWith('/shelf/product-1');
+      expect(mockReplace).toHaveBeenCalledWith('/shelf/product-1');
     });
+    expect(historyBack).not.toHaveBeenCalled();
+    historyBack.mockRestore();
   });
 
   it('saves an unopened product without requiring an opened date', async () => {
@@ -327,7 +337,8 @@ describe('ProductEditForm', () => {
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalled();
-      expect(mockPush).toHaveBeenCalledWith('/shelf/product-1');
+      expect(mockPush).not.toHaveBeenCalledWith('/shelf/product-1');
+      expect(mockReplace).toHaveBeenCalledWith('/shelf/product-1');
     });
 
     expect(mockMutate.mock.calls[0]?.[0].patch.userFields.openedAt).toBeNull();

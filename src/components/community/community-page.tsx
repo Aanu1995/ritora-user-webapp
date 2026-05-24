@@ -2,26 +2,26 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, UserCheck } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { QueryKey } from "@/constants/query-keys";
 import { getCommunityHome } from "@/services/community.service";
-import { PublishPanel, PostingEligibilityDialog } from "./community-eligibility";
+import {
+  PublishPanel,
+  PostingEligibilityDialog,
+} from "./community-eligibility";
 import {
   CommunityTabs,
-  FacetPills,
+  FacetStrip,
   ForYou,
   PeopleLikeMe,
   ReviewList,
   RoutineList,
 } from "./community-lists";
-import {
-  CommunitySkeleton,
-  type CommunityTab,
-} from "./community-shared";
+import { CommunitySkeleton, type CommunityTab } from "./community-shared";
 import { MySubmissions } from "./community-submissions";
 import { TrustPanel } from "./community-trust-panel";
 
@@ -61,7 +61,7 @@ export function CommunityPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 pb-10">
+    <div className="mx-auto max-w-6xl pb-10">
       <PageHeader
         title="Community"
         subtitle="Ranked for people like you, then adapted safely to your shelf."
@@ -73,40 +73,27 @@ export function CommunityPage() {
         }
       />
 
-      {/* Hero band — design system tokens only, no hard-coded palette. */}
-      <section className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-accent-soft via-surface to-secondary-soft p-5 shadow-soft sm:p-6">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-accent-strong">
-          <UserCheck className="h-3.5 w-3.5" />
-          Ranked by similarity, not popularity
-        </div>
-        <h2 className="mt-3 max-w-3xl font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-          See what worked for people who share your skin, then let Ritora
-          translate it.
-        </h2>
-        <p className="mt-3 max-w-3xl text-sm leading-6 text-muted">
-          Community reviews and routines use only privacy-safe profile facets.
-          Your email, exact location, photos, medical context and private notes
-          stay private.
-        </p>
-        <FacetPills data={data} />
-      </section>
+      {/* Compact facet strip — replaces the old hero band */}
+      <FacetStrip data={data} />
 
+      {/* Sticky tab bar — stays in view as the user scrolls */}
       <CommunityTabs active={tab} onChange={handleTabChange} />
 
-      {tab === "for-you" ? (
-        <ForYou data={data} onChangeTab={handleTabChange} />
-      ) : null}
-      {tab === "people" ? <PeopleLikeMe data={data} /> : null}
-      {tab === "routines" ? <RoutineList routines={data.routines} /> : null}
-      {tab === "reviews" ? <ReviewList reviews={data.reviews} /> : null}
-      {tab === "publish" ? (
-        <PublishPanel
-          eligibility={data.postingEligibility}
-          onExplainBlocked={() => setPostingDialogOpen(true)}
-        />
-      ) : null}
-      {tab === "submissions" ? <MySubmissions /> : null}
-      {tab === "trust" ? <TrustPanel data={data} /> : null}
+      {/* Tab content */}
+      <div className="mt-4 space-y-6">
+        {tab === "for-you" ? <ForYou data={data} /> : null}
+        {tab === "people" ? <PeopleLikeMe data={data} /> : null}
+        {tab === "routines" ? <RoutineList routines={data.routines} /> : null}
+        {tab === "reviews" ? <ReviewList reviews={data.reviews} /> : null}
+        {tab === "publish" ? (
+          <PublishPanel
+            eligibility={data.postingEligibility}
+            onExplainBlocked={() => setPostingDialogOpen(true)}
+          />
+        ) : null}
+        {tab === "submissions" ? <MySubmissions /> : null}
+        {tab === "trust" ? <TrustPanel data={data} /> : null}
+      </div>
 
       <PostingEligibilityDialog
         eligibility={data.postingEligibility}

@@ -14,7 +14,10 @@ import {
   useDeleteSkinProfileHormonalContext,
   useUpdateSkinProfile,
 } from "@/hooks/use-skin-profile";
-import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
+import {
+  useUnsavedChangesGuard,
+  type UnsavedChangesGuardRelease,
+} from "@/hooks/use-unsaved-changes-guard";
 import {
   clearSubmitErrors,
   executeMutation,
@@ -42,6 +45,7 @@ interface HormonalSectionProps {
   options: SkinProfileOptions;
   submitRef?: Ref<SectionFormHandle>;
   onPendingChange?: (pending: boolean) => void;
+  onSaved?: (release: UnsavedChangesGuardRelease) => void;
 }
 
 export function HormonalSection({
@@ -49,6 +53,7 @@ export function HormonalSection({
   options,
   submitRef,
   onPendingChange,
+  onSaved,
 }: HormonalSectionProps) {
   const t = useTranslations("skinProfile.hormonal");
   const tOptions = useTranslations("skinProfile.options");
@@ -94,8 +99,9 @@ export function HormonalSection({
     },
     onSubmit: ({ value }) => {
       form.reset(value);
-      releaseGuard();
+      const release = releaseGuard({ removeHistoryEntry: false });
       toast.success(t("saved"));
+      onSaved?.(release);
     },
   });
 
@@ -161,7 +167,7 @@ export function HormonalSection({
     deleteMutation.mutate(undefined, {
       onSuccess: () => {
         form.reset(getHormonalFormValues({}));
-        releaseGuard();
+        releaseGuard({ removeHistoryEntry: false });
         setConsentAcceptedValue(false);
         toast.success(t("deleted"));
       },

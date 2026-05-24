@@ -108,6 +108,7 @@ export type AnalyzeProductsInput =
       focusProductId: string;
       language?: Locale;
       withExplanations?: boolean;
+      forceRefresh?: boolean;
     }
   | {
       productIds: string[];

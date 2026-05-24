@@ -25,7 +25,6 @@ import {
   blockedPosting,
   communityHomeFixture,
   eligiblePosting,
-  reviewFixture,
   routineFixture,
   submissionsFixture,
 } from "../test-fixtures";

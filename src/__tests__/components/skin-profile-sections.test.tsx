@@ -31,18 +31,21 @@ type UpdateMutate = (
   options?: MutationOptions,
 ) => void;
 
-type DeleteMutate = (
-  variables?: undefined,
-  options?: MutationOptions,
-) => void;
+type DeleteMutate = (variables?: undefined, options?: MutationOptions) => void;
 
 let mockUpdateMutate: jest.MockedFunction<UpdateMutate>;
 let mockDeleteHealthMutate: jest.MockedFunction<DeleteMutate>;
 let mockDeleteHormonalMutate: jest.MockedFunction<DeleteMutate>;
-let mockReleaseGuard: jest.MockedFunction<() => void>;
+type ReleaseGuardOptions = { removeHistoryEntry?: boolean };
+type ReleaseGuardResult = { hadHistoryEntry: boolean };
+
+let mockReleaseGuard: jest.MockedFunction<
+  (options?: ReleaseGuardOptions) => ReleaseGuardResult
+>;
 let mockRequestLeave: jest.MockedFunction<(callback: () => void) => void>;
 let mockRouterPush: jest.MockedFunction<(href: string) => void>;
 const mockToastSuccess = jest.fn();
+const mockToastError = jest.fn();
 
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
@@ -53,6 +56,7 @@ jest.mock("next/navigation", () => ({
 
 jest.mock("sonner", () => ({
   toast: {
+    error: (...args: unknown[]) => mockToastError(...args),
     success: (...args: unknown[]) => mockToastSuccess(...args),
   },
 }));
@@ -76,7 +80,9 @@ jest.mock("@/components/ui/select", () => ({
   ),
   SelectTrigger: () => null,
   SelectValue: () => null,
-  SelectContent: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  SelectContent: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
   SelectItem: ({
     value,
     children,
@@ -174,8 +180,9 @@ function mergedProfile(input: Partial<SkinProfile>): SkinProfile {
 describe("skin profile optional sections", () => {
   beforeEach(() => {
     mockRouterPush = jest.fn();
-    mockReleaseGuard = jest.fn();
+    mockReleaseGuard = jest.fn(() => ({ hadHistoryEntry: false }));
     mockRequestLeave = jest.fn((callback) => callback());
+    mockToastError.mockClear();
     mockToastSuccess.mockClear();
     mockUpdateMutate = jest.fn((variables, options) => {
       options?.onSuccess?.(mergedProfile(variables as Partial<SkinProfile>));
@@ -219,9 +226,7 @@ describe("skin profile optional sections", () => {
     expect(screen.getByText(/health-data consent active/i)).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Eczema" }));
-    await user.click(
-      screen.getByRole("button", { name: "Topical retinoid" }),
-    );
+    await user.click(screen.getByRole("button", { name: "Topical retinoid" }));
     await user.click(
       screen.getByRole("checkbox", {
         name: /other medications that may cause photosensitivity/i,
@@ -243,12 +248,17 @@ describe("skin profile optional sections", () => {
       }),
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
-    expect(mockReleaseGuard).toHaveBeenCalled();
+    expect(mockReleaseGuard).toHaveBeenCalledWith({
+      removeHistoryEntry: false,
+    });
 
     await user.click(screen.getByRole("button", { name: /delete this data/i }));
     await user.click(screen.getByRole("button", { name: /^delete$/i }));
 
     await waitFor(() => expect(mockDeleteHealthMutate).toHaveBeenCalled());
+    expect(mockReleaseGuard).toHaveBeenLastCalledWith({
+      removeHistoryEntry: false,
+    });
   });
 
   it("requires medical safety consent before saving new health context", async () => {
@@ -322,6 +332,9 @@ describe("skin profile optional sections", () => {
       },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+    expect(mockReleaseGuard).toHaveBeenCalledWith({
+      removeHistoryEntry: false,
+    });
   });
 
   it("submits active tolerance with an optional last-used date", async () => {
@@ -358,6 +371,9 @@ describe("skin profile optional sections", () => {
       },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+    expect(mockReleaseGuard).toHaveBeenCalledWith({
+      removeHistoryEntry: false,
+    });
   });
 
   it("adds, removes, and submits reaction history entries", async () => {
@@ -424,6 +440,39 @@ describe("skin profile optional sections", () => {
       },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+    expect(mockReleaseGuard).toHaveBeenCalledWith({
+      removeHistoryEntry: false,
+    });
+  });
+
+  it("does not submit reaction history while an add-reaction draft is unsaved", async () => {
+    const user = userEvent.setup();
+    const profile = mergedProfile({
+      hasHealthContextConsent: true,
+      reactionHistory: {
+        has_known_reactions: true,
+        entries: [],
+      },
+    });
+    const { ref } = renderForwardedSection((sectionRef) => (
+      <ReactionsSection
+        ref={sectionRef}
+        profile={profile}
+        options={mockSkinProfileOptions}
+        onPendingChange={jest.fn()}
+      />
+    ));
+
+    await user.type(
+      screen.getByPlaceholderText(/salicylic acid, lavender oil/i),
+      "Lavender oil",
+    );
+    submitSection(ref);
+
+    expect(mockUpdateMutate).not.toHaveBeenCalled();
+    expect(mockToastError).toHaveBeenCalledWith(
+      "Add or clear the draft reaction before saving.",
+    );
   });
 
   it("saves no known reaction history as an answered health-context field", async () => {
@@ -441,7 +490,9 @@ describe("skin profile optional sections", () => {
       />
     ));
 
-    await user.click(screen.getByRole("button", { name: "No known reactions" }));
+    await user.click(
+      screen.getByRole("button", { name: "No known reactions" }),
+    );
     submitSection(ref);
 
     expect(
@@ -509,6 +560,9 @@ describe("skin profile optional sections", () => {
       }),
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+    expect(mockReleaseGuard).toHaveBeenCalledWith({
+      removeHistoryEntry: false,
+    });
   });
 
   it("submits and revokes hormonal context after consent", async () => {
@@ -546,9 +600,15 @@ describe("skin profile optional sections", () => {
       },
       expect.objectContaining({ onSuccess: expect.any(Function) }),
     );
+    expect(mockReleaseGuard).toHaveBeenCalledWith({
+      removeHistoryEntry: false,
+    });
 
     await user.click(screen.getByRole("button", { name: /delete this data/i }));
     await waitFor(() => expect(mockDeleteHormonalMutate).toHaveBeenCalled());
+    expect(mockReleaseGuard).toHaveBeenLastCalledWith({
+      removeHistoryEntry: false,
+    });
   });
 
   it("requires hormonal consent before saving new hormonal context", async () => {

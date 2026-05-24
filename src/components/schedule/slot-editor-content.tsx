@@ -150,6 +150,7 @@ export function SlotEditorContent({
       setBaselineSlot(savedSlot);
       setBaselineSteps(nextBaselineSteps);
       setProductLookup(buildProductLookup(savedSlot.steps));
+      releaseGuard({ removeHistoryEntry: false });
       form.reset(createSlotEditorDefaultValues(savedSlot, nextBaselineSteps));
       latestSavedSlotRef.current = null;
 

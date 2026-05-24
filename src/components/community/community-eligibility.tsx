@@ -146,6 +146,7 @@ export function PostingEligibilityDialog({
 
         <DialogFooter>
           <Button
+            size="sm"
             type="button"
             variant="ghost"
             onClick={() => onOpenChange(false)}
@@ -154,6 +155,7 @@ export function PostingEligibilityDialog({
           </Button>
           {needsGuidelines ? (
             <Button
+              size="sm"
               type="button"
               onClick={() => accept.mutate()}
               disabled={accept.isPending}
