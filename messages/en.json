@@ -54,7 +54,7 @@
     "privacy": "Privacy",
     "faq": "FAQ",
     "login": "Log in",
-    "signUp": "Sign up",
+    "signUp": "Create account",
     "dashboard": "Dashboard",
     "skinProfile": "Skin Profile",
     "settings": "Settings",
@@ -69,7 +69,7 @@
       "headlineLead": "Build safer skincare routines from the",
       "headlineAccent": "products you already own.",
       "lead": "Ritora catches ingredient clashes in the products you already own and turns them into a calm morning, midday, and evening plan tuned to your skin. No shopping needed.",
-      "ctaPrimary": "Create your free account",
+      "ctaPrimary": "Create your account",
       "ctaSecondary": "See how it works",
       "imageAlt": "Today's Suggestion app card with morning routine and Skin Journal preview.",
       "pills": {
@@ -570,14 +570,13 @@
     "finalCta": {
       "headline": "Your shelf, your skin, your routine.",
       "body": "Create your account in under a minute. Add a few products, answer a few questions about your skin, and you'll have a calmer plan for tomorrow morning, built from what's already in your bathroom.",
-      "ctaPrimary": "Create your free account",
+      "ctaPrimary": "Create your account",
       "ctaSecondary": "Log in",
       "trust": ["Free to use", "No card required", "Delete your data anytime"]
     }
   },
   "footer": {
     "brandBlurb": "Ritora helps you turn the products you already own into a calmer, safer daily routine.",
-    "cookieNotice": "Cookie Notice",
     "columns": {
       "explore": "Explore",
       "legal": "Legal",
@@ -604,7 +603,7 @@
     "forgotPasswordDescription": "Enter your email and we'll send you a reset link.",
     "noAccount": "New to Ritora?",
     "hasAccount": "Already have an account?",
-    "signUp": "Create an account",
+    "signUp": "Create account",
     "signIn": "Log in",
     "acceptTerms": "I accept the {terms}",
     "acceptPrivacy": "I accept the {privacy}",
@@ -1096,7 +1095,6 @@
       "legalDescription": "Review the policies behind your data and account.",
       "privacyPolicy": "Privacy policy",
       "termsOfService": "Terms of service",
-      "cookieNotice": "Cookie notice",
       "view": "View",
       "dataTitle": "Your data",
       "dataDescription": "Export and deletion controls.",
@@ -3104,37 +3102,177 @@
     "description": "Ritora turns the skincare products you already own into a calmer morning and evening routine, with ingredient safety checks and guidance shaped by your skin."
   },
   "legalPages": {
-    "cookies": {
-      "metadataTitle": "Cookie Notice",
-      "metadataDescription": "Cookie notice foundations for the Ritora web experience.",
-      "eyebrow": "Cookie Notice",
-      "title": "Cookie foundations for Ritora",
-      "paragraphs": [
-        "The product direction aims to keep cookie use minimal and transparent. Authentication cookies and carefully scoped preference cookies are preferred over unnecessary tracking.",
-        "A fuller cookie notice will document what is essential, what is optional, and how user consent affects analytics or preference storage as more features ship."
-      ]
-    },
     "privacy": {
       "metadataTitle": "Privacy Policy",
-      "metadataDescription": "Privacy foundations for the Ritora web experience.",
-      "eyebrow": "Privacy Policy",
-      "title": "Privacy foundations for Ritora",
-      "paragraphs": [
-        "Ritora is being built with privacy-by-design principles from the start. The product direction prioritizes data minimization, clear consent, and a boundary between public education features and private personalized routines.",
-        "As implementation expands, this page will be replaced with a full policy that documents lawful basis, retention periods, processor relationships, and export and deletion rights in more detail.",
-        "For now, this page establishes the intent behind the current technical improvements: secure auth foundations, explicit consent versioning, and a privacy-aware backend baseline."
-      ]
+      "metadataDescription": "How Ritora collects, uses, and protects your information.",
+      "title": "Privacy Policy",
+      "lastUpdated": "Last updated on 25 May 2026",
+      "overview": {
+        "title": "Overview",
+        "lead": "Ritora helps you build a calmer, safer skincare routine. To do that we ask for a few things: a little about your skin, the products you use, and the way your skin reacts over time. We try to ask for as little as possible, and we tell you exactly what we do with what you give us.",
+        "intro": "Three things to know up front.",
+        "bullets": [
+          "We do not sell your information.",
+          "We do not train AI models on your photos or your skin profile.",
+          "You can delete your account, and everything in it, from inside the app whenever you want."
+        ],
+        "tail": "If anything on this page is unclear, write to <support>support@getritora.com</support> and a human will reply."
+      },
+      "whatWeCollect": {
+        "title": "What we collect",
+        "lead": "We collect four kinds of information, and only when you give it to us or when it is needed to make the app work.",
+        "accountInfo": "<strong>Account information.</strong> When you create an account we ask for your email address and a password. We never see your password in plain text. We store it as a one way cryptographic hash, which means even we cannot read it. You can also tell us your name, language, time zone, date of birth, and sex at birth. The last two are optional and help us give you better skincare suggestions.",
+        "skinProfile": "<strong>Skin profile.</strong> During onboarding we ask you about your skin. Your skin type, the concerns you have, allergies and past reactions, medications, sun and sleep habits, and the kinds of products you prefer. You can change or remove any answer at any time.",
+        "photosAndRoutine": "<strong>Photos and routine activity.</strong> If you use the skin journal we keep the photos you upload, the dates they were taken, and the notes the AI generates from them. We also store the products you add to your shelf, the routine you build, and the records of what you actually applied each day.",
+        "basicTech": "<strong>Basic technical information.</strong> Standard server logs. Your IP address, browser, request times, and any errors. Plus your notification preferences.",
+        "tail": "We do not collect your precise location. We do not use advertising trackers. There are no marketing cookies in the product."
+      },
+      "howWeUse": {
+        "title": "How we use it",
+        "lead": "We use what you give us to do these things, and only these things.",
+        "bullets": [
+          "Run your account and keep you signed in.",
+          "Generate the daily routine that fits your skin.",
+          "Analyse your skin journal and flag possible reactions early.",
+          "Send the emails you would expect from us: verification, password reset, and any notifications you turn on.",
+          "Keep the service safe, fix bugs, and prevent abuse.",
+          "Meet our legal obligations."
+        ],
+        "tail": "That is the whole list. No advertising. No selling. No quiet resale to anyone else. If we ever want to use your information for something new, we will ask you first."
+      },
+      "photosAndAi": {
+        "title": "Photos and AI",
+        "lead": "The skin journal helps you see how your skin changes. Here is how it works behind the scenes.",
+        "bullets": [
+          "Photos are sent to a third party AI provider for analysis. The provider is contractually bound not to keep them and not to train any model on them.",
+          "We strip GPS information from your photos before storing them.",
+          "We do not run facial recognition. We do not build a face template. The analysis looks at the skin, not at the person."
+        ],
+        "bulletStrong": "<strong>We do not use your photos or skin profile to train any AI model. Not ours. Not anyone else's.</strong>",
+        "disclaimer": "Ritora gives you suggestions. It is not medical advice. If your skin is reacting, please see a dermatologist or a pharmacist. You can override or skip any suggestion the app gives you."
+      },
+      "sharing": {
+        "title": "Sharing your data",
+        "p1": "We do not sell your information. We do not share it with advertisers. There is no version of Ritora that funds itself by selling its users.",
+        "p2": "The only time your information leaves our systems is when the law obliges us to share it, or when you ask us to. If Ritora is ever acquired or merges with another company, you will be told before anything moves, and this policy will still apply."
+      },
+      "retention": {
+        "title": "How long we keep it",
+        "p1": "We keep your information for as long as your account is active. When you delete your account, we keep your data for 30 days in case you change your mind, and then we erase it from our systems.",
+        "p2": "A couple of specific timelines. Photos in the skin journal are removed within seven days of you deleting them. Server logs roll over within 90 days. Where the law obliges us to keep a record (for example, accounting), we keep only the minimum that is required for the time it is required."
+      },
+      "location": {
+        "title": "Where your data lives",
+        "p1": "Your information is stored in the European Union. Some AI processing happens in the United States under the standard legal safeguards that European law requires. Your data is encrypted in transit and at rest."
+      },
+      "security": {
+        "title": "Security",
+        "p1": "We treat security as part of the product, not as an afterthought.",
+        "p2": "Your data is encrypted in transit and at rest. The sensitive fields in your skin profile get an extra layer of encryption before they touch the database.",
+        "p3": "No system is perfectly secure. If anything ever goes wrong, we will tell you. If you find a problem, please write to <support>support@getritora.com</support>."
+      },
+      "rights": {
+        "title": "Your rights and choices",
+        "lead": "You stay in control of your information. From <em>Settings</em> inside the app you can:",
+        "bullets": [
+          "Download a copy of everything we have on you.",
+          "Edit or remove any part of your skin profile.",
+          "Delete a single journal entry, or all of them.",
+          "Turn off optional AI features.",
+          "Delete your account entirely."
+        ],
+        "p1": "If you would rather do any of this by email, write to <support>support@getritora.com</support>. We respond within a month, usually much sooner, and we do not charge for it.",
+        "p2": "If you live in the European Union or the United Kingdom, you also have the right to lodge a complaint with your local data protection authority. We hope you would tell us first so we can fix it, but that right is yours either way."
+      },
+      "children": {
+        "title": "Children",
+        "p1": "Ritora is for people aged 16 and over. We do not knowingly collect information from anyone younger. If you think a child has signed up, write to <support>support@getritora.com</support> and we will remove the account."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "lead": "We use a small set of cookies, all for basic functionality.",
+        "bullets": [
+          "A session cookie that keeps you signed in.",
+          "A cookie that remembers your choices in the cookie banner.",
+          "Local storage for your theme and language preferences."
+        ],
+        "tail": "That is the whole list. No advertising cookies. No fingerprinting. No tracking across other sites."
+      },
+      "changes": {
+        "title": "Changes to this policy",
+        "p1": "If we change anything important on this page, we will update the date at the top, tell you inside the app, and email you when the change is significant. We will do this before the change takes effect, not after."
+      },
+      "contact": {
+        "title": "Contact us",
+        "p1": "For anything about this policy, or about your information, write to <support>support@getritora.com</support>. We read every message."
+      }
     },
     "terms": {
       "metadataTitle": "Terms of Service",
-      "metadataDescription": "Terms foundations for the Ritora web experience.",
-      "eyebrow": "Terms of Service",
-      "title": "Terms foundations for Ritora",
-      "paragraphs": [
-        "Ritora is intended as a skincare decision-support experience, not a diagnostic or medical tool. The platform direction focuses on safer routine decisions, inventory clarity, and calmer product use.",
-        "As the product matures, these terms will be expanded to cover account responsibilities, acceptable use, disclaimer language, and service boundaries in production detail.",
-        "The current page exists so the public experience already has a real legal route structure instead of placeholder links."
-      ]
+      "metadataDescription": "The terms that apply when you use Ritora.",
+      "title": "Terms of Service",
+      "lastUpdated": "Last updated on 25 May 2026",
+      "overview": {
+        "title": "Overview",
+        "p1": "These are the terms you agree to when you use Ritora. Ritora is an app that helps you build a calmer skincare routine using the products you already own. By creating an account or using the app, you agree to these terms. If you do not agree, please do not use Ritora."
+      },
+      "eligibility": {
+        "title": "Eligibility",
+        "p1": "You need to be 16 or over to use Ritora. You also need to give us accurate information about yourself. If we find out you lied, or that you are under 16, we will close the account."
+      },
+      "account": {
+        "title": "Your account",
+        "p1": "You are responsible for keeping your password safe and for everything that happens on your account. If you think someone else has got in, tell us straight away at <support>support@getritora.com</support>."
+      },
+      "ritoraIs": {
+        "title": "What Ritora is, and what it is not",
+        "p1": "Ritora is a decision support tool for your skincare routine. It is not a medical device, not a doctor, and not a diagnosis. The suggestions you get inside the app are help, not advice.",
+        "p2": "If your skin is reacting badly, please see a dermatologist or a pharmacist. Anything Ritora tells you, you can change, ignore, or override."
+      },
+      "yourContent": {
+        "title": "Your content",
+        "p1": "The photos you upload, the answers you give about your skin, and the routine you build are yours. You keep ownership of them.",
+        "p2": "You give Ritora the limited permission it needs to store your content, process it, and show it back to you in the app. That permission ends when you delete the content or close your account."
+      },
+      "prohibited": {
+        "title": "What you cannot do",
+        "lead": "A few things you must not do when using Ritora.",
+        "bullets": [
+          "Pretend to be someone else, or create an account on behalf of someone else without their permission.",
+          "Try to scrape, copy, or republish other users' content.",
+          "Try to break into the app, reverse engineer it, or test it for vulnerabilities without our written permission.",
+          "Use the app for anything illegal, for anything that targets a specific person, or for anything that exposes a minor to content that is not for them.",
+          "Post content that harasses, threatens, or harms another person, or that promotes illegal activity.",
+          "Resell or rent out access to the app."
+        ],
+        "tail": "If you do any of these things we may suspend or close your account without notice."
+      },
+      "pricing": {
+        "title": "Pricing",
+        "p1": "Ritora is free to use today. If we ever add a paid plan we will tell you before it affects you, and we will not turn off anything you already rely on without giving you fair notice."
+      },
+      "suspension": {
+        "title": "Suspension and closing the account",
+        "p1": "You can delete your account from inside the app whenever you want. After a 30 day grace period in case you change your mind, everything goes.",
+        "p2": "We may suspend or close your account if you break these terms, if we believe you are abusing the service, or if the law requires it. Where we can, we will tell you why."
+      },
+      "warranty": {
+        "title": "No warranty",
+        "p1": "We work hard to make Ritora useful, but we cannot promise it will always work, always be available, or always be free of bugs. The app is provided as it is. That is the same deal you get from most online services."
+      },
+      "liability": {
+        "title": "Limit of our responsibility",
+        "p1": "To the maximum extent allowed by law, we are not responsible for indirect or consequential losses, lost data, lost profits, or anything that happens to your skin because of a Ritora suggestion. Use your own judgement, and ask a real doctor when you are worried.",
+        "p2": "If we are held responsible for something despite the rest of this section, our total liability is capped at the amount you paid us in the twelve months before the problem arose. Today that amount is zero."
+      },
+      "changes": {
+        "title": "Changes to these terms",
+        "p1": "If we change these terms in a significant way, we will update the date at the top and tell you inside the app or by email before the change takes effect. By continuing to use Ritora after that, you accept the new version."
+      },
+      "contact": {
+        "title": "Contact us",
+        "p1": "If you have a question about these terms, write to <support>support@getritora.com</support>. We read every message."
+      }
     }
   },
   "journal": {

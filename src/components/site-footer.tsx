@@ -67,12 +67,6 @@ export async function SiteFooter() {
             >
               {tAuth('termsOfService')}
             </Link>
-            <Link
-              href={AppRoute.Cookies}
-              className="transition-colors hover:text-foreground"
-            >
-              {tFooter('cookieNotice')}
-            </Link>
           </div>
         </div>
 

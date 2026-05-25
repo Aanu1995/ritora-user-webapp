@@ -581,7 +581,6 @@
   },
   "footer": {
     "brandBlurb": "Ritora hjälper dig att förvandla produkterna du redan äger till en lugnare, säkrare daglig rutin.",
-    "cookieNotice": "Cookiepolicy",
     "columns": {
       "explore": "Utforska",
       "legal": "Juridik",
@@ -608,7 +607,7 @@
     "forgotPasswordDescription": "Ange din e-post så skickar vi en återställningslänk.",
     "noAccount": "Ny på Ritora?",
     "hasAccount": "Har du redan ett konto?",
-    "signUp": "Skapa ett konto",
+    "signUp": "Skapa konto",
     "signIn": "Logga in",
     "acceptTerms": "Jag accepterar {terms}",
     "acceptPrivacy": "Jag accepterar {privacy}",
@@ -1100,7 +1099,6 @@
       "legalDescription": "Granska policyerna bakom dina data och ditt konto.",
       "privacyPolicy": "Integritetspolicy",
       "termsOfService": "Användarvillkor",
-      "cookieNotice": "Cookieinformation",
       "view": "Visa",
       "dataTitle": "Dina data",
       "dataDescription": "Export- och raderingskontroller.",
@@ -3111,37 +3109,177 @@
     "description": "Ritora gör hudvårdsprodukterna du redan äger till en lugnare morgon- och kvällsrutin, med ingredienskontroller och vägledning formad av din hud."
   },
   "legalPages": {
-    "cookies": {
-      "metadataTitle": "Cookieinformation",
-      "metadataDescription": "Grunderna för cookies i Ritoras webbupplevelse.",
-      "eyebrow": "Cookieinformation",
-      "title": "Cookiegrunder för Ritora",
-      "paragraphs": [
-        "Produktinriktningen är att hålla cookieanvändningen minimal och transparent. Autentiseringscookies och tydligt avgränsade preferenscookies prioriteras framför onödig spårning.",
-        "En mer komplett cookieinformation kommer att beskriva vad som är nödvändigt, vad som är valfritt och hur användarens samtycke påverkar analys eller lagring av preferenser när fler funktioner lanseras."
-      ]
-    },
     "privacy": {
       "metadataTitle": "Integritetspolicy",
-      "metadataDescription": "Integritetsgrunder för Ritoras webbupplevelse.",
-      "eyebrow": "Integritetspolicy",
-      "title": "Integritetsgrunder för Ritora",
-      "paragraphs": [
-        "Ritora byggs med privacy-by-design från början. Produktinriktningen prioriterar dataminimering, tydligt samtycke och en gräns mellan offentlig utbildning och privata personliga rutiner.",
-        "När implementationen växer kommer den här sidan att ersättas av en fullständig policy som beskriver rättslig grund, lagringstider, personuppgiftsbiträden samt export- och raderingsrättigheter mer detaljerat.",
-        "För tillfället beskriver sidan avsikten bakom de aktuella tekniska förbättringarna: säkra autentiseringsgrunder, tydlig samtyckesversionering och en integritetsmedveten backendbas."
-      ]
+      "metadataDescription": "Hur Ritora samlar in, använder och skyddar din information.",
+      "title": "Integritetspolicy",
+      "lastUpdated": "Senast uppdaterad den 25 maj 2026",
+      "overview": {
+        "title": "Översikt",
+        "lead": "Ritora hjälper dig att bygga en lugnare och tryggare hudvårdsrutin. För att göra det behöver vi veta lite om dig: lite om din hud, vilka produkter du använder och hur din hud reagerar över tid. Vi försöker fråga om så lite som möjligt, och vi berättar exakt vad vi gör med det du ger oss.",
+        "intro": "Tre saker att veta från början.",
+        "bullets": [
+          "Vi säljer inte din information.",
+          "Vi tränar inte AI-modeller på dina foton eller din hudprofil.",
+          "Du kan ta bort ditt konto, och allt som finns i det, inifrån appen när du vill."
+        ],
+        "tail": "Om något på den här sidan är oklart, skriv till <support>support@getritora.com</support> så svarar en människa."
+      },
+      "whatWeCollect": {
+        "title": "Vad vi samlar in",
+        "lead": "Vi samlar in fyra typer av information, och bara när du ger den till oss eller när den behövs för att appen ska fungera.",
+        "accountInfo": "<strong>Kontoinformation.</strong> När du skapar ett konto frågar vi efter din e-postadress och ett lösenord. Vi ser aldrig ditt lösenord i klartext. Vi lagrar det som en envägs kryptografisk hash, vilket betyder att inte ens vi kan läsa det. Du kan också berätta för oss ditt namn, språk, tidszon, födelsedatum och kön vid födseln. De två sista är frivilliga och hjälper oss att ge dig bättre hudvårdsförslag.",
+        "skinProfile": "<strong>Hudprofil.</strong> Under introduktionen frågar vi dig om din hud. Din hudtyp, dina nuvarande hudbesvär, allergier och tidigare reaktioner, mediciner, sol- och sömnvanor, och vilka typer av produkter du föredrar. Du kan ändra eller ta bort vilket svar som helst när som helst.",
+        "photosAndRoutine": "<strong>Foton och rutinaktivitet.</strong> Om du använder Hudjournalen sparar vi fotona du laddar upp, datumen de togs och anteckningarna AI:n skapar utifrån dem. Vi lagrar också produkterna du lägger till i din hylla, rutinen du bygger och anteckningarna om vad du faktiskt applicerade varje dag.",
+        "basicTech": "<strong>Grundläggande teknisk information.</strong> Standardloggar på serversidan. Din IP-adress, webbläsare, tidpunkter för förfrågningar och eventuella fel. Plus dina aviseringsinställningar.",
+        "tail": "Vi samlar inte in din exakta plats. Vi använder inga reklamspårare. Det finns inga marknadsföringscookies i produkten."
+      },
+      "howWeUse": {
+        "title": "Hur vi använder den",
+        "lead": "Vi använder det du ger oss för att göra de här sakerna, och bara de här sakerna.",
+        "bullets": [
+          "Driva ditt konto och hålla dig inloggad.",
+          "Skapa den dagliga rutin som passar din hud.",
+          "Analysera din Hudjournal och flagga möjliga reaktioner tidigt.",
+          "Skicka de e-postmeddelanden du förväntar dig av oss: verifiering, lösenordsåterställning och eventuella aviseringar du slår på.",
+          "Hålla tjänsten säker, fixa buggar och förhindra missbruk.",
+          "Uppfylla våra rättsliga skyldigheter."
+        ],
+        "tail": "Det är hela listan. Ingen reklam. Ingen försäljning. Ingen tyst återförsäljning till någon annan. Om vi någonsin vill använda din information till något nytt frågar vi dig först."
+      },
+      "photosAndAi": {
+        "title": "Foton och AI",
+        "lead": "Hudjournalen hjälper dig att se hur din hud förändras. Så här fungerar det bakom kulisserna.",
+        "bullets": [
+          "Foton skickas till en extern AI-leverantör för analys. Leverantören är avtalsmässigt bunden att inte spara dem och att inte träna någon modell på dem.",
+          "Vi tar bort GPS-information från dina foton innan vi lagrar dem.",
+          "Vi använder ingen ansiktsigenkänning. Vi bygger ingen ansiktsmall. Analysen tittar på huden, inte på personen."
+        ],
+        "bulletStrong": "<strong>Vi använder inte dina foton eller din hudprofil för att träna någon AI-modell. Inte vår. Inte någon annans.</strong>",
+        "disclaimer": "Ritora ger dig förslag. Det är inte medicinsk rådgivning. Om din hud reagerar, kontakta en hudläkare eller ett apotek. Du kan åsidosätta eller hoppa över alla förslag appen ger dig."
+      },
+      "sharing": {
+        "title": "Delning av din data",
+        "p1": "Vi säljer inte din information. Vi delar den inte med annonsörer. Det finns ingen version av Ritora som finansieras genom att sälja sina användare.",
+        "p2": "Det enda tillfället din information lämnar våra system är när lagen kräver att vi delar den, eller när du ber oss om det. Om Ritora någonsin förvärvas av eller går samman med ett annat företag kommer du att få veta innan något flyttas, och denna policy gäller fortfarande."
+      },
+      "retention": {
+        "title": "Hur länge vi sparar den",
+        "p1": "Vi sparar din information så länge ditt konto är aktivt. När du raderar ditt konto sparar vi din data i 30 dagar ifall du ångrar dig, och sedan raderar vi den från våra system.",
+        "p2": "Några specifika tider. Foton i Hudjournalen raderas inom sju dagar efter att du tagit bort dem. Serverloggar roteras inom 90 dagar. Där lagen kräver att vi sparar en uppgift (till exempel bokföring) sparar vi bara det minimum som krävs under den tid det krävs."
+      },
+      "location": {
+        "title": "Var din data finns",
+        "p1": "Din information lagras i Europeiska unionen. Viss AI-bearbetning sker i USA under de standardiserade rättsliga skyddsåtgärder som europeisk lag kräver. Din data är krypterad under överföring och i vila."
+      },
+      "security": {
+        "title": "Säkerhet",
+        "p1": "Vi behandlar säkerhet som en del av produkten, inte som en eftertanke.",
+        "p2": "Din data är krypterad under överföring och i vila. De känsliga fälten i din hudprofil får ett extra lager av kryptering innan de når databasen.",
+        "p3": "Inget system är perfekt säkert. Om något någonsin går fel kommer vi att berätta det för dig. Om du hittar ett problem, skriv till <support>support@getritora.com</support>."
+      },
+      "rights": {
+        "title": "Dina rättigheter och val",
+        "lead": "Du har kontrollen över din information. Från <em>Inställningar</em> inne i appen kan du:",
+        "bullets": [
+          "Ladda ner en kopia av allt vi har om dig.",
+          "Ändra eller ta bort vilken del som helst av din hudprofil.",
+          "Radera en enstaka journalpost, eller alla.",
+          "Stänga av valfria AI-funktioner.",
+          "Radera ditt konto helt."
+        ],
+        "p1": "Om du hellre vill göra detta via e-post, skriv till <support>support@getritora.com</support>. Vi svarar inom en månad, oftast mycket snabbare, och vi tar inte betalt för det.",
+        "p2": "Om du bor i Europeiska unionen eller Storbritannien har du också rätt att lämna in ett klagomål till din lokala dataskyddsmyndighet. Vi hoppas att du först berättar för oss så att vi kan åtgärda det, men den rättigheten är din ändå."
+      },
+      "children": {
+        "title": "Barn",
+        "p1": "Ritora är för personer som är 16 år eller äldre. Vi samlar inte medvetet in information från någon som är yngre. Om du tror att ett barn har skapat ett konto, skriv till <support>support@getritora.com</support> så tar vi bort kontot."
+      },
+      "cookies": {
+        "title": "Cookies",
+        "lead": "Vi använder ett litet antal cookies, alla för grundläggande funktionalitet.",
+        "bullets": [
+          "En sessionscookie som håller dig inloggad.",
+          "En cookie som kommer ihåg dina val i cookie-bannern.",
+          "Lokal lagring för dina inställningar för tema och språk."
+        ],
+        "tail": "Det är hela listan. Inga reklamcookies. Ingen fingeravtrycksspårning. Ingen spårning över andra webbplatser."
+      },
+      "changes": {
+        "title": "Ändringar av denna policy",
+        "p1": "Om vi ändrar något viktigt på den här sidan kommer vi att uppdatera datumet högst upp, berätta inne i appen och mejla dig när ändringen är betydande. Vi gör detta innan ändringen träder i kraft, inte efter."
+      },
+      "contact": {
+        "title": "Kontakta oss",
+        "p1": "För allt som rör denna policy eller din information, skriv till <support>support@getritora.com</support>. Vi läser varje meddelande."
+      }
     },
     "terms": {
       "metadataTitle": "Användarvillkor",
-      "metadataDescription": "Villkorsgrunder för Ritoras webbupplevelse.",
-      "eyebrow": "Användarvillkor",
-      "title": "Villkorsgrunder för Ritora",
-      "paragraphs": [
-        "Ritora är tänkt som ett beslutsstöd för hudvård, inte som ett diagnostiskt eller medicinskt verktyg. Plattformens inriktning fokuserar på tryggare rutinbeslut, tydligare produktöversikt och lugnare produktanvändning.",
-        "När produkten mognar kommer villkoren att utökas med kontoansvar, acceptabel användning, ansvarsfriskrivningar och tjänstens gränser i produktionsdetalj.",
-        "Den nuvarande sidan finns så att den publika upplevelsen redan har en riktig juridisk routestruktur i stället för platshållarlänkar."
-      ]
+      "metadataDescription": "Villkoren som gäller när du använder Ritora.",
+      "title": "Användarvillkor",
+      "lastUpdated": "Senast uppdaterad den 25 maj 2026",
+      "overview": {
+        "title": "Översikt",
+        "p1": "Det här är villkoren du godkänner när du använder Ritora. Ritora är en app som hjälper dig att bygga en lugnare hudvårdsrutin med de produkter du redan äger. Genom att skapa ett konto eller använda appen godkänner du dessa villkor. Om du inte godkänner dem, använd inte Ritora."
+      },
+      "eligibility": {
+        "title": "Vem som får använda Ritora",
+        "p1": "Du måste vara 16 år eller äldre för att använda Ritora. Du måste också ge oss korrekt information om dig själv. Om vi upptäcker att du har ljugit eller att du är under 16 stänger vi kontot."
+      },
+      "account": {
+        "title": "Ditt konto",
+        "p1": "Du ansvarar för att hålla ditt lösenord säkert och för allt som händer på ditt konto. Om du tror att någon annan har kommit in, berätta för oss direkt på <support>support@getritora.com</support>."
+      },
+      "ritoraIs": {
+        "title": "Vad Ritora är, och vad det inte är",
+        "p1": "Ritora är ett beslutsstöd för din hudvårdsrutin. Det är ingen medicinsk produkt, ingen läkare och ingen diagnos. Förslagen du får inne i appen är hjälp, inte rådgivning.",
+        "p2": "Om din hud reagerar dåligt, kontakta en hudläkare eller ett apotek. Allt som Ritora säger till dig kan du ändra, ignorera eller åsidosätta."
+      },
+      "yourContent": {
+        "title": "Ditt innehåll",
+        "p1": "Fotona du laddar upp, svaren du ger om din hud och rutinen du bygger tillhör dig. Du behåller äganderätten till dem.",
+        "p2": "Du ger Ritora den begränsade rättighet som behövs för att lagra ditt innehåll, bearbeta det och visa det tillbaka för dig i appen. Den rättigheten upphör när du raderar innehållet eller stänger ditt konto."
+      },
+      "prohibited": {
+        "title": "Vad du inte får göra",
+        "lead": "Några saker du inte får göra när du använder Ritora.",
+        "bullets": [
+          "Utge dig för att vara någon annan, eller skapa ett konto för någon annans räkning utan deras tillstånd.",
+          "Försöka skrapa, kopiera eller återpublicera andra användares innehåll.",
+          "Försöka bryta dig in i appen, baklängesutveckla den eller testa den för sårbarheter utan vårt skriftliga tillstånd.",
+          "Använda appen för något olagligt, för något som riktar sig mot en specifik person, eller för något som exponerar en minderårig för innehåll som inte är avsett för dem.",
+          "Publicera innehåll som trakasserar, hotar eller skadar en annan person, eller som främjar olaglig verksamhet.",
+          "Sälja vidare eller hyra ut åtkomst till appen."
+        ],
+        "tail": "Om du gör något av detta kan vi stänga av eller stänga ditt konto utan förvarning."
+      },
+      "pricing": {
+        "title": "Pris",
+        "p1": "Ritora är gratis att använda idag. Om vi någonsin lägger till ett betalt abonnemang kommer vi att berätta det för dig innan det påverkar dig, och vi kommer inte att stänga av något som du redan förlitar dig på utan rimligt varsel."
+      },
+      "suspension": {
+        "title": "Avstängning och avslut av kontot",
+        "p1": "Du kan radera ditt konto inifrån appen när du vill. Efter en respitperiod på 30 dagar ifall du ångrar dig försvinner allt.",
+        "p2": "Vi kan stänga av eller stänga ditt konto om du bryter mot dessa villkor, om vi anser att du missbrukar tjänsten, eller om lagen kräver det. Där vi kan kommer vi att berätta varför."
+      },
+      "warranty": {
+        "title": "Ingen garanti",
+        "p1": "Vi arbetar hårt för att göra Ritora användbart, men vi kan inte lova att det alltid kommer att fungera, alltid vara tillgängligt eller alltid vara fritt från buggar. Appen tillhandahålls i befintligt skick. Det är samma avtal du får från de flesta onlinetjänster."
+      },
+      "liability": {
+        "title": "Vårt ansvarsbegränsning",
+        "p1": "I den utsträckning lagen tillåter ansvarar vi inte för indirekta skador, följdskador, förlorad data, förlorade vinster, eller något som händer med din hud på grund av ett Ritora-förslag. Använd ditt eget omdöme och fråga en riktig läkare när du är orolig.",
+        "p2": "Om vi trots övrigt i detta avsnitt hålls ansvariga för något är vårt totala ansvar begränsat till det belopp du har betalat oss under de tolv månaderna innan problemet uppstod. Idag är det beloppet noll."
+      },
+      "changes": {
+        "title": "Ändringar av dessa villkor",
+        "p1": "Om vi ändrar dessa villkor på ett betydande sätt kommer vi att uppdatera datumet högst upp och berätta för dig inne i appen eller via e-post innan ändringen träder i kraft. Genom att fortsätta använda Ritora därefter godkänner du den nya versionen."
+      },
+      "contact": {
+        "title": "Kontakta oss",
+        "p1": "Om du har en fråga om dessa villkor, skriv till <support>support@getritora.com</support>. Vi läser varje meddelande."
+      }
     }
   },
   "journal": {

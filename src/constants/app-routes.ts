@@ -25,7 +25,6 @@ export enum AppRoute {
   Settings = '/settings',
   Privacy = '/privacy',
   Terms = '/terms',
-  Cookies = '/cookies',
 }
 
 export const NOTIFICATION_SETTINGS_ROUTE = `${AppRoute.Settings}?tab=notifications`;
@@ -52,5 +51,4 @@ export const PUBLIC_METADATA_ROUTES = [
   AppRoute.Home,
   AppRoute.Privacy,
   AppRoute.Terms,
-  AppRoute.Cookies,
 ] as const;
