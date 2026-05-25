@@ -4,6 +4,11 @@ const playwrightPort = process.env.PLAYWRIGHT_PORT ?? '3010';
 const baseURL =
   process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${playwrightPort}`;
 const apiBaseURL = process.env.PLAYWRIGHT_API_BASE_URL ?? `${baseURL}/api/v1`;
+const supportEmail =
+  process.env.NEXT_PUBLIC_SUPPORT_EMAIL?.trim() || 'support@getritora.com';
+const appEnv =
+  `NEXT_PUBLIC_API_URL=${JSON.stringify(apiBaseURL)} ` +
+  `NEXT_PUBLIC_SUPPORT_EMAIL=${JSON.stringify(supportEmail)}`;
 
 export default defineConfig({
   testDir: './e2e',
@@ -30,8 +35,8 @@ export default defineConfig({
     ? undefined
     : {
         command:
-          `NEXT_PUBLIC_API_URL=${apiBaseURL} npm run build && ` +
-          `NEXT_PUBLIC_API_URL=${apiBaseURL} PORT=${playwrightPort} npm start`,
+          `${appEnv} npm run build && ` +
+          `${appEnv} PORT=${JSON.stringify(playwrightPort)} npm start`,
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 120000,
