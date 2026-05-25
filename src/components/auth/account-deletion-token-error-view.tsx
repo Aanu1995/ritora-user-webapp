@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { AppRoute } from '@/constants/app-routes';
+import { getSupportMailto } from '@/lib/support-email';
 import {
   HeroBadge,
   SectionHeading,
@@ -127,7 +128,7 @@ export function ErrorView({
           <Link href={AppRoute.Login}>{t('accountDeletionGoToLogin')}</Link>
         </Button>
         <Button asChild variant="outline" className="w-full rounded-full">
-          <a href="mailto:support@getritora.com">
+          <a href={getSupportMailto()}>
             <Mail className="h-3.5 w-3.5" aria-hidden="true" />
             {t('accountDeletionContactSupport')}
           </a>

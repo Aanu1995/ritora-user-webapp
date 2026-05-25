@@ -136,7 +136,7 @@ export function buildClimateHeadline(
   t: ClimateTranslate,
 ): string | null {
   const condition = isKnownText(environment.conditionLabel)
-    ? environment.conditionLabel
+    ? translateWeatherCondition(t, environment.conditionLabel)
     : isKnownText(environment.temperatureBand)
       ? translateToken(t, "temperature", environment.temperatureBand)
       : null;
@@ -177,6 +177,13 @@ export function translateSensitivity(
   value: string,
 ): string {
   return translateToken(t, "sensitivity", value);
+}
+
+export function translateWeatherCondition(
+  t: ClimateTranslate,
+  value: string,
+): string {
+  return translateToken(t, "weatherCondition", value);
 }
 
 export function temperatureTone(
@@ -272,8 +279,11 @@ export function translateToken(
   group: string,
   value: string,
 ): string {
-  return TOKEN_KEYS[group]?.[value]
-    ? t(TOKEN_KEYS[group][value])
+  const normalizedKey = value.trim().toLowerCase().replaceAll(" ", "_");
+  const tokenKey = TOKEN_KEYS[group]?.[value] ?? TOKEN_KEYS[group]?.[normalizedKey];
+
+  return tokenKey
+    ? t(tokenKey)
     : formatToken(value);
 }
 
@@ -293,6 +303,15 @@ export function isKnownText(value: string | null | undefined): value is string {
 }
 
 const TOKEN_KEYS: Record<string, Record<string, string>> = {
+  weatherCondition: {
+    clear: "weatherCondition.clear",
+    cloudy: "weatherCondition.cloudy",
+    foggy: "weatherCondition.foggy",
+    rainy: "weatherCondition.rainy",
+    snowy: "weatherCondition.snowy",
+    showers: "weatherCondition.showers",
+    stormy: "weatherCondition.stormy",
+  },
   season: {
     spring: "seasons.spring",
     summer: "seasons.summer",

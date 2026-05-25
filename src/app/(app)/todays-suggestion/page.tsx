@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { HeaderContextSubtitle } from "@/components/app/header-context-subtitle";
 import { PageHeader } from "@/components/app/page-header";
@@ -54,6 +54,7 @@ import type {
 
 export default function TodaysSuggestionPage() {
   const t = useTranslations("todaysSuggestion.page");
+  const locale = useLocale();
   const todaysSuggestion = useTodaysSuggestion();
   const normalRoutine = useNormalRoutineToday();
   const regenerateSuggestion = useRegenerateSuggestion();
@@ -117,8 +118,8 @@ export default function TodaysSuggestionPage() {
   );
 
   const headline = useMemo(
-    () => buildHeadline(data?.date, userTimeZone),
-    [data?.date, userTimeZone],
+    () => buildHeadline(data?.date, userTimeZone, locale),
+    [data?.date, locale, userTimeZone],
   );
   const headerSubtitle = (
     <HeaderContextSubtitle

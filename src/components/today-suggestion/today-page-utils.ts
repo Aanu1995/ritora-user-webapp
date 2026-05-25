@@ -35,10 +35,11 @@ export function firstGapRecommendation(slots: TodaysSuggestionSlot[]): {
 export function buildHeadline(
   date: string | undefined,
   timeZone: string,
+  locale?: string,
 ): string {
   if (!date) return "";
   try {
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(locale, {
       weekday: "long",
       month: "long",
       day: "numeric",

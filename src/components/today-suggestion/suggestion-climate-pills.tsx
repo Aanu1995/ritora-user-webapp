@@ -7,6 +7,7 @@ import {
   EnvironmentUvRisk,
   type TodaysSuggestionEnvironmentSummary,
 } from "@/types/environment-suggestions";
+import { translateWeatherCondition } from "@/components/dashboard/dashboard-climate-formatters";
 
 type ClimatePill = {
   key: string;
@@ -72,7 +73,7 @@ function weatherPill(
     return {
       key: "weather",
       label: t("weatherWithTemperature", {
-        condition: environment.conditionLabel,
+        condition: translateWeatherCondition(t, environment.conditionLabel),
         temperature,
       }),
       icon: <CloudSun className="h-3 w-3" />,
@@ -90,7 +91,7 @@ function weatherPill(
   if (environment.conditionLabel) {
     return {
       key: "weather",
-      label: environment.conditionLabel,
+      label: translateWeatherCondition(t, environment.conditionLabel),
       icon: <CloudSun className="h-3 w-3" />,
     };
   }

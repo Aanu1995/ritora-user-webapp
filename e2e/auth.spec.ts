@@ -148,7 +148,7 @@ test.describe("Login Flow", () => {
     await mockAuthApi(page);
     await page.goto("/login");
     await dismissCookieBanner(page);
-    await page.getByRole("link", { name: /create an account/i }).click();
+    await page.getByRole("link", { name: /create account/i }).click();
 
     await expect(page).toHaveURL(/register/);
   });

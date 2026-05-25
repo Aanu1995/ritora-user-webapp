@@ -43,12 +43,14 @@ Variables:
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:3001/api/v1
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SUPPORT_EMAIL=support@getritora.com
 NEXT_PUBLIC_PRODUCT_MEDIA_URL=
 ```
 
 Notes:
 
 - `NEXT_PUBLIC_API_URL` must point to the backend API, not the Next.js dev server.
+- `NEXT_PUBLIC_SUPPORT_EMAIL` is used for support links in public legal and account-deletion screens.
 - `NEXT_PUBLIC_PRODUCT_MEDIA_URL` is optional. Set it when product images are served from private CloudFront media URLs.
 - The frontend blocks unexpected API origins and insecure production API transport.
 

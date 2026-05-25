@@ -130,7 +130,9 @@ describe("dashboard climate formatters", () => {
         t,
       ),
     ).toBeNull();
-    expect(buildClimateHeadline(environment(), t)).toBe("Clear, 12°C");
+    expect(buildClimateHeadline(environment(), t)).toBe(
+      "t:weatherCondition.clear, 12°C",
+    );
     expect(
       buildClimateHeadline(
         environment({ conditionLabel: null, temperatureCelsius: null }),

@@ -250,7 +250,7 @@ describe('LoginPage', () => {
   it('has link to register', () => {
     renderWithProviders(<LoginPage />);
     expect(
-      screen.getByRole('link', { name: /create an account/i }),
+      screen.getByRole('link', { name: /create account/i }),
     ).toBeInTheDocument();
   });
 

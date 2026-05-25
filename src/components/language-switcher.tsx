@@ -8,6 +8,7 @@ import { locales, type Locale, persistLocalePreference } from '@/i18n/config';
 const LOCALE_LABELS: Record<Locale, string> = {
   en: 'English',
   sv: 'Svenska',
+  es: 'Español',
 };
 
 interface LanguageSwitcherProps {

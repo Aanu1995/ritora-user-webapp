@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { HeaderContextSubtitle } from "@/components/app/header-context-subtitle";
 import { PageHeader } from "@/components/app/page-header";
@@ -75,6 +75,7 @@ function DashboardHeader({
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const tNudge = useTranslations("dashboardJournal");
+  const locale = useLocale();
   const user = useAuthStore((s) => s.user);
   const router = useRouter();
   const [renderedAt] = useState(() => new Date().toISOString());
@@ -92,8 +93,9 @@ export default function DashboardPage() {
         todaysSuggestion.data?.date ??
           getTodayDateInTimeZone(timeZone, renderedAt),
         timeZone,
+        locale,
       ),
-    [renderedAt, todaysSuggestion.data?.date, timeZone],
+    [locale, renderedAt, todaysSuggestion.data?.date, timeZone],
   );
 
   const isLoadingDashboard =

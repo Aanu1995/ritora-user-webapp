@@ -563,7 +563,7 @@
         },
         {
           "question": "Which languages are supported?",
-          "answer": "English and Swedish at launch. You can change your preferred language any time from settings."
+          "answer": "English, Swedish, and Spanish at launch. You can change your preferred language any time from settings."
         }
       ]
     },
@@ -837,6 +837,15 @@
     "cityLevelClimate": "City-level",
     "profileOnlyClimate": "Profile only",
     "weather": "Weather",
+    "weatherCondition": {
+      "clear": "Clear",
+      "cloudy": "Cloudy",
+      "foggy": "Foggy",
+      "rainy": "Rainy",
+      "snowy": "Snowy",
+      "showers": "Showers",
+      "stormy": "Stormy"
+    },
     "seasonLabel": "Season",
     "temperature": "Temp",
     "uv": "UV",
@@ -3116,7 +3125,7 @@
           "We do not train AI models on your photos or your skin profile.",
           "You can delete your account, and everything in it, from inside the app whenever you want."
         ],
-        "tail": "If anything on this page is unclear, write to <support>support@getritora.com</support> and a human will reply."
+        "tail": "If anything on this page is unclear, write to <support>{supportEmail}</support> and a human will reply."
       },
       "whatWeCollect": {
         "title": "What we collect",
@@ -3169,7 +3178,7 @@
         "title": "Security",
         "p1": "We treat security as part of the product, not as an afterthought.",
         "p2": "Your data is encrypted in transit and at rest. The sensitive fields in your skin profile get an extra layer of encryption before they touch the database.",
-        "p3": "No system is perfectly secure. If anything ever goes wrong, we will tell you. If you find a problem, please write to <support>support@getritora.com</support>."
+        "p3": "No system is perfectly secure. If anything ever goes wrong, we will tell you. If you find a problem, please write to <support>{supportEmail}</support>."
       },
       "rights": {
         "title": "Your rights and choices",
@@ -3181,12 +3190,12 @@
           "Turn off optional AI features.",
           "Delete your account entirely."
         ],
-        "p1": "If you would rather do any of this by email, write to <support>support@getritora.com</support>. We respond within a month, usually much sooner, and we do not charge for it.",
+        "p1": "If you would rather do any of this by email, write to <support>{supportEmail}</support>. We respond within a month, usually much sooner, and we do not charge for it.",
         "p2": "If you live in the European Union or the United Kingdom, you also have the right to lodge a complaint with your local data protection authority. We hope you would tell us first so we can fix it, but that right is yours either way."
       },
       "children": {
         "title": "Children",
-        "p1": "Ritora is for people aged 16 and over. We do not knowingly collect information from anyone younger. If you think a child has signed up, write to <support>support@getritora.com</support> and we will remove the account."
+        "p1": "Ritora is for people aged 16 and over. We do not knowingly collect information from anyone younger. If you think a child has signed up, write to <support>{supportEmail}</support> and we will remove the account."
       },
       "cookies": {
         "title": "Cookies",
@@ -3204,7 +3213,7 @@
       },
       "contact": {
         "title": "Contact us",
-        "p1": "For anything about this policy, or about your information, write to <support>support@getritora.com</support>. We read every message."
+        "p1": "For anything about this policy, or about your information, write to <support>{supportEmail}</support>. We read every message."
       }
     },
     "terms": {
@@ -3222,7 +3231,7 @@
       },
       "account": {
         "title": "Your account",
-        "p1": "You are responsible for keeping your password safe and for everything that happens on your account. If you think someone else has got in, tell us straight away at <support>support@getritora.com</support>."
+        "p1": "You are responsible for keeping your password safe and for everything that happens on your account. If you think someone else has got in, tell us straight away at <support>{supportEmail}</support>."
       },
       "ritoraIs": {
         "title": "What Ritora is, and what it is not",
@@ -3271,7 +3280,7 @@
       },
       "contact": {
         "title": "Contact us",
-        "p1": "If you have a question about these terms, write to <support>support@getritora.com</support>. We read every message."
+        "p1": "If you have a question about these terms, write to <support>{supportEmail}</support>. We read every message."
       }
     }
   },
@@ -4853,6 +4862,15 @@
     },
     "climate": {
       "weatherWithTemperature": "{condition} · {temperature}°C",
+      "weatherCondition": {
+        "clear": "Clear",
+        "cloudy": "Cloudy",
+        "foggy": "Foggy",
+        "rainy": "Rainy",
+        "snowy": "Snowy",
+        "showers": "Showers",
+        "stormy": "Stormy"
+      },
       "temperature": "{temperature}°C",
       "uvIndex": "UV {index}",
       "uvRisk": "UV {index} · {risk}",
@@ -5077,6 +5095,15 @@
           "moderate": "Moderate",
           "hard": "Hard"
         }
+      },
+      "weatherCondition": {
+        "clear": "Clear",
+        "cloudy": "Cloudy",
+        "foggy": "Foggy",
+        "rainy": "Rainy",
+        "snowy": "Snowy",
+        "showers": "Showers",
+        "stormy": "Stormy"
       },
       "evidenceReviewed": "reviewed {date}",
       "noRationale": "No rationale captured for this suggestion.",

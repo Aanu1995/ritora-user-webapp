@@ -4,8 +4,7 @@ import type { ReactNode } from 'react';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { AppRoute } from '@/constants/app-routes';
-
-const SUPPORT_EMAIL = 'support@getritora.com';
+import { getSupportEmail } from '@/lib/support-email';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('legalPages.terms');
@@ -38,23 +37,27 @@ function Bullets({ children }: { children: ReactNode }) {
   );
 }
 
-const richTags = {
-  strong: (chunks: ReactNode) => (
-    <strong className="font-semibold text-foreground">{chunks}</strong>
-  ),
-  em: (chunks: ReactNode) => <em>{chunks}</em>,
-  support: (chunks: ReactNode) => (
-    <a
-      href={`mailto:${SUPPORT_EMAIL}`}
-      className="text-accent-strong underline decoration-accent/40 underline-offset-[3px] transition-colors hover:decoration-current"
-    >
-      {chunks}
-    </a>
-  ),
-};
+function createRichTags(supportEmail: string) {
+  return {
+    strong: (chunks: ReactNode) => (
+      <strong className="font-semibold text-foreground">{chunks}</strong>
+    ),
+    em: (chunks: ReactNode) => <em>{chunks}</em>,
+    support: (chunks: ReactNode) => (
+      <a
+        href={`mailto:${supportEmail}`}
+        className="text-accent-strong underline decoration-accent/40 underline-offset-[3px] transition-colors hover:decoration-current"
+      >
+        {chunks}
+      </a>
+    ),
+    supportEmail,
+  };
+}
 
 export default async function TermsPage() {
   const t = await getTranslations('legalPages.terms');
+  const richTags = createRichTags(getSupportEmail());
   const stringBullets = (key: string) =>
     (t.raw(key) as string[]).map((bullet, idx) => (
       <li key={`${key}-${idx}`}>{bullet}</li>

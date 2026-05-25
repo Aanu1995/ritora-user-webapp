@@ -2,6 +2,8 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import defaultMessages from './messages/en.json';
 
+process.env.NEXT_PUBLIC_SUPPORT_EMAIL ??= 'support@getritora.com';
+
 type MessageLeaf = string | readonly MessageLeaf[] | MessageTree;
 interface MessageTree {
   readonly [key: string]: MessageLeaf;

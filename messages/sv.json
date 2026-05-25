@@ -563,7 +563,7 @@
         },
         {
           "question": "Vilka språk stöds?",
-          "answer": "Engelska och svenska från lansering. Du kan byta föredraget språk när som helst från inställningar."
+          "answer": "Engelska, svenska och spanska från lansering. Du kan byta föredraget språk när som helst från inställningar."
         }
       ]
     },
@@ -841,6 +841,15 @@
     "cityLevelClimate": "Stadsnivå",
     "profileOnlyClimate": "Endast profil",
     "weather": "Väder",
+    "weatherCondition": {
+      "clear": "Klart",
+      "cloudy": "Molnigt",
+      "foggy": "Dimma",
+      "rainy": "Regnigt",
+      "snowy": "Snöigt",
+      "showers": "Skurar",
+      "stormy": "Stormigt"
+    },
     "seasonLabel": "Säsong",
     "temperature": "Temp",
     "uv": "UV",
@@ -3123,7 +3132,7 @@
           "Vi tränar inte AI-modeller på dina foton eller din hudprofil.",
           "Du kan ta bort ditt konto, och allt som finns i det, inifrån appen när du vill."
         ],
-        "tail": "Om något på den här sidan är oklart, skriv till <support>support@getritora.com</support> så svarar en människa."
+        "tail": "Om något på den här sidan är oklart, skriv till <support>{supportEmail}</support> så svarar en människa."
       },
       "whatWeCollect": {
         "title": "Vad vi samlar in",
@@ -3176,7 +3185,7 @@
         "title": "Säkerhet",
         "p1": "Vi behandlar säkerhet som en del av produkten, inte som en eftertanke.",
         "p2": "Din data är krypterad under överföring och i vila. De känsliga fälten i din hudprofil får ett extra lager av kryptering innan de når databasen.",
-        "p3": "Inget system är perfekt säkert. Om något någonsin går fel kommer vi att berätta det för dig. Om du hittar ett problem, skriv till <support>support@getritora.com</support>."
+        "p3": "Inget system är perfekt säkert. Om något någonsin går fel kommer vi att berätta det för dig. Om du hittar ett problem, skriv till <support>{supportEmail}</support>."
       },
       "rights": {
         "title": "Dina rättigheter och val",
@@ -3188,12 +3197,12 @@
           "Stänga av valfria AI-funktioner.",
           "Radera ditt konto helt."
         ],
-        "p1": "Om du hellre vill göra detta via e-post, skriv till <support>support@getritora.com</support>. Vi svarar inom en månad, oftast mycket snabbare, och vi tar inte betalt för det.",
+        "p1": "Om du hellre vill göra detta via e-post, skriv till <support>{supportEmail}</support>. Vi svarar inom en månad, oftast mycket snabbare, och vi tar inte betalt för det.",
         "p2": "Om du bor i Europeiska unionen eller Storbritannien har du också rätt att lämna in ett klagomål till din lokala dataskyddsmyndighet. Vi hoppas att du först berättar för oss så att vi kan åtgärda det, men den rättigheten är din ändå."
       },
       "children": {
         "title": "Barn",
-        "p1": "Ritora är för personer som är 16 år eller äldre. Vi samlar inte medvetet in information från någon som är yngre. Om du tror att ett barn har skapat ett konto, skriv till <support>support@getritora.com</support> så tar vi bort kontot."
+        "p1": "Ritora är för personer som är 16 år eller äldre. Vi samlar inte medvetet in information från någon som är yngre. Om du tror att ett barn har skapat ett konto, skriv till <support>{supportEmail}</support> så tar vi bort kontot."
       },
       "cookies": {
         "title": "Cookies",
@@ -3211,7 +3220,7 @@
       },
       "contact": {
         "title": "Kontakta oss",
-        "p1": "För allt som rör denna policy eller din information, skriv till <support>support@getritora.com</support>. Vi läser varje meddelande."
+        "p1": "För allt som rör denna policy eller din information, skriv till <support>{supportEmail}</support>. Vi läser varje meddelande."
       }
     },
     "terms": {
@@ -3229,7 +3238,7 @@
       },
       "account": {
         "title": "Ditt konto",
-        "p1": "Du ansvarar för att hålla ditt lösenord säkert och för allt som händer på ditt konto. Om du tror att någon annan har kommit in, berätta för oss direkt på <support>support@getritora.com</support>."
+        "p1": "Du ansvarar för att hålla ditt lösenord säkert och för allt som händer på ditt konto. Om du tror att någon annan har kommit in, berätta för oss direkt på <support>{supportEmail}</support>."
       },
       "ritoraIs": {
         "title": "Vad Ritora är, och vad det inte är",
@@ -3278,7 +3287,7 @@
       },
       "contact": {
         "title": "Kontakta oss",
-        "p1": "Om du har en fråga om dessa villkor, skriv till <support>support@getritora.com</support>. Vi läser varje meddelande."
+        "p1": "Om du har en fråga om dessa villkor, skriv till <support>{supportEmail}</support>. Vi läser varje meddelande."
       }
     }
   },
@@ -4860,6 +4869,15 @@
     },
     "climate": {
       "weatherWithTemperature": "{condition} · {temperature}°C",
+      "weatherCondition": {
+        "clear": "Klart",
+        "cloudy": "Molnigt",
+        "foggy": "Dimma",
+        "rainy": "Regnigt",
+        "snowy": "Snöigt",
+        "showers": "Skurar",
+        "stormy": "Stormigt"
+      },
       "temperature": "{temperature}°C",
       "uvIndex": "UV {index}",
       "uvRisk": "UV {index} · {risk}",
@@ -5084,6 +5102,15 @@
           "moderate": "Måttligt",
           "hard": "Hårt"
         }
+      },
+      "weatherCondition": {
+        "clear": "Klart",
+        "cloudy": "Molnigt",
+        "foggy": "Dimma",
+        "rainy": "Regnigt",
+        "snowy": "Snöigt",
+        "showers": "Skurar",
+        "stormy": "Stormigt"
       },
       "evidenceReviewed": "granskad {date}",
       "noRationale": "Inget resonemang sparat för detta förslag.",
