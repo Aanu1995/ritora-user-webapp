@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.getritora.ritora",
+      "sha256_cert_fingerprints": [
+        "0E:76:E6:BB:7A:35:F8:D3:99:E6:A9:E2:D2:2B:EF:68:39:35:76:D4:A7:2D:4F:56:31:42:AE:6E:63:55:50:C0"
+      ]
+    }
+  }
+]

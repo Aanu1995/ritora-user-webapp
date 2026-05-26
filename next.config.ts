@@ -32,6 +32,28 @@ const cspReportOnly = [
   `connect-src 'self' ${apiOrigin}`,
 ].join('; ');
 
+const mobileAssociationHeaders = [
+  {
+    key: 'Content-Type',
+    value: 'application/json',
+  },
+  {
+    key: 'Cache-Control',
+    value: 'public, max-age=3600',
+  },
+];
+
+const actionLinkHeaders = [
+  {
+    key: 'Referrer-Policy',
+    value: 'no-referrer',
+  },
+  {
+    key: 'Cache-Control',
+    value: 'no-store, max-age=0',
+  },
+];
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
@@ -59,30 +81,28 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: '/.well-known/apple-app-site-association',
+        headers: mobileAssociationHeaders,
+      },
+      {
+        source: '/.well-known/assetlinks.json',
+        headers: mobileAssociationHeaders,
+      },
+      {
         source: '/verify-email',
-        headers: [
-          {
-            key: 'Referrer-Policy',
-            value: 'no-referrer',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'no-store, max-age=0',
-          },
-        ],
+        headers: actionLinkHeaders,
+      },
+      {
+        source: '/verify-email/:token*',
+        headers: actionLinkHeaders,
       },
       {
         source: '/reset-password',
-        headers: [
-          {
-            key: 'Referrer-Policy',
-            value: 'no-referrer',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'no-store, max-age=0',
-          },
-        ],
+        headers: actionLinkHeaders,
+      },
+      {
+        source: '/reset-password/:token*',
+        headers: actionLinkHeaders,
       },
       {
         source: '/(.*)',
