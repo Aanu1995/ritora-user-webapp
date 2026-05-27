@@ -1,5 +1,6 @@
 "use client";
 
+import type { ImageProps } from "next/image";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { PhotoFrame } from "@/components/skin-journal/photo-frame";
@@ -21,6 +22,9 @@ const ANGLE_DISPLAY_ORDER: Angle[] = [
   FRONT_PHOTO_ANGLE,
   "right_profile",
 ];
+const PRIMARY_PHOTO_LOADING: ImageProps["loading"] = "eager";
+const DEFERRED_PHOTO_LOADING: ImageProps["loading"] = "lazy";
+const PRIMARY_PHOTO_FETCH_PRIORITY: ImageProps["fetchPriority"] = "high";
 
 function entryPhotosForDisplay(entry: JournalEntry): JournalEntryPhoto[] {
   if (entry.photos?.length) {
@@ -42,11 +46,21 @@ function photoByAngle(photos: JournalEntryPhoto[]): Map<Angle, JournalEntryPhoto
   return new Map(photos.map((photo) => [photo.angle, photo]));
 }
 
+function primaryDisplayAngle(
+  photos: JournalEntryPhoto[],
+  photosByAngle: Map<Angle, JournalEntryPhoto>,
+): Angle | null {
+  return photosByAngle.has(FRONT_PHOTO_ANGLE)
+    ? FRONT_PHOTO_ANGLE
+    : (photos[0]?.angle ?? null);
+}
+
 export function DayDetailPhotoSet({ entry, date }: DayDetailPhotoSetProps) {
   const t = useTranslations("journal.dayDetail");
   const [lightboxAngle, setLightboxAngle] = useState<Angle | null>(null);
   const displayPhotos = entryPhotosForDisplay(entry);
   const displayPhotoByAngle = photoByAngle(displayPhotos);
+  const eagerAngle = primaryDisplayAngle(displayPhotos, displayPhotoByAngle);
   const lightboxPhoto = lightboxAngle
     ? displayPhotoByAngle.get(lightboxAngle) ?? null
     : null;
@@ -60,6 +74,7 @@ export function DayDetailPhotoSet({ entry, date }: DayDetailPhotoSetProps) {
       <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-3 px-4 py-6 sm:grid-cols-[1fr_1.2fr_1fr] sm:items-center sm:px-6 sm:py-8">
         {ANGLE_DISPLAY_ORDER.map((angle) => {
           const photo = displayPhotoByAngle.get(angle);
+          const shouldLoadEagerly = angle === eagerAngle;
           return (
             <div key={angle}>
               <div className="mb-1 flex items-center justify-between text-xs">
@@ -82,6 +97,16 @@ export function DayDetailPhotoSet({ entry, date }: DayDetailPhotoSetProps) {
                       date,
                     })}
                     aspect="square"
+                    loading={
+                      shouldLoadEagerly
+                        ? PRIMARY_PHOTO_LOADING
+                        : DEFERRED_PHOTO_LOADING
+                    }
+                    fetchPriority={
+                      shouldLoadEagerly
+                        ? PRIMARY_PHOTO_FETCH_PRIORITY
+                        : undefined
+                    }
                   />
                 </button>
               ) : (
