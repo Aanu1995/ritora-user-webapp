@@ -66,5 +66,11 @@ describe('mobile action link association files', () => {
     expect(nextConfig).toContain("source: '/verify-email/:token*'");
     expect(nextConfig).toContain("value: 'no-referrer'");
     expect(nextConfig).toContain("value: 'application/json'");
+    expect(nextConfig.indexOf("source: '/(.*)'")).toBeLessThan(
+      nextConfig.indexOf("source: '/reset-password/:token*'"),
+    );
+    expect(nextConfig.indexOf("source: '/(.*)'")).toBeLessThan(
+      nextConfig.indexOf("source: '/verify-email/:token*'"),
+    );
   });
 });

@@ -81,30 +81,6 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/.well-known/apple-app-site-association',
-        headers: mobileAssociationHeaders,
-      },
-      {
-        source: '/.well-known/assetlinks.json',
-        headers: mobileAssociationHeaders,
-      },
-      {
-        source: '/verify-email',
-        headers: actionLinkHeaders,
-      },
-      {
-        source: '/verify-email/:token*',
-        headers: actionLinkHeaders,
-      },
-      {
-        source: '/reset-password',
-        headers: actionLinkHeaders,
-      },
-      {
-        source: '/reset-password/:token*',
-        headers: actionLinkHeaders,
-      },
-      {
         source: '/(.*)',
         headers: [
           {
@@ -137,6 +113,30 @@ const nextConfig: NextConfig = {
               'camera=(self), geolocation=(), microphone=(), payment=(), usb=()',
           },
         ],
+      },
+      {
+        source: '/.well-known/apple-app-site-association',
+        headers: mobileAssociationHeaders,
+      },
+      {
+        source: '/.well-known/assetlinks.json',
+        headers: mobileAssociationHeaders,
+      },
+      {
+        source: '/verify-email',
+        headers: actionLinkHeaders,
+      },
+      {
+        source: '/verify-email/:token*',
+        headers: actionLinkHeaders,
+      },
+      {
+        source: '/reset-password',
+        headers: actionLinkHeaders,
+      },
+      {
+        source: '/reset-password/:token*',
+        headers: actionLinkHeaders,
       },
     ];
   },
