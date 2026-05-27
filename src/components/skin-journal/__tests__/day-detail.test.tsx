@@ -15,6 +15,31 @@ import {
 
 const ANALYSIS_VERSION = PhotoAnalysisInterpretationVersion.V1_1;
 
+jest.mock("next/image", () => {
+  const react = jest.requireActual<typeof import("react")>("react");
+
+  type MockImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
+    fill?: boolean;
+    priority?: boolean;
+    unoptimized?: boolean;
+  };
+
+  return {
+    __esModule: true,
+    default: ({
+      fill,
+      priority,
+      unoptimized,
+      ...props
+    }: MockImageProps) => {
+      void fill;
+      void priority;
+      void unoptimized;
+      return react.createElement("img", props);
+    },
+  };
+});
+
 function observations(): AnalysisObservations {
   return {
     schema_version: PhotoAnalysisSchemaVersion.V1_1,
@@ -221,6 +246,50 @@ describe("DayDetailPanel journal-day edit lock", () => {
     expect(screen.getByText(/compared with/i)).toHaveTextContent(
       /apr 18, 2026/i,
     );
+  });
+
+  it("loads the primary above-the-fold photo angle eagerly", () => {
+    renderWithProviders(
+      <DayDetailPanel
+        detail={dayDetail(
+          journalEntry({
+            photos: [
+              {
+                angle: "left_profile",
+                photo_url: "/media/left.webp",
+                width: 100,
+                height: 100,
+              },
+              {
+                angle: "head_on",
+                photo_url: "/media/front.webp",
+                width: 100,
+                height: 100,
+              },
+              {
+                angle: "right_profile",
+                photo_url: "/media/right.webp",
+                width: 100,
+                height: 100,
+              },
+            ],
+            angle_count: 3,
+          }),
+        )}
+        isToday
+      />,
+    );
+
+    const frontPhoto = screen.getByRole("img", {
+      name: /front skin journal photo/i,
+    });
+    const sidePhoto = screen.getByRole("img", {
+      name: /left side skin journal photo/i,
+    });
+
+    expect(frontPhoto).toHaveAttribute("loading", "eager");
+    expect(frontPhoto).toHaveAttribute("fetchpriority", "high");
+    expect(sidePhoto).toHaveAttribute("loading", "lazy");
   });
 
   it("shows a specific failed analysis explanation when the API returns a failure code", () => {

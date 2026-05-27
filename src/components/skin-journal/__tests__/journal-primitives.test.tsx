@@ -20,6 +20,31 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush }),
 }));
 
+jest.mock("next/image", () => {
+  const react = jest.requireActual<typeof import("react")>("react");
+
+  type MockImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
+    fill?: boolean;
+    priority?: boolean;
+    unoptimized?: boolean;
+  };
+
+  return {
+    __esModule: true,
+    default: ({
+      fill,
+      priority,
+      unoptimized,
+      ...props
+    }: MockImageProps) => {
+      void fill;
+      void priority;
+      void unoptimized;
+      return react.createElement("img", props);
+    },
+  };
+});
+
 jest.mock("@/hooks/use-skin-journal", () => ({
   useActiveSimplification: () => ({ data: simplification }),
   useAcknowledgeSimplification: () => ({
@@ -80,9 +105,41 @@ describe("skin journal primitive components", () => {
     expect(mockPush).toHaveBeenCalledWith("/journal/days/2026-05-04");
     expect(onLoadMore).toHaveBeenCalled();
   });
+
+  it("loads the first photo grid tile eagerly for above-the-fold rendering", () => {
+    renderWithProviders(
+      <PhotoGrid
+        entries={[
+          journalEntry({
+            photo_url: "/media/entry-1.webp",
+            has_photo: true,
+          }),
+          journalEntry({
+            id: "entry-2",
+            entry_date: "2026-05-05",
+            photo_url: "/media/entry-2.webp",
+            has_photo: true,
+          }),
+        ]}
+      />,
+    );
+
+    expect(screen.getByRole("img", { name: "2026-05-04" })).toHaveAttribute(
+      "loading",
+      "eager",
+    );
+    expect(screen.getByRole("img", { name: "2026-05-04" })).toHaveAttribute(
+      "fetchpriority",
+      "high",
+    );
+    expect(screen.getByRole("img", { name: "2026-05-05" })).toHaveAttribute(
+      "loading",
+      "lazy",
+    );
+  });
 });
 
-function journalEntry(): JournalEntry {
+function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
   return {
     id: "entry-1",
     entry_date: "2026-05-04",
@@ -132,5 +189,6 @@ function journalEntry(): JournalEntry {
     has_reaction: true,
     created_at: "2026-05-04T08:00:00.000Z",
     updated_at: "2026-05-04T08:00:00.000Z",
+    ...overrides,
   };
 }
