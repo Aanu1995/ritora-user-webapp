@@ -10,6 +10,9 @@ import { ApiPath } from "@/constants/api-paths";
 import {
   PhotoFilterStaticId,
   type Angle,
+  type AnalysisFeedback,
+  type AnalysisFeedbackReason,
+  type AnalysisFeedbackVote,
   type CalendarPayload,
   type CompareResponse,
   type DayDetail,
@@ -196,6 +199,21 @@ export async function deleteEntry(id: string): Promise<void> {
 
 export async function retryAnalysis(id: string): Promise<JournalEntry> {
   return postRequest(ApiPath.SkinJournalEntryRetry(id), {});
+}
+
+export async function reinterpretAnalysis(id: string): Promise<JournalEntry> {
+  return postRequest(ApiPath.SkinJournalEntryReinterpret(id), {});
+}
+
+export async function recordAnalysisFeedback(
+  id: string,
+  payload: {
+    vote: AnalysisFeedbackVote;
+    reason?: AnalysisFeedbackReason | null;
+    note?: string | null;
+  },
+): Promise<AnalysisFeedback> {
+  return postRequest(ApiPath.SkinJournalEntryAnalysisFeedback(id), payload);
 }
 
 export async function compareDays(

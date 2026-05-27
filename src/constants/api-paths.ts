@@ -97,6 +97,10 @@ export const ApiPath = {
   SkinJournalEntry: (id: string) => `${SKIN_JOURNAL_BASE}/entries/${id}`,
   SkinJournalEntryRetry: (id: string) =>
     `${SKIN_JOURNAL_BASE}/entries/${id}/analyze/retry`,
+  SkinJournalEntryReinterpret: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/entries/${id}/analyze/reinterpret`,
+  SkinJournalEntryAnalysisFeedback: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/entries/${id}/analysis-feedback`,
   SkinJournalCompare: `${SKIN_JOURNAL_BASE}/compare`,
   SkinJournalEvents: `${SKIN_JOURNAL_BASE}/events`,
   SkinJournalEventAck: (id: string) =>

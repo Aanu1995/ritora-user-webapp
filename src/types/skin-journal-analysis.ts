@@ -71,8 +71,14 @@ export interface AnalysisComparisonReference {
   quality: PhotoReferenceQuality;
 }
 
+export enum PhotoAnalysisSchemaVersion {
+  V1_0 = "1.0",
+  V1_1 = "1.1",
+  V1_2 = "1.2",
+}
+
 export interface AnalysisObservations {
-  schema_version: "1.0" | "1.1" | "1.2";
+  schema_version: PhotoAnalysisSchemaVersion;
   model_version: string;
   image_quality: {
     face_detected: boolean;
@@ -153,8 +159,52 @@ export interface PhotoAnalysisSourceCitation {
   last_verified: string;
 }
 
+export enum PhotoAnalysisReadingLabel {
+  Useful = "useful",
+  Limited = "limited",
+  NeedsRetake = "needs_retake",
+}
+
+export enum PhotoAnalysisConcernReadLabel {
+  LikelyVisible = "likely_visible",
+  Possible = "possible",
+  Limited = "limited",
+}
+
+export interface PhotoAnalysisTextRef {
+  key: string;
+  values?: Record<string, string | number>;
+}
+
+export interface PhotoAnalysisReadingQuality {
+  visual_label: PhotoAnalysisReadingLabel;
+  trend_label: PhotoAnalysisReadingLabel;
+  reason_keys: PhotoAnalysisTextRef[];
+}
+
+export interface PhotoAnalysisConcernGuidance {
+  concern: AnalysisConcern;
+  severity: "mild" | "moderate" | "severe";
+  locations: string[];
+  confidence_label: PhotoAnalysisConcernReadLabel;
+  title_key: string;
+  summary: PhotoAnalysisTextRef;
+  possible_factor_keys: PhotoAnalysisTextRef[];
+  action_keys: PhotoAnalysisTextRef[];
+  avoid_keys: PhotoAnalysisTextRef[];
+  track_key: PhotoAnalysisTextRef;
+  escalation_key?: PhotoAnalysisTextRef | null;
+  source_ids: string[];
+  sources: PhotoAnalysisSourceCitation[];
+}
+
+export enum PhotoAnalysisInterpretationVersion {
+  V1_0 = "1.0",
+  V1_1 = "1.1",
+}
+
 export interface PhotoAnalysisInterpretation {
-  version: "1.0";
+  version: PhotoAnalysisInterpretationVersion;
   code: PhotoAnalysisInterpretationCode;
   severity: PhotoAnalysisInterpretationSeverity;
   summary_key: string;
@@ -164,4 +214,6 @@ export interface PhotoAnalysisInterpretation {
   source_ids: string[];
   sources: PhotoAnalysisSourceCitation[];
   generated_at: string;
+  reading_quality?: PhotoAnalysisReadingQuality;
+  concern_guidance?: PhotoAnalysisConcernGuidance[];
 }

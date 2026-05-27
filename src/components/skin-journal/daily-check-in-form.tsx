@@ -12,6 +12,7 @@ import {
   type ConcernKey,
 } from "@/types/skin-journal";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Chip } from "./chip";
 import { ConcernRatingRow } from "./concern-rating-row";
 import { FeelPicker } from "./feel-picker";
@@ -241,7 +242,7 @@ export function DailyCheckInForm({
                 <label className="mb-2 block text-sm font-semibold">
                   {t("noteLabel")}
                 </label>
-                <textarea
+                <Textarea
                   rows={3}
                   placeholder={t("notePlaceholder")}
                   value={values.complaint_note ?? ""}
@@ -249,7 +250,6 @@ export function DailyCheckInForm({
                     form.setFieldValue("complaint_note", e.target.value);
                     onChange({ ...values, complaint_note: e.target.value });
                   }}
-                  className="w-full rounded-lg border border-border-strong bg-surface px-3 py-2 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
                 />
               </>
             )}

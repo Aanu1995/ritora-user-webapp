@@ -14,11 +14,16 @@ import { Chip } from "./chip";
 import { ConcernRatingRow } from "./concern-rating-row";
 import { AnalysisCard } from "./analysis-card";
 import { DayDetailPhotoSet } from "./day-detail-photo-set";
+import {
+  type DayDetailAnalysisFeedbackPayload,
+  useDayDetailAnalysisFeedback,
+} from "./day-detail-analysis-feedback";
 import { JournalDayDetailSkeleton } from "./journal-loading-skeletons";
 import { formatJournalShortDate } from "./journal-date";
 import { PhotoReferenceQualityBadge } from "./photo-reference-quality-badge";
 import {
   CONCERN_KEYS,
+  type AnalysisFeedback,
   type AnalysisFailureCode,
   type DayDetail,
   type JournalEntry,
@@ -33,6 +38,14 @@ interface DayDetailPanelProps {
   photoActionsDisabled?: boolean;
   retryAnalysisDisabled?: boolean;
   onRetryAnalysis?: (entry: JournalEntry) => void;
+  analysisFeedbackOverride?: AnalysisFeedback | null;
+  analysisFeedbackDisabled?: boolean;
+  onAnalysisFeedback?: (
+    entry: JournalEntry,
+    feedback: DayDetailAnalysisFeedbackPayload,
+  ) => void;
+  reinterpretAnalysisDisabled?: boolean;
+  onReinterpretAnalysis?: (entry: JournalEntry) => void;
   onReplacePhoto?: (entry: JournalEntry) => void;
 }
 
@@ -86,6 +99,11 @@ export function DayDetailPanel({
   photoActionsDisabled = false,
   retryAnalysisDisabled = false,
   onRetryAnalysis,
+  analysisFeedbackOverride,
+  analysisFeedbackDisabled = false,
+  onAnalysisFeedback,
+  reinterpretAnalysisDisabled = false,
+  onReinterpretAnalysis,
   onReplacePhoto,
 }: DayDetailPanelProps) {
   const locale = useLocale();
@@ -99,6 +117,10 @@ export function DayDetailPanel({
 
   const date = detail?.date ?? "";
   const entry = detail?.entry ?? null;
+  const analysisFeedback = useDayDetailAnalysisFeedback(
+    entry,
+    analysisFeedbackOverride,
+  );
   const canModifyEntry = isToday === true;
 
   const ratingsArray = useMemo(() => {
@@ -132,6 +154,7 @@ export function DayDetailPanel({
           </p>
           {canModifyEntry && onAddPhoto ? (
             <Button
+              size="sm"
               className="mt-4"
               disabled={photoActionsDisabled}
               onClick={onAddPhoto}
@@ -228,6 +251,7 @@ export function DayDetailPanel({
           <p className="mt-1 text-sm text-muted">{t("noPhotoBody")}</p>
           {canModifyEntry && onReplacePhoto ? (
             <Button
+              size="sm"
               className="mt-4"
               disabled={photoActionsDisabled}
               onClick={() => onReplacePhoto(entry)}
@@ -240,8 +264,27 @@ export function DayDetailPanel({
 
       {entry.analysis_observations ? (
         <AnalysisCard
+          key={entry.id}
           observations={entry.analysis_observations}
           interpretation={entry.analysis_interpretation}
+          feedbackVote={analysisFeedback.visibleFeedback?.vote ?? null}
+          feedbackReason={analysisFeedback.visibleFeedback?.reason ?? null}
+          feedbackNote={analysisFeedback.visibleFeedback?.note ?? null}
+          feedbackDisabled={analysisFeedbackDisabled}
+          onFeedback={
+            onAnalysisFeedback && !analysisFeedback.hasSubmittedFeedback
+              ? (feedback) =>
+                  onAnalysisFeedback(entry, {
+                    ...feedback,
+                  })
+              : undefined
+          }
+          reinterpretDisabled={reinterpretAnalysisDisabled}
+          onReinterpret={
+            onReinterpretAnalysis
+              ? () => onReinterpretAnalysis(entry)
+              : undefined
+          }
         />
       ) : status === "failed" ? (
         <div className="rounded-2xl border border-[color:var(--warning-border)] bg-warning-soft p-4">

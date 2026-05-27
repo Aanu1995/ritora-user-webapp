@@ -1,16 +1,29 @@
-import { screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { renderWithProviders } from "@/test/utils";
 import { AnalysisCard } from "../analysis-card";
-import type {
-  AnalysisObservations,
-  PhotoAnalysisInterpretation,
+import {
+  AnalysisFeedbackReason,
+  AnalysisFeedbackVote,
+  PhotoAnalysisConcernReadLabel,
+  PhotoAnalysisInterpretationVersion,
+  PhotoAnalysisReadingLabel,
+  PhotoAnalysisSchemaVersion,
+  type AnalysisObservations,
+  type PhotoAnalysisInterpretation,
 } from "@/types/skin-journal";
+
+const FeedbackVote = AnalysisFeedbackVote;
+const FeedbackReason = AnalysisFeedbackReason;
+const ReadLabel = PhotoAnalysisReadingLabel;
+const ConcernReadLabel = PhotoAnalysisConcernReadLabel;
+const InterpretationVersion = PhotoAnalysisInterpretationVersion;
+const SchemaVersion = PhotoAnalysisSchemaVersion;
 
 function observations(
   overrides: Partial<AnalysisObservations> = {},
 ): AnalysisObservations {
   return {
-    schema_version: "1.1",
+    schema_version: SchemaVersion.V1_1,
     model_version: "test-model",
     image_quality: {
       face_detected: true,
@@ -45,7 +58,7 @@ function observations(
 
 describe("AnalysisCard", () => {
   const interpretation: PhotoAnalysisInterpretation = {
-    version: "1.0",
+    version: InterpretationVersion.V1_0,
     code: "barrier_support",
     severity: "warning",
     summary_key: "journal.analysis.interpretation.barrierSupport.summary",
@@ -89,6 +102,250 @@ describe("AnalysisCard", () => {
     });
     expect(source).toHaveAttribute("target", "_blank");
     expect(source).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  it("renders v1.1 action cards instead of a numeric confidence badge", () => {
+    const richInterpretation: PhotoAnalysisInterpretation = {
+      ...interpretation,
+      version: InterpretationVersion.V1_1,
+      reading_quality: {
+        visual_label: ReadLabel.Useful,
+        trend_label: ReadLabel.Limited,
+        reason_keys: [
+          { key: "journal.analysis.reading.reasons.multiAngle" },
+          { key: "journal.analysis.reading.reasons.noPrior" },
+        ],
+      },
+      concern_guidance: [
+        {
+          concern: "acne",
+          severity: "moderate",
+          locations: ["left_cheek", "chin"],
+          confidence_label: ConcernReadLabel.LikelyVisible,
+          title_key: "journal.analysis.guidance.acne.title",
+          summary: {
+            key: "journal.analysis.guidance.acne.summary",
+            values: { severity: "moderate", locations: "left cheek, chin" },
+          },
+          possible_factor_keys: [
+            { key: "journal.analysis.guidance.factors.acneCommonContributors" },
+          ],
+          action_keys: [
+            { key: "journal.analysis.guidance.actions.acneSteadyRoutine" },
+            { key: "journal.analysis.guidance.actions.sameLight" },
+          ],
+          avoid_keys: [
+            { key: "journal.analysis.guidance.avoid.multipleNewActives" },
+            { key: "journal.analysis.guidance.avoid.overReadingOnePhoto" },
+          ],
+          track_key: { key: "journal.analysis.guidance.acne.track" },
+          escalation_key: null,
+          source_ids: ["aad_acne_skin_care_tips"],
+          sources: [
+            {
+              id: "aad_acne_skin_care_tips",
+              title_key: "journal.analysis.sources.aad_acne_skin_care_tips.title",
+              summary_key:
+                "journal.analysis.sources.aad_acne_skin_care_tips.summary",
+              organization: "American Academy of Dermatology",
+              url: "https://www.aad.org/public/diseases/acne/skin-care/tips",
+              evidence_grade: "moderate",
+              last_verified: "2026-05-01",
+            },
+          ],
+        },
+      ],
+    };
+
+    renderWithProviders(
+      <AnalysisCard
+        observations={observations({
+          detected_concerns: [
+            {
+              concern: "acne",
+              severity: "moderate",
+              locations: ["left_cheek", "chin"],
+              confidence: 0.82,
+            },
+          ],
+        })}
+        interpretation={richInterpretation}
+      />,
+    );
+
+    expect(screen.getByText(/photo read: useful read/i)).toBeInTheDocument();
+    expect(screen.queryByText(/confidence 0/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/breakout support/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/left cheek, chin/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/possible cause/i)).toBeInTheDocument();
+    expect(screen.queryByText(/possible factors/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/context clues/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/try next/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/acne skin-care tips/i).length).toBeGreaterThan(
+      0,
+    );
+  });
+
+  it("does not repeat the same possible cause across every concern card", () => {
+    const richInterpretation: PhotoAnalysisInterpretation = {
+      ...interpretation,
+      version: InterpretationVersion.V1_1,
+      concern_guidance: [
+        {
+          concern: "acne",
+          severity: "mild",
+          locations: ["left_cheek"],
+          confidence_label: ConcernReadLabel.Possible,
+          title_key: "journal.analysis.guidance.acne.title",
+          summary: {
+            key: "journal.analysis.guidance.acne.summary",
+            values: { severity: "mild", locations: "left cheek" },
+          },
+          possible_factor_keys: [
+            {
+              key: "journal.analysis.guidance.factors.recentApplicationChange",
+            },
+            { key: "journal.analysis.guidance.factors.acneCommonContributors" },
+          ],
+          action_keys: [
+            { key: "journal.analysis.guidance.actions.acneSteadyRoutine" },
+          ],
+          avoid_keys: [
+            { key: "journal.analysis.guidance.avoid.multipleNewActives" },
+          ],
+          track_key: { key: "journal.analysis.guidance.acne.track" },
+          escalation_key: null,
+          source_ids: [],
+          sources: [],
+        },
+        {
+          concern: "hyperpigmentation",
+          severity: "mild",
+          locations: ["forehead"],
+          confidence_label: ConcernReadLabel.Possible,
+          title_key: "journal.analysis.guidance.hyperpigmentation.title",
+          summary: {
+            key: "journal.analysis.guidance.hyperpigmentation.summary",
+            values: { severity: "mild", locations: "forehead" },
+          },
+          possible_factor_keys: [
+            {
+              key: "journal.analysis.guidance.factors.recentApplicationChange",
+            },
+            { key: "journal.analysis.guidance.factors.pigmentCommonContributors" },
+          ],
+          action_keys: [
+            { key: "journal.analysis.guidance.actions.spfContext" },
+            { key: "journal.analysis.guidance.actions.sameLight" },
+          ],
+          avoid_keys: [
+            { key: "journal.analysis.guidance.avoid.dailyJudgement" },
+            { key: "journal.analysis.guidance.avoid.overReadingOnePhoto" },
+          ],
+          track_key: { key: "journal.analysis.guidance.acne.track" },
+          escalation_key: null,
+          source_ids: [],
+          sources: [],
+        },
+      ],
+    };
+
+    renderWithProviders(
+      <AnalysisCard
+        observations={observations()}
+        interpretation={richInterpretation}
+      />,
+    );
+
+    expect(
+      screen.getAllByText(/A relevant routine step was skipped/i),
+    ).toHaveLength(1);
+    expect(screen.getAllByText(/Use similar daylight/i)).toHaveLength(1);
+    expect(screen.getAllByText(/Over-reading one photo/i)).toHaveLength(1);
+    expect(screen.getAllByText(/Watch whether clusters change/i)).toHaveLength(
+      1,
+    );
+    expect(
+      screen.getByText(/Common acne contributors include/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Common contributors include sun exposure/i),
+    ).toBeInTheDocument();
+  });
+
+  it("renders helpfulness buttons and sends the selected signal", () => {
+    const onFeedback = jest.fn();
+
+    renderWithProviders(
+      <AnalysisCard
+        observations={observations()}
+        interpretation={interpretation}
+        onFeedback={onFeedback}
+      />,
+    );
+
+    expect(screen.getByText(/was this analysis helpful/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /not helpful/i }));
+
+    expect(screen.getByText(/what made it unhelpful/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /too generic/i }));
+    fireEvent.change(screen.getByLabelText(/optional feedback note/i), {
+      target: { value: "Needed more specific routine guidance." },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /send feedback/i }));
+
+    expect(onFeedback).toHaveBeenCalledWith({
+      note: "Needed more specific routine guidance.",
+      reason: FeedbackReason.TooGeneric,
+      vote: FeedbackVote.NotHelpful,
+    });
+  });
+
+  it("hides the feedback prompt once feedback has already been submitted", () => {
+    renderWithProviders(
+      <AnalysisCard
+        observations={observations()}
+        interpretation={interpretation}
+        feedbackVote={FeedbackVote.Helpful}
+        onFeedback={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByText(/was this analysis helpful/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows a loading indicator while feedback is saving", () => {
+    renderWithProviders(
+      <AnalysisCard
+        observations={observations()}
+        interpretation={interpretation}
+        feedbackDisabled
+        onFeedback={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/saving feedback/i)).toBeInTheDocument();
+  });
+
+  it("offers one-click reinterpretation for legacy v1.0 payloads", () => {
+    const onReinterpret = jest.fn();
+
+    renderWithProviders(
+      <AnalysisCard
+        observations={observations()}
+        interpretation={interpretation}
+        onReinterpret={onReinterpret}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /update analysis/i }),
+    );
+
+    expect(onReinterpret).toHaveBeenCalledTimes(1);
   });
 
   it("falls back to controlled app wording when interpretation is absent", () => {

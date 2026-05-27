@@ -12,6 +12,8 @@ import { PhotoGrid } from "@/components/skin-journal/photo-grid";
 import { WrappedList } from "@/components/skin-journal/wrapped-list";
 import {
   PhotoFilterKind,
+  type AnalysisFeedbackReason,
+  type AnalysisFeedbackVote,
   type CalendarPayload,
   type DayDetail,
   type JournalEntry,
@@ -65,6 +67,17 @@ interface JournalTabPanelsProps {
   onPhotoFilterChange: (filter: PhotoFilterId) => void;
   onEditEntry?: (entry: JournalEntry) => void;
   onRetryAnalysis?: (entry: JournalEntry) => void;
+  onAnalysisFeedback?: (
+    entry: JournalEntry,
+    feedback: {
+      vote: AnalysisFeedbackVote;
+      reason?: AnalysisFeedbackReason | null;
+      note?: string | null;
+    },
+  ) => void;
+  analysisFeedbackDisabled?: boolean;
+  onReinterpretAnalysis?: (entry: JournalEntry) => void;
+  reinterpretAnalysisDisabled?: boolean;
   onReplacePhoto?: (entry: JournalEntry) => void;
   onDismissInsight: (id: string) => void;
 }
@@ -109,6 +122,10 @@ export function JournalTabPanels({
   onPhotoFilterChange,
   onEditEntry,
   onRetryAnalysis,
+  onAnalysisFeedback,
+  analysisFeedbackDisabled = false,
+  onReinterpretAnalysis,
+  reinterpretAnalysisDisabled = false,
   onReplacePhoto,
   onDismissInsight,
 }: JournalTabPanelsProps) {
@@ -166,6 +183,10 @@ export function JournalTabPanels({
                 photoActionsDisabled={photoActionsDisabled}
                 retryAnalysisDisabled={aiActionsDisabled}
                 onRetryAnalysis={onRetryAnalysis}
+                analysisFeedbackDisabled={analysisFeedbackDisabled}
+                onAnalysisFeedback={onAnalysisFeedback}
+                reinterpretAnalysisDisabled={reinterpretAnalysisDisabled}
+                onReinterpretAnalysis={onReinterpretAnalysis}
                 onReplacePhoto={onReplacePhoto}
               />
             </div>

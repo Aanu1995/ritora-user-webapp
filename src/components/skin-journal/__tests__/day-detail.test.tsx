@@ -1,7 +1,68 @@
 import { screen } from "@testing-library/react";
 import { renderWithProviders } from "@/test/utils";
 import { DayDetailPanel } from "../day-detail";
-import type { DayDetail, JournalEntry } from "@/types/skin-journal";
+import {
+  AnalysisFeedbackVote,
+  PhotoAnalysisInterpretationVersion,
+  PhotoAnalysisReadingLabel,
+  PhotoAnalysisSchemaVersion,
+  type AnalysisFeedback,
+  type AnalysisObservations,
+  type DayDetail,
+  type JournalEntry,
+  type PhotoAnalysisInterpretation,
+} from "@/types/skin-journal";
+
+const ANALYSIS_VERSION = PhotoAnalysisInterpretationVersion.V1_1;
+
+function observations(): AnalysisObservations {
+  return {
+    schema_version: PhotoAnalysisSchemaVersion.V1_1,
+    model_version: "test-model",
+    image_quality: {
+      face_detected: true,
+      lighting_quality: "good",
+      framing_quality: "good",
+      blur_detected: false,
+      issues: [],
+      needs_retake: false,
+      quality_score: 0.9,
+      excluded_from_trends_reason: null,
+    },
+    detected_concerns: [],
+    reaction_signals: {
+      reaction_detected: false,
+      reaction_severity: "none",
+      indicators: [],
+      confidence: 0.1,
+    },
+    barrier_signs: { barrier_compromise: false, indicators: [] },
+    overall_assessment: "Skin appears stable today.",
+    overall_change_from_previous: "stable",
+    user_visible_message: "Skin appears stable today.",
+    safety_flags: {
+      urgent_review_recommended: false,
+      doctor_follow_up_recommended: false,
+      reasons: [],
+    },
+    should_flag_for_doctor: false,
+  };
+}
+
+function interpretation(): PhotoAnalysisInterpretation {
+  return {
+    version: ANALYSIS_VERSION,
+    code: "no_clear_change",
+    severity: "info",
+    summary_key: "journal.analysis.interpretation.noClearChange.summary",
+    summary_values: {},
+    guidance_keys: [],
+    caveat_keys: [],
+    source_ids: [],
+    sources: [],
+    generated_at: "2026-05-27T08:00:00.000Z",
+  };
+}
 
 function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
   return {
@@ -33,6 +94,9 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     },
     analysis_observations: null,
     analysis_interpretation: null,
+    analysis_feedback: null,
+    analysis_feedback_submitted: false,
+    analysis_feedback_submitted_at: null,
     analysis_summary: null,
     analysis_model: null,
     analysis_version: null,
@@ -194,5 +258,58 @@ describe("DayDetailPanel journal-day edit lock", () => {
     expect(
       screen.getByText(/entries can only be added on the day itself/i),
     ).toBeInTheDocument();
+  });
+
+  it("hides the feedback prompt after anonymous feedback exists for the current interpretation", () => {
+    const feedback: AnalysisFeedback = {
+      vote: AnalysisFeedbackVote.Helpful,
+      reason: null,
+      note: null,
+      interpretation_version: ANALYSIS_VERSION,
+      reading_label: PhotoAnalysisReadingLabel.Useful,
+      created_at: "2026-05-27T08:00:00.000Z",
+      updated_at: "2026-05-27T08:00:00.000Z",
+    };
+
+    renderWithProviders(
+      <DayDetailPanel
+        detail={dayDetail(
+          journalEntry({
+            analysis_status: "completed",
+            analysis_observations: observations(),
+            analysis_interpretation: interpretation(),
+          }),
+        )}
+        analysisFeedbackOverride={feedback}
+        isToday
+        onAnalysisFeedback={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByText(/was this analysis helpful/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it("hides the feedback prompt when the entry says feedback was submitted", () => {
+    const entry = journalEntry({
+      analysis_status: "completed",
+      analysis_observations: observations(),
+      analysis_interpretation: interpretation(),
+      analysis_feedback_submitted: true,
+      analysis_feedback_submitted_at: "2026-05-27T08:01:00.000Z",
+    });
+
+    renderWithProviders(
+      <DayDetailPanel
+        detail={dayDetail(entry)}
+        isToday
+        onAnalysisFeedback={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByText(/was this analysis helpful/i),
+    ).not.toBeInTheDocument();
   });
 });

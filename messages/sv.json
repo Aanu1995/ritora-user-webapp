@@ -3425,7 +3425,65 @@
       "title": "Hudobservationer idag",
       "modelBadge": "AI · {model}",
       "confidence": "Säkerhet {value}",
+      "reading": {
+        "photoRead": "Fotoläsning: {label}",
+        "labels": {
+          "useful": "Användbar läsning",
+          "limited": "Begränsad läsning",
+          "needs_retake": "Behöver tas om"
+        },
+        "confidenceLabels": {
+          "likely_visible": "Tydligt synligt",
+          "possible": "Möjligt",
+          "limited": "Begränsat"
+        },
+        "reasons": {
+          "retake": "Fotokvaliteten begränsar den här läsningen.",
+          "visualLimited": "Ljus eller inramning begränsar fina detaljer.",
+          "multiAngle": "Tre användbara vinklar stärker dagens läsning.",
+          "clearFront": "Framifrån-bilden är tillräckligt tydlig för synliga signaler.",
+          "trendLimited": "Trendjämförelsen är begränsad idag.",
+          "noPrior": "Trendsäkerheten blir bättre efter fler referensfoton.",
+          "priorReference": "Jämfördes bara på hög nivå med ett tidigare foto framifrån."
+        }
+      },
+      "reinterpret": {
+        "body": "Det här äldre resultatet kan uppdateras till det nya formatet med åtgärdskort utan att du laddar upp ett nytt foto.",
+        "cta": "Uppdatera analys"
+      },
+      "feedback": {
+        "prompt": "Var analysen hjälpsam?",
+        "subtitle": "Din röst hjälper Ritora att skriva bättre analyser framöver.",
+        "thanks": "Tack för din feedback.",
+        "helpful": "Hjälpsam",
+        "notHelpful": "Inte hjälpsam",
+        "reasonPrompt": "Vad gjorde den mindre hjälpsam?",
+        "reasonHelp": "Det hjälper Ritora att rangordna och skriva bättre analyser framöver.",
+        "noteLabel": "Valfri feedbacknotering",
+        "notePlaceholder": "Lägg till en kort notering om du vill. Ta inte med namn, e-post eller andra identifierare.",
+        "noteCount": "{count}/{max}",
+        "saving": "Sparar feedback",
+        "submit": "Skicka feedback",
+        "reasons": {
+          "too_generic": "För generell",
+          "wrong_concern": "Fel problem",
+          "wrong_location": "Fel plats",
+          "missed_context": "Missade min kontext",
+          "not_actionable": "Inte handlingsbar",
+          "photo_quality_confusing": "Fotoläsningen stämde inte",
+          "sources_not_useful": "Källorna hjälpte inte",
+          "other": "Annat"
+        }
+      },
       "concernsLabel": "Detekterade problem",
+      "faceMap": {
+        "title": "Problemkarta",
+        "subtitle": "Färgade zoner visar var AI såg något på bilden.",
+        "empty": "Inga problem flaggades på den här bilden.",
+        "noMappedZones": "Inga kartlagda zoner för de här observationerna.",
+        "legendLabel": "Allvarlighet",
+        "zoneAria": "{concern} på {location}, {severity}"
+      },
       "imageQualityLabel": "Bildkvalitet",
       "lightingGood": "Bra ljus",
       "lightingFair": "Ok ljus",
@@ -3500,9 +3558,105 @@
           "guidance": "Fortsätt använda liknande ljus och inramning så kan Ritora jämföra förändringar mer rättvist över tid."
         },
         "caveats": {
-          "notDiagnosis": "Detta är inte en diagnos. Ritora använder synliga signaler för att stödja uppföljning och reflektion.",
           "qualityLimited": "Låg fotokvalitet kan dölja eller förstärka synliga förändringar.",
           "progressNeedsTime": "Hudförändringar kan gå långsamt, så enskilda dagsförändringar bör läsas med omsorg."
+        }
+      },
+      "guidance": {
+        "sections": {
+          "factors": "Möjlig orsak",
+          "actions": "Testa härnäst",
+          "avoid": "Undvik just nu",
+          "track": "Följ"
+        },
+        "acne": {
+          "title": "Stöd vid utbrott",
+          "summary": "{severity} utbrottsaktivitet syns runt {locations}. Använd det som en signal för uppföljning, inte som en diagnos.",
+          "track": "Följ om kluster förändras under de kommande 2 till 4 veckorna, särskilt efter produkt- eller rutinändringar."
+        },
+        "hyperpigmentation": {
+          "title": "Stöd för mörka märken och hudton",
+          "summary": "{severity} mörka märken eller ojämn ton syns runt {locations}. Detta är oftast mer användbart som långsam trend än som ett dagsbesked.",
+          "track": "Jämför foton tagna i liknande dagsljus och notera sol, SPF och irritation samma dagar."
+        },
+        "poresOil": {
+          "title": "Stöd för oljighet och porers synlighet",
+          "summary": "{severity} por- eller glanssynlighet finns runt {locations}. Ljus kan förstärka glans, så följ mönstret lugnt.",
+          "track": "Notera om glans och porer hänger ihop med svett, missad rengöring eller tyngre produktdagar."
+        },
+        "barrier": {
+          "title": "Stöd för barriär och komfort",
+          "summary": "{severity} torrhet, rodnad eller irritationsliknande tecken syns runt {locations}. Det är en signal att skydda komfort och minska brus i rutinen.",
+          "track": "Följ stramhet, sveda, fjällning och om mönstret lugnar sig efter enklare rutindagar."
+        },
+        "texture": {
+          "title": "Texturuppföljning",
+          "summary": "{severity} texturvariation syns runt {locations}. Foton i samma ljus är viktiga eftersom skuggor kan överdriva textur.",
+          "track": "Använd samma ljus och vinkel i några poster innan du bedömer om texturen förändras."
+        },
+        "photoSensitive": {
+          "title": "Fotokänslig uppföljning",
+          "summary": "{severity} synlig förändring finns runt {locations}, men området påverkas mycket av ljus, sömn och vinkel.",
+          "track": "Jämför bara liknande foton och koppla resultatet till sömn- och komfortavstämningar."
+        },
+        "factors": {
+          "checkInBreakouts": "Utbrott loggades idag, så granska möjliga närliggande orsaker som produktbyten, svett, stress, kostanteckningar eller friktion.",
+          "checkInOiliness": "Oljighet loggades idag. Överskottsolja kan bidra till tilltäppta porer och göra glans eller porer mer synliga.",
+          "checkInIrritation": "Torrhet, rodnad, irritation eller känslighet loggades idag, vilket kan peka mot barriärstress eller en ny irritant.",
+          "checkInSun": "Solexponering loggades idag. UV-exponering kan göra mörka märken, ojämn ton eller rodnad mer framträdande.",
+          "checkInSweat": "Svett eller träning loggades idag. Svett, värme och friktion kan bidra till tilltäppta porer eller irritation om det ligger kvar på huden.",
+          "checkInStress": "Hög stress loggades idag. Stress kan förvärra utbrott eller irritation hos vissa, så jämför över flera poster.",
+          "checkInSleep": "Mycket kort sömn loggades idag, vilket kan påverka inflammation, oljighet och hur trött eller reaktiv huden ser ut.",
+          "checkInFeel": "Din hudkänsla var låg idag, vilket kan peka mot torrhet, irritation eller barriärstress.",
+          "checkInNote": "Din anteckning kan nämna en möjlig trigger. Behandla den som en kandidat att jämföra med kommande poster.",
+          "noteDietAcne": "Din anteckning nämner mejeri, socker eller sent ätande. Det kan bidra till akne hos vissa, så jämför mönstret innan du ändrar kosten.",
+          "recentProductChangeNamed": "Din logg nämner ett nytt produktbyte: {product}. Produktförändringar kan bidra till utbrott, irritation, textur eller tonförändringar hos vissa.",
+          "recentRoutineChange": "En ny rutinändring loggades. Ny timing, frekvens eller produktkombination kan vara möjliga bidragande orsaker.",
+          "routineProductTiming": "Din rutin innehåller {product}. Om timing eller frekvens nyligen ändrats kan det vara en möjlig bidragande orsak.",
+          "activeIngredientTiming": "{product} kan påverka irritation, textur eller utbrottstiming hos vissa, särskilt när den nyligen startats eller ökats.",
+          "sunscreenContext": "Din rutin innehåller {product}. Ojämn SPF-användning kan bidra till att mörka märken och ojämn ton dröjer kvar.",
+          "recentApplicationChange": "Ett relevant rutinsteg missades eller byttes nyligen, vilket kan vara en möjlig bidragande orsak om mönstret upprepas.",
+          "photoQualityContext": "Fotokvaliteten är användbar men inte perfekt, så Ritora bör inte gissa exakta orsaker från svaga detaljer.",
+          "breakoutTiming": "Vanliga bidragande orsaker till utbrott är tilltäppta porer, svett eller friktion, stress, hormonell timing, vissa livsmedel och vissa läkemedel.",
+          "slowPigmentTiming": "Mörka märken följer ofta inflammation från utbrott, rakning eller irritation, och UV-exponering kan göra att de dröjer kvar.",
+          "oilPoreVisibility": "Porer kan se mer synliga ut när olja, tyngre produkter, svett eller ljus ger mer glans.",
+          "barrierTiming": "Barriärstress kan följa nya aktiva ingredienser, överrengöring, hård exfoliering, parfym, väderomslag eller irritanter.",
+          "visualTracking": "Om ingen tydlig loggad trigger sticker ut, jämför rutin, sömn, stress, produkt- och exponeringsändringar över flera poster.",
+          "acneCommonContributors": "Vanliga bidragande orsaker till akne är portilltäppande produkter, svett eller friktion, stress, hormonell timing, vissa livsmedel och vissa läkemedel.",
+          "pigmentCommonContributors": "Vanliga bidragande orsaker är solexponering, irritation och inflammation efter utbrott, rakning eller pillande.",
+          "oilPoreCommonContributors": "Oljeproduktion, tyngre produkter, svett och tilltäppta porer kan göra porer eller glans mer synliga.",
+          "barrierCommonContributors": "Nya aktiva ingredienser, överexfoliering, hård rengöring, parfym, väderomslag eller kända irritanter kan bidra till torrhet, rodnad eller barriärstress.",
+          "appearanceCommonContributors": "Sömn, torrhet, vätskebrist, skuggor och nya produktändringar kan påverka textur, fina linjer eller området under ögonen.",
+          "generalCommonContributors": "Nya produkt-, rutin-, miljö-, sömn-, stress- eller exponeringsändringar kan bidra till synliga hudförändringar."
+        },
+        "actions": {
+          "acneSteadyRoutine": "Håll rutinen stabil tillräckligt länge för att se ett mönster.",
+          "nonComedogenic": "Välj icke-komedogena produkter när det går.",
+          "logClusters": "Logga nya, ömma eller klustrade utbrott så Ritora kan jämföra timing.",
+          "spfContext": "Logga SPF och sol när du följer märken eller ton.",
+          "preventIrritation": "Prioritera att undvika irritation eftersom inflammation kan få märken att se mörkare ut.",
+          "sameLight": "Använd liknande dagsljus och vinkel vid nästa foto.",
+          "gentleCleanse": "Rengör milt och följ om glans kommer tillbaka snabbt.",
+          "oilFreeWhenPossible": "Välj lätta eller oljefria texturer när de passar din hud.",
+          "watchShinePattern": "Jämför glans före och efter rutinsteg.",
+          "simplifyRoutine": "Håll rutinen enkel när huden ser reaktiv eller obekväm ut.",
+          "moisturizerSupport": "Stötta komfort med en enkel fuktkräm om det passar din rutin.",
+          "watchComfort": "Låt komfort, sveda, stramhet och fjällning styra om du behöver sakta ner.",
+          "watchPattern": "Följ mönstret över flera poster innan du gör en större ändring."
+        },
+        "avoid": {
+          "multipleNewActives": "Att lägga till flera nya aktiva ingredienser samtidigt.",
+          "picking": "Att peta eller klämma på utslag.",
+          "dailyJudgement": "Att bedöma pigmentframsteg från en enda dag.",
+          "irritatingScrubs": "Hårda skrubbar eller ändringar som lätt irriterar.",
+          "strippingSkin": "Att torka ut huden för att få bort olja.",
+          "overExfoliation": "Att exfoliera mer bara för att porer syns idag.",
+          "addingActives": "Att lägga till nya aktiva ingredienser när huden ser stressad ut.",
+          "fragranceIfSensitive": "Parfymerade produkter om känsligheten är hög.",
+          "overReadingOnePhoto": "Att övertolka ett foto utan upprepad kontext."
+        },
+        "escalation": {
+          "persistentOrPainful": "Överväg hudläkare eller vårdgivare om detta fortsätter, sprider sig, gör ont eller innebär svullnad eller sprucken hud."
         }
       },
       "sources": {
@@ -3516,6 +3670,14 @@
           "title": "Tidsram för akneförändring",
           "summary": "AAD förklarar att akneförbättring vanligen bedöms över veckor med konsekvent vård."
         },
+        "aad_acne_skin_care_tips": {
+          "title": "Hudvårdstips vid akne",
+          "summary": "AAD rekommenderar mild hudvård för aknebenägen hud och icke-komedogena produkter."
+        },
+        "aad_acne_causes": {
+          "title": "Orsaker till akne",
+          "summary": "AAD beskriver vanliga bidragande orsaker till akne, inklusive tilltäppta porer, olja, bakterier, hormoner, läkemedel, kost och stress."
+        },
         "aad_dark_spots_skin_tones": {
           "title": "Mörka märken och ojämn hudton",
           "summary": "AAD beskriver hur mörka märken kan blekna långsamt och varför solskydd är viktigt när de följs."
@@ -3523,6 +3685,10 @@
         "aad_skin_of_color": {
           "title": "Vägledning för hud med mer pigment",
           "summary": "AAD tar upp hur akne och mörka märken kan synas annorlunda på djupare hudtoner."
+        },
+        "aad_oily_skin": {
+          "title": "Vägledning för oljig hud",
+          "summary": "AAD beskriver milda steg som kan hjälpa vid oljig hud utan att torka ut den."
         },
         "aad_retinoid_retinol_guidance": {
           "title": "Vägledning om retinoid och retinol",

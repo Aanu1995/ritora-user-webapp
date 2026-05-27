@@ -12,46 +12,33 @@ import { upsertTodayWithProgress } from "@/hooks/use-skin-journal-upload";
 import { invalidateAppNavBadges } from "@/lib/query-invalidation";
 import {
   JOURNAL_ANALYSIS_POLL_INTERVAL_MS,
-  JOURNAL_INSIGHT_POLL_INTERVAL_MS,
   shouldPollCalendar,
   shouldPollDay,
-  shouldPollInsights,
   shouldPollTodayEntry,
 } from "@/hooks/use-skin-journal-polling";
 import {
   acknowledgeEvent,
-  acknowledgeSimplification,
   compareDays,
-  createJournalExport,
   deleteEntry,
-  dismissInsight,
-  getActiveSimplification,
   getCalendar,
   getDay,
-  getJournalStats,
-  getJournalExport,
-  getWrapped,
-  getSimplification,
   getTodayEntry,
   listEvents,
   listPhotoFilters,
-  listInsights,
   listMonthEntries,
   listPhotoDates,
   listPhotos,
-  listWrapped,
-  markInsightSeen,
-  recordInsightAction,
+  recordAnalysisFeedback,
+  reinterpretAnalysis,
   retryAnalysis,
-  startSimplification,
   updateEntry,
 } from "@/services/skin-journal.service";
 import {
   PhotoFilterStaticId,
-  type InsightWindow,
-  type InsightAction,
+  type AnalysisFeedback,
+  type AnalysisFeedbackReason,
+  type AnalysisFeedbackVote,
   type JournalEventFilters,
-  type JournalExportJob,
   type PhotoDateIndex,
   type PhotoFilterId,
   type PhotoFilterIndex,
@@ -66,6 +53,21 @@ export {
   shouldPollCalendar,
   shouldPollDay,
 } from "@/hooks/use-skin-journal-polling";
+export {
+  useAcknowledgeSimplification,
+  useActiveSimplification,
+  useCreateJournalExport,
+  useDismissInsight,
+  useInsights,
+  useJournalExport,
+  useJournalStats,
+  useMarkInsightSeen,
+  useRecordInsightAction,
+  useSimplification,
+  useStartSimplification,
+  useWrapped,
+  useWrappedList,
+} from "@/hooks/use-skin-journal-secondary";
 
 export function useTodayEntry() {
   const enabled = useAuthEnabled();
@@ -201,7 +203,55 @@ export function useRetryAnalysis() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => retryAnalysis(id),
-    onSuccess: () => invalidateAll(qc),
+    onSuccess: (_result, id) => {
+      qc.setQueryData([QueryKey.SkinJournalAnalysisFeedback, id], null);
+      invalidateAll(qc);
+    },
+  });
+}
+
+export function useReinterpretAnalysis() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => reinterpretAnalysis(id),
+    onSuccess: (_result, id) => {
+      qc.setQueryData([QueryKey.SkinJournalAnalysisFeedback, id], null);
+      invalidateAll(qc);
+    },
+  });
+}
+
+export function useLocalAnalysisFeedback(entryId: string | null | undefined) {
+  return useQuery<AnalysisFeedback | null>({
+    queryKey: [QueryKey.SkinJournalAnalysisFeedback, entryId ?? null],
+    queryFn: () => null,
+    enabled: false,
+    initialData: null,
+  });
+}
+
+export function useRecordAnalysisFeedback() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: {
+      id: string;
+      vote: AnalysisFeedbackVote;
+      reason?: AnalysisFeedbackReason | null;
+      note?: string | null;
+    }) => ({
+      entryId: input.id,
+      feedback: await recordAnalysisFeedback(input.id, {
+        note: input.note,
+        reason: input.reason,
+        vote: input.vote,
+      }),
+    }),
+    onSuccess: ({ entryId, feedback }) => {
+      qc.setQueryData(
+        [QueryKey.SkinJournalAnalysisFeedback, entryId],
+        feedback,
+      );
+    },
   });
 }
 
@@ -236,141 +286,5 @@ export function useAcknowledgeEvent() {
       void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalEvents] });
       invalidateAppNavBadges(qc);
     },
-  });
-}
-
-export function useInsights(
-  params: { window?: InsightWindow; locale?: string } = {},
-) {
-  const enabled = useAuthEnabled();
-  return useQuery({
-    queryKey: [QueryKey.SkinJournalInsights, params],
-    queryFn: ({ signal }) => listInsights(params, { signal }),
-    enabled,
-    refetchInterval: (query) =>
-      shouldPollInsights(query.state.data)
-        ? JOURNAL_INSIGHT_POLL_INTERVAL_MS
-        : false,
-  });
-}
-
-export function useDismissInsight() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => dismissInsight(id),
-    onSuccess: () =>
-      qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalInsights] }),
-  });
-}
-
-export function useMarkInsightSeen() {
-  return useMutation({
-    mutationFn: (id: string) => markInsightSeen(id),
-  });
-}
-
-export function useRecordInsightAction() {
-  return useMutation({
-    mutationFn: (input: { id: string; action_kind: InsightAction["kind"] }) =>
-      recordInsightAction(input.id, { action_kind: input.action_kind }),
-  });
-}
-
-export function useWrappedList() {
-  const enabled = useAuthEnabled();
-  return useQuery({
-    queryKey: [QueryKey.SkinJournalWrappedList],
-    queryFn: ({ signal }) => listWrapped({ signal }),
-    enabled,
-  });
-}
-
-export function useWrapped(id: string | null) {
-  const enabled = useAuthEnabled();
-  return useQuery({
-    queryKey: [QueryKey.SkinJournalWrapped, id],
-    queryFn: ({ signal }) => getWrapped(id as string, { signal }),
-    enabled: enabled && !!id,
-  });
-}
-
-export function useActiveSimplification() {
-  const enabled = useAuthEnabled();
-  return useQuery({
-    queryKey: [QueryKey.SkinJournalSimplificationActive],
-    queryFn: ({ signal }) => getActiveSimplification({ signal }),
-    enabled,
-    refetchOnWindowFocus: true,
-  });
-}
-
-export function useSimplification(id: string | null) {
-  const enabled = useAuthEnabled();
-  return useQuery({
-    queryKey: [QueryKey.SkinJournalSimplification, id],
-    queryFn: ({ signal }) => getSimplification(id as string, { signal }),
-    enabled: enabled && !!id,
-  });
-}
-
-export function useStartSimplification() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (input: {
-      triggered_by_event_id?: string | null;
-      reason?: string;
-    }) => startSimplification(input),
-    onSuccess: () => {
-      void qc.invalidateQueries({
-        queryKey: [QueryKey.SkinJournalSimplificationActive],
-      });
-      invalidateAppNavBadges(qc);
-    },
-  });
-}
-
-export function useAcknowledgeSimplification() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (id: string) => acknowledgeSimplification(id),
-    onSuccess: () => {
-      void qc.invalidateQueries({
-        queryKey: [QueryKey.SkinJournalSimplificationActive],
-      });
-      void qc.invalidateQueries({
-        queryKey: [QueryKey.SkinJournalSimplification],
-      });
-      invalidateAppNavBadges(qc);
-    },
-  });
-}
-
-export function useJournalStats() {
-  const enabled = useAuthEnabled();
-  return useQuery({
-    queryKey: [QueryKey.SkinJournalStats],
-    queryFn: ({ signal }) => getJournalStats({ signal }),
-    enabled,
-  });
-}
-
-export function useCreateJournalExport() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (input: { from: string; to: string }) =>
-      createJournalExport(input),
-    onSuccess: (job: JournalExportJob) => {
-      qc.setQueryData([QueryKey.SkinJournalExport, job.id], job);
-      void qc.invalidateQueries({ queryKey: [QueryKey.Notifications] });
-    },
-  });
-}
-
-export function useJournalExport(id: string | null) {
-  const enabled = useAuthEnabled();
-  return useQuery({
-    queryKey: [QueryKey.SkinJournalExport, id],
-    queryFn: ({ signal }) => getJournalExport(id as string, { signal }),
-    enabled: enabled && !!id,
   });
 }

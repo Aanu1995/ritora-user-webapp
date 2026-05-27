@@ -3459,18 +3459,73 @@
       }
     },
     "analysis": {
-      "title": "Observaciones de la piel hoy.",
+      "title": "Observaciones de la piel hoy",
       "modelBadge": "AI · {model}",
-      "confidence": "Confidence {value}",
+      "confidence": "Confianza {value}",
+      "reading": {
+        "photoRead": "Lectura de foto: {label}",
+        "labels": {
+          "useful": "Lectura útil",
+          "limited": "Lectura limitada",
+          "needs_retake": "Necesita otra foto"
+        },
+        "confidenceLabels": {
+          "likely_visible": "Probablemente visible",
+          "possible": "Posible",
+          "limited": "Limitado"
+        },
+        "reasons": {
+          "retake": "La calidad de la foto limita esta lectura.",
+          "visualLimited": "La luz o el encuadre limitan los detalles finos.",
+          "multiAngle": "Tres ángulos utilizables mejoran la lectura de hoy.",
+          "clearFront": "La foto frontal es suficientemente clara para señales visibles.",
+          "trendLimited": "La comparación de tendencia es limitada hoy.",
+          "noPrior": "La confianza de tendencia mejora con más fotos de referencia.",
+          "priorReference": "Comparado solo a alto nivel con una foto frontal previa."
+        }
+      },
+      "reinterpret": {
+        "body": "Este resultado antiguo puede actualizarse al nuevo formato de tarjetas de acción sin subir otra foto.",
+        "cta": "Actualizar análisis"
+      },
+      "feedback": {
+        "prompt": "¿Te resultó útil este análisis?",
+        "helpful": "Útil",
+        "notHelpful": "No útil",
+        "reasonPrompt": "¿Qué lo hizo poco útil?",
+        "reasonHelp": "Esto ayuda a Ritora a ordenar y mejorar análisis futuros.",
+        "noteLabel": "Nota opcional de feedback",
+        "notePlaceholder": "Añade una nota breve si quieres. No incluyas nombres, correo ni otros identificadores.",
+        "saving": "Guardando feedback",
+        "submit": "Enviar feedback",
+        "reasons": {
+          "too_generic": "Demasiado genérico",
+          "wrong_concern": "Problema incorrecto",
+          "wrong_location": "Zona incorrecta",
+          "missed_context": "No usó mi contexto",
+          "not_actionable": "No es accionable",
+          "photo_quality_confusing": "Lectura de foto incorrecta",
+          "sources_not_useful": "Fuentes poco útiles",
+          "other": "Otro"
+        }
+      },
       "concernsLabel": "Preocupaciones detectadas",
+      "faceMap": {
+        "title": "Mapa de zonas",
+        "subtitle": "Las zonas coloreadas muestran dónde la IA vio algo en la foto.",
+        "empty": "No se marcaron preocupaciones en esta foto.",
+        "noMappedZones": "No hay zonas mapeadas para estas observaciones.",
+        "legendLabel": "Severidad",
+        "zoneAria": "{concern} en {location}, {severity}"
+      },
       "imageQualityLabel": "Calidad de imagen",
-      "lightingGood": "buena iluminacion",
-      "lightingFair": "Feria de iluminación",
-      "lightingPoor": "Iluminación pobre",
-      "framingGood": "encuadre bien",
-      "framingFair": "Feria de enmarcado",
-      "framingPoor": "Encuadre pobre",
-      "sharp": "Afilado",
+      "lightingGood": "Buena iluminación",
+      "lightingFair": "Iluminación aceptable",
+      "lightingPoor": "Iluminación baja",
+      "framingGood": "Buen encuadre",
+      "framingFair": "Encuadre aceptable",
+      "framingPoor": "Encuadre deficiente",
+      "sharp": "Nítida",
       "blurry": "Borroso",
       "perAngleQualityLabel": "Calidad del ángulo",
       "angles": {
@@ -3480,22 +3535,22 @@
       },
       "quality": {
         "poor": "pobre",
-        "fair": "feria",
+        "fair": "aceptable",
         "good": "bueno",
         "excellent": "excelente"
       },
       "qualityUsable": "Utilizable",
       "qualityReview": "Revisión",
-      "perAngleQualityRow": "Lighting {lighting}, framing {framing}, {sharpness}.",
+      "perAngleQualityRow": "Luz {lighting}, encuadre {framing}, {sharpness}.",
       "retakeTitle": "La calidad de la foto era demasiado baja.",
       "retakeBody": "Sube otra foto hoy si es posible, idealmente a la luz natural y con tu rostro centrado.",
-      "safetyTitle": "Considere la revisión profesional",
+      "safetyTitle": "Considera una revisión profesional",
       "safetyBody": "Ritora notó señales de seguridad visibles. Esto no es un diagnóstico, pero puede valer la pena contactar a un dermatólogo o médico.",
       "safetyReasons": {
         "possible_swelling": "Posible hinchazón",
-        "hive_like_appearance": "Aspecto parecido a una colmena",
+        "hive_like_appearance": "Aspecto similar a urticaria",
         "widespread_severe_irritation": "Irritación severa generalizada",
-        "rapid_worsening": "empeoramiento rápido",
+        "rapid_worsening": "Empeoramiento rápido",
         "eye_area_involvement": "Afectación del área de los ojos",
         "cracking_or_open_skin_appearance": "Apariencia de piel agrietada o abierta",
         "possible_infection_signs": "Posibles signos de infección"
@@ -3542,9 +3597,106 @@
           "progressNeedsTime": "El progreso de la piel puede ser lento, por lo que los cambios de un solo día deben leerse con atención."
         }
       },
+      "guidance": {
+        "sections": {
+          "factors": "Posible causa",
+          "actions": "Qué probar ahora",
+          "avoid": "Evitar por ahora",
+          "track": "Seguimiento"
+        },
+        "acne": {
+          "title": "Apoyo para brotes",
+          "summary": "Se ve actividad de brotes {severity} alrededor de {locations}. Úsalo como una pista de seguimiento, no como diagnóstico.",
+          "track": "Observa si los grupos cambian durante las próximas 2 a 4 semanas, especialmente después de cambios de producto o rutina."
+        },
+        "hyperpigmentation": {
+          "title": "Apoyo para marcas oscuras y tono",
+          "summary": "Se ven marcas oscuras o tono desigual {severity} alrededor de {locations}. Suele ser más útil como tendencia lenta que como veredicto de un día.",
+          "track": "Compara fotos tomadas con luz similar y registra sol, SPF o irritación en esos mismos días."
+        },
+        "poresOil": {
+          "title": "Apoyo para grasa y poros visibles",
+          "summary": "Hay visibilidad de poros o brillo {severity} alrededor de {locations}. La luz puede exagerar el brillo, así que sigue el patrón con calma.",
+          "track": "Anota si el brillo y los poros visibles coinciden con sudor, limpieza omitida o días con productos más pesados."
+        },
+        "barrier": {
+          "title": "Apoyo para comodidad de la barrera",
+          "summary": "Se ven señales {severity} de sequedad, enrojecimiento o irritación alrededor de {locations}. Es una pista para proteger la comodidad y reducir cambios en la rutina.",
+          "track": "Sigue tirantez, ardor, descamación y si el patrón se calma después de días con rutina más simple."
+        },
+        "texture": {
+          "title": "Seguimiento de textura",
+          "summary": "Se ve variación de textura {severity} alrededor de {locations}. Las fotos con la misma luz importan porque las sombras pueden exagerarla.",
+          "track": "Usa la misma luz y ángulo durante algunas entradas antes de decidir si la textura está cambiando."
+        },
+        "photoSensitive": {
+          "title": "Seguimiento sensible a la foto",
+          "summary": "Hay cambio visible {severity} alrededor de {locations}, pero esta zona depende mucho de luz, sueño y ángulo.",
+          "track": "Compara solo fotos similares y acompaña el resultado con check-ins de sueño y comodidad."
+        },
+        "factors": {
+          "checkInBreakouts": "Registraste brotes hoy, así que revisa posibles causas cercanas como cambios de producto, sudor, estrés, notas de dieta o fricción.",
+          "checkInOiliness": "Registraste grasa hoy. El exceso de grasa puede contribuir a poros obstruidos y hacer que el brillo o los poros se vean más.",
+          "checkInIrritation": "Registraste sequedad, enrojecimiento, irritación o sensibilidad hoy, lo que puede apuntar a estrés de barrera o un irritante reciente.",
+          "checkInSun": "Registraste exposición al sol hoy. La exposición UV puede hacer que manchas, tono desigual o enrojecimiento se vean más marcados.",
+          "checkInSweat": "Registraste sudor o ejercicio hoy. El sudor, el calor y la fricción pueden contribuir a poros obstruidos o irritación si permanecen en la piel.",
+          "checkInStress": "Registraste estrés alto hoy. El estrés puede empeorar brotes o irritación en algunas personas, así que compáralo entre entradas.",
+          "checkInSleep": "Registraste muy poco sueño hoy, lo que puede afectar inflamación, grasa y que la piel se vea cansada o reactiva.",
+          "checkInFeel": "Tu sensación general de piel fue baja hoy, lo que puede apuntar a sequedad, irritación o estrés de barrera.",
+          "checkInNote": "Tu nota puede mencionar un posible desencadenante. Trátalo como una causa candidata para comparar con futuras entradas.",
+          "noteDietAcne": "Tu nota menciona lácteos, azúcar o comer tarde. Pueden contribuir al acné en algunas personas, así que compara el patrón antes de cambiar la dieta.",
+          "recentProductChangeNamed": "Tu registro menciona un cambio reciente de producto: {product}. Los cambios de producto pueden contribuir a brotes, irritación, textura o tono en algunas personas.",
+          "recentRoutineChange": "Registraste un cambio reciente de rutina. Un nuevo horario, frecuencia o combinación de productos puede ser un posible contribuyente.",
+          "routineProductTiming": "Tu rutina incluye {product}. Si el horario o la frecuencia cambió recientemente, podría ser un posible contribuyente.",
+          "activeIngredientTiming": "{product} puede influir en irritación, textura o brotes en algunas personas, sobre todo si se empezó o aumentó hace poco.",
+          "sunscreenContext": "Tu rutina incluye {product}. El SPF irregular puede contribuir a que manchas oscuras y tono desigual duren más.",
+          "recentApplicationChange": "Se omitió o cambió un paso relevante de la rutina recientemente, lo que puede ser un posible contribuyente si el patrón se repite.",
+          "photoQualityContext": "La foto es utilizable pero no perfecta, así que Ritora no debe adivinar causas exactas desde detalles débiles.",
+          "breakoutTiming": "Entre los contribuyentes comunes de brotes están poros obstruidos, sudor o fricción, estrés, timing hormonal, algunos alimentos y algunos medicamentos.",
+          "slowPigmentTiming": "Las manchas oscuras a menudo siguen a inflamación por brotes, afeitado o irritación, y la exposición UV puede hacer que duren más.",
+          "oilPoreVisibility": "Los poros pueden verse más visibles cuando grasa, productos más pesados, sudor o iluminación crean más brillo.",
+          "barrierTiming": "El estrés de barrera puede seguir a activos recientes, exceso de limpieza, exfoliación fuerte, fragancia, cambios de clima o irritantes.",
+          "visualTracking": "Si no destaca un desencadenante claro en el registro, compara rutina, sueño, estrés, producto y exposición entre entradas repetidas.",
+          "acneCommonContributors": "Entre los contribuyentes comunes del acné están productos que obstruyen poros, sudor o fricción, estrés, timing hormonal, algunos alimentos y algunos medicamentos.",
+          "pigmentCommonContributors": "Los contribuyentes comunes incluyen exposición solar, irritación e inflamación después de brotes, afeitado o tocar la piel.",
+          "oilPoreCommonContributors": "Producción de grasa, productos más pesados, sudor y poros obstruidos pueden hacer que poros o brillo se vean más.",
+          "barrierCommonContributors": "Activos recientes, exceso de exfoliación, limpieza fuerte, fragancia, cambios de clima o irritantes conocidos pueden contribuir a sequedad, enrojecimiento o estrés de barrera.",
+          "appearanceCommonContributors": "Sueño, sequedad, deshidratación, sombras y cambios recientes de producto pueden afectar textura, líneas finas o apariencia bajo los ojos.",
+          "generalCommonContributors": "Cambios recientes de producto, rutina, entorno, sueño, estrés o exposición pueden contribuir a cambios visibles en la piel."
+        },
+        "actions": {
+          "acneSteadyRoutine": "Mantén la rutina estable el tiempo suficiente para ver un patrón.",
+          "nonComedogenic": "Prefiere productos no comedogénicos cuando sea posible.",
+          "logClusters": "Registra brotes nuevos, dolorosos o agrupados para que Ritora compare el momento.",
+          "spfContext": "Registra SPF y exposición al sol cuando sigas marcas o tono.",
+          "preventIrritation": "Prioriza evitar irritación porque la inflamación puede hacer que las marcas se vean más oscuras.",
+          "sameLight": "Usa luz de día y ángulo similares para la próxima foto.",
+          "gentleCleanse": "Usa limpieza suave y observa si el brillo vuelve rápido.",
+          "oilFreeWhenPossible": "Elige texturas ligeras u oil-free cuando le vayan bien a tu piel.",
+          "watchShinePattern": "Compara el patrón de brillo antes y después de los pasos de rutina.",
+          "simplifyRoutine": "Mantén la rutina simple mientras la piel se vea reactiva o incómoda.",
+          "moisturizerSupport": "Apoya la comodidad con una hidratante sencilla si encaja con tu rutina.",
+          "watchComfort": "Deja que comodidad, ardor, tirantez y descamación guíen si conviene bajar el ritmo.",
+          "watchPattern": "Observa el patrón durante varias entradas antes de hacer un cambio grande."
+        },
+        "avoid": {
+          "multipleNewActives": "Agregar varios activos nuevos a la vez.",
+          "picking": "Tocar, rascar o exprimir granitos.",
+          "dailyJudgement": "Juzgar el progreso de pigmentación por un solo día.",
+          "irritatingScrubs": "Exfoliantes duros o cambios con alto riesgo de irritación.",
+          "strippingSkin": "Resecar la piel para quitar la grasa.",
+          "overExfoliation": "Exfoliar más solo porque los poros se ven hoy.",
+          "addingActives": "Agregar activos nuevos cuando la piel se ve estresada.",
+          "fragranceIfSensitive": "Productos perfumados si la sensibilidad está alta.",
+          "overReadingOnePhoto": "Sobreinterpretar una foto sin contexto repetido."
+        },
+        "escalation": {
+          "persistentOrPainful": "Considera consultar a un dermatólogo o médico si esto persiste, se extiende, duele, o incluye hinchazón o piel abierta."
+        }
+      },
       "sources": {
-        "label": "Fuentes conectadas a tierra",
-        "lastVerified": "Verified {date}",
+        "label": "Fuentes de referencia",
+        "lastVerified": "Verificado {date}",
         "aad_skin_photo_quality": {
           "title": "Cómo tomar fotografías de piel",
           "summary": "AAD explica que una buena iluminación, un enfoque y un encuadre claro ayudan a que las fotografías muestren el color y la textura con precisión."
@@ -3553,6 +3705,14 @@
           "title": "Tiempo de progreso del acné",
           "summary": "La AAD explica que la mejora del acné generalmente se juzga a lo largo de semanas de atención constante."
         },
+        "aad_acne_skin_care_tips": {
+          "title": "Consejos de cuidado para acné",
+          "summary": "La AAD recomienda cuidado suave para piel con tendencia al acné y productos no comedogénicos."
+        },
+        "aad_acne_causes": {
+          "title": "Causas del acné",
+          "summary": "La AAD explica contribuyentes comunes del acné, incluidos poros obstruidos, grasa, bacterias, hormonas, medicamentos, dieta y estrés."
+        },
         "aad_dark_spots_skin_tones": {
           "title": "Manchas oscuras y tono desigual.",
           "summary": "AAD describe cómo las marcas oscuras pueden desaparecer lentamente y por qué es importante el protector solar a la hora de rastrearlas."
@@ -3560,6 +3720,10 @@
         "aad_skin_of_color": {
           "title": "Guía de color de piel",
           "summary": "AAD cubre cómo el acné y las marcas oscuras pueden mostrarse de manera diferente en tonos de piel más profundos."
+        },
+        "aad_oily_skin": {
+          "title": "Guía para piel grasa",
+          "summary": "La AAD explica pasos suaves que pueden ayudar con la piel grasa sin resecarla."
         },
         "aad_retinoid_retinol_guidance": {
           "title": "Guía sobre retinoides y retinol",

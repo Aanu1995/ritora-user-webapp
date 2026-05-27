@@ -23,6 +23,7 @@ export enum QueryKey {
   SkinJournalPhotoFilters = "skin-journal-photo-filters",
   SkinJournalPhotoDates = "skin-journal-photo-dates",
   SkinJournalCompare = "skin-journal-compare",
+  SkinJournalAnalysisFeedback = "skin-journal-analysis-feedback",
   SkinJournalEvents = "skin-journal-events",
   SkinJournalInsights = "skin-journal-insights",
   SkinJournalWrappedList = "skin-journal-wrapped-list",

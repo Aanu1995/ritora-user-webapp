@@ -3418,7 +3418,65 @@
       "title": "Skin observations today",
       "modelBadge": "AI · {model}",
       "confidence": "Confidence {value}",
+      "reading": {
+        "photoRead": "Photo read: {label}",
+        "labels": {
+          "useful": "Useful read",
+          "limited": "Limited read",
+          "needs_retake": "Needs retake"
+        },
+        "confidenceLabels": {
+          "likely_visible": "Likely visible",
+          "possible": "Possible",
+          "limited": "Limited"
+        },
+        "reasons": {
+          "retake": "Photo quality limits this reading.",
+          "visualLimited": "Lighting or framing limits fine detail.",
+          "multiAngle": "Three usable angles improve today's read.",
+          "clearFront": "The front photo is clear enough for visible signals.",
+          "trendLimited": "Trend comparison is limited today.",
+          "noPrior": "Trend confidence improves after more reference photos.",
+          "priorReference": "Compared only at a high level with a prior front photo."
+        }
+      },
+      "reinterpret": {
+        "body": "This older result can be updated to the newer action-card format without uploading another photo.",
+        "cta": "Update analysis"
+      },
+      "feedback": {
+        "prompt": "Was this analysis helpful?",
+        "subtitle": "Your vote helps Ritora rewrite future analyses.",
+        "thanks": "Thanks for the feedback.",
+        "helpful": "Helpful",
+        "notHelpful": "Not helpful",
+        "reasonPrompt": "What made it unhelpful?",
+        "reasonHelp": "This helps Ritora rank and rewrite future analysis.",
+        "noteLabel": "Optional feedback note",
+        "notePlaceholder": "Add a short note if you want. Do not include names, email, or other identifiers.",
+        "noteCount": "{count}/{max}",
+        "saving": "Saving feedback",
+        "submit": "Send feedback",
+        "reasons": {
+          "too_generic": "Too generic",
+          "wrong_concern": "Wrong concern",
+          "wrong_location": "Wrong location",
+          "missed_context": "Missed my context",
+          "not_actionable": "Not actionable",
+          "photo_quality_confusing": "Photo read was off",
+          "sources_not_useful": "Sources not useful",
+          "other": "Other"
+        }
+      },
       "concernsLabel": "Detected concerns",
+      "faceMap": {
+        "title": "Concern map",
+        "subtitle": "Tinted zones show where the AI saw something on the photo.",
+        "empty": "No concerns flagged on this photo.",
+        "noMappedZones": "No mapped zones for these concerns.",
+        "legendLabel": "Severity",
+        "zoneAria": "{concern} on {location}, {severity}"
+      },
       "imageQualityLabel": "Image quality",
       "lightingGood": "Lighting good",
       "lightingFair": "Lighting fair",
@@ -3493,9 +3551,105 @@
           "guidance": "Keep using similar lighting and framing so Ritora can compare changes more fairly over time."
         },
         "caveats": {
-          "notDiagnosis": "This is not a diagnosis. Ritora uses visible signals to support tracking and reflection.",
           "qualityLimited": "Low photo quality can hide or exaggerate visible changes.",
           "progressNeedsTime": "Skin progress can move slowly, so single day changes should be read with care."
+        }
+      },
+      "guidance": {
+        "sections": {
+          "factors": "Possible cause",
+          "actions": "Try next",
+          "avoid": "Avoid for now",
+          "track": "Track"
+        },
+        "acne": {
+          "title": "Breakout support",
+          "summary": "{severity} breakout activity is visible around {locations}. Use this as a tracking clue, not a diagnosis.",
+          "track": "Watch whether clusters change over the next 2 to 4 weeks, especially after product or routine changes."
+        },
+        "hyperpigmentation": {
+          "title": "Dark marks and tone support",
+          "summary": "{severity} dark marks or uneven tone are visible around {locations}. This is usually more useful as a slow trend than a one day verdict.",
+          "track": "Compare photos taken in similar daylight and note sun exposure or irritation on the same days."
+        },
+        "poresOil": {
+          "title": "Oil and pore visibility support",
+          "summary": "{severity} pore or shine visibility is present around {locations}. Lighting can exaggerate shine, so track the pattern calmly.",
+          "track": "Note whether shine and pore visibility line up with sweat, skipped cleansing, or heavier product days."
+        },
+        "barrier": {
+          "title": "Barrier comfort support",
+          "summary": "{severity} dryness, redness, or irritation-like signs are visible around {locations}. This is a cue to protect comfort and reduce noise in the routine.",
+          "track": "Track tightness, stinging, flaking, and whether the pattern settles after simpler routine days."
+        },
+        "texture": {
+          "title": "Texture tracking",
+          "summary": "{severity} texture variation is visible around {locations}. Same-light photos matter because shadows can overstate texture.",
+          "track": "Use the same lighting and angle for a few entries before deciding whether texture is changing."
+        },
+        "photoSensitive": {
+          "title": "Photo-sensitive tracking",
+          "summary": "{severity} visible change is present around {locations}, but this area is especially affected by light, sleep, and angle.",
+          "track": "Compare only similar photos and pair the result with sleep and comfort check-ins."
+        },
+        "factors": {
+          "checkInBreakouts": "Breakouts were logged today, so review nearby causes such as recent product changes, sweat, stress, diet notes, or friction.",
+          "checkInOiliness": "Oiliness was logged today. Excess oil can contribute to clogged pores and make shine or pores more visible.",
+          "checkInIrritation": "Dryness, redness, irritation, or sensitivity was logged today, which can point toward barrier stress or a recent irritant.",
+          "checkInSun": "Sun exposure was logged today. UV exposure can keep dark marks, uneven tone, or redness looking stronger.",
+          "checkInSweat": "Sweat or exercise was logged today. Sweat, heat, and friction can contribute to clogged pores or irritation if they sit on skin.",
+          "checkInStress": "High stress was logged today. Stress can worsen breakouts or irritation for some people, so compare it across entries.",
+          "checkInSleep": "Very short sleep was logged today, which can affect inflammation, oiliness, and how tired or reactive skin looks.",
+          "checkInFeel": "Your overall skin feel was low today, which can point toward dryness, irritation, or barrier stress.",
+          "checkInNote": "Your note may mention a possible trigger. Treat it as a candidate cause to compare with future entries.",
+          "noteDietAcne": "Your note mentions dairy, sugar, or late eating. These can be acne contributors for some people, so compare the pattern before changing diet.",
+          "recentProductChangeNamed": "Your log mentions a recent product change: {product}. Product changes can contribute to breakouts, irritation, texture, or tone shifts for some users.",
+          "recentRoutineChange": "A recent routine change was logged. New timing, frequency, or product combinations can be possible contributors.",
+          "routineProductTiming": "Your routine includes {product}. If timing or frequency recently changed, it could be a possible contributor.",
+          "activeIngredientTiming": "{product} may affect irritation, texture, or breakout timing for some users, especially when newly started or increased.",
+          "sunscreenContext": "Your routine includes {product}. Inconsistent SPF can contribute to dark marks and uneven tone lingering longer.",
+          "recentApplicationChange": "A relevant routine step was skipped or swapped recently, which can be a possible contributor if the pattern repeats.",
+          "photoQualityContext": "Photo quality is usable but not perfect, so Ritora should not guess exact causes from faint detail.",
+          "breakoutTiming": "Common breakout contributors include clogged pores, sweat or friction, stress, hormonal timing, some foods, and some medications.",
+          "slowPigmentTiming": "Dark marks often follow inflammation from breakouts, shaving, or irritation, and UV exposure can make them linger.",
+          "oilPoreVisibility": "Pores can look more visible when oil, heavier products, sweat, or lighting create more shine.",
+          "barrierTiming": "Barrier stress can follow recent actives, over-cleansing, harsh exfoliation, fragrance, weather shifts, or irritants.",
+          "visualTracking": "If no clear logged trigger stands out, compare routine, sleep, stress, product, and exposure changes across repeated entries.",
+          "acneCommonContributors": "Common acne contributors include pore-clogging products, sweat or friction, stress, hormonal timing, some foods, and some medications.",
+          "pigmentCommonContributors": "Common contributors include sun exposure, irritation, and inflammation after breakouts, shaving, or picking.",
+          "oilPoreCommonContributors": "Oil production, heavier products, sweat, and clogged pores can make pores or shine more visible.",
+          "barrierCommonContributors": "Recent actives, over-exfoliation, harsh cleansing, fragrance, weather shifts, or known irritants can contribute to dryness, redness, or barrier stress.",
+          "appearanceCommonContributors": "Sleep, dryness, dehydration, shadows, and recent product changes can affect texture, fine lines, or under-eye appearance.",
+          "generalCommonContributors": "Recent product, routine, environment, sleep, stress, or exposure changes can contribute to visible skin changes."
+        },
+        "actions": {
+          "acneSteadyRoutine": "Keep the routine steady long enough to see a pattern.",
+          "nonComedogenic": "Prefer noncomedogenic products where possible.",
+          "logClusters": "Log new, painful, or clustered breakouts so Ritora can compare timing.",
+          "spfContext": "Log SPF and sun exposure when tracking marks or tone.",
+          "preventIrritation": "Prioritize preventing irritation because inflammation can keep marks looking darker.",
+          "sameLight": "Use similar daylight and angle for the next photo.",
+          "gentleCleanse": "Use gentle cleansing and watch whether shine returns quickly.",
+          "oilFreeWhenPossible": "Choose lightweight or oil-free textures when they suit your skin.",
+          "watchShinePattern": "Compare shine patterns before and after routine steps.",
+          "simplifyRoutine": "Keep the routine simple while the skin looks reactive or uncomfortable.",
+          "moisturizerSupport": "Support comfort with a plain moisturizer step if it fits your routine.",
+          "watchComfort": "Let comfort, stinging, tightness, and flaking guide whether to slow down.",
+          "watchPattern": "Watch the pattern over multiple entries before making a big change."
+        },
+        "avoid": {
+          "multipleNewActives": "Adding multiple new actives at once.",
+          "picking": "Picking or squeezing spots.",
+          "dailyJudgement": "Judging pigment progress from one day.",
+          "irritatingScrubs": "Harsh scrubs or irritation-prone changes.",
+          "strippingSkin": "Stripping the skin to remove oil.",
+          "overExfoliation": "Exfoliating more because pores look visible today.",
+          "addingActives": "Adding new actives while the skin looks stressed.",
+          "fragranceIfSensitive": "Fragranced products if sensitivity is high.",
+          "overReadingOnePhoto": "Over-reading one photo without repeated context."
+        },
+        "escalation": {
+          "persistentOrPainful": "Consider a dermatologist or clinician if this persists, spreads, becomes painful, or involves swelling or broken skin."
         }
       },
       "sources": {
@@ -3509,6 +3663,14 @@
           "title": "Acne progress timing",
           "summary": "AAD explains that acne improvement is usually judged across weeks of consistent care."
         },
+        "aad_acne_skin_care_tips": {
+          "title": "Acne skin-care tips",
+          "summary": "AAD recommends gentle acne-prone skin care and choosing noncomedogenic products."
+        },
+        "aad_acne_causes": {
+          "title": "Acne causes",
+          "summary": "AAD explains common acne contributors, including clogged pores, oil, bacteria, hormones, medications, diet, and stress."
+        },
         "aad_dark_spots_skin_tones": {
           "title": "Dark spots and uneven tone",
           "summary": "AAD describes how dark marks can fade slowly and why sunscreen matters when tracking them."
@@ -3516,6 +3678,10 @@
         "aad_skin_of_color": {
           "title": "Skin of color guidance",
           "summary": "AAD covers how acne and dark marks may show differently across deeper skin tones."
+        },
+        "aad_oily_skin": {
+          "title": "Oily skin guidance",
+          "summary": "AAD explains gentle care steps that can help manage oily skin without stripping it."
         },
         "aad_retinoid_retinol_guidance": {
           "title": "Retinoid and retinol guidance",

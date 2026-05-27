@@ -302,12 +302,18 @@ export function PhotoCropDialog({
           <Button
             type="button"
             variant="ghost"
+            size="sm"
             onClick={handleReset}
             disabled={isCropping}
           >
             {t("reset")}
           </Button>
-          <Button type="button" onClick={handleApply} disabled={isCropping}>
+          <Button
+            type="button"
+            size="sm"
+            onClick={handleApply}
+            disabled={isCropping}
+          >
             {isCropping ? (
               <LoadingIndicator label={t("applying")} size="sm" />
             ) : (

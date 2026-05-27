@@ -182,6 +182,7 @@ export function DermatologistExportModal({
               {({ canSubmit, isSubmitting }) => (
                 <Button
                   type="submit"
+                  size="sm"
                   disabled={
                     createExport.isPending || isSubmitting || !canSubmit
                   }

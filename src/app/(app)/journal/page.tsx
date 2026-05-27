@@ -15,7 +15,9 @@ import {
   useJournalStats,
   usePhotoDates,
   usePhotoFilters,
+  useRecordAnalysisFeedback,
   useRecordInsightAction,
+  useReinterpretAnalysis,
   usePhotos,
   useWrappedList,
   useRetryAnalysis,
@@ -112,6 +114,8 @@ export default function JournalPage() {
   const dismissInsight = useDismissInsight();
   const recordInsightAction = useRecordInsightAction();
   const retryAnalysis = useRetryAnalysis();
+  const reinterpretAnalysis = useReinterpretAnalysis();
+  const recordAnalysisFeedback = useRecordAnalysisFeedback();
   const photos = useMemo(
     () => photosQuery.data?.pages.flatMap((page) => page.items) ?? [],
     [photosQuery.data],
@@ -233,10 +237,7 @@ export default function JournalPage() {
         }
       />
 
-      <Tabs
-        value={tab}
-        onValueChange={(v) => setTab(v as typeof tab)}
-      >
+      <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
         <div className="sticky top-[88px] z-[5] -mx-4 bg-background px-4 pt-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="mx-auto max-w-7xl pb-3">
             <StatStrip stats={stats} />
@@ -346,6 +347,14 @@ export default function JournalPage() {
           onRetryAnalysis={(entry) => {
             if (!aiActionsDisabled) retryAnalysis.mutate(entry.id);
           }}
+          analysisFeedbackDisabled={recordAnalysisFeedback.isPending}
+          onAnalysisFeedback={(entry, feedback) =>
+            recordAnalysisFeedback.mutate({ id: entry.id, ...feedback })
+          }
+          reinterpretAnalysisDisabled={reinterpretAnalysis.isPending}
+          onReinterpretAnalysis={(entry) =>
+            reinterpretAnalysis.mutate(entry.id)
+          }
           onReplacePhoto={
             canUploadForSelectedDate
               ? () => {

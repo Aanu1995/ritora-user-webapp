@@ -4,7 +4,12 @@ import { use } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { PageHeader } from "@/components/app/page-header";
 import { AppRoute } from "@/constants/app-routes";
-import { useDay, useRetryAnalysis } from "@/hooks/use-skin-journal";
+import {
+  useDay,
+  useRecordAnalysisFeedback,
+  useReinterpretAnalysis,
+  useRetryAnalysis,
+} from "@/hooks/use-skin-journal";
 import {
   isCapabilityDisabled,
   useUserCapabilities,
@@ -33,6 +38,8 @@ export default function JournalDayPage({
   const { openTodayUpload, profileGateDialog } = useJournalProfileGate();
   const { data, isLoading } = useDay(date);
   const retryAnalysis = useRetryAnalysis();
+  const reinterpretAnalysis = useReinterpretAnalysis();
+  const recordAnalysisFeedback = useRecordAnalysisFeedback();
   const capabilities = useUserCapabilities();
   const aiActionsDisabled = isCapabilityDisabled(capabilities.aiGeneration);
   const photoActionsDisabled =
@@ -61,6 +68,8 @@ export default function JournalDayPage({
           isToday={isToday}
           photoActionsDisabled={photoActionsDisabled}
           retryAnalysisDisabled={aiActionsDisabled}
+          analysisFeedbackDisabled={recordAnalysisFeedback.isPending}
+          reinterpretAnalysisDisabled={reinterpretAnalysis.isPending}
           onAddPhoto={isToday ? openTodayUpload : undefined}
           onEditEntry={isToday ? openTodayEdit : undefined}
           onRetryAnalysis={
@@ -69,6 +78,12 @@ export default function JournalDayPage({
                   if (!aiActionsDisabled) retryAnalysis.mutate(entry.id);
                 }
               : undefined
+          }
+          onAnalysisFeedback={(entry, feedback) =>
+            recordAnalysisFeedback.mutate({ id: entry.id, ...feedback })
+          }
+          onReinterpretAnalysis={(entry) =>
+            reinterpretAnalysis.mutate(entry.id)
           }
           onReplacePhoto={isToday ? openTodayEdit : undefined}
         />
