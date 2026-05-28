@@ -199,6 +199,24 @@ describe('Spanish visible copy localization', () => {
     );
   });
 
+  it('localizes shared settings timezone and notification copy', () => {
+    expect(esMessages.settings.timeZone.current).toBe(
+      'Zona horaria actual: {timeZone}',
+    );
+    expect(esMessages.settings.timeZone.deviceCurrent).toBe(
+      'Este dispositivo está configurado en {timeZone}.',
+    );
+    expect(esMessages.settingsNotifications.leadTimeOption).toContain(
+      '1 hora',
+    );
+    expect(esMessages.settingsNotifications.leadTimeOption).not.toContain(
+      '1 hour',
+    );
+    expect(esMessages.settingsNotifications.quietHoursTzNote).toBe(
+      'Las horas están en tu zona horaria · {timeZone}.',
+    );
+  });
+
   it('localizes dashboard greeting and climate metadata', () => {
     expect(esMessages.dashboard.greeting.morning).toBe(
       'Buenos días, {firstName}.',
@@ -295,7 +313,7 @@ describe('Swedish visible copy localization', () => {
     [
       'settingsNotifications.smartPickReadyTitle',
       svMessages.settingsNotifications.smartPickReadyTitle,
-      'Smarta val är redo',
+      'Smarta val redo',
     ],
     [
       'notificationsPage.sourceSmartPicks',
