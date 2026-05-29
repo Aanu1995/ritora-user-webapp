@@ -13,7 +13,8 @@ import type { RefreshResponse } from "@/types/auth";
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1";
 
-export type ApiRequestOptions = Pick<AxiosRequestConfig, "signal">;
+export type ApiRequestOptions = Pick<AxiosRequestConfig, "signal" | "timeout">;
+export const NO_CLIENT_SIDE_REQUEST_TIMEOUT_MS = 0;
 
 const ABSOLUTE_HTTP_URL_PATTERN = /^https?:\/\//i;
 const CREDENTIALLED_AUTH_PATHS = new Set<string>([

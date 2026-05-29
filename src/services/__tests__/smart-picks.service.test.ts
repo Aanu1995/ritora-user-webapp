@@ -1,6 +1,7 @@
 jest.mock("@/lib/api", () => ({
   deleteRequest: jest.fn(),
   getRequest: jest.fn(),
+  NO_CLIENT_SIDE_REQUEST_TIMEOUT_MS: 0,
   patchRequest: jest.fn(),
 }));
 
@@ -10,6 +11,7 @@ import {
   getSmartPicksOverview,
   getSmartPicksWishlist,
   updateSmartPicksBudget,
+  SMART_PICKS_OVERVIEW_REQUEST_TIMEOUT_MS,
 } from "@/services/smart-picks.service";
 
 const mockDeleteRequest = deleteRequest as jest.MockedFunction<
@@ -32,6 +34,7 @@ describe("smart-picks.service", () => {
 
     expect(mockGetRequest).toHaveBeenCalledWith(
       "/smart-picks/overview?mode=starter",
+      { timeout: SMART_PICKS_OVERVIEW_REQUEST_TIMEOUT_MS },
     );
   });
 
@@ -40,7 +43,13 @@ describe("smart-picks.service", () => {
 
     await getSmartPicksOverview();
 
-    expect(mockGetRequest).toHaveBeenCalledWith("/smart-picks/overview");
+    expect(mockGetRequest).toHaveBeenCalledWith("/smart-picks/overview", {
+      timeout: SMART_PICKS_OVERVIEW_REQUEST_TIMEOUT_MS,
+    });
+  });
+
+  it("does not apply a client-side timeout to Smart Picks overview", () => {
+    expect(SMART_PICKS_OVERVIEW_REQUEST_TIMEOUT_MS).toBe(0);
   });
 
   it("fetches and removes wishlist items", async () => {

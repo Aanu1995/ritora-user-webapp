@@ -1,6 +1,7 @@
 jest.mock("@/lib/api", () => ({
   deleteRequest: jest.fn(),
   getRequest: jest.fn(),
+  NO_CLIENT_SIDE_REQUEST_TIMEOUT_MS: 0,
   patchRequest: jest.fn(),
   postMultipartRequest: jest.fn(),
   postRequest: jest.fn(),
@@ -326,7 +327,7 @@ describe("shelf.service", () => {
     expect(postMultipartRequest).toHaveBeenCalledWith(
       "/catalogue/products/extract-from-images",
       expect.any(FormData),
-      expect.objectContaining({ timeout: 75000, onUploadProgress }),
+      expect.objectContaining({ timeout: 0, onUploadProgress }),
     );
 
     const body = (postMultipartRequest as jest.Mock).mock

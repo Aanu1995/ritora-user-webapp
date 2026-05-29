@@ -4672,6 +4672,10 @@
         "body": "Försök igen. Din hylla och profildata är oförändrade.",
         "retry": "Försök igen"
       },
+      "preparing": {
+        "title": "Förbereder produktmatchningar",
+        "body": "Ritora förbereder produktmatchningar. Sidan uppdateras automatiskt, så du kan lämna den och komma tillbaka."
+      },
       "recap": {
         "goal": "Mål",
         "skinType": "Hudtyp",
@@ -5130,6 +5134,9 @@
       "basicSuggestion": "Grundförslag",
       "personalizationOffTitle": "Personalisering är av.",
       "personalizationOffBody": "Detta förslag undviker profil-, journal- och historikkontext tills samtycke för AI-förslag har beviljats.",
+      "noStepsTitle": "Inga produktsteg just nu",
+      "noStepsBody": "Ritora hittade ingen hyllprodukt som passar denna förfrågan just nu. Inget behöver markeras som applicerat.",
+      "noStepsGapBody": "Ritora hittade ingen hyllprodukt att applicera just nu. Granska det saknade bassteget nedan i stället för att markera en rutin som applicerad.",
       "morningLabel": "Morgonrutin",
       "noonLabel": "Påminnelse mitt på dagen",
       "eveningLabel": "Kvällsrutin",

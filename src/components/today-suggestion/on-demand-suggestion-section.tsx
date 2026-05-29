@@ -40,11 +40,18 @@ export function OnDemandSuggestionSection({
   if (suggestions.length === 0) return null;
 
   return (
-    <section className="mt-5">
-      <p className="mb-2 ml-1 inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.1em] text-muted">
-        <Sparkles className="h-3 w-3" />
-        {t("sectionTitle")}
-      </p>
+    <section className="mt-6">
+      <div className="mb-3 flex items-center gap-2">
+        <span
+          aria-hidden
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[color:var(--ai-soft)] text-[color:var(--ai-strong)]"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+        </span>
+        <h2 className="font-display text-sm font-bold text-foreground">
+          {t("sectionTitle")}
+        </h2>
+      </div>
 
       <ul className="flex flex-col gap-3">
         {suggestions.map((item) => {
@@ -99,9 +106,15 @@ function OnDemandCard({
   const qualityWarnings = item.suggestion.productDataQuality.warnings;
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-2 px-1 text-xs text-muted">
-        <span className="font-semibold text-foreground">{t("label")}</span>
-        {intent ? <span>{t(`intent.${intent}`)}</span> : null}
+      <div className="flex flex-wrap items-center gap-1.5 px-1">
+        <span className="text-xs font-semibold text-foreground">
+          {t("label")}
+        </span>
+        {intent ? (
+          <span className="inline-flex items-center rounded-full border border-border bg-surface px-2 py-0.5 text-[11px] font-medium text-muted">
+            {t(`intent.${intent}`)}
+          </span>
+        ) : null}
       </div>
       {item.status === "generating" || item.status === "failed" ? (
         <div className="space-y-2">
@@ -122,10 +135,10 @@ function OnDemandCard({
       ) : (
         <div className="space-y-2">
           {qualityWarnings.length > 0 ? (
-            <div className="flex items-start gap-3 rounded-[1.25rem] border border-[color:var(--note-warm-border)] bg-[color:var(--note-warm-bg)] px-4 py-3">
+            <div className="flex items-start gap-3 rounded-2xl border border-[color:var(--note-warm-border)] bg-[color:var(--note-warm-bg)] px-4 py-3">
               <span
                 aria-hidden
-                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[rgba(245,158,11,0.18)] text-[color:var(--note-warm-fg)]"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-surface text-[color:var(--note-warm-fg)]"
               >
                 <TriangleAlert className="h-4 w-4" />
               </span>

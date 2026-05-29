@@ -4670,6 +4670,10 @@
         "body": "Inténtalo de nuevo. Los datos de tu estantería y perfil no se modifican.",
         "retry": "Inténtalo de nuevo"
       },
+      "preparing": {
+        "title": "Preparando coincidencias de productos",
+        "body": "Ritora está preparando coincidencias de productos. Esta página se actualiza automáticamente, así que puedes salir y volver más tarde."
+      },
       "recap": {
         "goal": "Objetivo",
         "skinType": "tipo de piel",
@@ -5128,6 +5132,9 @@
       "basicSuggestion": "sugerencia básica",
       "personalizationOffTitle": "La personalización está desactivada.",
       "personalizationOffBody": "Esta sugerencia evita el contexto del perfil, el diario y el historial hasta que se otorgue el consentimiento de la sugerencia de IA.",
+      "noStepsTitle": "No hay pasos de producto ahora",
+      "noStepsBody": "Ritora no encontró un producto de tu estante que encaje con esta solicitud ahora. No hay nada que marcar como aplicado.",
+      "noStepsGapBody": "Ritora no encontró un producto del estante para aplicar ahora. Revisa el esencial faltante abajo en lugar de marcar una rutina como aplicada.",
       "morningLabel": "rutina matutina",
       "noonLabel": "recordatorio del medio día",
       "eveningLabel": "rutina nocturna",

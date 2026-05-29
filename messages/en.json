@@ -4628,6 +4628,10 @@
         "body": "Try again. Your shelf and profile data are unchanged.",
         "retry": "Try again"
       },
+      "preparing": {
+        "title": "Preparing product matches",
+        "body": "Ritora is preparing product matches. This page refreshes automatically, so you can leave and come back."
+      },
       "recap": {
         "goal": "Goal",
         "skinType": "Skin type",
@@ -5086,6 +5090,9 @@
       "basicSuggestion": "Basic suggestion",
       "personalizationOffTitle": "Personalization is off.",
       "personalizationOffBody": "This suggestion avoids profile, journal, and history context until AI suggestion consent is granted.",
+      "noStepsTitle": "No product steps right now",
+      "noStepsBody": "Ritora did not find a shelf product that fits this request right now. Nothing needs to be marked as applied.",
+      "noStepsGapBody": "Ritora did not find a shelf product to apply right now. Review the missing essential below instead of marking a routine as applied.",
       "morningLabel": "Morning routine",
       "noonLabel": "Mid-day reminder",
       "eveningLabel": "Evening routine",

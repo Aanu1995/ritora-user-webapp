@@ -11,7 +11,10 @@ import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { AppRoute } from "@/constants/app-routes";
-import { useSmartPicksOverview } from "@/hooks/use-smart-picks";
+import {
+  hasActiveSmartPicksProductMatching,
+  useSmartPicksOverview,
+} from "@/hooks/use-smart-picks";
 import { useRecordSuggestionGapAction } from "@/hooks/use-suggestions";
 import {
   isCapabilityDisabled,
@@ -45,6 +48,7 @@ export function SmartPicksPage() {
   const overview = useSmartPicksOverview(mode, { enabled: !isAiDisabled });
   const recordAction = useRecordSuggestionGapAction();
   const activeMode = mode ?? overview.data?.mode ?? "refine";
+  const isPreparingPicks = hasActiveSmartPicksProductMatching(overview.data);
   const pendingPickId =
     recordAction.isPending && recordAction.variables?.sourceType === "smart_pick"
       ? (recordAction.variables.smartPickProductSuggestionId ?? null)
@@ -119,23 +123,28 @@ export function SmartPicksPage() {
         }
       />
 
-      <div className="mx-auto mt-6 flex max-w-4xl flex-col gap-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <ModeSwitch
-            disabled={isAiDisabled}
-            value={activeMode}
-            onChange={setMode}
-          />
-          {overview.isFetching && !overview.isLoading ? (
-            <span className="inline-flex items-center gap-2 text-xs font-semibold text-muted">
-              <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-              {t("refreshing")}
-            </span>
-          ) : null}
+      <div className="mx-auto w-full max-w-4xl">
+        <div
+          data-testid="smart-picks-tab-bar"
+          className="sticky top-[88px] z-[5] -mx-4 bg-background px-4 py-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+        >
+          <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-3">
+            <ModeSwitch
+              disabled={isAiDisabled}
+              value={activeMode}
+              onChange={setMode}
+            />
+            {overview.isFetching && !overview.isLoading ? (
+              <span className="inline-flex items-center gap-2 text-xs font-semibold text-muted">
+                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                {t("refreshing")}
+              </span>
+            ) : null}
+          </div>
         </div>
 
         {!isAiDisabled ? (
-          <>
+          <div className="mt-3">
             {overview.isLoading ? <SmartPicksSkeleton /> : null}
             {overview.isError ? (
               <RetryPanel
@@ -147,7 +156,7 @@ export function SmartPicksPage() {
                 }}
               />
             ) : null}
-          </>
+          </div>
         ) : null}
         {overview.data ? (
           <SmartPicksContent
@@ -157,11 +166,33 @@ export function SmartPicksPage() {
             pendingPickId={pendingPickId}
             pendingAction={pendingAction}
             actionsDisabled={actionsDisabled}
+            isPreparingPicks={isPreparingPicks}
             onAction={handleAction}
           />
         ) : null}
       </div>
     </div>
+  );
+}
+
+function SmartPicksPreparingBanner() {
+  const t = useTranslations("smartPicks.page");
+
+  return (
+    <section className="rounded-lg border border-accent-soft bg-accent-soft/55 px-4 py-3 text-accent-strong">
+      <div className="flex items-start gap-3">
+        <RefreshCw
+          className="mt-0.5 h-4 w-4 shrink-0 animate-spin"
+          aria-hidden="true"
+        />
+        <div className="min-w-0">
+          <h2 className="text-sm font-bold">{t("preparing.title")}</h2>
+          <p className="mt-1 text-xs leading-5 text-muted">
+            {t("preparing.body")}
+          </p>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -172,6 +203,7 @@ function SmartPicksContent({
   pendingPickId,
   pendingAction,
   actionsDisabled,
+  isPreparingPicks,
   onAction,
 }: {
   overview: NonNullable<ReturnType<typeof useSmartPicksOverview>["data"]>;
@@ -180,6 +212,7 @@ function SmartPicksContent({
   pendingPickId: string | null;
   pendingAction: SuggestionGapActionKind | null;
   actionsDisabled: boolean;
+  isPreparingPicks: boolean;
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }) {
   const t = useTranslations("smartPicks.page");
@@ -187,11 +220,16 @@ function SmartPicksContent({
     overview.skinProfileRequired || overview.consentRequired;
 
   if (shouldBlockSmartPicks)
-    return <SmartPicksEmptyState overview={overview} />;
+    return (
+      <div className="mt-3" data-testid="smart-picks-tab-content">
+        <SmartPicksEmptyState overview={overview} />
+      </div>
+    );
 
   if (overview.mode === "starter") {
     return (
-      <div className="space-y-5">
+      <div className="mt-3 space-y-5" data-testid="smart-picks-tab-content">
+        {isPreparingPicks ? <SmartPicksPreparingBanner /> : null}
         <RecapRow recap={overview.recap} />
         <CoverageMeter coverage={overview.coverage} />
         <SmartPicksTrustNotice />
@@ -215,7 +253,8 @@ function SmartPicksContent({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="mt-3 space-y-5" data-testid="smart-picks-tab-content">
+      {isPreparingPicks ? <SmartPicksPreparingBanner /> : null}
       <RecapRow recap={overview.recap} />
       <CoverageMeter coverage={overview.coverage} />
       <SmartPicksTrustNotice />

@@ -253,7 +253,7 @@ describe("suggestion hooks", () => {
     expect(mockRetryOnDemand).toHaveBeenCalledWith("suggestion-on-demand-1");
   });
 
-  it("polls faster while a suggestion is generating", () => {
+  it("polls every 15 seconds while a suggestion is generating", () => {
     expect(getTodaysSuggestionRefetchInterval(undefined)).toBe(false);
     expect(getTodaysSuggestionRefetchInterval(todayResponse())).toBe(false);
     expect(
@@ -275,7 +275,7 @@ describe("suggestion hooks", () => {
           },
         ],
       }),
-    ).toBe(5_000);
+    ).toBe(15_000);
   });
 
   it("polls only until the next locked slot becomes visible", () => {

@@ -1,6 +1,7 @@
 import { act, waitFor } from "@testing-library/react";
 import { renderHookWithProviders } from "@/test/utils";
 import {
+  getSmartPicksOverviewRefetchInterval,
   useDeleteSmartPicksWishlistItem,
   useSmartPicksOverview,
   useSmartPicksWishlist,
@@ -18,7 +19,9 @@ import type {
 } from "@/types/smart-picks";
 import {
   SMART_PICKS_HISTORY_READINESS_REASON,
+  SMART_PICKS_PRODUCT_GENERATION_REASON,
   SMART_PICKS_PRODUCT_GENERATION_STATUS,
+  SMART_PICKS_STARTER_KIT_STEP_STATUS,
 } from "@/types/smart-picks";
 
 jest.mock("@/hooks/use-auth-enabled", () => ({
@@ -109,7 +112,109 @@ describe("Smart Picks hooks", () => {
     await waitFor(() => expect(mockGetOverview).toHaveBeenCalledTimes(1));
   });
 
-  it("does not poll when pending copy is not backed by a running job", async () => {
+  it("keeps retrying after a temporary backend outage", async () => {
+    jest.useFakeTimers();
+    mockGetOverview
+      .mockRejectedValueOnce(new Error("backend unavailable"))
+      .mockResolvedValueOnce(overview());
+
+    const overviewState = renderHookWithProviders(() =>
+      useSmartPicksOverview("starter"),
+    );
+    await waitFor(() => expect(overviewState.result.current.isError).toBe(true));
+
+    mockGetOverview.mockClear();
+
+    await act(async () => {
+      jest.advanceTimersByTime(30_000);
+    });
+
+    await waitFor(() => expect(mockGetOverview).toHaveBeenCalledTimes(1));
+  });
+
+  it("uses the Smart Picks polling cadence while generation runs", () => {
+    expect(getSmartPicksOverviewRefetchInterval(undefined)).toBe(false);
+    expect(
+      getSmartPicksOverviewRefetchInterval({
+        ...overview(),
+        productGeneration: {
+          status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Pending,
+          reason: null,
+          missingPickCount: 1,
+          isProcessing: true,
+          attemptedAt: null,
+          retryAfter: null,
+        },
+      }),
+    ).toBe(30_000);
+    expect(
+      getSmartPicksOverviewRefetchInterval({
+        ...overview(),
+        productGeneration: {
+          status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Pending,
+          reason: null,
+          missingPickCount: 1,
+          isProcessing: false,
+          attemptedAt: null,
+          retryAfter: null,
+        },
+      }),
+    ).toBe(30_000);
+    expect(getSmartPicksOverviewRefetchInterval(overview())).toBe(false);
+  });
+
+  it("polls again after transient product matching failures become retryable", () => {
+    expect(
+      getSmartPicksOverviewRefetchInterval(
+        {
+          ...overview(),
+          productGeneration: {
+            status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Failed,
+            reason: SMART_PICKS_PRODUCT_GENERATION_REASON.ProviderFailed,
+            missingPickCount: 1,
+            isProcessing: false,
+            attemptedAt: "2026-05-10T10:00:00.000Z",
+            retryAfter: "2026-05-10T10:01:00.000Z",
+          },
+        },
+        Date.parse("2026-05-10T10:00:10.000Z"),
+      ),
+    ).toBe(50_000);
+    expect(
+      getSmartPicksOverviewRefetchInterval(
+        {
+          ...overview(),
+          productGeneration: {
+            status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Failed,
+            reason: SMART_PICKS_PRODUCT_GENERATION_REASON.ProviderFailed,
+            missingPickCount: 1,
+            isProcessing: false,
+            attemptedAt: "2026-05-10T10:00:00.000Z",
+            retryAfter: "2026-05-10T10:01:00.000Z",
+          },
+        },
+        Date.parse("2026-05-10T10:01:05.000Z"),
+      ),
+    ).toBe(30_000);
+  });
+
+  it("does not keep polling when product matching cannot run without configuration", () => {
+    expect(
+      getSmartPicksOverviewRefetchInterval({
+        ...overview(),
+        productGeneration: {
+          status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Failed,
+          reason: SMART_PICKS_PRODUCT_GENERATION_REASON.MissingApiKey,
+          missingPickCount: 1,
+          isProcessing: false,
+          attemptedAt: "2026-05-10T10:00:00.000Z",
+          retryAfter: "2026-05-10T10:01:00.000Z",
+        },
+      }),
+    ).toBe(false);
+  });
+
+  it("keeps polling while the backend has pending product picks to return", async () => {
     jest.useFakeTimers();
     mockGetOverview.mockResolvedValue({
       ...overview(),
@@ -137,7 +242,67 @@ describe("Smart Picks hooks", () => {
       jest.advanceTimersByTime(30_000);
     });
 
-    expect(mockGetOverview).not.toHaveBeenCalled();
+    await waitFor(() => expect(mockGetOverview).toHaveBeenCalledTimes(1));
+  });
+
+  it("keeps polling while visible Smart Pick products are still unmatched", () => {
+    expect(
+      getSmartPicksOverviewRefetchInterval({
+        ...overview(),
+        productSuggestionsUnavailable: true,
+        productGeneration: {
+          status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Ready,
+          reason: null,
+          missingPickCount: 0,
+          isProcessing: false,
+          attemptedAt: null,
+          retryAfter: null,
+        },
+        priorityGaps: [
+          {
+            ...overview().priorityGaps[0]!,
+            pick: null,
+          },
+        ],
+      }),
+    ).toBe(30_000);
+  });
+
+  it("keeps polling while Starter Kit recommended steps are still unmatched", () => {
+    expect(
+      getSmartPicksOverviewRefetchInterval({
+        ...overview(),
+        mode: "starter",
+        productSuggestionsUnavailable: true,
+        productGeneration: {
+          status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Ready,
+          reason: null,
+          missingPickCount: 0,
+          isProcessing: false,
+          attemptedAt: null,
+          retryAfter: null,
+        },
+        priorityGaps: [],
+        starterKit: {
+          summary: "Start with the basics.",
+          steps: [
+            {
+              order: 1,
+              role: "cleanse",
+              title: "Cleanse",
+              ingredientOrCategory: "Gentle cleanser",
+              normalizedKey: "gentle-cleanser",
+              status: SMART_PICKS_STARTER_KIT_STEP_STATUS.Recommended,
+              ownedProductId: null,
+              ownedProductName: null,
+              reason: "Start here.",
+              pick: null,
+              sourceIds: [],
+            },
+          ],
+        },
+      }),
+    ).toBe(30_000);
   });
 
   it("exposes pending mutation state while budget changes save", async () => {
