@@ -91,11 +91,7 @@
         "journalTitle": "Diario de piel",
         "journalSubtitle": "Hoy · multiángulo",
         "ai": "IA",
-        "photoLabels": [
-          "Frente",
-          "Izquierda",
-          "Derecha"
-        ],
+        "photoLabels": ["Frente", "Izquierda", "Derecha"],
         "redness": "enrojecimiento",
         "dryness": "Sequedad"
       }
@@ -352,11 +348,7 @@
           "title": "Estante · Limpiador Hidratante CeraVe",
           "subtitle": "Comenzó el 14 de enero · 4 meses",
           "status": "Activo",
-          "chips": [
-            "Ceramidas",
-            "ácido hialurónico",
-            "Sin fragancia"
-          ],
+          "chips": ["Ceramidas", "ácido hialurónico", "Sin fragancia"],
           "usedLabel": "Usado",
           "lastedLabel": "Duró"
         },
@@ -411,11 +403,7 @@
           "title": "El análisis de hoy.",
           "subtitle": "3 fotos · analizadas 6:18",
           "ai": "IA",
-          "photoLabels": [
-            "Frente",
-            "Izquierda",
-            "Derecha"
-          ],
+          "photoLabels": ["Frente", "Izquierda", "Derecha"],
           "redness": "enrojecimiento",
           "dryness": "Sequedad",
           "irritation": "irritación",
@@ -486,11 +474,7 @@
           "cardTitle": "Libro de jugadas",
           "cardSubtitle": "Compartido por alguien como tú",
           "authorName": "maya k.",
-          "authorTags": [
-            "combinación",
-            "Fitzpatrick IV",
-            "Hiperpigmentación"
-          ],
+          "authorTags": ["combinación", "Fitzpatrick IV", "Hiperpigmentación"],
           "playbookTitle": "Reconstrucción de barrera más tranquila",
           "playbookSubtitle": "Rutina nocturna de 4 pasos durante 6 semanas.",
           "steps": [
@@ -2344,9 +2328,7 @@
           "Masajear suavemente sobre la piel húmeda con movimientos circulares.",
           "Enjuague bien con agua tibia."
         ],
-        "cautions": [
-          "Evite el área de los ojos."
-        ]
+        "cautions": ["Evite el área de los ojos."]
       },
       "toner": {
         "steps": [
@@ -2423,9 +2405,7 @@
           "Utilice el dedo anular para golpear suavemente alrededor del hueso orbital.",
           "Evite tirar o arrastrar la fina piel del área de los ojos."
         ],
-        "cautions": [
-          "Mantenga el producto fuera del ojo."
-        ]
+        "cautions": ["Mantenga el producto fuera del ojo."]
       },
       "lip-care": {
         "steps": [
@@ -2438,9 +2418,7 @@
           "Siga las instrucciones en el paquete.",
           "Aplicar solo en el área objetivo."
         ],
-        "cautions": [
-          "Pruebe el parche antes del primer uso."
-        ]
+        "cautions": ["Pruebe el parche antes del primer uso."]
       },
       "other": {
         "steps": [],
@@ -3358,15 +3336,7 @@
       "next": "El próximo mes",
       "loading": "Cargando calendario",
       "monthlyWrapped": "Envuelto mensualmente",
-      "weekdays": [
-        "m",
-        "t",
-        "W.",
-        "t",
-        "f",
-        "S",
-        "S"
-      ],
+      "weekdays": ["m", "t", "W.", "t", "f", "S", "S"],
       "legend": {
         "completed": "hecho",
         "noEntry": "Ninguno",
@@ -4558,8 +4528,10 @@
     "sourceTodaysSuggestion": "La sugerencia de hoy",
     "sourceSmartPicks": "Selecciones inteligentes",
     "sourceShelf": "estante",
+    "sourceCommunity": "Comunidad",
     "fallbackProductName": "un producto",
     "unknownDate": "una fecha desconocida",
+    "unknownKindBody": "Abra esta notificación para ver los detalles.",
     "errors": {
       "loadTitle": "No pudimos cargar notificaciones.",
       "loadBody": "Por favor inténtalo de nuevo. Sus preferencias de notificación y datos del diario no cambian.",
@@ -4623,6 +4595,10 @@
       "smart_pick_ready": {
         "title": "Nueva selección inteligente disponible",
         "body": "Tu estante cambió. Revise la última brecha antes de comprar algo nuevo."
+      },
+      "community_moderation": {
+        "title": "Actualización de comunidad",
+        "body": "Una reseña o guía que compartiste tiene una actualización de moderación."
       }
     }
   },
@@ -5586,7 +5562,7 @@
       "adapt": "Adaptarse a mi estante",
       "reportRoutine": "Informe de rutina",
       "reportReview": "Revisión del informe",
-      "context": "Contexto:",
+      "context": "Emparejado con",
       "moreSteps": "+{count} more"
     },
     "share": {
@@ -5602,6 +5578,18 @@
       "scanning": "Escaneando…",
       "saveEdits": "Guardar ediciones",
       "saving": "Guardando…"
+    },
+    "unsavedReview": {
+      "title": "¿Descartar cambios de la reseña?",
+      "description": "Tu borrador de reseña se perderá si cierras este panel ahora.",
+      "discard": "Descartar cambios",
+      "keepEditing": "Seguir editando"
+    },
+    "unsavedPlaybook": {
+      "title": "¿Descartar cambios del libro de jugadas?",
+      "description": "Tu borrador del libro de jugadas se perderá si cierras este panel ahora.",
+      "discard": "Descartar cambios",
+      "keepEditing": "Seguir editando"
     },
     "editability": {
       "heading": "Aviso antes de enviar",
@@ -5908,24 +5896,39 @@
       "effect": "Efecto",
       "irritation": "irritación",
       "notRated": "No clasificado",
-      "repurchase": "Repurchase: {value}",
-      "unknown": "Desconocido"
+      "repurchase": "Volvería a comprarlo: {value}",
+      "unknown": "Desconocido",
+      "howUsedLabel": "Cómo lo usaron",
+      "outcomeLabel": "Qué cambió",
+      "reviewerLabel": "Sobre este reseñador"
     },
     "outcomeSignals": {
       "addedToast": "Su resultado se agregó a la evidencia.",
       "failedToast": "No se pudo guardar el resultado.",
-      "confirmed": "{worked}/{total} confirmed",
-      "helper": "Añade tu resultado sin juzgar la publicación original.",
+      "confirmed": "{worked} de {total} personas confirmaron que funcionó",
+      "helper": "Toca un icono debajo para compartir tu propio resultado con este producto. Cada icono representa un tipo de resultado distinto.",
+      "shortLabels": {
+        "worked_for_me_too": "Funcionó",
+        "worked_with_changes": "Ajustado",
+        "mixed_result": "Mixto",
+        "did_not_work": "No funcionó",
+        "caused_irritation": "Irritación"
+      },
       "chooseOutcomeFirst": "Elija un resultado primero.",
       "addFailed": "No se pudo agregar el resultado.",
       "dialogTitle": "Confirma tu resultado",
       "dialogDescription": "Esto hace que la evidencia sea más útil sin convertir la publicación de otra persona en una partitura pública.",
+      "yourOutcome": "Tu resultado",
       "sameGoal": "¿El mismo objetivo?",
+      "sameGoalHint": "¿Buscabas tratar el mismo problema de piel que la publicación original?",
       "sameGoalYes": "Si, mismo objetivo",
       "sameGoalNo": "No, relacionados pero diferentes.",
       "trialDuration": "¿Cuánto tiempo lo intentaste?",
+      "trialDurationHint": "Cuánto tiempo usaste el producto antes de decidir.",
       "irritation": "irritación",
+      "irritationHint": "Cualquier escozor, enrojecimiento o brote que notaste.",
       "followedParts": "¿Qué seguiste?",
+      "followedPartsHint": "Qué partes de la rutina original también seguiste.",
       "choose": "elegir",
       "chooseDuration": "Elige la duración",
       "chooseIrritation": "Elige el nivel de irritación",
@@ -6016,6 +6019,19 @@
       "withdrawConfirmTitle": "¿Retirar el envío de la comunidad?",
       "withdrawConfirmBody": "Esto lo elimina de las vistas de la comunidad, las coincidencias y las clasificaciones de evidencia. El registro de auditoría de moderación se mantiene internamente.",
       "cancel": "Cancelar",
+      "editReviewTitle": "Editar reseña",
+      "editReviewDescription": "Actualiza la reseña devuelta y guárdala para otra revisión de seguridad.",
+      "editPlaybookTitle": "Editar libro de jugadas",
+      "editPlaybookDescription": "Actualiza el libro de jugadas devuelto y guárdalo para otra revisión de seguridad.",
+      "guidanceTitle": "Qué editar",
+      "guidanceFallback": "Revisa este envío por afirmaciones inseguras, falta de contexto de rutina o problemas de divulgación antes de guardar los cambios.",
+      "safetyFlagTitleFallback": "Revisión de seguridad",
+      "guidanceInstruction": "Cambia las partes indicadas y luego guarda los cambios. Vuelve a enviar sin cambios solo si crees que fue un error.",
+      "guidanceSource": {
+        "ai": "Moderación automática",
+        "admin": "Moderación de Ritora",
+        "system": "Revisión de seguridad"
+      },
       "missingSnapshot": "Este envío no se puede editar todavía. Intente actualizar la página.",
       "status": {
         "draft": "Borrador",

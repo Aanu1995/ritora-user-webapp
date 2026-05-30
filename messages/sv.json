@@ -91,11 +91,7 @@
         "journalTitle": "Huddagbok",
         "journalSubtitle": "Idag · flera vinklar",
         "ai": "AI",
-        "photoLabels": [
-          "Fram",
-          "Vänster",
-          "Höger"
-        ],
+        "photoLabels": ["Fram", "Vänster", "Höger"],
         "redness": "Rodnad",
         "dryness": "Torrhet"
       }
@@ -352,11 +348,7 @@
           "title": "Hylla · CeraVe Hydrating Cleanser",
           "subtitle": "Startad 14 jan · 4 mån gammal",
           "status": "Aktiv",
-          "chips": [
-            "Ceramider",
-            "Hyaluronsyra",
-            "Parfymfri"
-          ],
+          "chips": ["Ceramider", "Hyaluronsyra", "Parfymfri"],
           "usedLabel": "Använd",
           "lastedLabel": "Räckte"
         },
@@ -411,11 +403,7 @@
           "title": "Dagens analys",
           "subtitle": "3 foton · analyserat 06:18",
           "ai": "AI",
-          "photoLabels": [
-            "Fram",
-            "Vänster",
-            "Höger"
-          ],
+          "photoLabels": ["Fram", "Vänster", "Höger"],
           "redness": "Rodnad",
           "dryness": "Torrhet",
           "irritation": "Irritation",
@@ -486,19 +474,10 @@
           "cardTitle": "Playbook",
           "cardSubtitle": "Delad av någon som du",
           "authorName": "Maya K.",
-          "authorTags": [
-            "Kombinerad",
-            "Fitzpatrick IV",
-            "Hyperpigmentering"
-          ],
+          "authorTags": ["Kombinerad", "Fitzpatrick IV", "Hyperpigmentering"],
           "playbookTitle": "Lugnare barriäråteruppbyggnad",
           "playbookSubtitle": "4-stegs kvällsrutin i 6 veckor",
-          "steps": [
-            "Rengöring",
-            "Niacinamid",
-            "Ceramidfuktkräm",
-            "SPF 50"
-          ],
+          "steps": ["Rengöring", "Niacinamid", "Ceramidfuktkräm", "SPF 50"],
           "outcome": "32 sa att det fungerade",
           "outcomeMixed": "4 blandade resultat",
           "adaptCta": "Anpassa till min hylla"
@@ -2344,9 +2323,7 @@
           "Massera mjukt i cirklar på fuktig hud.",
           "Skölj noga med ljummet vatten."
         ],
-        "cautions": [
-          "Undvik ögonpartiet."
-        ]
+        "cautions": ["Undvik ögonpartiet."]
       },
       "toner": {
         "steps": [
@@ -2423,14 +2400,10 @@
           "Knacka mjukt med ringfingret runt ögonbenet.",
           "Dra eller sträck inte ut den tunna huden kring ögonen."
         ],
-        "cautions": [
-          "Undvik att få produkten i ögat."
-        ]
+        "cautions": ["Undvik att få produkten i ögat."]
       },
       "lip-care": {
-        "steps": [
-          "Applicera ett tunt lager efter behov under dagen."
-        ],
+        "steps": ["Applicera ett tunt lager efter behov under dagen."],
         "cautions": []
       },
       "treatment": {
@@ -2438,9 +2411,7 @@
           "Följ förpackningens instruktioner.",
           "Applicera endast på det berörda området."
         ],
-        "cautions": [
-          "Testa på en liten yta innan första användning."
-        ]
+        "cautions": ["Testa på en liten yta innan första användning."]
       },
       "other": {
         "steps": [],
@@ -3358,15 +3329,7 @@
       "next": "Nästa månad",
       "loading": "Laddar kalender",
       "monthlyWrapped": "Månads-Wrapped",
-      "weekdays": [
-        "M",
-        "T",
-        "O",
-        "T",
-        "F",
-        "L",
-        "S"
-      ],
+      "weekdays": ["M", "T", "O", "T", "F", "L", "S"],
       "legend": {
         "completed": "Klar",
         "noEntry": "Ingen",
@@ -4560,8 +4523,10 @@
     "sourceTodaysSuggestion": "Dagens förslag",
     "sourceSmartPicks": "Smarta val",
     "sourceShelf": "Hylla",
+    "sourceCommunity": "Gemenskap",
     "fallbackProductName": "En produkt",
     "unknownDate": "ett okänt datum",
+    "unknownKindBody": "Öppna aviseringen för mer information.",
     "errors": {
       "loadTitle": "Vi kunde inte ladda aviseringar",
       "loadBody": "Försök igen. Dina aviseringsinställningar och journaldata är oförändrade.",
@@ -4625,6 +4590,10 @@
       "smart_pick_ready": {
         "title": "Nytt smart val finns",
         "body": "Din hylla har ändrats. Granska den senaste luckan innan du köper något nytt."
+      },
+      "community_moderation": {
+        "title": "Gemenskapsuppdatering",
+        "body": "En recension eller spelplan som du delade har en modereringsuppdatering."
       }
     }
   },
@@ -5588,7 +5557,7 @@
       "adapt": "Anpassa till min hylla",
       "reportRoutine": "Rapportera rutin",
       "reportReview": "Rapportera recension",
-      "context": "Sammanhang:",
+      "context": "Parad med",
       "moreSteps": "+{count} fler"
     },
     "share": {
@@ -5605,16 +5574,28 @@
       "saveEdits": "Spara ändringar",
       "saving": "Sparar…"
     },
+    "unsavedReview": {
+      "title": "Kasta recensionens ändringar?",
+      "description": "Ditt recensionsutkast går förlorat om du stänger panelen nu.",
+      "discard": "Kasta ändringar",
+      "keepEditing": "Fortsätt redigera"
+    },
+    "unsavedPlaybook": {
+      "title": "Kasta spelplanens ändringar?",
+      "description": "Ditt spelplansutkast går förlorat om du stänger panelen nu.",
+      "discard": "Kasta ändringar",
+      "keepEditing": "Fortsätt redigera"
+    },
     "editability": {
       "heading": "Innan du skickar in",
-      "reviewBody": "När din recension är publicerad kan du bara redigera recensionstexten — och bara om våra moderatorer ber dig. Betyg, produkt, användningsuppgifter och taggar är låsta.",
-      "playbookBody": "När din spelplan är publicerad kan du bara redigera titel och sammanfattning — och bara om våra moderatorer ber dig. Steg, produkter, mål och taggar är låsta."
+      "reviewBody": "När din recension är publicerad är det bara recensionstexten du kan redigera, och bara om våra moderatorer ber dig. Betyg, produkt, användningsuppgifter och taggar är låsta.",
+      "playbookBody": "När din spelplan är publicerad är det bara titeln och sammanfattningen du kan redigera, och bara om våra moderatorer ber dig. Steg, produkter, mål och taggar är låsta."
     },
     "confirm": {
       "reviewTitle": "Skicka in den här recensionen?",
-      "reviewBody": "Vi säkerhetskontrollerar och kör AI-moderering innan den publiceras. Efter det kan du bara redigera recensionstexten — och bara om moderatorer ber dig.",
+      "reviewBody": "Vi kör en säkerhetskontroll och AI-moderering innan den publiceras. Efter det är det bara recensionstexten du kan redigera, och bara om moderatorer ber dig.",
       "playbookTitle": "Dela den här spelplanen?",
-      "playbookBody": "Vi säkerhetskontrollerar och kör AI-moderering innan den publiceras. Efter det kan du bara redigera titel och sammanfattning — och bara om moderatorer ber dig.",
+      "playbookBody": "Vi kör en säkerhetskontroll och AI-moderering innan den publiceras. Efter det är det bara titeln och sammanfattningen du kan redigera, och bara om moderatorer ber dig.",
       "keepEditing": "Fortsätt redigera"
     },
     "filters": {
@@ -5774,7 +5755,7 @@
         "submitFailed": "Recensionen kunde inte skickas.",
         "productSection": "Recenserad produkt",
         "ratingsSection": "Hur bra fungerade den?",
-        "ratingsDescription": "Hur produkten fungerade för din hud. Obligatoriska betyg på en skala 1–5.",
+        "ratingsDescription": "Hur produkten fungerade för din hud. Obligatoriska betyg på en skala från 1 till 5.",
         "overallLabel": "Helhetsbetyg",
         "overallHint": "Din totala nöjdhet.",
         "overallPlaceholder": "Betygsätt helheten",
@@ -5793,7 +5774,7 @@
         "valueHint": "Valfritt. Om den kändes värd priset.",
         "optionalPlaceholder": "Valfritt",
         "usageSection": "När och hur du använde den",
-        "usageDescription": "Samma produkt, olika rutin — sammanhanget ändrar resultatet.",
+        "usageDescription": "Samma produkt, olika rutin. Sammanhanget ändrar resultatet.",
         "usageDurationLabel": "Användningstid",
         "usageDurationHint": "Hur länge tills du visste.",
         "usageDurationPlaceholder": "Välj tidsperiod",
@@ -5823,7 +5804,7 @@
         "outcomesHint": "Kommaseparerade nyckelord som gör detta sökbart.",
         "outcomesPlaceholder": "lugnare, mindre sveda, ingen förändring",
         "bodySection": "Med dina egna ord",
-        "bodyDescription": "Valfritt. Undvik diagnoser och påståenden som \"botade\" — allt som låter som medicinsk rådgivning går till moderering.",
+        "bodyDescription": "Valfritt. Undvik diagnoser och påståenden som \"botade\". Allt som låter som medicinsk rådgivning går till moderering.",
         "bodyHint": "Lägg till nyanser som betyg och taggar inte kan visa.",
         "bodyLabel": "Recensionstext",
         "bodyPlaceholder": "Vad förändrades, vad gjorde det inte, och vad skulle du säga till någon med liknande hud innan de provar den?"
@@ -5845,7 +5826,7 @@
         "timeframeHint": "Hur lång tid det tog innan du visste att det fungerade.",
         "timeframePlaceholder": "Välj tidsram",
         "routineSection": "Produkter och rutin",
-        "routineDescription": "Lägg till varje steg i ordning. Välj från din hylla när du kan — manuell inmatning fungerar när produkten inte finns på hyllan.",
+        "routineDescription": "Lägg till varje steg i ordning. Välj från din hylla när du kan. Manuell inmatning fungerar när produkten inte finns på hyllan.",
         "changedSection": "Vad förändrades",
         "changedDescription": "Valfritt. Taggar gör spelplanen sökbar för personer med samma mål.",
         "avoidLabel": "Vad jag undvek",
@@ -5910,24 +5891,39 @@
       "effect": "Effekt",
       "irritation": "Irritation",
       "notRated": "Inte betygsatt",
-      "repurchase": "Köp igen: {value}",
-      "unknown": "Okänt"
+      "repurchase": "Skulle köpa igen: {value}",
+      "unknown": "Okänt",
+      "howUsedLabel": "Så här använde de produkten",
+      "outcomeLabel": "Vad förändrades",
+      "reviewerLabel": "Om den här recensenten"
     },
     "outcomeSignals": {
       "addedToast": "Ditt resultat lades till i bevisen.",
       "failedToast": "Kunde inte spara ditt resultat.",
-      "confirmed": "{worked}/{total} bekräftade",
-      "helper": "Lägg till ditt resultat utan att bedöma originalinlägget.",
+      "confirmed": "{worked} av {total} personer bekräftade att det fungerade",
+      "helper": "Tryck på en ikon nedan för att dela ditt eget resultat med produkten. Varje ikon står för ett olika slags resultat.",
+      "shortLabels": {
+        "worked_for_me_too": "Fungerade",
+        "worked_with_changes": "Justerade",
+        "mixed_result": "Blandat",
+        "did_not_work": "Fungerade inte",
+        "caused_irritation": "Irritation"
+      },
       "chooseOutcomeFirst": "Välj ett resultat först.",
       "addFailed": "Kunde inte lägga till resultat.",
       "dialogTitle": "Bekräfta ditt resultat",
       "dialogDescription": "Detta gör bevisen mer användbara utan att göra någon annans inlägg till en offentlig poäng.",
+      "yourOutcome": "Ditt resultat",
       "sameGoal": "Samma mål?",
+      "sameGoalHint": "Var du inriktad på samma hudproblem som det ursprungliga inlägget?",
       "sameGoalYes": "Ja, samma mål",
       "sameGoalNo": "Nej, relaterat men annorlunda",
       "trialDuration": "Hur länge provade du det?",
+      "trialDurationHint": "Hur länge du använde produkten innan du bestämde dig.",
       "irritation": "Irritation",
+      "irritationHint": "Någon sveda, rodnad eller utbrott du märkte.",
       "followedParts": "Vad följde du?",
+      "followedPartsHint": "Vilka delar av den ursprungliga rutinen du också testade.",
       "choose": "Välj",
       "chooseDuration": "Välj tidsperiod",
       "chooseIrritation": "Välj irritationsnivå",
@@ -5945,7 +5941,7 @@
       "playbooks": "Spelplaner",
       "workedSignals": "Fungerade för dem",
       "averageEffectiveness": "Snitt-effekt",
-      "notAvailable": "—",
+      "notAvailable": "Saknas",
       "topGoals": "Vanligaste mål",
       "topAvoids": "Vad personer undvek",
       "reviewOutcomes": "Recensionsresultat",
@@ -6018,6 +6014,19 @@
       "withdrawConfirmTitle": "Dra tillbaka gemenskapsinlägg?",
       "withdrawConfirmBody": "Detta tar bort det från gemenskapsvyer, matchning och bevisrankningar. Modereringsrevisionsposten behålls internt.",
       "cancel": "Avbryt",
+      "editReviewTitle": "Redigera recension",
+      "editReviewDescription": "Uppdatera den returnerade recensionen och spara den för en ny säkerhetskontroll.",
+      "editPlaybookTitle": "Redigera spelplan",
+      "editPlaybookDescription": "Uppdatera den returnerade spelplanen och spara den för en ny säkerhetskontroll.",
+      "guidanceTitle": "Vad som behöver ändras",
+      "guidanceFallback": "Granska inlägget för osäkra påståenden, saknat rutinsammanhang eller problem med upplysningar innan du sparar ändringar.",
+      "safetyFlagTitleFallback": "Säkerhetsgranskning",
+      "guidanceInstruction": "Ändra delarna som nämns och spara sedan. Skicka in oförändrat endast om du tror att detta är ett misstag.",
+      "guidanceSource": {
+        "ai": "Automatisk moderering",
+        "admin": "Ritora-moderering",
+        "system": "Säkerhetsgranskning"
+      },
       "missingSnapshot": "Det här inlägget kan inte redigeras ännu. Försök uppdatera sidan.",
       "status": {
         "draft": "Utkast",

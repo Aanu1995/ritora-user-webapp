@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Sheet,
@@ -13,6 +14,11 @@ import {
   ShareWhatWorkedPanel,
   WriteReviewPanel,
 } from "./community-eligibility";
+import { useCommunityModalUnsavedChanges } from "./community-unsaved-review-guard";
+import {
+  CommunityUnsavedPlaybookDialog,
+  CommunityUnsavedReviewDialog,
+} from "./community-unsaved-review-dialog";
 
 /* ===========================================================
  * Side-sheet wrappers for the two contribution flows.
@@ -34,33 +40,104 @@ type CommunityComposerSheetProps = {
 
 export function WriteReviewSheet(props: CommunityComposerSheetProps) {
   const t = useTranslations("community.share");
+  const [discardOpen, setDiscardOpen] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const hasUnsavedChanges = props.open && dirty;
+  useCommunityModalUnsavedChanges(hasUnsavedChanges);
+
+  const closeWithoutPrompt = () => {
+    setDirty(false);
+    setDiscardOpen(false);
+    props.onOpenChange(false);
+  };
+
+  const handleOpenChange = (next: boolean) => {
+    if (next) {
+      props.onOpenChange(true);
+      return;
+    }
+
+    if (hasUnsavedChanges) {
+      setDiscardOpen(true);
+      return;
+    }
+
+    closeWithoutPrompt();
+  };
+
   return (
-    <CommunityComposerSheet
-      {...props}
-      title={t("reviewTitle")}
-      description={t("reviewDescription")}
-    >
-      <WriteReviewPanel
-        eligibility={props.eligibility}
-        onExplainBlocked={props.onExplainBlocked}
+    <>
+      <CommunityComposerSheet
+        {...props}
+        open={props.open}
+        onOpenChange={handleOpenChange}
+        title={t("reviewTitle")}
+        description={t("reviewDescription")}
+      >
+        <WriteReviewPanel
+          eligibility={props.eligibility}
+          onDirtyChange={setDirty}
+          onExplainBlocked={props.onExplainBlocked}
+          onSaved={closeWithoutPrompt}
+        />
+      </CommunityComposerSheet>
+      <CommunityUnsavedReviewDialog
+        open={discardOpen}
+        onOpenChange={setDiscardOpen}
+        onDiscard={closeWithoutPrompt}
       />
-    </CommunityComposerSheet>
+    </>
   );
 }
 
 export function ShareWhatWorkedSheet(props: CommunityComposerSheetProps) {
   const t = useTranslations("community.share");
+  const [discardOpen, setDiscardOpen] = useState(false);
+  const [dirty, setDirty] = useState(false);
+  const hasUnsavedChanges = props.open && dirty;
+  useCommunityModalUnsavedChanges(hasUnsavedChanges);
+
+  const closeWithoutPrompt = () => {
+    setDirty(false);
+    setDiscardOpen(false);
+    props.onOpenChange(false);
+  };
+
+  const handleOpenChange = (next: boolean) => {
+    if (next) {
+      props.onOpenChange(true);
+      return;
+    }
+
+    if (hasUnsavedChanges) {
+      setDiscardOpen(true);
+      return;
+    }
+
+    closeWithoutPrompt();
+  };
+
   return (
-    <CommunityComposerSheet
-      {...props}
-      title={t("playbookTitle")}
-      description={t("playbookDescription")}
-    >
-      <ShareWhatWorkedPanel
-        eligibility={props.eligibility}
-        onExplainBlocked={props.onExplainBlocked}
+    <>
+      <CommunityComposerSheet
+        {...props}
+        onOpenChange={handleOpenChange}
+        title={t("playbookTitle")}
+        description={t("playbookDescription")}
+      >
+        <ShareWhatWorkedPanel
+          eligibility={props.eligibility}
+          onDirtyChange={setDirty}
+          onExplainBlocked={props.onExplainBlocked}
+          onSaved={closeWithoutPrompt}
+        />
+      </CommunityComposerSheet>
+      <CommunityUnsavedPlaybookDialog
+        open={discardOpen}
+        onOpenChange={setDiscardOpen}
+        onDiscard={closeWithoutPrompt}
       />
-    </CommunityComposerSheet>
+    </>
   );
 }
 

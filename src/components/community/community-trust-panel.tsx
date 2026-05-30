@@ -13,7 +13,7 @@ export function TrustPanel({ data }: { data: CommunityHome }) {
     <div className="space-y-4">
       <section className="rounded-2xl border border-border bg-surface p-5 shadow-soft">
         <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-white">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent text-surface">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
@@ -58,7 +58,7 @@ export function TrustPanel({ data }: { data: CommunityHome }) {
                 key={warning.id}
                 className="flex gap-3 rounded-2xl border border-warning/30 bg-warning-soft p-4"
               >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-warning text-white">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-warning text-surface">
                   <AlertTriangle className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">

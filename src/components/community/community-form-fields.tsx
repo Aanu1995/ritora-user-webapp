@@ -200,6 +200,7 @@ export function CommunitySelectField({
         options={options}
         onChange={field.handleChange}
         placeholder={effectivePlaceholder}
+        required={required}
       />
       <CommunityFieldError errors={field.state.meta.errors} />
     </Field>
@@ -263,6 +264,7 @@ export function CommunitySimpleSelect({
           options={options}
           onChange={onChange}
           placeholder={effectivePlaceholder}
+          required={required}
         />
       ) : null}
     </>
@@ -282,12 +284,14 @@ function HiddenSelectMirror({
   onChange,
   options,
   placeholder,
+  required,
   value,
 }: {
   name: string;
   onChange: (value: string) => void;
   options: readonly CommunitySelectOption[];
   placeholder: string;
+  required?: boolean;
   value: string;
 }) {
   return (
@@ -299,7 +303,9 @@ function HiddenSelectMirror({
       onChange={(event) => onChange(event.target.value)}
       className="sr-only"
     >
-      <option value="">{placeholder}</option>
+      <option value="" disabled={required}>
+        {placeholder}
+      </option>
       {options.map((option) => (
         <option key={option.value} value={option.value}>
           {option.label}

@@ -1,44 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ShieldCheck } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import {
-  ConfirmDialog,
-  ConfirmDialogTone,
-} from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { QueryKey } from "@/constants/query-keys";
 import { useShelfProducts } from "@/hooks/use-shelf";
 import { useShelfDateContext } from "@/hooks/use-shelf-time-zone";
 import { getApiErrorMessage } from "@/lib/api-error";
-import {
-  executeMutation,
-  readSubmissionErrorMessage,
-} from "@/lib/form-submission";
+import { executeMutation } from "@/lib/form-submission";
 import { cn } from "@/lib/utils";
 import { createCommunityRoutine } from "@/services/community.service";
-import type {
-  CommunityRoutine,
-  CreateCommunityRoutineInput,
-} from "@/types/community";
-import {
-  ShelfCategoryFilter,
-  ShelfSort,
-  ShelfStatFilter,
-} from "@/types/shelf";
 import { CommunityCheckboxGroup } from "./community-checkbox-group";
 import { useCommunityTranslatedOptions } from "./community-i18n-options";
 import {
   communityRoutineFormSchema,
   defaultCommunityRoutineValues,
-  type CommunityRoutineFormValues,
 } from "./community-form-schemas";
 import { routineFormToInput } from "./community-form-payloads";
+import {
+  communityPlaybookShelfFilters,
+  type PlaybookArrayFieldName,
+  type PlaybookSelectFieldName,
+  type PlaybookSelectOptions,
+  type PlaybookTextFieldName,
+  type PublishRoutineFormProps,
+} from "./community-playbook-form-config";
 import {
   CommunityDisclosureSelect,
   CommunityEditabilityNotice,
@@ -48,46 +37,12 @@ import {
   Field,
   FormGrid,
   FormSection,
-  InlineSpinner,
 } from "./community-shared";
-import type { SelectOption } from "./community-review-form-utils";
 import { CommunityPlaybookStepsField } from "./community-playbook-steps-field";
-
-const communityShelfFilters = {
-  category: ShelfCategoryFilter.All,
-  search: "",
-  sort: ShelfSort.Alphabetical,
-  stat: ShelfStatFilter.All,
-};
-
-type PlaybookTextFieldName = "title";
-
-type PlaybookSelectFieldName =
-  | "goal"
-  | "goalResult"
-  | "timeframe";
-
-type PlaybookArrayFieldName =
-  | "avoidTags"
-  | "didNotWorkTags"
-  | "habitTags"
-  | "warningTags";
-
-type PublishRoutineFormProps = {
-  defaultValues?: CommunityRoutineFormValues;
-  /**
-   * "create" (default) shows the pre-submit editability notice and routes
-   * the submit click through a confirmation dialog. "edit" skips both —
-   * the parent edit form already gives the user context.
-   */
-  kind?: "create" | "edit";
-  mutationFn?: (input: CreateCommunityRoutineInput) => Promise<CommunityRoutine>;
-  onSaved?: () => void;
-  resetOnSuccess?: boolean;
-  submitLabel?: string;
-  submittingLabel?: string;
-  successMessage?: (routine: CommunityRoutine) => string;
-};
+import {
+  CommunityPlaybookSubmitControls,
+  CommunityPlaybookSubmitError,
+} from "./community-playbook-submit-controls";
 
 export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
   const tShare = useTranslations("community.share");
@@ -98,6 +53,7 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
     defaultValues = defaultCommunityRoutineValues,
     kind = "create",
     mutationFn = createCommunityRoutine,
+    onDirtyChange,
     onSaved,
     resetOnSuccess = true,
     submitLabel = tShare("sharePlaybook"),
@@ -109,18 +65,22 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
   const options = useCommunityTranslatedOptions();
   const queryClient = useQueryClient();
   const dateContext = useShelfDateContext();
-  const shelfProducts = useShelfProducts(communityShelfFilters, dateContext);
+  const shelfProducts = useShelfProducts(
+    communityPlaybookShelfFilters,
+    dateContext,
+  );
   const mutation = useMutation({
     mutationFn,
     onSuccess: (routine) => {
-      void queryClient.invalidateQueries({ queryKey: [QueryKey.CommunityHome] });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityHome],
+      });
       toast.success(
         successMessage?.(routine) ??
           (routine.moderationStatus === "published"
             ? tToast("playbookPublished")
             : tToast("playbookModerating")),
       );
-      onSaved?.();
     },
   });
   const form = useForm({
@@ -136,14 +96,14 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
 
         if (result.error !== null) {
           return {
-            form:
-              getApiErrorMessage(result.error) ??
-              tForm("submitFailed"),
+            form: getApiErrorMessage(result.error) ?? tForm("submitFailed"),
             fields: {},
           };
         }
 
         if (resetOnSuccess) formApi.reset();
+        onDirtyChange?.(false);
+        onSaved?.();
         return undefined;
       },
     },
@@ -184,7 +144,7 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
     name: PlaybookSelectFieldName,
     label: string,
     hint: string,
-    options: readonly SelectOption[],
+    options: PlaybookSelectOptions,
     placeholder: string,
     required = true,
   ) => (
@@ -206,7 +166,7 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
     name: PlaybookArrayFieldName,
     label: string,
     hint: string,
-    options: readonly SelectOption[],
+    options: PlaybookSelectOptions,
     required = false,
   ) => (
     <form.Field name={name}>
@@ -223,6 +183,13 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
       )}
     </form.Field>
   );
+  const isFormDirty = useStore(form.store, (state) => state.isDirty);
+
+  useEffect(() => {
+    onDirtyChange?.(isFormDirty);
+  }, [isFormDirty, onDirtyChange]);
+
+  useEffect(() => () => onDirtyChange?.(false), [onDirtyChange]);
 
   const handleConfirmedSubmit = () => {
     setConfirmOpen(false);
@@ -340,17 +307,9 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
       </FormSection>
 
       <form.Subscribe selector={(state) => state.errorMap.onSubmit}>
-        {(submitError) => {
-          const message = readSubmissionErrorMessage(submitError);
-          return message ? (
-            <p
-              className="rounded-xl border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-danger"
-              role="alert"
-            >
-              {message}
-            </p>
-          ) : null;
-        }}
+        {(submitError) => (
+          <CommunityPlaybookSubmitError submitError={submitError} />
+        )}
       </form.Subscribe>
 
       {needsConfirm ? <CommunityEditabilityNotice kind="playbook" /> : null}
@@ -364,35 +323,20 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
         {({ canSubmit, isSubmitting }) => {
           const busy = isSubmitting || mutation.isPending;
           return (
-            <>
-              <div className="flex justify-end">
-                <Button
-                  size="sm"
-                  type="submit"
-                  disabled={!canSubmit || busy}
-                >
-                  {busy ? (
-                    <InlineSpinner />
-                  ) : (
-                    <ShieldCheck className="h-4 w-4" />
-                  )}
-                  {busy ? submittingLabel : submitLabel}
-                </Button>
-              </div>
-              {needsConfirm ? (
-                <ConfirmDialog
-                  open={confirmOpen}
-                  onOpenChange={setConfirmOpen}
-                  title={tConfirm("playbookTitle")}
-                  description={tConfirm("playbookBody")}
-                  confirmLabel={submitLabel}
-                  cancelLabel={tConfirm("keepEditing")}
-                  onConfirm={handleConfirmedSubmit}
-                  isPending={busy}
-                  tone={ConfirmDialogTone.Warning}
-                />
-              ) : null}
-            </>
+            <CommunityPlaybookSubmitControls
+              busy={busy}
+              canSubmit={canSubmit}
+              cancelLabel={tConfirm("keepEditing")}
+              confirmBody={tConfirm("playbookBody")}
+              confirmLabel={submitLabel}
+              confirmOpen={confirmOpen}
+              confirmTitle={tConfirm("playbookTitle")}
+              needsConfirm={needsConfirm}
+              onConfirm={handleConfirmedSubmit}
+              onConfirmOpenChange={setConfirmOpen}
+              submitLabel={submitLabel}
+              submittingLabel={submittingLabel}
+            />
           );
         }}
       </form.Subscribe>

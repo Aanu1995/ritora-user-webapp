@@ -208,6 +208,11 @@ export const submissionsFixture: CommunitySubmission[] = [
         message: "Remove treatment claims before resubmitting.",
       },
     ],
+    moderationGuidance: {
+      reason: "Remove treatment claims before resubmitting.",
+      source: "ai",
+      createdAt: "2026-05-04T00:00:00.000Z",
+    },
     authorUserId: "user-1",
     createdAt: "2026-05-04T00:00:00.000Z",
     updatedAt: "2026-05-04T00:00:00.000Z",
@@ -244,6 +249,11 @@ export const submissionsFixture: CommunitySubmission[] = [
     status: "rejected",
     disclosureType: "sponsored",
     safetyFlags: [],
+    moderationGuidance: {
+      reason: "Add sunscreen context and clarify the claim wording.",
+      source: "admin",
+      createdAt: "2026-05-05T00:00:00.000Z",
+    },
     authorUserId: "user-1",
     createdAt: "2026-05-05T00:00:00.000Z",
     updatedAt: "2026-05-05T00:00:00.000Z",

@@ -287,7 +287,7 @@ export function ReviewList({
           body={t("reviewsEmptyBody")}
         />
       ) : (
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid gap-3">
           {reviews.map((review) => (
             <ReviewCard key={review.id} review={review} />
           ))}

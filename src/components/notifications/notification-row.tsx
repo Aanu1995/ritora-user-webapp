@@ -89,13 +89,25 @@ const KIND_STYLES: Record<
     bg: "bg-accent-soft",
     fg: "text-accent-strong",
   },
+  community_moderation: {
+    emoji: "CM",
+    bg: "bg-[color:var(--secondary-soft)]",
+    fg: "text-[color:var(--secondary)]",
+  },
 };
+
+const DEFAULT_KIND_STYLES = {
+  emoji: "!",
+  bg: "bg-surface-muted",
+  fg: "text-muted",
+} as const;
 
 enum NotificationSourceMessageKey {
   SkinJournal = "sourceSkinJournal",
   TodaysSuggestion = "sourceTodaysSuggestion",
   SmartPicks = "sourceSmartPicks",
   Shelf = "sourceShelf",
+  Community = "sourceCommunity",
 }
 
 const TODAY_SUGGESTION_NOTIFICATION_KINDS = new Set<NotificationKind>([
@@ -110,6 +122,9 @@ const SHELF_NOTIFICATION_KINDS = new Set<NotificationKind>([
   "product_nearing_expiry",
   "product_expired",
 ]);
+const COMMUNITY_NOTIFICATION_KINDS = new Set<NotificationKind>([
+  "community_moderation",
+]);
 
 function getNotificationSourceMessageKey(
   kind: NotificationKind,
@@ -122,6 +137,9 @@ function getNotificationSourceMessageKey(
   }
   if (SHELF_NOTIFICATION_KINDS.has(kind)) {
     return NotificationSourceMessageKey.Shelf;
+  }
+  if (COMMUNITY_NOTIFICATION_KINDS.has(kind)) {
+    return NotificationSourceMessageKey.Community;
   }
 
   return NotificationSourceMessageKey.SkinJournal;
@@ -181,6 +199,31 @@ function formatDateLabel(value: string | null, locale: string): string | null {
   return formatLocalizedDate(value, locale);
 }
 
+function formatKindFallback(kind: string): string {
+  return kind
+    .split("_")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+type NotificationPageTranslate = (
+  key: string,
+  values?: Record<string, string | number>,
+) => string;
+
+function tryTranslate(
+  translate: NotificationPageTranslate,
+  key: string,
+  values?: Record<string, string | number>,
+): string | null {
+  try {
+    return translate(key, values);
+  } catch {
+    return null;
+  }
+}
+
 export function NotificationRow({
   actionsDisabled = false,
   notification,
@@ -188,10 +231,10 @@ export function NotificationRow({
 }: NotificationRowProps) {
   const locale = useLocale();
   const t = useTranslations("notificationsPage");
-  const tKind = useTranslations(`notificationsPage.kinds.${notification.kind}`);
+  const translateMessage = t as unknown as NotificationPageTranslate;
   const router = useRouter();
   const markRead = useMarkNotificationRead();
-  const styles = KIND_STYLES[notification.kind];
+  const styles = KIND_STYLES[notification.kind] ?? DEFAULT_KIND_STYLES;
   const deepLink = normalizeDeepLink(notification.deep_link);
   const sourceMessageKey = getNotificationSourceMessageKey(notification.kind);
   const productName =
@@ -207,20 +250,31 @@ export function NotificationRow({
     notification.payload,
     "daysUntilExpiry",
   );
+  const kindTitleKey = `kinds.${notification.kind}.title`;
+  const kindBodyKey = `kinds.${notification.kind}.body`;
 
   const isUnread = !notification.read_at;
+  const title =
+    tryTranslate(translateMessage, kindTitleKey) ??
+    formatKindFallback(notification.kind);
   const body =
     notification.kind === "product_nearing_expiry"
       ? daysUntilExpiry !== null
-        ? tKind("body", {
+        ? tryTranslate(translateMessage, kindBodyKey, {
             productName,
             daysUntilExpiry,
             expiresDate,
-          })
-        : tKind("bodyFallback", { productName, expiresDate })
+          }) ?? t("unknownKindBody")
+        : tryTranslate(translateMessage, `kinds.${notification.kind}.bodyFallback`, {
+            productName,
+            expiresDate,
+          }) ?? t("unknownKindBody")
       : notification.kind === "product_expired"
-        ? tKind("body", { productName, expiresDate })
-        : tKind("body");
+        ? tryTranslate(translateMessage, kindBodyKey, {
+            productName,
+            expiresDate,
+          }) ?? t("unknownKindBody")
+        : tryTranslate(translateMessage, kindBodyKey) ?? t("unknownKindBody");
 
   const handleClick = () => {
     if (actionsDisabled) {
@@ -255,7 +309,7 @@ export function NotificationRow({
       </div>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-foreground">
-          {tKind("title")}
+          {title}
         </p>
         <p className="mt-1 text-sm leading-[1.55] text-muted">
           {body}

@@ -1,39 +1,26 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Check } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import {
-  ConfirmDialog,
-  ConfirmDialogTone,
-} from "@/components/ui/confirm-dialog";
 import { Input } from "@/components/ui/input";
 import { QueryKey } from "@/constants/query-keys";
 import { useShelfProducts } from "@/hooks/use-shelf";
 import { useShelfDateContext } from "@/hooks/use-shelf-time-zone";
 import { getApiErrorMessage } from "@/lib/api-error";
-import {
-  executeMutation,
-  readSubmissionErrorMessage,
-} from "@/lib/form-submission";
+import { executeMutation } from "@/lib/form-submission";
 import { cn } from "@/lib/utils";
 import { createCommunityReview } from "@/services/community.service";
-import type { CreateCommunityReviewInput } from "@/types/community";
-import { ShelfCategoryFilter, ShelfSort, ShelfStatFilter } from "@/types/shelf";
 import {
   communityReviewFormSchema,
   defaultCommunityReviewValues,
-  type CommunityReviewFormValues,
 } from "./community-form-schemas";
 import { reviewFormToInput } from "./community-form-payloads";
 import { useCommunityTranslatedOptions } from "./community-i18n-options";
 import {
   CommunityReviewProductFieldGroup,
   type CommunityReviewFormFieldRenderer,
-  type CommunityReviewProductFieldGroupProps,
 } from "./community-review-product-field-group";
 import {
   CommunityDisclosureSelect,
@@ -44,46 +31,22 @@ import {
   Field,
   FormGrid,
   FormSection,
-  InlineSpinner,
 } from "./community-shared";
+import {
+  CommunityReviewSubmitControls,
+  CommunityReviewSubmitError,
+} from "./community-review-submit-controls";
+import {
+  communityReviewShelfFilters,
+  type ProductFieldGroupConfig,
+  type WriteReviewFormProps,
+} from "./community-write-review-form-config";
 import {
   ratingOptions,
   type ReviewSelectFieldName,
   type ReviewTextFieldName,
   type SelectOption,
 } from "./community-review-form-utils";
-
-const communityShelfFilters = {
-  category: ShelfCategoryFilter.All,
-  search: "",
-  sort: ShelfSort.Alphabetical,
-  stat: ShelfStatFilter.All,
-};
-
-type ProductFieldGroupConfig = Omit<
-  CommunityReviewProductFieldGroupProps,
-  "fieldRenderer" | "isLoadingProducts" | "products"
->;
-
-type CommunityReviewMutationResult = { moderationStatus: string };
-
-type WriteReviewFormProps = {
-  defaultValues?: CommunityReviewFormValues;
-  /**
-   * "create" (default) shows the pre-submit editability notice and routes
-   * the submit click through a confirmation dialog. "edit" skips both —
-   * the parent edit form already gives the user context.
-   */
-  kind?: "create" | "edit";
-  mutationFn?: (
-    input: CreateCommunityReviewInput,
-  ) => Promise<CommunityReviewMutationResult>;
-  onSaved?: () => void;
-  resetOnSuccess?: boolean;
-  submitLabel?: string;
-  submittingLabel?: string;
-  successMessage?: (review: CommunityReviewMutationResult) => string;
-};
 
 export function WriteReviewForm(props: WriteReviewFormProps = {}) {
   const tShare = useTranslations("community.share");
@@ -94,6 +57,7 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
     defaultValues = defaultCommunityReviewValues,
     kind = "create",
     mutationFn = createCommunityReview,
+    onDirtyChange,
     onSaved,
     resetOnSuccess = true,
     submitLabel = tShare("submitReview"),
@@ -105,7 +69,10 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
   const options = useCommunityTranslatedOptions();
   const queryClient = useQueryClient();
   const dateContext = useShelfDateContext();
-  const shelfProducts = useShelfProducts(communityShelfFilters, dateContext);
+  const shelfProducts = useShelfProducts(
+    communityReviewShelfFilters,
+    dateContext,
+  );
   const mutation = useMutation({
     mutationFn,
     onSuccess: (result) => {
@@ -116,7 +83,6 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
             ? tToast("reviewPublished")
             : tToast("reviewModerating")),
       );
-      onSaved?.();
     },
   });
   const form = useForm({
@@ -140,6 +106,8 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
         }
 
         if (resetOnSuccess) formApi.reset();
+        onDirtyChange?.(false);
+        onSaved?.();
         return undefined;
       },
     },
@@ -206,6 +174,13 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
       {...config}
     />
   );
+  const isFormDirty = useStore(form.store, (state) => state.isDirty);
+
+  useEffect(() => {
+    onDirtyChange?.(isFormDirty);
+  }, [isFormDirty, onDirtyChange]);
+
+  useEffect(() => () => onDirtyChange?.(false), [onDirtyChange]);
 
   const handleConfirmedSubmit = () => {
     setConfirmOpen(false);
@@ -380,17 +355,9 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
       </FormSection>
 
       <form.Subscribe selector={(state) => state.errorMap.onSubmit}>
-        {(submitError) => {
-          const message = readSubmissionErrorMessage(submitError);
-          return message ? (
-            <p
-              className="rounded-xl border border-danger/30 bg-danger-soft px-3 py-2 text-sm text-danger"
-              role="alert"
-            >
-              {message}
-            </p>
-          ) : null;
-        }}
+        {(submitError) => (
+          <CommunityReviewSubmitError submitError={submitError} />
+        )}
       </form.Subscribe>
 
       {needsConfirm ? <CommunityEditabilityNotice kind="review" /> : null}
@@ -404,31 +371,20 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
         {({ canSubmit, isSubmitting }) => {
           const busy = isSubmitting || mutation.isPending;
           return (
-            <>
-              <div className="flex justify-end">
-                <Button
-                  size="sm"
-                  type="submit"
-                  disabled={!canSubmit || busy}
-                >
-                  {busy ? <InlineSpinner /> : <Check className="h-4 w-4" />}
-                  {busy ? submittingLabel : submitLabel}
-                </Button>
-              </div>
-              {needsConfirm ? (
-                <ConfirmDialog
-                  open={confirmOpen}
-                  onOpenChange={setConfirmOpen}
-                  title={tConfirm("reviewTitle")}
-                  description={tConfirm("reviewBody")}
-                  confirmLabel={submitLabel}
-                  cancelLabel={tConfirm("keepEditing")}
-                  onConfirm={handleConfirmedSubmit}
-                  isPending={busy}
-                  tone={ConfirmDialogTone.Warning}
-                />
-              ) : null}
-            </>
+            <CommunityReviewSubmitControls
+              busy={busy}
+              canSubmit={canSubmit}
+              cancelLabel={tConfirm("keepEditing")}
+              confirmBody={tConfirm("reviewBody")}
+              confirmLabel={submitLabel}
+              confirmOpen={confirmOpen}
+              confirmTitle={tConfirm("reviewTitle")}
+              needsConfirm={needsConfirm}
+              onConfirm={handleConfirmedSubmit}
+              onConfirmOpenChange={setConfirmOpen}
+              submitLabel={submitLabel}
+              submittingLabel={submittingLabel}
+            />
           );
         }}
       </form.Subscribe>

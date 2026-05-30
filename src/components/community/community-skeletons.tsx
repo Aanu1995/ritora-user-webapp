@@ -65,7 +65,8 @@ export function CommunitySkeleton() {
               <Skeleton className="h-5 w-48 rounded-md" />
               <Skeleton className="h-4 w-14 rounded" />
             </div>
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid gap-3">
+              <CommunityCardSkeleton />
               <CommunityCardSkeleton />
               <CommunityCardSkeleton />
             </div>

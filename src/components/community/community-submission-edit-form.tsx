@@ -2,7 +2,6 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
 import { QueryKey } from "@/constants/query-keys";
 import {
   updateCommunityReview,
@@ -17,13 +16,13 @@ import { PublishRoutineForm, WriteReviewForm } from "./community-publish-forms";
 
 type Props = {
   item: CommunitySubmission;
-  onCancel: () => void;
+  onDirtyChange?: (dirty: boolean) => void;
   onSaved: () => void;
 };
 
 export function CommunitySubmissionEditForm({
   item,
-  onCancel,
+  onDirtyChange,
   onSaved,
 }: Props) {
   const t = useTranslations("community.submissions");
@@ -43,42 +42,41 @@ export function CommunitySubmissionEditForm({
 
   if (missingSnapshot) {
     return (
-      <div className="mt-5 rounded-xl border border-warning/30 bg-warning-soft p-4 text-sm text-warning">
+      <div className="rounded-xl border border-warning/30 bg-warning-soft p-4 text-sm text-warning">
         {t("missingSnapshot")}
       </div>
     );
   }
 
-  return (
-    <div className="mt-5 grid gap-5 rounded-xl border border-border bg-surface-muted/60 p-5">
-      <div className="flex justify-end">
-        <Button size="sm" type="button" variant="ghost" onClick={onCancel}>
-          {t("cancel")}
-        </Button>
-      </div>
-      {item.type === "routine" ? (
-        <PublishRoutineForm
-          defaultValues={routineInputToFormValues(item.editableRoutine)}
-          kind="edit"
-          mutationFn={(input) => updateCommunityRoutine(item.id, input)}
-          onSaved={handleSaved}
-          resetOnSuccess={false}
-          submitLabel={tShare("saveEdits")}
-          submittingLabel={tShare("saving")}
-          successMessage={() => tToast("editsSaved")}
-        />
-      ) : (
-        <WriteReviewForm
-          defaultValues={reviewInputToFormValues(item.editableReview)}
-          kind="edit"
-          mutationFn={(input) => updateCommunityReview(item.id, input)}
-          onSaved={handleSaved}
-          resetOnSuccess={false}
-          submitLabel={tShare("saveEdits")}
-          submittingLabel={tShare("saving")}
-          successMessage={() => tToast("editsSaved")}
-        />
-      )}
-    </div>
+  // Render the publish form directly inside the parent Sheet's
+  // content area. The previous wrapper introduced a card-within-
+  // a-sheet (border + surface-muted background + extra padding)
+  // and a top-aligned Cancel button that duplicated the
+  // SheetContent close X. Both removed for a cleaner, less nested
+  // composition.
+  return item.type === "routine" ? (
+    <PublishRoutineForm
+      defaultValues={routineInputToFormValues(item.editableRoutine)}
+      kind="edit"
+      mutationFn={(input) => updateCommunityRoutine(item.id, input)}
+      onDirtyChange={onDirtyChange}
+      onSaved={handleSaved}
+      resetOnSuccess={false}
+      submitLabel={tShare("saveEdits")}
+      submittingLabel={tShare("saving")}
+      successMessage={() => tToast("editsSaved")}
+    />
+  ) : (
+    <WriteReviewForm
+      defaultValues={reviewInputToFormValues(item.editableReview)}
+      kind="edit"
+      mutationFn={(input) => updateCommunityReview(item.id, input)}
+      onDirtyChange={onDirtyChange}
+      onSaved={handleSaved}
+      resetOnSuccess={false}
+      submitLabel={tShare("saveEdits")}
+      submittingLabel={tShare("saving")}
+      successMessage={() => tToast("editsSaved")}
+    />
   );
 }

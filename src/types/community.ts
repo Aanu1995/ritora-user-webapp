@@ -371,6 +371,12 @@ export type CommunityAdaptation = {
   };
 };
 
+export type CommunityModerationGuidance = {
+  reason: string;
+  source: "ai" | "admin" | "system";
+  createdAt: string;
+};
+
 export type CommunitySubmission = {
   id: string;
   type: "routine" | "review";
@@ -381,6 +387,7 @@ export type CommunitySubmission = {
   editableReview?: CommunityEditableReview | null;
   editableRoutine?: CommunityEditableRoutine | null;
   safetyFlags: CommunitySafetyFlag[];
+  moderationGuidance: CommunityModerationGuidance | null;
   authorUserId: string;
   createdAt: string;
   updatedAt: string;

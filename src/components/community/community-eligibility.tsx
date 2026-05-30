@@ -21,45 +21,41 @@ import { getApiErrorMessage } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
 import { acceptCommunityGuidelines } from "@/services/community.service";
 import type { CommunityPostingEligibility } from "@/types/community";
-import {
-  InlineSpinner,
-  formatEligibilityDate,
-} from "./community-shared";
-import {
-  PublishRoutineForm,
-  WriteReviewForm,
-} from "./community-publish-forms";
+import { InlineSpinner, formatEligibilityDate } from "./community-shared";
+import { PublishRoutineForm, WriteReviewForm } from "./community-publish-forms";
 
 export function WriteReviewPanel({
   eligibility,
   onExplainBlocked,
+  onSaved,
+  onDirtyChange,
 }: {
   eligibility: CommunityPostingEligibility;
   onExplainBlocked: () => void;
+  onDirtyChange?: (dirty: boolean) => void;
+  onSaved?: () => void;
 }) {
   return (
-    <PostingPanel
-      eligibility={eligibility}
-      onExplainBlocked={onExplainBlocked}
-    >
-      <WriteReviewForm />
+    <PostingPanel eligibility={eligibility} onExplainBlocked={onExplainBlocked}>
+      <WriteReviewForm onDirtyChange={onDirtyChange} onSaved={onSaved} />
     </PostingPanel>
   );
 }
 
 export function ShareWhatWorkedPanel({
   eligibility,
+  onDirtyChange,
   onExplainBlocked,
+  onSaved,
 }: {
   eligibility: CommunityPostingEligibility;
+  onDirtyChange?: (dirty: boolean) => void;
   onExplainBlocked: () => void;
+  onSaved?: () => void;
 }) {
   return (
-    <PostingPanel
-      eligibility={eligibility}
-      onExplainBlocked={onExplainBlocked}
-    >
-      <PublishRoutineForm />
+    <PostingPanel eligibility={eligibility} onExplainBlocked={onExplainBlocked}>
+      <PublishRoutineForm onDirtyChange={onDirtyChange} onSaved={onSaved} />
     </PostingPanel>
   );
 }
@@ -103,7 +99,9 @@ export function PostingEligibilityDialog({
   const accept = useMutation({
     mutationFn: acceptCommunityGuidelines,
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: [QueryKey.CommunityHome] });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityHome],
+      });
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.CommunityEligibility],
       });
@@ -112,7 +110,6 @@ export function PostingEligibilityDialog({
     onError: (error) =>
       toast.error(getApiErrorMessage(error) ?? tToast("guidelinesFailed")),
   });
-  const primaryReason = eligibility.reasons[0];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -122,13 +119,27 @@ export function PostingEligibilityDialog({
           <DialogDescription>{t("dialogDescription")}</DialogDescription>
         </DialogHeader>
 
+        {/* Each blocking reason renders as its own pending-state
+            card. Previously a duplicate "primary reason" banner
+            was rendered below the list, repeating one of the
+            cards above. Removed — the cards themselves are the
+            single source of truth for what's blocking. */}
         <div className="mt-5 grid gap-2">
           {eligibility.reasons.map((reason) => (
             <div
               key={reason.code}
-              className="flex gap-3 rounded-xl border border-border bg-surface-muted/60 p-3"
+              className="flex gap-3 rounded-xl border border-warning/30 bg-warning-soft/40 p-3"
             >
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+              <div
+                aria-hidden
+                // `text-surface` auto-inverts for theme so the
+                // icon stays readable against `--warning` in
+                // both modes (dark amber in light, light amber
+                // in dark).
+                className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-warning text-surface"
+              >
+                <AlertTriangle className="h-4 w-4" />
+              </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-foreground">
                   {tReason(reason.code)}
@@ -144,17 +155,6 @@ export function PostingEligibilityDialog({
             </div>
           ))}
         </div>
-
-        {primaryReason ? (
-          <div className="mt-4 rounded-xl border border-warning/30 bg-warning-soft px-3 py-2 text-sm leading-6 text-warning">
-            {primaryReason.code === "account_too_new"
-              ? t("accountAgeNotice", {
-                  accountAgeDays: eligibility.accountAgeDays,
-                  minimumAccountAgeDays: eligibility.minimumAccountAgeDays,
-                })
-              : primaryReason.message}
-          </div>
-        ) : null}
 
         <div className="mt-4 flex flex-wrap gap-2">
           {!eligibility.emailVerified ? (
@@ -221,7 +221,9 @@ function EligibilityGate({
   const accept = useMutation({
     mutationFn: acceptCommunityGuidelines,
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: [QueryKey.CommunityHome] });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityHome],
+      });
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.CommunityEligibility],
       });
@@ -275,6 +277,17 @@ function EligibilityGate({
           </Button>
         </div>
       </div>
+      {/* Eligibility checklist. Pending items render in full
+          contrast (foreground text, warning-soft icon) so the
+          eye lands on them first. Satisfied items dim to muted
+          so they read as "done, move on" — the user can scan
+          the grid and tell what's still required without
+          reading every label.
+          The bottom "primary reason" warning banner that used
+          to live below this grid was duplicating one of the
+          items above. Removed in favor of a single source of
+          truth: the pending item card itself surfaces the
+          reason. */}
       <div className="mt-4 grid gap-2 md:grid-cols-2">
         <EligibilityItem
           detail={tItems("emailDetail")}
@@ -297,7 +310,13 @@ function EligibilityGate({
           ok={eligibility.hasAcceptedGuidelines}
         />
         <EligibilityItem
-          detail={tItems("ageDetail", { days: eligibility.accountAgeDays })}
+          detail={
+            eligibility.accountAgeDays >= eligibility.minimumAccountAgeDays
+              ? tItems("ageDetail", { days: eligibility.accountAgeDays })
+              : t("unlockDate", {
+                  date: formatEligibilityDate(eligibility.eligibleAt),
+                })
+          }
           label={tItems("ageLabel", {
             days: eligibility.minimumAccountAgeDays,
           })}
@@ -313,15 +332,6 @@ function EligibilityGate({
           }
         />
       </div>
-      {eligibility.reasons.length > 0 ? (
-        <div className="mt-4 rounded-xl border border-warning/30 bg-warning-soft px-3 py-2 text-sm leading-6 text-warning">
-          {eligibility.reasons[0]?.code === "account_too_new"
-            ? t("unlockDate", {
-                date: formatEligibilityDate(eligibility.eligibleAt),
-              })
-            : eligibility.reasons[0]?.message}
-        </div>
-      ) : null}
     </section>
   );
 }
@@ -336,13 +346,18 @@ function EligibilityItem({
   ok: boolean;
 }) {
   return (
-    <div className="flex gap-3 rounded-xl border border-border bg-surface p-3 transition hover:border-border-strong">
+    <div
+      className={cn(
+        "flex gap-3 rounded-xl border p-3 transition",
+        ok
+          ? "border-border bg-surface-muted/40"
+          : "border-warning/30 bg-warning-soft/40 hover:border-warning/50",
+      )}
+    >
       <div
         className={cn(
           "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
-          ok
-            ? "bg-accent text-white"
-            : "bg-warning-soft text-warning",
+          ok ? "bg-accent-soft text-accent-strong" : "bg-warning text-surface",
         )}
       >
         {ok ? (
@@ -352,8 +367,22 @@ function EligibilityItem({
         )}
       </div>
       <div className="min-w-0">
-        <p className="text-sm font-semibold text-foreground">{label}</p>
-        <p className="mt-1 text-xs leading-5 text-muted">{detail}</p>
+        <p
+          className={cn(
+            "text-sm font-semibold",
+            ok ? "text-muted" : "text-foreground",
+          )}
+        >
+          {label}
+        </p>
+        <p
+          className={cn(
+            "mt-1 text-xs leading-5",
+            ok ? "text-muted/80" : "text-muted",
+          )}
+        >
+          {detail}
+        </p>
       </div>
     </div>
   );

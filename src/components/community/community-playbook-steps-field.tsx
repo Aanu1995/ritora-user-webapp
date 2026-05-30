@@ -107,15 +107,18 @@ export function CommunityPlaybookStepsField({
   const addStep = () => onChange([...steps, { ...blankStep }]);
   const removeStep = (index: number) => {
     onChange(steps.filter((_step, stepIndex) => stepIndex !== index));
-    setOther(index, false);
+    setOtherSteps((current) => {
+      const shifted = new Set<number>();
+      current.forEach((stepIndex) => {
+        if (stepIndex < index) shifted.add(stepIndex);
+        if (stepIndex > index) shifted.add(stepIndex - 1);
+      });
+      return shifted;
+    });
   };
 
   return (
-    <Field
-      label={t("label")}
-      hint={t("hint")}
-      required
-    >
+    <Field label={t("label")} hint={t("hint")} required>
       <div className="grid gap-4">
         {steps.map((step, index) => (
           <div
@@ -141,13 +144,33 @@ export function CommunityPlaybookStepsField({
             </div>
 
             {(() => {
-              const isOther = otherSteps.has(index);
               const fromShelf = Boolean(step.productId);
+              const hasManualProduct = Boolean(
+                step.productBrand || step.productName,
+              );
+              const isOther =
+                !fromShelf && (otherSteps.has(index) || hasManualProduct);
               const dropdownValue = fromShelf
                 ? step.productId
                 : isOther
                   ? OTHER_PRODUCT_VALUE
                   : "";
+              const currentProductOption =
+                fromShelf &&
+                !shelfOptions.some((option) => option.value === step.productId)
+                  ? [
+                      {
+                        value: step.productId,
+                        label:
+                          `${step.productBrand} ${step.productName}`.trim() ||
+                          t("linked"),
+                      },
+                    ]
+                  : [];
+              const stepShelfOptions = [
+                ...currentProductOption,
+                ...shelfOptions,
+              ];
               return (
                 <div className="grid gap-5">
                   <FormGrid>
@@ -155,12 +178,10 @@ export function CommunityPlaybookStepsField({
                       label={t("product")}
                       name={`steps.${index}.productId`}
                       placeholder={
-                        isLoadingProducts
-                          ? t("loadingShelf")
-                          : t("pickProduct")
+                        isLoadingProducts ? t("loadingShelf") : t("pickProduct")
                       }
                       disabled={isLoadingProducts}
-                      options={shelfOptions}
+                      options={stepShelfOptions}
                       value={dropdownValue}
                       onChange={(next) => {
                         if (next === OTHER_PRODUCT_VALUE) {
@@ -176,12 +197,17 @@ export function CommunityPlaybookStepsField({
                         const product = products.find(
                           (item) => item.id === next,
                         );
+                        if (!product) {
+                          updateStep(index, {
+                            productId: next,
+                          });
+                          return;
+                        }
                         updateStep(index, {
-                          category:
-                            product?.identity.category ?? step.category,
-                          productBrand: product?.identity.brand ?? "",
+                          category: product.identity.category,
+                          productBrand: product.identity.brand,
                           productId: next,
-                          productName: product?.identity.name ?? "",
+                          productName: product.identity.name,
                         });
                       }}
                     />
@@ -190,9 +216,7 @@ export function CommunityPlaybookStepsField({
                       name={`steps.${index}.category`}
                       options={options.productCategories}
                       value={step.category}
-                      onChange={(next) =>
-                        updateStep(index, { category: next })
-                      }
+                      onChange={(next) => updateStep(index, { category: next })}
                       required
                     />
                     <CommunitySimpleSelect
@@ -262,10 +286,7 @@ export function CommunityPlaybookStepsField({
               );
             })()}
             <div className="mt-5">
-              <Field
-                hint={t("noteHint")}
-                label={t("note")}
-              >
+              <Field hint={t("noteHint")} label={t("note")}>
                 <CommunityTextarea
                   name={`steps.${index}.notes`}
                   value={step.notes}

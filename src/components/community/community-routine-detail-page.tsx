@@ -309,13 +309,20 @@ export function CommunityRoutineDetailPage({
                       <div className="flex items-center gap-2">
                         <div
                           className={cn(
+                            // `text-surface` auto-inverts per
+                            // theme so the icon reads against
+                            // each filled tone in both light
+                            // and dark mode. `text-white` would
+                            // wash out against the lighter
+                            // dark-mode shades of accent/ai/
+                            // warning.
                             "flex h-7 w-7 items-center justify-center rounded-lg",
                             palette.badge === "accent" &&
-                              "bg-accent text-white",
+                              "bg-accent text-surface",
                             palette.badge === "ai" &&
-                              "bg-ai text-white",
+                              "bg-ai text-surface",
                             palette.badge === "warning" &&
-                              "bg-warning text-white",
+                              "bg-warning text-surface",
                             palette.badge === "muted" &&
                               "bg-surface text-muted",
                           )}

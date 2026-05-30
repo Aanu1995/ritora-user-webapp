@@ -187,6 +187,20 @@ describe("NotificationsPage", () => {
     expect(screen.getByText(/9 days/i)).toBeInTheDocument();
   });
 
+  it("renders community moderation notifications without crashing", () => {
+    mockUnreadNotifications = [
+      notification("community-1", null, "community_moderation"),
+    ];
+    mockReadNotifications = [];
+    mockUnreadCount = 1;
+
+    renderWithProviders(<NotificationsPage />);
+
+    expect(screen.getByText(/community update/i)).toBeInTheDocument();
+    expect(screen.getByText(/moderation update/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/community/i)).toHaveLength(2);
+  });
+
   it("renders the notification preferences action in the populated header", () => {
     renderWithProviders(<NotificationsPage />);
 

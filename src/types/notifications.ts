@@ -12,7 +12,8 @@ export type NotificationKind =
   | "recording_reminder"
   | "product_nearing_expiry"
   | "product_expired"
-  | "smart_pick_ready";
+  | "smart_pick_ready"
+  | "community_moderation";
 
 export const SUGGESTION_LEAD_TIME_MIN_MINUTES = 30;
 export const SUGGESTION_LEAD_TIME_MAX_MINUTES = 720;

@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import userEvent from "@testing-library/user-event";
 import { toast } from "sonner";
@@ -142,7 +148,8 @@ describe("ForYou", () => {
             patterns: [
               {
                 id: "similar-users",
-                title: "Community evidence is ranked by similarity, not popularity",
+                title:
+                  "Community evidence is ranked by similarity, not popularity",
                 body: "0 published items currently match your profile facets.",
               },
               {
@@ -210,9 +217,7 @@ describe("CommunityPage", () => {
     expect(screen.getByText("Quiet AM barrier routine")).toBeInTheDocument();
     expect(screen.getByText("Ritora Barrier Cream")).toBeInTheDocument();
 
-    await userEvent.click(
-      screen.getByRole("tab", { name: /people like me/i }),
-    );
+    await userEvent.click(screen.getByRole("tab", { name: /people like me/i }));
     expect(screen.getByText("92% match")).toBeInTheDocument();
     expect(screen.getByText("76% match")).toBeInTheDocument();
 
@@ -244,9 +249,9 @@ describe("CommunityPage", () => {
         name: "Community posting is not available yet",
       }),
     ).toBeInTheDocument();
-    expect(screen.getAllByText("Account age requirement").length).toBeGreaterThan(
-      0,
-    );
+    expect(
+      screen.getAllByText("Account age requirement").length,
+    ).toBeGreaterThan(0);
     expect(screen.getByRole("link", { name: "Verify email" })).toHaveAttribute(
       "href",
       "/resend-verification",
@@ -255,7 +260,9 @@ describe("CommunityPage", () => {
     await userEvent.click(
       screen.getAllByRole("button", { name: /accept rules/i })[0],
     );
-    await waitFor(() => expect(mockedAcceptGuidelines).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(mockedAcceptGuidelines).toHaveBeenCalledTimes(1),
+    );
   });
 
   it("opens writing forms from the viewing tabs for eligible posters", async () => {
@@ -286,9 +293,7 @@ describe("CommunityPage", () => {
       screen.getByText("Pick from your shelf, or choose Other."),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Comma-separated keywords that make this searchable.",
-      ),
+      screen.getByText("Comma-separated keywords that make this searchable."),
     ).toBeInTheDocument();
     expect(
       screen.getByText("Add nuance that ratings and tags can't show."),
@@ -314,9 +319,7 @@ describe("CommunityPage", () => {
     expect(
       screen.getByText("A short name for what worked."),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText("What this playbook was for."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("What this playbook was for.")).toBeInTheDocument();
     expect(
       screen.getByText("Optional. Pick the closest outcome."),
     ).toBeInTheDocument();
@@ -324,18 +327,132 @@ describe("CommunityPage", () => {
       screen.getByText("How long until you knew it worked."),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Things that helped because you stopped doing them.",
-      ),
+      screen.getByText("Things that helped because you stopped doing them."),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
         "Optional. Sleep, food, activity, or anything else that may have helped.",
       ),
     ).toBeInTheDocument();
+    expect(screen.getByText("Lifestyle changes")).toBeInTheDocument();
+  });
+
+  it("guards unsaved review drafts before closing the create sheet", async () => {
+    mockedGetCommunityHome.mockResolvedValue({
+      ...communityHomeFixture,
+      postingEligibility: eligiblePosting,
+    });
+
+    renderWithProviders(<CommunityPage />);
+
+    await userEvent.click(await screen.findByRole("tab", { name: /reviews/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /write a review/i }),
+    );
+
+    const reviewDialog = await screen.findByRole("dialog", {
+      name: "Write a review",
+    });
+    const reviewedProductSelect = reviewDialog.querySelector<HTMLSelectElement>(
+      'select[name="selectedShelfProductId"]',
+    );
+    if (!reviewedProductSelect) {
+      throw new Error("Expected review product picker.");
+    }
+
+    fireEvent.change(reviewedProductSelect, {
+      target: { value: "product-cream" },
+    });
+    await userEvent.click(
+      within(reviewDialog).getByRole("button", { name: "Close" }),
+    );
+
+    const discardDialog = await screen.findByRole("alertdialog", {
+      name: "Discard review changes?",
+    });
+    await userEvent.click(
+      within(discardDialog).getByRole("button", { name: "Keep editing" }),
+    );
     expect(
-      screen.getByText("Lifestyle changes"),
+      screen.getByRole("dialog", { name: "Write a review" }),
     ).toBeInTheDocument();
+
+    await userEvent.click(
+      within(reviewDialog).getByRole("button", { name: "Close" }),
+    );
+    await userEvent.click(
+      within(
+        await screen.findByRole("alertdialog", {
+          name: "Discard review changes?",
+        }),
+      ).getByRole("button", { name: "Discard changes" }),
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole("dialog", { name: "Write a review" }),
+      ).not.toBeInTheDocument(),
+    );
+  });
+
+  it("guards unsaved playbook drafts before closing the create sheet", async () => {
+    mockedGetCommunityHome.mockResolvedValue({
+      ...communityHomeFixture,
+      postingEligibility: eligiblePosting,
+    });
+
+    renderWithProviders(<CommunityPage />);
+
+    await userEvent.click(
+      await screen.findByRole("tab", { name: /playbooks/i }),
+    );
+    await userEvent.click(
+      screen.getByRole("button", { name: /share a playbook/i }),
+    );
+
+    const playbookDialog = await screen.findByRole("dialog", {
+      name: "Share a playbook",
+    });
+    const titleInput = playbookDialog.querySelector<HTMLInputElement>(
+      'input[name="title"]',
+    );
+    if (!titleInput) {
+      throw new Error("Expected playbook title field.");
+    }
+
+    fireEvent.change(titleInput, {
+      target: { value: "What helped my barrier" },
+    });
+    await userEvent.click(
+      within(playbookDialog).getByRole("button", { name: "Close" }),
+    );
+
+    const discardDialog = await screen.findByRole("alertdialog", {
+      name: "Discard playbook changes?",
+    });
+    await userEvent.click(
+      within(discardDialog).getByRole("button", { name: "Keep editing" }),
+    );
+    expect(
+      screen.getByRole("dialog", { name: "Share a playbook" }),
+    ).toBeInTheDocument();
+
+    await userEvent.click(
+      within(playbookDialog).getByRole("button", { name: "Close" }),
+    );
+    await userEvent.click(
+      within(
+        await screen.findByRole("alertdialog", {
+          name: "Discard playbook changes?",
+        }),
+      ).getByRole("button", { name: "Discard changes" }),
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole("dialog", { name: "Share a playbook" }),
+      ).not.toBeInTheDocument(),
+    );
   });
 
   it("shows posting guidance instead of opening composer deep links for blocked posters", async () => {
@@ -376,7 +493,9 @@ describe("CommunityPage", () => {
     renderWithProviders(<CommunityPage />);
 
     expect(
-      await screen.findByText(/Complete your skin profile for better matching/i),
+      await screen.findByText(
+        /Complete your skin profile for better matching/i,
+      ),
     ).toBeInTheDocument();
     expect(screen.getByText("No shelf patterns yet")).toBeInTheDocument();
     expect(screen.getByText("No goal playbooks yet")).toBeInTheDocument();
@@ -413,9 +532,11 @@ describe("CommunityPage", () => {
     renderWithProviders(<CommunityPage />);
 
     await userEvent.click(
-      (await screen.findAllByRole("button", {
-        name: /worked for me too/i,
-      }))[0],
+      (
+        await screen.findAllByRole("button", {
+          name: /worked for me too/i,
+        })
+      )[0],
     );
 
     expect(
@@ -466,10 +587,12 @@ describe("community publish forms", () => {
       moderationStatus: "published",
     });
 
+    const onReviewSaved = jest.fn();
     const reviewRender = renderWithProviders(
       <WriteReviewPanel
         eligibility={eligiblePosting}
         onExplainBlocked={jest.fn()}
+        onSaved={onReviewSaved}
       />,
     );
     const reviewContainer = reviewRender.container;
@@ -498,10 +621,9 @@ describe("community publish forms", () => {
     const routineSlotSelect = reviewContainer.querySelector<HTMLSelectElement>(
       'select[name="routineSlot"]',
     );
-    const skinResponseSelect =
-      reviewContainer.querySelector<HTMLSelectElement>(
-        'select[name="skinResponse"]',
-      );
+    const skinResponseSelect = reviewContainer.querySelector<HTMLSelectElement>(
+      'select[name="skinResponse"]',
+    );
     const repurchaseSelect = reviewContainer.querySelector<HTMLSelectElement>(
       'select[name="repurchase"]',
     );
@@ -533,6 +655,8 @@ describe("community publish forms", () => {
     ) {
       throw new Error("Expected review form fields.");
     }
+    expect(reviewedProductSelect.options[0]).toBeDisabled();
+    expect(contextProductSelect.options[0]).toBeDisabled();
 
     fireEvent.change(reviewedProductSelect, {
       target: { value: "product-cream" },
@@ -570,7 +694,9 @@ describe("community publish forms", () => {
     fireEvent.change(reviewBodyInput, {
       target: { value: "Worked nicely alongside a simple cleanser." },
     });
-    await userEvent.click(screen.getByRole("button", { name: /submit review/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /submit review/i }),
+    );
     // Creating a review now requires confirming the editability warning
     // before the mutation fires.
     const reviewConfirmDialog = await screen.findByRole("alertdialog", {
@@ -583,6 +709,7 @@ describe("community publish forms", () => {
     );
 
     await waitFor(() => expect(mockedCreateReview).toHaveBeenCalled());
+    await waitFor(() => expect(onReviewSaved).toHaveBeenCalledTimes(1));
     expect(mockedCreateReview.mock.calls[0]?.[0]).toEqual(
       expect.objectContaining({
         productBrand: "Ritora",
@@ -599,25 +726,23 @@ describe("community publish forms", () => {
         routineContext: [
           {
             category: "cleanser",
+            productId: "product-cleanser",
             productBrand: "Ritora",
             productName: "Milky Cleanser",
           },
         ],
+        productId: "product-cream",
       }),
     );
-    expect(mockedCreateReview.mock.calls[0]?.[0]).not.toHaveProperty(
-      "productId",
-    );
-    expect(
-      mockedCreateReview.mock.calls[0]?.[0].routineContext[0],
-    ).not.toHaveProperty("productId");
 
     reviewRender.unmount();
 
+    const onPlaybookSaved = jest.fn();
     const routineRender = renderWithProviders(
       <ShareWhatWorkedPanel
         eligibility={eligiblePosting}
         onExplainBlocked={jest.fn()}
+        onSaved={onPlaybookSaved}
       />,
     );
     const routineContainer = routineRender.container;
@@ -646,8 +771,8 @@ describe("community publish forms", () => {
       );
     const routineSummaryInput =
       routineContainer.querySelector<HTMLTextAreaElement>(
-      'textarea[name="summary"]',
-    );
+        'textarea[name="summary"]',
+      );
     if (
       !routineTitleInput ||
       !routineProductSelect ||
@@ -711,6 +836,7 @@ describe("community publish forms", () => {
     );
 
     await waitFor(() => expect(mockedCreateRoutine).toHaveBeenCalled());
+    await waitFor(() => expect(onPlaybookSaved).toHaveBeenCalledTimes(1));
     expect(mockedCreateRoutine.mock.calls[0]?.[0]).toEqual(
       expect.objectContaining({
         title: "What repaired my barrier",
@@ -741,6 +867,61 @@ describe("community publish forms", () => {
       }),
     );
   });
+
+  it("keeps manual playbook step fields aligned after removing earlier steps", async () => {
+    renderWithProviders(
+      <ShareWhatWorkedPanel
+        eligibility={eligiblePosting}
+        onExplainBlocked={jest.fn()}
+      />,
+    );
+
+    await userEvent.click(
+      screen.getByRole("button", { name: /add another step/i }),
+    );
+
+    const secondStepSelect = document.querySelector<HTMLSelectElement>(
+      'select[name="steps.1.productId"]',
+    );
+    if (!secondStepSelect) {
+      throw new Error("Expected second playbook step product picker.");
+    }
+
+    fireEvent.change(secondStepSelect, {
+      target: { value: "__other__" },
+    });
+
+    const secondBrandInput = document.querySelector<HTMLInputElement>(
+      'input[name="steps.1.productBrand"]',
+    );
+    const secondProductInput = document.querySelector<HTMLInputElement>(
+      'input[name="steps.1.productName"]',
+    );
+    if (!secondBrandInput || !secondProductInput) {
+      throw new Error("Expected manual product fields for second step.");
+    }
+
+    fireEvent.change(secondBrandInput, {
+      target: { value: "Manual Brand" },
+    });
+    fireEvent.change(secondProductInput, {
+      target: { value: "Manual Cream" },
+    });
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "Remove step 1" }),
+    );
+
+    const shiftedBrandInput = document.querySelector<HTMLInputElement>(
+      'input[name="steps.0.productBrand"]',
+    );
+    const shiftedProductInput = document.querySelector<HTMLInputElement>(
+      'input[name="steps.0.productName"]',
+    );
+
+    expect(shiftedBrandInput).toHaveValue("Manual Brand");
+    expect(shiftedProductInput).toHaveValue("Manual Cream");
+  });
 });
 
 describe("CommunityRoutineDetailPage", () => {
@@ -768,7 +949,9 @@ describe("CommunityRoutineDetailPage", () => {
     expect(screen.getByText("Removed for safety")).toBeInTheDocument();
     expect(screen.getByText("Honest gaps")).toBeInTheDocument();
     expect(screen.getByText("Ritora Calm Cream")).toBeInTheDocument();
-    expect(screen.getByText("A sunscreen category gap remains.")).toBeInTheDocument();
+    expect(
+      screen.getByText("A sunscreen category gap remains."),
+    ).toBeInTheDocument();
 
     await userEvent.click(
       screen.getByRole("button", { name: /save adaptation/i }),
@@ -792,12 +975,27 @@ describe("CommunityRoutineDetailPage", () => {
 
     renderWithProviders(<CommunityRoutineDetailPage routineId="routine-404" />);
 
-    expect(await screen.findByText("Routine could not load")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Routine could not load"),
+    ).toBeInTheDocument();
   });
 });
 
 describe("MySubmissions", () => {
   it("edits returned playbooks with the full structured form", async () => {
+    mockUseShelfProducts.mockReturnValue({
+      data: [
+        {
+          id: "product-cream",
+          identity: {
+            brand: "Ritora",
+            category: "moisturizer",
+            name: "Barrier Cream",
+          },
+        },
+      ],
+      isLoading: false,
+    });
     mockedListSubmissions.mockResolvedValue({ items: submissionsFixture });
     mockedUpdateRoutine.mockResolvedValue(routineFixture);
 
@@ -809,6 +1007,13 @@ describe("MySubmissions", () => {
     expect(
       screen.getByText("Remove treatment claims before resubmitting."),
     ).toBeInTheDocument();
+    expect(screen.getAllByText("What to edit").length).toBeGreaterThan(0);
+    expect(screen.getByText("Automated moderation")).toBeInTheDocument();
+    expect(
+      screen.getAllByText(
+        "Change the parts called out, then save edits. Resubmit unchanged only if you believe this was a mistake.",
+      ).length,
+    ).toBeGreaterThan(0);
 
     const routineCard = screen
       .getByText("Needs safer routine")
@@ -818,17 +1023,31 @@ describe("MySubmissions", () => {
     await userEvent.click(
       within(routineCard).getByRole("button", { name: "Edit" }),
     );
-    const titleInput =
-      routineCard.querySelector<HTMLInputElement>('input[name="title"]');
-    const lifestyleInput = routineCard.querySelector<HTMLTextAreaElement>(
+    const playbookDialog = await screen.findByRole("dialog", {
+      name: "Edit playbook",
+    });
+    const titleInput = playbookDialog.querySelector<HTMLInputElement>(
+      'input[name="title"]',
+    );
+    const lifestyleInput = playbookDialog.querySelector<HTMLTextAreaElement>(
       'textarea[name="summary"]',
     );
-    const timeframeSelect = routineCard.querySelector<HTMLSelectElement>(
+    const timeframeSelect = playbookDialog.querySelector<HTMLSelectElement>(
       'select[name="timeframe"]',
     );
-    if (!titleInput || !lifestyleInput || !timeframeSelect) {
+    const selectedStepProduct = playbookDialog.querySelector<HTMLSelectElement>(
+      'select[name="steps.0.productId"]',
+    );
+    if (
+      !titleInput ||
+      !lifestyleInput ||
+      !timeframeSelect ||
+      !selectedStepProduct
+    ) {
       throw new Error("Expected structured editable routine fields.");
     }
+    expect(selectedStepProduct.value).toBe("product-cleanser");
+    expect(selectedStepProduct.textContent).toContain("Ritora Milky Cleanser");
 
     fireEvent.change(titleInput, {
       target: { value: "Updated safer routine" },
@@ -852,7 +1071,7 @@ describe("MySubmissions", () => {
           goalTags: ["acne"],
           steps: [
             expect.objectContaining({
-              productId: null,
+              productId: "product-cleanser",
               productBrand: "Ritora",
               productName: "Milky Cleanser",
               category: "cleanser",
@@ -863,6 +1082,105 @@ describe("MySubmissions", () => {
         }),
       ),
     );
+  });
+
+  it("guards unsaved playbook edits before closing the edit sheet", async () => {
+    mockedListSubmissions.mockResolvedValue({ items: submissionsFixture });
+
+    renderWithProviders(<MySubmissions />);
+
+    const routineCard = (
+      await screen.findByText("Needs safer routine")
+    ).closest("article");
+    if (!routineCard) throw new Error("Expected routine submission card.");
+
+    await userEvent.click(
+      within(routineCard).getByRole("button", { name: "Edit" }),
+    );
+    const playbookDialog = await screen.findByRole("dialog", {
+      name: "Edit playbook",
+    });
+    const titleInput = playbookDialog.querySelector<HTMLInputElement>(
+      'input[name="title"]',
+    );
+    if (!titleInput) {
+      throw new Error("Expected editable playbook title field.");
+    }
+
+    fireEvent.change(titleInput, {
+      target: { value: "Updated safer routine" },
+    });
+    await userEvent.click(
+      within(playbookDialog).getByRole("button", { name: "Close" }),
+    );
+
+    const discardDialog = await screen.findByRole("alertdialog", {
+      name: "Discard playbook changes?",
+    });
+    await userEvent.click(
+      within(discardDialog).getByRole("button", { name: "Keep editing" }),
+    );
+    expect(
+      screen.getByRole("dialog", { name: "Edit playbook" }),
+    ).toBeInTheDocument();
+
+    await userEvent.click(
+      within(playbookDialog).getByRole("button", { name: "Close" }),
+    );
+    await userEvent.click(
+      within(
+        await screen.findByRole("alertdialog", {
+          name: "Discard playbook changes?",
+        }),
+      ).getByRole("button", { name: "Discard changes" }),
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole("dialog", { name: "Edit playbook" }),
+      ).not.toBeInTheDocument(),
+    );
+    expect(mockedUpdateRoutine).not.toHaveBeenCalled();
+  });
+
+  it("falls back to safety flags when returned playbooks have no moderation note", async () => {
+    mockedListSubmissions.mockResolvedValue({
+      items: [
+        {
+          ...submissionsFixture[0],
+          moderationGuidance: null,
+        },
+      ],
+    });
+
+    renderWithProviders(<MySubmissions />);
+
+    expect(await screen.findByText("What to edit")).toBeInTheDocument();
+    expect(screen.getByText("Safety review")).toBeInTheDocument();
+    expect(
+      screen.getByText("Remove treatment claims before resubmitting."),
+    ).toBeInTheDocument();
+  });
+
+  it("shows a generic edit reason when returned content has no note or flag", async () => {
+    mockedListSubmissions.mockResolvedValue({
+      items: [
+        {
+          ...submissionsFixture[0],
+          moderationGuidance: null,
+          safetyFlags: [],
+        },
+      ],
+    });
+
+    renderWithProviders(<MySubmissions />);
+
+    expect(await screen.findByText("What to edit")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Review this submission for unsafe claims, missing routine context, or disclosure issues before saving edits.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("edits returned reviews with shelf product context and resubmits unchanged content", async () => {
@@ -876,18 +1194,44 @@ describe("MySubmissions", () => {
       "article",
     );
     if (!reviewCard) throw new Error("Expected review submission card.");
+    expect(
+      within(reviewCard).getByText(
+        "Add sunscreen context and clarify the claim wording.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(reviewCard).getByText("Ritora moderation"),
+    ).toBeInTheDocument();
 
     await userEvent.click(
       within(reviewCard).getByRole("button", { name: "Edit" }),
     );
-    const outcomesInput =
-      reviewCard.querySelector<HTMLInputElement>('input[name="outcomes"]');
-    const ratingSelect = reviewCard.querySelector<HTMLSelectElement>(
+    const reviewDialog = await screen.findByRole("dialog", {
+      name: "Edit review",
+    });
+    const selectedReviewProduct = reviewDialog.querySelector<HTMLSelectElement>(
+      'select[name="selectedShelfProductId"]',
+    );
+    const selectedContextProduct =
+      reviewDialog.querySelector<HTMLSelectElement>(
+        'select[name="selectedContextShelfProductId"]',
+      );
+    const outcomesInput = reviewDialog.querySelector<HTMLInputElement>(
+      'input[name="outcomes"]',
+    );
+    const ratingSelect = reviewDialog.querySelector<HTMLSelectElement>(
       'select[name="overallRating"]',
     );
-    if (!outcomesInput || !ratingSelect) {
+    if (
+      !selectedReviewProduct ||
+      !selectedContextProduct ||
+      !outcomesInput ||
+      !ratingSelect
+    ) {
       throw new Error("Expected structured editable review fields.");
     }
+    expect(selectedReviewProduct.value).toBe("product-cream");
+    expect(selectedContextProduct.value).toBe("product-cleanser");
 
     fireEvent.change(outcomesInput, {
       target: { value: "calmer, less stinging, smoother" },
@@ -901,10 +1245,12 @@ describe("MySubmissions", () => {
         expect.objectContaining({
           productBrand: "Ritora",
           productName: "Barrier Cream",
+          productId: "product-cream",
           overallRating: 5,
           outcomes: ["calmer", "less stinging", "smoother"],
           routineContext: [
             expect.objectContaining({
+              productId: "product-cleanser",
               productBrand: "Ritora",
               productName: "Milky Cleanser",
             }),
@@ -917,6 +1263,65 @@ describe("MySubmissions", () => {
       within(reviewCard).getByRole("button", { name: "Resubmit unchanged" }),
     );
     expect(mockedResubmit).toHaveBeenCalledWith("submission-review");
+  });
+
+  it("guards unsaved review edits before closing the edit sheet", async () => {
+    mockedListSubmissions.mockResolvedValue({ items: submissionsFixture });
+
+    renderWithProviders(<MySubmissions />);
+
+    const reviewCard = (await screen.findByText("Rejected review")).closest(
+      "article",
+    );
+    if (!reviewCard) throw new Error("Expected review submission card.");
+
+    await userEvent.click(
+      within(reviewCard).getByRole("button", { name: "Edit" }),
+    );
+    const reviewDialog = await screen.findByRole("dialog", {
+      name: "Edit review",
+    });
+    const outcomesInput = reviewDialog.querySelector<HTMLInputElement>(
+      'input[name="outcomes"]',
+    );
+    if (!outcomesInput) {
+      throw new Error("Expected editable review outcomes field.");
+    }
+
+    fireEvent.change(outcomesInput, {
+      target: { value: "calmer, less stinging, smoother" },
+    });
+    await userEvent.click(
+      within(reviewDialog).getByRole("button", { name: "Close" }),
+    );
+
+    const discardDialog = await screen.findByRole("alertdialog", {
+      name: "Discard review changes?",
+    });
+    await userEvent.click(
+      within(discardDialog).getByRole("button", { name: "Keep editing" }),
+    );
+    expect(
+      screen.getByRole("dialog", { name: "Edit review" }),
+    ).toBeInTheDocument();
+
+    await userEvent.click(
+      within(reviewDialog).getByRole("button", { name: "Close" }),
+    );
+    await userEvent.click(
+      within(
+        await screen.findByRole("alertdialog", {
+          name: "Discard review changes?",
+        }),
+      ).getByRole("button", { name: "Discard changes" }),
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.queryByRole("dialog", { name: "Edit review" }),
+      ).not.toBeInTheDocument(),
+    );
+    expect(mockedUpdateReview).not.toHaveBeenCalled();
   });
 
   it("offers withdrawal instead of editing for published submissions", async () => {
@@ -935,9 +1340,9 @@ describe("MySubmissions", () => {
 
     renderWithProviders(<MySubmissions />);
 
-    const publishedCard = (await screen.findByText("Published playbook")).closest(
-      "article",
-    );
+    const publishedCard = (
+      await screen.findByText("Published playbook")
+    ).closest("article");
     if (!publishedCard) throw new Error("Expected published submission card.");
 
     expect(
@@ -950,7 +1355,9 @@ describe("MySubmissions", () => {
     const dialog = await screen.findByRole("alertdialog", {
       name: "Withdraw community submission?",
     });
-    await userEvent.click(within(dialog).getByRole("button", { name: "Withdraw" }));
+    await userEvent.click(
+      within(dialog).getByRole("button", { name: "Withdraw" }),
+    );
 
     await waitFor(() =>
       expect(mockedWithdraw).toHaveBeenCalledWith("submission-published"),

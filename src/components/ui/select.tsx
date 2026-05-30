@@ -93,7 +93,11 @@ const SelectContent = React.forwardRef<
       ref={ref}
       data-slot="select-content"
       className={cn(
-        'relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-2xl border border-border bg-surface text-foreground shadow-soft data-[state=open]:animate-in data-[state=closed]:animate-out',
+        // z-[80] keeps the dropdown above any Radix Dialog
+        // (DialogContent renders at z-[71]). Anything lower
+        // would render the dropdown behind the opaque dialog,
+        // making the Select look "broken" inside modals.
+        'relative z-[80] max-h-96 min-w-[8rem] overflow-hidden rounded-2xl border border-border bg-surface text-foreground shadow-soft data-[state=open]:animate-in data-[state=closed]:animate-out',
         position === 'popper' &&
           'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
         className,

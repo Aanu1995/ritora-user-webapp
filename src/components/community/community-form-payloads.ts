@@ -51,6 +51,7 @@ export function reviewFormToInput(
   value: CommunityReviewFormValues,
 ): CreateCommunityReviewInput {
   return {
+    productId: blankToNull(value.selectedShelfProductId),
     productBrand: value.productBrand,
     productName: value.productName,
     productCategory: value.productCategory,
@@ -72,6 +73,7 @@ export function reviewFormToInput(
     routineContext: [
       {
         category: value.contextCategory,
+        productId: blankToNull(value.selectedContextShelfProductId),
         productBrand: blankToNull(value.contextProductBrand),
         productName: value.contextProductName.trim(),
       },
@@ -99,7 +101,7 @@ export function routineInputToFormValues(
             frequency: step.frequency ?? "",
             notes: step.notes ?? "",
             productBrand: step.productBrand ?? "",
-            productId: "",
+            productId: step.productId ?? "",
             productName: step.productName ?? "",
             slot: step.slot,
           }))
@@ -133,8 +135,8 @@ export function reviewInputToFormValues(
     productName: input.productName,
     repurchase: input.repurchase,
     routineSlot: input.routineSlot ?? "",
-    selectedContextShelfProductId: "",
-    selectedShelfProductId: "",
+    selectedContextShelfProductId: context?.productId ?? "",
+    selectedShelfProductId: input.productId ?? "",
     skinResponse: input.skinResponse ?? "",
     textureRating: ratingToString(input.textureRating),
     usageDuration: input.usageDuration,

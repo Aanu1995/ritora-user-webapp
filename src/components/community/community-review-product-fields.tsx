@@ -92,8 +92,8 @@ export function CommunityReviewProductFields({
   // about a real shelf id or an empty string. We seed it true when the
   // user has typed a brand/name manually so editing a draft doesn't hide
   // their previous text.
-  const [otherMode, setOtherMode] = useState(() =>
-    Boolean(brandField.state.value) || Boolean(nameField.state.value),
+  const [otherMode, setOtherMode] = useState(
+    () => Boolean(brandField.state.value) || Boolean(nameField.state.value),
   );
 
   // Picking a shelf product overrides the otherMode flag — the
@@ -105,18 +105,47 @@ export function CommunityReviewProductFields({
       ? OTHER_PRODUCT_VALUE
       : "";
 
-  const shelfOptions = useMemo(
-    () => [
-      ...products.map((product) => ({
-        value: product.id,
-        label: `${product.identity.brand} ${product.identity.name}`,
-      })),
+  const shelfOptions = useMemo(() => {
+    const productOptions = products.map((product) => ({
+      value: product.id,
+      label: `${product.identity.brand} ${product.identity.name}`,
+    }));
+    const hasSelectedProduct = productOptions.some(
+      (option) => option.value === selectedShelfId,
+    );
+    const selectedSnapshotOption =
+      selectedShelfId && !hasSelectedProduct
+        ? [
+            {
+              value: selectedShelfId,
+              label:
+                `${brandField.state.value} ${nameField.state.value}`.trim() ||
+                t("linkedMessage"),
+            },
+          ]
+        : [];
+
+    return [
+      ...selectedSnapshotOption,
+      ...productOptions,
       { value: OTHER_PRODUCT_VALUE, label: t("otherProduct") },
-    ],
-    [products, t],
-  );
+    ];
+  }, [
+    brandField.state.value,
+    nameField.state.value,
+    products,
+    selectedShelfId,
+    t,
+  ]);
 
   const handleDropdownChange = (next: string) => {
+    if (next === "") {
+      selectedShelfProductIdField.handleChange("");
+      brandField.handleChange("");
+      nameField.handleChange("");
+      setOtherMode(false);
+      return;
+    }
     if (next === OTHER_PRODUCT_VALUE) {
       selectedShelfProductIdField.handleChange("");
       brandField.handleChange("");
@@ -139,11 +168,10 @@ export function CommunityReviewProductFields({
         label={selectLabel ?? t("selectLabel")}
         name={selectedShelfProductIdField.name}
         hint={selectHint ?? t("selectHint")}
-        placeholder={
-          isLoadingProducts ? t("loadingShelf") : t("pickProduct")
-        }
+        placeholder={isLoadingProducts ? t("loadingShelf") : t("pickProduct")}
         disabled={isLoadingProducts}
         options={shelfOptions}
+        required
         value={dropdownValue}
         onChange={handleDropdownChange}
       />

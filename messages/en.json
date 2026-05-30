@@ -477,7 +477,12 @@
           "authorTags": ["Combination", "Fitzpatrick IV", "Hyperpigmentation"],
           "playbookTitle": "Calmer barrier rebuild",
           "playbookSubtitle": "4 step evening routine for 6 weeks",
-          "steps": ["Cleanser", "Niacinamide", "Ceramide moisturiser", "SPF 50"],
+          "steps": [
+            "Cleanser",
+            "Niacinamide",
+            "Ceramide moisturiser",
+            "SPF 50"
+          ],
           "outcome": "32 said this worked",
           "outcomeMixed": "4 mixed results",
           "adaptCta": "Adapt to my shelf"
@@ -4516,8 +4521,10 @@
     "sourceTodaysSuggestion": "Today's Suggestion",
     "sourceSmartPicks": "Smart Picks",
     "sourceShelf": "Shelf",
+    "sourceCommunity": "Community",
     "fallbackProductName": "A product",
     "unknownDate": "an unknown date",
+    "unknownKindBody": "Open this notification for details.",
     "errors": {
       "loadTitle": "We couldn't load notifications",
       "loadBody": "Please try again. Your notification preferences and journal data are unchanged.",
@@ -4581,6 +4588,10 @@
       "smart_pick_ready": {
         "title": "New Smart Pick available",
         "body": "Your shelf changed. Review the latest gap before buying anything new."
+      },
+      "community_moderation": {
+        "title": "Community update",
+        "body": "A review or playbook you shared has a moderation update."
       }
     }
   },
@@ -5544,7 +5555,7 @@
       "adapt": "Adapt to my shelf",
       "reportRoutine": "Report routine",
       "reportReview": "Report review",
-      "context": "Context:",
+      "context": "Paired with",
       "moreSteps": "+{count} more"
     },
     "share": {
@@ -5561,16 +5572,28 @@
       "saveEdits": "Save edits",
       "saving": "Saving…"
     },
+    "unsavedReview": {
+      "title": "Discard review changes?",
+      "description": "Your review draft will be lost if you close this panel now.",
+      "discard": "Discard changes",
+      "keepEditing": "Keep editing"
+    },
+    "unsavedPlaybook": {
+      "title": "Discard playbook changes?",
+      "description": "Your playbook draft will be lost if you close this panel now.",
+      "discard": "Discard changes",
+      "keepEditing": "Keep editing"
+    },
     "editability": {
       "heading": "Heads up before you submit",
-      "reviewBody": "Once your review is live, you can only edit the review text — and only if our moderators ask you to. Ratings, the product, usage details, and tags are locked in.",
-      "playbookBody": "Once your playbook is live, you can only edit the title and summary — and only if our moderators ask you to. Steps, products, goals, and tags are locked in."
+      "reviewBody": "Once your review is live, the only thing you can change is the review text, and only if our moderators ask you to. Ratings, the product, usage details, and tags are locked in.",
+      "playbookBody": "Once your playbook is live, the only things you can change are the title and summary, and only if our moderators ask you to. Steps, products, goals, and tags are locked in."
     },
     "confirm": {
       "reviewTitle": "Submit this review?",
-      "reviewBody": "We'll safety-scan it and run AI moderation before it goes live. After that you can only edit the review text — and only if moderators ask you to.",
+      "reviewBody": "We'll run a safety scan and AI moderation before it goes live. After that, the only thing you can change is the review text, and only if moderators ask you to.",
       "playbookTitle": "Share this playbook?",
-      "playbookBody": "We'll safety-scan it and run AI moderation before it goes live. After that you can only edit the title and summary — and only if moderators ask you to.",
+      "playbookBody": "We'll run a safety scan and AI moderation before it goes live. After that, you can change only the title and summary, and only if moderators ask you to.",
       "keepEditing": "Keep editing"
     },
     "filters": {
@@ -5730,7 +5753,7 @@
         "submitFailed": "Review could not be submitted.",
         "productSection": "Product reviewed",
         "ratingsSection": "How well did it work?",
-        "ratingsDescription": "How the product performed for your skin. Required ratings on a 1–5 scale.",
+        "ratingsDescription": "How the product performed for your skin. Required ratings on a 1 to 5 scale.",
         "overallLabel": "Overall rating",
         "overallHint": "Overall satisfaction.",
         "overallPlaceholder": "Rate overall",
@@ -5749,7 +5772,7 @@
         "valueHint": "Optional. Felt worth the price.",
         "optionalPlaceholder": "Optional",
         "usageSection": "When and how you used it",
-        "usageDescription": "Same product, different routine — context changes the outcome.",
+        "usageDescription": "Same product, different routine. The context changes the outcome.",
         "usageDurationLabel": "Usage duration",
         "usageDurationHint": "How long until you knew.",
         "usageDurationPlaceholder": "Choose duration",
@@ -5779,7 +5802,7 @@
         "outcomesHint": "Comma-separated keywords that make this searchable.",
         "outcomesPlaceholder": "calmer, less stinging, no change",
         "bodySection": "In your own words",
-        "bodyDescription": "Optional. Skip diagnoses and 'cured' claims — anything that reads as medical advice goes to moderation.",
+        "bodyDescription": "Optional. Skip diagnoses and 'cured' claims. Anything that reads as medical advice goes to moderation.",
         "bodyHint": "Add nuance that ratings and tags can't show.",
         "bodyLabel": "Review text",
         "bodyPlaceholder": "What changed, what didn't, and what would you tell someone with similar skin before they try it?"
@@ -5801,7 +5824,7 @@
         "timeframeHint": "How long until you knew it worked.",
         "timeframePlaceholder": "Choose timeframe",
         "routineSection": "Products and routine",
-        "routineDescription": "Add each step in order. Pick from your shelf where you can — manual entry is fine when a product isn't on your shelf.",
+        "routineDescription": "Add each step in order. Pick from your shelf where you can. Manual entry is fine when a product isn't on your shelf.",
         "changedSection": "What changed",
         "changedDescription": "Optional. Tags make this playbook searchable for people chasing the same goal.",
         "avoidLabel": "What I avoided",
@@ -5866,24 +5889,39 @@
       "effect": "Effect",
       "irritation": "Irritation",
       "notRated": "Not rated",
-      "repurchase": "Repurchase: {value}",
-      "unknown": "Unknown"
+      "repurchase": "Would buy again: {value}",
+      "unknown": "Unknown",
+      "howUsedLabel": "How they used it",
+      "outcomeLabel": "What changed",
+      "reviewerLabel": "About this reviewer"
     },
     "outcomeSignals": {
       "addedToast": "Your outcome was added to the evidence.",
       "failedToast": "Could not save your outcome.",
-      "confirmed": "{worked}/{total} confirmed",
-      "helper": "Add your outcome without judging the original post.",
+      "confirmed": "{worked} of {total} people confirmed it worked",
+      "helper": "Tap an icon below to share your own outcome with this product. Each icon stands for a different kind of result.",
+      "shortLabels": {
+        "worked_for_me_too": "Worked",
+        "worked_with_changes": "Tweaked",
+        "mixed_result": "Mixed",
+        "did_not_work": "Did not work",
+        "caused_irritation": "Irritation"
+      },
       "chooseOutcomeFirst": "Choose an outcome first.",
       "addFailed": "Could not add outcome.",
       "dialogTitle": "Confirm your outcome",
       "dialogDescription": "This makes the evidence more useful without turning someone else's post into a public score.",
+      "yourOutcome": "Your outcome",
       "sameGoal": "Same goal?",
+      "sameGoalHint": "Were you targeting the same skin concern as the original post?",
       "sameGoalYes": "Yes, same goal",
       "sameGoalNo": "No, related but different",
       "trialDuration": "How long did you try it?",
+      "trialDurationHint": "Total time you gave the product a fair shot.",
       "irritation": "Irritation",
+      "irritationHint": "Any stinging, redness, or breakouts you noticed.",
       "followedParts": "What did you follow?",
+      "followedPartsHint": "Which parts of the original routine you also tried.",
       "choose": "Choose",
       "chooseDuration": "Choose duration",
       "chooseIrritation": "Choose irritation level",
@@ -5901,7 +5939,7 @@
       "playbooks": "Playbooks",
       "workedSignals": "Worked for them",
       "averageEffectiveness": "Avg. effectiveness",
-      "notAvailable": "—",
+      "notAvailable": "N/A",
       "topGoals": "Top goals",
       "topAvoids": "What people avoided",
       "reviewOutcomes": "Review outcomes",
@@ -5974,6 +6012,19 @@
       "withdrawConfirmTitle": "Withdraw community submission?",
       "withdrawConfirmBody": "This removes it from community views, matching, and evidence rankings. The moderation audit record is kept internally.",
       "cancel": "Cancel",
+      "editReviewTitle": "Edit review",
+      "editReviewDescription": "Update the returned review, then save it for another safety check.",
+      "editPlaybookTitle": "Edit playbook",
+      "editPlaybookDescription": "Update the returned playbook, then save it for another safety check.",
+      "guidanceTitle": "What to edit",
+      "guidanceFallback": "Review this submission for unsafe claims, missing routine context, or disclosure issues before saving edits.",
+      "safetyFlagTitleFallback": "Safety review",
+      "guidanceInstruction": "Change the parts called out, then save edits. Resubmit unchanged only if you believe this was a mistake.",
+      "guidanceSource": {
+        "ai": "Automated moderation",
+        "admin": "Ritora moderation",
+        "system": "Safety review"
+      },
       "missingSnapshot": "This submission cannot be edited yet. Try refreshing the page.",
       "status": {
         "draft": "Draft",
