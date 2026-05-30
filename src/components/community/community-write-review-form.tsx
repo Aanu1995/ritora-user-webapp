@@ -22,6 +22,7 @@ import {
   CommunityReviewProductFieldGroup,
   type CommunityReviewFormFieldRenderer,
 } from "./community-review-product-field-group";
+import { CommunityReviewContextProductsField } from "./community-review-context-products-field";
 import {
   CommunityDisclosureSelect,
   CommunityEditabilityNotice,
@@ -76,7 +77,12 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
   const mutation = useMutation({
     mutationFn,
     onSuccess: (result) => {
-      void queryClient.invalidateQueries({ queryKey: [QueryKey.CommunityHome] });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityHome],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityReviews],
+      });
       toast.success(
         successMessage?.(result) ??
           (result.moderationStatus === "published"
@@ -98,9 +104,7 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
 
         if (result.error !== null) {
           return {
-            form:
-              getApiErrorMessage(result.error) ??
-              tForm("submitFailed"),
+            form: getApiErrorMessage(result.error) ?? tForm("submitFailed"),
             fields: {},
           };
         }
@@ -164,9 +168,7 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
       )}
     </form.Field>
   );
-  const productFieldGroup = ({
-    ...config
-  }: ProductFieldGroupConfig) => (
+  const productFieldGroup = ({ ...config }: ProductFieldGroupConfig) => (
     <CommunityReviewProductFieldGroup
       fieldRenderer={form.Field as CommunityReviewFormFieldRenderer}
       isLoadingProducts={shelfProducts.isLoading}
@@ -310,24 +312,26 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
         description={tForm("pairedDescription")}
       >
         <div className="grid gap-6">
-          {productFieldGroup({
-            brandHint: tForm("pairedBrandHint"),
-            brandName: "contextProductBrand",
-            brandPlaceholder: tForm("pairedBrandPlaceholder"),
-            brandRequired: false,
-            categoryHint: tForm("pairedCategoryHint"),
-            categoryName: "contextCategory",
-            categoryLabel: tForm("pairedCategoryLabel"),
-            linkedMessage: tForm("pairedLinkedMessage"),
-            manualHeading: tForm("pairedManualHeading"),
-            nameName: "contextProductName",
-            productHint: tForm("pairedProductHint"),
-            productLabel: tForm("pairedProductLabel"),
-            productPlaceholder: tForm("pairedProductPlaceholder"),
-            selectedName: "selectedContextShelfProductId",
-            selectHint: tForm("pairedSelectHint"),
-            selectLabel: tForm("pairedSelectLabel"),
-          })}
+          <form.Field name="routineContextUsage">
+            {(routineContextUsageField) => (
+              <form.Field name="routineContext">
+                {(routineContextField) => (
+                  <CommunityReviewContextProductsField
+                    contextErrors={routineContextField.state.meta.errors}
+                    contextUsageErrors={
+                      routineContextUsageField.state.meta.errors
+                    }
+                    contextUsageValue={routineContextUsageField.state.value}
+                    isLoadingProducts={shelfProducts.isLoading}
+                    onContextChange={routineContextField.handleChange}
+                    onContextUsageChange={routineContextUsageField.handleChange}
+                    products={shelfProducts.data}
+                    value={routineContextField.state.value}
+                  />
+                )}
+              </form.Field>
+            )}
+          </form.Field>
           {textField(
             "outcomes",
             tForm("outcomesLabel"),

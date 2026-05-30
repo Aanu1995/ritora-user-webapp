@@ -191,6 +191,8 @@ export const ApiPath = {
     `${COMMUNITY_BASE}/reviews/${id}/helpfulness`,
   CommunityReviewOutcomeSignal: (id: string) =>
     `${COMMUNITY_BASE}/reviews/${id}/outcome-signal`,
+  CommunityReviewResults: (id: string) =>
+    `${COMMUNITY_BASE}/reviews/${id}/results`,
   CommunityWarnings: `${COMMUNITY_BASE}/warnings`,
   CommunityMySubmissions: `${COMMUNITY_BASE}/me/submissions`,
   CommunityResubmitContent: (id: string) =>

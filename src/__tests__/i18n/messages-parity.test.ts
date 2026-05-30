@@ -276,21 +276,6 @@ describe('Swedish visible copy localization', () => {
       'Gemenskapsbevis',
     ],
     [
-      'community.forYou.patterns.similarUsers.title',
-      svMessages.community.forYou.patterns.similarUsers.title,
-      'Gemenskapsbevis rangordnas efter likhet, inte popularitet',
-    ],
-    [
-      'community.forYou.patterns.routineContext.title',
-      svMessages.community.forYou.patterns.routineContext.title,
-      'Recensioner med rutinsammanhang rankas högre',
-    ],
-    [
-      'community.forYou.patterns.safeFacets.title',
-      svMessages.community.forYou.patterns.safeFacets.title,
-      'Din privata profil förblir privat',
-    ],
-    [
       'community.submissions.title',
       svMessages.community.submissions.title,
       'Mina gemenskapsinlägg',

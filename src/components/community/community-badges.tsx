@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import {
   Award,
@@ -108,15 +108,20 @@ export function MatchBadge({ score }: { score: number }) {
   );
 }
 
-export function Chip({
-  children,
-  className,
-}: {
+type ChipProps = HTMLAttributes<HTMLSpanElement> & {
   children: ReactNode;
-  className?: string;
-}) {
+};
+
+export function Chip({ children, className, ...rest }: ChipProps) {
+  /* Spreads any extra HTML attributes (e.g. `title` for
+     hover-discovery on truncated chips) onto the underlying
+     span. Callers that need to mark a chip as truncating its
+     own content can pass `className="max-w-full truncate"
+     title={fullString}` without us needing a dedicated prop
+     for every standard HTML attribute. */
   return (
     <span
+      {...rest}
       className={cn(
         "inline-flex items-center gap-1 rounded-full border border-border bg-surface px-2.5 py-1 text-xs font-medium text-muted",
         className,

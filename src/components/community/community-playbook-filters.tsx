@@ -1,139 +1,151 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  CommunityCompactFilterToolbar,
+  CommunityInlineSearchField,
+  type CompactFilterDefinition,
+} from "./community-compact-filter-toolbar";
 import { useCommunityTranslatedOptions } from "./community-i18n-options";
-
-/* ===========================================================
- * Sentinel for "no filter applied". Radix Select can't accept
- * an empty string as an item value, so we use a non-empty
- * sentinel and translate it back to "" on the way out.
- * ========================================================= */
-const ALL = "__all__";
 
 export type CommunityPlaybookFilterState = {
   avoidTag: string;
+  concern: string;
+  disclosureType: string;
   goal: string;
   habitTag: string;
   productRole: string;
   result: string;
+  search: string;
+  sensitivity: string;
+  skinType: string;
   timeframe: string;
   warningTag: string;
 };
 
 export const emptyPlaybookFilters: CommunityPlaybookFilterState = {
   avoidTag: "",
+  concern: "",
+  disclosureType: "",
   goal: "",
   habitTag: "",
   productRole: "",
   result: "",
+  search: "",
+  sensitivity: "",
+  skinType: "",
   timeframe: "",
   warningTag: "",
 };
 
-export function CommunityPlaybookFilters({
+const countedPlaybookFilterKeys: ReadonlyArray<
+  keyof CommunityPlaybookFilterState
+> = [
+  "avoidTag",
+  "concern",
+  "disclosureType",
+  "goal",
+  "habitTag",
+  "productRole",
+  "result",
+  "sensitivity",
+  "skinType",
+  "timeframe",
+  "warningTag",
+];
+
+export function hasActivePlaybookFilters(
+  filters: CommunityPlaybookFilterState,
+): boolean {
+  return Object.values(filters).some(Boolean);
+}
+
+export function countActivePlaybookFilters(
+  filters: CommunityPlaybookFilterState,
+): number {
+  return countedPlaybookFilterKeys.reduce(
+    (sum, key) => (filters[key] ? sum + 1 : sum),
+    0,
+  );
+}
+
+export function PlaybookSearchField({
   onChange,
   value,
 }: {
+  onChange: (next: string) => void;
+  value: string;
+}) {
+  const t = useTranslations("community.filters");
+  return (
+    <CommunityInlineSearchField
+      ariaLabel={t("searchPlaybooks")}
+      placeholder={t("searchPlaybooksPlaceholder")}
+      value={value}
+      onChange={onChange}
+    />
+  );
+}
+
+export function PlaybookCompactToolbar({
+  countLabel,
+  onChange,
+  value,
+}: {
+  countLabel?: string;
   onChange: (next: CommunityPlaybookFilterState) => void;
   value: CommunityPlaybookFilterState;
 }) {
   const t = useTranslations("community.filters");
   const options = useCommunityTranslatedOptions();
-  return (
-    <div className="grid gap-3 rounded-xl border border-border bg-surface p-3 sm:grid-cols-2 lg:grid-cols-3">
-      <FilterSelect
-        allLabel={t("all")}
-        label={t("goal")}
-        options={options.goals}
-        value={value.goal}
-        onChange={(goal) => onChange({ ...value, goal })}
-      />
-      <FilterSelect
-        allLabel={t("all")}
-        label={t("result")}
-        options={options.goalResults}
-        value={value.result}
-        onChange={(result) => onChange({ ...value, result })}
-      />
-      <FilterSelect
-        allLabel={t("all")}
-        label={t("timeframe")}
-        options={options.goalTimeframes}
-        value={value.timeframe}
-        onChange={(timeframe) => onChange({ ...value, timeframe })}
-      />
-      <FilterSelect
-        allLabel={t("all")}
-        label={t("productRole")}
-        options={options.productCategories}
-        value={value.productRole}
-        onChange={(productRole) => onChange({ ...value, productRole })}
-      />
-      <FilterSelect
-        allLabel={t("all")}
-        label={t("avoided")}
-        options={options.avoidTags}
-        value={value.avoidTag}
-        onChange={(avoidTag) => onChange({ ...value, avoidTag })}
-      />
-      <FilterSelect
-        allLabel={t("all")}
-        label={t("habit")}
-        options={options.habits}
-        value={value.habitTag}
-        onChange={(habitTag) => onChange({ ...value, habitTag })}
-      />
-      <FilterSelect
-        allLabel={t("all")}
-        label={t("warning")}
-        options={options.warnings}
-        value={value.warningTag}
-        onChange={(warningTag) => onChange({ ...value, warningTag })}
-      />
-    </div>
-  );
-}
+  const inlineFilters: CompactFilterDefinition<CommunityPlaybookFilterState>[] =
+    [
+      { key: "concern", label: t("concern"), options: options.concerns },
+      { key: "goal", label: t("goal"), options: options.goals },
+      { key: "skinType", label: t("skinType"), options: options.skinTypes },
+    ];
+  const sheetFilters: CompactFilterDefinition<CommunityPlaybookFilterState>[] =
+    [
+      ...inlineFilters,
+      { key: "result", label: t("result"), options: options.goalResults },
+      {
+        key: "timeframe",
+        label: t("timeframe"),
+        options: options.goalTimeframes,
+      },
+      {
+        key: "sensitivity",
+        label: t("sensitivity"),
+        options: options.sensitivities,
+      },
+      {
+        key: "productRole",
+        label: t("productRole"),
+        options: options.productCategories,
+      },
+      { key: "avoidTag", label: t("avoided"), options: options.avoidTags },
+      { key: "habitTag", label: t("habit"), options: options.habits },
+      { key: "warningTag", label: t("warning"), options: options.warnings },
+      {
+        key: "disclosureType",
+        label: t("disclosure"),
+        options: options.disclosures,
+      },
+    ];
 
-function FilterSelect({
-  allLabel,
-  label,
-  onChange,
-  options,
-  value,
-}: {
-  allLabel: string;
-  label: string;
-  onChange: (value: string) => void;
-  options: readonly { value: string; label: string }[];
-  value: string;
-}) {
   return (
-    <div className="grid gap-1.5">
-      <Label className="text-xs font-medium text-muted">{label}</Label>
-      <Select
-        value={value === "" ? ALL : value}
-        onValueChange={(next) => onChange(next === ALL ? "" : next)}
-      >
-        <SelectTrigger className="h-10 rounded-lg px-3 py-2 text-sm">
-          <SelectValue placeholder={allLabel} />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={ALL}>{allLabel}</SelectItem>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <CommunityCompactFilterToolbar
+      activeCount={countActivePlaybookFilters(value)}
+      anyActive={hasActivePlaybookFilters(value)}
+      ariaLabel={t("playbooksFiltersTitle")}
+      countLabel={countLabel}
+      emptyValue={emptyPlaybookFilters}
+      inlineFilters={inlineFilters}
+      onChange={onChange}
+      sheetDescription={t("playbooksFiltersDescription")}
+      sheetFilters={sheetFilters}
+      sheetTitle={t("playbooksFiltersTitle")}
+      value={value}
+    />
   );
 }

@@ -5502,9 +5502,7 @@
   "community": {
     "title": "Gemenskap",
     "subtitle": "Produkter, spelplaner och vad du bör hoppa över, bekräftat av personer som dig.",
-    "topMatches": "Visa bästa matchningar",
     "tabs": {
-      "forYou": "För dig",
       "peopleLikeMe": "Personer som jag",
       "playbooks": "Spelplaner",
       "reviews": "Recensioner",
@@ -5518,25 +5516,6 @@
       "privacyBody": "Vi använder bara faseterna ovan för att rangordna det du ser. Din e-post, plats, foton, medicinska sammanhang och privata anteckningar förblir privata.",
       "emptyProfile": "Slutför din hudprofil för bättre matchning. När den är klar kan vi rangordna rutiner kring det som faktiskt passar dig."
     },
-    "forYou": {
-      "patternsTitle": "Vad personer med din hylla gör",
-      "patternsEmptyTitle": "Inga hyllmönster ännu",
-      "patternsEmptyBody": "Lägg till några produkter i din hylla, så visar vi vad personer med liknande hyllor gör.",
-      "patterns": {
-        "similarUsers": {
-          "title": "Gemenskapsbevis rangordnas efter likhet, inte popularitet",
-          "body": "{count, plural, one {# publicerat inlägg matchar dina profilaspekter just nu.} other {# publicerade inlägg matchar dina profilaspekter just nu.}}"
-        },
-        "routineContext": {
-          "title": "Recensioner med rutinsammanhang rankas högre",
-          "body": "Ritora kräver att produktrecensioner innehåller den omgivande rutinen innan de kan påverka matchningen."
-        },
-        "safeFacets": {
-          "title": "Din privata profil förblir privat",
-          "body": "{count, plural, one {# hudbekymmer används utan att exponera exakt plats, e-post, foton eller medicinsk historik.} other {# hudbekymmer används utan att exponera exakt plats, e-post, foton eller medicinsk historik.}}"
-        }
-      }
-    },
     "lists": {
       "playbooksTitle": "Målspelplaner",
       "playbooksEmptyTitle": "Inga målspelplaner ännu",
@@ -5544,12 +5523,19 @@
       "playbooksFilterEmptyTitle": "Inga spelplaner matchar de filtren",
       "playbooksFilterEmptyBody": "Pröva ett bredare mål, resultat eller tidsram.",
       "playbooksTopN": "Topp {count}",
+      "playbooksLoaded": "{count} laddade",
       "playbooksShownTotal": "{shown}/{total} visade",
-      "reviewsTitle": "Recensioner från personer som dig",
+      "reviewsTitle": "Matchade recensioner",
       "reviewsEmptyTitle": "Inga publicerade recensioner ännu",
       "reviewsEmptyBody": "När personer delar recensioner med det krävda sammanhanget visas de här.",
+      "reviewsFilterEmptyTitle": "Inga recensioner matchar de filtren",
+      "reviewsFilterEmptyBody": "Pröva en bredare produkt, hudprofil eller resultatfilter.",
       "reviewsTopN": "Topp {count}",
+      "reviewsLoaded": "{count} laddade",
       "reviewsTotal": "{count} totalt",
+      "loadingMore": "Laddar mer gemenskapsbevis…",
+      "loadMoreError": "Vi kunde inte läsa in mer gemenskapsbevis.",
+      "retry": "Försök igen",
       "peopleEmptyTitle": "Inga gemenskapsbevis ännu",
       "peopleEmptyBody": "När personer med hud som din delar spelplaner och recensioner ser du dem här."
     },
@@ -5558,6 +5544,8 @@
       "reportRoutine": "Rapportera rutin",
       "reportReview": "Rapportera recension",
       "context": "Parad med",
+      "usedAloneContextLabel": "Använd ensam",
+      "notSureContextLabel": "Andra produkter ej noterade",
       "moreSteps": "+{count} fler"
     },
     "share": {
@@ -5599,14 +5587,40 @@
       "keepEditing": "Fortsätt redigera"
     },
     "filters": {
+      "searchPlaybooks": "Sök spelplaner",
+      "searchPlaybooksPlaceholder": "Sök mål, produkter, vanor, undvikna triggers…",
+      "searchReviews": "Sök recensioner",
+      "searchReviewsPlaceholder": "Sök produkt, varumärke, resultat eller parad produkt…",
       "goal": "Mål",
       "result": "Resultat",
       "timeframe": "Tidsram",
+      "skinType": "Hudtyp",
+      "concern": "Hudbekymmer",
+      "sensitivity": "Känslighet",
       "productRole": "Produktroll",
+      "productCategory": "Produktkategori",
+      "usedWithCategory": "Kategori använd med",
+      "routineContext": "Rutinsammanhang",
+      "routineSlot": "Rutintid",
+      "skinResponse": "Hudrespons",
+      "usageDuration": "Användningstid",
+      "minimumRating": "Lägsta betyg",
+      "confirmedResult": "Bekräftat resultat",
       "avoided": "Undvek",
       "habit": "Vana",
       "warning": "Varning",
-      "all": "Alla"
+      "disclosure": "Intressekoppling",
+      "clear": "Rensa filter",
+      "clearAll": "Rensa alla",
+      "all": "Alla",
+      "filtersAll": "Filter",
+      "filtersWithCount": "Filter · {count}",
+      "allFiltersTitle": "Filtrera recensioner",
+      "allFiltersDescription": "Välj vilken kombination du vill av resultat, hudprofil, rutinsammanhang och intressekoppling.",
+      "playbooksFiltersTitle": "Filtrera spelplaner",
+      "playbooksFiltersDescription": "Välj vilken kombination du vill av mål, hudprofil, produkter och säkerhet.",
+      "done": "Klart",
+      "activeFiltersLabel": "{count, plural, =0 {Inga aktiva filter} one {# aktivt filter} other {# aktiva filter}}"
     },
     "options": {
       "disclosure": {
@@ -5624,6 +5638,13 @@
         "affiliate": "Partnerlänk · Länkar eller köp kan gynna författaren",
         "professional": "Professionell · Delas från ett professionellt sammanhang",
         "brand_rep": "Varumärkesrepresentant · Författaren representerar varumärket"
+      },
+      "safeFacet": {
+        "barrier": "Barriärstöd",
+        "dark-marks": "Mörka märken",
+        "cold-dry": "Kallt och torrt",
+        "cold-weather": "Kallt väder",
+        "temperate": "Tempererat"
       },
       "reviewUsageDuration": {
         "2-weeks": "2 veckor eller mindre",
@@ -5643,6 +5664,11 @@
         "pm": "Kvällsrutin",
         "am-pm": "Morgon och kväll",
         "either": "Antingen / varierar"
+      },
+      "reviewRoutineContextUsage": {
+        "used_alone": "Jag använde den ensam",
+        "with_products": "Jag använde den med andra produkter",
+        "not_sure": "Jag minns inte"
       },
       "reviewSkinResponse": {
         "improved": "Förbättrades",
@@ -5720,6 +5746,13 @@
         "needs-sunscreen": "Behöver solskydd",
         "professional-care-involved": "Professionell vård ingick"
       },
+      "minimumRating": {
+        "5": "5 stjärnor",
+        "4": "4+ stjärnor",
+        "3": "3+ stjärnor",
+        "2": "2+ stjärnor",
+        "1": "1+ stjärnor"
+      },
       "outcomeSignal": {
         "worked_for_me_too": "Fungerade för mig också",
         "worked_with_changes": "Fungerade med ändringar",
@@ -5741,6 +5774,11 @@
         "avoid-list": "Undvik-lista",
         "habits": "Vanor",
         "partial": "Bara delar av den"
+      },
+      "reviewOutcomeFollowedPart": {
+        "products": "Samma produkt",
+        "routine-timing": "Liknande timing",
+        "partial": "Bara delvis liknande användning"
       },
       "outcomeIrritation": {
         "none": "Ingen irritation",
@@ -5787,8 +5825,8 @@
         "repurchaseLabel": "Skulle köpa igen",
         "repurchaseHint": "Skulle du köpa den igen?",
         "repurchasePlaceholder": "Välj svar",
-        "pairedSection": "Vad du använde den med",
-        "pairedDescription": "Produkten du använde tillsammans med den. Krävs för att vi ska kunna rangordna detta som rutinbevis.",
+        "pairedSection": "Rutinsammanhang",
+        "pairedDescription": "Berätta om du använde produkten ensam eller med andra produkter. Kompanjonprodukter krävs bara när de ingick i samma rutin.",
         "pairedBrandHint": "Valfritt. Varumärke för den parade produkten.",
         "pairedBrandPlaceholder": "t.ex. CeraVe",
         "pairedCategoryHint": "Vilken roll produkten hade i din rutin.",
@@ -5859,6 +5897,31 @@
       "linkedMessage": "Den här recensionen kopplas till din hyllprodukt.",
       "manualHeading": "Berätta vad du använde"
     },
+    "reviewContextProducts": {
+      "usageLabel": "Hur använde du den?",
+      "usageHint": "Välj ärligt så att Ritora inte tvingar fram falskt rutinsammanhang.",
+      "usagePlaceholder": "Välj användningssammanhang",
+      "usedAloneNote": "Detta behandlas som fristående bevis för den recenserade produkten.",
+      "notSureNote": "Det är okej. Recensionen kan fortfarande hjälpa, men rankas lägre än recensioner med tydligare rutinsammanhang.",
+      "productsLabel": "Produkter som användes med den",
+      "productsHint": "Lägg till varje produkt du minns från samma rutin.",
+      "product": "Produkt {number}",
+      "removeProduct": "Ta bort produkt {number}",
+      "addProduct": "Lägg till en produkt till",
+      "selectLabel": "Produkt",
+      "loadingShelf": "Laddar hylla…",
+      "pickProduct": "Välj en produkt",
+      "otherProduct": "Annan (inte på min hylla)",
+      "categoryLabel": "Produktroll",
+      "linked": "Kopplad till din hyllprodukt.",
+      "manualHeading": "Berätta vad du parade den med",
+      "brandLabel": "Varumärke",
+      "brandHint": "Valfritt. Varumärke för kompanjonprodukten.",
+      "brandPlaceholder": "t.ex. CeraVe",
+      "productNameLabel": "Produktnamn",
+      "productNameHint": "Exakt produktnamn om den inte fanns på din hylla.",
+      "productNamePlaceholder": "t.ex. Hydrating Cleanser"
+    },
     "playbookSteps": {
       "label": "Produkter och rutinsteg",
       "hint": "Välj från din hylla när det går så att bevis kan kopplas tillbaka till produktbeslut.",
@@ -5899,9 +5962,56 @@
     },
     "outcomeSignals": {
       "addedToast": "Ditt resultat lades till i bevisen.",
+      "addedWithModeratedNoteToast": "Ditt resultat lades till. Anteckning eller produktkontext visas bara om modereringen godkänner den.",
       "failedToast": "Kunde inte spara ditt resultat.",
       "confirmed": "{worked} av {total} personer bekräftade att det fungerade",
+      "reviewConfirmed": "{worked} av {total} personer bekräftade att produkten fungerade för dem",
       "helper": "Tryck på en ikon nedan för att dela ditt eget resultat med produkten. Varje ikon står för ett olika slags resultat.",
+      "reviewHelper": "Tryck på en ikon nedan för att säga om den recenserade produkten fungerade för dig också. Din kontext hjälper Ritora att rangordna produktbevis.",
+      "viewResults": "Visa gemenskapsresultat",
+      "resultsTitle": "Gemenskapsresultat",
+      "resultsDescription": "Strukturerade bekräftelser från personer som provade den recenserade produkten. Resultatanteckningar visas först efter moderering.",
+      "resultsForProduct": "För {product}",
+      "resultMatchedPartsLabel": "Matchande sammanhang",
+      "resultUsedWithLabel": "Använd med",
+      "filterAll": "Alla",
+      "filterLabel": "Filtrera efter resultat",
+      "resultsCount": "{count, plural, one {# resultat} other {# resultat}}",
+      "resultType": "Resultattyp",
+      "allResultTypes": "Alla resultattyper",
+      "resultsLoadError": "Gemenskapsresultat kunde inte laddas.",
+      "retry": "Försök igen",
+      "resultsEmptyTitle": "Inga gemenskapsresultat ännu",
+      "resultsEmptyDescription": "När medlemmar bekräftar den här produkten visas deras strukturerade resultatkontext här.",
+      "resultDuration": "Tidsperiod",
+      "resultIrritation": "Irritation",
+      "resultSameGoal": "Målmatchning",
+      "resultRoutineSlot": "När använde du den?",
+      "resultRoutineSlotHint": "Valfritt. Hjälper andra jämföra morgon-, kvälls- eller flexibel användning.",
+      "resultRoutineSlotShort": "Rutintid",
+      "resultMatchedParts": "Matchad kontext: {parts}",
+      "resultNote": "Resultatanteckning",
+      "resultNoteHint": "Valfritt. Dela vad som gjorde ditt produktresultat annorlunda, inklusive produkter du använde tillsammans med den. Anteckningar modereras innan de visas offentligt.",
+      "resultNotePlaceholder": "t.ex. Den fungerade bättre när jag använde den efter en mild rengöring och hoppade över syror den kvällen.",
+      "similarToYou": "Liknar din profil",
+      "usedWithProducts": "Produkter som användes med den",
+      "usedWithProductsHint": "Valfritt. Lägg till produkter du använde tillsammans med den recenserade produkten så att andra kan jämföra rutinkontext.",
+      "addUsedWithProduct": "Lägg till produkt använd med den",
+      "usedWithProduct": "Produkt {number}",
+      "removeUsedWithProduct": "Ta bort produkt {number}",
+      "usedWithProductSelect": "Produkt",
+      "usedWithProductRole": "Produktroll",
+      "otherProduct": "Annan (inte på min hylla)",
+      "loadingShelf": "Laddar hylla…",
+      "pickProduct": "Välj en produkt",
+      "linked": "Kopplad till din hyllprodukt.",
+      "manualUsedWithHeading": "Berätta vad du parade den med",
+      "manualUsedWithBrand": "Varumärke",
+      "manualUsedWithBrandPlaceholder": "t.ex. CeraVe",
+      "manualUsedWithProduct": "Produktnamn",
+      "manualUsedWithProductPlaceholder": "t.ex. Hydrating Cleanser",
+      "reviewOwnContentToast": "Du kan inte bekräfta din egen recension.",
+      "routineOwnContentToast": "Du kan inte bekräfta din egen spelplan.",
       "shortLabels": {
         "worked_for_me_too": "Fungerade",
         "worked_with_changes": "Justerade",
@@ -5912,23 +6022,33 @@
       "chooseOutcomeFirst": "Välj ett resultat först.",
       "addFailed": "Kunde inte lägga till resultat.",
       "dialogTitle": "Bekräfta ditt resultat",
+      "reviewDialogTitle": "Bekräfta produktresultat",
       "dialogDescription": "Detta gör bevisen mer användbara utan att göra någon annans inlägg till en offentlig poäng.",
+      "reviewDialogDescription": "Bekräfta bara om du själv har använt den recenserade produkten. Ritora använder din kontext som produktbevis, inte som ett betyg mot recensenten.",
       "yourOutcome": "Ditt resultat",
+      "yourExperienceGroup": "Din upplevelse",
+      "routineContextGroup": "Rutinsammanhang",
+      "routineContextGroupDescription": "Allt valfritt. Lägg bara till det som hjälper en annan läsare att förstå ditt resultat.",
       "sameGoal": "Samma mål?",
+      "reviewSameGoal": "Samma resultatmål?",
       "sameGoalHint": "Var du inriktad på samma hudproblem som det ursprungliga inlägget?",
       "sameGoalYes": "Ja, samma mål",
       "sameGoalNo": "Nej, relaterat men annorlunda",
       "trialDuration": "Hur länge provade du det?",
       "trialDurationHint": "Hur länge du använde produkten innan du bestämde dig.",
+      "reviewTrialDurationHint": "Hur länge du använde den recenserade produkten innan du avgjorde om den fungerade för dig.",
       "irritation": "Irritation",
       "irritationHint": "Någon sveda, rodnad eller utbrott du märkte.",
       "followedParts": "Vad följde du?",
       "followedPartsHint": "Vilka delar av den ursprungliga rutinen du också testade.",
+      "reviewFollowedParts": "Vad matchade din användning?",
+      "reviewFollowedPartsHint": "Välj det som var tillräckligt likt recensionen för att din bekräftelse ska räknas som produktbevis.",
       "choose": "Välj",
       "chooseDuration": "Välj tidsperiod",
       "chooseIrritation": "Välj irritationsnivå",
       "adding": "Lägger till…",
-      "addOutcome": "Lägg till resultat"
+      "addOutcome": "Lägg till resultat",
+      "reviewAddOutcome": "Bekräfta produktresultat"
     },
     "productEvidence": {
       "loadError": "Gemenskapsbevis kunde inte laddas.",
@@ -6011,6 +6131,10 @@
       "resubmitting": "Skickar in igen…",
       "withdraw": "Dra tillbaka",
       "withdrawing": "Drar tillbaka…",
+      "viewReview": "Visa recension",
+      "viewPlaybook": "Visa spelplan",
+      "resultTitle": "Resultat på {title}",
+      "resultFallbackTarget": "gemenskapsinlägg",
       "withdrawConfirmTitle": "Dra tillbaka gemenskapsinlägg?",
       "withdrawConfirmBody": "Detta tar bort det från gemenskapsvyer, matchning och bevisrankningar. Modereringsrevisionsposten behålls internt.",
       "cancel": "Avbryt",
@@ -6022,6 +6146,7 @@
       "guidanceFallback": "Granska inlägget för osäkra påståenden, saknat rutinsammanhang eller problem med upplysningar innan du sparar ändringar.",
       "safetyFlagTitleFallback": "Säkerhetsgranskning",
       "guidanceInstruction": "Ändra delarna som nämns och spara sedan. Skicka in oförändrat endast om du tror att detta är ett misstag.",
+      "resultGuidanceInstruction": "Dra tillbaka resultatet om du inte vill att det ska visas eller räknas som bevis.",
       "guidanceSource": {
         "ai": "Automatisk moderering",
         "admin": "Ritora-moderering",
@@ -6038,7 +6163,8 @@
       },
       "type": {
         "routine": "Spelplan",
-        "review": "Recension"
+        "review": "Recension",
+        "result": "Resultatnotis"
       }
     },
     "eligibility": {

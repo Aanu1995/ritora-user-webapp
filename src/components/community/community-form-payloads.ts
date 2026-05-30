@@ -3,6 +3,7 @@ import type {
   CommunityEditableRoutine,
   CommunityGoalResult,
   CommunityGoalTimeframe,
+  CommunityReviewRoutineContextUsage,
   CommunityReviewRoutineSlot,
   CommunityReviewSkinResponse,
   CreateCommunityReviewInput,
@@ -58,6 +59,8 @@ export function reviewFormToInput(
     disclosureType: value.disclosureType,
     usageDuration: value.usageDuration,
     frequency: value.frequency,
+    routineContextUsage:
+      value.routineContextUsage as CommunityReviewRoutineContextUsage,
     routineSlot: value.routineSlot as CommunityReviewRoutineSlot,
     skinResponse: value.skinResponse as CommunityReviewSkinResponse,
     overallRating: toRequiredRating(value.overallRating),
@@ -70,14 +73,15 @@ export function reviewFormToInput(
       .map((item) => item.trim())
       .filter(Boolean),
     repurchase: value.repurchase,
-    routineContext: [
-      {
-        category: value.contextCategory,
-        productId: blankToNull(value.selectedContextShelfProductId),
-        productBrand: blankToNull(value.contextProductBrand),
-        productName: value.contextProductName.trim(),
-      },
-    ],
+    routineContext:
+      value.routineContextUsage === "with_products"
+        ? value.routineContext.map((item) => ({
+            category: item.category,
+            productId: blankToNull(item.productId),
+            productBrand: blankToNull(item.productBrand),
+            productName: blankToNull(item.productName),
+          }))
+        : [],
     body: value.body,
   };
 }
@@ -117,13 +121,12 @@ export function reviewInputToFormValues(
   input: CommunityEditableReview | null | undefined,
 ): CommunityReviewFormValues {
   if (!input) return cloneReviewDefaults();
-  const context = input.routineContext[0];
+  const routineContextUsage =
+    input.routineContextUsage ??
+    (input.routineContext.length > 0 ? "with_products" : "used_alone");
   return {
     ...cloneReviewDefaults(),
     body: input.body ?? "",
-    contextCategory: context?.category ?? defaultCommunityReviewValues.contextCategory,
-    contextProductBrand: context?.productBrand ?? "",
-    contextProductName: context?.productName ?? "",
     disclosureType: input.disclosureType,
     effectivenessRating: ratingToString(input.effectivenessRating),
     frequency: input.frequency,
@@ -134,8 +137,17 @@ export function reviewInputToFormValues(
     productCategory: input.productCategory,
     productName: input.productName,
     repurchase: input.repurchase,
+    routineContext:
+      input.routineContext.length > 0
+        ? input.routineContext.map((item) => ({
+            category: item.category,
+            productBrand: item.productBrand ?? "",
+            productId: item.productId ?? "",
+            productName: item.productName ?? "",
+          }))
+        : [],
+    routineContextUsage,
     routineSlot: input.routineSlot ?? "",
-    selectedContextShelfProductId: context?.productId ?? "",
     selectedShelfProductId: input.productId ?? "",
     skinResponse: input.skinResponse ?? "",
     textureRating: ratingToString(input.textureRating),

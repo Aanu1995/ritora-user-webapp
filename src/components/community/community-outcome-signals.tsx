@@ -1,10 +1,11 @@
 "use client";
 
-import { BadgeCheck } from "lucide-react";
+import { ArrowRight, BadgeCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
@@ -12,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { QueryKey } from "@/constants/query-keys";
+import { getApiErrorMessage, getApiErrorStatus } from "@/lib/api-error";
 import { cn } from "@/lib/utils";
 import {
   signalCommunityReviewOutcome,
@@ -21,6 +23,7 @@ import type {
   CommunityOutcomeSignal,
   CommunityOutcomeSignalCounts,
   CommunityOutcomeSignalInput,
+  CommunityOutcomeSignalResponse,
 } from "@/types/community";
 import { useCommunityTranslatedOptions } from "./community-i18n-options";
 import {
@@ -30,10 +33,16 @@ import {
   SIGNAL_PILL_CLASS,
 } from "./community-outcome-signal-meta";
 import { OutcomeSignalDialog } from "./community-outcome-signal-dialog";
+import { CommunityReviewResultsSheet } from "./community-review-results-sheet";
 import { InlineSpinner } from "./community-shared";
 
 type CommunityOutcomeSignalsProps = {
+  canSignalOutcome?: boolean;
   contentId: string;
+  /** Title of the reviewed product / shared playbook. Used as a
+   * subtitle in the "Community results" sheet so the user keeps
+   * the context of what they clicked into. */
+  contentTitle?: string;
   contentType: "routine" | "review";
   counts: CommunityOutcomeSignalCounts;
 };
@@ -63,32 +72,70 @@ type CommunityOutcomeSignalsProps = {
  * ========================================================= */
 
 export function CommunityOutcomeSignals({
+  canSignalOutcome = true,
   contentId,
+  contentTitle,
   contentType,
   counts,
 }: CommunityOutcomeSignalsProps) {
   const t = useTranslations("community.outcomeSignals");
   const tShort = useTranslations("community.outcomeSignals.shortLabels");
   const options = useCommunityTranslatedOptions();
+  const sectionLabel =
+    contentType === "review" ? t("reviewDialogTitle") : t("dialogTitle");
   const queryClient = useQueryClient();
   const [selectedSignal, setSelectedSignal] =
     useState<CommunityOutcomeSignal | null>(null);
-  const signal = useMutation({
+  const [resultsOpen, setResultsOpen] = useState(false);
+  const signal = useMutation<
+    CommunityOutcomeSignalResponse,
+    Error,
+    CommunityOutcomeSignalInput
+  >({
     mutationFn: (input: CommunityOutcomeSignalInput) =>
       contentType === "review"
         ? signalCommunityReviewOutcome(contentId, input)
         : signalCommunityRoutineOutcome(contentId, input),
-    onSuccess: () => {
+    onSuccess: (result) => {
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.CommunityHome],
       });
-      toast.success(t("addedToast"));
+      void queryClient.invalidateQueries({
+        queryKey: [
+          contentType === "review"
+            ? QueryKey.CommunityReviews
+            : QueryKey.CommunityRoutines,
+        ],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityReviewResults, contentId],
+      });
+      toast.success(
+        result.noteModerationStatus === "published"
+          ? t("addedToast")
+          : t("addedWithModeratedNoteToast"),
+      );
       setSelectedSignal(null);
     },
-    onError: () => toast.error(t("failedToast")),
+    onError: (error) => {
+      if (isOwnContentSignalError(error)) {
+        toast.error(
+          contentType === "review"
+            ? t("reviewOwnContentToast")
+            : t("routineOwnContentToast"),
+        );
+        return;
+      }
+      toast.error(t("failedToast"));
+    },
   });
   const worked = counts.worked_for_me_too + counts.worked_with_changes;
   const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
+  const confirmedLabel =
+    contentType === "review"
+      ? t("reviewConfirmed", { worked, total })
+      : t("confirmed", { worked, total });
+  const helper = contentType === "review" ? t("reviewHelper") : t("helper");
 
   return (
     <TooltipProvider delayDuration={150}>
@@ -97,16 +144,45 @@ export function CommunityOutcomeSignals({
           card reads as one continuous surface rather than a
           stack of boxes-in-boxes. */}
       <section
-        aria-label={t("dialogTitle")}
+        aria-label={sectionLabel}
         className="mt-4 border-t border-border pt-4"
       >
-        <header className="flex flex-wrap items-baseline justify-between gap-2">
-          <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground">
-            <BadgeCheck className="h-4 w-4 text-accent-strong" />
-            {t("confirmed", { worked, total })}
+        {/* Header: confirmed-count summary on the left, the
+            "View community results" action inline on the right
+            (review surfaces only, when there's something to
+            see). Putting the action next to the number it
+            expands keeps them visually associated, instead of
+            stranding the button in its own right-aligned row
+            below the pills.
+
+            On narrow phones we let the count label flex
+            (`min-w-0 flex-1`) so its leading icon stays
+            aligned with the card's left rule, and the action
+            button stays pinned to the right edge with
+            `shrink-0`. The button uses negative-x and
+            negative-y margins so its hit area extends to the
+            card edge without making the label appear visually
+            inset — the smaller `-mr-2` corrects for the
+            ghost-button's internal padding. */}
+        <header className="flex items-center justify-between gap-2">
+          <p className="inline-flex min-w-0 flex-1 items-center gap-1.5 text-sm font-semibold text-foreground">
+            <BadgeCheck className="h-4 w-4 shrink-0 text-accent-strong" />
+            <span className="min-w-0 truncate">{confirmedLabel}</span>
           </p>
+          {contentType === "review" && total > 0 ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="-mr-2 shrink-0 whitespace-nowrap px-2 text-accent-strong"
+              onClick={() => setResultsOpen(true)}
+            >
+              {t("viewResults")}
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
+          ) : null}
         </header>
-        <p className="mt-1 text-xs leading-5 text-muted">{t("helper")}</p>
+        <p className="mt-1 text-xs leading-5 text-muted">{helper}</p>
 
         {/* Horizontal pills: icon + short label + count all on
             one line, wrapped in a flex-wrap. Compresses the
@@ -124,13 +200,14 @@ export function CommunityOutcomeSignals({
             const loading =
               signal.isPending && signal.variables?.signal === value;
             const count = counts[value];
+            const disabled = signal.isPending || !canSignalOutcome;
             return (
               <Tooltip key={value}>
                 <TooltipTrigger asChild>
                   <button
                     type="button"
                     aria-label={fullLabel}
-                    disabled={signal.isPending}
+                    disabled={disabled}
                     onClick={() => setSelectedSignal(value)}
                     className={cn(
                       "inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition disabled:cursor-not-allowed disabled:opacity-60",
@@ -167,6 +244,7 @@ export function CommunityOutcomeSignals({
         </div>
 
         <OutcomeSignalDialog
+          contentType={contentType}
           isPending={signal.isPending}
           mutate={signal.mutate}
           onOpenChange={(open) => {
@@ -175,7 +253,22 @@ export function CommunityOutcomeSignals({
           open={selectedSignal !== null}
           selectedSignal={selectedSignal}
         />
+        {contentType === "review" ? (
+          <CommunityReviewResultsSheet
+            open={resultsOpen}
+            onOpenChange={setResultsOpen}
+            reviewId={contentId}
+            productName={contentTitle}
+          />
+        ) : null}
       </section>
     </TooltipProvider>
+  );
+}
+
+function isOwnContentSignalError(error: unknown): boolean {
+  const message = getApiErrorMessage(error)?.toLowerCase() ?? "";
+  return (
+    getApiErrorStatus(error) === 403 && message.includes("your own content")
   );
 }

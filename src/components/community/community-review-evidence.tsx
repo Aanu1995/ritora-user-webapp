@@ -9,11 +9,11 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { safeDynamicTranslation } from "@/components/skin-journal/safe-translation";
 import type { CommunityReview } from "@/types/community";
 import {
   humaniseCommunityTag,
   labelFromOptions,
+  useCommunityFacetLabel,
   useCommunityTranslatedOptions,
 } from "./community-i18n-options";
 import { Badge, Chip } from "./community-shared";
@@ -42,20 +42,7 @@ import { Badge, Chip } from "./community-shared";
 
 export function ReviewEvidenceSummary({ review }: { review: CommunityReview }) {
   const t = useTranslations("community.reviewEvidence");
-  /* `skinProfile.options` is the canonical translation table for
-   * every raw facet slug the backend exposes on a review's
-   * `safeFacets` (skinType, sensitivityLevel, climateBucket,
-   * skinToneRange, concernTags). Previously these chips were
-   * just `humaniseCommunityTag(value)`, which only replaced
-   * underscores with spaces and Title-Cased every word —
-   * untranslated and a bit ugly ("Dry Air" instead of "Dry
-   * air", and the same English in Swedish/Spanish locales).
-   * `safeDynamicTranslation` falls back to the humanised form
-   * if a slug is missing from the locale's options block, so a
-   * new backend value never crashes the card. */
-  const tFacet = useTranslations("skinProfile.options");
-  const translateFacet = (value: string) =>
-    safeDynamicTranslation(tFacet, value, humaniseCommunityTag(value));
+  const translateFacet = useCommunityFacetLabel();
   const options = useCommunityTranslatedOptions();
 
   const usageDuration =

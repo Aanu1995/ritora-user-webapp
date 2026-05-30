@@ -8,29 +8,18 @@ import {
   ChevronDown,
   GitBranch,
   Lock,
-  Sparkles,
   Star,
   UserCheck,
   Users,
 } from "lucide-react";
-import { safeDynamicTranslation } from "@/components/skin-journal/safe-translation";
 import { cn } from "@/lib/utils";
 import type { CommunityHome } from "@/types/community";
-import { humaniseCommunityTag } from "./community-i18n-options";
+import { useCommunityFacetLabel } from "./community-i18n-options";
 import type { CommunityTab } from "./community-shared";
 
 export function FacetStrip({ data }: { data: CommunityHome }) {
   const t = useTranslations("community.facets");
-  /* `skinProfile.options` carries the canonical translations for
-   * every raw profile slug (`normal`, `dry_air`, `dark_marks`,
-   * etc.). Previously these pills rendered the raw value, so
-   * "Matching: normal, dark, dry_air..." was English-only and
-   * looked like database keys. `safeDynamicTranslation` falls
-   * back to humanised text if a future backend value lacks an
-   * options entry so a new slug never crashes the strip. */
-  const tFacet = useTranslations("skinProfile.options");
-  const translateFacet = (value: string) =>
-    safeDynamicTranslation(tFacet, value, humaniseCommunityTag(value));
+  const translateFacet = useCommunityFacetLabel();
   const [open, setOpen] = useState(false);
   const facets = data.profileFacets;
   const pills = [
@@ -105,7 +94,6 @@ export function CommunityTabs({
 }) {
   const t = useTranslations("community.tabs");
   const tabs: Array<[CommunityTab, string, ReactNode]> = [
-    ["for-you", t("forYou"), <Sparkles key="i" className="h-4 w-4" />],
     ["people", t("peopleLikeMe"), <Users key="i" className="h-4 w-4" />],
     ["routines", t("playbooks"), <GitBranch key="i" className="h-4 w-4" />],
     ["reviews", t("reviews"), <Star key="i" className="h-4 w-4" />],

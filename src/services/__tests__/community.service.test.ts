@@ -5,7 +5,12 @@ jest.mock("@/lib/api", () => ({
   postRequest: jest.fn(),
 }));
 
-import { deleteRequest, getRequest, patchRequest, postRequest } from "@/lib/api";
+import {
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "@/lib/api";
 import {
   acceptCommunityGuidelines,
   adaptCommunityRoutine,
@@ -16,6 +21,7 @@ import {
   getCommunityProductEvidence,
   getCommunityRoutine,
   getPeopleLikeMe,
+  listCommunityReviewResults,
   listCommunityReviews,
   listCommunityRoutines,
   listCommunityWarnings,
@@ -43,12 +49,17 @@ describe("community.service", () => {
     await getCommunityHome(controller.signal);
     await getCommunityPostingEligibility(controller.signal);
     await getPeopleLikeMe(controller.signal);
-    await listCommunityRoutines(controller.signal);
+    await listCommunityRoutines({}, controller.signal);
     await getCommunityRoutine("routine-1", controller.signal);
-    await listCommunityReviews(controller.signal);
+    await listCommunityReviews({}, controller.signal);
     await listCommunityWarnings(controller.signal);
     await listMyCommunitySubmissions(controller.signal);
     await getCommunityProductEvidence("product-1", controller.signal);
+    await listCommunityReviewResults(
+      "review-1",
+      "worked_for_me_too",
+      controller.signal,
+    );
 
     expect(getRequest).toHaveBeenNthCalledWith(1, "/community/home", {
       signal: controller.signal,
@@ -56,11 +67,9 @@ describe("community.service", () => {
     expect(getRequest).toHaveBeenNthCalledWith(2, "/community/eligibility", {
       signal: controller.signal,
     });
-    expect(getRequest).toHaveBeenNthCalledWith(
-      3,
-      "/community/people-like-me",
-      { signal: controller.signal },
-    );
+    expect(getRequest).toHaveBeenNthCalledWith(3, "/community/people-like-me", {
+      signal: controller.signal,
+    });
     expect(getRequest).toHaveBeenNthCalledWith(4, "/community/routines", {
       signal: controller.signal,
     });
@@ -75,20 +84,79 @@ describe("community.service", () => {
     expect(getRequest).toHaveBeenNthCalledWith(7, "/community/warnings", {
       signal: controller.signal,
     });
-    expect(getRequest).toHaveBeenNthCalledWith(
-      8,
-      "/community/me/submissions",
-      { signal: controller.signal },
-    );
+    expect(getRequest).toHaveBeenNthCalledWith(8, "/community/me/submissions", {
+      signal: controller.signal,
+    });
     expect(getRequest).toHaveBeenNthCalledWith(
       9,
       "/community/products/product-1/evidence",
       { signal: controller.signal },
     );
+    expect(getRequest).toHaveBeenNthCalledWith(
+      10,
+      "/community/reviews/review-1/results?signal=worked_for_me_too",
+      { signal: controller.signal },
+    );
+  });
+
+  it("sends community pagination params to list endpoints", async () => {
+    const controller = new AbortController();
+    (getRequest as jest.Mock).mockResolvedValue({
+      items: [],
+      nextCursor: null,
+    });
+
+    await listCommunityRoutines(
+      {
+        cursor: "routine-cursor",
+        goal: "barrier-repair",
+        limit: 12,
+        productRole: "moisturizer",
+        search: "barrier",
+      },
+      controller.signal,
+    );
+    await listCommunityReviews(
+      {
+        contextProductCategory: "cleanser",
+        cursor: "review-cursor",
+        limit: 12,
+        minRating: 4,
+        productCategory: "treatment",
+        routineSlot: "pm",
+        search: "azelaic",
+      },
+      controller.signal,
+    );
+
+    expect(getRequest).toHaveBeenNthCalledWith(1, "/community/routines", {
+      params: {
+        cursor: "routine-cursor",
+        goal: "barrier-repair",
+        limit: 12,
+        productRole: "moisturizer",
+        search: "barrier",
+      },
+      signal: controller.signal,
+    });
+    expect(getRequest).toHaveBeenNthCalledWith(2, "/community/reviews", {
+      params: {
+        contextProductCategory: "cleanser",
+        cursor: "review-cursor",
+        limit: 12,
+        minRating: 4,
+        productCategory: "treatment",
+        routineSlot: "pm",
+        search: "azelaic",
+      },
+      signal: controller.signal,
+    });
   });
 
   it("creates reviews and routines through guarded publish endpoints", async () => {
-    (postRequest as jest.Mock).mockResolvedValue({ moderationStatus: "published" });
+    (postRequest as jest.Mock).mockResolvedValue({
+      moderationStatus: "published",
+    });
 
     await createCommunityReview({
       productBrand: "Ritora",
@@ -97,6 +165,7 @@ describe("community.service", () => {
       disclosureType: "ordinary",
       usageDuration: "4-weeks",
       frequency: "daily",
+      routineContextUsage: "with_products",
       routineSlot: "pm",
       skinResponse: "improved",
       overallRating: 5,
@@ -174,6 +243,15 @@ describe("community.service", () => {
       trialDuration: "4-weeks",
       followedParts: ["products", "routine-timing"],
       irritationLevel: "mild",
+      note: "It worked better with a gentle cleanser.",
+      routineSlot: "pm",
+      usedWithProducts: [
+        {
+          category: "cleanser",
+          productBrand: "Ritora",
+          productName: "Milky Cleanser",
+        },
+      ],
     });
     await saveCommunityAdaptation("routine-1", "adaptation-1");
     await resubmitCommunityContent("content-1");
@@ -227,6 +305,15 @@ describe("community.service", () => {
         trialDuration: "4-weeks",
         followedParts: ["products", "routine-timing"],
         irritationLevel: "mild",
+        note: "It worked better with a gentle cleanser.",
+        routineSlot: "pm",
+        usedWithProducts: [
+          {
+            category: "cleanser",
+            productBrand: "Ritora",
+            productName: "Milky Cleanser",
+          },
+        ],
       },
     );
     expect(postRequest).toHaveBeenNthCalledWith(

@@ -1,15 +1,24 @@
 import { ApiPath } from "@/constants/api-paths";
-import { deleteRequest, getRequest, patchRequest, postRequest } from "@/lib/api";
+import {
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "@/lib/api";
 import type {
   CommunityAdaptation,
   CommunityHome,
   CommunityHelpfulnessVote,
   CommunityList,
+  CommunityListQuery,
+  CommunityOutcomeSignal,
   CommunityOutcomeSignalInput,
+  CommunityOutcomeSignalResponse,
   CommunityPostingEligibility,
   CommunityProductEvidence,
   CommunityReportReason,
   CommunityReview,
+  CommunityReviewResultsResponse,
   CommunityRoutine,
   CommunitySubmission,
   CommunityWarning,
@@ -35,15 +44,77 @@ export function acceptCommunityGuidelines(): Promise<CommunityPostingEligibility
   );
 }
 
-export function getPeopleLikeMe(signal?: AbortSignal): Promise<CommunityList<CommunityRoutine | CommunityReview>> {
-  return getRequest<CommunityList<CommunityRoutine | CommunityReview>>(ApiPath.CommunityPeopleLikeMe, { signal });
+export function getPeopleLikeMe(
+  signal?: AbortSignal,
+): Promise<CommunityList<CommunityRoutine | CommunityReview>> {
+  return getRequest<CommunityList<CommunityRoutine | CommunityReview>>(
+    ApiPath.CommunityPeopleLikeMe,
+    { signal },
+  );
 }
 
-export function listCommunityRoutines(signal?: AbortSignal): Promise<CommunityList<CommunityRoutine>> {
-  return getRequest<CommunityList<CommunityRoutine>>(ApiPath.CommunityRoutines, { signal });
+function buildCommunityListParams(query: CommunityListQuery) {
+  const optionalParams = {
+    avoidTag: query.avoidTag,
+    concern: query.concern,
+    contextProductCategory: query.contextProductCategory,
+    disclosureType: query.disclosureType,
+    goal: query.goal,
+    habitTag: query.habitTag,
+    outcome: query.outcome,
+    productCategory: query.productCategory,
+    productRole: query.productRole,
+    result: query.result,
+    resultSignal: query.resultSignal,
+    routineContextUsage: query.routineContextUsage,
+    routineSlot: query.routineSlot,
+    search: query.search,
+    sensitivity: query.sensitivity,
+    skinResponse: query.skinResponse,
+    skinType: query.skinType,
+    sort: query.sort,
+    timeframe: query.timeframe,
+    usageDuration: query.usageDuration,
+    warningTag: query.warningTag,
+  };
+
+  return {
+    ...Object.fromEntries(
+      Object.entries(optionalParams).filter(([, value]) => Boolean(value)),
+    ),
+    ...(query.cursor ? { cursor: query.cursor } : {}),
+    ...(typeof query.limit === "number" ? { limit: query.limit } : {}),
+    ...(typeof query.minRating === "number"
+      ? { minRating: query.minRating }
+      : {}),
+  };
 }
 
-export function getCommunityRoutine(id: string, signal?: AbortSignal): Promise<CommunityRoutine> {
+function buildCommunityListRequestConfig(
+  query: CommunityListQuery,
+  signal?: AbortSignal,
+) {
+  const params = buildCommunityListParams(query);
+  if (Object.keys(params).length === 0) {
+    return { signal };
+  }
+  return { params, signal };
+}
+
+export function listCommunityRoutines(
+  query: CommunityListQuery = {},
+  signal?: AbortSignal,
+): Promise<CommunityList<CommunityRoutine>> {
+  return getRequest<CommunityList<CommunityRoutine>>(
+    ApiPath.CommunityRoutines,
+    buildCommunityListRequestConfig(query, signal),
+  );
+}
+
+export function getCommunityRoutine(
+  id: string,
+  signal?: AbortSignal,
+): Promise<CommunityRoutine> {
   return getRequest<CommunityRoutine>(ApiPath.CommunityRoutine(id), { signal });
 }
 
@@ -57,7 +128,9 @@ export function getCommunityProductEvidence(
   );
 }
 
-export function createCommunityRoutine(input: CreateCommunityRoutineInput): Promise<CommunityRoutine> {
+export function createCommunityRoutine(
+  input: CreateCommunityRoutineInput,
+): Promise<CommunityRoutine> {
   return postRequest<CommunityRoutine>(ApiPath.CommunityRoutines, input);
 }
 
@@ -65,15 +138,26 @@ export function updateCommunityRoutine(
   id: string,
   input: Partial<CreateCommunityRoutineInput>,
 ): Promise<CommunityRoutine> {
-  return patchRequest<CommunityRoutine>(ApiPath.CommunityRoutineEdit(id), input);
+  return patchRequest<CommunityRoutine>(
+    ApiPath.CommunityRoutineEdit(id),
+    input,
+  );
 }
 
-export function adaptCommunityRoutine(id: string): Promise<CommunityAdaptation> {
+export function adaptCommunityRoutine(
+  id: string,
+): Promise<CommunityAdaptation> {
   return postRequest<CommunityAdaptation>(ApiPath.CommunityRoutineAdapt(id));
 }
 
-export function saveCommunityAdaptation(routineId: string, adaptationId: string): Promise<{ saved: true }> {
-  return postRequest<{ saved: true }>(ApiPath.CommunityRoutineSaveAdaptation(routineId), { adaptationId });
+export function saveCommunityAdaptation(
+  routineId: string,
+  adaptationId: string,
+): Promise<{ saved: true }> {
+  return postRequest<{ saved: true }>(
+    ApiPath.CommunityRoutineSaveAdaptation(routineId),
+    { adaptationId },
+  );
 }
 
 export function reportCommunityRoutine(
@@ -94,15 +178,26 @@ export function voteCommunityRoutine(
 export function signalCommunityRoutineOutcome(
   id: string,
   input: CommunityOutcomeSignalInput,
-): Promise<unknown> {
-  return postRequest(ApiPath.CommunityRoutineOutcomeSignal(id), input);
+): Promise<CommunityOutcomeSignalResponse> {
+  return postRequest<CommunityOutcomeSignalResponse>(
+    ApiPath.CommunityRoutineOutcomeSignal(id),
+    input,
+  );
 }
 
-export function listCommunityReviews(signal?: AbortSignal): Promise<CommunityList<CommunityReview>> {
-  return getRequest<CommunityList<CommunityReview>>(ApiPath.CommunityReviews, { signal });
+export function listCommunityReviews(
+  query: CommunityListQuery = {},
+  signal?: AbortSignal,
+): Promise<CommunityList<CommunityReview>> {
+  return getRequest<CommunityList<CommunityReview>>(
+    ApiPath.CommunityReviews,
+    buildCommunityListRequestConfig(query, signal),
+  );
 }
 
-export function createCommunityReview(input: CreateCommunityReviewInput): Promise<{
+export function createCommunityReview(
+  input: CreateCommunityReviewInput,
+): Promise<{
   moderationStatus: string;
   safetyFlags: unknown[];
 }> {
@@ -134,11 +229,32 @@ export function voteCommunityReview(
 export function signalCommunityReviewOutcome(
   id: string,
   input: CommunityOutcomeSignalInput,
-): Promise<unknown> {
-  return postRequest(ApiPath.CommunityReviewOutcomeSignal(id), input);
+): Promise<CommunityOutcomeSignalResponse> {
+  return postRequest<CommunityOutcomeSignalResponse>(
+    ApiPath.CommunityReviewOutcomeSignal(id),
+    input,
+  );
 }
 
-export function listCommunityWarnings(signal?: AbortSignal): Promise<CommunityWarning[]> {
+export function listCommunityReviewResults(
+  id: string,
+  signal?: CommunityOutcomeSignal | "",
+  abortSignal?: AbortSignal,
+): Promise<CommunityReviewResultsResponse> {
+  const params = new URLSearchParams();
+  if (signal) params.set("signal", signal);
+  const query = params.toString();
+  return getRequest<CommunityReviewResultsResponse>(
+    query
+      ? `${ApiPath.CommunityReviewResults(id)}?${query}`
+      : ApiPath.CommunityReviewResults(id),
+    { signal: abortSignal },
+  );
+}
+
+export function listCommunityWarnings(
+  signal?: AbortSignal,
+): Promise<CommunityWarning[]> {
   return getRequest<CommunityWarning[]>(ApiPath.CommunityWarnings, { signal });
 }
 

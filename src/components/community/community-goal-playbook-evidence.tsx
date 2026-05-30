@@ -75,16 +75,28 @@ function TagRow({
   tags: string[];
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-1.5">
-      <span className="inline-flex items-center gap-1 font-semibold text-muted">
+    /* `min-w-0` on the row + tags container so the row can
+       shrink inside its grid cell instead of pushing the
+       parent wider. The chip container itself wraps tags,
+       and individual chips truncate via `max-w-full`. */
+    <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+      <span className="inline-flex shrink-0 items-center gap-1 font-semibold text-muted">
         <Icon className="h-3 w-3" />
         {label}
       </span>
-      {tags.slice(0, 5).map((tag) => (
-        <Chip key={tag}>
-          {labelFromOptions(options, tag) ?? humaniseCommunityTag(tag)}
-        </Chip>
-      ))}
+      {tags.slice(0, 5).map((tag) => {
+        const display =
+          labelFromOptions(options, tag) ?? humaniseCommunityTag(tag);
+        return (
+          <Chip
+            key={tag}
+            title={display}
+            className="max-w-full truncate"
+          >
+            {display}
+          </Chip>
+        );
+      })}
     </div>
   );
 }

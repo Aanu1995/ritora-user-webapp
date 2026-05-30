@@ -6,7 +6,7 @@ type UseAutoLoadMoreOptions = {
   enabled?: boolean;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
-  onLoadMore: () => void | Promise<unknown>;
+  onLoadMore: () => Promise<unknown> | void;
   rootMargin?: string;
 };
 
@@ -56,11 +56,21 @@ export function useAutoLoadMore({
         requestInFlightRef.current = true;
         try {
           const loadMoreResult = onLoadMoreRef.current();
-          if (loadMoreResult) {
-            void loadMoreResult.catch(() => {
-              requestInFlightRef.current = false;
-            });
+          if (!loadMoreResult) {
+            requestInFlightRef.current = false;
+            return;
           }
+
+          void Promise.resolve(loadMoreResult).then(
+            () => {
+              if (!isFetchingNextPage) {
+                requestInFlightRef.current = false;
+              }
+            },
+            () => {
+              requestInFlightRef.current = false;
+            },
+          );
         } catch {
           requestInFlightRef.current = false;
         }

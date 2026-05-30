@@ -5507,9 +5507,7 @@
   "community": {
     "title": "Comunidad",
     "subtitle": "Productos, guías y qué omitir, confirmados por personas como usted.",
-    "topMatches": "Ver los mejores partidos",
     "tabs": {
-      "forYou": "para ti",
       "peopleLikeMe": "gente como yo",
       "playbooks": "Libros de jugadas",
       "reviews": "Reseñas",
@@ -5523,25 +5521,6 @@
       "privacyBody": "Sólo utilizamos las facetas anteriores para clasificar lo que ves. Su correo electrónico, ubicación, fotografías, contexto médico y notas privadas permanecen privados.",
       "emptyProfile": "Complete su perfil de piel para una mejor combinación. Una vez hecho esto, podemos clasificar los manuales de estrategias según lo que realmente se adapta a sus necesidades."
     },
-    "forYou": {
-      "patternsTitle": "Qué están haciendo las personas con tu estante",
-      "patternsEmptyTitle": "Aún no hay patrones de estantes",
-      "patternsEmptyBody": "Agregue algunos productos a su estante y le mostraremos lo que están haciendo las personas con estantes similares.",
-      "patterns": {
-        "similarUsers": {
-          "title": "La evidencia comunitaria se clasifica por similitud, no por popularidad",
-          "body": "{count, plural, one {# published item currently matches your profile facets.} other {# published items currently match your profile facets.}}"
-        },
-        "routineContext": {
-          "title": "Las reseñas con contexto de rutina tienen una clasificación más alta",
-          "body": "Ritora exige que las revisiones de productos incluyan la rutina circundante antes de que puedan influir en la combinación."
-        },
-        "safeFacets": {
-          "title": "Tu perfil privado permanece privado",
-          "body": "{count, plural, one {# concern tag is used without exposing exact location, email, photos, or medical history.} other {# concern tags are used without exposing exact location, email, photos, or medical history.}}"
-        }
-      }
-    },
     "lists": {
       "playbooksTitle": "Libros de jugadas de objetivos",
       "playbooksEmptyTitle": "Aún no hay manuales de objetivos",
@@ -5549,12 +5528,19 @@
       "playbooksFilterEmptyTitle": "Ningún libro de jugadas coincide con esos filtros",
       "playbooksFilterEmptyBody": "Pruebe con un objetivo, resultado o plazo más amplio.",
       "playbooksTopN": "Top {count}",
+      "playbooksLoaded": "{count} cargados",
       "playbooksShownTotal": "{shown}/{total} shown",
-      "reviewsTitle": "Reseñas de gente como tú",
+      "reviewsTitle": "Reseñas para ti",
       "reviewsEmptyTitle": "Aún no hay reseñas publicadas",
       "reviewsEmptyBody": "Una vez que las personas comparten reseñas con el contexto requerido, aparecen aquí.",
+      "reviewsFilterEmptyTitle": "Ninguna reseña coincide con esos filtros",
+      "reviewsFilterEmptyBody": "Prueba con un filtro de producto, perfil de piel o resultado más amplio.",
       "reviewsTopN": "Top {count}",
+      "reviewsLoaded": "{count} cargadas",
       "reviewsTotal": "{count} total",
+      "loadingMore": "Cargando más evidencia de la comunidad…",
+      "loadMoreError": "No pudimos cargar más evidencia de la comunidad.",
+      "retry": "Intentarlo de nuevo",
       "peopleEmptyTitle": "Aún no hay evidencia comunitaria",
       "peopleEmptyBody": "Una vez que las personas con una piel como la tuya compartan guías y reseñas, las verás aquí."
     },
@@ -5563,6 +5549,8 @@
       "reportRoutine": "Informe de rutina",
       "reportReview": "Revisión del informe",
       "context": "Emparejado con",
+      "usedAloneContextLabel": "Usado solo",
+      "notSureContextLabel": "Otros productos no indicados",
       "moreSteps": "+{count} more"
     },
     "share": {
@@ -5604,14 +5592,40 @@
       "keepEditing": "Sigue editando"
     },
     "filters": {
+      "searchPlaybooks": "Buscar guías",
+      "searchPlaybooksPlaceholder": "Busca objetivos, productos, hábitos, desencadenantes evitados…",
+      "searchReviews": "Buscar reseñas",
+      "searchReviewsPlaceholder": "Busca producto, marca, resultado o producto combinado…",
       "goal": "Objetivo",
       "result": "Resultado",
       "timeframe": "Plazo",
+      "skinType": "Tipo de piel",
+      "concern": "Preocupación",
+      "sensitivity": "Sensibilidad",
       "productRole": "Rol del producto",
+      "productCategory": "Categoría de producto",
+      "usedWithCategory": "Categoría usada con",
+      "routineContext": "Contexto de rutina",
+      "routineSlot": "Horario de rutina",
+      "skinResponse": "Respuesta de la piel",
+      "usageDuration": "Duración de uso",
+      "minimumRating": "Calificación mínima",
+      "confirmedResult": "Resultado confirmado",
       "avoided": "evitado",
       "habit": "Hábito",
       "warning": "Advertencia",
-      "all": "Todos"
+      "disclosure": "Divulgación",
+      "clear": "Borrar filtros",
+      "clearAll": "Borrar todo",
+      "all": "Todos",
+      "filtersAll": "Filtros",
+      "filtersWithCount": "Filtros · {count}",
+      "allFiltersTitle": "Filtrar reseñas",
+      "allFiltersDescription": "Elige la combinación que quieras de resultado, perfil de piel, contexto de rutina y divulgación.",
+      "playbooksFiltersTitle": "Filtrar planes",
+      "playbooksFiltersDescription": "Elige la combinación que quieras de objetivo, perfil de piel, productos y seguridad.",
+      "done": "Listo",
+      "activeFiltersLabel": "{count, plural, =0 {Sin filtros activos} one {# filtro activo} other {# filtros activos}}"
     },
     "options": {
       "disclosure": {
@@ -5629,6 +5643,13 @@
         "affiliate": "Afiliado · Los enlaces o compras pueden beneficiar al autor.",
         "professional": "Profesional · Compartido desde un contexto profesional",
         "brand_rep": "Representante de marca · El autor representa la marca."
+      },
+      "safeFacet": {
+        "barrier": "Apoyo de barrera",
+        "dark-marks": "Manchas oscuras",
+        "cold-dry": "Frío y seco",
+        "cold-weather": "Clima frío",
+        "temperate": "Templado"
       },
       "reviewUsageDuration": {
         "2-weeks": "2 semanas o menos",
@@ -5648,6 +5669,11 @@
         "pm": "rutina de MP",
         "am-pm": "AM y PM",
         "either": "Cualquiera / varía"
+      },
+      "reviewRoutineContextUsage": {
+        "used_alone": "Lo usé solo",
+        "with_products": "Lo usé con otros productos",
+        "not_sure": "No lo recuerdo"
       },
       "reviewSkinResponse": {
         "improved": "Mejorado",
@@ -5725,6 +5751,13 @@
         "needs-sunscreen": "Necesita protector solar",
         "professional-care-involved": "Atención profesional involucrada"
       },
+      "minimumRating": {
+        "5": "5 estrellas",
+        "4": "4+ estrellas",
+        "3": "3+ estrellas",
+        "2": "2+ estrellas",
+        "1": "1+ estrellas"
+      },
       "outcomeSignal": {
         "worked_for_me_too": "Funcionó para mí también",
         "worked_with_changes": "Trabajó con cambios",
@@ -5746,6 +5779,11 @@
         "avoid-list": "Lista a evitar",
         "habits": "Hábitos",
         "partial": "Sólo partes de ello"
+      },
+      "reviewOutcomeFollowedPart": {
+        "products": "Mismo producto",
+        "routine-timing": "Horario similar",
+        "partial": "Uso solo parcialmente similar"
       },
       "outcomeIrritation": {
         "none": "Sin irritación",
@@ -5792,8 +5830,8 @@
         "repurchaseLabel": "recompraría",
         "repurchaseHint": "¿Lo comprarías de nuevo?",
         "repurchasePlaceholder": "Elige respuesta",
-        "pairedSection": "Con que lo combinaste",
-        "pairedDescription": "El producto que usaste junto con él. Se requiere para que podamos clasificar esto como evidencia de rutina.",
+        "pairedSection": "Contexto de la rutina",
+        "pairedDescription": "Indica si usaste este producto solo o con otros productos. Los productos acompañantes solo son obligatorios si formaban parte de la misma rutina.",
         "pairedBrandHint": "Opcional. Marca del producto emparejado.",
         "pairedBrandPlaceholder": "por ej. cerave",
         "pairedCategoryHint": "Papel que jugó este producto en tu rutina.",
@@ -5864,6 +5902,31 @@
       "linkedMessage": "Esta reseña estará vinculada a su producto de estantería.",
       "manualHeading": "Cuéntanos qué usaste"
     },
+    "reviewContextProducts": {
+      "usageLabel": "¿Cómo lo usaste?",
+      "usageHint": "Elige con honestidad para que Ritora no fuerce un contexto de rutina falso.",
+      "usagePlaceholder": "Elige el contexto de uso",
+      "usedAloneNote": "Esto se tratará como evidencia independiente para el producto reseñado.",
+      "notSureNote": "Está bien. La reseña aún puede ayudar, pero se clasificará por debajo de las reseñas con contexto de rutina más claro.",
+      "productsLabel": "Productos usados con él",
+      "productsHint": "Agrega todos los productos que recuerdes haber usado en la misma rutina.",
+      "product": "Producto {number}",
+      "removeProduct": "Eliminar producto {number}",
+      "addProduct": "Agregar otro producto",
+      "selectLabel": "Producto",
+      "loadingShelf": "Cargando estante…",
+      "pickProduct": "Elige un producto",
+      "otherProduct": "Otro (no en mi estante)",
+      "categoryLabel": "Rol del producto",
+      "linked": "Vinculado a tu producto del estante.",
+      "manualHeading": "Cuéntanos con qué lo combinaste",
+      "brandLabel": "Marca",
+      "brandHint": "Opcional. Marca del producto acompañante.",
+      "brandPlaceholder": "por ej. CeraVe",
+      "productNameLabel": "Nombre del producto",
+      "productNameHint": "Nombre exacto si no estaba en tu estante.",
+      "productNamePlaceholder": "por ej. Limpiador hidratante"
+    },
     "playbookSteps": {
       "label": "Productos y pasos de rutina.",
       "hint": "Elija de su estantería siempre que sea posible para que la evidencia pueda conectarse con las decisiones sobre productos.",
@@ -5904,9 +5967,56 @@
     },
     "outcomeSignals": {
       "addedToast": "Su resultado se agregó a la evidencia.",
+      "addedWithModeratedNoteToast": "Tu resultado se agregó. Cualquier nota o contexto de producto solo aparecerá si moderación lo aprueba.",
       "failedToast": "No se pudo guardar el resultado.",
       "confirmed": "{worked} de {total} personas confirmaron que funcionó",
+      "reviewConfirmed": "{worked} de {total} personas confirmaron que este producto les funcionó",
       "helper": "Toca un icono debajo para compartir tu propio resultado con este producto. Cada icono representa un tipo de resultado distinto.",
+      "reviewHelper": "Toca un icono debajo para decir si este producto reseñado también te funcionó. Tu contexto ayuda a Ritora a clasificar la evidencia del producto.",
+      "viewResults": "Ver resultados comunitarios",
+      "resultsTitle": "Resultados comunitarios",
+      "resultsDescription": "Confirmaciones estructuradas de personas que probaron este producto reseñado. Las notas de resultado solo aparecen después de moderación.",
+      "resultsForProduct": "Para {product}",
+      "resultMatchedPartsLabel": "Contexto coincidente",
+      "resultUsedWithLabel": "Usado con",
+      "filterAll": "Todos",
+      "filterLabel": "Filtrar por resultado",
+      "resultsCount": "{count, plural, one {# resultado} other {# resultados}}",
+      "resultType": "Tipo de resultado",
+      "allResultTypes": "Todos los tipos de resultado",
+      "resultsLoadError": "No se pudieron cargar los resultados comunitarios.",
+      "retry": "Reintentar",
+      "resultsEmptyTitle": "Aún no hay resultados comunitarios",
+      "resultsEmptyDescription": "Cuando miembros confirmen este producto, su contexto estructurado aparecerá aquí.",
+      "resultDuration": "Duración",
+      "resultIrritation": "Irritación",
+      "resultSameGoal": "Coincidencia de objetivo",
+      "resultRoutineSlot": "¿Cuándo lo usaste?",
+      "resultRoutineSlotHint": "Opcional. Ayuda a comparar uso de mañana, noche o flexible.",
+      "resultRoutineSlotShort": "Momento de rutina",
+      "resultMatchedParts": "Contexto coincidente: {parts}",
+      "resultNote": "Nota de resultado",
+      "resultNoteHint": "Opcional. Comparte qué hizo diferente tu resultado, incluidos productos usados junto a este. Las notas pasan moderación antes de mostrarse públicamente.",
+      "resultNotePlaceholder": "p. ej. Funcionó mejor cuando lo usé después de un limpiador suave y evité ácidos esa noche.",
+      "similarToYou": "Similar a tu perfil",
+      "usedWithProducts": "Productos usados con él",
+      "usedWithProductsHint": "Opcional. Agrega productos que usaste junto al producto reseñado para que otros comparen el contexto de rutina.",
+      "addUsedWithProduct": "Agregar producto usado con él",
+      "usedWithProduct": "Producto {number}",
+      "removeUsedWithProduct": "Eliminar producto {number}",
+      "usedWithProductSelect": "Producto",
+      "usedWithProductRole": "Rol del producto",
+      "otherProduct": "Otro (no está en mi estante)",
+      "loadingShelf": "Cargando estante…",
+      "pickProduct": "Elige un producto",
+      "linked": "Vinculado a tu producto del estante.",
+      "manualUsedWithHeading": "Cuéntanos con qué lo combinaste",
+      "manualUsedWithBrand": "Marca",
+      "manualUsedWithBrandPlaceholder": "p. ej. CeraVe",
+      "manualUsedWithProduct": "Nombre del producto",
+      "manualUsedWithProductPlaceholder": "p. ej. Hydrating Cleanser",
+      "reviewOwnContentToast": "No puedes confirmar tu propia reseña.",
+      "routineOwnContentToast": "No puedes confirmar tu propia guía.",
       "shortLabels": {
         "worked_for_me_too": "Funcionó",
         "worked_with_changes": "Ajustado",
@@ -5917,23 +6027,33 @@
       "chooseOutcomeFirst": "Elija un resultado primero.",
       "addFailed": "No se pudo agregar el resultado.",
       "dialogTitle": "Confirma tu resultado",
+      "reviewDialogTitle": "Confirmar resultado del producto",
       "dialogDescription": "Esto hace que la evidencia sea más útil sin convertir la publicación de otra persona en una partitura pública.",
+      "reviewDialogDescription": "Confirma solo si usaste el producto reseñado. Ritora usa tu contexto como evidencia del producto, no como una puntuación contra quien escribió la reseña.",
       "yourOutcome": "Tu resultado",
+      "yourExperienceGroup": "Tu experiencia",
+      "routineContextGroup": "Contexto de la rutina",
+      "routineContextGroupDescription": "Todo es opcional. Agrega solo lo que ayude a otro lector a entender tu resultado.",
       "sameGoal": "¿El mismo objetivo?",
+      "reviewSameGoal": "¿El mismo objetivo de resultado?",
       "sameGoalHint": "¿Buscabas tratar el mismo problema de piel que la publicación original?",
       "sameGoalYes": "Si, mismo objetivo",
       "sameGoalNo": "No, relacionados pero diferentes.",
       "trialDuration": "¿Cuánto tiempo lo intentaste?",
       "trialDurationHint": "Cuánto tiempo usaste el producto antes de decidir.",
+      "reviewTrialDurationHint": "Cuánto tiempo usaste este producto reseñado antes de decidir si funcionó para ti.",
       "irritation": "irritación",
       "irritationHint": "Cualquier escozor, enrojecimiento o brote que notaste.",
       "followedParts": "¿Qué seguiste?",
       "followedPartsHint": "Qué partes de la rutina original también seguiste.",
+      "reviewFollowedParts": "¿Qué coincidió con tu uso?",
+      "reviewFollowedPartsHint": "Elige qué fue lo suficientemente parecido a la reseña para que tu confirmación cuente como evidencia del producto.",
       "choose": "elegir",
       "chooseDuration": "Elige la duración",
       "chooseIrritation": "Elige el nivel de irritación",
       "adding": "Añadiendo…",
-      "addOutcome": "Agregar resultado"
+      "addOutcome": "Agregar resultado",
+      "reviewAddOutcome": "Confirmar resultado del producto"
     },
     "productEvidence": {
       "loadError": "No se pudo cargar la evidencia comunitaria.",
@@ -6016,6 +6136,10 @@
       "resubmitting": "Reenviando…",
       "withdraw": "Retirar",
       "withdrawing": "Retirándose…",
+      "viewReview": "Ver reseña",
+      "viewPlaybook": "Ver guía",
+      "resultTitle": "Resultado en {title}",
+      "resultFallbackTarget": "publicación comunitaria",
       "withdrawConfirmTitle": "¿Retirar el envío de la comunidad?",
       "withdrawConfirmBody": "Esto lo elimina de las vistas de la comunidad, las coincidencias y las clasificaciones de evidencia. El registro de auditoría de moderación se mantiene internamente.",
       "cancel": "Cancelar",
@@ -6027,6 +6151,7 @@
       "guidanceFallback": "Revisa este envío por afirmaciones inseguras, falta de contexto de rutina o problemas de divulgación antes de guardar los cambios.",
       "safetyFlagTitleFallback": "Revisión de seguridad",
       "guidanceInstruction": "Cambia las partes indicadas y luego guarda los cambios. Vuelve a enviar sin cambios solo si crees que fue un error.",
+      "resultGuidanceInstruction": "Retira este resultado si no quieres que se muestre ni que cuente como evidencia.",
       "guidanceSource": {
         "ai": "Moderación automática",
         "admin": "Moderación de Ritora",
@@ -6043,7 +6168,8 @@
       },
       "type": {
         "routine": "Libro de jugadas",
-        "review": "Revisión"
+        "review": "Revisión",
+        "result": "Nota de resultado"
       }
     },
     "eligibility": {

@@ -1,4 +1,5 @@
 import {
+  act,
   fireEvent,
   render,
   screen,
@@ -14,7 +15,11 @@ import {
   ShareWhatWorkedPanel,
   WriteReviewPanel,
 } from "@/components/community/community-eligibility";
-import { ForYou } from "@/components/community/community-lists";
+import { ReviewEvidenceSummary } from "@/components/community/community-review-evidence";
+import { ReviewList, RoutineList } from "@/components/community/community-lists";
+import { CommunityCompactFilterToolbar } from "@/components/community/community-compact-filter-toolbar";
+import { emptyPlaybookFilters } from "@/components/community/community-playbook-filters";
+import { emptyReviewFilters } from "@/components/community/community-review-filters";
 import { CommunityRoutineDetailPage } from "@/components/community/community-routine-detail-page";
 import { MySubmissions } from "@/components/community/community-submissions";
 import {
@@ -24,6 +29,9 @@ import {
   createCommunityRoutine,
   getCommunityHome,
   getCommunityRoutine,
+  listCommunityReviews,
+  listCommunityReviewResults,
+  listCommunityRoutines,
   listMyCommunitySubmissions,
   reportCommunityReview,
   reportCommunityRoutine,
@@ -45,9 +53,75 @@ import {
   routineFixture,
   submissionsFixture,
 } from "../test-fixtures";
+import { useAuthStore } from "@/stores/auth-store";
 
 const mockUseShelfProducts = jest.fn();
 let mockSearchParams = new URLSearchParams();
+
+type MockIntersectionObserverInstance = {
+  callback: IntersectionObserverCallback;
+  disconnect: jest.Mock<void, []>;
+  observe: jest.Mock<void, [Element]>;
+};
+
+const intersectionObservers: MockIntersectionObserverInstance[] = [];
+
+function installIntersectionObserverMock() {
+  class MockIntersectionObserver {
+    private readonly instance: MockIntersectionObserverInstance;
+
+    constructor(callback: IntersectionObserverCallback) {
+      this.instance = {
+        callback,
+        disconnect: jest.fn(),
+        observe: jest.fn(),
+      };
+      intersectionObservers.push(this.instance);
+    }
+
+    observe(element: Element) {
+      this.instance.observe(element);
+    }
+
+    disconnect() {
+      this.instance.disconnect();
+    }
+
+    unobserve() {
+      return undefined;
+    }
+
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+  }
+
+  Object.defineProperty(window, "IntersectionObserver", {
+    configurable: true,
+    value: MockIntersectionObserver,
+  });
+  Object.defineProperty(global, "IntersectionObserver", {
+    configurable: true,
+    value: MockIntersectionObserver,
+  });
+}
+
+function triggerLastIntersection(target: Element) {
+  const observer = intersectionObservers.at(-1);
+  if (!observer) {
+    throw new Error("Expected an IntersectionObserver instance.");
+  }
+
+  observer.callback(
+    [
+      {
+        isIntersecting: true,
+        target,
+      } as IntersectionObserverEntry,
+    ],
+    {} as IntersectionObserver,
+  );
+}
 
 jest.mock("next/navigation", () => ({
   useSearchParams: () => mockSearchParams,
@@ -67,6 +141,9 @@ jest.mock("@/services/community.service", () => ({
   createCommunityRoutine: jest.fn(),
   getCommunityHome: jest.fn(),
   getCommunityRoutine: jest.fn(),
+  listCommunityReviews: jest.fn(),
+  listCommunityReviewResults: jest.fn(),
+  listCommunityRoutines: jest.fn(),
   listMyCommunitySubmissions: jest.fn(),
   reportCommunityReview: jest.fn(),
   reportCommunityRoutine: jest.fn(),
@@ -92,6 +169,9 @@ const mockedAcceptGuidelines = jest.mocked(acceptCommunityGuidelines);
 const mockedCreateReview = jest.mocked(createCommunityReview);
 const mockedCreateRoutine = jest.mocked(createCommunityRoutine);
 const mockedGetRoutine = jest.mocked(getCommunityRoutine);
+const mockedListReviews = jest.mocked(listCommunityReviews);
+const mockedListReviewResults = jest.mocked(listCommunityReviewResults);
+const mockedListRoutines = jest.mocked(listCommunityRoutines);
 const mockedAdaptRoutine = jest.mocked(adaptCommunityRoutine);
 const mockedSaveAdaptation = jest.mocked(saveCommunityAdaptation);
 const mockedSignalRoutineOutcome = jest.mocked(signalCommunityRoutineOutcome);
@@ -110,7 +190,9 @@ afterEach(() => {
 });
 
 beforeEach(() => {
+  intersectionObservers.length = 0;
   mockSearchParams = new URLSearchParams();
+  useAuthStore.setState({ isAuthenticated: true, isLoading: false });
   mockUseShelfProducts.mockReturnValue({
     data: [
       {
@@ -129,71 +211,210 @@ beforeEach(() => {
           name: "Barrier Cream",
         },
       },
+      {
+        id: "product-toner",
+        identity: {
+          brand: "Ritora",
+          category: "toner",
+          name: "Calm Toner",
+        },
+      },
     ],
     isLoading: false,
   });
+  mockedListReviewResults.mockResolvedValue({
+    counts: reviewFixture.outcomeSignalCounts,
+    items: [],
+  });
+  mockedListReviews.mockResolvedValue({
+    items: [reviewFixture],
+    nextCursor: null,
+  });
+  mockedListRoutines.mockResolvedValue({
+    items: [routineFixture],
+    nextCursor: null,
+  });
 });
 
-describe("ForYou", () => {
-  it("localizes known backend pattern cards by id", () => {
+describe("ReviewEvidenceSummary", () => {
+  it("localizes community-only safe facets without missing-message lookups", () => {
     render(
       <NextIntlClientProvider locale="sv" messages={svMessages}>
-        <ForYou
-          data={{
-            ...communityHomeFixture,
-            profileFacets: {
-              ...communityHomeFixture.profileFacets,
-              concernTags: ["acne", "dryness", "sensitivity", "texture"],
+        <ReviewEvidenceSummary
+          review={{
+            ...reviewFixture,
+            safeFacets: {
+              ...reviewFixture.safeFacets,
+              climateBucket: "temperate",
+              concernTags: ["dark-marks"],
             },
-            patterns: [
-              {
-                id: "similar-users",
-                title:
-                  "Community evidence is ranked by similarity, not popularity",
-                body: "0 published items currently match your profile facets.",
-              },
-              {
-                id: "routine-context",
-                title: "Reviews with routine context rank higher",
-                body: "Ritora requires product reviews to include the surrounding routine before they can influence matching.",
-              },
-              {
-                id: "safe-facets",
-                title: "Your private profile stays private",
-                body: "4 concern tags are used without exposing exact location, email, photos, or medical history.",
-              },
-            ],
-            reviews: [],
-            routines: [],
           }}
         />
       </NextIntlClientProvider>,
     );
 
+    expect(screen.getByText("Tempererat")).toBeInTheDocument();
+    expect(screen.getByText("Mörka märken")).toBeInTheDocument();
+    expect(screen.queryByText("Temperate")).not.toBeInTheDocument();
+    expect(screen.queryByText("Dark Marks")).not.toBeInTheDocument();
+  });
+});
+
+describe("Community lists pagination", () => {
+  it("renders auto-load sentinels without showing retry before a fetch-more failure", () => {
+    renderWithProviders(
+      <>
+        <RoutineList
+          routines={[routineFixture]}
+          hasNextPage
+          onLoadMore={jest.fn()}
+        />
+        <ReviewList
+          reviews={[reviewFixture]}
+          hasNextPage
+          onLoadMore={jest.fn()}
+        />
+      </>,
+    );
+
     expect(
-      screen.getByText(
-        "Gemenskapsbevis rangordnas efter likhet, inte popularitet",
-      ),
+      screen.getByTestId("community-routines-auto-load-sentinel"),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "0 publicerade inlägg matchar dina profilaspekter just nu.",
-      ),
+      screen.getByTestId("community-reviews-auto-load-sentinel"),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Recensioner med rutinsammanhang rankas högre"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText("Din privata profil förblir privat"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "4 hudbekymmer används utan att exponera exakt plats, e-post, foton eller medicinsk historik.",
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText("Your private profile stays private"),
+      screen.queryByRole("button", { name: /try again/i }),
     ).not.toBeInTheDocument();
+  });
+
+  it("only shows the pagination retry action when fetching more fails", async () => {
+    const retry = jest.fn();
+
+    renderWithProviders(
+      <ReviewList
+        reviews={[reviewFixture]}
+        hasLoadMoreError
+        onRetryLoadMore={retry}
+      />,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: /try again/i }));
+
+    expect(retry).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps auto-loading guarded while the load-more request is pending", async () => {
+    installIntersectionObserverMock();
+    const loadMore = jest.fn(() => new Promise<unknown>(() => undefined));
+
+    renderWithProviders(
+      <ReviewList
+        reviews={[reviewFixture]}
+        hasNextPage
+        onLoadMore={loadMore}
+      />,
+    );
+
+    const sentinel = screen.getByTestId("community-reviews-auto-load-sentinel");
+    await waitFor(() => expect(intersectionObservers).toHaveLength(1));
+
+    act(() => triggerLastIntersection(sentinel));
+    act(() => triggerLastIntersection(sentinel));
+
+    expect(loadMore).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders backend-backed review and playbook search filters", () => {
+    const onReviewFiltersChange = jest.fn();
+    const onPlaybookFiltersChange = jest.fn();
+
+    renderWithProviders(
+      <>
+        <RoutineList
+          routines={[]}
+          filters={emptyPlaybookFilters}
+          onFiltersChange={onPlaybookFiltersChange}
+        />
+        <ReviewList
+          reviews={[]}
+          filters={emptyReviewFilters}
+          onFiltersChange={onReviewFiltersChange}
+        />
+      </>,
+    );
+
+    fireEvent.change(
+      screen.getByPlaceholderText(
+        "Search goals, products, habits, avoided triggers…",
+      ),
+      { target: { value: "barrier" } },
+    );
+    fireEvent.change(
+      screen.getByPlaceholderText(
+        "Search product, brand, outcome, or paired product…",
+      ),
+      { target: { value: "azelaic" } },
+    );
+
+    expect(onPlaybookFiltersChange).toHaveBeenCalledWith(
+      expect.objectContaining({ search: "barrier" }),
+    );
+    expect(onReviewFiltersChange).toHaveBeenCalledWith(
+      expect.objectContaining({ search: "azelaic" }),
+    );
+  });
+
+  it("keeps sheet filter changes local until Done is clicked", async () => {
+    type TestFilters = {
+      concern: string;
+      productCategory: string;
+    };
+    const onFiltersChange = jest.fn();
+
+    renderWithProviders(
+      <CommunityCompactFilterToolbar<TestFilters>
+        activeCount={0}
+        anyActive={false}
+        ariaLabel="Test filters"
+        emptyValue={{ concern: "", productCategory: "" }}
+        inlineFilters={[]}
+        onChange={onFiltersChange}
+        sheetDescription="Choose filters"
+        sheetFilters={[
+          {
+            key: "concern",
+            label: "Concern",
+            options: [{ value: "acne", label: "Acne" }],
+          },
+          {
+            key: "productCategory",
+            label: "Product category",
+            options: [{ value: "serum", label: "Serum" }],
+          },
+        ]}
+        sheetTitle="Filter reviews"
+        value={{ concern: "", productCategory: "" }}
+      />,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Filters" }));
+    const dialog = await screen.findByRole("dialog", {
+      name: "Filter reviews",
+    });
+
+    await userEvent.click(within(dialog).getAllByRole("combobox")[0]);
+    await userEvent.click(await screen.findByRole("option", { name: "Acne" }));
+
+    expect(onFiltersChange).not.toHaveBeenCalled();
+
+    await userEvent.click(within(dialog).getByRole("button", { name: "Done" }));
+
+    expect(onFiltersChange).toHaveBeenCalledTimes(1);
+    expect(onFiltersChange).toHaveBeenCalledWith({
+      concern: "acne",
+      productCategory: "",
+    });
   });
 });
 
@@ -205,19 +426,35 @@ describe("CommunityPage", () => {
       hasAcceptedGuidelines: true,
     });
     mockedReportReview.mockResolvedValue({});
-    mockedSignalReviewOutcome.mockResolvedValue({});
-    mockedSignalRoutineOutcome.mockResolvedValue({});
+    mockedSignalReviewOutcome.mockResolvedValue({
+      signal: "worked_for_me_too",
+      noteModerationStatus: "published",
+      outcomeSignalCounts: reviewFixture.outcomeSignalCounts,
+    });
+    mockedSignalRoutineOutcome.mockResolvedValue({
+      signal: "worked_for_me_too",
+      noteModerationStatus: "published",
+      outcomeSignalCounts: routineFixture.outcomeSignalCounts,
+    });
 
     renderWithProviders(<CommunityPage />);
 
     expect(
       await screen.findByRole("heading", { name: "Community" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Minimal barrier support")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("tab", { name: /for you/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /see top matches/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /people like me/i })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
     expect(screen.getByText("Quiet AM barrier routine")).toBeInTheDocument();
     expect(screen.getByText("Ritora Barrier Cream")).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("tab", { name: /people like me/i }));
     expect(screen.getByText("92% match")).toBeInTheDocument();
     expect(screen.getByText("76% match")).toBeInTheDocument();
 
@@ -265,6 +502,24 @@ describe("CommunityPage", () => {
     );
   });
 
+  it("redirects legacy For You tab state to People like me", async () => {
+    mockSearchParams = new URLSearchParams("tab=for-you");
+    mockedGetCommunityHome.mockResolvedValue(communityHomeFixture);
+
+    renderWithProviders(<CommunityPage />);
+
+    expect(
+      await screen.findByRole("heading", { name: "Community" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("tab", { name: /for you/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /people like me/i })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+  });
+
   it("opens writing forms from the viewing tabs for eligible posters", async () => {
     mockedGetCommunityHome.mockResolvedValue({
       ...communityHomeFixture,
@@ -290,7 +545,9 @@ describe("CommunityPage", () => {
     expect(screen.getByText("1 = none, 5 = severe.")).toBeInTheDocument();
     expect(screen.getByText("How long until you knew.")).toBeInTheDocument();
     expect(
-      screen.getByText("Pick from your shelf, or choose Other."),
+      screen.getByText(
+        "Choose honestly so Ritora does not force fake routine context.",
+      ),
     ).toBeInTheDocument();
     expect(
       screen.getByText("Comma-separated keywords that make this searchable."),
@@ -497,9 +754,12 @@ describe("CommunityPage", () => {
         /Complete your skin profile for better matching/i,
       ),
     ).toBeInTheDocument();
-    expect(screen.getByText("No shelf patterns yet")).toBeInTheDocument();
-    expect(screen.getByText("No goal playbooks yet")).toBeInTheDocument();
-    expect(screen.getByText("No published reviews yet")).toBeInTheDocument();
+    expect(screen.getByText("No community evidence yet")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Once people with skin like yours share playbooks and reviews, you'll see them here.",
+      ),
+    ).toBeInTheDocument();
   });
 
   it("shows a retry panel when community home cannot load", async () => {
@@ -515,7 +775,7 @@ describe("CommunityPage", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Try again" }));
     expect(
-      await screen.findByText("Minimal barrier support"),
+      await screen.findByText("Quiet AM barrier routine"),
     ).toBeInTheDocument();
   });
 
@@ -526,6 +786,7 @@ describe("CommunityPage", () => {
     });
     mockedSignalRoutineOutcome.mockResolvedValue({
       signal: "worked_for_me_too",
+      noteModerationStatus: "published",
       outcomeSignalCounts: routineFixture.outcomeSignalCounts,
     });
 
@@ -574,6 +835,244 @@ describe("CommunityPage", () => {
       }),
     );
   });
+
+  it("uses review-specific product confirmation copy for review outcome evidence", async () => {
+    mockedGetCommunityHome.mockResolvedValue({
+      ...communityHomeFixture,
+      postingEligibility: eligiblePosting,
+    });
+    mockedSignalReviewOutcome.mockResolvedValue({
+      signal: "worked_for_me_too",
+      noteModerationStatus: "published",
+      outcomeSignalCounts: reviewFixture.outcomeSignalCounts,
+    });
+
+    renderWithProviders(<CommunityPage />);
+
+    await userEvent.click(await screen.findByRole("tab", { name: /reviews/i }));
+    expect(
+      await screen.findByText(
+        "11 of 13 people confirmed this product worked for them",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Tap an icon below to say whether this reviewed product worked for you too. Your context helps Ritora rank product evidence.",
+      ),
+    ).toBeInTheDocument();
+    await userEvent.click(
+      screen.getByRole("button", { name: /worked for me too/i }),
+    );
+
+    const dialog = await screen.findByRole("dialog", {
+      name: /confirm product result/i,
+    });
+
+    expect(
+      within(dialog).getByText("What matched your use?"),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(
+        "Confirm only if you used the reviewed product yourself. Ritora uses your context as product evidence, not as a score against the reviewer.",
+      ),
+    ).toBeInTheDocument();
+    expect(within(dialog).getByText("Same product")).toBeInTheDocument();
+    expect(
+      within(dialog).queryByText("What did you follow?"),
+    ).not.toBeInTheDocument();
+    expect(within(dialog).queryByText("Avoid list")).not.toBeInTheDocument();
+    expect(within(dialog).queryByText("Habits")).not.toBeInTheDocument();
+
+    const sameGoalSelect = dialog.querySelector<HTMLSelectElement>(
+      'select[name="sameGoal"]',
+    );
+    const trialDurationSelect = dialog.querySelector<HTMLSelectElement>(
+      'select[name="trialDuration"]',
+    );
+    const irritationSelect = dialog.querySelector<HTMLSelectElement>(
+      'select[name="irritationLevel"]',
+    );
+    const routineSlotSelect = dialog.querySelector<HTMLSelectElement>(
+      'select[name="routineSlot"]',
+    );
+    const noteInput = dialog.querySelector<HTMLTextAreaElement>(
+      'textarea[name="note"]',
+    );
+    if (
+      !sameGoalSelect ||
+      !trialDurationSelect ||
+      !irritationSelect ||
+      !routineSlotSelect ||
+      !noteInput
+    ) {
+      throw new Error("Expected review outcome context fields.");
+    }
+
+    fireEvent.change(sameGoalSelect, { target: { value: "true" } });
+    fireEvent.change(trialDurationSelect, {
+      target: { value: "8-weeks" },
+    });
+    fireEvent.change(irritationSelect, { target: { value: "none" } });
+    fireEvent.change(routineSlotSelect, { target: { value: "pm" } });
+    await userEvent.click(within(dialog).getByText("Same product"));
+    await userEvent.click(
+      within(dialog).getByRole("button", {
+        name: /add product used with it/i,
+      }),
+    );
+    const usedWithSelect = dialog.querySelector<HTMLSelectElement>(
+      'select[name="usedWithProducts.0.productId"]',
+    );
+    if (!usedWithSelect) {
+      throw new Error("Expected used-with product selector.");
+    }
+    fireEvent.change(usedWithSelect, {
+      target: { value: "product-cleanser" },
+    });
+    fireEvent.change(noteInput, {
+      target: { value: "It worked better with a gentle cleanser." },
+    });
+    await userEvent.click(
+      within(dialog).getByRole("button", {
+        name: /confirm product result/i,
+      }),
+    );
+
+    await waitFor(() =>
+      expect(mockedSignalReviewOutcome).toHaveBeenCalledWith("review-1", {
+        signal: "worked_for_me_too",
+        sameGoal: true,
+        trialDuration: "8-weeks",
+        followedParts: ["products"],
+        irritationLevel: "none",
+        routineSlot: "pm",
+        usedWithProducts: [
+          {
+            category: "cleanser",
+            productBrand: "Ritora",
+            productId: "product-cleanser",
+            productName: "Milky Cleanser",
+          },
+        ],
+        note: "It worked better with a gentle cleanser.",
+      }),
+    );
+  });
+
+  it("opens filtered community results for review confirmations", async () => {
+    mockedGetCommunityHome.mockResolvedValue({
+      ...communityHomeFixture,
+      postingEligibility: eligiblePosting,
+    });
+    mockedListReviewResults.mockResolvedValue({
+      counts: reviewFixture.outcomeSignalCounts,
+      items: [
+        {
+          id: "vote-1",
+          signal: "worked_for_me_too",
+          sameGoal: true,
+          trialDuration: "8-weeks",
+          followedParts: ["products"],
+          irritationLevel: "none",
+          routineSlot: "pm",
+          usedWithProducts: [
+            {
+              category: "cleanser",
+              productBrand: "Ritora",
+              productName: "Milky Cleanser",
+            },
+          ],
+          note: "The cleanser pairing made it less drying.",
+          noteModerationStatus: "published",
+          similarToViewer: true,
+          createdAt: "2026-05-01T10:00:00.000Z",
+          updatedAt: "2026-05-01T10:00:00.000Z",
+        },
+      ],
+    });
+
+    renderWithProviders(<CommunityPage />);
+
+    await userEvent.click(await screen.findByRole("tab", { name: /reviews/i }));
+    await userEvent.click(
+      await screen.findByRole("button", { name: /view community results/i }),
+    );
+
+    // The sheet's accessible name is now the product itself
+    // ("Ritora Barrier Cream") because the redesigned header
+    // promotes the product name to the SheetTitle and demotes
+    // "Community results" to a small eyebrow above it.
+    const sheet = await screen.findByRole("dialog", {
+      name: /ritora barrier cream/i,
+    });
+    expect(
+      within(sheet).getByText("The cleanser pairing made it less drying."),
+    ).toBeInTheDocument();
+    expect(
+      within(sheet).getByText("Ritora Milky Cleanser"),
+    ).toBeInTheDocument();
+
+    // Filter is now a row of tone-coded pill buttons (the
+    // previous Select dropdown was replaced for one-tap
+    // filtering). Each pill is an `aria-pressed` button labeled
+    // with the signal's short text (e.g. "Worked").
+    const workedFilter = within(sheet).getByRole("button", {
+      name: "Worked",
+    });
+    await userEvent.click(workedFilter);
+
+    await waitFor(() =>
+      expect(mockedListReviewResults).toHaveBeenLastCalledWith(
+        "review-1",
+        "worked_for_me_too",
+        expect.any(AbortSignal),
+      ),
+    );
+  });
+
+  it("disables outcome comments and hides reporting on reviews authored by the current user", async () => {
+    const ownReview = {
+      ...reviewFixture,
+      canSignalOutcome: false,
+      canReportContent: false,
+    };
+    mockedGetCommunityHome.mockResolvedValue({
+      ...communityHomeFixture,
+      postingEligibility: eligiblePosting,
+      routines: [],
+      reviews: [ownReview],
+    });
+    mockedListReviews.mockResolvedValue({
+      items: [ownReview],
+      nextCursor: null,
+    });
+
+    renderWithProviders(<CommunityPage />);
+
+    await userEvent.click(await screen.findByRole("tab", { name: /reviews/i }));
+
+    await screen.findByText(
+      "Tap an icon below to say whether this reviewed product worked for you too. Your context helps Ritora rank product evidence.",
+    );
+    expect(
+      screen.getByText("Ritora Barrier Cream").closest("article"),
+    ).toHaveClass("target:ring-2");
+    const outcomeButton = screen.getByRole("button", {
+      name: /worked for me too/i,
+    });
+    expect(outcomeButton).toBeDisabled();
+    expect(
+      screen.queryByRole("button", { name: /report review/i }),
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(outcomeButton);
+
+    expect(
+      screen.queryByRole("dialog", { name: /confirm product result/i }),
+    ).not.toBeInTheDocument();
+    expect(mockedReportReview).not.toHaveBeenCalled();
+    expect(mockedSignalReviewOutcome).not.toHaveBeenCalled();
+  });
 });
 
 describe("community publish forms", () => {
@@ -604,10 +1103,9 @@ describe("community publish forms", () => {
     const reviewBodyInput = reviewContainer.querySelector<HTMLTextAreaElement>(
       'textarea[name="body"]',
     );
-    const contextProductSelect =
-      reviewContainer.querySelector<HTMLSelectElement>(
-        'select[name="selectedContextShelfProductId"]',
-      );
+    const contextUsageSelect = reviewContainer.querySelector<HTMLSelectElement>(
+      'select[name="routineContextUsage"]',
+    );
     const outcomesInput = reviewContainer.querySelector<HTMLInputElement>(
       'input[name="outcomes"]',
     );
@@ -642,7 +1140,7 @@ describe("community publish forms", () => {
     if (
       !reviewedProductSelect ||
       !reviewBodyInput ||
-      !contextProductSelect ||
+      !contextUsageSelect ||
       !outcomesInput ||
       !usageDurationSelect ||
       !frequencySelect ||
@@ -656,13 +1154,36 @@ describe("community publish forms", () => {
       throw new Error("Expected review form fields.");
     }
     expect(reviewedProductSelect.options[0]).toBeDisabled();
-    expect(contextProductSelect.options[0]).toBeDisabled();
+    expect(contextUsageSelect.options[0]).toBeDisabled();
 
     fireEvent.change(reviewedProductSelect, {
       target: { value: "product-cream" },
     });
+    fireEvent.change(contextUsageSelect, {
+      target: { value: "with_products" },
+    });
+    const contextProductSelect =
+      reviewContainer.querySelector<HTMLSelectElement>(
+        'select[name="routineContext.0.productId"]',
+      );
+    if (!contextProductSelect) {
+      throw new Error("Expected paired product row after choosing context.");
+    }
     fireEvent.change(contextProductSelect, {
       target: { value: "product-cleanser" },
+    });
+    await userEvent.click(
+      screen.getByRole("button", { name: /add another product/i }),
+    );
+    const secondContextSelect =
+      reviewContainer.querySelector<HTMLSelectElement>(
+        'select[name="routineContext.1.productId"]',
+      );
+    if (!secondContextSelect) {
+      throw new Error("Expected second paired product row.");
+    }
+    fireEvent.change(secondContextSelect, {
+      target: { value: "product-toner" },
     });
     fireEvent.change(outcomesInput, {
       target: { value: "helped-overall" },
@@ -723,12 +1244,19 @@ describe("community publish forms", () => {
         effectivenessRating: 4,
         irritationRating: 1,
         outcomes: ["helped-overall"],
+        routineContextUsage: "with_products",
         routineContext: [
           {
             category: "cleanser",
             productId: "product-cleanser",
             productBrand: "Ritora",
             productName: "Milky Cleanser",
+          },
+          {
+            category: "toner",
+            productId: "product-toner",
+            productBrand: "Ritora",
+            productName: "Calm Toner",
           },
         ],
         productId: "product-cream",
@@ -1212,9 +1740,12 @@ describe("MySubmissions", () => {
     const selectedReviewProduct = reviewDialog.querySelector<HTMLSelectElement>(
       'select[name="selectedShelfProductId"]',
     );
+    const selectedContextUsage = reviewDialog.querySelector<HTMLSelectElement>(
+      'select[name="routineContextUsage"]',
+    );
     const selectedContextProduct =
       reviewDialog.querySelector<HTMLSelectElement>(
-        'select[name="selectedContextShelfProductId"]',
+        'select[name="routineContext.0.productId"]',
       );
     const outcomesInput = reviewDialog.querySelector<HTMLInputElement>(
       'input[name="outcomes"]',
@@ -1224,6 +1755,7 @@ describe("MySubmissions", () => {
     );
     if (
       !selectedReviewProduct ||
+      !selectedContextUsage ||
       !selectedContextProduct ||
       !outcomesInput ||
       !ratingSelect
@@ -1231,6 +1763,7 @@ describe("MySubmissions", () => {
       throw new Error("Expected structured editable review fields.");
     }
     expect(selectedReviewProduct.value).toBe("product-cream");
+    expect(selectedContextUsage.value).toBe("with_products");
     expect(selectedContextProduct.value).toBe("product-cleanser");
 
     fireEvent.change(outcomesInput, {
@@ -1248,6 +1781,7 @@ describe("MySubmissions", () => {
           productId: "product-cream",
           overallRating: 5,
           outcomes: ["calmer", "less stinging", "smoother"],
+          routineContextUsage: "with_products",
           routineContext: [
             expect.objectContaining({
               productId: "product-cleanser",
@@ -1334,6 +1868,14 @@ describe("MySubmissions", () => {
           status: "published",
           safetyFlags: [],
         },
+        {
+          ...submissionsFixture[1],
+          id: "submission-published-review",
+          title: "Published review",
+          status: "published",
+          safetyFlags: [],
+          moderationGuidance: null,
+        },
       ],
     });
     mockedWithdraw.mockResolvedValue({ deleted: true });
@@ -1348,6 +1890,25 @@ describe("MySubmissions", () => {
     expect(
       within(publishedCard).queryByRole("button", { name: "Edit" }),
     ).not.toBeInTheDocument();
+    expect(
+      within(publishedCard).getByRole("link", { name: "View playbook" }),
+    ).toHaveAttribute(
+      "href",
+      "/community?tab=routines#community-routine-submission-published",
+    );
+
+    const publishedReviewCard = (
+      await screen.findByText("Published review")
+    ).closest("article");
+    if (!publishedReviewCard) {
+      throw new Error("Expected published review submission card.");
+    }
+    expect(
+      within(publishedReviewCard).getByRole("link", { name: "View review" }),
+    ).toHaveAttribute(
+      "href",
+      "/community?tab=reviews#community-review-submission-published-review",
+    );
 
     await userEvent.click(
       within(publishedCard).getByRole("button", { name: "Withdraw" }),
@@ -1364,6 +1925,53 @@ describe("MySubmissions", () => {
     );
     expect(mockedToast.success).toHaveBeenCalledWith(
       "Submission withdrawn from community evidence.",
+    );
+  });
+
+  it("shows result notes with a link back to the original review and withdrawal", async () => {
+    mockedListSubmissions.mockResolvedValue({
+      items: [submissionsFixture[2]],
+    });
+    mockedWithdraw.mockResolvedValue({ deleted: true });
+
+    renderWithProviders(<MySubmissions />);
+
+    const resultCard = (
+      await screen.findByText(
+        "Result on The Ordinary Azelaic Acid Suspension 10%",
+      )
+    ).closest("article");
+    if (!resultCard) throw new Error("Expected result submission card.");
+
+    expect(within(resultCard).getByText("Result note")).toBeInTheDocument();
+    expect(
+      within(resultCard).getByText(
+        "Buffering with moisturizer made it easier to keep using.",
+      ),
+    ).toBeInTheDocument();
+    const reviewLink = within(resultCard).getByRole("link", {
+      name: "View review",
+    });
+    expect(reviewLink).toHaveAttribute(
+      "href",
+      "/community?tab=reviews#community-review-review-1",
+    );
+    expect(
+      within(resultCard).queryByRole("button", { name: "Edit" }),
+    ).not.toBeInTheDocument();
+
+    await userEvent.click(
+      within(resultCard).getByRole("button", { name: "Withdraw" }),
+    );
+    const dialog = await screen.findByRole("alertdialog", {
+      name: "Withdraw community submission?",
+    });
+    await userEvent.click(
+      within(dialog).getByRole("button", { name: "Withdraw" }),
+    );
+
+    await waitFor(() =>
+      expect(mockedWithdraw).toHaveBeenCalledWith("submission-result"),
     );
   });
 

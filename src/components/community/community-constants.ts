@@ -6,6 +6,7 @@ import type {
   CommunityOutcomeIrritationLevel,
   CommunityOutcomeSignal,
   CommunityOutcomeTrialDuration,
+  CommunityReviewRoutineContextUsage,
   CommunityReviewRoutineSlot,
   CommunityReviewSkinResponse,
 } from "@/types/community";
@@ -26,6 +27,12 @@ export const communityReviewRoutineSlots = [
   "either",
 ] as const satisfies readonly CommunityReviewRoutineSlot[];
 
+export const communityReviewRoutineContextUsages = [
+  "used_alone",
+  "with_products",
+  "not_sure",
+] as const satisfies readonly CommunityReviewRoutineContextUsage[];
+
 export const communityReviewSkinResponses = [
   "improved",
   "no_change",
@@ -33,12 +40,43 @@ export const communityReviewSkinResponses = [
   "worsened",
 ] as const satisfies readonly CommunityReviewSkinResponse[];
 
-export const communityReviewRatingValues = [
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
+export const communityReviewRatingValues = ["1", "2", "3", "4", "5"] as const;
+
+export const communitySkinTypeOptions = [
+  { value: "oily" },
+  { value: "dry" },
+  { value: "combination" },
+  { value: "normal" },
+  { value: "sensitive" },
+] as const;
+
+export const communityConcernOptions = [
+  { value: "acne" },
+  { value: "dark_marks" },
+  { value: "dryness" },
+  { value: "oiliness" },
+  { value: "texture" },
+  { value: "redness" },
+  { value: "large_pores" },
+  { value: "fine_lines" },
+  { value: "barrier_damage" },
+  { value: "eczema" },
+  { value: "uneven_tone" },
+] as const;
+
+export const communitySensitivityOptions = [
+  { value: "low" },
+  { value: "moderate" },
+  { value: "high" },
+  { value: "very_high" },
+] as const;
+
+export const communityMinimumRatingOptions = [
+  { value: "5" },
+  { value: "4" },
+  { value: "3" },
+  { value: "2" },
+  { value: "1" },
 ] as const;
 
 export const reviewUsageDurationOptions = [
@@ -205,6 +243,10 @@ export const outcomeFollowedPartOptions: Array<{
   { value: "habits" },
   { value: "partial" },
 ];
+
+export const reviewOutcomeFollowedPartOptions: Array<{
+  value: CommunityOutcomeFollowedPart;
+}> = [{ value: "products" }, { value: "routine-timing" }, { value: "partial" }];
 
 export const outcomeIrritationOptions: Array<{
   value: CommunityOutcomeIrritationLevel;

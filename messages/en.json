@@ -5500,9 +5500,7 @@
   "community": {
     "title": "Community",
     "subtitle": "Products, playbooks, and what to skip, confirmed by people like you.",
-    "topMatches": "See top matches",
     "tabs": {
-      "forYou": "For you",
       "peopleLikeMe": "People like me",
       "playbooks": "Playbooks",
       "reviews": "Reviews",
@@ -5516,25 +5514,6 @@
       "privacyBody": "We only use the facets above to rank what you see. Your email, location, photos, medical context, and private notes all stay private.",
       "emptyProfile": "Complete your skin profile for better matching. Once it's done, we can rank playbooks around what actually fits you."
     },
-    "forYou": {
-      "patternsTitle": "What people with your shelf are doing",
-      "patternsEmptyTitle": "No shelf patterns yet",
-      "patternsEmptyBody": "Add a few products to your shelf, and we'll show what people with similar shelves are doing.",
-      "patterns": {
-        "similarUsers": {
-          "title": "Community evidence is ranked by similarity, not popularity",
-          "body": "{count, plural, one {# published item currently matches your profile facets.} other {# published items currently match your profile facets.}}"
-        },
-        "routineContext": {
-          "title": "Reviews with routine context rank higher",
-          "body": "Ritora requires product reviews to include the surrounding routine before they can influence matching."
-        },
-        "safeFacets": {
-          "title": "Your private profile stays private",
-          "body": "{count, plural, one {# concern tag is used without exposing exact location, email, photos, or medical history.} other {# concern tags are used without exposing exact location, email, photos, or medical history.}}"
-        }
-      }
-    },
     "lists": {
       "playbooksTitle": "Goal playbooks",
       "playbooksEmptyTitle": "No goal playbooks yet",
@@ -5542,12 +5521,19 @@
       "playbooksFilterEmptyTitle": "No playbooks match those filters",
       "playbooksFilterEmptyBody": "Try a broader goal, result, or timeframe.",
       "playbooksTopN": "Top {count}",
+      "playbooksLoaded": "{count} loaded",
       "playbooksShownTotal": "{shown}/{total} shown",
-      "reviewsTitle": "Reviews from people like you",
+      "reviewsTitle": "Matched reviews",
       "reviewsEmptyTitle": "No published reviews yet",
       "reviewsEmptyBody": "Once people share reviews with the required context, they show up here.",
+      "reviewsFilterEmptyTitle": "No reviews match those filters",
+      "reviewsFilterEmptyBody": "Try a broader product, skin profile, or outcome filter.",
       "reviewsTopN": "Top {count}",
+      "reviewsLoaded": "{count} loaded",
       "reviewsTotal": "{count} total",
+      "loadingMore": "Loading more community evidence…",
+      "loadMoreError": "We couldn't load more community evidence.",
+      "retry": "Try again",
       "peopleEmptyTitle": "No community evidence yet",
       "peopleEmptyBody": "Once people with skin like yours share playbooks and reviews, you'll see them here."
     },
@@ -5556,6 +5542,8 @@
       "reportRoutine": "Report routine",
       "reportReview": "Report review",
       "context": "Paired with",
+      "usedAloneContextLabel": "Used alone",
+      "notSureContextLabel": "Other products not noted",
       "moreSteps": "+{count} more"
     },
     "share": {
@@ -5597,14 +5585,40 @@
       "keepEditing": "Keep editing"
     },
     "filters": {
+      "searchPlaybooks": "Search playbooks",
+      "searchPlaybooksPlaceholder": "Search goals, products, habits, avoided triggers…",
+      "searchReviews": "Search reviews",
+      "searchReviewsPlaceholder": "Search product, brand, outcome, or paired product…",
       "goal": "Goal",
       "result": "Result",
       "timeframe": "Timeframe",
+      "skinType": "Skin type",
+      "concern": "Concern",
+      "sensitivity": "Sensitivity",
       "productRole": "Product role",
+      "productCategory": "Product category",
+      "usedWithCategory": "Used-with category",
+      "routineContext": "Routine context",
+      "routineSlot": "Routine timing",
+      "skinResponse": "Skin response",
+      "usageDuration": "Usage duration",
+      "minimumRating": "Minimum rating",
+      "confirmedResult": "Confirmed result",
       "avoided": "Avoided",
       "habit": "Habit",
       "warning": "Warning",
-      "all": "All"
+      "disclosure": "Disclosure",
+      "clear": "Clear filters",
+      "clearAll": "Clear all",
+      "all": "All",
+      "filtersAll": "Filters",
+      "filtersWithCount": "Filters · {count}",
+      "allFiltersTitle": "Filter reviews",
+      "allFiltersDescription": "Pick any combination of result, skin profile, routine context, and disclosure to narrow what you see.",
+      "playbooksFiltersTitle": "Filter playbooks",
+      "playbooksFiltersDescription": "Pick any combination of goal, skin profile, products, and safety to narrow what you see.",
+      "done": "Done",
+      "activeFiltersLabel": "{count, plural, =0 {No active filters} one {# active filter} other {# active filters}}"
     },
     "options": {
       "disclosure": {
@@ -5622,6 +5636,13 @@
         "affiliate": "Affiliate · Links or purchases may benefit the author",
         "professional": "Professional · Shared from a professional context",
         "brand_rep": "Brand rep · The author represents the brand"
+      },
+      "safeFacet": {
+        "barrier": "Barrier support",
+        "dark-marks": "Dark marks",
+        "cold-dry": "Cold and dry",
+        "cold-weather": "Cold weather",
+        "temperate": "Temperate"
       },
       "reviewUsageDuration": {
         "2-weeks": "2 weeks or less",
@@ -5641,6 +5662,11 @@
         "pm": "PM routine",
         "am-pm": "AM and PM",
         "either": "Either / varies"
+      },
+      "reviewRoutineContextUsage": {
+        "used_alone": "I used it alone",
+        "with_products": "I used it with other products",
+        "not_sure": "I do not remember"
       },
       "reviewSkinResponse": {
         "improved": "Improved",
@@ -5718,6 +5744,13 @@
         "needs-sunscreen": "Needs sunscreen",
         "professional-care-involved": "Professional care involved"
       },
+      "minimumRating": {
+        "5": "5 stars",
+        "4": "4+ stars",
+        "3": "3+ stars",
+        "2": "2+ stars",
+        "1": "1+ stars"
+      },
       "outcomeSignal": {
         "worked_for_me_too": "Worked for me too",
         "worked_with_changes": "Worked with changes",
@@ -5739,6 +5772,11 @@
         "avoid-list": "Avoid list",
         "habits": "Habits",
         "partial": "Only parts of it"
+      },
+      "reviewOutcomeFollowedPart": {
+        "products": "Same product",
+        "routine-timing": "Similar timing",
+        "partial": "Only partly similar use"
       },
       "outcomeIrritation": {
         "none": "No irritation",
@@ -5785,8 +5823,8 @@
         "repurchaseLabel": "Would repurchase",
         "repurchaseHint": "Would you buy it again?",
         "repurchasePlaceholder": "Choose answer",
-        "pairedSection": "What you paired it with",
-        "pairedDescription": "The product you used alongside it. Required so we can rank this as routine evidence.",
+        "pairedSection": "Routine context",
+        "pairedDescription": "Tell us whether you used this product alone or with other products. Companion products are only required when they were part of the same routine.",
         "pairedBrandHint": "Optional. Brand of the paired product.",
         "pairedBrandPlaceholder": "e.g. CeraVe",
         "pairedCategoryHint": "Role this product played in your routine.",
@@ -5857,6 +5895,31 @@
       "linkedMessage": "This review will be linked to your shelf product.",
       "manualHeading": "Tell us what you used"
     },
+    "reviewContextProducts": {
+      "usageLabel": "How did you use it?",
+      "usageHint": "Choose honestly so Ritora does not force fake routine context.",
+      "usagePlaceholder": "Choose usage context",
+      "usedAloneNote": "This will be treated as standalone evidence for the reviewed product.",
+      "notSureNote": "That is okay. The review can still help, but it will rank lower than reviews with clearer routine context.",
+      "productsLabel": "Products used with it",
+      "productsHint": "Add every product you remember using in the same routine.",
+      "product": "Product {number}",
+      "removeProduct": "Remove product {number}",
+      "addProduct": "Add another product",
+      "selectLabel": "Product",
+      "loadingShelf": "Loading shelf…",
+      "pickProduct": "Pick a product",
+      "otherProduct": "Other (not on my shelf)",
+      "categoryLabel": "Product role",
+      "linked": "Linked to your shelf product.",
+      "manualHeading": "Tell us what you paired with it",
+      "brandLabel": "Brand",
+      "brandHint": "Optional. Brand of the companion product.",
+      "brandPlaceholder": "e.g. CeraVe",
+      "productNameLabel": "Product name",
+      "productNameHint": "Exact product name if it was not on your shelf.",
+      "productNamePlaceholder": "e.g. Hydrating Cleanser"
+    },
     "playbookSteps": {
       "label": "Products and routine steps",
       "hint": "Choose from your shelf where possible so evidence can connect back to product decisions.",
@@ -5897,9 +5960,56 @@
     },
     "outcomeSignals": {
       "addedToast": "Your outcome was added to the evidence.",
+      "addedWithModeratedNoteToast": "Your result was added. Any note or product context will appear only if moderation approves it.",
       "failedToast": "Could not save your outcome.",
       "confirmed": "{worked} of {total} people confirmed it worked",
+      "reviewConfirmed": "{worked} of {total} people confirmed this product worked for them",
       "helper": "Tap an icon below to share your own outcome with this product. Each icon stands for a different kind of result.",
+      "reviewHelper": "Tap an icon below to say whether this reviewed product worked for you too. Your context helps Ritora rank product evidence.",
+      "viewResults": "View community results",
+      "resultsTitle": "Community results",
+      "resultsDescription": "Structured confirmations from people who tried this reviewed product. Result notes only appear after moderation.",
+      "resultsForProduct": "For {product}",
+      "resultMatchedPartsLabel": "Matched context",
+      "resultUsedWithLabel": "Used with",
+      "filterAll": "All",
+      "filterLabel": "Filter by result",
+      "resultsCount": "{count, plural, one {# result} other {# results}}",
+      "resultType": "Result type",
+      "allResultTypes": "All result types",
+      "resultsLoadError": "Community results could not load.",
+      "retry": "Retry",
+      "resultsEmptyTitle": "No community results yet",
+      "resultsEmptyDescription": "When members confirm this product, their structured result context will appear here.",
+      "resultDuration": "Duration",
+      "resultIrritation": "Irritation",
+      "resultSameGoal": "Goal match",
+      "resultRoutineSlot": "When did you use it?",
+      "resultRoutineSlotHint": "Optional. Helps others compare AM, PM, or flexible use.",
+      "resultRoutineSlotShort": "Routine timing",
+      "resultMatchedParts": "Matched context: {parts}",
+      "resultNote": "Result note",
+      "resultNoteHint": "Optional. Share what made your product result different, including products used alongside it. Notes pass moderation before public display.",
+      "resultNotePlaceholder": "e.g. It worked better when I used it after a gentle cleanser and skipped acids that night.",
+      "similarToYou": "Similar to your profile",
+      "usedWithProducts": "Products used with it",
+      "usedWithProductsHint": "Optional. Add products you used alongside the reviewed product so others can compare routine context.",
+      "addUsedWithProduct": "Add product used with it",
+      "usedWithProduct": "Product {number}",
+      "removeUsedWithProduct": "Remove product {number}",
+      "usedWithProductSelect": "Product",
+      "usedWithProductRole": "Product role",
+      "otherProduct": "Other (not on my shelf)",
+      "loadingShelf": "Loading shelf…",
+      "pickProduct": "Pick a product",
+      "linked": "Linked to your shelf product.",
+      "manualUsedWithHeading": "Tell us what you paired with it",
+      "manualUsedWithBrand": "Brand",
+      "manualUsedWithBrandPlaceholder": "e.g. CeraVe",
+      "manualUsedWithProduct": "Product name",
+      "manualUsedWithProductPlaceholder": "e.g. Hydrating Cleanser",
+      "reviewOwnContentToast": "You can’t confirm your own review.",
+      "routineOwnContentToast": "You can’t confirm your own playbook.",
       "shortLabels": {
         "worked_for_me_too": "Worked",
         "worked_with_changes": "Tweaked",
@@ -5910,23 +6020,33 @@
       "chooseOutcomeFirst": "Choose an outcome first.",
       "addFailed": "Could not add outcome.",
       "dialogTitle": "Confirm your outcome",
+      "reviewDialogTitle": "Confirm product result",
       "dialogDescription": "This makes the evidence more useful without turning someone else's post into a public score.",
+      "reviewDialogDescription": "Confirm only if you used the reviewed product yourself. Ritora uses your context as product evidence, not as a score against the reviewer.",
       "yourOutcome": "Your outcome",
+      "yourExperienceGroup": "Your experience",
+      "routineContextGroup": "Routine context",
+      "routineContextGroupDescription": "All optional. Add only what helps another reader understand your result.",
       "sameGoal": "Same goal?",
+      "reviewSameGoal": "Same result goal?",
       "sameGoalHint": "Were you targeting the same skin concern as the original post?",
       "sameGoalYes": "Yes, same goal",
       "sameGoalNo": "No, related but different",
       "trialDuration": "How long did you try it?",
       "trialDurationHint": "Total time you gave the product a fair shot.",
+      "reviewTrialDurationHint": "How long you used this reviewed product before deciding whether it worked for you.",
       "irritation": "Irritation",
       "irritationHint": "Any stinging, redness, or breakouts you noticed.",
       "followedParts": "What did you follow?",
       "followedPartsHint": "Which parts of the original routine you also tried.",
+      "reviewFollowedParts": "What matched your use?",
+      "reviewFollowedPartsHint": "Choose what was close enough to the review for your confirmation to count as product evidence.",
       "choose": "Choose",
       "chooseDuration": "Choose duration",
       "chooseIrritation": "Choose irritation level",
       "adding": "Adding…",
-      "addOutcome": "Add outcome"
+      "addOutcome": "Add outcome",
+      "reviewAddOutcome": "Confirm product result"
     },
     "productEvidence": {
       "loadError": "Community evidence could not load.",
@@ -6009,6 +6129,10 @@
       "resubmitting": "Resubmitting…",
       "withdraw": "Withdraw",
       "withdrawing": "Withdrawing…",
+      "viewReview": "View review",
+      "viewPlaybook": "View playbook",
+      "resultTitle": "Result on {title}",
+      "resultFallbackTarget": "community post",
       "withdrawConfirmTitle": "Withdraw community submission?",
       "withdrawConfirmBody": "This removes it from community views, matching, and evidence rankings. The moderation audit record is kept internally.",
       "cancel": "Cancel",
@@ -6020,6 +6144,7 @@
       "guidanceFallback": "Review this submission for unsafe claims, missing routine context, or disclosure issues before saving edits.",
       "safetyFlagTitleFallback": "Safety review",
       "guidanceInstruction": "Change the parts called out, then save edits. Resubmit unchanged only if you believe this was a mistake.",
+      "resultGuidanceInstruction": "Withdraw this result if you do not want it shown or considered as evidence.",
       "guidanceSource": {
         "ai": "Automated moderation",
         "admin": "Ritora moderation",
@@ -6036,7 +6161,8 @@
       },
       "type": {
         "routine": "Playbook",
-        "review": "Review"
+        "review": "Review",
+        "result": "Result note"
       }
     },
     "eligibility": {

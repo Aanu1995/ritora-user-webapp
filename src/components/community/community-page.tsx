@@ -1,19 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { MessageSquarePlus, SlidersHorizontal, TrendingUp } from "lucide-react";
+import { MessageSquarePlus, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { QueryKey } from "@/constants/query-keys";
+import {
+  useCommunityReviews,
+  useCommunityRoutines,
+} from "@/hooks/use-community";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { getCommunityHome } from "@/services/community.service";
+import type { CommunityListQuery } from "@/types/community";
 import { PostingEligibilityDialog } from "./community-eligibility";
 import { CommunityTabs, FacetStrip } from "./community-facet-tabs";
 import {
-  ForYou,
   PeopleLikeMe,
   ReviewList,
   RoutineList,
@@ -22,6 +27,14 @@ import {
   ShareWhatWorkedSheet,
   WriteReviewSheet,
 } from "./community-share-sheet";
+import {
+  emptyPlaybookFilters,
+  type CommunityPlaybookFilterState,
+} from "./community-playbook-filters";
+import {
+  emptyReviewFilters,
+  type CommunityReviewFilterState,
+} from "./community-review-filters";
 import { CommunitySkeleton, type CommunityTab } from "./community-shared";
 import { MySubmissions } from "./community-submissions";
 import { TrustPanel } from "./community-trust-panel";
@@ -50,11 +63,54 @@ export function CommunityPage() {
   const [composer, setComposer] = useState<CommunityComposer>(() =>
     parseCommunityComposer(initialTabParam),
   );
+  const [playbookFilters, setPlaybookFilters] = useState(emptyPlaybookFilters);
+  const [reviewFilters, setReviewFilters] = useState(emptyReviewFilters);
+  const debouncedPlaybookSearch = useDebouncedValue(
+    playbookFilters.search,
+    300,
+  );
+  const debouncedReviewSearch = useDebouncedValue(reviewFilters.search, 300);
+  const playbookQueryFilters = buildPlaybookQueryFilters(
+    playbookFilters,
+    debouncedPlaybookSearch,
+  );
+  const reviewQueryFilters = buildReviewQueryFilters(
+    reviewFilters,
+    debouncedReviewSearch,
+  );
   const [postingDialogOpen, setPostingDialogOpen] = useState(false);
   const query = useQuery({
     queryKey: [QueryKey.CommunityHome],
     queryFn: ({ signal }) => getCommunityHome(signal),
   });
+  const routinesQuery = useCommunityRoutines(
+    playbookQueryFilters,
+    tab === "routines",
+  );
+  const reviewsQuery = useCommunityReviews(
+    reviewQueryFilters,
+    tab === "reviews",
+  );
+  const activeTargetReady =
+    tab === "routines"
+      ? !routinesQuery.isPending
+      : tab === "reviews"
+        ? !reviewsQuery.isPending
+        : true;
+
+  useEffect(() => {
+    if (!query.isSuccess || !activeTargetReady || !window.location.hash) {
+      return undefined;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      document
+        .getElementById(window.location.hash.slice(1))
+        ?.scrollIntoView({ block: "center" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeTargetReady, query.isSuccess, tab]);
 
   if (query.isLoading) {
     return <CommunitySkeleton />;
@@ -96,23 +152,9 @@ export function CommunityPage() {
 
   return (
     <div className="mx-auto max-w-6xl pb-10 motion-safe:animate-in motion-safe:fade-in">
-      {/* Full-width page header — only this stays at the outer width. */}
       <PageHeader
         title={t("title")}
         subtitle={t("subtitle")}
-        action={
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setComposer(null);
-              setTab("people");
-            }}
-          >
-            <SlidersHorizontal className="h-4 w-4" />
-            {t("topMatches")}
-          </Button>
-        }
       />
 
       {/* 75% column for chrome (facet strip + tabs) and the tab
@@ -123,7 +165,6 @@ export function CommunityPage() {
         <CommunityTabs active={tab} onChange={handleTabChange} />
 
         <div className="mt-4 space-y-6">
-          {tab === "for-you" ? <ForYou data={data} /> : null}
           {tab === "people" ? <PeopleLikeMe data={data} /> : null}
           {tab === "routines" ? (
             <RoutineList
@@ -138,7 +179,19 @@ export function CommunityPage() {
                   {t("share.playbookAction")}
                 </Button>
               }
-              routines={data.routines}
+              routines={routinesQuery.data}
+              filters={playbookFilters}
+              onFiltersChange={setPlaybookFilters}
+              isLoading={routinesQuery.isPending}
+              isError={routinesQuery.isError}
+              hasNextPage={Boolean(routinesQuery.hasNextPage)}
+              isFetchingNextPage={routinesQuery.isFetchingNextPage}
+              hasLoadMoreError={Boolean(routinesQuery.isFetchNextPageError)}
+              onLoadMore={() => routinesQuery.fetchNextPage()}
+              onRetryLoadMore={() => routinesQuery.fetchNextPage()}
+              onRetryInitialLoad={() => {
+                void routinesQuery.refetch();
+              }}
             />
           ) : null}
           {tab === "reviews" ? (
@@ -154,7 +207,19 @@ export function CommunityPage() {
                   {t("share.reviewAction")}
                 </Button>
               }
-              reviews={data.reviews}
+              reviews={reviewsQuery.data}
+              filters={reviewFilters}
+              onFiltersChange={setReviewFilters}
+              isLoading={reviewsQuery.isPending}
+              isError={reviewsQuery.isError}
+              hasNextPage={Boolean(reviewsQuery.hasNextPage)}
+              isFetchingNextPage={reviewsQuery.isFetchingNextPage}
+              hasLoadMoreError={Boolean(reviewsQuery.isFetchNextPageError)}
+              onLoadMore={() => reviewsQuery.fetchNextPage()}
+              onRetryLoadMore={() => reviewsQuery.fetchNextPage()}
+              onRetryInitialLoad={() => {
+                void reviewsQuery.refetch();
+              }}
             />
           ) : null}
           {tab === "submissions" ? <MySubmissions /> : null}
@@ -193,7 +258,6 @@ function parseCommunityTab(value: string | null): CommunityTab {
   }
 
   const tabs = new Set<CommunityTab>([
-    "for-you",
     "people",
     "routines",
     "reviews",
@@ -202,7 +266,7 @@ function parseCommunityTab(value: string | null): CommunityTab {
   ]);
   return value && tabs.has(value as CommunityTab)
     ? (value as CommunityTab)
-    : "for-you";
+    : "people";
 }
 
 function parseCommunityComposer(value: string | null): CommunityComposer {
@@ -213,4 +277,53 @@ function parseCommunityComposer(value: string | null): CommunityComposer {
     return "playbook";
   }
   return null;
+}
+
+function buildPlaybookQueryFilters(
+  filters: CommunityPlaybookFilterState,
+  search: string,
+): CommunityListQuery {
+  return {
+    avoidTag: filters.avoidTag,
+    concern: filters.concern,
+    disclosureType:
+      filters.disclosureType as CommunityListQuery["disclosureType"],
+    goal: filters.goal,
+    habitTag: filters.habitTag,
+    productRole: filters.productRole,
+    result: filters.result as CommunityListQuery["result"],
+    search,
+    sensitivity: filters.sensitivity,
+    skinType: filters.skinType,
+    timeframe: filters.timeframe as CommunityListQuery["timeframe"],
+    warningTag: filters.warningTag,
+  };
+}
+
+function buildReviewQueryFilters(
+  filters: CommunityReviewFilterState,
+  search: string,
+): CommunityListQuery {
+  const minRating = Number(filters.minRating);
+
+  return {
+    concern: filters.concern,
+    contextProductCategory: filters.contextProductCategory,
+    disclosureType:
+      filters.disclosureType as CommunityListQuery["disclosureType"],
+    minRating:
+      Number.isInteger(minRating) && minRating >= 1 && minRating <= 5
+        ? minRating
+        : null,
+    productCategory: filters.productCategory,
+    resultSignal: filters.resultSignal as CommunityListQuery["resultSignal"],
+    routineContextUsage:
+      filters.routineContextUsage as CommunityListQuery["routineContextUsage"],
+    routineSlot: filters.routineSlot as CommunityListQuery["routineSlot"],
+    search,
+    sensitivity: filters.sensitivity,
+    skinResponse: filters.skinResponse as CommunityListQuery["skinResponse"],
+    skinType: filters.skinType,
+    usageDuration: filters.usageDuration,
+  };
 }

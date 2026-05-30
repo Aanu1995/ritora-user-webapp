@@ -8,13 +8,9 @@ import {
 } from "./community-review-product-fields";
 
 export type CommunityReviewProductFieldName =
-  | "contextCategory"
-  | "contextProductBrand"
-  | "contextProductName"
   | "productBrand"
   | "productCategory"
   | "productName"
-  | "selectedContextShelfProductId"
   | "selectedShelfProductId";
 
 export type CommunityReviewFormFieldRenderer = <
@@ -42,13 +38,13 @@ type ProductPickerCopy = Pick<
 >;
 
 export type CommunityReviewProductFieldGroupProps = ProductPickerCopy & {
-  brandName: "productBrand" | "contextProductBrand";
-  categoryName: "productCategory" | "contextCategory";
+  brandName: "productBrand";
+  categoryName: "productCategory";
   fieldRenderer: CommunityReviewFormFieldRenderer;
   isLoadingProducts: boolean;
-  nameName: "productName" | "contextProductName";
+  nameName: "productName";
   products: ShelfProduct[];
-  selectedName: "selectedShelfProductId" | "selectedContextShelfProductId";
+  selectedName: "selectedShelfProductId";
 };
 
 export function CommunityReviewProductFieldGroup({

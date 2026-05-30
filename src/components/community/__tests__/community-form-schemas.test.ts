@@ -1,6 +1,8 @@
 import {
+  communityOutcomeSignalFormSchema,
   communityReviewFormSchema,
   communityRoutineFormSchema,
+  defaultCommunityOutcomeSignalValues,
   defaultCommunityReviewValues,
   defaultCommunityRoutineValues,
 } from "../community-form-schemas";
@@ -9,7 +11,6 @@ describe("community form schemas", () => {
   it("requires product-linked review essentials before submission", () => {
     const validReview = {
       ...defaultCommunityReviewValues,
-      contextProductName: "Milky Cleanser",
       effectivenessRating: "4",
       frequency: "daily",
       irritationRating: "1",
@@ -18,6 +19,7 @@ describe("community form schemas", () => {
       productBrand: "Ritora",
       productName: "Barrier Cream",
       repurchase: "yes",
+      routineContextUsage: "used_alone",
       routineSlot: "pm",
       skinResponse: "improved",
       usageDuration: "8-weeks",
@@ -44,7 +46,15 @@ describe("community form schemas", () => {
   it("keeps extracted shelf product details as the durable review evidence", () => {
     const result = communityReviewFormSchema.safeParse({
       ...defaultCommunityReviewValues,
-      contextProductName: "Milky Cleanser",
+      routineContextUsage: "with_products",
+      routineContext: [
+        {
+          category: "cleanser",
+          productBrand: "Ritora",
+          productId: "product-cleanser",
+          productName: "Milky Cleanser",
+        },
+      ],
       effectivenessRating: "4",
       frequency: "daily",
       irritationRating: "1",
@@ -55,7 +65,6 @@ describe("community form schemas", () => {
       productName: "Barrier Cream",
       repurchase: "yes",
       routineSlot: "pm",
-      selectedContextShelfProductId: "product-cleanser",
       selectedShelfProductId: "product-cream",
       skinResponse: "improved",
       usageDuration: "8-weeks",
@@ -63,13 +72,12 @@ describe("community form schemas", () => {
 
     expect(result.success).toBe(true);
     if (!result.success) throw new Error("Expected review validation to pass.");
-    expect(result.data.selectedContextShelfProductId).toBe("product-cleanser");
+    expect(result.data.routineContext[0]?.productId).toBe("product-cleanser");
   });
 
-  it("requires structured ratings, skin response and named routine context", () => {
+  it("requires structured ratings and skin response without forcing a paired product", () => {
     const result = communityReviewFormSchema.safeParse({
       ...defaultCommunityReviewValues,
-      contextProductName: "",
       effectivenessRating: "",
       irritationRating: "",
       overallRating: "",
@@ -83,6 +91,7 @@ describe("community form schemas", () => {
     if (result.success) throw new Error("Expected review validation to fail.");
     expect(result.error.issues).toEqual(
       expect.arrayContaining([
+        expect.objectContaining({ message: "Usage context is required." }),
         expect.objectContaining({ message: "Overall rating is required." }),
         expect.objectContaining({
           message: "Effectiveness rating is required.",
@@ -90,9 +99,96 @@ describe("community form schemas", () => {
         expect.objectContaining({ message: "Irritation rating is required." }),
         expect.objectContaining({ message: "Routine timing is required." }),
         expect.objectContaining({ message: "Skin response is required." }),
+      ]),
+    );
+  });
+
+  it("requires companion products only when the review says they were used", () => {
+    const result = communityReviewFormSchema.safeParse({
+      ...defaultCommunityReviewValues,
+      routineContextUsage: "with_products",
+      effectivenessRating: "4",
+      frequency: "daily",
+      irritationRating: "1",
+      overallRating: "5",
+      outcomes: "helped-overall",
+      productBrand: "Ritora",
+      productName: "Barrier Cream",
+      repurchase: "yes",
+      routineSlot: "pm",
+      skinResponse: "improved",
+      usageDuration: "8-weeks",
+    });
+
+    expect(result.success).toBe(false);
+    if (result.success) throw new Error("Expected review validation to fail.");
+    expect(result.error.issues).toEqual(
+      expect.arrayContaining([
         expect.objectContaining({
-          message: "At least one product used with it is required.",
+          message: "Add at least one product used with it.",
         }),
+      ]),
+    );
+  });
+
+  it("shows a parent-level error when a companion product row is blank", () => {
+    const result = communityReviewFormSchema.safeParse({
+      ...defaultCommunityReviewValues,
+      routineContextUsage: "with_products",
+      routineContext: [
+        {
+          category: "cleanser",
+          productBrand: "",
+          productId: "",
+          productName: "",
+        },
+      ],
+      effectivenessRating: "4",
+      frequency: "daily",
+      irritationRating: "1",
+      overallRating: "5",
+      outcomes: "helped-overall",
+      productBrand: "Ritora",
+      productName: "Barrier Cream",
+      repurchase: "yes",
+      routineSlot: "pm",
+      skinResponse: "improved",
+      usageDuration: "8-weeks",
+    });
+
+    expect(result.success).toBe(false);
+    if (result.success) throw new Error("Expected review validation to fail.");
+    expect(result.error.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          message: "Add a shelf product or product name for every product.",
+          path: ["routineContext"],
+        }),
+      ]),
+    );
+  });
+
+  it("requires the user to choose whether the reviewed product was used alone or with products", () => {
+    const result = communityReviewFormSchema.safeParse({
+      ...defaultCommunityReviewValues,
+      effectivenessRating: "4",
+      frequency: "daily",
+      irritationRating: "1",
+      overallRating: "5",
+      outcomes: "helped-overall",
+      productBrand: "Ritora",
+      productName: "Barrier Cream",
+      repurchase: "yes",
+      routineSlot: "pm",
+      skinResponse: "improved",
+      usageDuration: "8-weeks",
+    });
+
+    expect(result.success).toBe(false);
+    if (result.success) throw new Error("Expected review validation to fail.");
+    expect(result.error.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ message: "Usage context is required." }),
       ]),
     );
   });
@@ -100,7 +196,6 @@ describe("community form schemas", () => {
   it("rejects invalid disclosure values", () => {
     const result = communityReviewFormSchema.safeParse({
       ...defaultCommunityReviewValues,
-      contextProductName: "Milky Cleanser",
       disclosureType: "unknown",
       effectivenessRating: "4",
       frequency: "daily",
@@ -110,6 +205,7 @@ describe("community form schemas", () => {
       productBrand: "Ritora",
       productName: "Barrier Cream",
       repurchase: "yes",
+      routineContextUsage: "used_alone",
       routineSlot: "pm",
       skinResponse: "improved",
       usageDuration: "8-weeks",
@@ -147,7 +243,9 @@ describe("community form schemas", () => {
       title: "Simple barrier support",
     };
 
-    expect(communityRoutineFormSchema.safeParse(validRoutine).success).toBe(true);
+    expect(communityRoutineFormSchema.safeParse(validRoutine).success).toBe(
+      true,
+    );
 
     const result = communityRoutineFormSchema.safeParse({
       ...validRoutine,
@@ -177,7 +275,6 @@ describe("community form schemas", () => {
     const result = communityReviewFormSchema.safeParse({
       ...defaultCommunityReviewValues,
       body: "x".repeat(1201),
-      contextProductName: "Milky Cleanser",
       effectivenessRating: "4",
       frequency: "daily",
       irritationRating: "1",
@@ -186,6 +283,7 @@ describe("community form schemas", () => {
       productBrand: "Ritora",
       productName: "Barrier Cream",
       repurchase: "yes",
+      routineContextUsage: "used_alone",
       routineSlot: "pm",
       skinResponse: "improved",
       usageDuration: "8-weeks",
@@ -233,5 +331,40 @@ describe("community form schemas", () => {
         }),
       ]),
     );
+  });
+
+  it("allows optional moderated result notes with shelf product context", () => {
+    const result = communityOutcomeSignalFormSchema.safeParse({
+      ...defaultCommunityOutcomeSignalValues,
+      followedParts: ["products"],
+      irritationLevel: "none",
+      note: "It worked better when I paired it with a gentle cleanser.",
+      routineSlot: "pm",
+      sameGoal: "true",
+      trialDuration: "8-weeks",
+      usedWithProducts: [
+        {
+          category: "cleanser",
+          productBrand: "Ritora",
+          productId: "product-cleanser",
+          productName: "Milky Cleanser",
+        },
+      ],
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it("keeps result notes within the backend moderation limit", () => {
+    const result = communityOutcomeSignalFormSchema.safeParse({
+      ...defaultCommunityOutcomeSignalValues,
+      followedParts: ["products"],
+      irritationLevel: "none",
+      note: "x".repeat(501),
+      sameGoal: "true",
+      trialDuration: "8-weeks",
+    });
+
+    expect(result.success).toBe(false);
   });
 });

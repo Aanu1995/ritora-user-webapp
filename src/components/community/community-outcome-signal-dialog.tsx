@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import type {
   CommunityOutcomeSignal,
   CommunityOutcomeSignalInput,
+  CommunityOutcomeSignalResponse,
 } from "@/types/community";
 import { CommunityCheckboxGroup } from "./community-checkbox-group";
 import {
@@ -33,17 +34,21 @@ import {
   SIGNAL_META,
   SIGNAL_PILL_CLASS,
 } from "./community-outcome-signal-meta";
+import { CommunityOutcomeProductsFieldFromShelf } from "./community-outcome-products-field";
 import {
   CommunityFieldError,
   CommunitySimpleSelect,
+  CommunityTextareaField,
   Field,
+  FormSection,
   InlineSpinner,
 } from "./community-shared";
 
 type OutcomeSignalDialogProps = {
+  contentType: "routine" | "review";
   isPending: boolean;
   mutate: UseMutateFunction<
-    unknown,
+    CommunityOutcomeSignalResponse,
     Error,
     CommunityOutcomeSignalInput,
     unknown
@@ -54,6 +59,7 @@ type OutcomeSignalDialogProps = {
 };
 
 export function OutcomeSignalDialog({
+  contentType,
   isPending,
   mutate,
   onOpenChange,
@@ -62,6 +68,10 @@ export function OutcomeSignalDialog({
 }: OutcomeSignalDialogProps) {
   const t = useTranslations("community.outcomeSignals");
   const options = useCommunityTranslatedOptions();
+  const isReview = contentType === "review";
+  const followedPartOptions = isReview
+    ? options.reviewOutcomeFollowedParts
+    : options.outcomeFollowedParts;
   const form = useForm({
     defaultValues: defaultCommunityOutcomeSignalValues,
     validators: {
@@ -71,7 +81,7 @@ export function OutcomeSignalDialog({
         if (!selectedSignal) {
           return { form: t("chooseOutcomeFirst"), fields: {} };
         }
-        const input: CommunityOutcomeSignalInput = {
+        const baseInput: CommunityOutcomeSignalInput = {
           signal: selectedSignal,
           sameGoal: value.sameGoal === "true",
           trialDuration:
@@ -81,6 +91,23 @@ export function OutcomeSignalDialog({
           irritationLevel:
             value.irritationLevel as CommunityOutcomeSignalInput["irritationLevel"],
         };
+        const input: CommunityOutcomeSignalInput = isReview
+          ? {
+              ...baseInput,
+              note: value.note.trim() || null,
+              routineSlot:
+                (value.routineSlot as CommunityOutcomeSignalInput["routineSlot"]) ||
+                null,
+              usedWithProducts: value.usedWithProducts
+                .filter((item) => item.productId || item.productName.trim())
+                .map((item) => ({
+                  category: item.category,
+                  productBrand: item.productBrand.trim() || null,
+                  productId: item.productId || null,
+                  productName: item.productName.trim() || null,
+                })),
+            }
+          : baseInput;
         const result = await executeMutation(mutate, input);
         if (result.error !== null) {
           return { form: t("addFailed"), fields: {} };
@@ -115,8 +142,14 @@ export function OutcomeSignalDialog({
         >
           <div className="flex flex-col gap-3 px-6 pb-3 pt-6">
             <DialogHeader>
-              <DialogTitle>{t("dialogTitle")}</DialogTitle>
-              <DialogDescription>{t("dialogDescription")}</DialogDescription>
+              <DialogTitle>
+                {isReview ? t("reviewDialogTitle") : t("dialogTitle")}
+              </DialogTitle>
+              <DialogDescription className="text-xs leading-5">
+                {isReview
+                  ? t("reviewDialogDescription")
+                  : t("dialogDescription")}
+              </DialogDescription>
             </DialogHeader>
 
             {selectedSignal && selectedMeta ? (
@@ -150,68 +183,138 @@ export function OutcomeSignalDialog({
             ) : null}
           </div>
 
-          <div className="grid flex-1 gap-4 overflow-y-auto px-6 pb-4">
-            <form.Field name="sameGoal">
-              {(field) => (
-                <OutcomeSelect
-                  errors={field.state.meta.errors}
-                  hint={t("sameGoalHint")}
-                  label={t("sameGoal")}
-                  name={field.name}
-                  onBlur={field.handleBlur}
-                  onChange={field.handleChange}
-                  options={[
-                    { value: "true", label: t("sameGoalYes") },
-                    { value: "false", label: t("sameGoalNo") },
-                  ]}
-                  placeholder={t("choose")}
-                  value={field.state.value}
-                />
-              )}
-            </form.Field>
-            <form.Field name="trialDuration">
-              {(field) => (
-                <OutcomeSelect
-                  errors={field.state.meta.errors}
-                  hint={t("trialDurationHint")}
-                  label={t("trialDuration")}
-                  name={field.name}
-                  onBlur={field.handleBlur}
-                  onChange={field.handleChange}
-                  options={options.outcomeTrialDurations}
-                  placeholder={t("chooseDuration")}
-                  value={field.state.value}
-                />
-              )}
-            </form.Field>
-            <form.Field name="irritationLevel">
-              {(field) => (
-                <OutcomeSelect
-                  errors={field.state.meta.errors}
-                  hint={t("irritationHint")}
-                  label={t("irritation")}
-                  name={field.name}
-                  onBlur={field.handleBlur}
-                  onChange={field.handleChange}
-                  options={options.outcomeIrritations}
-                  placeholder={t("chooseIrritation")}
-                  value={field.state.value}
-                />
-              )}
-            </form.Field>
-            <form.Field name="followedParts">
-              {(field) => (
-                <CommunityCheckboxGroup
-                  errors={field.state.meta.errors}
-                  hint={t("followedPartsHint")}
-                  label={t("followedParts")}
-                  onChange={field.handleChange}
-                  options={options.outcomeFollowedParts}
-                  required
-                  value={field.state.value}
-                />
-              )}
-            </form.Field>
+          {/* Form body — broken into clearly-labelled groups so
+              users aren't staring at a wall of 4–7 mixed-input
+              fields. Two groups for reviews ("Your experience"
+              [required] + "Routine context" [all optional]) and
+              one group for routine confirmations (just "Your
+              experience"). The optional group's description
+              explicitly tells the user they can skip everything
+              in it without losing the submission, which removes
+              the implicit pressure to fill out every field.
+              The submit button lives inside this scroll region
+              too — it flows past the fields rather than being
+              pinned to the dialog floor. `pb-6` gives it room
+              from the rounded dialog edge. */}
+          <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-6 pb-6">
+            <FormSection title={t("yourExperienceGroup")}>
+              <form.Field name="sameGoal">
+                {(field) => (
+                  <OutcomeSelect
+                    errors={field.state.meta.errors}
+                    hint={t("sameGoalHint")}
+                    label={isReview ? t("reviewSameGoal") : t("sameGoal")}
+                    name={field.name}
+                    onBlur={field.handleBlur}
+                    onChange={field.handleChange}
+                    options={[
+                      { value: "true", label: t("sameGoalYes") },
+                      { value: "false", label: t("sameGoalNo") },
+                    ]}
+                    placeholder={t("choose")}
+                    value={field.state.value}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="trialDuration">
+                {(field) => (
+                  <OutcomeSelect
+                    errors={field.state.meta.errors}
+                    hint={
+                      isReview
+                        ? t("reviewTrialDurationHint")
+                        : t("trialDurationHint")
+                    }
+                    label={t("trialDuration")}
+                    name={field.name}
+                    onBlur={field.handleBlur}
+                    onChange={field.handleChange}
+                    options={options.outcomeTrialDurations}
+                    placeholder={t("chooseDuration")}
+                    value={field.state.value}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="irritationLevel">
+                {(field) => (
+                  <OutcomeSelect
+                    errors={field.state.meta.errors}
+                    hint={t("irritationHint")}
+                    label={t("irritation")}
+                    name={field.name}
+                    onBlur={field.handleBlur}
+                    onChange={field.handleChange}
+                    options={options.outcomeIrritations}
+                    placeholder={t("chooseIrritation")}
+                    value={field.state.value}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="followedParts">
+                {(field) => (
+                  <CommunityCheckboxGroup
+                    errors={field.state.meta.errors}
+                    hint={
+                      isReview
+                        ? t("reviewFollowedPartsHint")
+                        : t("followedPartsHint")
+                    }
+                    label={
+                      isReview ? t("reviewFollowedParts") : t("followedParts")
+                    }
+                    onChange={field.handleChange}
+                    options={followedPartOptions}
+                    required
+                    value={field.state.value}
+                  />
+                )}
+              </form.Field>
+            </FormSection>
+
+            {isReview ? (
+              <FormSection
+                title={t("routineContextGroup")}
+                description={t("routineContextGroupDescription")}
+              >
+                <form.Field name="routineSlot">
+                  {(field) => (
+                    <OutcomeSelect
+                      errors={field.state.meta.errors}
+                      hint={t("resultRoutineSlotHint")}
+                      label={t("resultRoutineSlot")}
+                      name={field.name}
+                      onBlur={field.handleBlur}
+                      onChange={field.handleChange}
+                      options={options.reviewRoutineSlots}
+                      placeholder={t("choose")}
+                      required={false}
+                      value={field.state.value}
+                    />
+                  )}
+                </form.Field>
+                <form.Field name="usedWithProducts">
+                  {(field) => (
+                    <CommunityOutcomeProductsFieldFromShelf
+                      errors={field.state.meta.errors}
+                      onChange={field.handleChange}
+                      value={field.state.value}
+                    />
+                  )}
+                </form.Field>
+                <form.Field name="note">
+                  {(field) => (
+                    <CommunityTextareaField
+                      field={field}
+                      hint={t("resultNoteHint")}
+                      label={t("resultNote")}
+                      maxLength={500}
+                      placeholder={t("resultNotePlaceholder")}
+                    />
+                  )}
+                </form.Field>
+              </FormSection>
+            ) : null}
+
             <form.Subscribe selector={(state) => state.errorMap.onSubmit}>
               {(submitError) => {
                 const message = readSubmissionErrorMessage(submitError);
@@ -225,17 +328,26 @@ export function OutcomeSignalDialog({
                 ) : null;
               }}
             </form.Subscribe>
-          </div>
 
-          <div className="flex justify-end border-t border-border px-6 py-4">
-            <Button type="submit" size="sm" disabled={isPending}>
-              {isPending ? (
-                <InlineSpinner />
-              ) : (
-                <CheckCircle2 className="h-4 w-4" />
-              )}
-              {isPending ? t("adding") : t("addOutcome")}
-            </Button>
+            {/* Submit button flows inline with the form body so it
+                scrolls with the fields instead of being pinned at
+                the bottom of the dialog. Spacing above (mt-2) and
+                below (pb-6 on the parent) keeps it from butting up
+                against the last field or the dialog edge. */}
+            <div className="mt-2 flex justify-end">
+              <Button type="submit" size="sm" disabled={isPending}>
+                {isPending ? (
+                  <InlineSpinner />
+                ) : (
+                  <CheckCircle2 className="h-4 w-4" />
+                )}
+                {isPending
+                  ? t("adding")
+                  : isReview
+                    ? t("reviewAddOutcome")
+                    : t("addOutcome")}
+              </Button>
+            </div>
           </div>
         </form>
       </DialogContent>
@@ -252,6 +364,7 @@ function OutcomeSelect({
   onChange,
   options,
   placeholder,
+  required = true,
   value,
 }: {
   errors: readonly unknown[];
@@ -262,18 +375,19 @@ function OutcomeSelect({
   onChange: (value: string) => void;
   options: readonly { value: string; label: string }[];
   placeholder: string;
+  required?: boolean;
   value: string;
 }) {
   void onBlur;
   return (
-    <Field hint={hint} label={label} required>
+    <Field hint={hint} label={label} required={required}>
       <CommunitySimpleSelect
         name={name}
         options={options}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        required
+        required={required}
       />
       <CommunityFieldError errors={errors} />
     </Field>

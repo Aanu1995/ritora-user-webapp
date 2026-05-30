@@ -70,18 +70,21 @@ export function RoutineCard({ routine }: { routine: CommunityRoutine }) {
   });
 
   return (
-    <article className="rounded-xl border border-border bg-surface p-4 transition hover:border-border-strong">
-      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-        <div className="min-w-0">
+    <article
+      id={`community-routine-${routine.id}`}
+      className="scroll-mt-24 min-w-0 overflow-hidden rounded-xl border border-border bg-surface p-4 transition target:border-accent target:bg-accent-soft/30 target:ring-2 target:ring-accent/30 hover:border-border-strong"
+    >
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold text-foreground">
+            <h3 className="break-words font-display text-base font-bold leading-tight tracking-tight text-foreground">
               {routine.title}
             </h3>
             <MatchBadge score={routine.matchScore} />
             <DisclosureBadge value={routine.disclosureType} />
           </div>
           {routine.summary ? (
-            <p className="mt-1.5 text-xs leading-5 text-muted">
+            <p className="mt-1.5 break-words text-xs leading-5 text-muted [overflow-wrap:anywhere]">
               {routine.summary}
             </p>
           ) : null}
@@ -89,17 +92,21 @@ export function RoutineCard({ routine }: { routine: CommunityRoutine }) {
             routine.safetyFlags.length > 0) && (
             <div className="mt-2 flex flex-wrap gap-1.5">
               {routine.relevanceReasons.slice(0, 4).map((reason) => (
-                <Chip key={reason}>{reason}</Chip>
+                <Chip key={reason} className="max-w-full truncate" title={reason}>
+                  {reason}
+                </Chip>
               ))}
               {routine.safetyFlags.map((flag) => (
                 <SafetyChip key={flag.code} severity={flag.severity}>
-                  {flag.message}
+                  <span className="max-w-full truncate" title={flag.message}>
+                    {flag.message}
+                  </span>
                 </SafetyChip>
               ))}
             </div>
           )}
         </div>
-        <div className="flex flex-wrap gap-2 md:shrink-0">
+        <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
           <Button asChild size="sm">
             <Link href={`${AppRoute.Community}/routines/${routine.id}`}>
               <Wand2 className="h-4 w-4" />
@@ -110,7 +117,7 @@ export function RoutineCard({ routine }: { routine: CommunityRoutine }) {
             size="sm"
             variant="ghost"
             onClick={() => report.mutate()}
-            disabled={report.isPending}
+            disabled={report.isPending || !routine.canReportContent}
             aria-label={t("reportRoutine")}
           >
             {report.isPending ? (
@@ -123,16 +130,16 @@ export function RoutineCard({ routine }: { routine: CommunityRoutine }) {
       </div>
       <GoalPlaybookEvidence routine={routine} />
       {routine.steps.length > 0 ? (
-        <div className="mt-3 flex flex-wrap gap-1.5 border-t border-border pt-3 text-[11px]">
+        <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-border pt-3 text-[11px]">
           {routine.steps.slice(0, 5).map((step) => (
             <span
               key={`${routine.id}-${step.stepOrder}`}
-              className="inline-flex items-center gap-1 rounded-md bg-surface-muted px-2 py-0.5"
+              className="inline-flex max-w-full shrink-0 items-center gap-1 truncate rounded-md bg-surface-muted px-2 py-0.5"
             >
               <span className="font-semibold text-foreground">
                 {step.stepOrder}.
               </span>
-              <span className="text-muted">
+              <span className="truncate text-muted">
                 {labelFromOptions(options.productCategories, step.category) ??
                   humaniseCommunityTag(step.category)}
               </span>
@@ -149,6 +156,7 @@ export function RoutineCard({ routine }: { routine: CommunityRoutine }) {
         contentId={routine.id}
         contentType="routine"
         counts={routine.outcomeSignalCounts}
+        canSignalOutcome={routine.canSignalOutcome}
       />
     </article>
   );
@@ -174,16 +182,18 @@ export function ReviewCard({ review }: { review: CommunityReview }) {
       humaniseCommunityTag(value)
     );
   });
-  /* Publish date: the backend does not expose a separate
-   * `publishedAt`, but for any review in the "people like you"
-   * feed the moderation status is already `published`, so
-   * `createdAt` is the closest signal of when the review went
-   * live. Rendered as a localized relative time in the top-
-   * right cluster, tone-coded so the user can spot fresh
-   * evidence at a glance: reviews under 30 days old get the
-   * accent (green) tone, older ones stay muted. The exact
-   * date is preserved in the `<time title="…">` attribute for
-   * hover discovery. */
+  const contextDisplayLabel: string | null =
+    review.routineContextUsage === "with_products" &&
+    contextLabels.length > 0
+      ? t("context")
+      : review.routineContextUsage === "used_alone"
+        ? t("usedAloneContextLabel")
+        : review.routineContextUsage === "not_sure"
+          ? t("notSureContextLabel")
+          : null;
+  const showContextChips =
+    review.routineContextUsage === "with_products" &&
+    contextLabels.length > 0;
   const publishedDate = parseUtcDate(review.createdAt);
   const publishedRelative = publishedDate
     ? publishedDate.locale(locale).fromNow()
@@ -196,17 +206,10 @@ export function ReviewCard({ review }: { review: CommunityReview }) {
     publishedDate.isAfter(utcNow().subtract(30, "day"));
 
   return (
-    <article className="rounded-xl border border-border bg-surface p-4 transition hover:border-border-strong">
-      {/* Header layout:
-          - Mobile: title block on top, metadata cluster wraps
-            onto its own row below, left-aligned. Gives the
-            title full card width to breathe.
-          - sm+: title on the left, metadata cluster right-
-            aligned, same row.
-          Previously the metadata cluster (date + match + flag)
-          sat in the top-right at every viewport, squeezing the
-          title on narrow phones and forcing chips to wrap
-          inside the cluster. */}
+    <article
+      id={`community-review-${review.id}`}
+      className="scroll-mt-24 min-w-0 overflow-hidden rounded-xl border border-border bg-surface p-4 transition target:border-accent target:bg-accent-soft/30 target:ring-2 target:ring-accent/30 hover:border-border-strong"
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <h3 className="break-words font-display text-base font-bold leading-tight tracking-tight text-foreground">
@@ -228,19 +231,21 @@ export function ReviewCard({ review }: { review: CommunityReview }) {
             </Badge>
           ) : null}
           <MatchBadge score={review.matchScore} />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => report.mutate()}
-            disabled={report.isPending}
-            aria-label={t("reportReview")}
-          >
-            {report.isPending ? (
-              <InlineSpinner />
-            ) : (
-              <Flag className="h-4 w-4" />
-            )}
-          </Button>
+          {review.canReportContent ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => report.mutate()}
+              disabled={report.isPending}
+              aria-label={t("reportReview")}
+            >
+              {report.isPending ? (
+                <InlineSpinner />
+              ) : (
+                <Flag className="h-4 w-4" />
+              )}
+            </Button>
+          ) : null}
         </div>
       </div>
 
@@ -253,59 +258,43 @@ export function ReviewCard({ review }: { review: CommunityReview }) {
 
       <ReviewEvidenceSummary review={review} />
 
-      {/* Review body — the most important piece of content on
-          the card because it's what the reviewer actually wrote.
-          Promoted from a subtle left rule + `text-foreground/90`
-          (easy to skim past) to a proper tinted quotation block:
-          accent-soft surface so the prose stands apart from the
-          surrounding chips, a leading Quote glyph so the eye
-          locks onto it immediately, full `text-foreground` for
-          maximum readability, and `line-clamp-4` (up from 3) so
-          slightly longer reviews don't get cut off as often. */}
       {review.body ? (
-        // Solid theme-aware surface (`bg-surface-muted`) instead
-        // of the previous `bg-accent-soft` that was nearly
-        // invisible in light mode and barely there in dark. The
-        // border + Quote icon keep the accent identity without
-        // depending on a translucent fill that disappears against
-        // the parent card. `text-foreground` auto-adapts: dark
-        // on the cream surface in light, near-white on the dark
-        // surface in dark.
-        <blockquote className="mt-3 flex gap-3 rounded-xl border border-accent/20 bg-surface-muted px-4 py-3">
+        <blockquote className="mt-3 flex min-w-0 gap-3 rounded-xl border border-accent/20 bg-surface-muted px-4 py-3">
           <Quote
             aria-hidden
             className="mt-0.5 h-4 w-4 shrink-0 text-accent-strong"
           />
-          <p className="text-sm leading-relaxed text-foreground line-clamp-4">
+          <p className="min-w-0 break-words text-sm leading-relaxed text-foreground line-clamp-4 [overflow-wrap:anywhere]">
             {review.body}
           </p>
         </blockquote>
       ) : null}
 
-      {/* Context line was an `text-[11px]` middot-joined string.
-          Each pairing now renders as its own pill in foreground
-          contrast, so the user can count and scan what was
-          layered with the reviewed product at a glance. */}
-      {contextLabels.length > 0 ? (
+      {contextDisplayLabel ? (
         <div className="mt-3 flex flex-wrap items-center gap-1.5">
           <span className="text-xs font-semibold text-muted">
-            {t("context")}
+            {contextDisplayLabel}
           </span>
-          {contextLabels.map((label, index) => (
-            <span
-              key={`${review.id}-context-${index}`}
-              className="inline-flex items-center rounded-full border border-border bg-surface px-2 py-0.5 text-[11px] font-medium text-foreground"
-            >
-              {label}
-            </span>
-          ))}
+          {showContextChips
+            ? contextLabels.map((label, index) => (
+                <span
+                  key={`${review.id}-context-${index}`}
+                  title={label}
+                  className="inline-flex max-w-full items-center truncate rounded-full border border-border bg-surface px-2 py-0.5 text-[11px] font-medium text-foreground"
+                >
+                  {label}
+                </span>
+              ))
+            : null}
         </div>
       ) : null}
 
       <CommunityOutcomeSignals
         contentId={review.id}
+        contentTitle={`${review.productBrand} ${review.productName}`.trim()}
         contentType="review"
         counts={review.outcomeSignalCounts}
+        canSignalOutcome={review.canSignalOutcome}
       />
     </article>
   );

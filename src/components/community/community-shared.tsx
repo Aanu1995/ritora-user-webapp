@@ -1,5 +1,4 @@
 export type CommunityTab =
-  | "for-you"
   | "people"
   | "routines"
   | "reviews"

@@ -122,7 +122,7 @@ export function CommunityRoutineDetailPage({
               variant="outline"
               size="sm"
               onClick={() => report.mutate()}
-              disabled={report.isPending}
+              disabled={report.isPending || !routine.canReportContent}
             >
               {report.isPending ? (
                 <InlineSpinner />
@@ -156,6 +156,7 @@ export function CommunityRoutineDetailPage({
           contentId={routine.id}
           contentType="routine"
           counts={routine.outcomeSignalCounts}
+          canSignalOutcome={routine.canSignalOutcome}
         />
 
         {/* Safety strip */}

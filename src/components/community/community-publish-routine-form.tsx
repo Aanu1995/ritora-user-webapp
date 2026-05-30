@@ -75,6 +75,9 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.CommunityHome],
       });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityRoutines],
+      });
       toast.success(
         successMessage?.(routine) ??
           (routine.moderationStatus === "published"

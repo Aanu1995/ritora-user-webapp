@@ -1,14 +1,8 @@
 import { communityReviewRatingValues } from "./community-constants";
 
-export type ReviewTextFieldName =
-  | "contextProductBrand"
-  | "contextProductName"
-  | "outcomes"
-  | "productBrand"
-  | "productName";
+export type ReviewTextFieldName = "outcomes" | "productBrand" | "productName";
 
 export type ReviewSelectFieldName =
-  | "contextCategory"
   | "effectivenessRating"
   | "frequency"
   | "irritationRating"

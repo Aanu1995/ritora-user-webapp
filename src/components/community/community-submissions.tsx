@@ -1,9 +1,11 @@
 "use client";
 import {
   AlertTriangle,
+  ArrowUpRight,
   Clock,
   FileCheck2,
   GitBranch,
+  MessageSquareText,
   PencilLine,
   RefreshCw,
   Star,
@@ -11,7 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,6 +23,7 @@ import {
   ConfirmDialogTone,
 } from "@/components/ui/confirm-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AppRoute } from "@/constants/app-routes";
 import { QueryKey } from "@/constants/query-keys";
 import { getApiErrorMessage } from "@/lib/api-error";
 import {
@@ -33,6 +36,7 @@ import {
   CommunityPlaybookSubmissionEditSheet,
   CommunityReviewSubmissionEditSheet,
 } from "./community-submission-edit-sheet";
+import { SubmissionNotice } from "./community-submission-notice";
 import {
   Badge,
   CommunityListSkeleton,
@@ -58,14 +62,10 @@ function statusTone(
   }
 }
 
-/* Type → Icon mapping. Used as a leading glyph next to the title
- * meta so the user can tell their review submissions apart from
- * their playbook submissions at a glance. Matches the icons used
- * elsewhere in the community feature (Star for reviews on the
- * sidebar tab, GitBranch for playbooks). */
 const TYPE_ICON: Record<CommunitySubmission["type"], LucideIcon> = {
   review: Star,
   routine: GitBranch,
+  result: MessageSquareText,
 };
 
 export function MySubmissions() {
@@ -90,6 +90,12 @@ export function MySubmissions() {
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.CommunityHome],
       });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityReviews],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityRoutines],
+      });
       toast.success(tToast("resubmitted"));
     },
     onError: (error) =>
@@ -104,6 +110,12 @@ export function MySubmissions() {
       });
       void queryClient.invalidateQueries({
         queryKey: [QueryKey.CommunityHome],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityReviews],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: [QueryKey.CommunityRoutines],
       });
       toast.success(tToast("withdrawn"));
     },
@@ -145,14 +157,19 @@ export function MySubmissions() {
         {items.map((item) => {
           const resubmitting =
             resubmit.isPending && resubmit.variables === item.id;
+          const isResult = item.type === "result";
           const canEdit =
-            item.status === "draft" ||
-            item.status === "pending_review" ||
-            item.status === "needs_edit" ||
-            item.status === "rejected";
+            !isResult &&
+            (item.status === "draft" ||
+              item.status === "pending_review" ||
+              item.status === "needs_edit" ||
+              item.status === "rejected");
           const canResubmit =
-            item.status === "needs_edit" || item.status === "rejected";
-          const showWithdraw = item.status === "published";
+            !isResult &&
+            (item.status === "needs_edit" || item.status === "rejected");
+          const showWithdraw = isResult
+            ? item.status !== "hidden"
+            : item.status === "published";
           const withdrawing =
             withdraw.isPending && withdraw.variables === item.id;
           const primarySafetyFlag = item.safetyFlags[0] ?? null;
@@ -164,18 +181,15 @@ export function MySubmissions() {
               ? (primarySafetyFlag?.message ?? t("guidanceFallback"))
               : null);
           const guidanceSource = item.moderationGuidance?.source ?? "system";
+          const guidanceInstruction = isResult
+            ? t("resultGuidanceInstruction")
+            : t("guidanceInstruction");
           const showPrimarySafetyFlag =
             primarySafetyFlag !== null &&
             primarySafetyFlag.message !== guidanceReason;
-          const hasActions = canEdit || canResubmit || showWithdraw;
-          /* Submission date: backend doesn't expose a separate
-           * `publishedAt`, but `createdAt` is the closest signal
-           * of when the user posted the submission. Rendered in
-           * the meta line as a localized relative time so the
-           * user can tell at a glance how stale each submission
-           * is; absolute date stays in `<time title>` for hover.
-           * Tone-coded: posts under 30 days old read as recent
-           * (accent), older ones read as muted. */
+          const viewTarget = getSubmissionViewTarget(item);
+          const hasActions =
+            canEdit || canResubmit || showWithdraw || viewTarget !== null;
           const submittedDate = parseUtcDate(item.createdAt);
           const submittedRelative = submittedDate
             ? submittedDate.locale(locale).fromNow()
@@ -187,25 +201,21 @@ export function MySubmissions() {
             submittedDate !== null &&
             submittedDate.isAfter(utcNow().subtract(30, "day"));
           const TypeIcon = TYPE_ICON[item.type];
+          const displayTitle =
+            item.type === "result"
+              ? t("resultTitle", {
+                  title: item.parentContent?.title ?? t("resultFallbackTarget"),
+                })
+              : item.title;
           return (
             <article
               key={item.id}
               className="rounded-2xl border border-border bg-surface p-5 shadow-soft"
             >
-              {/* Header layout:
-                  - Mobile: title block stacks on top, status
-                    badge + date cluster wraps to its own row
-                    below, left-aligned. Gives the title full
-                    card width to breathe.
-                  - sm+: title block on the left, status cluster
-                    right-aligned, same row.
-                  The previous layout crammed title + type chip
-                  + status chip into one flex-wrap row, so on
-                  narrow phones the chips elbowed the title down. */}
               <header className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
                 <div className="min-w-0 flex-1">
                   <h3 className="min-w-0 break-words font-display text-base font-bold leading-tight tracking-tight text-foreground">
-                    {item.title}
+                    {displayTitle}
                   </h3>
                   <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-muted">
                     <span className="inline-flex items-center gap-1">
@@ -252,21 +262,19 @@ export function MySubmissions() {
                   title={t("guidanceTitle")}
                   tag={t(`guidanceSource.${guidanceSource}`)}
                   body={guidanceReason}
-                  footnote={t("guidanceInstruction")}
+                  footnote={guidanceInstruction}
                 />
+              ) : null}
+
+              {isResult && item.editableText ? (
+                <blockquote className="mt-3 rounded-xl border-l-4 border-accent bg-surface-muted px-3 py-2 text-sm leading-6 text-foreground">
+                  {item.editableText}
+                </blockquote>
               ) : null}
 
               {hasActions ? (
                 <div className="mt-4 flex flex-wrap justify-end gap-2">
                   {canEdit ? (
-                    // Edit is the recommended path: the guidance
-                    // notice tells the user to "change the parts
-                    // called out below, then save edits." So it
-                    // gets the primary (default-filled) variant
-                    // and an icon for parity with the other two
-                    // buttons. Previously rendered as another
-                    // outline, identical to Resubmit, with no
-                    // visual hierarchy.
                     <Button
                       size="sm"
                       onClick={() => setEditingId(item.id)}
@@ -288,6 +296,16 @@ export function MySubmissions() {
                         <RefreshCw className="h-4 w-4" />
                       )}
                       {resubmitting ? t("resubmitting") : t("resubmit")}
+                    </Button>
+                  ) : null}
+                  {viewTarget ? (
+                    <Button size="sm" variant="outline" asChild>
+                      <a href={viewTarget.href}>
+                        <ArrowUpRight className="h-4 w-4" />
+                        {viewTarget.type === "review"
+                          ? t("viewReview")
+                          : t("viewPlaybook")}
+                      </a>
                     </Button>
                   ) : null}
                   {showWithdraw ? (
@@ -344,58 +362,36 @@ export function MySubmissions() {
   );
 }
 
-/* ===========================================================
- * SubmissionNotice
- *
- * Pending-state notice block (icon avatar + title + optional
- * source tag + body + optional footnote). Spans the full card
- * width, soft warning fill, body in `text-foreground` so the
- * actionable copy reads at full contrast instead of competing
- * with the warning hue. Shares the same look as the eligibility
- * gate's pending items so the two surfaces feel like one
- * design language.
- * ========================================================= */
+function getSubmissionViewTarget(
+  item: CommunitySubmission,
+): { href: string; type: "review" | "routine" } | null {
+  if (item.type === "result") {
+    return item.parentContent
+      ? {
+          href: buildCommunityContentHref(
+            item.parentContent.type,
+            item.parentContent.id,
+          ),
+          type: item.parentContent.type,
+        }
+      : null;
+  }
 
-function SubmissionNotice({
-  body,
-  footnote,
-  icon,
-  tag,
-  title,
-}: {
-  body: string;
-  footnote?: string;
-  icon: ReactNode;
-  tag?: string;
-  title: string;
-}) {
-  return (
-    <div className="mt-3 flex gap-3 rounded-xl border border-warning/30 bg-warning-soft/40 px-3 py-3">
-      <span
-        aria-hidden
-        // `text-surface` auto-inverts for theme: white in light
-        // mode (high contrast on dark amber `--warning`), dark
-        // in dark mode (high contrast on light amber `--warning`).
-        // Using a literal `text-white` here would wash out
-        // against dark mode's lighter `--warning` shade.
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-warning text-surface"
-      >
-        {icon}
-      </span>
-      <div className="min-w-0 space-y-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="text-sm font-semibold text-foreground">{title}</p>
-          {tag ? (
-            <span className="inline-flex items-center rounded-full border border-border bg-surface px-2 py-0.5 text-[11px] font-medium text-muted">
-              {tag}
-            </span>
-          ) : null}
-        </div>
-        <p className="text-sm leading-5 text-foreground">{body}</p>
-        {footnote ? (
-          <p className="text-xs leading-5 text-muted">{footnote}</p>
-        ) : null}
-      </div>
-    </div>
-  );
+  if (item.status !== "published") {
+    return null;
+  }
+
+  return {
+    href: buildCommunityContentHref(item.type, item.id),
+    type: item.type,
+  };
+}
+
+function buildCommunityContentHref(
+  type: "review" | "routine",
+  id: string,
+): string {
+  return `${AppRoute.Community}?tab=${
+    type === "review" ? "reviews" : "routines"
+  }#community-${type}-${id}`;
 }
