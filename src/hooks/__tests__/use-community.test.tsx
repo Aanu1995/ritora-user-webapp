@@ -1,5 +1,6 @@
 import { act, waitFor } from "@testing-library/react";
 import {
+  useCommunityBookmarks,
   useCommunityPeopleLikeMe,
   useCommunityReviews,
   useMyCommunitySubmissions,
@@ -13,18 +14,21 @@ import {
 } from "@/components/community/test-fixtures";
 import {
   getPeopleLikeMe,
+  listCommunityBookmarks,
   listCommunityReviews,
   listMyCommunitySubmissions,
 } from "@/services/community.service";
 
 jest.mock("@/services/community.service", () => ({
   getPeopleLikeMe: jest.fn(),
+  listCommunityBookmarks: jest.fn(),
   listCommunityReviews: jest.fn(),
   listCommunityRoutines: jest.fn(),
   listMyCommunitySubmissions: jest.fn(),
 }));
 
 const mockedGetPeopleLikeMe = jest.mocked(getPeopleLikeMe);
+const mockedListBookmarks = jest.mocked(listCommunityBookmarks);
 const mockedListReviews = jest.mocked(listCommunityReviews);
 const mockedListSubmissions = jest.mocked(listMyCommunitySubmissions);
 
@@ -94,6 +98,37 @@ describe("useCommunityPeopleLikeMe", () => {
     await waitFor(() => expect(result.current.data).toHaveLength(2));
     expect(result.current.hasNextPage).toBe(false);
     expect(mockedGetPeopleLikeMe).toHaveBeenLastCalledWith(
+      { cursor: "cursor-1", limit: 12 },
+      expect.any(AbortSignal),
+    );
+  });
+});
+
+describe("useCommunityBookmarks", () => {
+  it("flattens paginated bookmark pages", async () => {
+    mockedListBookmarks
+      .mockResolvedValueOnce({
+        items: [reviewFixture],
+        nextCursor: "cursor-1",
+      })
+      .mockResolvedValueOnce({
+        items: [{ ...reviewFixture, id: "review-2" }],
+        nextCursor: null,
+      });
+
+    const { result } = renderHookWithProviders(() => useCommunityBookmarks());
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toHaveLength(1);
+    expect(result.current.hasNextPage).toBe(true);
+
+    await act(async () => {
+      await result.current.fetchNextPage();
+    });
+
+    await waitFor(() => expect(result.current.data).toHaveLength(2));
+    expect(result.current.hasNextPage).toBe(false);
+    expect(mockedListBookmarks).toHaveBeenLastCalledWith(
       { cursor: "cursor-1", limit: 12 },
       expect.any(AbortSignal),
     );

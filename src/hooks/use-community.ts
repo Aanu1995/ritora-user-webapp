@@ -5,6 +5,7 @@ import { QueryKey } from "@/constants/query-keys";
 import { useAuthEnabled } from "@/hooks/use-auth-enabled";
 import {
   getPeopleLikeMe,
+  listCommunityBookmarks,
   listCommunityReviews,
   listCommunityRoutines,
   listMyCommunitySubmissions,
@@ -106,6 +107,29 @@ export function useCommunityPeopleLikeMe(enabled: boolean = true) {
     ...query,
     data: query.data?.pages.flatMap((page) => page.items) ?? [],
     profileFacets: query.data?.pages[0]?.profileFacets ?? null,
+  };
+}
+
+export function useCommunityBookmarks(enabled: boolean = true) {
+  const isEnabled = useAuthEnabled(enabled);
+  const query = useInfiniteQuery({
+    queryKey: [QueryKey.CommunityBookmarks],
+    queryFn: ({ pageParam, signal }) =>
+      listCommunityBookmarks(
+        {
+          cursor: pageParam,
+          limit: COMMUNITY_LIST_PAGE_SIZE,
+        },
+        signal,
+      ),
+    enabled: isEnabled,
+    initialPageParam: null as string | null,
+    getNextPageParam: getSafeNextCursor,
+  });
+
+  return {
+    ...query,
+    data: query.data?.pages.flatMap((page) => page.items) ?? [],
   };
 }
 

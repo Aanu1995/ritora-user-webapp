@@ -5511,6 +5511,7 @@
       "peopleLikeMe": "gente como yo",
       "playbooks": "Libros de jugadas",
       "reviews": "Reseñas",
+      "bookmarks": "Guardados",
       "submissions": "mio",
       "warnings": "Advertencias",
       "sectionsLabel": "Secciones comunitarias"
@@ -5543,6 +5544,20 @@
       "retry": "Intentarlo de nuevo",
       "peopleEmptyTitle": "Aún no hay evidencia comunitaria",
       "peopleEmptyBody": "Una vez que las personas con una piel como la tuya compartan guías y reseñas, las verás aquí."
+    },
+    "bookmarks": {
+      "title": "Guardados",
+      "emptyTitle": "Aún no hay evidencia comunitaria guardada",
+      "emptyBody": "Guarda reseñas y guías que quieras volver a consultar antes de probar algo nuevo.",
+      "loaded": "{count} guardados",
+      "save": "Guardar",
+      "bookmarked": "Guardado",
+      "remove": "Quitar guardado",
+      "saving": "Guardando…",
+      "removing": "Quitando…",
+      "savedToast": "Guardado en favoritos.",
+      "removedToast": "Eliminado de favoritos.",
+      "failedToast": "No pudimos actualizar este guardado. Inténtalo de nuevo."
     },
     "cards": {
       "adapt": "Revisar mi estante",

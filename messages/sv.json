@@ -5506,6 +5506,7 @@
       "peopleLikeMe": "Personer som jag",
       "playbooks": "Spelplaner",
       "reviews": "Recensioner",
+      "bookmarks": "Bokmärken",
       "submissions": "Mina",
       "warnings": "Varningar",
       "sectionsLabel": "Gemenskapssektioner"
@@ -5538,6 +5539,20 @@
       "retry": "Försök igen",
       "peopleEmptyTitle": "Inga gemenskapsbevis ännu",
       "peopleEmptyBody": "När personer med hud som din delar spelplaner och recensioner ser du dem här."
+    },
+    "bookmarks": {
+      "title": "Bokmärken",
+      "emptyTitle": "Inga sparade gemenskapsbevis ännu",
+      "emptyBody": "Spara recensioner och spelplaner som du vill återkomma till innan du provar något nytt.",
+      "loaded": "{count} sparade",
+      "save": "Spara",
+      "bookmarked": "Bokmärkt",
+      "remove": "Ta bort bokmärke",
+      "saving": "Sparar…",
+      "removing": "Tar bort…",
+      "savedToast": "Sparad i bokmärken.",
+      "removedToast": "Borttagen från bokmärken.",
+      "failedToast": "Vi kunde inte uppdatera bokmärket. Försök igen."
     },
     "cards": {
       "adapt": "Kontrollera min hylla",

@@ -14,6 +14,8 @@ import {
 import {
   acceptCommunityGuidelines,
   adaptCommunityRoutine,
+  bookmarkCommunityReview,
+  bookmarkCommunityRoutine,
   createCommunityReview,
   createCommunityRoutine,
   getCommunityHome,
@@ -22,6 +24,7 @@ import {
   getCommunityRoutine,
   getPeopleLikeMe,
   listCommunityReviewResults,
+  listCommunityBookmarks,
   listCommunityReviews,
   listCommunityRoutineResults,
   listCommunityRoutines,
@@ -32,6 +35,8 @@ import {
   resubmitCommunityContent,
   signalCommunityReviewOutcome,
   signalCommunityRoutineOutcome,
+  unbookmarkCommunityReview,
+  unbookmarkCommunityRoutine,
   updateCommunityReview,
   updateCommunityRoutine,
   voteCommunityReview,
@@ -52,6 +57,7 @@ describe("community.service", () => {
     await listCommunityRoutines({}, controller.signal);
     await getCommunityRoutine("routine-1", controller.signal);
     await listCommunityReviews({}, controller.signal);
+    await listCommunityBookmarks(controller.signal);
     await listCommunityWarnings(controller.signal);
     await listMyCommunitySubmissions(controller.signal);
     await getCommunityProductEvidence("product-1", controller.signal);
@@ -86,19 +92,22 @@ describe("community.service", () => {
     expect(getRequest).toHaveBeenNthCalledWith(6, "/community/reviews", {
       signal: controller.signal,
     });
-    expect(getRequest).toHaveBeenNthCalledWith(7, "/community/warnings", {
+    expect(getRequest).toHaveBeenNthCalledWith(7, "/community/bookmarks", {
       signal: controller.signal,
     });
-    expect(getRequest).toHaveBeenNthCalledWith(8, "/community/me/submissions", {
+    expect(getRequest).toHaveBeenNthCalledWith(8, "/community/warnings", {
+      signal: controller.signal,
+    });
+    expect(getRequest).toHaveBeenNthCalledWith(9, "/community/me/submissions", {
       signal: controller.signal,
     });
     expect(getRequest).toHaveBeenNthCalledWith(
-      9,
+      10,
       "/community/products/product-1/evidence",
       { signal: controller.signal },
     );
     expect(getRequest).toHaveBeenNthCalledWith(
-      10,
+      11,
       "/community/reviews/review-1/results",
       {
         params: { signal: "worked_for_me_too" },
@@ -106,7 +115,7 @@ describe("community.service", () => {
       },
     );
     expect(getRequest).toHaveBeenNthCalledWith(
-      11,
+      12,
       "/community/routines/routine-1/results",
       {
         params: { signal: "worked_with_changes" },
@@ -211,6 +220,13 @@ describe("community.service", () => {
       },
       controller.signal,
     );
+    await listCommunityBookmarks(
+      {
+        cursor: "bookmark-cursor",
+        limit: 12,
+      },
+      controller.signal,
+    );
 
     expect(getRequest).toHaveBeenNthCalledWith(1, "/community/routines", {
       params: {
@@ -256,6 +272,13 @@ describe("community.service", () => {
         signal: controller.signal,
       },
     );
+    expect(getRequest).toHaveBeenNthCalledWith(5, "/community/bookmarks", {
+      params: {
+        cursor: "bookmark-cursor",
+        limit: 12,
+      },
+      signal: controller.signal,
+    });
   });
 
   it("creates reviews and routines through guarded publish endpoints", async () => {
@@ -444,5 +467,32 @@ describe("community.service", () => {
     });
 
     expect(deleteRequest).toHaveBeenCalledWith("/community/content/content-1");
+  });
+
+  it("bookmarks and removes community reviews and playbooks", async () => {
+    (postRequest as jest.Mock).mockResolvedValue({ bookmarked: true });
+    (deleteRequest as jest.Mock).mockResolvedValue({ bookmarked: false });
+
+    await bookmarkCommunityRoutine("routine-1");
+    await bookmarkCommunityReview("review-1");
+    await unbookmarkCommunityRoutine("routine-1");
+    await unbookmarkCommunityReview("review-1");
+
+    expect(postRequest).toHaveBeenNthCalledWith(
+      1,
+      "/community/routines/routine-1/bookmark",
+    );
+    expect(postRequest).toHaveBeenNthCalledWith(
+      2,
+      "/community/reviews/review-1/bookmark",
+    );
+    expect(deleteRequest).toHaveBeenNthCalledWith(
+      1,
+      "/community/routines/routine-1/bookmark",
+    );
+    expect(deleteRequest).toHaveBeenNthCalledWith(
+      2,
+      "/community/reviews/review-1/bookmark",
+    );
   });
 });

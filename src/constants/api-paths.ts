@@ -168,9 +168,12 @@ export const ApiPath = {
   CommunityEligibility: `${COMMUNITY_BASE}/eligibility`,
   CommunityAcceptGuidelines: `${COMMUNITY_BASE}/guidelines/accept`,
   CommunityPeopleLikeMe: `${COMMUNITY_BASE}/people-like-me`,
+  CommunityBookmarks: `${COMMUNITY_BASE}/bookmarks`,
   CommunityRoutines: `${COMMUNITY_BASE}/routines`,
   CommunityRoutine: (id: string) => `${COMMUNITY_BASE}/routines/${id}`,
   CommunityRoutineEdit: (id: string) => `${COMMUNITY_BASE}/routines/${id}`,
+  CommunityRoutineBookmark: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/bookmark`,
   CommunityRoutineReport: (id: string) =>
     `${COMMUNITY_BASE}/routines/${id}/report`,
   CommunityRoutineHelpfulness: (id: string) =>
@@ -185,6 +188,8 @@ export const ApiPath = {
     `${COMMUNITY_BASE}/products/${id}/evidence`,
   CommunityReviews: `${COMMUNITY_BASE}/reviews`,
   CommunityReviewEdit: (id: string) => `${COMMUNITY_BASE}/reviews/${id}`,
+  CommunityReviewBookmark: (id: string) =>
+    `${COMMUNITY_BASE}/reviews/${id}/bookmark`,
   CommunityReviewReport: (id: string) =>
     `${COMMUNITY_BASE}/reviews/${id}/report`,
   CommunityReviewHelpfulness: (id: string) =>

@@ -286,7 +286,16 @@ export function MySubmissions() {
                       variant="ghost"
                       onClick={() => setWithdrawId(item.id)}
                       disabled={withdrawing}
-                      className="text-muted hover:bg-danger-soft hover:text-danger"
+                      /* Destructive intent visible at rest:
+                         text + icon render in `text-danger`
+                         from the start so users (especially
+                         keyboard / touch users who never see
+                         hover) can tell the action is
+                         destructive without interacting.
+                         Hover just adds the soft red fill
+                         for click feedback; it doesn't carry
+                         the danger identity by itself. */
+                      className="text-danger hover:bg-danger-soft hover:text-danger"
                     >
                       {withdrawing ? (
                         <InlineSpinner />

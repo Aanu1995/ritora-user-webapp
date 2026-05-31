@@ -29,11 +29,13 @@ import { MySubmissions } from "@/components/community/community-submissions";
 import {
   adaptCommunityRoutine,
   acceptCommunityGuidelines,
+  bookmarkCommunityReview,
   createCommunityReview,
   createCommunityRoutine,
   getCommunityHome,
   getPeopleLikeMe,
   getCommunityRoutine,
+  listCommunityBookmarks,
   listCommunityReviews,
   listCommunityReviewResults,
   listCommunityRoutineResults,
@@ -44,6 +46,8 @@ import {
   resubmitCommunityContent,
   signalCommunityReviewOutcome,
   signalCommunityRoutineOutcome,
+  unbookmarkCommunityReview,
+  unbookmarkCommunityRoutine,
   updateCommunityReview,
   updateCommunityRoutine,
   withdrawCommunityContent,
@@ -142,11 +146,14 @@ jest.mock("sonner", () => ({
 jest.mock("@/services/community.service", () => ({
   acceptCommunityGuidelines: jest.fn(),
   adaptCommunityRoutine: jest.fn(),
+  bookmarkCommunityReview: jest.fn(),
+  bookmarkCommunityRoutine: jest.fn(),
   createCommunityReview: jest.fn(),
   createCommunityRoutine: jest.fn(),
   getCommunityHome: jest.fn(),
   getPeopleLikeMe: jest.fn(),
   getCommunityRoutine: jest.fn(),
+  listCommunityBookmarks: jest.fn(),
   listCommunityReviews: jest.fn(),
   listCommunityReviewResults: jest.fn(),
   listCommunityRoutineResults: jest.fn(),
@@ -157,6 +164,8 @@ jest.mock("@/services/community.service", () => ({
   resubmitCommunityContent: jest.fn(),
   signalCommunityReviewOutcome: jest.fn(),
   signalCommunityRoutineOutcome: jest.fn(),
+  unbookmarkCommunityReview: jest.fn(),
+  unbookmarkCommunityRoutine: jest.fn(),
   updateCommunityReview: jest.fn(),
   updateCommunityRoutine: jest.fn(),
   withdrawCommunityContent: jest.fn(),
@@ -176,12 +185,16 @@ const mockedAcceptGuidelines = jest.mocked(acceptCommunityGuidelines);
 const mockedCreateReview = jest.mocked(createCommunityReview);
 const mockedCreateRoutine = jest.mocked(createCommunityRoutine);
 const mockedGetRoutine = jest.mocked(getCommunityRoutine);
+const mockedListBookmarks = jest.mocked(listCommunityBookmarks);
 const mockedListReviews = jest.mocked(listCommunityReviews);
 const mockedListReviewResults = jest.mocked(listCommunityReviewResults);
 const mockedListRoutineResults = jest.mocked(listCommunityRoutineResults);
 const mockedListRoutines = jest.mocked(listCommunityRoutines);
 const mockedAdaptRoutine = jest.mocked(adaptCommunityRoutine);
 const mockedSignalRoutineOutcome = jest.mocked(signalCommunityRoutineOutcome);
+const mockedBookmarkReview = jest.mocked(bookmarkCommunityReview);
+const mockedUnbookmarkRoutine = jest.mocked(unbookmarkCommunityRoutine);
+const mockedUnbookmarkReview = jest.mocked(unbookmarkCommunityReview);
 const mockedReportRoutine = jest.mocked(reportCommunityRoutine);
 const mockedReportReview = jest.mocked(reportCommunityReview);
 const mockedSignalReviewOutcome = jest.mocked(signalCommunityReviewOutcome);
@@ -245,6 +258,10 @@ beforeEach(() => {
   });
   mockedListRoutines.mockResolvedValue({
     items: [routineFixture],
+    nextCursor: null,
+  });
+  mockedListBookmarks.mockResolvedValue({
+    items: [routineFixture, reviewFixture],
     nextCursor: null,
   });
   mockedGetPeopleLikeMe.mockResolvedValue({
@@ -539,6 +556,7 @@ describe("CommunityPage", () => {
     expect(
       screen.queryByRole("tab", { name: /share what worked/i }),
     ).not.toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /bookmarks/i })).toBeInTheDocument();
 
     await userEvent.click(await screen.findByRole("tab", { name: /reviews/i }));
     await userEvent.click(
@@ -563,6 +581,120 @@ describe("CommunityPage", () => {
     await waitFor(() =>
       expect(mockedAcceptGuidelines).toHaveBeenCalledTimes(1),
     );
+  });
+
+  it("saves community cards and shows bookmarked cards with remove actions", async () => {
+    mockedGetCommunityHome.mockResolvedValue(communityHomeFixture);
+    mockedBookmarkReview.mockResolvedValue({ bookmarked: true });
+    mockedUnbookmarkReview.mockResolvedValue({ bookmarked: false });
+
+    renderWithProviders(<CommunityPage />);
+
+    await userEvent.click(await screen.findByRole("tab", { name: /reviews/i }));
+    const reviewCard = (
+      await screen.findByRole("heading", { name: "Ritora Barrier Cream" })
+    ).closest("article");
+    if (!reviewCard) throw new Error("Expected review card.");
+
+    await userEvent.click(
+      within(reviewCard).getByRole("button", { name: "Save" }),
+    );
+    await waitFor(() =>
+      expect(mockedBookmarkReview).toHaveBeenCalledWith(reviewFixture.id),
+    );
+
+    await userEvent.click(screen.getByRole("tab", { name: /bookmarks/i }));
+    await waitFor(() =>
+      expect(mockedListBookmarks).toHaveBeenCalledWith(
+        { cursor: null, limit: 12 },
+        expect.any(AbortSignal),
+      ),
+    );
+    const savedReviewCard = (
+      await screen.findByRole("heading", { name: "Ritora Barrier Cream" })
+    ).closest("article");
+    if (!savedReviewCard) throw new Error("Expected saved review card.");
+    expect(
+      within(savedReviewCard).getByRole("button", { name: "Remove bookmark" }),
+    ).toBeInTheDocument();
+
+    await userEvent.click(
+      within(savedReviewCard).getByRole("button", {
+        name: "Remove bookmark",
+      }),
+    );
+    await waitFor(() =>
+      expect(mockedUnbookmarkReview).toHaveBeenCalledWith(reviewFixture.id),
+    );
+  });
+
+  it("indicates when review and playbook cards are already bookmarked", async () => {
+    mockedUnbookmarkReview.mockResolvedValue({ bookmarked: false });
+    mockedUnbookmarkRoutine.mockResolvedValue({ bookmarked: false });
+
+    renderWithProviders(
+      <>
+        <ReviewList
+          reviews={[{ ...reviewFixture, bookmarkedByViewer: true }]}
+        />
+        <RoutineList
+          routines={[{ ...routineFixture, bookmarkedByViewer: true }]}
+        />
+      </>,
+    );
+
+    const bookmarkedButtons = screen.getAllByRole("button", {
+      name: "Bookmarked",
+    });
+    expect(bookmarkedButtons).toHaveLength(2);
+    bookmarkedButtons.forEach((button) => {
+      expect(button).toHaveClass("h-8", "w-8");
+    });
+
+    const reviewCard = screen
+      .getByRole("heading", { name: "Ritora Barrier Cream" })
+      .closest("article");
+    const routineCard = screen
+      .getByRole("heading", { name: routineFixture.title })
+      .closest("article");
+    const reviewActions = reviewCard?.firstElementChild?.lastElementChild;
+    const routineActions = routineCard?.firstElementChild?.lastElementChild;
+    expect(reviewActions?.lastElementChild).toBe(bookmarkedButtons[0]);
+    expect(routineActions?.lastElementChild).toBe(bookmarkedButtons[1]);
+
+    await userEvent.click(bookmarkedButtons[0]);
+    await waitFor(() =>
+      expect(mockedUnbookmarkReview).toHaveBeenCalledWith(reviewFixture.id),
+    );
+
+    await userEvent.click(bookmarkedButtons[1]);
+    await waitFor(() =>
+      expect(mockedUnbookmarkRoutine).toHaveBeenCalledWith(routineFixture.id),
+    );
+  });
+
+  it("does not render bookmarked items that are under moderation", async () => {
+    mockedGetCommunityHome.mockResolvedValue(communityHomeFixture);
+    mockedListBookmarks.mockResolvedValue({
+      items: [
+        {
+          ...reviewFixture,
+          moderationStatus: "pending_review",
+        },
+      ],
+      nextCursor: null,
+    });
+
+    renderWithProviders(<CommunityPage />);
+
+    await userEvent.click(
+      await screen.findByRole("tab", { name: /bookmarks/i }),
+    );
+
+    expect(
+      await screen.findByText("No saved community evidence yet"),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Ritora Barrier Cream")).not.toBeInTheDocument();
   });
 
   it("redirects legacy For You tab state to People like me", async () => {

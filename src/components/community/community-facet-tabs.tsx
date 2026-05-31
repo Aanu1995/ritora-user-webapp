@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   AlertTriangle,
+  Bookmark,
   ChevronDown,
   GitBranch,
   Lock,
@@ -97,6 +98,7 @@ export function CommunityTabs({
     ["people", t("peopleLikeMe"), <Users key="i" className="h-4 w-4" />],
     ["routines", t("playbooks"), <GitBranch key="i" className="h-4 w-4" />],
     ["reviews", t("reviews"), <Star key="i" className="h-4 w-4" />],
+    ["bookmarks", t("bookmarks"), <Bookmark key="i" className="h-4 w-4" />],
     ["submissions", t("submissions"), <UserCheck key="i" className="h-4 w-4" />],
     ["trust", t("warnings"), <AlertTriangle key="i" className="h-4 w-4" />],
   ];

@@ -2,6 +2,7 @@ export type CommunityTab =
   | "people"
   | "routines"
   | "reviews"
+  | "bookmarks"
   | "submissions"
   | "trust";
 

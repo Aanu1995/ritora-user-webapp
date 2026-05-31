@@ -90,7 +90,13 @@ function CardTypeAvatar({
   );
 }
 
-export function RoutineCard({ routine }: { routine: CommunityRoutine }) {
+export function RoutineCard({
+  bookmarkAction,
+  routine,
+}: {
+  bookmarkAction?: ReactNode;
+  routine: CommunityRoutine;
+}) {
   const t = useTranslations("community.cards");
   const options = useCommunityTranslatedOptions();
   const [detailOpen, setDetailOpen] = useState(false);
@@ -184,6 +190,7 @@ export function RoutineCard({ routine }: { routine: CommunityRoutine }) {
               <BookOpen className="h-4 w-4" />
               {t("viewPlaybook")}
             </Button>
+            {bookmarkAction}
           </div>
         </div>
 
@@ -285,7 +292,13 @@ function routineStepProductLabel(
   return productLabel ? `${productLabel} · ${categoryLabel}` : categoryLabel;
 }
 
-export function ReviewCard({ review }: { review: CommunityReview }) {
+export function ReviewCard({
+  bookmarkAction,
+  review,
+}: {
+  bookmarkAction?: ReactNode;
+  review: CommunityReview;
+}) {
   const t = useTranslations("community.cards");
   const options = useCommunityTranslatedOptions();
   const categoryLabel =
@@ -331,6 +344,7 @@ export function ReviewCard({ review }: { review: CommunityReview }) {
         <div className="flex flex-wrap items-center gap-1 sm:shrink-0 sm:justify-end">
           <PublishedDateBadge createdAt={review.createdAt} />
           <MatchBadge score={review.matchScore} />
+          {bookmarkAction}
         </div>
       </div>
 

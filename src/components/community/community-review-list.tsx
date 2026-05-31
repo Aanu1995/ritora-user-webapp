@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Star } from "lucide-react";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import type { CommunityReview } from "@/types/community";
+import { CommunityBookmarkButton } from "./community-bookmark-button";
 import { ReviewCard, SectionTitle } from "./community-cards";
 import {
   CommunityAutoLoadState,
@@ -108,9 +109,7 @@ export function ReviewList({
             <div className="order-3 w-full sm:order-2 sm:ml-auto sm:mr-0 sm:w-auto sm:max-w-md sm:flex-1">
               <ReviewSearchField
                 value={filters.search}
-                onChange={(search) =>
-                  onFiltersChange({ ...filters, search })
-                }
+                onChange={(search) => onFiltersChange({ ...filters, search })}
               />
             </div>
           </div>
@@ -162,7 +161,18 @@ export function ReviewList({
            level horizontal scrollbar on mobile. */
         <div className="grid grid-cols-1 gap-3">
           {reviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
+            <ReviewCard
+              key={review.id}
+              review={review}
+              bookmarkAction={
+                <CommunityBookmarkButton
+                  bookmarked={review.bookmarkedByViewer}
+                  contentId={review.id}
+                  contentType="review"
+                  mode="save"
+                />
+              }
+            />
           ))}
         </div>
       ) : null}

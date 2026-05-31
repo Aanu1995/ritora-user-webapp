@@ -5504,6 +5504,7 @@
       "peopleLikeMe": "People like me",
       "playbooks": "Playbooks",
       "reviews": "Reviews",
+      "bookmarks": "Bookmarks",
       "submissions": "Mine",
       "warnings": "Warnings",
       "sectionsLabel": "Community sections"
@@ -5536,6 +5537,20 @@
       "retry": "Try again",
       "peopleEmptyTitle": "No community evidence yet",
       "peopleEmptyBody": "Once people with skin like yours share playbooks and reviews, you'll see them here."
+    },
+    "bookmarks": {
+      "title": "Bookmarks",
+      "emptyTitle": "No saved community evidence yet",
+      "emptyBody": "Save reviews and playbooks you want to revisit before trying something new.",
+      "loaded": "{count} saved",
+      "save": "Save",
+      "bookmarked": "Bookmarked",
+      "remove": "Remove bookmark",
+      "saving": "Saving…",
+      "removing": "Removing…",
+      "savedToast": "Saved to bookmarks.",
+      "removedToast": "Removed from bookmarks.",
+      "failedToast": "We couldn't update that bookmark. Please try again."
     },
     "cards": {
       "adapt": "Check my shelf",

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { GitBranch } from "lucide-react";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import type { CommunityRoutine } from "@/types/community";
+import { CommunityBookmarkButton } from "./community-bookmark-button";
 import { RoutineCard, SectionTitle } from "./community-cards";
 import {
   CommunityAutoLoadState,
@@ -95,9 +96,7 @@ export function RoutineList({
             <div className="order-3 w-full sm:order-2 sm:ml-auto sm:mr-0 sm:w-auto sm:max-w-md sm:flex-1">
               <PlaybookSearchField
                 value={filters.search}
-                onChange={(search) =>
-                  onFiltersChange({ ...filters, search })
-                }
+                onChange={(search) => onFiltersChange({ ...filters, search })}
               />
             </div>
           </div>
@@ -149,7 +148,18 @@ export function RoutineList({
            overflow trap fixed on the Reviews list. */
         <div className="grid grid-cols-1 gap-3">
           {routines.map((routine) => (
-            <RoutineCard key={routine.id} routine={routine} />
+            <RoutineCard
+              key={routine.id}
+              routine={routine}
+              bookmarkAction={
+                <CommunityBookmarkButton
+                  bookmarked={routine.bookmarkedByViewer}
+                  contentId={routine.id}
+                  contentType="routine"
+                  mode="save"
+                />
+              }
+            />
           ))}
         </div>
       ) : null}

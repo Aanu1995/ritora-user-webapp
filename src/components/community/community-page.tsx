@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { QueryKey } from "@/constants/query-keys";
 import {
+  useCommunityBookmarks,
   useCommunityPeopleLikeMe,
   useCommunityReviews,
   useCommunityRoutines,
@@ -17,6 +18,7 @@ import {
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { getCommunityHome } from "@/services/community.service";
 import type { CommunityListQuery } from "@/types/community";
+import { BookmarksList } from "./community-bookmarks";
 import { PostingEligibilityDialog } from "./community-eligibility";
 import { CommunityTabs, FacetStrip } from "./community-facet-tabs";
 import {
@@ -93,6 +95,7 @@ export function CommunityPage() {
     tab === "reviews",
   );
   const peopleQuery = useCommunityPeopleLikeMe(tab === "people");
+  const bookmarksQuery = useCommunityBookmarks(tab === "bookmarks");
   const activeTargetReady =
     tab === "people"
       ? !peopleQuery.isPending
@@ -100,6 +103,8 @@ export function CommunityPage() {
       ? !routinesQuery.isPending
       : tab === "reviews"
         ? !reviewsQuery.isPending
+        : tab === "bookmarks"
+          ? !bookmarksQuery.isPending
         : true;
 
   useEffect(() => {
@@ -240,6 +245,21 @@ export function CommunityPage() {
               }}
             />
           ) : null}
+          {tab === "bookmarks" ? (
+            <BookmarksList
+              items={bookmarksQuery.data}
+              isLoading={bookmarksQuery.isPending}
+              isError={bookmarksQuery.isError}
+              hasNextPage={Boolean(bookmarksQuery.hasNextPage)}
+              isFetchingNextPage={bookmarksQuery.isFetchingNextPage}
+              hasLoadMoreError={Boolean(bookmarksQuery.isFetchNextPageError)}
+              onLoadMore={() => bookmarksQuery.fetchNextPage()}
+              onRetryLoadMore={() => bookmarksQuery.fetchNextPage()}
+              onRetryInitialLoad={() => {
+                void bookmarksQuery.refetch();
+              }}
+            />
+          ) : null}
           {tab === "submissions" ? <MySubmissions /> : null}
           {tab === "trust" ? <TrustPanel data={data} /> : null}
         </div>
@@ -279,6 +299,7 @@ function parseCommunityTab(value: string | null): CommunityTab {
     "people",
     "routines",
     "reviews",
+    "bookmarks",
     "submissions",
     "trust",
   ]);

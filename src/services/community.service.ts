@@ -7,6 +7,7 @@ import {
 } from "@/lib/api";
 import type {
   CommunityAdaptation,
+  CommunityBookmarkItem,
   CommunityHome,
   CommunityHelpfulnessVote,
   CommunityList,
@@ -75,6 +76,17 @@ export function getPeopleLikeMe(
   const args = normalizeCursorListArgs(queryOrSignal, signal);
   return getRequest<CommunityPeopleLikeMe>(
     ApiPath.CommunityPeopleLikeMe,
+    buildCommunityListRequestConfig(args.query, args.signal),
+  );
+}
+
+export function listCommunityBookmarks(
+  queryOrSignal?: CommunityCursorListQuery | AbortSignal,
+  signal?: AbortSignal,
+): Promise<CommunityList<CommunityBookmarkItem>> {
+  const args = normalizeCursorListArgs(queryOrSignal, signal);
+  return getRequest<CommunityList<CommunityBookmarkItem>>(
+    ApiPath.CommunityBookmarks,
     buildCommunityListRequestConfig(args.query, args.signal),
   );
 }
@@ -184,6 +196,20 @@ export function reportCommunityRoutine(
   return postRequest(ApiPath.CommunityRoutineReport(id), { reason, note });
 }
 
+export function bookmarkCommunityRoutine(
+  id: string,
+): Promise<{ bookmarked: true }> {
+  return postRequest<{ bookmarked: true }>(ApiPath.CommunityRoutineBookmark(id));
+}
+
+export function unbookmarkCommunityRoutine(
+  id: string,
+): Promise<{ bookmarked: false }> {
+  return deleteRequest<{ bookmarked: false }>(
+    ApiPath.CommunityRoutineBookmark(id),
+  );
+}
+
 export function voteCommunityRoutine(
   id: string,
   vote: CommunityHelpfulnessVote,
@@ -233,6 +259,20 @@ export function reportCommunityReview(
   note?: string,
 ): Promise<unknown> {
   return postRequest(ApiPath.CommunityReviewReport(id), { reason, note });
+}
+
+export function bookmarkCommunityReview(
+  id: string,
+): Promise<{ bookmarked: true }> {
+  return postRequest<{ bookmarked: true }>(ApiPath.CommunityReviewBookmark(id));
+}
+
+export function unbookmarkCommunityReview(
+  id: string,
+): Promise<{ bookmarked: false }> {
+  return deleteRequest<{ bookmarked: false }>(
+    ApiPath.CommunityReviewBookmark(id),
+  );
 }
 
 export function voteCommunityReview(

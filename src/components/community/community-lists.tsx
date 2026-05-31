@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Users } from "lucide-react";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import type { CommunityReview, CommunityRoutine } from "@/types/community";
+import { CommunityBookmarkButton } from "./community-bookmark-button";
 import { ReviewCard, RoutineCard } from "./community-cards";
 import {
   CommunityAutoLoadState,
@@ -74,9 +75,31 @@ export function PeopleLikeMe({
       <div className="grid grid-cols-1 gap-3">
         {items.map((item) =>
           item.type === "routine" ? (
-            <RoutineCard key={item.id} routine={item} />
+            <RoutineCard
+              key={item.id}
+              routine={item}
+              bookmarkAction={
+                <CommunityBookmarkButton
+                  bookmarked={item.bookmarkedByViewer}
+                  contentId={item.id}
+                  contentType="routine"
+                  mode="save"
+                />
+              }
+            />
           ) : (
-            <ReviewCard key={item.id} review={item} />
+            <ReviewCard
+              key={item.id}
+              review={item}
+              bookmarkAction={
+                <CommunityBookmarkButton
+                  bookmarked={item.bookmarkedByViewer}
+                  contentId={item.id}
+                  contentType="review"
+                  mode="save"
+                />
+              }
+            />
           ),
         )}
       </div>

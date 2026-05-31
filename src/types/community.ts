@@ -181,6 +181,7 @@ export type CommunityRoutine = {
   helpfulCount: number;
   notHelpfulCount: number;
   outcomeSignalCounts: CommunityOutcomeSignalCounts;
+  bookmarkedByViewer: boolean;
   canSignalOutcome: boolean;
   canReportContent: boolean;
   matchScore: number;
@@ -223,6 +224,7 @@ export type CommunityReview = {
   helpfulCount: number;
   notHelpfulCount: number;
   outcomeSignalCounts: CommunityOutcomeSignalCounts;
+  bookmarkedByViewer: boolean;
   canSignalOutcome: boolean;
   canReportContent: boolean;
   matchScore: number;
@@ -284,6 +286,8 @@ export type CommunityPeopleLikeMe = CommunityList<
 > & {
   profileFacets: CommunitySafeProfileFacets;
 };
+
+export type CommunityBookmarkItem = CommunityRoutine | CommunityReview;
 
 export type CommunityEvidenceCount = {
   value: string;
