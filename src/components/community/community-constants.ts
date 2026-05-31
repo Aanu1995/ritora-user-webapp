@@ -1,3 +1,4 @@
+import { ProductCategory } from "@/types/shelf";
 import type {
   CommunityDisclosureType,
   CommunityGoalResult,
@@ -119,14 +120,18 @@ export const reviewRepurchaseOptions = [
 ] as const;
 
 export const productCategoryOptions = [
-  { value: "cleanser" },
-  { value: "moisturizer" },
-  { value: "treatment" },
-  { value: "serum" },
-  { value: "sunscreen" },
-  { value: "exfoliant" },
-  { value: "toner" },
-  { value: "mask" },
+  { value: ProductCategory.Cleanser },
+  { value: ProductCategory.Toner },
+  { value: ProductCategory.Essence },
+  { value: ProductCategory.Serum },
+  { value: ProductCategory.Moisturizer },
+  { value: ProductCategory.SunProtection },
+  { value: ProductCategory.Exfoliant },
+  { value: ProductCategory.Mask },
+  { value: ProductCategory.EyeCare },
+  { value: ProductCategory.LipCare },
+  { value: ProductCategory.Treatment },
+  { value: ProductCategory.Other },
 ] as const;
 
 export const communityGoalOptions = [

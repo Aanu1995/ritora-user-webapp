@@ -225,7 +225,7 @@ describe('ProductDetailView', () => {
     // the rest of the phrase can land in separate text nodes. Match
     // both halves inside the same section instead.
     expect(sectionText).toMatch(/3\s*similar-user confirmations/);
-    expect(screen.getByText(/over exfoliation/i)).toBeInTheDocument();
+    expect(screen.getByText(/over-exfoliation/i)).toBeInTheDocument();
   });
 
   it('restores the active tab for the product detail page', async () => {

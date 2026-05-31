@@ -1,6 +1,7 @@
-import enMessages from '../../../messages/en.json';
-import esMessages from '../../../messages/es.json';
-import svMessages from '../../../messages/sv.json';
+import enMessages from "../../../messages/en.json";
+import esMessages from "../../../messages/es.json";
+import svMessages from "../../../messages/sv.json";
+import { productCategoryOptions } from "@/components/community/community-constants";
 
 type MessageNode = string | MessageTree;
 type MessageTree = {
@@ -48,33 +49,33 @@ type LandingMessages = {
 };
 
 const landingFeatureKeys = [
-  'suggestions',
-  'community',
-  'journal',
-  'ingredients',
-  'quickCheck',
-  'smartPicks',
-  'shelf',
-  'climate',
+  "suggestions",
+  "community",
+  "journal",
+  "ingredients",
+  "quickCheck",
+  "smartPicks",
+  "shelf",
+  "climate",
 ] as const;
-const landingDayparts = ['morning', 'noon', 'evening'] as const;
-const landingStates = ['ready', 'locked', 'done'] as const;
-const bottleShapes = ['pump', 'dropper', 'tube', 'jar'] as const;
+const landingDayparts = ["morning", "noon", "evening"] as const;
+const landingStates = ["ready", "locked", "done"] as const;
+const bottleShapes = ["pump", "dropper", "tube", "jar"] as const;
 const bottleTones = [
-  'green',
-  'cream',
-  'aqua',
-  'blush',
-  'amber',
-  'lavender',
+  "green",
+  "cream",
+  "aqua",
+  "blush",
+  "amber",
+  "lavender",
 ] as const;
 
 function collectKeys(
   value: MessageNode,
-  prefix = '',
+  prefix = "",
   output: string[] = [],
 ): string[] {
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     output.push(prefix);
     return output;
   }
@@ -128,7 +129,7 @@ function assertLandingStructuredTokens(messages: LandingMessages): void {
     shelfItems
       .map((item) => item.badgeTone)
       .filter((value): value is string => Boolean(value)),
-    ['finished'],
+    ["finished"],
   );
 
   const dayPlanSlots = messages.landing.howItWorks.visuals.dayPlan.slots;
@@ -155,12 +156,12 @@ function assertLandingStructuredTokens(messages: LandingMessages): void {
     smartPicks
       .map((pick) => pick.tierTone)
       .filter((value): value is string => Boolean(value)),
-    ['mid', 'luxe'],
+    ["mid", "luxe"],
   );
 }
 
-describe('schedule/timezone message parity', () => {
-  it('keeps the English, Swedish, and Spanish feature keys aligned', () => {
+describe("schedule/timezone message parity", () => {
+  it("keeps the English, Swedish, and Spanish feature keys aligned", () => {
     const englishKeys = collectFeatureKeys(enMessages);
     const swedishKeys = collectFeatureKeys(svMessages);
     const spanishKeys = collectFeatureKeys(esMessages);
@@ -183,150 +184,185 @@ describe('schedule/timezone message parity', () => {
   });
 });
 
-describe('landing structured message tokens', () => {
-  it('keeps render-control tokens unlocalized across languages', () => {
+describe("landing structured message tokens", () => {
+  it("keeps render-control tokens unlocalized across languages", () => {
     assertLandingStructuredTokens(enMessages as LandingMessages);
     assertLandingStructuredTokens(svMessages as LandingMessages);
     assertLandingStructuredTokens(esMessages as LandingMessages);
   });
 });
 
-describe('Spanish visible copy localization', () => {
-  it('localizes the language settings label', () => {
-    expect(esMessages.settings.language.title).toBe('Idioma de visualización');
+describe("Spanish visible copy localization", () => {
+  it("localizes the language settings label", () => {
+    expect(esMessages.settings.language.title).toBe("Idioma de visualización");
     expect(esMessages.settings.language.title).not.toBe(
       enMessages.settings.language.title,
     );
   });
 
-  it('localizes shared settings timezone and notification copy', () => {
+  it("localizes shared settings timezone and notification copy", () => {
     expect(esMessages.settings.timeZone.current).toBe(
-      'Zona horaria actual: {timeZone}',
+      "Zona horaria actual: {timeZone}",
     );
     expect(esMessages.settings.timeZone.deviceCurrent).toBe(
-      'Este dispositivo está configurado en {timeZone}.',
+      "Este dispositivo está configurado en {timeZone}.",
     );
-    expect(esMessages.settingsNotifications.leadTimeOption).toContain(
-      '1 hora',
-    );
+    expect(esMessages.settingsNotifications.leadTimeOption).toContain("1 hora");
     expect(esMessages.settingsNotifications.leadTimeOption).not.toContain(
-      '1 hour',
+      "1 hour",
     );
     expect(esMessages.settingsNotifications.quietHoursTzNote).toBe(
-      'Las horas están en tu zona horaria · {timeZone}.',
+      "Las horas están en tu zona horaria · {timeZone}.",
     );
   });
 
-  it('localizes dashboard greeting and climate metadata', () => {
+  it("localizes dashboard greeting and climate metadata", () => {
     expect(esMessages.dashboard.greeting.morning).toBe(
-      'Buenos días, {firstName}.',
+      "Buenos días, {firstName}.",
     );
     expect(esMessages.dashboard.greeting.morning).not.toBe(
       enMessages.dashboard.greeting.morning,
     );
     expect(esMessages.currentContext.lastUpdated).toBe(
-      'Última actualización {time}',
+      "Última actualización {time}",
     );
     expect(esMessages.currentContext.lastUpdated).not.toBe(
       enMessages.currentContext.lastUpdated,
     );
-    expect(esMessages.currentContext.weatherCondition.clear).toBe('Despejado');
+    expect(esMessages.currentContext.weatherCondition.clear).toBe("Despejado");
     expect(esMessages.currentContext.weatherCondition.clear).not.toBe(
       enMessages.currentContext.weatherCondition.clear,
     );
   });
 });
 
-describe('Swedish navigation copy', () => {
-  it('localizes the Community menu item', () => {
-    expect(svMessages.sidebar.items.community).toBe('Gemenskap');
+describe("Swedish navigation copy", () => {
+  it("localizes the Community menu item", () => {
+    expect(svMessages.sidebar.items.community).toBe("Gemenskap");
     expect(svMessages.sidebar.items.community).not.toBe(
       enMessages.sidebar.items.community,
     );
   });
 });
 
-describe('Swedish visible copy localization', () => {
+describe("Swedish visible copy localization", () => {
   it.each([
-    ['sidebar.navigation', svMessages.sidebar.navigation, 'Navigering'],
-    ['sidebar.items.community', svMessages.sidebar.items.community, 'Gemenskap'],
+    ["sidebar.navigation", svMessages.sidebar.navigation, "Navigering"],
     [
-      'shelf.lookupWarning.community-data',
-      svMessages.shelf.lookupWarning['community-data'],
-      'Källan är gemenskapsbaserad',
+      "sidebar.items.community",
+      svMessages.sidebar.items.community,
+      "Gemenskap",
     ],
     [
-      'checkProduct.details.context.signals.skin_journal',
+      "shelf.lookupWarning.community-data",
+      svMessages.shelf.lookupWarning["community-data"],
+      "Källan är gemenskapsbaserad",
+    ],
+    [
+      "checkProduct.details.context.signals.skin_journal",
       svMessages.checkProduct.details.context.signals.skin_journal,
-      'Huddagbok',
+      "Huddagbok",
     ],
     [
-      'checkProduct.result.nextActions.review_smart_picks',
+      "checkProduct.result.nextActions.review_smart_picks",
       svMessages.checkProduct.result.nextActions.review_smart_picks,
-      'Jämför med Smarta val innan du köper.',
+      "Jämför med Smarta val innan du köper.",
     ],
     [
-      'checkProduct.result.reasons.recent_journal_reaction',
+      "checkProduct.result.reasons.recent_journal_reaction",
       svMessages.checkProduct.result.reasons.recent_journal_reaction,
-      'Nya huddagboksposter innehåller reaktionssignaler.',
+      "Nya huddagboksposter innehåller reaktionssignaler.",
     ],
     [
-      'community.productEvidence.title',
+      "community.productEvidence.title",
       svMessages.community.productEvidence.title,
-      'Gemenskapsbevis',
+      "Gemenskapsbevis",
     ],
     [
-      'community.submissions.title',
+      "community.submissions.title",
       svMessages.community.submissions.title,
-      'Mina gemenskapsinlägg',
+      "Mina gemenskapsinlägg",
     ],
     [
-      'community.eligibility.dialogTitle',
+      "community.eligibility.dialogTitle",
       svMessages.community.eligibility.dialogTitle,
-      'Publicering i gemenskapen är inte tillgänglig ännu',
+      "Publicering i gemenskapen är inte tillgänglig ännu",
     ],
     [
-      'community.toasts.guidelinesAccepted',
+      "community.toasts.guidelinesAccepted",
       svMessages.community.toasts.guidelinesAccepted,
-      'Gemenskapsriktlinjer godkända.',
+      "Gemenskapsriktlinjer godkända.",
     ],
     [
-      'settingsNotifications.smartPicksTitle',
+      "community.options.productCategory.sun-protection",
+      svMessages.community.options.productCategory["sun-protection"],
+      "Solskydd",
+    ],
+    [
+      "community.shared.outcomes.irritation",
+      svMessages.community.shared.outcomes.irritation,
+      "Irriterade huden",
+    ],
+    [
+      "settingsNotifications.smartPicksTitle",
       svMessages.settingsNotifications.smartPicksTitle,
-      'Smarta val',
+      "Smarta val",
     ],
     [
-      'settingsNotifications.smartPickReadyTitle',
+      "settingsNotifications.smartPickReadyTitle",
       svMessages.settingsNotifications.smartPickReadyTitle,
-      'Smarta val redo',
+      "Smarta val redo",
     ],
     [
-      'notificationsPage.sourceSmartPicks',
+      "notificationsPage.sourceSmartPicks",
       svMessages.notificationsPage.sourceSmartPicks,
-      'Smarta val',
+      "Smarta val",
     ],
-    ['smartPicks.page.title', svMessages.smartPicks.page.title, 'Smarta val'],
+    ["smartPicks.page.title", svMessages.smartPicks.page.title, "Smarta val"],
     [
-      'smartPicks.page.mode.label',
+      "smartPicks.page.mode.label",
       svMessages.smartPicks.page.mode.label,
-      'Läge för Smarta val',
+      "Läge för Smarta val",
     ],
     [
-      'smartPicks.page.wishlist.title',
+      "smartPicks.page.wishlist.title",
       svMessages.smartPicks.page.wishlist.title,
-      'Önskelista för Smarta val',
+      "Önskelista för Smarta val",
     ],
     [
-      'journal.insightsTab.categories.essence',
+      "journal.insightsTab.categories.essence",
       svMessages.journal.insightsTab.categories.essence,
-      'essens',
+      "essens",
     ],
     [
-      'journal.insightsTab.categories.mask',
+      "journal.insightsTab.categories.mask",
       svMessages.journal.insightsTab.categories.mask,
-      'ansiktsmask',
+      "ansiktsmask",
     ],
-  ] as const)('%s', (_key, actual, expected) => {
+  ] as const)("%s", (_key, actual, expected) => {
     expect(actual).toBe(expected);
+  });
+});
+
+describe("community option translations", () => {
+  it("keeps product category options aligned with localized message labels", () => {
+    const categoryValues = productCategoryOptions.map((option) => option.value);
+
+    for (const messages of [enMessages, svMessages, esMessages]) {
+      const labels = messages.community.options.productCategory as Record<
+        string,
+        string
+      >;
+
+      for (const value of categoryValues) {
+        expect(labels[value]).toEqual(expect.any(String));
+        expect(labels[value]).not.toBe(value);
+      }
+
+      expect(labels.sunscreen).toEqual(expect.any(String));
+    }
+
+    expect(categoryValues).toContain("sun-protection");
+    expect(categoryValues).not.toContain("sunscreen");
   });
 });

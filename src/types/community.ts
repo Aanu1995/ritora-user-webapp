@@ -250,6 +250,13 @@ export type CommunityReviewResult = {
 export type CommunityReviewResultsResponse = {
   counts: CommunityOutcomeSignalCounts;
   items: CommunityReviewResult[];
+  nextCursor: string | null;
+};
+
+export type CommunityOutcomeResultsQuery = {
+  cursor?: string | null;
+  limit?: number;
+  signal?: CommunityOutcomeSignal | "";
 };
 
 export type CommunityWarning = {
@@ -270,6 +277,12 @@ export type CommunityHome = {
   reviews: CommunityReview[];
   warnings: CommunityWarning[];
   patterns: Array<{ id: string; title: string; body: string }>;
+};
+
+export type CommunityPeopleLikeMe = CommunityList<
+  CommunityRoutine | CommunityReview
+> & {
+  profileFacets: CommunitySafeProfileFacets;
 };
 
 export type CommunityEvidenceCount = {
@@ -476,6 +489,7 @@ export type CommunitySubmission = {
   editableRoutine?: CommunityEditableRoutine | null;
   parentContent?: {
     id: string;
+    status?: CommunityModerationStatus;
     title: string;
     type: "routine" | "review";
   } | null;

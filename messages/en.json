@@ -485,7 +485,7 @@
           ],
           "outcome": "32 said this worked",
           "outcomeMixed": "4 mixed results",
-          "adaptCta": "Adapt to my shelf"
+          "adaptCta": "Check my shelf"
         }
       }
     },
@@ -5538,12 +5538,16 @@
       "peopleEmptyBody": "Once people with skin like yours share playbooks and reviews, you'll see them here."
     },
     "cards": {
-      "adapt": "Adapt to my shelf",
+      "adapt": "Check my shelf",
+      "viewPlaybook": "View playbook",
       "reportRoutine": "Report routine",
       "reportReview": "Report review",
+      "typeReview": "Review",
+      "typePlaybook": "Playbook",
       "context": "Paired with",
       "usedAloneContextLabel": "Used alone",
       "notSureContextLabel": "Other products not noted",
+      "routineStepsLabel": "Routine steps",
       "moreSteps": "+{count} more"
     },
     "share": {
@@ -5681,13 +5685,18 @@
       },
       "productCategory": {
         "cleanser": "Cleanser",
-        "moisturizer": "Moisturizer",
-        "treatment": "Treatment",
+        "toner": "Toner",
+        "essence": "Essence",
         "serum": "Serum",
+        "moisturizer": "Moisturizer",
+        "sun-protection": "Sun protection",
         "sunscreen": "Sunscreen",
         "exfoliant": "Exfoliant",
-        "toner": "Toner",
-        "mask": "Mask"
+        "mask": "Mask",
+        "eye-care": "Eye care",
+        "lip-care": "Lip care",
+        "treatment": "Treatment",
+        "other": "Other"
       },
       "goal": {
         "acne-control": "Acne control",
@@ -5964,11 +5973,11 @@
       "failedToast": "Could not save your outcome.",
       "confirmed": "{worked} of {total} people confirmed it worked",
       "reviewConfirmed": "{worked} of {total} people confirmed this product worked for them",
-      "helper": "Tap an icon below to share your own outcome with this product. Each icon stands for a different kind of result.",
+      "helper": "Tap an icon below to share your own outcome with this playbook. Each icon stands for a different kind of result.",
       "reviewHelper": "Tap an icon below to say whether this reviewed product worked for you too. Your context helps Ritora rank product evidence.",
       "viewResults": "View community results",
       "resultsTitle": "Community results",
-      "resultsDescription": "Structured confirmations from people who tried this reviewed product. Result notes only appear after moderation.",
+      "resultsDescription": "Structured confirmations from people who tried this review or playbook. Result notes only appear after moderation.",
       "resultsForProduct": "For {product}",
       "resultMatchedPartsLabel": "Matched context",
       "resultUsedWithLabel": "Used with",
@@ -5980,7 +5989,7 @@
       "resultsLoadError": "Community results could not load.",
       "retry": "Retry",
       "resultsEmptyTitle": "No community results yet",
-      "resultsEmptyDescription": "When members confirm this product, their structured result context will appear here.",
+      "resultsEmptyDescription": "When members confirm this evidence, their structured result context will appear here.",
       "resultDuration": "Duration",
       "resultIrritation": "Irritation",
       "resultSameGoal": "Goal match",
@@ -5989,11 +5998,11 @@
       "resultRoutineSlotShort": "Routine timing",
       "resultMatchedParts": "Matched context: {parts}",
       "resultNote": "Result note",
-      "resultNoteHint": "Optional. Share what made your product result different, including products used alongside it. Notes pass moderation before public display.",
-      "resultNotePlaceholder": "e.g. It worked better when I used it after a gentle cleanser and skipped acids that night.",
+      "resultNoteHint": "Optional. Share what made your result different, including products, routine timing, habits, or avoid choices. Notes pass moderation before public display.",
+      "resultNotePlaceholder": "e.g. It worked better when I used a gentle cleanser, moved it to PM, and skipped acids that night.",
       "similarToYou": "Similar to your profile",
-      "usedWithProducts": "Products used with it",
-      "usedWithProductsHint": "Optional. Add products you used alongside the reviewed product so others can compare routine context.",
+      "usedWithProducts": "Products you used",
+      "usedWithProductsHint": "Optional. Add products you used while trying this evidence so others can compare routine context.",
       "addUsedWithProduct": "Add product used with it",
       "usedWithProduct": "Product {number}",
       "removeUsedWithProduct": "Remove product {number}",
@@ -6012,7 +6021,7 @@
       "routineOwnContentToast": "You can’t confirm your own playbook.",
       "shortLabels": {
         "worked_for_me_too": "Worked",
-        "worked_with_changes": "Tweaked",
+        "worked_with_changes": "Changed",
         "mixed_result": "Mixed",
         "did_not_work": "Did not work",
         "caused_irritation": "Irritation"
@@ -6033,7 +6042,7 @@
       "sameGoalYes": "Yes, same goal",
       "sameGoalNo": "No, related but different",
       "trialDuration": "How long did you try it?",
-      "trialDurationHint": "Total time you gave the product a fair shot.",
+      "trialDurationHint": "Total time you gave this playbook or approach a fair shot.",
       "reviewTrialDurationHint": "How long you used this reviewed product before deciding whether it worked for you.",
       "irritation": "Irritation",
       "irritationHint": "Any stinging, redness, or breakouts you noticed.",
@@ -6069,7 +6078,12 @@
       "loadErrorTitle": "Routine could not load",
       "loadErrorBody": "This community routine may be unavailable or under moderation.",
       "tryAgain": "Try again",
-      "subtitle": "A goal playbook you can compare with people like you and adapt safely.",
+      "sheetTitle": "Playbook details",
+      "sheetEyebrow": "Playbook",
+      "sheetDescription": "Review the shared products, routine pattern, safety notes, and what your shelf already covers.",
+      "matchReasonsLabel": "Why this matches you",
+      "noRelevanceReasons": "Shared without a specific match reason.",
+      "subtitle": "A goal playbook you can compare with people like you and check against your own shelf.",
       "backToCommunity": "Community",
       "report": "Report",
       "reporting": "Reporting…",
@@ -6077,34 +6091,32 @@
       "stepsTitle": "Products and routine pattern",
       "stepsCount": "{count, plural, one {# step} other {# steps}}",
       "categoryOnlyStep": "Category-only step",
-      "adaptLabel": "Adapt to my shelf",
-      "adaptTitle": "Translate this routine to what you already own",
-      "adaptBody": "We keep what you already own, swap in safe alternatives from your shelf, drop unsafe steps, and call out honest gaps by category. We never push a specific product on you.",
-      "adapting": "Adapting…",
-      "adaptAgain": "Adapt again",
-      "adaptAction": "Adapt to my shelf",
-      "saving": "Saving…",
-      "saveAdaptation": "Save adaptation",
-      "saveAdaptationHint": "Saving keeps the adapted version on your account. Your routine stays the same unless you pick to replace it.",
+      "adaptLabel": "Shelf check",
+      "adaptTitle": "See what you already have and what is missing",
+      "adaptBody": "Ritora compares this playbook with your Shelf so you can see which steps you already own, which steps can use a similar safe product you own, and which product categories are missing. It does not delete Shelf products or change your routine.",
+      "adapting": "Checking shelf…",
+      "adaptAgain": "Check shelf again",
+      "adaptAction": "Check my shelf",
+      "previewOnlyHint": "This shelf check is a temporary guide. It does not save to your account, buy products, delete Shelf items, or change your routine.",
       "adaptError": "Something went wrong adapting this routine. Try again, or report it if the problem keeps happening.",
       "changeStep": "Step {step} · {label}",
       "change": {
-        "kept": "Kept from your shelf",
-        "swapped": "Swapped to an equivalent",
-        "removed": "Removed for safety",
-        "gap": "Honest gap"
+        "kept": "Already in your shelf",
+        "swapped": "Use a similar product you own",
+        "removed": "Skip this step for safety",
+        "gap": "Missing from your shelf"
       },
       "changeType": {
-        "kept": "Kept",
-        "swapped": "Swapped",
-        "removed": "Removed",
-        "gap": "Gap"
+        "kept": "Owned",
+        "swapped": "Owned alternative",
+        "removed": "Skip",
+        "gap": "Missing"
       },
       "summary": {
-        "kept": "Kept from your shelf",
-        "swapped": "Swapped to alternative",
-        "removed": "Removed for safety",
-        "gaps": "Honest gaps"
+        "kept": "Already owned",
+        "swapped": "Owned alternatives",
+        "removed": "Skipped for safety",
+        "gaps": "Missing categories"
       },
       "safetySeverity": {
         "high": "High",
@@ -6120,7 +6132,8 @@
       "warningsEmptyBody": "When something turns risky in the community (a reformulation, an unsafe routine, or hidden sponsorship), our moderators post warnings here."
     },
     "submissions": {
-      "title": "My community submissions",
+      "title": "My submissions",
+      "countLabel": "{count, plural, =0 {No submissions} one {# submission} other {# submissions}}",
       "emptyTitle": "No community submissions yet",
       "emptyBody": "Anything you share shows up here with its current moderation status.",
       "edit": "Edit",
@@ -6163,7 +6176,27 @@
         "routine": "Playbook",
         "review": "Review",
         "result": "Result note"
-      }
+      },
+      "resultOnReview": "Result on review",
+      "resultOnPlaybook": "Result on playbook",
+      "resultOnFallback": "Result on community post",
+      "resultUnknownProduct": "Untitled product",
+      "parentReviewUnderModerationTitle": "Original review under moderation",
+      "parentReviewUnderModerationBody": "Your result note is saved, but this review is not visible publicly while Ritora reviews it.",
+      "parentPlaybookUnderModerationTitle": "Original playbook under moderation",
+      "parentPlaybookUnderModerationBody": "Your result note is saved, but this playbook is not visible publicly while Ritora reviews it.",
+      "parentNeedsEditReviewTitle": "Original review returned to its author",
+      "parentNeedsEditReviewBody": "Your note will appear again once the author edits and resubmits the review.",
+      "parentNeedsEditPlaybookTitle": "Original playbook returned to its author",
+      "parentNeedsEditPlaybookBody": "Your note will appear again once the author edits and resubmits the playbook.",
+      "parentRejectedReviewTitle": "Original review was rejected",
+      "parentRejectedReviewBody": "Your note will not appear publicly. You can withdraw it if you prefer to remove it from your record.",
+      "parentRejectedPlaybookTitle": "Original playbook was rejected",
+      "parentRejectedPlaybookBody": "Your note will not appear publicly. You can withdraw it if you prefer to remove it from your record.",
+      "parentHiddenReviewTitle": "Original review was removed",
+      "parentHiddenReviewBody": "Your note is no longer attached to a public review. You can withdraw it if you prefer to remove it from your record.",
+      "parentHiddenPlaybookTitle": "Original playbook was removed",
+      "parentHiddenPlaybookBody": "Your note is no longer attached to a public playbook. You can withdraw it if you prefer to remove it from your record."
     },
     "eligibility": {
       "dialogTitle": "Community posting is not available yet",
@@ -6217,10 +6250,8 @@
       "resubmitFailed": "Could not resubmit this item.",
       "withdrawn": "Submission withdrawn from community evidence.",
       "withdrawFailed": "Could not withdraw this item.",
-      "routineAdapted": "Routine adapted to your shelf.",
-      "routineAdaptFailed": "Could not adapt this routine.",
-      "adaptationSaved": "Adaptation saved.",
-      "adaptationSaveFailed": "Could not save adaptation."
+      "routineAdapted": "Shelf check complete.",
+      "routineAdaptFailed": "Could not check this playbook against your shelf."
     },
     "errors": {
       "couldNotLoadTitle": "Community could not load",

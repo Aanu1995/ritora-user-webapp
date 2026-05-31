@@ -485,7 +485,7 @@
           ],
           "outcome": "32 dijeron que esto funcionó",
           "outcomeMixed": "4 resultados mixtos",
-          "adaptCta": "Adaptarse a mi estante"
+          "adaptCta": "Revisar mi estante"
         }
       }
     },
@@ -3733,7 +3733,7 @@
       "redness": "enrojecimiento",
       "breakouts": "Brotes",
       "texture": "textura",
-      "irritation": "irritación",
+      "irritation": "Irritación",
       "sensitivity": "Sensibilidad",
       "acne": "Acné",
       "hyperpigmentation": "Hiperpigmentación",
@@ -5545,12 +5545,16 @@
       "peopleEmptyBody": "Una vez que las personas con una piel como la tuya compartan guías y reseñas, las verás aquí."
     },
     "cards": {
-      "adapt": "Adaptarse a mi estante",
+      "adapt": "Revisar mi estante",
+      "viewPlaybook": "Ver guía",
       "reportRoutine": "Informe de rutina",
       "reportReview": "Revisión del informe",
+      "typeReview": "Reseña",
+      "typePlaybook": "Guía",
       "context": "Emparejado con",
       "usedAloneContextLabel": "Usado solo",
       "notSureContextLabel": "Otros productos no indicados",
+      "routineStepsLabel": "Pasos de la rutina",
       "moreSteps": "+{count} more"
     },
     "share": {
@@ -5687,14 +5691,19 @@
         "no": "No"
       },
       "productCategory": {
-        "cleanser": "limpiador",
-        "moisturizer": "Crema hidratante",
-        "treatment": "Tratamiento",
+        "cleanser": "Limpiador",
+        "toner": "Tónico",
+        "essence": "Esencia",
         "serum": "Suero",
-        "sunscreen": "protector solar",
-        "exfoliant": "exfoliante",
-        "toner": "Tóner",
-        "mask": "máscara"
+        "moisturizer": "Crema hidratante",
+        "sun-protection": "Protección solar",
+        "sunscreen": "Protector solar",
+        "exfoliant": "Exfoliante",
+        "mask": "Mascarilla",
+        "eye-care": "Cuidado de ojos",
+        "lip-care": "Cuidado de labios",
+        "treatment": "Tratamiento",
+        "other": "Otro"
       },
       "goal": {
         "acne-control": "control del acné",
@@ -5957,7 +5966,7 @@
     "reviewEvidence": {
       "overall": "En general",
       "effect": "Efecto",
-      "irritation": "irritación",
+      "irritation": "Irritación",
       "notRated": "No clasificado",
       "repurchase": "Volvería a comprarlo: {value}",
       "unknown": "Desconocido",
@@ -5971,11 +5980,11 @@
       "failedToast": "No se pudo guardar el resultado.",
       "confirmed": "{worked} de {total} personas confirmaron que funcionó",
       "reviewConfirmed": "{worked} de {total} personas confirmaron que este producto les funcionó",
-      "helper": "Toca un icono debajo para compartir tu propio resultado con este producto. Cada icono representa un tipo de resultado distinto.",
+      "helper": "Toca un icono debajo para compartir tu propio resultado con esta guía. Cada icono representa un tipo de resultado distinto.",
       "reviewHelper": "Toca un icono debajo para decir si este producto reseñado también te funcionó. Tu contexto ayuda a Ritora a clasificar la evidencia del producto.",
       "viewResults": "Ver resultados comunitarios",
       "resultsTitle": "Resultados comunitarios",
-      "resultsDescription": "Confirmaciones estructuradas de personas que probaron este producto reseñado. Las notas de resultado solo aparecen después de moderación.",
+      "resultsDescription": "Confirmaciones estructuradas de personas que probaron esta reseña o guía. Las notas de resultado solo aparecen después de moderación.",
       "resultsForProduct": "Para {product}",
       "resultMatchedPartsLabel": "Contexto coincidente",
       "resultUsedWithLabel": "Usado con",
@@ -5987,7 +5996,7 @@
       "resultsLoadError": "No se pudieron cargar los resultados comunitarios.",
       "retry": "Reintentar",
       "resultsEmptyTitle": "Aún no hay resultados comunitarios",
-      "resultsEmptyDescription": "Cuando miembros confirmen este producto, su contexto estructurado aparecerá aquí.",
+      "resultsEmptyDescription": "Cuando miembros confirmen esta evidencia, su contexto estructurado aparecerá aquí.",
       "resultDuration": "Duración",
       "resultIrritation": "Irritación",
       "resultSameGoal": "Coincidencia de objetivo",
@@ -5996,11 +6005,11 @@
       "resultRoutineSlotShort": "Momento de rutina",
       "resultMatchedParts": "Contexto coincidente: {parts}",
       "resultNote": "Nota de resultado",
-      "resultNoteHint": "Opcional. Comparte qué hizo diferente tu resultado, incluidos productos usados junto a este. Las notas pasan moderación antes de mostrarse públicamente.",
-      "resultNotePlaceholder": "p. ej. Funcionó mejor cuando lo usé después de un limpiador suave y evité ácidos esa noche.",
+      "resultNoteHint": "Opcional. Comparte qué hizo diferente tu resultado, incluidos productos, momento de rutina, hábitos o cosas que evitaste. Las notas pasan moderación antes de mostrarse públicamente.",
+      "resultNotePlaceholder": "p. ej. Funcionó mejor cuando usé un limpiador suave, lo moví a la noche y evité ácidos esa noche.",
       "similarToYou": "Similar a tu perfil",
-      "usedWithProducts": "Productos usados con él",
-      "usedWithProductsHint": "Opcional. Agrega productos que usaste junto al producto reseñado para que otros comparen el contexto de rutina.",
+      "usedWithProducts": "Productos que usaste",
+      "usedWithProductsHint": "Opcional. Agrega productos que usaste al probar esta evidencia para que otros comparen el contexto de rutina.",
       "addUsedWithProduct": "Agregar producto usado con él",
       "usedWithProduct": "Producto {number}",
       "removeUsedWithProduct": "Eliminar producto {number}",
@@ -6019,10 +6028,10 @@
       "routineOwnContentToast": "No puedes confirmar tu propia guía.",
       "shortLabels": {
         "worked_for_me_too": "Funcionó",
-        "worked_with_changes": "Ajustado",
+        "worked_with_changes": "Con cambios",
         "mixed_result": "Mixto",
         "did_not_work": "No funcionó",
-        "caused_irritation": "Irritación"
+        "caused_irritation": "Irritó"
       },
       "chooseOutcomeFirst": "Elija un resultado primero.",
       "addFailed": "No se pudo agregar el resultado.",
@@ -6040,9 +6049,9 @@
       "sameGoalYes": "Si, mismo objetivo",
       "sameGoalNo": "No, relacionados pero diferentes.",
       "trialDuration": "¿Cuánto tiempo lo intentaste?",
-      "trialDurationHint": "Cuánto tiempo usaste el producto antes de decidir.",
+      "trialDurationHint": "Cuánto tiempo probaste esta guía o enfoque antes de decidir.",
       "reviewTrialDurationHint": "Cuánto tiempo usaste este producto reseñado antes de decidir si funcionó para ti.",
-      "irritation": "irritación",
+      "irritation": "Irritación",
       "irritationHint": "Cualquier escozor, enrojecimiento o brote que notaste.",
       "followedParts": "¿Qué seguiste?",
       "followedPartsHint": "Qué partes de la rutina original también seguiste.",
@@ -6076,7 +6085,12 @@
       "loadErrorTitle": "La rutina no se pudo cargar.",
       "loadErrorBody": "Es posible que esta rutina comunitaria no esté disponible o esté moderada.",
       "tryAgain": "Inténtalo de nuevo",
-      "subtitle": "Un manual de objetivos que puedes comparar con personas como tú y adaptarte de forma segura.",
+      "sheetTitle": "Detalles de la guía",
+      "sheetEyebrow": "Guía",
+      "sheetDescription": "Revisa los productos compartidos, el patrón de rutina, las notas de seguridad y lo que tu estante ya cubre.",
+      "matchReasonsLabel": "Por qué te coincide",
+      "noRelevanceReasons": "Compartido sin un motivo de coincidencia específico.",
+      "subtitle": "Una guía de objetivo que puedes comparar con personas como tú y revisar contra tu propio estante.",
       "backToCommunity": "Comunidad",
       "report": "Informe",
       "reporting": "Informando…",
@@ -6084,34 +6098,32 @@
       "stepsTitle": "Productos y patrón de rutina.",
       "stepsCount": "{count, plural, one {# step} other {# steps}}",
       "categoryOnlyStep": "Paso solo de categoría",
-      "adaptLabel": "Adaptarse a mi estante",
-      "adaptTitle": "Traduce esta rutina a lo que ya tienes",
-      "adaptBody": "Mantenemos lo que ya posee, intercambiamos alternativas seguras de su estante, eliminamos pasos inseguros y señalamos brechas honestas por categoría. Nunca le ofrecemos un producto específico.",
-      "adapting": "Adaptándose…",
-      "adaptAgain": "Adaptarse de nuevo",
-      "adaptAction": "Adaptarse a mi estante",
-      "saving": "Guardando…",
-      "saveAdaptation": "Guardar adaptación",
-      "saveAdaptationHint": "Al guardar se mantiene la versión adaptada en su cuenta. Tu rutina sigue siendo la misma a menos que elijas reemplazarla.",
+      "adaptLabel": "Revisión del estante",
+      "adaptTitle": "Ver lo que ya tienes y lo que falta",
+      "adaptBody": "Ritora compara esta guía con tu estante para mostrar qué pasos ya tienes, qué pasos pueden usar un producto seguro y similar que ya tienes, y qué categorías de producto faltan. No elimina productos del estante ni cambia tu rutina.",
+      "adapting": "Revisando estante…",
+      "adaptAgain": "Revisar estante otra vez",
+      "adaptAction": "Revisar mi estante",
+      "previewOnlyHint": "Esta revisión del estante es una guía temporal. No se guarda en tu cuenta, no compra productos, no elimina artículos del estante y no cambia tu rutina.",
       "adaptError": "Algo salió mal al adaptar esta rutina. Inténtalo de nuevo o infórmalo si el problema continúa.",
       "changeStep": "Step {step} · {label}",
       "change": {
-        "kept": "Guardado de tu estante",
-        "swapped": "Cambiado a un equivalente",
-        "removed": "Eliminado por seguridad",
-        "gap": "brecha honesta"
+        "kept": "Ya está en tu estante",
+        "swapped": "Usa un producto similar que tienes",
+        "removed": "Omite este paso por seguridad",
+        "gap": "Falta en tu estante"
       },
       "changeType": {
-        "kept": "mantenido",
-        "swapped": "Intercambiado",
-        "removed": "Eliminado",
-        "gap": "brecha"
+        "kept": "Lo tienes",
+        "swapped": "Alternativa propia",
+        "removed": "Omitir",
+        "gap": "Falta"
       },
       "summary": {
-        "kept": "Guardado de tu estante",
-        "swapped": "Cambiado a alternativa",
-        "removed": "Eliminado por seguridad",
-        "gaps": "Brechas honestas"
+        "kept": "Ya lo tienes",
+        "swapped": "Alternativas propias",
+        "removed": "Omitidos por seguridad",
+        "gaps": "Categorías faltantes"
       },
       "safetySeverity": {
         "high": "Alto",
@@ -6127,7 +6139,8 @@
       "warningsEmptyBody": "Cuando algo se vuelve riesgoso en la comunidad (una reformulación, una rutina insegura o un patrocinio oculto), nuestros moderadores publican advertencias aquí."
     },
     "submissions": {
-      "title": "Envíos de mi comunidad",
+      "title": "Mis envíos",
+      "countLabel": "{count, plural, =0 {Sin envíos} one {# envío} other {# envíos}}",
       "emptyTitle": "Aún no hay envíos de la comunidad",
       "emptyBody": "Todo lo que compartas aparece aquí con su estado de moderación actual.",
       "edit": "Editar",
@@ -6170,7 +6183,27 @@
         "routine": "Libro de jugadas",
         "review": "Revisión",
         "result": "Nota de resultado"
-      }
+      },
+      "resultOnReview": "Resultado sobre reseña",
+      "resultOnPlaybook": "Resultado sobre plan",
+      "resultOnFallback": "Resultado sobre publicación de la comunidad",
+      "resultUnknownProduct": "Producto sin título",
+      "parentReviewUnderModerationTitle": "La reseña original está en moderación",
+      "parentReviewUnderModerationBody": "Tu nota de resultado está guardada, pero esta reseña no es visible públicamente mientras Ritora la revisa.",
+      "parentPlaybookUnderModerationTitle": "La guía original está en moderación",
+      "parentPlaybookUnderModerationBody": "Tu nota de resultado está guardada, pero esta guía no es visible públicamente mientras Ritora la revisa.",
+      "parentNeedsEditReviewTitle": "Reseña original devuelta a su autor",
+      "parentNeedsEditReviewBody": "Tu nota aparecerá de nuevo en cuanto el autor revise y vuelva a enviar la reseña.",
+      "parentNeedsEditPlaybookTitle": "Plan original devuelto a su autor",
+      "parentNeedsEditPlaybookBody": "Tu nota aparecerá de nuevo en cuanto el autor revise y vuelva a enviar el plan.",
+      "parentRejectedReviewTitle": "La reseña original fue rechazada",
+      "parentRejectedReviewBody": "Tu nota no aparecerá públicamente. Puedes retirarla si prefieres eliminarla de tu registro.",
+      "parentRejectedPlaybookTitle": "El plan original fue rechazado",
+      "parentRejectedPlaybookBody": "Tu nota no aparecerá públicamente. Puedes retirarla si prefieres eliminarla de tu registro.",
+      "parentHiddenReviewTitle": "La reseña original fue eliminada",
+      "parentHiddenReviewBody": "Tu nota ya no está vinculada a una reseña pública. Puedes retirarla si prefieres eliminarla de tu registro.",
+      "parentHiddenPlaybookTitle": "El plan original fue eliminado",
+      "parentHiddenPlaybookBody": "Tu nota ya no está vinculada a un plan público. Puedes retirarla si prefieres eliminarla de tu registro."
     },
     "eligibility": {
       "dialogTitle": "La publicación comunitaria aún no está disponible",
@@ -6224,10 +6257,8 @@
       "resubmitFailed": "No se pudo volver a enviar este artículo.",
       "withdrawn": "Presentación retirada de la evidencia comunitaria.",
       "withdrawFailed": "No se pudo retirar este artículo.",
-      "routineAdapted": "Rutina adaptada a tu estantería.",
-      "routineAdaptFailed": "No se pudo adaptar esta rutina.",
-      "adaptationSaved": "Adaptación guardada.",
-      "adaptationSaveFailed": "No se pudo guardar la adaptación."
+      "routineAdapted": "Revisión del estante completada.",
+      "routineAdaptFailed": "No se pudo revisar esta guía contra tu estante."
     },
     "errors": {
       "couldNotLoadTitle": "La comunidad no pudo cargar",
@@ -6255,7 +6286,7 @@
         "helped": "Ayudó",
         "worsened": "Empeorado",
         "no-change": "Sin cambios",
-        "irritation": "irritación",
+        "irritation": "Irritó la piel",
         "barrier-recovery": "Recuperación de barreras",
         "repurchased": "Recomprado",
         "stopped-using": "Dejó de usar"

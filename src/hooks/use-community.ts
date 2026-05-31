@@ -4,8 +4,10 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { QueryKey } from "@/constants/query-keys";
 import { useAuthEnabled } from "@/hooks/use-auth-enabled";
 import {
+  getPeopleLikeMe,
   listCommunityReviews,
   listCommunityRoutines,
+  listMyCommunitySubmissions,
 } from "@/services/community.service";
 import type { CommunityList, CommunityListQuery } from "@/types/community";
 
@@ -67,6 +69,53 @@ export function useCommunityReviews(
       listCommunityReviews(
         {
           ...filters,
+          cursor: pageParam,
+          limit: COMMUNITY_LIST_PAGE_SIZE,
+        },
+        signal,
+      ),
+    enabled: isEnabled,
+    initialPageParam: null as string | null,
+    getNextPageParam: getSafeNextCursor,
+  });
+
+  return {
+    ...query,
+    data: query.data?.pages.flatMap((page) => page.items) ?? [],
+  };
+}
+
+export function useCommunityPeopleLikeMe(enabled: boolean = true) {
+  const isEnabled = useAuthEnabled(enabled);
+  const query = useInfiniteQuery({
+    queryKey: [QueryKey.CommunityPeopleLikeMe],
+    queryFn: ({ pageParam, signal }) =>
+      getPeopleLikeMe(
+        {
+          cursor: pageParam,
+          limit: COMMUNITY_LIST_PAGE_SIZE,
+        },
+        signal,
+      ),
+    enabled: isEnabled,
+    initialPageParam: null as string | null,
+    getNextPageParam: getSafeNextCursor,
+  });
+
+  return {
+    ...query,
+    data: query.data?.pages.flatMap((page) => page.items) ?? [],
+    profileFacets: query.data?.pages[0]?.profileFacets ?? null,
+  };
+}
+
+export function useMyCommunitySubmissions(enabled: boolean = true) {
+  const isEnabled = useAuthEnabled(enabled);
+  const query = useInfiniteQuery({
+    queryKey: [QueryKey.CommunityMySubmissions],
+    queryFn: ({ pageParam, signal }) =>
+      listMyCommunitySubmissions(
+        {
           cursor: pageParam,
           limit: COMMUNITY_LIST_PAGE_SIZE,
         },

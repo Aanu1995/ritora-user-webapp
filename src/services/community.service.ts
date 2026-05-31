@@ -12,8 +12,10 @@ import type {
   CommunityList,
   CommunityListQuery,
   CommunityOutcomeSignal,
+  CommunityOutcomeResultsQuery,
   CommunityOutcomeSignalInput,
   CommunityOutcomeSignalResponse,
+  CommunityPeopleLikeMe,
   CommunityPostingEligibility,
   CommunityProductEvidence,
   CommunityReportReason,
@@ -44,12 +46,36 @@ export function acceptCommunityGuidelines(): Promise<CommunityPostingEligibility
   );
 }
 
-export function getPeopleLikeMe(
+type CommunityCursorListQuery = Pick<CommunityListQuery, "cursor" | "limit">;
+
+function isAbortSignal(value: unknown): value is AbortSignal {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "aborted" in value &&
+    "addEventListener" in value
+  );
+}
+
+function normalizeCursorListArgs(
+  queryOrSignal?: CommunityCursorListQuery | AbortSignal,
   signal?: AbortSignal,
-): Promise<CommunityList<CommunityRoutine | CommunityReview>> {
-  return getRequest<CommunityList<CommunityRoutine | CommunityReview>>(
+) {
+  if (isAbortSignal(queryOrSignal)) {
+    return { query: {}, signal: queryOrSignal };
+  }
+
+  return { query: queryOrSignal ?? {}, signal };
+}
+
+export function getPeopleLikeMe(
+  queryOrSignal?: CommunityCursorListQuery | AbortSignal,
+  signal?: AbortSignal,
+): Promise<CommunityPeopleLikeMe> {
+  const args = normalizeCursorListArgs(queryOrSignal, signal);
+  return getRequest<CommunityPeopleLikeMe>(
     ApiPath.CommunityPeopleLikeMe,
-    { signal },
+    buildCommunityListRequestConfig(args.query, args.signal),
   );
 }
 
@@ -150,16 +176,6 @@ export function adaptCommunityRoutine(
   return postRequest<CommunityAdaptation>(ApiPath.CommunityRoutineAdapt(id));
 }
 
-export function saveCommunityAdaptation(
-  routineId: string,
-  adaptationId: string,
-): Promise<{ saved: true }> {
-  return postRequest<{ saved: true }>(
-    ApiPath.CommunityRoutineSaveAdaptation(routineId),
-    { adaptationId },
-  );
-}
-
 export function reportCommunityRoutine(
   id: string,
   reason: CommunityReportReason,
@@ -238,18 +254,47 @@ export function signalCommunityReviewOutcome(
 
 export function listCommunityReviewResults(
   id: string,
-  signal?: CommunityOutcomeSignal | "",
+  queryOrSignal?: CommunityOutcomeResultsQuery | CommunityOutcomeSignal | "",
   abortSignal?: AbortSignal,
 ): Promise<CommunityReviewResultsResponse> {
-  const params = new URLSearchParams();
-  if (signal) params.set("signal", signal);
-  const query = params.toString();
-  return getRequest<CommunityReviewResultsResponse>(
-    query
-      ? `${ApiPath.CommunityReviewResults(id)}?${query}`
-      : ApiPath.CommunityReviewResults(id),
-    { signal: abortSignal },
+  return listCommunityOutcomeResults(
+    ApiPath.CommunityReviewResults(id),
+    queryOrSignal,
+    abortSignal,
   );
+}
+
+export function listCommunityRoutineResults(
+  id: string,
+  queryOrSignal?: CommunityOutcomeResultsQuery | CommunityOutcomeSignal | "",
+  abortSignal?: AbortSignal,
+): Promise<CommunityReviewResultsResponse> {
+  return listCommunityOutcomeResults(
+    ApiPath.CommunityRoutineResults(id),
+    queryOrSignal,
+    abortSignal,
+  );
+}
+
+function listCommunityOutcomeResults(
+  path: string,
+  queryOrSignal?: CommunityOutcomeResultsQuery | CommunityOutcomeSignal | "",
+  abortSignal?: AbortSignal,
+): Promise<CommunityReviewResultsResponse> {
+  const query =
+    typeof queryOrSignal === "string"
+      ? { signal: queryOrSignal }
+      : (queryOrSignal ?? {});
+  const params = {
+    ...(query.cursor ? { cursor: query.cursor } : {}),
+    ...(query.limit ? { limit: query.limit } : {}),
+    ...(query.signal ? { signal: query.signal } : {}),
+  };
+
+  return getRequest<CommunityReviewResultsResponse>(path, {
+    ...(Object.keys(params).length > 0 ? { params } : {}),
+    signal: abortSignal,
+  });
 }
 
 export function listCommunityWarnings(
@@ -259,11 +304,13 @@ export function listCommunityWarnings(
 }
 
 export function listMyCommunitySubmissions(
+  queryOrSignal?: CommunityCursorListQuery | AbortSignal,
   signal?: AbortSignal,
 ): Promise<CommunityList<CommunitySubmission>> {
+  const args = normalizeCursorListArgs(queryOrSignal, signal);
   return getRequest<CommunityList<CommunitySubmission>>(
     ApiPath.CommunityMySubmissions,
-    { signal },
+    buildCommunityListRequestConfig(args.query, args.signal),
   );
 }
 

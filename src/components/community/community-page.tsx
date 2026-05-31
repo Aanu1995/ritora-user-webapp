@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { QueryKey } from "@/constants/query-keys";
 import {
+  useCommunityPeopleLikeMe,
   useCommunityReviews,
   useCommunityRoutines,
 } from "@/hooks/use-community";
@@ -91,8 +92,11 @@ export function CommunityPage() {
     reviewQueryFilters,
     tab === "reviews",
   );
+  const peopleQuery = useCommunityPeopleLikeMe(tab === "people");
   const activeTargetReady =
-    tab === "routines"
+    tab === "people"
+      ? !peopleQuery.isPending
+      : tab === "routines"
       ? !routinesQuery.isPending
       : tab === "reviews"
         ? !reviewsQuery.isPending
@@ -165,7 +169,21 @@ export function CommunityPage() {
         <CommunityTabs active={tab} onChange={handleTabChange} />
 
         <div className="mt-4 space-y-6">
-          {tab === "people" ? <PeopleLikeMe data={data} /> : null}
+          {tab === "people" ? (
+            <PeopleLikeMe
+              items={peopleQuery.data}
+              isLoading={peopleQuery.isPending}
+              isError={peopleQuery.isError}
+              hasNextPage={Boolean(peopleQuery.hasNextPage)}
+              isFetchingNextPage={peopleQuery.isFetchingNextPage}
+              hasLoadMoreError={Boolean(peopleQuery.isFetchNextPageError)}
+              onLoadMore={() => peopleQuery.fetchNextPage()}
+              onRetryLoadMore={() => peopleQuery.fetchNextPage()}
+              onRetryInitialLoad={() => {
+                void peopleQuery.refetch();
+              }}
+            />
+          ) : null}
           {tab === "routines" ? (
             <RoutineList
               action={

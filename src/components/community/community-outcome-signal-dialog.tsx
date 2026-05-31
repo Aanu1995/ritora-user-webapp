@@ -91,23 +91,21 @@ export function OutcomeSignalDialog({
           irritationLevel:
             value.irritationLevel as CommunityOutcomeSignalInput["irritationLevel"],
         };
-        const input: CommunityOutcomeSignalInput = isReview
-          ? {
-              ...baseInput,
-              note: value.note.trim() || null,
-              routineSlot:
-                (value.routineSlot as CommunityOutcomeSignalInput["routineSlot"]) ||
-                null,
-              usedWithProducts: value.usedWithProducts
-                .filter((item) => item.productId || item.productName.trim())
-                .map((item) => ({
-                  category: item.category,
-                  productBrand: item.productBrand.trim() || null,
-                  productId: item.productId || null,
-                  productName: item.productName.trim() || null,
-                })),
-            }
-          : baseInput;
+        const input: CommunityOutcomeSignalInput = {
+          ...baseInput,
+          note: value.note.trim() || null,
+          routineSlot:
+            (value.routineSlot as CommunityOutcomeSignalInput["routineSlot"]) ||
+            null,
+          usedWithProducts: value.usedWithProducts
+            .filter((item) => item.productId || item.productName.trim())
+            .map((item) => ({
+              category: item.category,
+              productBrand: item.productBrand.trim() || null,
+              productId: item.productId || null,
+              productName: item.productName.trim() || null,
+            })),
+        };
         const result = await executeMutation(mutate, input);
         if (result.error !== null) {
           return { form: t("addFailed"), fields: {} };
@@ -183,19 +181,10 @@ export function OutcomeSignalDialog({
             ) : null}
           </div>
 
-          {/* Form body — broken into clearly-labelled groups so
-              users aren't staring at a wall of 4–7 mixed-input
-              fields. Two groups for reviews ("Your experience"
-              [required] + "Routine context" [all optional]) and
-              one group for routine confirmations (just "Your
-              experience"). The optional group's description
-              explicitly tells the user they can skip everything
-              in it without losing the submission, which removes
-              the implicit pressure to fill out every field.
-              The submit button lives inside this scroll region
-              too — it flows past the fields rather than being
-              pinned to the dialog floor. `pb-6` gives it room
-              from the rounded dialog edge. */}
+          {/* Form body — required experience first, optional
+              context second. Notes and product context are
+              moderated before public display for both product
+              reviews and playbooks. */}
           <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-6 pb-6">
             <FormSection title={t("yourExperienceGroup")}>
               <form.Field name="sameGoal">
@@ -271,49 +260,47 @@ export function OutcomeSignalDialog({
               </form.Field>
             </FormSection>
 
-            {isReview ? (
-              <FormSection
-                title={t("routineContextGroup")}
-                description={t("routineContextGroupDescription")}
-              >
-                <form.Field name="routineSlot">
-                  {(field) => (
-                    <OutcomeSelect
-                      errors={field.state.meta.errors}
-                      hint={t("resultRoutineSlotHint")}
-                      label={t("resultRoutineSlot")}
-                      name={field.name}
-                      onBlur={field.handleBlur}
-                      onChange={field.handleChange}
-                      options={options.reviewRoutineSlots}
-                      placeholder={t("choose")}
-                      required={false}
-                      value={field.state.value}
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="usedWithProducts">
-                  {(field) => (
-                    <CommunityOutcomeProductsFieldFromShelf
-                      errors={field.state.meta.errors}
-                      onChange={field.handleChange}
-                      value={field.state.value}
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="note">
-                  {(field) => (
-                    <CommunityTextareaField
-                      field={field}
-                      hint={t("resultNoteHint")}
-                      label={t("resultNote")}
-                      maxLength={500}
-                      placeholder={t("resultNotePlaceholder")}
-                    />
-                  )}
-                </form.Field>
-              </FormSection>
-            ) : null}
+            <FormSection
+              title={t("routineContextGroup")}
+              description={t("routineContextGroupDescription")}
+            >
+              <form.Field name="routineSlot">
+                {(field) => (
+                  <OutcomeSelect
+                    errors={field.state.meta.errors}
+                    hint={t("resultRoutineSlotHint")}
+                    label={t("resultRoutineSlot")}
+                    name={field.name}
+                    onBlur={field.handleBlur}
+                    onChange={field.handleChange}
+                    options={options.reviewRoutineSlots}
+                    placeholder={t("choose")}
+                    required={false}
+                    value={field.state.value}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="usedWithProducts">
+                {(field) => (
+                  <CommunityOutcomeProductsFieldFromShelf
+                    errors={field.state.meta.errors}
+                    onChange={field.handleChange}
+                    value={field.state.value}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="note">
+                {(field) => (
+                  <CommunityTextareaField
+                    field={field}
+                    hint={t("resultNoteHint")}
+                    label={t("resultNote")}
+                    maxLength={500}
+                    placeholder={t("resultNotePlaceholder")}
+                  />
+                )}
+              </form.Field>
+            </FormSection>
 
             <form.Subscribe selector={(state) => state.errorMap.onSubmit}>
               {(submitError) => {

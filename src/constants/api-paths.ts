@@ -177,10 +177,10 @@ export const ApiPath = {
     `${COMMUNITY_BASE}/routines/${id}/helpfulness`,
   CommunityRoutineOutcomeSignal: (id: string) =>
     `${COMMUNITY_BASE}/routines/${id}/outcome-signal`,
+  CommunityRoutineResults: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/results`,
   CommunityRoutineAdapt: (id: string) =>
     `${COMMUNITY_BASE}/routines/${id}/adapt-to-shelf`,
-  CommunityRoutineSaveAdaptation: (id: string) =>
-    `${COMMUNITY_BASE}/routines/${id}/save-adaptation`,
   CommunityProductEvidence: (id: string) =>
     `${COMMUNITY_BASE}/products/${id}/evidence`,
   CommunityReviews: `${COMMUNITY_BASE}/reviews`,

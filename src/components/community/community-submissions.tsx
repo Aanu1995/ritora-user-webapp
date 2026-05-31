@@ -1,128 +1,109 @@
 "use client";
+
 import {
   AlertTriangle,
   ArrowUpRight,
-  Clock,
   FileCheck2,
-  GitBranch,
-  MessageSquareText,
   PencilLine,
+  Quote,
   RefreshCw,
-  Star,
   Trash2,
-  type LucideIcon,
 } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  type QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { parseUtcDate, utcNow } from "@/lib/dayjs";
 import {
   ConfirmDialog,
   ConfirmDialogTone,
 } from "@/components/ui/confirm-dialog";
+import { RetryPanel } from "@/components/ui/retry-panel";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AppRoute } from "@/constants/app-routes";
 import { QueryKey } from "@/constants/query-keys";
+import { useMyCommunitySubmissions } from "@/hooks/use-community";
 import { getApiErrorMessage } from "@/lib/api-error";
+import { cn } from "@/lib/utils";
 import {
-  listMyCommunitySubmissions,
   resubmitCommunityContent,
   withdrawCommunityContent,
 } from "@/services/community.service";
-import type { CommunitySubmission } from "@/types/community";
+import {
+  CommunityAutoLoadState,
+  useCommunityAutoLoad,
+} from "./community-list-pagination";
+import {
+  buildSubmissionCardState,
+  getModerationGuidance,
+  getParentNotice,
+  getSubmissionViewTarget,
+} from "./community-submission-card-utils";
 import {
   CommunityPlaybookSubmissionEditSheet,
   CommunityReviewSubmissionEditSheet,
 } from "./community-submission-edit-sheet";
 import { SubmissionNotice } from "./community-submission-notice";
 import {
-  Badge,
   CommunityListSkeleton,
   EmptyState,
   InlineSpinner,
 } from "./community-shared";
 
-function statusTone(
-  status: CommunitySubmission["status"],
-): "muted" | "accent" | "warning" | "danger" | "ai" {
-  switch (status) {
-    case "published":
-      return "accent";
-    case "pending_review":
-      return "ai";
-    case "needs_edit":
-      return "warning";
-    case "rejected":
-    case "hidden":
-      return "danger";
-    default:
-      return "muted";
-  }
-}
-
-const TYPE_ICON: Record<CommunitySubmission["type"], LucideIcon> = {
-  review: Star,
-  routine: GitBranch,
-  result: MessageSquareText,
-};
-
 export function MySubmissions() {
   const t = useTranslations("community.submissions");
   const tStatus = useTranslations("community.submissions.status");
   const tType = useTranslations("community.submissions.type");
+  const tErrors = useTranslations("community.errors");
   const locale = useLocale();
   const tToast = useTranslations("community.toasts");
   const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [withdrawId, setWithdrawId] = useState<string | null>(null);
-  const query = useQuery({
-    queryKey: [QueryKey.CommunityMySubmissions],
-    queryFn: ({ signal }) => listMyCommunitySubmissions(signal),
-  });
+
+  const query = useMyCommunitySubmissions();
+
   const resubmit = useMutation({
     mutationFn: (id: string) => resubmitCommunityContent(id),
     onSuccess: () => {
-      void queryClient.invalidateQueries({
-        queryKey: [QueryKey.CommunityMySubmissions],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: [QueryKey.CommunityHome],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: [QueryKey.CommunityReviews],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: [QueryKey.CommunityRoutines],
-      });
+      invalidateCommunityQueries(queryClient);
       toast.success(tToast("resubmitted"));
     },
     onError: (error) =>
       toast.error(getApiErrorMessage(error) ?? tToast("resubmitFailed")),
   });
+
   const withdraw = useMutation({
     mutationFn: (id: string) => withdrawCommunityContent(id),
     onSuccess: () => {
       setWithdrawId(null);
-      void queryClient.invalidateQueries({
-        queryKey: [QueryKey.CommunityMySubmissions],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: [QueryKey.CommunityHome],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: [QueryKey.CommunityReviews],
-      });
-      void queryClient.invalidateQueries({
-        queryKey: [QueryKey.CommunityRoutines],
-      });
+      invalidateCommunityQueries(queryClient);
       toast.success(tToast("withdrawn"));
     },
     onError: (error) =>
       toast.error(getApiErrorMessage(error) ?? tToast("withdrawFailed")),
   });
-  if (query.isLoading) {
+
+  const items = query.data;
+  const loadMoreSentinelRef = useCommunityAutoLoad({
+    compact: false,
+    hasLoadMoreError: Boolean(query.isFetchNextPageError),
+    hasNextPage: Boolean(query.hasNextPage),
+    isError: query.isError,
+    isFetchingNextPage: query.isFetchingNextPage,
+    isLoading: query.isPending,
+    itemCount: items.length,
+    onLoadMore: () => query.fetchNextPage(),
+  });
+  const showAutoLoadState =
+    Boolean(query.hasNextPage) ||
+    query.isFetchingNextPage ||
+    query.isFetchNextPageError;
+
+  if (query.isPending && query.data.length === 0) {
     return (
       <section
         aria-busy
@@ -134,10 +115,23 @@ export function MySubmissions() {
     );
   }
 
-  const items = query.data?.items ?? [];
   const editingItem = items.find((item) => item.id === editingId) ?? null;
   const editingReview = editingItem?.type === "review" ? editingItem : null;
   const editingRoutine = editingItem?.type === "routine" ? editingItem : null;
+
+  if (query.isError && items.length === 0) {
+    return (
+      <RetryPanel
+        title={tErrors("couldNotLoadTitle")}
+        description={tErrors("couldNotLoadBody")}
+        actionLabel={tErrors("tryAgain")}
+        onAction={() => {
+          void query.refetch();
+        }}
+        hideSupportLink
+      />
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -148,107 +142,104 @@ export function MySubmissions() {
       />
     );
   }
+
   return (
-    <section className="space-y-4">
-      <h2 className="font-display text-lg font-bold tracking-tight text-foreground">
-        {t("title")}
-      </h2>
-      <div className="space-y-3">
+    <section className="space-y-3">
+      <header className="flex items-baseline justify-between gap-3">
+        <h2 className="font-display text-base font-bold tracking-tight text-foreground">
+          {t("title")}
+        </h2>
+        <span className="text-xs font-medium tabular-nums text-muted">
+          {t("countLabel", { count: items.length })}
+        </span>
+      </header>
+
+      <div className="grid grid-cols-1 gap-2">
         {items.map((item) => {
+          const card = buildSubmissionCardState(item, {
+            locale,
+            resultUnknownProduct: t("resultUnknownProduct"),
+            typeReview: t("resultOnReview"),
+            typePlaybook: t("resultOnPlaybook"),
+            typeFallback: t("resultOnFallback"),
+            defaultType: tType(item.type),
+          });
+          const primarySafetyFlag = item.safetyFlags[0] ?? null;
+          const guidance = getModerationGuidance(item, primarySafetyFlag, {
+            fallbackReason: t("guidanceFallback"),
+            guidanceInstruction: t("guidanceInstruction"),
+            resultGuidanceInstruction: t("resultGuidanceInstruction"),
+          });
+          const parentNotice = getParentNotice(item);
+          const viewTarget = getSubmissionViewTarget(item);
           const resubmitting =
             resubmit.isPending && resubmit.variables === item.id;
-          const isResult = item.type === "result";
-          const canEdit =
-            !isResult &&
-            (item.status === "draft" ||
-              item.status === "pending_review" ||
-              item.status === "needs_edit" ||
-              item.status === "rejected");
-          const canResubmit =
-            !isResult &&
-            (item.status === "needs_edit" || item.status === "rejected");
-          const showWithdraw = isResult
-            ? item.status !== "hidden"
-            : item.status === "published";
           const withdrawing =
             withdraw.isPending && withdraw.variables === item.id;
-          const primarySafetyFlag = item.safetyFlags[0] ?? null;
-          const needsUserEdits =
-            item.status === "needs_edit" || item.status === "rejected";
-          const guidanceReason =
-            item.moderationGuidance?.reason ??
-            (needsUserEdits
-              ? (primarySafetyFlag?.message ?? t("guidanceFallback"))
-              : null);
-          const guidanceSource = item.moderationGuidance?.source ?? "system";
-          const guidanceInstruction = isResult
-            ? t("resultGuidanceInstruction")
-            : t("guidanceInstruction");
-          const showPrimarySafetyFlag =
-            primarySafetyFlag !== null &&
-            primarySafetyFlag.message !== guidanceReason;
-          const viewTarget = getSubmissionViewTarget(item);
           const hasActions =
-            canEdit || canResubmit || showWithdraw || viewTarget !== null;
-          const submittedDate = parseUtcDate(item.createdAt);
-          const submittedRelative = submittedDate
-            ? submittedDate.locale(locale).fromNow()
-            : null;
-          const submittedAbsolute = submittedDate
-            ? submittedDate.locale(locale).format("LL")
-            : undefined;
-          const isRecentSubmission =
-            submittedDate !== null &&
-            submittedDate.isAfter(utcNow().subtract(30, "day"));
-          const TypeIcon = TYPE_ICON[item.type];
-          const displayTitle =
-            item.type === "result"
-              ? t("resultTitle", {
-                  title: item.parentContent?.title ?? t("resultFallbackTarget"),
-                })
-              : item.title;
+            card.canEdit || card.canResubmit || card.showWithdraw || viewTarget;
+
           return (
             <article
               key={item.id}
-              className="rounded-2xl border border-border bg-surface p-5 shadow-soft"
+              className={cn(
+                "min-w-0 overflow-hidden rounded-xl border border-border bg-surface p-4 transition hover:border-border-strong",
+                card.statusVisual.cardBorderAccent,
+              )}
             >
-              <header className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+              <header className="flex items-start gap-3">
+                <span
+                  aria-hidden
+                  className={cn(
+                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                    card.typeMeta.avatarClass,
+                  )}
+                >
+                  <card.typeMeta.Icon className="h-4 w-4" />
+                </span>
+
                 <div className="min-w-0 flex-1">
-                  <h3 className="min-w-0 break-words font-display text-base font-bold leading-tight tracking-tight text-foreground">
-                    {displayTitle}
+                  <h3
+                    className="break-words font-display text-sm font-bold leading-tight tracking-tight text-foreground sm:text-base [overflow-wrap:anywhere]"
+                    title={card.displayTitle}
+                  >
+                    {card.displayTitle}
                   </h3>
-                  <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-muted">
-                    <span className="inline-flex items-center gap-1">
-                      <TypeIcon className="h-3.5 w-3.5" aria-hidden />
-                      {tType(item.type)}
-                    </span>
-                    {submittedRelative ? (
+                  <p className="mt-0.5 inline-flex flex-wrap items-center gap-x-1.5 text-[11px] text-muted">
+                    <span>{card.typeLabel}</span>
+                    {card.submittedRelative ? (
                       <>
                         <span aria-hidden>·</span>
                         <time
                           dateTime={item.createdAt}
-                          title={submittedAbsolute}
-                          className={
-                            isRecentSubmission
-                              ? "inline-flex items-center gap-1 font-medium text-accent-strong"
-                              : "inline-flex items-center gap-1"
-                          }
+                          title={card.submittedAbsolute}
                         >
-                          <Clock className="h-3 w-3" aria-hidden />
-                          {submittedRelative}
+                          {card.submittedRelative}
                         </time>
                       </>
                     ) : null}
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-1.5 sm:shrink-0 sm:justify-end">
-                  <Badge tone={statusTone(item.status)}>
-                    {tStatus(item.status)}
-                  </Badge>
-                </div>
+
+                <span
+                  className={cn(
+                    "inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-semibold",
+                    card.statusVisual.pillClass,
+                  )}
+                >
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "h-1.5 w-1.5 rounded-full",
+                      card.statusVisual.dotClass,
+                    )}
+                  />
+                  {tStatus(item.status)}
+                </span>
               </header>
 
-              {showPrimarySafetyFlag ? (
+              {primarySafetyFlag &&
+              primarySafetyFlag.message !== guidance.reason ? (
                 <SubmissionNotice
                   icon={<AlertTriangle className="h-4 w-4" />}
                   title={t("safetyFlagTitleFallback")}
@@ -256,34 +247,56 @@ export function MySubmissions() {
                 />
               ) : null}
 
-              {guidanceReason ? (
+              {guidance.reason ? (
                 <SubmissionNotice
                   icon={<AlertTriangle className="h-4 w-4" />}
                   title={t("guidanceTitle")}
-                  tag={t(`guidanceSource.${guidanceSource}`)}
-                  body={guidanceReason}
-                  footnote={guidanceInstruction}
+                  tag={t(`guidanceSource.${guidance.source}`)}
+                  body={guidance.reason}
+                  footnote={guidance.instruction}
                 />
               ) : null}
 
-              {isResult && item.editableText ? (
-                <blockquote className="mt-3 rounded-xl border-l-4 border-accent bg-surface-muted px-3 py-2 text-sm leading-6 text-foreground">
-                  {item.editableText}
+              {parentNotice ? (
+                <SubmissionNotice
+                  icon={<AlertTriangle className="h-4 w-4" />}
+                  title={t(parentNotice.titleKey)}
+                  tag={tStatus(parentNotice.status)}
+                  body={t(parentNotice.bodyKey)}
+                />
+              ) : null}
+
+              {item.type === "result" && item.editableText ? (
+                <blockquote className="mt-3 flex min-w-0 gap-3 rounded-xl border border-accent/20 bg-surface-muted px-3 py-2">
+                  <Quote
+                    aria-hidden
+                    className="mt-0.5 h-4 w-4 shrink-0 text-accent-strong"
+                  />
+                  <p className="min-w-0 break-words text-sm leading-6 text-foreground line-clamp-4 [overflow-wrap:anywhere]">
+                    {item.editableText}
+                  </p>
                 </blockquote>
               ) : null}
 
               {hasActions ? (
-                <div className="mt-4 flex flex-wrap justify-end gap-2">
-                  {canEdit ? (
+                <div className="mt-3 flex flex-wrap justify-end gap-2">
+                  {card.showWithdraw ? (
                     <Button
                       size="sm"
-                      onClick={() => setEditingId(item.id)}
+                      variant="ghost"
+                      onClick={() => setWithdrawId(item.id)}
+                      disabled={withdrawing}
+                      className="text-muted hover:bg-danger-soft hover:text-danger"
                     >
-                      <PencilLine className="h-4 w-4" />
-                      {t("edit")}
+                      {withdrawing ? (
+                        <InlineSpinner />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                      {withdrawing ? t("withdrawing") : t("withdraw")}
                     </Button>
                   ) : null}
-                  {canResubmit ? (
+                  {card.canResubmit ? (
                     <Button
                       size="sm"
                       variant="outline"
@@ -308,20 +321,10 @@ export function MySubmissions() {
                       </a>
                     </Button>
                   ) : null}
-                  {showWithdraw ? (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setWithdrawId(item.id)}
-                      disabled={withdrawing}
-                      className="text-danger hover:border-danger/40 hover:bg-danger-soft hover:text-danger"
-                    >
-                      {withdrawing ? (
-                        <InlineSpinner />
-                      ) : (
-                        <Trash2 className="h-4 w-4" />
-                      )}
-                      {withdrawing ? t("withdrawing") : t("withdraw")}
+                  {card.canEdit ? (
+                    <Button size="sm" onClick={() => setEditingId(item.id)}>
+                      <PencilLine className="h-4 w-4" />
+                      {t("edit")}
                     </Button>
                   ) : null}
                 </div>
@@ -330,6 +333,19 @@ export function MySubmissions() {
           );
         })}
       </div>
+
+      {showAutoLoadState ? (
+        <CommunityAutoLoadState
+          hasLoadMoreError={Boolean(query.isFetchNextPageError)}
+          isFetchingNextPage={query.isFetchingNextPage}
+          onRetryLoadMore={() => {
+            void query.fetchNextPage();
+          }}
+          sentinelRef={loadMoreSentinelRef}
+          testId="community-submissions-auto-load-sentinel"
+        />
+      ) : null}
+
       <CommunityPlaybookSubmissionEditSheet
         item={editingRoutine}
         open={editingRoutine !== null}
@@ -362,36 +378,14 @@ export function MySubmissions() {
   );
 }
 
-function getSubmissionViewTarget(
-  item: CommunitySubmission,
-): { href: string; type: "review" | "routine" } | null {
-  if (item.type === "result") {
-    return item.parentContent
-      ? {
-          href: buildCommunityContentHref(
-            item.parentContent.type,
-            item.parentContent.id,
-          ),
-          type: item.parentContent.type,
-        }
-      : null;
+function invalidateCommunityQueries(queryClient: QueryClient) {
+  for (const queryKey of [
+    QueryKey.CommunityMySubmissions,
+    QueryKey.CommunityHome,
+    QueryKey.CommunityPeopleLikeMe,
+    QueryKey.CommunityReviews,
+    QueryKey.CommunityRoutines,
+  ]) {
+    void queryClient.invalidateQueries({ queryKey: [queryKey] });
   }
-
-  if (item.status !== "published") {
-    return null;
-  }
-
-  return {
-    href: buildCommunityContentHref(item.type, item.id),
-    type: item.type,
-  };
-}
-
-function buildCommunityContentHref(
-  type: "review" | "routine",
-  id: string,
-): string {
-  return `${AppRoute.Community}?tab=${
-    type === "review" ? "reviews" : "routines"
-  }#community-${type}-${id}`;
 }

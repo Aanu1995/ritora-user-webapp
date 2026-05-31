@@ -33,7 +33,7 @@ export function useCommunityAutoLoad({
   isFetchingNextPage: boolean;
   isLoading: boolean;
   itemCount: number;
-  onLoadMore?: () => void;
+  onLoadMore?: () => Promise<unknown> | void;
 }) {
   return useAutoLoadMore({
     enabled:

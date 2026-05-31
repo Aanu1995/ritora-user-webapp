@@ -17,11 +17,16 @@ import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { safeDynamicTranslation } from "@/components/skin-journal/safe-translation";
 import { QueryKey } from "@/constants/query-keys";
 import { cn } from "@/lib/utils";
 import { getCommunityProductEvidence } from "@/services/community.service";
 import type { CommunityEvidenceCount } from "@/types/community";
-import { humaniseCommunityTag } from "./community-i18n-options";
+import {
+  humaniseCommunityTag,
+  labelFromOptions,
+  useCommunityTranslatedOptions,
+} from "./community-i18n-options";
 
 /* ===========================================================
  * Community evidence panel
@@ -43,6 +48,8 @@ type Props = {
 
 export function CommunityProductEvidencePanel({ productId }: Props) {
   const t = useTranslations("community.productEvidence");
+  const tOutcome = useTranslations("community.shared.outcomes");
+  const options = useCommunityTranslatedOptions();
   const evidence = useQuery({
     queryKey: [QueryKey.CommunityProductEvidence, productId],
     queryFn: ({ signal }) => getCommunityProductEvidence(productId, signal),
@@ -161,18 +168,33 @@ export function CommunityProductEvidencePanel({ productId }: Props) {
             icon={Target}
             title={t("topGoals")}
             values={data.topGoals}
+            labelFor={(value) =>
+              labelFromOptions(options.goals, value) ??
+              humaniseCommunityTag(value)
+            }
             tone="accent"
           />
           <TagGroup
             icon={Ban}
             title={t("topAvoids")}
             values={data.topAvoids}
+            labelFor={(value) =>
+              labelFromOptions(options.avoidTags, value) ??
+              humaniseCommunityTag(value)
+            }
             tone="warning"
           />
           <TagGroup
             icon={Sparkles}
             title={t("reviewOutcomes")}
             values={data.topOutcomes}
+            labelFor={(value) =>
+              safeDynamicTranslation(
+                tOutcome,
+                value,
+                humaniseCommunityTag(value),
+              )
+            }
             tone="ai"
           />
         </div>
@@ -243,11 +265,13 @@ const TAG_TONE_ICON: Record<TagTone, string> = {
 
 function TagGroup({
   icon: Icon,
+  labelFor,
   title,
   tone,
   values,
 }: {
   icon: LucideIcon;
+  labelFor: (value: string) => string;
   title: string;
   tone: TagTone;
   values: CommunityEvidenceCount[];
@@ -269,7 +293,7 @@ function TagGroup({
               className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-2.5 py-1 text-xs"
             >
               <span className="font-medium text-foreground">
-                {humaniseCommunityTag(item.value)}
+                {labelFor(item.value)}
               </span>
               <span className="rounded-full bg-surface-muted px-1.5 text-[10px] font-semibold tabular-nums text-muted">
                 {item.count}

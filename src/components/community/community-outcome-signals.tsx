@@ -33,7 +33,7 @@ import {
   SIGNAL_PILL_CLASS,
 } from "./community-outcome-signal-meta";
 import { OutcomeSignalDialog } from "./community-outcome-signal-dialog";
-import { CommunityReviewResultsSheet } from "./community-review-results-sheet";
+import { CommunityOutcomeResultsSheet } from "./community-review-results-sheet";
 import { InlineSpinner } from "./community-shared";
 
 type CommunityOutcomeSignalsProps = {
@@ -108,7 +108,7 @@ export function CommunityOutcomeSignals({
         ],
       });
       void queryClient.invalidateQueries({
-        queryKey: [QueryKey.CommunityReviewResults, contentId],
+        queryKey: [QueryKey.CommunityOutcomeResults, contentType, contentId],
       });
       toast.success(
         result.noteModerationStatus === "published"
@@ -169,7 +169,7 @@ export function CommunityOutcomeSignals({
             <BadgeCheck className="h-4 w-4 shrink-0 text-accent-strong" />
             <span className="min-w-0 truncate">{confirmedLabel}</span>
           </p>
-          {contentType === "review" && total > 0 ? (
+          {total > 0 ? (
             <Button
               type="button"
               size="sm"
@@ -253,12 +253,13 @@ export function CommunityOutcomeSignals({
           open={selectedSignal !== null}
           selectedSignal={selectedSignal}
         />
-        {contentType === "review" ? (
-          <CommunityReviewResultsSheet
+        {total > 0 ? (
+          <CommunityOutcomeResultsSheet
+            contentId={contentId}
+            contentTitle={contentTitle}
+            contentType={contentType}
             open={resultsOpen}
             onOpenChange={setResultsOpen}
-            reviewId={contentId}
-            productName={contentTitle}
           />
         ) : null}
       </section>

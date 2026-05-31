@@ -23,13 +23,13 @@ import {
   getPeopleLikeMe,
   listCommunityReviewResults,
   listCommunityReviews,
+  listCommunityRoutineResults,
   listCommunityRoutines,
   listCommunityWarnings,
   listMyCommunitySubmissions,
   reportCommunityReview,
   reportCommunityRoutine,
   resubmitCommunityContent,
-  saveCommunityAdaptation,
   signalCommunityReviewOutcome,
   signalCommunityRoutineOutcome,
   updateCommunityReview,
@@ -57,7 +57,12 @@ describe("community.service", () => {
     await getCommunityProductEvidence("product-1", controller.signal);
     await listCommunityReviewResults(
       "review-1",
-      "worked_for_me_too",
+      { signal: "worked_for_me_too" },
+      controller.signal,
+    );
+    await listCommunityRoutineResults(
+      "routine-1",
+      { signal: "worked_with_changes" },
       controller.signal,
     );
 
@@ -94,8 +99,72 @@ describe("community.service", () => {
     );
     expect(getRequest).toHaveBeenNthCalledWith(
       10,
-      "/community/reviews/review-1/results?signal=worked_for_me_too",
-      { signal: controller.signal },
+      "/community/reviews/review-1/results",
+      {
+        params: { signal: "worked_for_me_too" },
+        signal: controller.signal,
+      },
+    );
+    expect(getRequest).toHaveBeenNthCalledWith(
+      11,
+      "/community/routines/routine-1/results",
+      {
+        params: { signal: "worked_with_changes" },
+        signal: controller.signal,
+      },
+    );
+  });
+
+  it("sends community result pagination params to review and playbook result endpoints", async () => {
+    const controller = new AbortController();
+    (getRequest as jest.Mock).mockResolvedValue({
+      counts: {},
+      items: [],
+      nextCursor: null,
+    });
+
+    await listCommunityReviewResults(
+      "review-1",
+      {
+        cursor: "review-result-cursor",
+        limit: 12,
+        signal: "worked_for_me_too",
+      },
+      controller.signal,
+    );
+    await listCommunityRoutineResults(
+      "routine-1",
+      {
+        cursor: "routine-result-cursor",
+        limit: 12,
+        signal: "worked_with_changes",
+      },
+      controller.signal,
+    );
+
+    expect(getRequest).toHaveBeenNthCalledWith(
+      1,
+      "/community/reviews/review-1/results",
+      {
+        params: {
+          cursor: "review-result-cursor",
+          limit: 12,
+          signal: "worked_for_me_too",
+        },
+        signal: controller.signal,
+      },
+    );
+    expect(getRequest).toHaveBeenNthCalledWith(
+      2,
+      "/community/routines/routine-1/results",
+      {
+        params: {
+          cursor: "routine-result-cursor",
+          limit: 12,
+          signal: "worked_with_changes",
+        },
+        signal: controller.signal,
+      },
     );
   });
 
@@ -128,6 +197,20 @@ describe("community.service", () => {
       },
       controller.signal,
     );
+    await getPeopleLikeMe(
+      {
+        cursor: "people-cursor",
+        limit: 12,
+      },
+      controller.signal,
+    );
+    await listMyCommunitySubmissions(
+      {
+        cursor: "mine-cursor",
+        limit: 12,
+      },
+      controller.signal,
+    );
 
     expect(getRequest).toHaveBeenNthCalledWith(1, "/community/routines", {
       params: {
@@ -151,6 +234,28 @@ describe("community.service", () => {
       },
       signal: controller.signal,
     });
+    expect(getRequest).toHaveBeenNthCalledWith(
+      3,
+      "/community/people-like-me",
+      {
+        params: {
+          cursor: "people-cursor",
+          limit: 12,
+        },
+        signal: controller.signal,
+      },
+    );
+    expect(getRequest).toHaveBeenNthCalledWith(
+      4,
+      "/community/me/submissions",
+      {
+        params: {
+          cursor: "mine-cursor",
+          limit: 12,
+        },
+        signal: controller.signal,
+      },
+    );
   });
 
   it("creates reviews and routines through guarded publish endpoints", async () => {
@@ -253,7 +358,6 @@ describe("community.service", () => {
         },
       ],
     });
-    await saveCommunityAdaptation("routine-1", "adaptation-1");
     await resubmitCommunityContent("content-1");
     await updateCommunityRoutine("routine-1", {
       title: "Updated",
@@ -318,11 +422,6 @@ describe("community.service", () => {
     );
     expect(postRequest).toHaveBeenNthCalledWith(
       8,
-      "/community/routines/routine-1/save-adaptation",
-      { adaptationId: "adaptation-1" },
-    );
-    expect(postRequest).toHaveBeenNthCalledWith(
-      9,
       "/community/content/content-1/resubmit",
     );
     expect(patchRequest).toHaveBeenNthCalledWith(

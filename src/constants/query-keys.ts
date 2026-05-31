@@ -49,6 +49,7 @@ export enum QueryKey {
   CommunityPeopleLikeMe = "community-people-like-me",
   CommunityRoutines = "community-routines",
   CommunityRoutine = "community-routine",
+  CommunityOutcomeResults = "community-outcome-results",
   CommunityProductEvidence = "community-product-evidence",
   CommunityReviews = "community-reviews",
   CommunityReviewResults = "community-review-results",

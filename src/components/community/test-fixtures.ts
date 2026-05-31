@@ -302,6 +302,7 @@ export const submissionsFixture: CommunitySubmission[] = [
     moderationGuidance: null,
     parentContent: {
       id: "review-1",
+      status: "published",
       title: "The Ordinary Azelaic Acid Suspension 10%",
       type: "review",
     },

@@ -16,7 +16,11 @@ import {
   WriteReviewPanel,
 } from "@/components/community/community-eligibility";
 import { ReviewEvidenceSummary } from "@/components/community/community-review-evidence";
-import { ReviewList, RoutineList } from "@/components/community/community-lists";
+import {
+  PeopleLikeMe,
+  ReviewList,
+  RoutineList,
+} from "@/components/community/community-lists";
 import { CommunityCompactFilterToolbar } from "@/components/community/community-compact-filter-toolbar";
 import { emptyPlaybookFilters } from "@/components/community/community-playbook-filters";
 import { emptyReviewFilters } from "@/components/community/community-review-filters";
@@ -28,15 +32,16 @@ import {
   createCommunityReview,
   createCommunityRoutine,
   getCommunityHome,
+  getPeopleLikeMe,
   getCommunityRoutine,
   listCommunityReviews,
   listCommunityReviewResults,
+  listCommunityRoutineResults,
   listCommunityRoutines,
   listMyCommunitySubmissions,
   reportCommunityReview,
   reportCommunityRoutine,
   resubmitCommunityContent,
-  saveCommunityAdaptation,
   signalCommunityReviewOutcome,
   signalCommunityRoutineOutcome,
   updateCommunityReview,
@@ -140,15 +145,16 @@ jest.mock("@/services/community.service", () => ({
   createCommunityReview: jest.fn(),
   createCommunityRoutine: jest.fn(),
   getCommunityHome: jest.fn(),
+  getPeopleLikeMe: jest.fn(),
   getCommunityRoutine: jest.fn(),
   listCommunityReviews: jest.fn(),
   listCommunityReviewResults: jest.fn(),
+  listCommunityRoutineResults: jest.fn(),
   listCommunityRoutines: jest.fn(),
   listMyCommunitySubmissions: jest.fn(),
   reportCommunityReview: jest.fn(),
   reportCommunityRoutine: jest.fn(),
   resubmitCommunityContent: jest.fn(),
-  saveCommunityAdaptation: jest.fn(),
   signalCommunityReviewOutcome: jest.fn(),
   signalCommunityRoutineOutcome: jest.fn(),
   updateCommunityReview: jest.fn(),
@@ -165,15 +171,16 @@ jest.mock("@/hooks/use-shelf-time-zone", () => ({
 }));
 
 const mockedGetCommunityHome = jest.mocked(getCommunityHome);
+const mockedGetPeopleLikeMe = jest.mocked(getPeopleLikeMe);
 const mockedAcceptGuidelines = jest.mocked(acceptCommunityGuidelines);
 const mockedCreateReview = jest.mocked(createCommunityReview);
 const mockedCreateRoutine = jest.mocked(createCommunityRoutine);
 const mockedGetRoutine = jest.mocked(getCommunityRoutine);
 const mockedListReviews = jest.mocked(listCommunityReviews);
 const mockedListReviewResults = jest.mocked(listCommunityReviewResults);
+const mockedListRoutineResults = jest.mocked(listCommunityRoutineResults);
 const mockedListRoutines = jest.mocked(listCommunityRoutines);
 const mockedAdaptRoutine = jest.mocked(adaptCommunityRoutine);
-const mockedSaveAdaptation = jest.mocked(saveCommunityAdaptation);
 const mockedSignalRoutineOutcome = jest.mocked(signalCommunityRoutineOutcome);
 const mockedReportRoutine = jest.mocked(reportCommunityRoutine);
 const mockedReportReview = jest.mocked(reportCommunityReview);
@@ -225,6 +232,12 @@ beforeEach(() => {
   mockedListReviewResults.mockResolvedValue({
     counts: reviewFixture.outcomeSignalCounts,
     items: [],
+    nextCursor: null,
+  });
+  mockedListRoutineResults.mockResolvedValue({
+    counts: routineFixture.outcomeSignalCounts,
+    items: [],
+    nextCursor: null,
   });
   mockedListReviews.mockResolvedValue({
     items: [reviewFixture],
@@ -232,6 +245,11 @@ beforeEach(() => {
   });
   mockedListRoutines.mockResolvedValue({
     items: [routineFixture],
+    nextCursor: null,
+  });
+  mockedGetPeopleLikeMe.mockResolvedValue({
+    profileFacets: communityHomeFixture.profileFacets,
+    items: [routineFixture, reviewFixture],
     nextCursor: null,
   });
 });
@@ -274,6 +292,11 @@ describe("Community lists pagination", () => {
           hasNextPage
           onLoadMore={jest.fn()}
         />
+        <PeopleLikeMe
+          items={[routineFixture, reviewFixture]}
+          hasNextPage
+          onLoadMore={jest.fn()}
+        />
       </>,
     );
 
@@ -283,6 +306,12 @@ describe("Community lists pagination", () => {
     expect(
       screen.getByTestId("community-reviews-auto-load-sentinel"),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("community-people-auto-load-sentinel"),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText(/Ritora Milk Cleanser/).length).toBeGreaterThan(
+      0,
+    );
     expect(
       screen.queryByRole("button", { name: /try again/i }),
     ).not.toBeInTheDocument();
@@ -323,6 +352,49 @@ describe("Community lists pagination", () => {
     act(() => triggerLastIntersection(sentinel));
 
     expect(loadMore).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens playbook details in a side panel instead of navigating away", async () => {
+    mockedGetRoutine.mockResolvedValue(routineFixture);
+
+    const { container } = renderWithProviders(
+      <RoutineList routines={[routineFixture]} />,
+    );
+
+    expect(
+      screen.queryByRole("link", { name: "View playbook" }),
+    ).not.toBeInTheDocument();
+    expect(
+      container.querySelector(`time[datetime="${routineFixture.createdAt}"]`),
+    ).toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "View playbook" }),
+    );
+
+    expect(mockedGetRoutine).toHaveBeenCalledWith(
+      "routine-1",
+      expect.any(AbortSignal),
+    );
+
+    const panel = await screen.findByRole("dialog");
+    /* Sheet header now shows the routine TITLE as the
+       SheetTitle (passed from the card), with "Playbook" as
+       a small eyebrow above it — replaces the previous
+       generic "Playbook details" SheetTitle. Asserting the
+       eyebrow proves the header structure is intact; the
+       title assertion below proves the right routine
+       rendered. */
+    expect(within(panel).getByText("Playbook")).toBeInTheDocument();
+    expect(
+      within(panel).getByRole("heading", { name: "Quiet AM barrier routine" }),
+    ).toBeInTheDocument();
+    expect(
+      await within(panel).findByText("Products and routine pattern"),
+    ).toBeInTheDocument();
+    expect(
+      within(panel).getByRole("button", { name: /check my shelf/i }),
+    ).toBeInTheDocument();
   });
 
   it("renders backend-backed review and playbook search filters", () => {
@@ -419,13 +491,12 @@ describe("Community lists pagination", () => {
 });
 
 describe("CommunityPage", () => {
-  it("renders matched evidence, tab navigation, reporting, and blocked-posting guidance", async () => {
+  it("renders matched evidence, tab navigation, disabled reporting, and blocked-posting guidance", async () => {
     mockedGetCommunityHome.mockResolvedValue(communityHomeFixture);
     mockedAcceptGuidelines.mockResolvedValue({
       ...blockedPosting,
       hasAcceptedGuidelines: true,
     });
-    mockedReportReview.mockResolvedValue({});
     mockedSignalReviewOutcome.mockResolvedValue({
       signal: "worked_for_me_too",
       noteModerationStatus: "published",
@@ -448,27 +519,19 @@ describe("CommunityPage", () => {
     expect(
       screen.queryByRole("button", { name: /see top matches/i }),
     ).not.toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: /people like me/i })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+    expect(
+      screen.getByRole("tab", { name: /people like me/i }),
+    ).toHaveAttribute("aria-selected", "true");
     expect(screen.getByText("Quiet AM barrier routine")).toBeInTheDocument();
     expect(screen.getByText("Ritora Barrier Cream")).toBeInTheDocument();
 
     expect(screen.getByText("92% match")).toBeInTheDocument();
     expect(screen.getByText("76% match")).toBeInTheDocument();
-
-    const reportButtons = screen.getAllByRole("button", { name: /report/i });
-    await userEvent.click(reportButtons[reportButtons.length - 1]);
-    await waitFor(() =>
-      expect(mockedReportReview).toHaveBeenCalledWith(
-        "review-1",
-        "unsafe_advice",
-      ),
-    );
-    expect(mockedToast.success).toHaveBeenCalledWith(
-      "Report submitted for moderation.",
-    );
+    expect(
+      screen.queryByRole("button", { name: /report/i }),
+    ).not.toBeInTheDocument();
+    expect(mockedReportReview).not.toHaveBeenCalled();
+    expect(mockedReportRoutine).not.toHaveBeenCalled();
 
     expect(
       screen.queryByRole("tab", { name: /write review/i }),
@@ -514,10 +577,9 @@ describe("CommunityPage", () => {
     expect(
       screen.queryByRole("tab", { name: /for you/i }),
     ).not.toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: /people like me/i })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
+    expect(
+      screen.getByRole("tab", { name: /people like me/i }),
+    ).toHaveAttribute("aria-selected", "true");
   });
 
   it("opens writing forms from the viewing tabs for eligible posters", async () => {
@@ -729,6 +791,19 @@ describe("CommunityPage", () => {
   });
 
   it("shows empty matching copy and retries when the home query fails", async () => {
+    mockedGetPeopleLikeMe.mockResolvedValueOnce({
+      profileFacets: {
+        skinType: null,
+        concernTags: [],
+        sensitivityLevel: null,
+        skinToneRange: null,
+        climateBucket: null,
+        routinePace: null,
+        goalTags: [],
+      },
+      items: [],
+      nextCursor: null,
+    });
     mockedGetCommunityHome.mockResolvedValueOnce({
       ...communityHomeFixture,
       profileFacets: {
@@ -779,7 +854,7 @@ describe("CommunityPage", () => {
     ).toBeInTheDocument();
   });
 
-  it("requires contextual confirmation before adding outcome evidence", async () => {
+  it("collects moderated playbook result notes and product context before adding outcome evidence", async () => {
     mockedGetCommunityHome.mockResolvedValue({
       ...communityHomeFixture,
       postingEligibility: eligiblePosting,
@@ -813,7 +888,19 @@ describe("CommunityPage", () => {
     const irritationSelect = document.querySelector<HTMLSelectElement>(
       'select[name="irritationLevel"]',
     );
-    if (!sameGoalSelect || !trialDurationSelect || !irritationSelect) {
+    const routineSlotSelect = document.querySelector<HTMLSelectElement>(
+      'select[name="routineSlot"]',
+    );
+    const noteInput = document.querySelector<HTMLTextAreaElement>(
+      'textarea[name="note"]',
+    );
+    if (
+      !sameGoalSelect ||
+      !trialDurationSelect ||
+      !irritationSelect ||
+      !routineSlotSelect ||
+      !noteInput
+    ) {
       throw new Error("Expected outcome context fields.");
     }
 
@@ -822,7 +909,31 @@ describe("CommunityPage", () => {
       target: { value: "8-weeks" },
     });
     fireEvent.change(irritationSelect, { target: { value: "none" } });
-    await userEvent.click(screen.getByText("Products"));
+    fireEvent.change(routineSlotSelect, { target: { value: "pm" } });
+    const outcomeDialog = screen.getByRole("dialog", {
+      name: /confirm your outcome/i,
+    });
+    await userEvent.click(within(outcomeDialog).getByText("Products"));
+    await userEvent.click(within(outcomeDialog).getByText("Habits"));
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: /add product used with it/i,
+      }),
+    );
+    const usedWithSelect = document.querySelector<HTMLSelectElement>(
+      'select[name="usedWithProducts.0.productId"]',
+    );
+    if (!usedWithSelect) {
+      throw new Error("Expected used-with product selector.");
+    }
+    fireEvent.change(usedWithSelect, {
+      target: { value: "product-cleanser" },
+    });
+    fireEvent.change(noteInput, {
+      target: {
+        value: "I followed the cleanser step and changed the evening timing.",
+      },
+    });
     await userEvent.click(screen.getByRole("button", { name: /add outcome/i }));
 
     await waitFor(() =>
@@ -830,8 +941,18 @@ describe("CommunityPage", () => {
         signal: "worked_for_me_too",
         sameGoal: true,
         trialDuration: "8-weeks",
-        followedParts: ["products"],
+        followedParts: ["products", "habits"],
         irritationLevel: "none",
+        routineSlot: "pm",
+        usedWithProducts: [
+          {
+            category: "cleanser",
+            productBrand: "Ritora",
+            productId: "product-cleanser",
+            productName: "Milky Cleanser",
+          },
+        ],
+        note: "I followed the cleanser step and changed the evening timing.",
       }),
     );
   });
@@ -989,6 +1110,7 @@ describe("CommunityPage", () => {
           updatedAt: "2026-05-01T10:00:00.000Z",
         },
       ],
+      nextCursor: null,
     });
 
     renderWithProviders(<CommunityPage />);
@@ -1011,6 +1133,7 @@ describe("CommunityPage", () => {
     expect(
       within(sheet).getByText("Ritora Milky Cleanser"),
     ).toBeInTheDocument();
+    expect(within(sheet).getByText("Same product")).toBeInTheDocument();
 
     // Filter is now a row of tone-coded pill buttons (the
     // previous Select dropdown was replaced for one-tap
@@ -1024,7 +1147,166 @@ describe("CommunityPage", () => {
     await waitFor(() =>
       expect(mockedListReviewResults).toHaveBeenLastCalledWith(
         "review-1",
-        "worked_for_me_too",
+        {
+          cursor: null,
+          limit: 12,
+          signal: "worked_for_me_too",
+        },
+        expect.any(AbortSignal),
+      ),
+    );
+  });
+
+  it("automatically loads more review result notes when the sheet reaches the end", async () => {
+    installIntersectionObserverMock();
+    mockedGetCommunityHome.mockResolvedValue({
+      ...communityHomeFixture,
+      postingEligibility: eligiblePosting,
+    });
+    mockedListReviewResults
+      .mockResolvedValueOnce({
+        counts: reviewFixture.outcomeSignalCounts,
+        items: [
+          {
+            id: "vote-1",
+            signal: "worked_for_me_too",
+            sameGoal: true,
+            trialDuration: "8-weeks",
+            followedParts: ["products"],
+            irritationLevel: "none",
+            routineSlot: "pm",
+            usedWithProducts: [],
+            note: "First result note.",
+            noteModerationStatus: "published",
+            similarToViewer: true,
+            createdAt: "2026-05-02T10:00:00.000Z",
+            updatedAt: "2026-05-02T10:00:00.000Z",
+          },
+        ],
+        nextCursor: "review-result-cursor",
+      })
+      .mockResolvedValueOnce({
+        counts: reviewFixture.outcomeSignalCounts,
+        items: [
+          {
+            id: "vote-2",
+            signal: "worked_with_changes",
+            sameGoal: false,
+            trialDuration: "4-weeks",
+            followedParts: ["products"],
+            irritationLevel: "mild",
+            routineSlot: null,
+            usedWithProducts: [],
+            note: "Second result note.",
+            noteModerationStatus: "published",
+            similarToViewer: false,
+            createdAt: "2026-05-01T10:00:00.000Z",
+            updatedAt: "2026-05-01T10:00:00.000Z",
+          },
+        ],
+        nextCursor: null,
+      });
+
+    renderWithProviders(<CommunityPage />);
+
+    await userEvent.click(await screen.findByRole("tab", { name: /reviews/i }));
+    await userEvent.click(
+      await screen.findByRole("button", { name: /view community results/i }),
+    );
+
+    const sheet = await screen.findByRole("dialog", {
+      name: /ritora barrier cream/i,
+    });
+    expect(within(sheet).getByText("First result note.")).toBeInTheDocument();
+
+    const sentinel = within(sheet).getByTestId(
+      "community-results-load-more-sentinel",
+    );
+    act(() => triggerLastIntersection(sentinel));
+
+    await waitFor(() =>
+      expect(mockedListReviewResults).toHaveBeenLastCalledWith(
+        "review-1",
+        {
+          cursor: "review-result-cursor",
+          limit: 12,
+          signal: "",
+        },
+        expect.any(AbortSignal),
+      ),
+    );
+    expect(within(sheet).getByText("Second result note.")).toBeInTheDocument();
+  });
+
+  it("opens filtered community results for playbook confirmations", async () => {
+    mockedGetCommunityHome.mockResolvedValue({
+      ...communityHomeFixture,
+      postingEligibility: eligiblePosting,
+    });
+    mockedListRoutineResults.mockResolvedValue({
+      counts: routineFixture.outcomeSignalCounts,
+      items: [
+        {
+          id: "routine-vote-1",
+          signal: "worked_with_changes",
+          sameGoal: true,
+          trialDuration: "8-weeks",
+          followedParts: ["products", "habits"],
+          irritationLevel: "none",
+          routineSlot: "pm",
+          usedWithProducts: [
+            {
+              category: "cleanser",
+              productBrand: "Ritora",
+              productName: "Milky Cleanser",
+            },
+          ],
+          note: "I followed the cleanser step and sleep habit, but used my own moisturizer.",
+          noteModerationStatus: "published",
+          similarToViewer: true,
+          createdAt: "2026-05-01T10:00:00.000Z",
+          updatedAt: "2026-05-01T10:00:00.000Z",
+        },
+      ],
+      nextCursor: null,
+    });
+
+    renderWithProviders(<CommunityPage />);
+
+    await userEvent.click(
+      await screen.findByRole("tab", { name: /playbooks/i }),
+    );
+    await userEvent.click(
+      await screen.findByRole("button", { name: /view community results/i }),
+    );
+
+    const sheet = await screen.findByRole("dialog", {
+      name: /quiet am barrier routine/i,
+    });
+    expect(
+      within(sheet).getByText(
+        "I followed the cleanser step and sleep habit, but used my own moisturizer.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(sheet).getByText("Ritora Milky Cleanser"),
+    ).toBeInTheDocument();
+    expect(within(sheet).getByText("Products")).toBeInTheDocument();
+    expect(within(sheet).queryByText("Same product")).not.toBeInTheDocument();
+
+    const changedFilter = within(sheet).getByRole("button", {
+      name: "Changed",
+    });
+    await userEvent.click(changedFilter);
+
+    await waitFor(() =>
+      expect(mockedListRoutineResults).toHaveBeenLastCalledWith(
+        "routine-1",
+        {
+          cursor: null,
+          limit: 12,
+          signal: "worked_with_changes",
+        },
         expect.any(AbortSignal),
       ),
     );
@@ -1453,11 +1735,9 @@ describe("community publish forms", () => {
 });
 
 describe("CommunityRoutineDetailPage", () => {
-  it("adapts, saves, and reports a routine while displaying safety flags", async () => {
+  it("checks a routine against the shelf without offering to save the check", async () => {
     mockedGetRoutine.mockResolvedValue(routineFixture);
     mockedAdaptRoutine.mockResolvedValue(adaptationFixture);
-    mockedSaveAdaptation.mockResolvedValue({ saved: true });
-    mockedReportRoutine.mockResolvedValue({});
 
     renderWithProviders(<CommunityRoutineDetailPage routineId="routine-1" />);
 
@@ -1467,35 +1747,27 @@ describe("CommunityRoutineDetailPage", () => {
     expect(
       screen.getByText("Add sunscreen when using photosensitizing actives."),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /report/i }),
+    ).not.toBeInTheDocument();
 
     await userEvent.click(
-      screen.getByRole("button", { name: /adapt to my shelf/i }),
+      screen.getByRole("button", { name: /check my shelf/i }),
     );
 
-    expect(await screen.findByText("Kept from your shelf")).toBeInTheDocument();
-    expect(screen.getByText("Swapped to alternative")).toBeInTheDocument();
-    expect(screen.getByText("Removed for safety")).toBeInTheDocument();
-    expect(screen.getByText("Honest gaps")).toBeInTheDocument();
+    expect(await screen.findByText("Already owned")).toBeInTheDocument();
+    expect(screen.getByText("Owned alternatives")).toBeInTheDocument();
+    expect(screen.getByText("Skipped for safety")).toBeInTheDocument();
+    expect(screen.getByText("Missing categories")).toBeInTheDocument();
     expect(screen.getByText("Ritora Calm Cream")).toBeInTheDocument();
     expect(
       screen.getByText("A sunscreen category gap remains."),
     ).toBeInTheDocument();
 
-    await userEvent.click(
-      screen.getByRole("button", { name: /save adaptation/i }),
-    );
-    expect(mockedSaveAdaptation).toHaveBeenCalledWith(
-      "routine-1",
-      "adaptation-1",
-    );
-
-    await userEvent.click(screen.getByRole("button", { name: /report/i }));
-    await waitFor(() =>
-      expect(mockedReportRoutine).toHaveBeenCalledWith(
-        "routine-1",
-        "unsafe_advice",
-      ),
-    );
+    expect(
+      screen.queryByRole("button", { name: /save/i }),
+    ).not.toBeInTheDocument();
+    expect(mockedReportRoutine).not.toHaveBeenCalled();
   });
 
   it("shows a retry panel when a routine is unavailable", async () => {
@@ -1510,6 +1782,25 @@ describe("CommunityRoutineDetailPage", () => {
 });
 
 describe("MySubmissions", () => {
+  it("uses automatic pagination for the Mine tab", async () => {
+    mockedListSubmissions.mockResolvedValue({
+      items: [submissionsFixture[0]],
+      nextCursor: "cursor-1",
+    });
+
+    renderWithProviders(<MySubmissions />);
+
+    expect(
+      await screen.findByRole("heading", { name: "My submissions" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("community-submissions-auto-load-sentinel"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /try again/i }),
+    ).not.toBeInTheDocument();
+  });
+
   it("edits returned playbooks with the full structured form", async () => {
     mockUseShelfProducts.mockReturnValue({
       data: [
@@ -1530,7 +1821,7 @@ describe("MySubmissions", () => {
     renderWithProviders(<MySubmissions />);
 
     expect(
-      await screen.findByRole("heading", { name: "My community submissions" }),
+      await screen.findByRole("heading", { name: "My submissions" }),
     ).toBeInTheDocument();
     expect(
       screen.getByText("Remove treatment claims before resubmitting."),
@@ -1711,6 +2002,21 @@ describe("MySubmissions", () => {
     ).toBeInTheDocument();
   });
 
+  it("uses the reviewed product name as the Mine review card title", async () => {
+    mockedListSubmissions.mockResolvedValue({
+      items: [submissionsFixture[1]],
+    });
+
+    renderWithProviders(<MySubmissions />);
+
+    expect(
+      await screen.findByRole("heading", { name: "Ritora Barrier Cream" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Rejected review" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("edits returned reviews with shelf product context and resubmits unchanged content", async () => {
     mockedListSubmissions.mockResolvedValue({ items: submissionsFixture });
     mockedUpdateReview.mockResolvedValue(reviewFixture);
@@ -1718,9 +2024,9 @@ describe("MySubmissions", () => {
 
     renderWithProviders(<MySubmissions />);
 
-    const reviewCard = (await screen.findByText("Rejected review")).closest(
-      "article",
-    );
+    const reviewCard = (
+      await screen.findByRole("heading", { name: "Ritora Barrier Cream" })
+    ).closest("article");
     if (!reviewCard) throw new Error("Expected review submission card.");
     expect(
       within(reviewCard).getByText(
@@ -1804,9 +2110,9 @@ describe("MySubmissions", () => {
 
     renderWithProviders(<MySubmissions />);
 
-    const reviewCard = (await screen.findByText("Rejected review")).closest(
-      "article",
-    );
+    const reviewCard = (
+      await screen.findByRole("heading", { name: "Ritora Barrier Cream" })
+    ).closest("article");
     if (!reviewCard) throw new Error("Expected review submission card.");
 
     await userEvent.click(
@@ -1898,11 +2204,12 @@ describe("MySubmissions", () => {
     );
 
     const publishedReviewCard = (
-      await screen.findByText("Published review")
+      await screen.findByRole("heading", { name: "Ritora Barrier Cream" })
     ).closest("article");
     if (!publishedReviewCard) {
       throw new Error("Expected published review submission card.");
     }
+    expect(screen.queryByText("Published review")).not.toBeInTheDocument();
     expect(
       within(publishedReviewCard).getByRole("link", { name: "View review" }),
     ).toHaveAttribute(
@@ -1937,13 +2244,15 @@ describe("MySubmissions", () => {
     renderWithProviders(<MySubmissions />);
 
     const resultCard = (
-      await screen.findByText(
-        "Result on The Ordinary Azelaic Acid Suspension 10%",
-      )
+      await screen.findByRole("heading", {
+        name: "The Ordinary Azelaic Acid Suspension 10%",
+      })
     ).closest("article");
     if (!resultCard) throw new Error("Expected result submission card.");
 
-    expect(within(resultCard).getByText("Result note")).toBeInTheDocument();
+    expect(
+      within(resultCard).getByText("Result on review"),
+    ).toBeInTheDocument();
     expect(
       within(resultCard).getByText(
         "Buffering with moisturizer made it easier to keep using.",
@@ -1973,6 +2282,66 @@ describe("MySubmissions", () => {
     await waitFor(() =>
       expect(mockedWithdraw).toHaveBeenCalledWith("submission-result"),
     );
+  });
+
+  it("does not use an outcome signal enum as a missing result parent title", async () => {
+    mockedListSubmissions.mockResolvedValue({
+      items: [
+        {
+          ...submissionsFixture[2],
+          title: "did_not_work",
+          parentContent: null,
+          resultSignal: "did_not_work",
+        },
+      ],
+    });
+
+    renderWithProviders(<MySubmissions />);
+
+    expect(
+      await screen.findByRole("heading", { name: "Untitled product" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("did_not_work")).not.toBeInTheDocument();
+  });
+
+  it("shows when a result note parent review is under moderation and hides the view link", async () => {
+    mockedListSubmissions.mockResolvedValue({
+      items: [
+        {
+          ...submissionsFixture[2],
+          parentContent: {
+            id: "review-flagged",
+            status: "pending_review",
+            title: "The Ordinary Azelaic Acid Suspension 10%",
+            type: "review",
+          },
+        },
+      ],
+    });
+
+    renderWithProviders(<MySubmissions />);
+
+    const resultCard = (
+      await screen.findByRole("heading", {
+        name: "The Ordinary Azelaic Acid Suspension 10%",
+      })
+    ).closest("article");
+    if (!resultCard) throw new Error("Expected result submission card.");
+
+    /* The parent-moderation notice was compacted from a
+       full title+body block to a one-line strip that
+       carries the body only. The body alone is still
+       enough context for the user (the strip's tone +
+       icon convey severity) and saves ~50px of card
+       chrome. */
+    expect(
+      within(resultCard).getByText(
+        "Your result note is saved, but this review is not visible publicly while Ritora reviews it.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(resultCard).queryByRole("link", { name: "View review" }),
+    ).not.toBeInTheDocument();
   });
 
   it("shows an empty state when the user has no submissions", async () => {
