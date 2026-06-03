@@ -3397,7 +3397,17 @@
       "statusFailed": "Analys misslyckades",
       "statusNeedsReview": "Behöver granskas",
       "noPhotoTitle": "Endast avstämning",
-      "noPhotoBody": "Du loggade hur huden kändes utan foto. AI-analys hoppas över denna dag."
+      "noPhotoBody": "Du loggade hur huden kändes utan foto. AI-analys hoppas över denna dag.",
+      "attentionTitle": "Behöver din uppmärksamhet",
+      "eventWorseningBody": "{concern} ändrades från {previous} till {current} jämfört med föregående post.",
+      "eventWorseningFallbackBody": "En av dagens registrerade hudsignaler ökade jämfört med föregående post.",
+      "eventReactionBody": "Reaktionssignaler upptäcktes: {indicators}.",
+      "eventReactionFallbackBody": "Reaktionssignaler upptäcktes i denna post.",
+      "eventReferralBody": "Denna post nådde granskningsgränsen: {threshold}.",
+      "eventReferralFallbackBody": "Flera senaste poster nådde granskningsgränsen.",
+      "eventGenericBody": "Granska denna journalhändelse innan du tar bort märket.",
+      "eventMarkRead": "Markera läst",
+      "eventMarkingRead": "Markerar läst"
     },
     "referenceQuality": {
       "status": {
@@ -3646,13 +3656,18 @@
         },
         "avoid": {
           "multipleNewActives": "Att lägga till flera nya aktiva ingredienser samtidigt.",
-          "picking": "Att peta eller klämma på utslag.",
+          "picking": "Att peta eller klämma på utslag, eftersom det kan förvärra inflammation och märken.",
+          "dietPatternIfLogged": "Att upprepa ett loggat mönster med mejeri, sött eller sent ätande om det fortsätter sammanfalla med utbrottsdagar.",
+          "sweatFrictionAfterExercise": "Att låta svett, värme eller friktion ligga kvar på utbrottsbenägna områden efter träning.",
+          "poreCloggingProducts": "Tunga eller portilltäppande produkter på områden där utbrott syns.",
+          "inconsistentSpf": "Oskyddad sol eller ojämn SPF-användning när du följer märken eller ojämn ton.",
           "dailyJudgement": "Att bedöma pigmentframsteg från en enda dag.",
           "irritatingScrubs": "Hårda skrubbar eller ändringar som lätt irriterar.",
           "strippingSkin": "Att torka ut huden för att få bort olja.",
           "overExfoliation": "Att exfoliera mer bara för att porer syns idag.",
           "addingActives": "Att lägga till nya aktiva ingredienser när huden ser stressad ut.",
           "fragranceIfSensitive": "Parfymerade produkter om känsligheten är hög.",
+          "knownIrritantReexposure": "Att upprepa en produkt eller ett rutinsteg som nyligen sammanföll med irritation.",
           "overReadingOnePhoto": "Att övertolka ett foto utan upprepad kontext."
         },
         "escalation": {

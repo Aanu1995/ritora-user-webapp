@@ -190,8 +190,11 @@ export interface PhotoAnalysisConcernGuidance {
   title_key: string;
   summary: PhotoAnalysisTextRef;
   possible_factor_keys: PhotoAnalysisTextRef[];
+  possible_cause_items?: string[];
   action_keys: PhotoAnalysisTextRef[];
+  try_next_items?: string[];
   avoid_keys: PhotoAnalysisTextRef[];
+  avoid_items?: string[];
   track_key: PhotoAnalysisTextRef;
   escalation_key?: PhotoAnalysisTextRef | null;
   source_ids: string[];

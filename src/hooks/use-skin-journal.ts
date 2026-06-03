@@ -284,6 +284,7 @@ export function useAcknowledgeEvent() {
     mutationFn: (id: string) => acknowledgeEvent(id),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalEvents] });
+      void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalDay] });
       invalidateAppNavBadges(qc);
     },
   });

@@ -130,13 +130,22 @@ describe("AnalysisCard", () => {
           possible_factor_keys: [
             { key: "journal.analysis.guidance.factors.acneCommonContributors" },
           ],
+          possible_cause_items: [
+            "The chin breakout pattern may line up with the late sugary snack you logged.",
+          ],
           action_keys: [
             { key: "journal.analysis.guidance.actions.acneSteadyRoutine" },
             { key: "journal.analysis.guidance.actions.sameLight" },
           ],
+          try_next_items: [
+            "Keep the routine steady and log whether similar foods line up with new spots.",
+          ],
           avoid_keys: [
             { key: "journal.analysis.guidance.avoid.multipleNewActives" },
             { key: "journal.analysis.guidance.avoid.overReadingOnePhoto" },
+          ],
+          avoid_items: [
+            "Avoid repeating that logged late sugary snack pattern if it keeps matching breakout days.",
           ],
           track_key: { key: "journal.analysis.guidance.acne.track" },
           escalation_key: null,
@@ -144,7 +153,8 @@ describe("AnalysisCard", () => {
           sources: [
             {
               id: "aad_acne_skin_care_tips",
-              title_key: "journal.analysis.sources.aad_acne_skin_care_tips.title",
+              title_key:
+                "journal.analysis.sources.aad_acne_skin_care_tips.title",
               summary_key:
                 "journal.analysis.sources.aad_acne_skin_care_tips.summary",
               organization: "American Academy of Dermatology",
@@ -181,6 +191,13 @@ describe("AnalysisCard", () => {
     expect(screen.queryByText(/possible factors/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/context clues/i)).not.toBeInTheDocument();
     expect(screen.getByText(/try next/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/late sugary snack you logged/i),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/routine steady and log/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/avoid repeating that logged late sugary snack/i),
+    ).toBeInTheDocument();
     expect(screen.getAllByText(/acne skin-care tips/i).length).toBeGreaterThan(
       0,
     );
@@ -232,7 +249,9 @@ describe("AnalysisCard", () => {
             {
               key: "journal.analysis.guidance.factors.recentApplicationChange",
             },
-            { key: "journal.analysis.guidance.factors.pigmentCommonContributors" },
+            {
+              key: "journal.analysis.guidance.factors.pigmentCommonContributors",
+            },
           ],
           action_keys: [
             { key: "journal.analysis.guidance.actions.spfContext" },
@@ -341,9 +360,7 @@ describe("AnalysisCard", () => {
       />,
     );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: /update analysis/i }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: /update analysis/i }));
 
     expect(onReinterpret).toHaveBeenCalledTimes(1);
   });
@@ -409,7 +426,9 @@ describe("AnalysisCard", () => {
       />,
     );
 
-    expect(screen.getByText(/consider professional review/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/consider professional review/i),
+    ).toBeInTheDocument();
     expect(screen.getByText(/possible swelling/i)).toBeInTheDocument();
     expect(screen.getByText(/hive-like appearance/i)).toBeInTheDocument();
     expect(

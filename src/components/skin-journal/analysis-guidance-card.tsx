@@ -47,8 +47,7 @@ const TONE_STYLES: Record<
   },
   avoid: {
     icon: Ban,
-    iconClass:
-      "bg-warning-soft text-[color:var(--warning)]",
+    iconClass: "bg-warning-soft text-[color:var(--warning)]",
     bulletClass: "text-[color:var(--warning)]",
   },
   track: {
@@ -146,6 +145,18 @@ export function ConcernGuidanceCard({
     guidance.concern,
     guidance.concern.replace(/_/g, " "),
   );
+  const possibleCauseItems =
+    guidance.possible_cause_items && guidance.possible_cause_items.length > 0
+      ? guidance.possible_cause_items
+      : guidance.possible_factor_keys.map((item) => translateTextRef(t, item));
+  const tryNextItems =
+    guidance.try_next_items && guidance.try_next_items.length > 0
+      ? guidance.try_next_items
+      : guidance.action_keys.map((item) => translateTextRef(t, item));
+  const avoidItems =
+    guidance.avoid_items && guidance.avoid_items.length > 0
+      ? guidance.avoid_items
+      : guidance.avoid_keys.map((item) => translateTextRef(t, item));
 
   return (
     <article className="rounded-2xl border border-border bg-surface-muted/50 p-4">
@@ -203,19 +214,17 @@ export function ConcernGuidanceCard({
         <GuidanceBlock
           tone="factors"
           label={translateKey(t, "journal.analysis.guidance.sections.factors")}
-          items={guidance.possible_factor_keys.map((item) =>
-            translateTextRef(t, item),
-          )}
+          items={possibleCauseItems}
         />
         <GuidanceBlock
           tone="actions"
           label={translateKey(t, "journal.analysis.guidance.sections.actions")}
-          items={guidance.action_keys.map((item) => translateTextRef(t, item))}
+          items={tryNextItems}
         />
         <GuidanceBlock
           tone="avoid"
           label={translateKey(t, "journal.analysis.guidance.sections.avoid")}
-          items={guidance.avoid_keys.map((item) => translateTextRef(t, item))}
+          items={avoidItems}
         />
         {hideTrack ? null : (
           <TrackBlock

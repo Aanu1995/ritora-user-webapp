@@ -3404,7 +3404,17 @@
       "statusFailed": "El análisis falló",
       "statusNeedsReview": "Necesita revisión",
       "noPhotoTitle": "Sólo check-in",
-      "noPhotoBody": "Registraste cómo se sentía tu piel sin una foto. Por hoy se omite el análisis de IA."
+      "noPhotoBody": "Registraste cómo se sentía tu piel sin una foto. Por hoy se omite el análisis de IA.",
+      "attentionTitle": "Necesita tu atención",
+      "eventWorseningBody": "{concern} cambió de {previous} a {current} en comparación con la entrada anterior.",
+      "eventWorseningFallbackBody": "Una de las señales de piel registradas hoy aumentó en comparación con la entrada anterior.",
+      "eventReactionBody": "Se detectaron señales de reacción: {indicators}.",
+      "eventReactionFallbackBody": "Se detectaron señales de reacción en esta entrada.",
+      "eventReferralBody": "Esta entrada alcanzó el umbral de revisión: {threshold}.",
+      "eventReferralFallbackBody": "Varias entradas recientes alcanzaron el umbral de revisión.",
+      "eventGenericBody": "Revisa este evento del diario antes de borrar el indicador.",
+      "eventMarkRead": "Marcar como leído",
+      "eventMarkingRead": "Marcando como leído"
     },
     "referenceQuality": {
       "status": {
@@ -3651,13 +3661,18 @@
         },
         "avoid": {
           "multipleNewActives": "Agregar varios activos nuevos a la vez.",
-          "picking": "Tocar, rascar o exprimir granitos.",
+          "picking": "Tocar, rascar o exprimir granitos, porque puede empeorar inflamación y marcas.",
+          "dietPatternIfLogged": "Repetir un patrón registrado de lácteos, azúcar o comida tarde si sigue coincidiendo con días de brotes.",
+          "sweatFrictionAfterExercise": "Dejar sudor, calor o fricción sobre zonas propensas a brotes después de hacer ejercicio.",
+          "poreCloggingProducts": "Productos pesados o que obstruyen poros en zonas donde hay brotes.",
+          "inconsistentSpf": "Exposición solar sin protección o SPF irregular mientras sigues marcas o tono desigual.",
           "dailyJudgement": "Juzgar el progreso de pigmentación por un solo día.",
           "irritatingScrubs": "Exfoliantes duros o cambios con alto riesgo de irritación.",
           "strippingSkin": "Resecar la piel para quitar la grasa.",
           "overExfoliation": "Exfoliar más solo porque los poros se ven hoy.",
           "addingActives": "Agregar activos nuevos cuando la piel se ve estresada.",
           "fragranceIfSensitive": "Productos perfumados si la sensibilidad está alta.",
+          "knownIrritantReexposure": "Repetir un producto o paso de rutina que coincidió recientemente con irritación.",
           "overReadingOnePhoto": "Sobreinterpretar una foto sin contexto repetido."
         },
         "escalation": {

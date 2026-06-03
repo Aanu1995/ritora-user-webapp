@@ -14,6 +14,7 @@ import { Chip } from "./chip";
 import { ConcernRatingRow } from "./concern-rating-row";
 import { AnalysisCard } from "./analysis-card";
 import { DayDetailPhotoSet } from "./day-detail-photo-set";
+import { DayDetailAttentionEvents } from "./day-detail-attention-events";
 import {
   type DayDetailAnalysisFeedbackPayload,
   useDayDetailAnalysisFeedback,
@@ -241,6 +242,8 @@ export function DayDetailPanel({
       </div>
 
       {entry.has_photo ? <PhotoReferenceQualityBadge entry={entry} /> : null}
+
+      <DayDetailAttentionEvents events={detail?.events ?? []} />
 
       {entry.has_photo ? (
         <DayDetailPhotoSet entry={entry} date={date} />

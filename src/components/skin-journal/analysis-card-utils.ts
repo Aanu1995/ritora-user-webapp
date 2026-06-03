@@ -75,11 +75,17 @@ export function dedupeRepeatedGuidanceItems(
   const contextKeyCounts = new Map<string, number>();
   const actionKeyCounts = new Map<string, number>();
   const avoidKeyCounts = new Map<string, number>();
+  const possibleCauseTextCounts = new Map<string, number>();
+  const tryNextTextCounts = new Map<string, number>();
+  const avoidTextCounts = new Map<string, number>();
   const trackKeyCounts = new Map<string, number>();
   for (const card of guidance) {
     countTextRefs(contextKeyCounts, card.possible_factor_keys);
     countTextRefs(actionKeyCounts, card.action_keys);
     countTextRefs(avoidKeyCounts, card.avoid_keys);
+    countStrings(possibleCauseTextCounts, card.possible_cause_items);
+    countStrings(tryNextTextCounts, card.try_next_items);
+    countStrings(avoidTextCounts, card.avoid_items);
     trackKeyCounts.set(
       card.track_key.key,
       (trackKeyCounts.get(card.track_key.key) ?? 0) + 1,
@@ -89,6 +95,9 @@ export function dedupeRepeatedGuidanceItems(
   const shownContextKeys = new Set<string>();
   const shownActionKeys = new Set<string>();
   const shownAvoidKeys = new Set<string>();
+  const shownPossibleCauseTexts = new Set<string>();
+  const shownTryNextTexts = new Set<string>();
+  const shownAvoidTexts = new Set<string>();
   const shownTrackKeys = new Set<string>();
   return guidance.map((card) => {
     const displayCard: DisplayConcernGuidance = {
@@ -107,6 +116,21 @@ export function dedupeRepeatedGuidanceItems(
         card.avoid_keys,
         avoidKeyCounts,
         shownAvoidKeys,
+      ),
+      possible_cause_items: keepFirstRepeatedStrings(
+        card.possible_cause_items,
+        possibleCauseTextCounts,
+        shownPossibleCauseTexts,
+      ),
+      try_next_items: keepFirstRepeatedStrings(
+        card.try_next_items,
+        tryNextTextCounts,
+        shownTryNextTexts,
+      ),
+      avoid_items: keepFirstRepeatedStrings(
+        card.avoid_items,
+        avoidTextCounts,
+        shownAvoidTexts,
       ),
     };
     if (
@@ -129,6 +153,16 @@ function countTextRefs(
   }
 }
 
+function countStrings(
+  counts: Map<string, number>,
+  values: string[] | undefined,
+): void {
+  for (const value of values ?? []) {
+    const key = value.toLowerCase();
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+}
+
 function keepFirstRepeatedTextRefs(
   refs: PhotoAnalysisTextRef[],
   counts: Map<string, number>,
@@ -146,14 +180,33 @@ function keepFirstRepeatedTextRefs(
   });
 }
 
+function keepFirstRepeatedStrings(
+  values: string[] | undefined,
+  counts: Map<string, number>,
+  shownKeys: Set<string>,
+): string[] | undefined {
+  if (!values) {
+    return undefined;
+  }
+  return values.filter((value) => {
+    const key = value.toLowerCase();
+    if ((counts.get(key) ?? 0) <= 1) {
+      return true;
+    }
+    if (shownKeys.has(key)) {
+      return false;
+    }
+    shownKeys.add(key);
+    return true;
+  });
+}
+
 function humanizeLocation(location: string): string {
   return location.replace(/_/g, " ");
 }
 
 export function formatLocations(locations: string[]): string {
-  return locations.length > 0
-    ? locations.map(humanizeLocation).join(", ")
-    : "";
+  return locations.length > 0 ? locations.map(humanizeLocation).join(", ") : "";
 }
 
 export function fallbackSummaryKey(

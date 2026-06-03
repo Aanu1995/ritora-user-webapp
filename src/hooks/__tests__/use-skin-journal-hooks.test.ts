@@ -374,6 +374,18 @@ describe("useSkinJournal hooks", () => {
     );
   });
 
+  it("refreshes journal event, day detail, and badge state when an event is acknowledged", () => {
+    asMutation<string>(useAcknowledgeEvent()).onSuccess?.({}, "event-1");
+
+    expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+      queryKey: [QueryKey.SkinJournalEvents],
+    });
+    expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+      queryKey: [QueryKey.SkinJournalDay],
+    });
+    expect(invalidateAppNavBadges).toHaveBeenCalledWith(mockQueryClient);
+  });
+
   it("does not upload an unsupported front photo when the angle map is empty", () => {
     asMutation<{
       payload: { is_pre_routine: boolean };

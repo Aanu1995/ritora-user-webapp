@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "@/test/utils";
 import { DayDetailPanel } from "../day-detail";
 import {
@@ -9,11 +10,26 @@ import {
   type AnalysisFeedback,
   type AnalysisObservations,
   type DayDetail,
+  type JournalEvent,
   type JournalEntry,
   type PhotoAnalysisInterpretation,
 } from "@/types/skin-journal";
 
 const ANALYSIS_VERSION = PhotoAnalysisInterpretationVersion.V1_1;
+const mockAcknowledgeEventMutate = jest.fn();
+let mockAcknowledgeEventPending = false;
+let mockAcknowledgeEventVariables: string | undefined;
+
+jest.mock("@/hooks/use-skin-journal", () => ({
+  ...jest.requireActual<typeof import("@/hooks/use-skin-journal")>(
+    "@/hooks/use-skin-journal",
+  ),
+  useAcknowledgeEvent: () => ({
+    isPending: mockAcknowledgeEventPending,
+    mutate: mockAcknowledgeEventMutate,
+    variables: mockAcknowledgeEventVariables,
+  }),
+}));
 
 jest.mock("next/image", () => {
   const react = jest.requireActual<typeof import("react")>("react");
@@ -143,16 +159,42 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
   };
 }
 
-function dayDetail(entry: JournalEntry | null): DayDetail {
+function journalEvent(overrides: Partial<JournalEvent> = {}): JournalEvent {
+  return {
+    id: "event-1",
+    entry_id: "entry-1",
+    kind: "worsening",
+    severity: "warning",
+    payload: {
+      concern: "redness",
+      previous: 1,
+      current: 4,
+    },
+    acknowledged_at: null,
+    created_at: "2026-04-29T08:00:00.000Z",
+    ...overrides,
+  };
+}
+
+function dayDetail(
+  entry: JournalEntry | null,
+  events: JournalEvent[] = [],
+): DayDetail {
   return {
     date: entry?.entry_date ?? "2026-04-29",
     entry,
-    events: [],
+    events,
     insights: [],
   };
 }
 
 describe("DayDetailPanel journal-day edit lock", () => {
+  beforeEach(() => {
+    mockAcknowledgeEventMutate.mockReset();
+    mockAcknowledgeEventPending = false;
+    mockAcknowledgeEventVariables = undefined;
+  });
+
   it("hides replace and retry actions for elapsed journal days", () => {
     renderWithProviders(
       <DayDetailPanel
@@ -380,5 +422,40 @@ describe("DayDetailPanel journal-day edit lock", () => {
     expect(
       screen.queryByText(/was this analysis helpful/i),
     ).not.toBeInTheDocument();
+  });
+
+  it("shows unacknowledged warning events and lets the user mark them read", async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <DayDetailPanel
+        detail={dayDetail(journalEntry(), [journalEvent()])}
+        isToday
+      />,
+    );
+
+    expect(screen.getByText(/needs your attention/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/redness changed from 1 to 4/i),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /mark read/i }));
+
+    expect(mockAcknowledgeEventMutate).toHaveBeenCalledWith("event-1");
+  });
+
+  it("does not show already acknowledged warning events", () => {
+    renderWithProviders(
+      <DayDetailPanel
+        detail={dayDetail(journalEntry(), [
+          journalEvent({
+            acknowledged_at: "2026-04-29T09:00:00.000Z",
+          }),
+        ])}
+        isToday
+      />,
+    );
+
+    expect(screen.queryByText(/needs your attention/i)).not.toBeInTheDocument();
   });
 });

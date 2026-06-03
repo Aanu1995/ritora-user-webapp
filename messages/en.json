@@ -3395,7 +3395,17 @@
       "statusFailed": "Analysis failed",
       "statusNeedsReview": "Needs review",
       "noPhotoTitle": "Check-in only",
-      "noPhotoBody": "You logged how your skin felt without a photo. AI analysis is skipped for this day."
+      "noPhotoBody": "You logged how your skin felt without a photo. AI analysis is skipped for this day.",
+      "attentionTitle": "Needs your attention",
+      "eventWorseningBody": "{concern} changed from {previous} to {current} compared with the previous entry.",
+      "eventWorseningFallbackBody": "One of today's recorded skin signals increased compared with the previous entry.",
+      "eventReactionBody": "Reaction signals were detected: {indicators}.",
+      "eventReactionFallbackBody": "Reaction signals were detected on this entry.",
+      "eventReferralBody": "This entry met the review threshold: {threshold}.",
+      "eventReferralFallbackBody": "Several recent entries met the review threshold.",
+      "eventGenericBody": "Review this journal event before clearing the badge.",
+      "eventMarkRead": "Mark read",
+      "eventMarkingRead": "Marking read"
     },
     "referenceQuality": {
       "status": {
@@ -3644,13 +3654,18 @@
         },
         "avoid": {
           "multipleNewActives": "Adding multiple new actives at once.",
-          "picking": "Picking or squeezing spots.",
+          "picking": "Picking or squeezing spots, because it can worsen inflammation and marks.",
+          "dietPatternIfLogged": "Repeating a logged dairy, sugary, or late-night eating pattern if it keeps matching breakout days.",
+          "sweatFrictionAfterExercise": "Letting sweat, heat, or friction sit on breakout-prone areas after exercise.",
+          "poreCloggingProducts": "Heavy or pore-clogging products on areas that are breaking out.",
+          "inconsistentSpf": "Unprotected sun exposure or inconsistent SPF while tracking marks or uneven tone.",
           "dailyJudgement": "Judging pigment progress from one day.",
           "irritatingScrubs": "Harsh scrubs or irritation-prone changes.",
           "strippingSkin": "Stripping the skin to remove oil.",
           "overExfoliation": "Exfoliating more because pores look visible today.",
           "addingActives": "Adding new actives while the skin looks stressed.",
           "fragranceIfSensitive": "Fragranced products if sensitivity is high.",
+          "knownIrritantReexposure": "Repeating a product or routine step that recently lined up with irritation.",
           "overReadingOnePhoto": "Over-reading one photo without repeated context."
         },
         "escalation": {
