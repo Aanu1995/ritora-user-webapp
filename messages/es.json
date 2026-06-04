@@ -5471,7 +5471,7 @@
     },
     "empty": {
       "title": "Nada en la historia todavía.",
-      "body": "Las sugerencias anteriores y lo que aplicaste aparecen aquí una vez que se completa el día. Edite cualquier registro en cualquier momento.",
+      "body": "Las sugerencias anteriores y lo que aplicaste aparecen aquí una vez que se completa el día. Registra o edita un espacio durante 24 horas después de la hora sugerida.",
       "cta": "Abrir la sugerencia de hoy"
     },
     "popovers": {
@@ -5484,8 +5484,8 @@
             "body": "Cada espacio anterior muestra la rutina que sugerimos junto a la que realmente aplicó, para que pueda detectar patrones a lo largo del tiempo."
           },
           "editAnytime": {
-            "title": "Editar un registro en cualquier momento",
-            "body": "¿Olvidaste grabar ayer? Agréguelo ahora. ¿Utilizó un producto diferente al que registró? Cámbialo. Cada edición tiene una marca de tiempo y se conserva el original."
+            "title": "Registrar o editar durante 24 horas",
+            "body": "¿Olvidaste una rutina nocturna? Añádela o corrígela dentro de las 24 horas posteriores a la hora sugerida. Cada edición tiene una marca de tiempo y se conserva el original."
           },
           "insights": {
             "title": "Perspectivas y adherencia",

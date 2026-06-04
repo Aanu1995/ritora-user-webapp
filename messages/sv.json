@@ -5466,7 +5466,7 @@
     },
     "empty": {
       "title": "Inget i historiken än",
-      "body": "Tidigare förslag och vad du applicerade visas här när en dag är klar. Redigera registreringar när som helst.",
+      "body": "Tidigare förslag och vad du applicerade visas här när en dag är klar. Registrera eller redigera en plats i 24 timmar efter den föreslagna tiden.",
       "cta": "Öppna Dagens förslag"
     },
     "popovers": {
@@ -5479,8 +5479,8 @@
             "body": "Varje tidigare plats visar rutinen vi föreslog bredvid den du faktiskt applicerade, så att du kan se mönster över tid."
           },
           "editAnytime": {
-            "title": "Redigera en registrering när som helst",
-            "body": "Glömde att registrera igår? Lägg till det nu. Använde du en annan produkt än du loggade? Ändra det. Varje ändring tidsstämplas och originalet bevaras."
+            "title": "Registrera eller redigera i 24 timmar",
+            "body": "Glömde du en sen kvällsrutin? Lägg till eller korrigera den inom 24 timmar från förslagets tid. Varje ändring tidsstämplas och originalet bevaras."
           },
           "insights": {
             "title": "Insikter och följsamhet",

@@ -5464,7 +5464,7 @@
     },
     "empty": {
       "title": "Nothing in history yet",
-      "body": "Past suggestions and what you applied appear here once a day completes. Edit any record anytime.",
+      "body": "Past suggestions and what you applied appear here once a day completes. Record or edit a slot for 24 hours after its suggested time.",
       "cta": "Open Today's Suggestion"
     },
     "popovers": {
@@ -5477,8 +5477,8 @@
             "body": "Each past slot shows the routine we suggested next to the one you actually applied, so you can spot patterns over time."
           },
           "editAnytime": {
-            "title": "Edit a record anytime",
-            "body": "Forgot to record yesterday? Add it now. Used a different product than you logged? Change it. Every edit is timestamped and the original is kept."
+            "title": "Record or edit for 24 hours",
+            "body": "Forgot a late-night routine? Add or correct it within 24 hours of the suggestion time. Every edit is timestamped and the original is kept."
           },
           "insights": {
             "title": "Insights and adherence",

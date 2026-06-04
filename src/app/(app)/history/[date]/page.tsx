@@ -27,10 +27,14 @@ export default function HistoryDayPage() {
   const tSummary = useTranslations("history.dayCard");
   const day = useSuggestionHistoryDay(params.date);
   const userTimeZone = useAuthStore((state) => state.user?.timeZone) ?? "UTC";
+  const [historyActionNowMs] = useState(() => Date.now());
   const [editTarget, setEditTarget] = useState<{
     slot: TodaysSuggestionSlot;
     log: ApplicationLog;
   } | null>(null);
+  const [recordTarget, setRecordTarget] = useState<TodaysSuggestionSlot | null>(
+    null,
+  );
   const [detailTarget, setDetailTarget] = useState<SuggestionInstance | null>(
     null,
   );
@@ -103,13 +107,25 @@ export default function HistoryDayPage() {
                 onEdit={(targetSlot, log) =>
                   setEditTarget({ slot: targetSlot, log })
                 }
+                onRecord={setRecordTarget}
                 onShowDetail={setDetailTarget}
+                nowMs={historyActionNowMs}
               />
             </li>
           ))}
         </ul>
       </div>
 
+      <RecordApplicationSheet
+        open={recordTarget !== null}
+        onOpenChange={(open) => (open ? null : setRecordTarget(null))}
+        mode={recordTarget ? { kind: "record", slot: recordTarget } : null}
+        onSaved={() => {
+          setRecordTarget(null);
+          void day.refetch();
+        }}
+        timeZone={userTimeZone}
+      />
       <RecordApplicationSheet
         open={editTarget !== null}
         onOpenChange={(open) => (open ? null : setEditTarget(null))}
