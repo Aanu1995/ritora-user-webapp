@@ -1289,9 +1289,9 @@
       "waterNotesPlaceholder": "e.g. Face feels tight after washing at home"
     },
     "preferences": {
-      "fragranceFreeLabel": "Fragrance-free only?",
+      "fragranceFreeLabel": "Fragrance-free only",
       "fragranceFreeHint": "Skip products with added scent. Often gentler on sensitive skin.",
-      "nonComedogenicLabel": "Non-comedogenic only?",
+      "nonComedogenicLabel": "Non-comedogenic only",
       "nonComedogenicHint": "Skip ingredients known to clog pores. Useful for acne-prone skin.",
       "sunscreenFilterLabel": "Sunscreen filter preference",
       "sunscreenFilterHint": "Chemical filters absorb UV; mineral filters reflect it. Hybrids combine both.",

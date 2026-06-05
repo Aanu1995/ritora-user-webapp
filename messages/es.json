@@ -1293,9 +1293,9 @@
       "waterNotesPlaceholder": "por ej. La cara se siente tirante después de lavarse en casa."
     },
     "preferences": {
-      "fragranceFreeLabel": "¿Solo sin fragancia?",
+      "fragranceFreeLabel": "Solo sin fragancia",
       "fragranceFreeHint": "Evite los productos con aroma añadido. A menudo es más suave con la piel sensible.",
-      "nonComedogenicLabel": "¿Solo no comedogénico?",
+      "nonComedogenicLabel": "Solo no comedogénico",
       "nonComedogenicHint": "Evite los ingredientes que se sabe que obstruyen los poros. Útil para pieles propensas al acné.",
       "sunscreenFilterLabel": "Preferencia de filtro de protección solar",
       "sunscreenFilterHint": "Los filtros químicos absorben los rayos UV; Los filtros minerales lo reflejan. Los híbridos combinan ambos.",

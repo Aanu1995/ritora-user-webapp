@@ -1288,9 +1288,9 @@
       "waterNotesPlaceholder": "t.ex. Ansiktet känns stramt efter tvätt hemma"
     },
     "preferences": {
-      "fragranceFreeLabel": "Endast doftfritt?",
+      "fragranceFreeLabel": "Endast doftfritt",
       "fragranceFreeHint": "Hoppa över produkter med tillsatt doft. Ofta skonsammare för känslig hud.",
-      "nonComedogenicLabel": "Endast icke-komedogent?",
+      "nonComedogenicLabel": "Endast icke-komedogent",
       "nonComedogenicHint": "Hoppa över ingredienser som täpper till porer. Bra för aknebenägen hud.",
       "sunscreenFilterLabel": "Solskyddsfilter",
       "sunscreenFilterHint": "Kemiska filter absorberar UV; mineralfilter reflekterar. Hybrider kombinerar båda.",
