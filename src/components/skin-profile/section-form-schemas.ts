@@ -68,12 +68,32 @@ const reactionEntrySchema = z.object({
   patch_test_confirmed: z.boolean().optional(),
 });
 
-export const reactionHistorySectionSchema = z.object({
-  reactionHistory: z.object({
-    has_known_reactions: z.boolean().nullable().optional(),
-    entries: z.array(reactionEntrySchema).max(50).optional(),
-  }),
-});
+const REACTION_HISTORY_REQUIRED_MESSAGE =
+  "validation.reactionHistoryRequired";
+
+export const reactionHistorySectionSchema = z
+  .object({
+    reactionHistory: z.object({
+      has_known_reactions: z.boolean().nullable().optional(),
+      entries: z.array(reactionEntrySchema).max(50).optional(),
+    }),
+  })
+  .superRefine((value, ctx) => {
+    const reactionHistory = value.reactionHistory;
+    const entries = reactionHistory.entries ?? [];
+    const hasKnownReactions = reactionHistory.has_known_reactions;
+    const isAnswered = typeof hasKnownReactions === "boolean";
+    const isKnownWithoutEntries =
+      hasKnownReactions === true && entries.length === 0;
+
+    if (!isAnswered || isKnownWithoutEntries) {
+      ctx.addIssue({
+        code: "custom",
+        message: REACTION_HISTORY_REQUIRED_MESSAGE,
+        path: [],
+      });
+    }
+  });
 
 export type ReactionHistoryFormValues = z.infer<
   typeof reactionHistorySectionSchema

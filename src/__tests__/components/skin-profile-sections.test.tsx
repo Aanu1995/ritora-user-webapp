@@ -475,6 +475,57 @@ describe("skin profile optional sections", () => {
     );
   });
 
+  it("requires a yes or no reaction-history answer before saving", async () => {
+    const profile = mergedProfile({
+      hasHealthContextConsent: true,
+      reactionHistory: {},
+    });
+    const { ref } = renderForwardedSection((sectionRef) => (
+      <ReactionsSection
+        ref={sectionRef}
+        profile={profile}
+        options={mockSkinProfileOptions}
+        onPendingChange={jest.fn()}
+      />
+    ));
+
+    submitSection(ref);
+
+    expect(mockUpdateMutate).not.toHaveBeenCalled();
+    expect(
+      screen.getByText(
+        "Choose yes or no. If yes, add at least one reaction before saving.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("requires at least one logged reaction when known reactions is yes", async () => {
+    const profile = mergedProfile({
+      hasHealthContextConsent: true,
+      reactionHistory: {
+        has_known_reactions: true,
+        entries: [],
+      },
+    });
+    const { ref } = renderForwardedSection((sectionRef) => (
+      <ReactionsSection
+        ref={sectionRef}
+        profile={profile}
+        options={mockSkinProfileOptions}
+        onPendingChange={jest.fn()}
+      />
+    ));
+
+    submitSection(ref);
+
+    expect(mockUpdateMutate).not.toHaveBeenCalled();
+    expect(
+      screen.getByText(
+        "Choose yes or no. If yes, add at least one reaction before saving.",
+      ),
+    ).toBeInTheDocument();
+  });
+
   it("saves no known reaction history as an answered health-context field", async () => {
     const user = userEvent.setup();
     const profile = mergedProfile({

@@ -16,7 +16,11 @@
     "recommended": "Rekommenderat",
     "datePicker": {
       "placeholder": "Välj datum",
-      "clear": "Rensa datum"
+      "clear": "Rensa datum",
+      "dialogTitle": "Datumväljare",
+      "navigationLabel": "Kalendernavigering",
+      "previousMonth": "Föregående månad",
+      "nextMonth": "Nästa månad"
     },
     "birthdayPicker": {
       "label": "Födelsedatum",
@@ -1426,7 +1430,10 @@
       "consentTitle": "Skydda reaktionshistorik",
       "consentDescription": "Reaktionshistorik är hälsorelaterad data. Ritora lagrar den krypterad och använder den bara för att anpassa dina förslag.",
       "consentAccept": "Tillåt och spara",
-      "consentDecline": "Inte nu"
+      "consentDecline": "Inte nu",
+      "validation": {
+        "reactionHistoryRequired": "Välj ja eller nej. Om ja, lägg till minst en reaktion innan du sparar."
+      }
     },
     "activeTolerance": {
       "pageTitle": "Aktiv tolerans",

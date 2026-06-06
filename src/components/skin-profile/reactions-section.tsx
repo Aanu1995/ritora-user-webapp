@@ -121,9 +121,35 @@ export const ReactionsSection = forwardRef<
     );
   };
 
+  const reactionHistoryValidationMessage = () => {
+    const reactionHistory = form.getFieldValue("reactionHistory");
+    const entries = reactionHistory.entries ?? [];
+    const hasKnownReactions = reactionHistory.has_known_reactions;
+
+    if (
+      typeof hasKnownReactions !== "boolean" ||
+      (hasKnownReactions === true && entries.length === 0)
+    ) {
+      return t("validation.reactionHistoryRequired");
+    }
+
+    return undefined;
+  };
+
   const submitReactionHistory = () => {
     if (draftDirtyRef.current) {
       toast.error(t("draftUnsavedError"));
+      return;
+    }
+
+    const validationMessage = reactionHistoryValidationMessage();
+    if (validationMessage) {
+      form.setErrorMap({
+        onSubmit: {
+          form: validationMessage,
+          fields: {},
+        },
+      });
       return;
     }
 
@@ -203,7 +229,10 @@ export const ReactionsSection = forwardRef<
       })}
     >
       {({ entries, hasKnownReactions, submitError }) => {
-        const formError = readSubmissionErrorMessage(submitError);
+        const formError = reactionHistoryFormErrorMessage(
+          readSubmissionErrorMessage(submitError),
+          t("validation.reactionHistoryRequired"),
+        );
 
         return (
           <>
@@ -384,3 +413,14 @@ export const ReactionsSection = forwardRef<
     </form.Subscribe>
   );
 });
+
+function reactionHistoryFormErrorMessage(
+  message: string | undefined,
+  reactionHistoryRequiredMessage: string,
+): string | undefined {
+  if (message === "validation.reactionHistoryRequired") {
+    return reactionHistoryRequiredMessage;
+  }
+
+  return message;
+}

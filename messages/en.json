@@ -16,7 +16,11 @@
     "recommended": "Recommended",
     "datePicker": {
       "placeholder": "Pick a date",
-      "clear": "Clear date"
+      "clear": "Clear date",
+      "dialogTitle": "Date picker",
+      "navigationLabel": "Calendar navigation",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month"
     },
     "birthdayPicker": {
       "label": "Date of birth",
@@ -1427,7 +1431,10 @@
       "consentTitle": "Protect reaction history",
       "consentDescription": "Reaction history is health-context data. Ritora stores it encrypted and uses it only to personalize your suggestions.",
       "consentAccept": "Allow and save",
-      "consentDecline": "Not now"
+      "consentDecline": "Not now",
+      "validation": {
+        "reactionHistoryRequired": "Choose yes or no. If yes, add at least one reaction before saving."
+      }
     },
     "activeTolerance": {
       "pageTitle": "Active tolerance",
