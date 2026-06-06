@@ -178,7 +178,11 @@ export default function DashboardPage() {
           />
         ) : null}
         {latestSuggestionSlot ? (
-          <DashboardLatestSuggestion slot={latestSuggestionSlot} />
+          <DashboardLatestSuggestion
+            slot={latestSuggestionSlot}
+            timeZone={timeZone}
+            nowMs={new Date(renderedAt).getTime()}
+          />
         ) : null}
         <CompactSimplificationAlert />
         <DashboardSetupChecklist

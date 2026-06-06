@@ -14,7 +14,6 @@ const SOURCE_ROOTS = [
 
 const FORM_FILES = [
   "src/components/skin-journal/daily-check-in-form.tsx",
-  "src/components/skin-journal/dermatologist-export-modal.tsx",
 ];
 
 const FORBIDDEN_VISIBLE_COPY = [

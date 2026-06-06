@@ -376,24 +376,3 @@ export interface UpsertEntryPayload {
   photo_processing_consent?: boolean;
   remove_photo_angles?: Angle[];
 }
-
-export interface JournalExportPayload {
-  generated_at: string;
-  from: string;
-  to: string;
-  entries: Array<Record<string, unknown> & { photo_url: string | null }>;
-  events: Record<string, unknown>[];
-  insights: Record<string, unknown>[];
-  wrapped: Record<string, unknown>[];
-  simplifications: Record<string, unknown>[];
-}
-
-export interface JournalExportJob {
-  id: string;
-  status: "ready" | "failed";
-  from: string;
-  to: string;
-  payload: JournalExportPayload | null;
-  error: string | null;
-  created_at: string;
-}

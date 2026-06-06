@@ -10,10 +10,8 @@ import {
 } from "@/hooks/use-skin-journal-polling";
 import {
   acknowledgeSimplification,
-  createJournalExport,
   dismissInsight,
   getActiveSimplification,
-  getJournalExport,
   getJournalStats,
   getSimplification,
   getWrapped,
@@ -26,7 +24,6 @@ import {
 import type {
   InsightAction,
   InsightWindow,
-  JournalExportJob,
 } from "@/types/skin-journal";
 
 export function useInsights(
@@ -141,26 +138,5 @@ export function useJournalStats() {
     queryKey: [QueryKey.SkinJournalStats],
     queryFn: ({ signal }) => getJournalStats({ signal }),
     enabled,
-  });
-}
-
-export function useCreateJournalExport() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (input: { from: string; to: string }) =>
-      createJournalExport(input),
-    onSuccess: (job: JournalExportJob) => {
-      qc.setQueryData([QueryKey.SkinJournalExport, job.id], job);
-      void qc.invalidateQueries({ queryKey: [QueryKey.Notifications] });
-    },
-  });
-}
-
-export function useJournalExport(id: string | null) {
-  const enabled = useAuthEnabled();
-  return useQuery({
-    queryKey: [QueryKey.SkinJournalExport, id],
-    queryFn: ({ signal }) => getJournalExport(id as string, { signal }),
-    enabled: enabled && !!id,
   });
 }

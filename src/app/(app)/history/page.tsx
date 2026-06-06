@@ -9,7 +9,6 @@ import { RetryPanel } from "@/components/ui/retry-panel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HistoryDayCard } from "@/components/history/history-day-card";
 import { HistoryEmptyState } from "@/components/history/history-empty-state";
-import { HistoryExportButton } from "@/components/history/history-export-button";
 import { HistoryFilterBar } from "@/components/history/history-filter-bar";
 import { HistoryHeaderPopovers } from "@/components/history/header-popovers";
 import { HistoryListSkeleton } from "@/components/history/history-list-skeleton";
@@ -40,15 +39,7 @@ export default function HistoryPage() {
   const showAutoLoadState =
     canLoadMore || history.isFetchingNextPage || hasLoadMoreError;
 
-  const headerAction = (
-    <div className="flex shrink-0 gap-1.5">
-      <HistoryExportButton
-        query={query}
-        disabled={!data || data.days.length === 0}
-      />
-      <HistoryHeaderPopovers />
-    </div>
-  );
+  const headerAction = <HistoryHeaderPopovers />;
 
   return (
     <div>

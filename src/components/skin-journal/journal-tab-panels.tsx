@@ -5,11 +5,10 @@ import { Button } from "@/components/ui/button";
 import { TabsContent } from "@/components/ui/tabs";
 import { Chip } from "@/components/skin-journal/chip";
 import { DayDetailPanel } from "@/components/skin-journal/day-detail";
+import { JournalComingSoon } from "@/components/skin-journal/journal-coming-soon";
 import { JournalEmptyState } from "@/components/skin-journal/journal-empty-state";
-import { InsightsPanel } from "@/components/skin-journal/insights/insights-panel";
 import { JournalCalendar } from "@/components/skin-journal/journal-calendar";
 import { PhotoGrid } from "@/components/skin-journal/photo-grid";
-import { WrappedList } from "@/components/skin-journal/wrapped-list";
 import {
   PhotoFilterKind,
   type AnalysisFeedbackReason,
@@ -59,7 +58,6 @@ interface JournalTabPanelsProps {
   onSelectDate: (date: string) => void;
   onOpenUpload?: () => void;
   onOpenCompare: (fromDate?: string, toDate?: string) => void;
-  onOpenExport: () => void;
   onOpenInsightEntries: (entryIds: string[]) => void;
   onOpenProduct: (productId: string) => void;
   onOpenSettings: (tab: string) => void;
@@ -83,7 +81,6 @@ interface JournalTabPanelsProps {
 }
 
 export function JournalTabPanels({
-  photos,
   filteredPhotos,
   totalPhotoCount,
   hasMoreFilteredPhotos,
@@ -91,14 +88,6 @@ export function JournalTabPanels({
   onLoadMoreFilteredPhotos,
   photoFilters,
   selectedPhotoFilter,
-  insights,
-  insightsMeta,
-  insightsLoading,
-  insightsWindow,
-  onInsightsWindowChange,
-  onRefreshInsights,
-  isRefreshingInsights,
-  wrapped,
   calendarData,
   calendarLoading,
   trackedMonths,
@@ -114,11 +103,6 @@ export function JournalTabPanels({
   onSelectDate,
   onOpenUpload,
   onOpenCompare,
-  onOpenExport,
-  onOpenInsightEntries,
-  onOpenProduct,
-  onOpenSettings,
-  onRecordInsightAction,
   onPhotoFilterChange,
   onEditEntry,
   onRetryAnalysis,
@@ -127,12 +111,11 @@ export function JournalTabPanels({
   onReinterpretAnalysis,
   reinterpretAnalysisDisabled = false,
   onReplacePhoto,
-  onDismissInsight,
 }: JournalTabPanelsProps) {
   const tEmpty = useTranslations("journal.empty");
   const tPhotosTab = useTranslations("journal.photos");
   const tConcerns = useTranslations("journal.concerns");
-  const tWrapped = useTranslations("journal.wrapped");
+  const tComingSoon = useTranslations("journal.comingSoon");
 
   const visiblePhotoFilters =
     photoFilters.length > 0
@@ -265,46 +248,23 @@ export function JournalTabPanels({
       </TabsContent>
 
       <TabsContent value="insights" className="mt-4">
-        <InsightsPanel
-          photos={photos}
-          totalPhotoCount={totalPhotoCount}
-          insights={insights}
-          insightsMeta={insightsMeta}
-          insightsLoading={insightsLoading}
-          insightsWindow={insightsWindow}
-          onInsightsWindowChange={onInsightsWindowChange}
-          onRefreshInsights={onRefreshInsights}
-          refreshInsightsDisabled={aiActionsDisabled}
-          isRefreshingInsights={isRefreshingInsights}
-          photoActionsDisabled={photoActionsDisabled}
-          onOpenUpload={onOpenUpload}
-          onOpenCompare={onOpenCompare}
-          onOpenExport={onOpenExport}
-          onOpenEntries={onOpenInsightEntries}
-          onOpenProduct={onOpenProduct}
-          onOpenSettings={onOpenSettings}
-          onRecordInsightAction={onRecordInsightAction}
-          onDismissInsight={onDismissInsight}
+        <JournalComingSoon
+          icon="✨"
+          tone="ai"
+          badge={tComingSoon("badge")}
+          title={tComingSoon("insights.title")}
+          body={tComingSoon("insights.body")}
         />
       </TabsContent>
 
       <TabsContent value="wrapped" className="mt-4">
-        <div className="mb-4">
-          <h3 className="font-display text-lg font-bold">
-            {tWrapped("title")}
-          </h3>
-          <p className="mt-1 text-xs text-muted">{tWrapped("subtitle")}</p>
-        </div>
-        {wrapped.length === 0 ? (
-          <JournalEmptyState
-            icon="🎞️"
-            title={tWrapped("empty.title")}
-            body={tWrapped("empty.body")}
-            tone="secondary"
-          />
-        ) : (
-          <WrappedList wrapped={wrapped} />
-        )}
+        <JournalComingSoon
+          icon="🎞️"
+          tone="secondary"
+          badge={tComingSoon("badge")}
+          title={tComingSoon("wrapped.title")}
+          body={tComingSoon("wrapped.body")}
+        />
       </TabsContent>
     </div>
   );

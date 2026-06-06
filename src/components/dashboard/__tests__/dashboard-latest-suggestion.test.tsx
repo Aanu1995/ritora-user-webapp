@@ -20,52 +20,67 @@ afterEach(() => {
 });
 
 describe("DashboardLatestSuggestion", () => {
-  it("renders the slot summary and step preview", () => {
-    renderWithProviders(<DashboardLatestSuggestion slot={slot()} />);
+  it("renders the shared Today suggestion card with an apply-style link", () => {
+    renderWithProviders(
+      <DashboardLatestSuggestion slot={slot()} nowMs={Date.now()} />,
+    );
 
     expect(
       screen.getByRole("region", { name: /morning routine/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/next up · morning routine/i)).toBeInTheDocument();
     expect(screen.getByText("8:00 AM")).toBeInTheDocument();
+    expect(screen.getByText(/morning routine/i)).toBeInTheDocument();
     expect(screen.getByText(/keep the routine light/i)).toBeInTheDocument();
     expect(screen.getByText(/barrier serum/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /record this suggestion/i }))
+      .toHaveAttribute("href", "/todays-suggestion");
   });
 
-  it("links the Open routine action to /todays-suggestion", () => {
-    renderWithProviders(<DashboardLatestSuggestion slot={slot()} />);
+  it("routes only the record action to /todays-suggestion", () => {
+    renderWithProviders(
+      <DashboardLatestSuggestion slot={slot()} nowMs={Date.now()} />,
+    );
 
-    const link = screen.getByRole("link", { name: /open routine/i });
+    const links = screen.getAllByRole("link");
+    expect(links).toHaveLength(1);
+
+    const link = screen.getByRole("link", { name: /record this suggestion/i });
     expect(link).toHaveAttribute("href", "/todays-suggestion");
   });
 
-  it("does not render an inline record-application action", () => {
-    // The dashboard card is preview-only; recording lives on
-    // /todays-suggestion. If a record/applied button creeps back in,
-    // this catches it.
+  it("keeps the record label when the slot is awaiting application details", () => {
     renderWithProviders(
-      <DashboardLatestSuggestion slot={slot({ status: "recordable" })} />,
+      <DashboardLatestSuggestion
+        slot={slot({ status: "recordable" })}
+        nowMs={Date.now()}
+      />,
     );
 
+    expect(screen.getByRole("link", { name: /record this suggestion/i }))
+      .toHaveAttribute("href", "/todays-suggestion");
     expect(
-      screen.queryByRole("button", { name: /mark as applied/i }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: /record what i applied/i }),
+      screen.queryByRole("button", { name: /record this suggestion/i }),
     ).not.toBeInTheDocument();
   });
 
-  it("collapses extra steps into a +N more line", () => {
+  it("shows the complete shared card instead of collapsing steps", () => {
     const steps = [0, 1, 2, 3, 4].map((index) =>
-      suggestionStep({ id: `step-${index}`, stepOrder: index }),
+      suggestionStep({
+        id: `step-${index}`,
+        stepOrder: index,
+        productName: `Product ${index + 1}`,
+      }),
     );
     renderWithProviders(
       <DashboardLatestSuggestion
         slot={slot({ suggestion: suggestionInstance({ steps }) })}
+        nowMs={Date.now()}
       />,
     );
 
-    expect(screen.getByText(/\+ 2 more steps/)).toBeInTheDocument();
+    expect(screen.getByText("Product 1")).toBeInTheDocument();
+    expect(screen.getByText("Product 5")).toBeInTheDocument();
+    expect(screen.queryByText(/\+ 2 more steps/)).not.toBeInTheDocument();
   });
 });
 

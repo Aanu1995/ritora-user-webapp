@@ -35,10 +35,6 @@ jest.mock("@/components/skin-journal/reaction-detected-modal", () => ({
   ReactionDetectedModal: () => null,
 }));
 
-jest.mock("@/components/skin-journal/dermatologist-export-modal", () => ({
-  DermatologistExportModal: () => null,
-}));
-
 jest.mock("@/hooks/use-skin-journal", () => ({
   useCalendar: () => ({ data: undefined, isLoading: false }),
   useDay: () => ({ data: null, isLoading: false }),

@@ -95,7 +95,11 @@
         "journalTitle": "Huddagbok",
         "journalSubtitle": "Idag · flera vinklar",
         "ai": "AI",
-        "photoLabels": ["Fram", "Vänster", "Höger"],
+        "photoLabels": [
+          "Fram",
+          "Vänster",
+          "Höger"
+        ],
         "redness": "Rodnad",
         "dryness": "Torrhet"
       }
@@ -292,7 +296,7 @@
           "bullets": [
             "Flervinklad fotografering med privat, krypterad lagring",
             "Reaktionsdetektering pausar automatiskt riskfyllda aktiva ingredienser",
-            "Jämför två datum. Exportera en hudläkarrapport.",
+            "Jämför två datum sida vid sida.",
             "Månatlig Skin Wrapped: en privat återblick från dina foton"
           ]
         },
@@ -352,7 +356,11 @@
           "title": "Hylla · CeraVe Hydrating Cleanser",
           "subtitle": "Startad 14 jan · 4 mån gammal",
           "status": "Aktiv",
-          "chips": ["Ceramider", "Hyaluronsyra", "Parfymfri"],
+          "chips": [
+            "Ceramider",
+            "Hyaluronsyra",
+            "Parfymfri"
+          ],
           "usedLabel": "Använd",
           "lastedLabel": "Räckte"
         },
@@ -407,7 +415,11 @@
           "title": "Dagens analys",
           "subtitle": "3 foton · analyserat 06:18",
           "ai": "AI",
-          "photoLabels": ["Fram", "Vänster", "Höger"],
+          "photoLabels": [
+            "Fram",
+            "Vänster",
+            "Höger"
+          ],
           "redness": "Rodnad",
           "dryness": "Torrhet",
           "irritation": "Irritation",
@@ -478,10 +490,19 @@
           "cardTitle": "Playbook",
           "cardSubtitle": "Delad av någon som du",
           "authorName": "Maya K.",
-          "authorTags": ["Kombinerad", "Fitzpatrick IV", "Hyperpigmentering"],
+          "authorTags": [
+            "Kombinerad",
+            "Fitzpatrick IV",
+            "Hyperpigmentering"
+          ],
           "playbookTitle": "Lugnare barriäråteruppbyggnad",
           "playbookSubtitle": "4-stegs kvällsrutin i 6 veckor",
-          "steps": ["Rengöring", "Niacinamid", "Ceramidfuktkräm", "SPF 50"],
+          "steps": [
+            "Rengöring",
+            "Niacinamid",
+            "Ceramidfuktkräm",
+            "SPF 50"
+          ],
           "outcome": "32 sa att det fungerade",
           "outcomeMixed": "4 blandade resultat",
           "adaptCta": "Kontrollera min hylla"
@@ -829,7 +850,8 @@
       "ariaLabel": "{routine} · redo att registreras",
       "eyebrow": "Nästa · {routine}",
       "moreSteps": "+ {count, plural, one {# steg till} other {# steg till}}",
-      "openRoutine": "Öppna rutin"
+      "openRoutine": "Öppna rutin",
+      "recordCta": "Registrera det här förslaget"
     }
   },
   "currentContext": {
@@ -2330,7 +2352,9 @@
           "Massera mjukt i cirklar på fuktig hud.",
           "Skölj noga med ljummet vatten."
         ],
-        "cautions": ["Undvik ögonpartiet."]
+        "cautions": [
+          "Undvik ögonpartiet."
+        ]
       },
       "toner": {
         "steps": [
@@ -2407,10 +2431,14 @@
           "Knacka mjukt med ringfingret runt ögonbenet.",
           "Dra eller sträck inte ut den tunna huden kring ögonen."
         ],
-        "cautions": ["Undvik att få produkten i ögat."]
+        "cautions": [
+          "Undvik att få produkten i ögat."
+        ]
       },
       "lip-care": {
-        "steps": ["Applicera ett tunt lager efter behov under dagen."],
+        "steps": [
+          "Applicera ett tunt lager efter behov under dagen."
+        ],
         "cautions": []
       },
       "treatment": {
@@ -2418,7 +2446,9 @@
           "Följ förpackningens instruktioner.",
           "Applicera endast på det berörda området."
         ],
-        "cautions": ["Testa på en liten yta innan första användning."]
+        "cautions": [
+          "Testa på en liten yta innan första användning."
+        ]
       },
       "other": {
         "steps": [],
@@ -3303,7 +3333,6 @@
     "subtitle": "En post per dag. Foto, betyg, observationer och insikter, allt på ett ställe.",
     "eyebrow": "Din hudresa",
     "fab": "Lägg till dagens foto",
-    "exportForDermatologist": "Exportera för hudläkare",
     "prerequisites": {
       "profile": {
         "title": "Slutför din hudprofil först",
@@ -3317,6 +3346,18 @@
       "photos": "Foton",
       "insights": "Insikter",
       "wrapped": "Wrapped"
+    },
+    "comingSoon": {
+      "badge": "Kommer snart",
+      "tabBadge": "Snart",
+      "insights": {
+        "title": "Insikter kommer snart",
+        "body": "Vi tittar på dina foton, hittar mönster i din hud och ger dig enkla tips. Fortsätt lägga till foton så blir det redo för dig."
+      },
+      "wrapped": {
+        "title": "Skin Wrapped kommer snart",
+        "body": "Vi gör dina dagliga foton till en rolig återblick på hur din hud har förändrats. Fortsätt lägga till foton så blir din redo."
+      }
     },
     "stats": {
       "currentStreak": "Nuvarande streak",
@@ -3336,7 +3377,15 @@
       "next": "Nästa månad",
       "loading": "Laddar kalender",
       "monthlyWrapped": "Månads-Wrapped",
-      "weekdays": ["M", "T", "O", "T", "F", "L", "S"],
+      "weekdays": [
+        "M",
+        "T",
+        "O",
+        "T",
+        "F",
+        "L",
+        "S"
+      ],
       "legend": {
         "completed": "Klar",
         "noEntry": "Ingen",
@@ -4017,7 +4066,6 @@
       },
       "showHow": "Visa mig hur",
       "dismiss": "Avfärda",
-      "exportHistory": "Exportera hudhistorik",
       "notNow": "Inte nu",
       "refresh": "Sök efter uppdateringar",
       "refreshing": "Uppdaterar",
@@ -4170,7 +4218,6 @@
       "actions": {
         "viewEntries": "Visa poster",
         "openCompare": "Öppna jämförelse",
-        "openExport": "Exportera hudhistorik",
         "openTodayUpload": "Lägg till dagens foto",
         "openProduct": "Öppna produkt",
         "openSettings": "Öppna inställningar"
@@ -4387,21 +4434,6 @@
       "tooDark": "Vi hade svårt att se din hud tydligt. Prova naturligt ljus nästa gång.",
       "futureDate": "Kan inte välja ett framtida datum.",
       "uploadFailed": "Uppladdning misslyckades. Försök igen."
-    },
-    "export": {
-      "title": "Exportera för hudläkare",
-      "body": "Välj datumintervall. Vi paketerar dina poster, foton, AI-observationer, händelser och insikter till en delbar sammanfattning.",
-      "fromLabel": "Från",
-      "toLabel": "Till",
-      "submit": "Generera export",
-      "cancel": "Avbryt",
-      "generating": "Genererar…",
-      "readyTitle": "Exporten är klar",
-      "readyBody": "{entries, plural, one {# post} other {# poster}} ingår. Du får också en avisering med den säkra exporten.",
-      "validation": {
-        "invalidDate": "Välj ett giltigt datum.",
-        "endBeforeStart": "Slutdatumet måste vara efter startdatumet."
-      }
     }
   },
   "dashboardJournal": {
@@ -4583,10 +4615,6 @@
       "analysis_failed": {
         "title": "Analys misslyckades",
         "body": "Tryck för att försöka igen."
-      },
-      "export_ready": {
-        "title": "Din export är klar",
-        "body": "Tryck för att ladda ner."
       },
       "suggestion_ready": {
         "title": "Ditt förslag är klart",
@@ -5350,12 +5378,10 @@
     "page": {
       "title": "Historik",
       "subtitle": "Tidigare förslag och vad du faktiskt applicerade. Redigera vilken registrering som helst när som helst.",
-      "export": "Exportera",
       "loading": "Laddar historik",
       "errorTitle": "Vi kunde inte ladda historik",
       "error": "Något gick fel när vi laddade din historik. Du kan försöka igen.",
       "retry": "Försök igen",
-      "exportError": "Vi kunde inte exportera din historik. Försök igen.",
       "loadMore": "Ladda mer",
       "loadingMore": "Laddar mer",
       "loadMoreError": "Vi kunde inte ladda mer historik."
@@ -5439,7 +5465,6 @@
       "backLabel": "All historik",
       "subtitle": "{slots} platser, {applied} av {total} applicerade",
       "viewPhoto": "Visa foto",
-      "export": "Exportera",
       "appliedSummary": "{applied} av {total} applicerade",
       "daypart": {
         "morning": "Morgon",
@@ -5505,10 +5530,6 @@
         "whenItShows": {
           "q": "När visas dagens förslag här?",
           "a": "När kalenderdatumet rullar över i din tidszon. Tills dess stannar idag på sidan Dagens förslag."
-        },
-        "export": {
-          "q": "Kan jag exportera min historik?",
-          "a": "Ja, med Exportera-knappen. Lämna den till en hudläkare eller spara en kopia."
         }
       }
     },

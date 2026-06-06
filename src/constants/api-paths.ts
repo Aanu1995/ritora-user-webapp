@@ -121,8 +121,6 @@ export const ApiPath = {
   SkinJournalSimplificationAck: (id: string) =>
     `${SKIN_JOURNAL_BASE}/simplification/${id}/acknowledge`,
   SkinJournalStats: `${SKIN_JOURNAL_BASE}/stats`,
-  SkinJournalExport: `${SKIN_JOURNAL_BASE}/export`,
-  SkinJournalExportJob: (id: string) => `${SKIN_JOURNAL_BASE}/export/${id}`,
 
   Notifications: NOTIFICATIONS_BASE,
   NotificationRead: (id: string) => `${NOTIFICATIONS_BASE}/${id}/read`,
@@ -150,7 +148,6 @@ export const ApiPath = {
   SuggestionRegenerate: (id: string) => `${SUGGESTIONS_BASE}/${id}/regenerate`,
   Suggestion: (id: string) => `${SUGGESTIONS_BASE}/${id}`,
   SuggestionsHistory: SUGGESTIONS_HISTORY_BASE,
-  SuggestionsHistoryExport: `${SUGGESTIONS_HISTORY_BASE}/export`,
   SuggestionsHistoryDay: (date: string) =>
     `${SUGGESTIONS_HISTORY_BASE}/${date}`,
 

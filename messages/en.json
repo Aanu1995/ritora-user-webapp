@@ -95,7 +95,11 @@
         "journalTitle": "Skin Journal",
         "journalSubtitle": "Today · multi-angle",
         "ai": "AI",
-        "photoLabels": ["Front", "Left", "Right"],
+        "photoLabels": [
+          "Front",
+          "Left",
+          "Right"
+        ],
         "redness": "Redness",
         "dryness": "Dryness"
       }
@@ -292,7 +296,7 @@
           "bullets": [
             "Multi-angle capture with private, encrypted storage",
             "Reaction detection auto-pauses risky actives",
-            "Compare any two dates. Export a dermatologist report.",
+            "Compare any two dates side by side.",
             "Monthly Skin Wrapped: a private recap from your photos"
           ]
         },
@@ -352,7 +356,11 @@
           "title": "Shelf · CeraVe Hydrating Cleanser",
           "subtitle": "Started Jan 14 · 4 mo old",
           "status": "Active",
-          "chips": ["Ceramides", "Hyaluronic acid", "Fragrance-free"],
+          "chips": [
+            "Ceramides",
+            "Hyaluronic acid",
+            "Fragrance-free"
+          ],
           "usedLabel": "Used",
           "lastedLabel": "Lasted"
         },
@@ -407,7 +415,11 @@
           "title": "Today's analysis",
           "subtitle": "3 photos · analysed 6:18 AM",
           "ai": "AI",
-          "photoLabels": ["Front", "Left", "Right"],
+          "photoLabels": [
+            "Front",
+            "Left",
+            "Right"
+          ],
           "redness": "Redness",
           "dryness": "Dryness",
           "irritation": "Irritation",
@@ -478,7 +490,11 @@
           "cardTitle": "Playbook",
           "cardSubtitle": "Shared by someone like you",
           "authorName": "Maya K.",
-          "authorTags": ["Combination", "Fitzpatrick IV", "Hyperpigmentation"],
+          "authorTags": [
+            "Combination",
+            "Fitzpatrick IV",
+            "Hyperpigmentation"
+          ],
           "playbookTitle": "Calmer barrier rebuild",
           "playbookSubtitle": "4 step evening routine for 6 weeks",
           "steps": [
@@ -581,7 +597,11 @@
       "body": "Create your account in under a minute. Add a few products, answer a few questions about your skin, and you'll have a calmer plan for tomorrow morning, built from what's already in your bathroom.",
       "ctaPrimary": "Create your account",
       "ctaSecondary": "Log in",
-      "trust": ["Free to use", "No card required", "Delete your data anytime"]
+      "trust": [
+        "Free to use",
+        "No card required",
+        "Delete your data anytime"
+      ]
     }
   },
   "footer": {
@@ -830,7 +850,8 @@
       "ariaLabel": "{routine} · ready to record",
       "eyebrow": "Next up · {routine}",
       "moreSteps": "+ {count, plural, one {# more step} other {# more steps}}",
-      "openRoutine": "Open routine"
+      "openRoutine": "Open routine",
+      "recordCta": "Record this suggestion"
     }
   },
   "currentContext": {
@@ -2331,7 +2352,9 @@
           "Massage gently onto damp skin in circular motions.",
           "Rinse thoroughly with lukewarm water."
         ],
-        "cautions": ["Avoid the eye area."]
+        "cautions": [
+          "Avoid the eye area."
+        ]
       },
       "toner": {
         "steps": [
@@ -2386,7 +2409,10 @@
           "Leave on for the time printed on the packaging.",
           "Rinse thoroughly with lukewarm water."
         ],
-        "cautions": ["Patch-test before first use.", "Avoid the eye area."]
+        "cautions": [
+          "Patch-test before first use.",
+          "Avoid the eye area."
+        ]
       },
       "exfoliant": {
         "steps": [
@@ -2405,10 +2431,14 @@
           "Use the ring finger to tap gently around the orbital bone.",
           "Avoid pulling or dragging the thin eye-area skin."
         ],
-        "cautions": ["Keep product out of the eye itself."]
+        "cautions": [
+          "Keep product out of the eye itself."
+        ]
       },
       "lip-care": {
-        "steps": ["Apply a thin layer as needed throughout the day."],
+        "steps": [
+          "Apply a thin layer as needed throughout the day."
+        ],
         "cautions": []
       },
       "treatment": {
@@ -2416,7 +2446,9 @@
           "Follow the directions on the packaging.",
           "Apply to the target area only."
         ],
-        "cautions": ["Patch-test before first use."]
+        "cautions": [
+          "Patch-test before first use."
+        ]
       },
       "other": {
         "steps": [],
@@ -3301,7 +3333,6 @@
     "subtitle": "One entry per day. Photo, ratings, observations and insights, all in one place.",
     "eyebrow": "Your skin journey",
     "fab": "Add today's photo",
-    "exportForDermatologist": "Export for dermatologist",
     "prerequisites": {
       "profile": {
         "title": "Finish your skin profile first",
@@ -3315,6 +3346,18 @@
       "photos": "Photos",
       "insights": "Insights",
       "wrapped": "Wrapped"
+    },
+    "comingSoon": {
+      "badge": "Coming soon",
+      "tabBadge": "Soon",
+      "insights": {
+        "title": "Insights coming soon",
+        "body": "We'll look at your photos and spot patterns in your skin, then share simple tips. Keep adding photos so it's ready for you."
+      },
+      "wrapped": {
+        "title": "Skin Wrapped coming soon",
+        "body": "We'll turn your daily photos into a fun recap of how your skin has changed. Keep adding photos so yours is ready."
+      }
     },
     "stats": {
       "currentStreak": "Current streak",
@@ -3334,7 +3377,15 @@
       "next": "Next month",
       "loading": "Loading calendar",
       "monthlyWrapped": "Monthly Wrapped",
-      "weekdays": ["M", "T", "W", "T", "F", "S", "S"],
+      "weekdays": [
+        "M",
+        "T",
+        "W",
+        "T",
+        "F",
+        "S",
+        "S"
+      ],
       "legend": {
         "completed": "Done",
         "noEntry": "None",
@@ -4015,7 +4066,6 @@
       },
       "showHow": "Show me how",
       "dismiss": "Dismiss",
-      "exportHistory": "Export skin history",
       "notNow": "Not now",
       "refresh": "Check for updates",
       "refreshing": "Refreshing",
@@ -4168,7 +4218,6 @@
       "actions": {
         "viewEntries": "View entries",
         "openCompare": "Open compare",
-        "openExport": "Export skin history",
         "openTodayUpload": "Add today's photo",
         "openProduct": "Open product",
         "openSettings": "Open settings"
@@ -4385,21 +4434,6 @@
       "tooDark": "We had trouble seeing your skin clearly. Try natural daylight next time.",
       "futureDate": "Cannot pick a future date.",
       "uploadFailed": "Upload failed. Please try again."
-    },
-    "export": {
-      "title": "Export for dermatologist",
-      "body": "Pick a date range. We'll bundle your entries, photos, AI observations, events, and insights into a sharable summary.",
-      "fromLabel": "From",
-      "toLabel": "To",
-      "submit": "Generate export",
-      "cancel": "Cancel",
-      "generating": "Generating…",
-      "readyTitle": "Export is ready",
-      "readyBody": "{entries, plural, one {# entry} other {# entries}} included. You'll also receive a notification with the secure export.",
-      "validation": {
-        "invalidDate": "Choose a valid date.",
-        "endBeforeStart": "The end date must be after the start date."
-      }
     }
   },
   "dashboardJournal": {
@@ -4581,10 +4615,6 @@
       "analysis_failed": {
         "title": "Analysis failed",
         "body": "Tap to retry on the entry."
-      },
-      "export_ready": {
-        "title": "Your export is ready",
-        "body": "Tap to download."
       },
       "suggestion_ready": {
         "title": "Your suggestion is ready",
@@ -5348,12 +5378,10 @@
     "page": {
       "title": "History",
       "subtitle": "Past suggestions and what you actually applied. Edit any record anytime.",
-      "export": "Export",
       "loading": "Loading history",
       "errorTitle": "We could not load history",
       "error": "Something went wrong loading your history. You can try again.",
       "retry": "Try again",
-      "exportError": "We couldn't export your history. Try again.",
       "loadMore": "Load more",
       "loadingMore": "Loading more",
       "loadMoreError": "We couldn't load more history."
@@ -5437,7 +5465,6 @@
       "backLabel": "All history",
       "subtitle": "{slots} slots, {applied} of {total} applied",
       "viewPhoto": "View photo",
-      "export": "Export",
       "appliedSummary": "{applied} of {total} applied",
       "daypart": {
         "morning": "Morning",
@@ -5503,10 +5530,6 @@
         "whenItShows": {
           "q": "When does today's suggestion show up here?",
           "a": "When the calendar date rolls over in your time zone. Until then, today stays on the Today's Suggestion page."
-        },
-        "export": {
-          "q": "Can I export my history?",
-          "a": "Yes, with the Export button. Hand it to a dermatologist or keep a copy."
         }
       }
     },

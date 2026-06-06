@@ -65,7 +65,7 @@ export default async function PrivacyPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      <SiteHeader />
+      <SiteHeader showNavLinks={false} />
       <main className="mx-auto w-full max-w-[720px] px-5 pt-10 pb-24 sm:px-6 sm:pt-14 lg:pt-16 lg:pb-32">
         <h1 className="font-display text-[32px] font-bold tracking-tight text-foreground sm:text-[38px]">
           {t('title')}

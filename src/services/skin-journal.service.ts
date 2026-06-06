@@ -19,7 +19,6 @@ import {
   type JournalEntry,
   type JournalEvent,
   type JournalEventFilters,
-  type JournalExportJob,
   type InsightAction,
   type JournalInsightsResponse,
   type InsightWindow,
@@ -341,21 +340,4 @@ export async function getJournalStats(
   options?: ApiRequestOptions,
 ): Promise<JournalStats> {
   return getWithOptions<JournalStats>(ApiPath.SkinJournalStats, options);
-}
-
-export async function createJournalExport(payload: {
-  from: string;
-  to: string;
-}): Promise<JournalExportJob> {
-  return postRequest(ApiPath.SkinJournalExport, payload);
-}
-
-export async function getJournalExport(
-  id: string,
-  options?: ApiRequestOptions,
-): Promise<JournalExportJob> {
-  return getWithOptions<JournalExportJob>(
-    ApiPath.SkinJournalExportJob(id),
-    options,
-  );
 }

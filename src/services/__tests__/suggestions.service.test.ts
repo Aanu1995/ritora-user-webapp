@@ -7,7 +7,6 @@ jest.mock("@/lib/api", () => ({
 import { getRequest, patchRequest, postRequest } from "@/lib/api";
 import {
   createOnDemandSuggestion,
-  exportSuggestionHistoryCsv,
   getRoutineBreak,
   getSuggestion,
   getSuggestionAiConsent,
@@ -160,34 +159,6 @@ describe("suggestions.service", () => {
 
     expect(mockGetRequest).toHaveBeenCalledWith(
       "/suggestions/history?range=custom&from=2026-04-01&to=2026-04-29&daypart=morning&mode=mixed&requestSource=on_demand&status=partial&edited=true&cursor=cursor-1&limit=12",
-    );
-  });
-
-  it("exports all matching history filters without frontend pagination params", async () => {
-    const blob = new Blob(["Date\n"], { type: "text/csv" });
-    mockGetRequest.mockResolvedValue(blob);
-
-    await expect(
-      exportSuggestionHistoryCsv({
-        range: "custom",
-        fromDate: "2026-04-01",
-        toDate: "2026-04-29",
-        daypart: "morning",
-        mode: "mixed",
-        requestSource: "on_demand",
-        status: "partial",
-        hasBeenEdited: true,
-        cursor: "cursor-1",
-        limit: 12,
-      }),
-    ).resolves.toBe(blob);
-
-    expect(mockGetRequest).toHaveBeenCalledWith(
-      "/suggestions/history/export?range=custom&from=2026-04-01&to=2026-04-29&daypart=morning&mode=mixed&requestSource=on_demand&status=partial&edited=true",
-      {
-        headers: { Accept: "text/csv" },
-        responseType: "blob",
-      },
     );
   });
 

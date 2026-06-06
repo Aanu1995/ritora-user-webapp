@@ -14,13 +14,11 @@ import {
   useActiveSimplification,
   useCalendar,
   useCompareDays,
-  useCreateJournalExport,
   useDay,
   useDeleteEntry,
   useDismissInsight,
   useEvents,
   useInsights,
-  useJournalExport,
   useJournalStats,
   useMarkInsightSeen,
   useMonthEntries,
@@ -71,13 +69,11 @@ jest.mock("@/services/skin-journal.service", () => ({
   acknowledgeEvent: jest.fn(),
   acknowledgeSimplification: jest.fn(),
   compareDays: jest.fn(),
-  createJournalExport: jest.fn(),
   deleteEntry: jest.fn(),
   dismissInsight: jest.fn(),
   getActiveSimplification: jest.fn(),
   getCalendar: jest.fn(),
   getDay: jest.fn(),
-  getJournalExport: jest.fn(),
   getJournalStats: jest.fn(),
   getSimplification: jest.fn(),
   getTodayEntry: jest.fn(),
@@ -162,8 +158,6 @@ describe("useSkinJournal hooks", () => {
     asQuery(useActiveSimplification()).queryFn(queryContext());
     asQuery(useSimplification("simplification-1")).queryFn(queryContext());
     asQuery(useJournalStats()).queryFn(queryContext());
-    asQuery(useJournalExport("export-1")).queryFn(queryContext());
-
     expect(journalService.getTodayEntry).toHaveBeenCalledWith(
       expect.objectContaining({ signal: expect.any(AbortSignal) }),
     );
@@ -401,7 +395,7 @@ describe("useSkinJournal hooks", () => {
     );
   });
 
-  it("wires event, insight, simplification, and export mutations", () => {
+  it("wires event, insight, and simplification mutations", () => {
     asMutation<string>(useAcknowledgeEvent()).mutationFn("event-1");
     asMutation<string>(useDismissInsight()).mutationFn("insight-1");
     asMutation<string>(useMarkInsightSeen()).mutationFn("insight-1");
@@ -414,13 +408,6 @@ describe("useSkinJournal hooks", () => {
     asMutation<string>(useAcknowledgeSimplification()).mutationFn(
       "simplification-1",
     );
-    const exportMutation = asMutation<
-      { from: string; to: string },
-      { id: string }
-    >(useCreateJournalExport());
-    exportMutation.mutationFn({ from: "2026-05-01", to: "2026-05-31" });
-    exportMutation.onSuccess?.({ id: "export-1" });
-
     expect(journalService.acknowledgeEvent).toHaveBeenCalledWith("event-1");
     expect(journalService.dismissInsight).toHaveBeenCalledWith("insight-1");
     expect(journalService.markInsightSeen).toHaveBeenCalledWith("insight-1");
@@ -433,14 +420,6 @@ describe("useSkinJournal hooks", () => {
     });
     expect(journalService.acknowledgeSimplification).toHaveBeenCalledWith(
       "simplification-1",
-    );
-    expect(journalService.createJournalExport).toHaveBeenCalledWith({
-      from: "2026-05-01",
-      to: "2026-05-31",
-    });
-    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
-      [QueryKey.SkinJournalExport, "export-1"],
-      { id: "export-1" },
     );
   });
 

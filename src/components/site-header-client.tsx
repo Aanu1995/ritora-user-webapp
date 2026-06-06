@@ -36,6 +36,7 @@ export function SiteHeaderClient({
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const search = searchParams.toString();
   const lastRouteRef = useRef(`${pathname}?${search}`);
+  const hasNavLinks = navLinks.length > 0;
 
   useEffect(() => {
     const current = `${pathname}?${search}`;
@@ -100,17 +101,19 @@ export function SiteHeaderClient({
           <span>Ritora</span>
         </Link>
 
-        <nav className="hidden items-center gap-8 text-sm text-muted lg:flex">
-          {navLinks.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="transition-colors hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        {hasNavLinks ? (
+          <nav className="hidden items-center gap-8 text-sm text-muted lg:flex">
+            {navLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="transition-colors hover:text-foreground"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        ) : null}
 
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
@@ -157,21 +160,23 @@ export function SiteHeaderClient({
         }`}
       >
         <div className="mx-auto w-full max-w-7xl px-5 pb-8 pt-4 sm:px-6">
-          <nav aria-label={primaryNavLabel}>
-            <ul className="flex flex-col divide-y divide-border">
-              {navLinks.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="block py-3 text-base font-semibold tracking-tight text-foreground transition-colors hover:text-accent"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          {hasNavLinks ? (
+            <nav aria-label={primaryNavLabel}>
+              <ul className="flex flex-col divide-y divide-border">
+                {navLinks.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className="block py-3 text-base font-semibold tracking-tight text-foreground transition-colors hover:text-accent"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ) : null}
           <div className="mt-5 flex flex-col gap-2.5">
             <Link
               href={AppRoute.Register}

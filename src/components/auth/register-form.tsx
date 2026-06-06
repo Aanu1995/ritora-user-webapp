@@ -4,7 +4,6 @@ import { useForm } from "@tanstack/react-form";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
-import { AppleSignInButton } from "@/components/auth/apple-sign-in-button";
 import { AuthDivider } from "@/components/auth/auth-divider";
 import { AuthLegalDisclosure } from "@/components/auth/auth-legal-disclosure";
 import { ConsentCheckbox } from "@/components/auth/consent-checkbox";
@@ -22,10 +21,7 @@ import { normalizeLocale } from "@/i18n/config";
 import { getRegisterSubmitError } from "@/lib/auth-submit-errors";
 import { navigateToUrl } from "@/lib/browser-navigation";
 import { firstFieldError } from "@/lib/form-errors";
-import {
-  getAppleOAuthStartUrl,
-  getGoogleOAuthStartUrl,
-} from "@/services/auth.service";
+import { getGoogleOAuthStartUrl } from "@/services/auth.service";
 import {
   clearSubmitErrors,
   executeMutation,
@@ -54,7 +50,6 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
   const [isGoogleRedirecting, setIsGoogleRedirecting] = useState(false);
-  const [isAppleRedirecting, setIsAppleRedirecting] = useState(false);
 
   const form = useForm({
     defaultValues: DEFAULT_VALUES,
@@ -108,21 +103,6 @@ export function RegisterForm() {
     );
   };
 
-  const handleAppleSignUp = () => {
-    if (isAccountCreationDisabled) {
-      return;
-    }
-
-    setIsAppleRedirecting(true);
-    navigateToUrl(
-      getAppleOAuthStartUrl({
-        preferredLanguage: locale,
-        termsAccepted: true,
-        privacyPolicyAccepted: true,
-      }),
-    );
-  };
-
   if (submittedEmail) {
     return <RegisterVerificationMessage submittedEmail={submittedEmail} />;
   }
@@ -147,23 +127,12 @@ export function RegisterForm() {
                   isSubmitting ||
                   registerUser.isPending ||
                   isGoogleRedirecting ||
-                  isAppleRedirecting ||
                   isAccountCreationDisabled
                 }
                 isLoading={isGoogleRedirecting}
                 onClick={handleGoogleSignUp}
               />
-              <AppleSignInButton
-                isDisabled={
-                  isSubmitting ||
-                  registerUser.isPending ||
-                  isGoogleRedirecting ||
-                  isAppleRedirecting ||
-                  isAccountCreationDisabled
-                }
-                isLoading={isAppleRedirecting}
-                onClick={handleAppleSignUp}
-              />
+              {/* TODO: Re-enable Apple sign-up after the OAuth implementation is complete. */}
             </div>
           )}
         </form.Subscribe>

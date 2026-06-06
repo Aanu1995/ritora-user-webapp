@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import {
   Check,
   CircleCheck,
@@ -30,6 +31,8 @@ type Props = {
   onRecord?: (slot: TodaysSuggestionSlot) => void;
   onEdit?: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail?: (slot: TodaysSuggestionSlot) => void;
+  actionControls?: ReactNode;
+  showActions?: boolean;
   personalizationOff?: boolean;
   timeZone?: string;
   nowMs: number;
@@ -40,6 +43,8 @@ export function SuggestionSlotCard({
   onRecord,
   onEdit,
   onShowDetail,
+  actionControls,
+  showActions = true,
   personalizationOff = false,
   timeZone,
   nowMs,
@@ -162,29 +167,37 @@ export function SuggestionSlotCard({
             ))}
           </ol>
 
-          <div className="mt-3.5 flex items-center gap-2">
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => onRecord?.(slot)}
-              className="flex-1 bg-[color:var(--accent)] text-white shadow-none hover:bg-[color:var(--accent-strong)] hover:opacity-100"
-            >
-              <Check className="h-4 w-4" />
-              {isAwaitingRecord ? t("recordWhatIApplied") : t("markAsApplied")}
-            </Button>
-            {onShowDetail ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => onShowDetail(slot)}
-                className="w-7 shrink-0 px-0 sm:w-9"
-                aria-label={t("whyThisRoutine")}
-              >
-                <Ellipsis className="h-4 w-4" />
-              </Button>
-            ) : null}
-          </div>
+          {showActions ? (
+            <div className="mt-3.5 flex items-center gap-2">
+              {actionControls ?? (
+                <>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => onRecord?.(slot)}
+                    className="flex-1 bg-[color:var(--accent)] text-white shadow-none hover:bg-[color:var(--accent-strong)] hover:opacity-100"
+                  >
+                    <Check className="h-4 w-4" />
+                    {isAwaitingRecord
+                      ? t("recordWhatIApplied")
+                      : t("markAsApplied")}
+                  </Button>
+                  {onShowDetail ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onShowDetail(slot)}
+                      className="w-7 shrink-0 px-0 sm:w-9"
+                      aria-label={t("whyThisRoutine")}
+                    >
+                      <Ellipsis className="h-4 w-4" />
+                    </Button>
+                  ) : null}
+                </>
+              )}
+            </div>
+          ) : null}
         </>
       ) : (
         <NoSuggestionStepsState

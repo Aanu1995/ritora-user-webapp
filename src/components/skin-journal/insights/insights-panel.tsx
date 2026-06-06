@@ -32,7 +32,6 @@ interface InsightsPanelProps {
   photoActionsDisabled?: boolean;
   onOpenUpload?: () => void;
   onOpenCompare: (fromDate?: string, toDate?: string) => void;
-  onOpenExport: () => void;
   onOpenEntries: (entryIds: string[]) => void;
   onOpenProduct: (productId: string) => void;
   onOpenSettings: (tab: string) => void;
@@ -69,7 +68,6 @@ export function InsightsPanel({
   photoActionsDisabled = false,
   onOpenUpload,
   onOpenCompare,
-  onOpenExport,
   onOpenEntries,
   onOpenProduct,
   onOpenSettings,
@@ -96,10 +94,6 @@ export function InsightsPanel({
     }
 
     onRecordInsightAction?.(insightId, action);
-    if (action.kind === "open_export") {
-      onOpenExport();
-      return;
-    }
     if (action.kind === "open_today_upload") {
       onOpenUpload?.();
       return;

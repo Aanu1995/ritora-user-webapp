@@ -131,18 +131,14 @@ describe("RegisterPage", () => {
     const googleButton = screen.getByRole("button", {
       name: /continue with google/i,
     });
-    const appleButton = screen.getByRole("button", {
-      name: /continue with apple/i,
-    });
 
     expect(
       disclosure.compareDocumentPosition(googleButton) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(
-      disclosure.compareDocumentPosition(appleButton) &
-        Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
+      screen.queryByRole("button", { name: /continue with apple/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("submits with all required fields and explicit consent", async () => {

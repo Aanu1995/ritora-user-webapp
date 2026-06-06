@@ -233,7 +233,6 @@ describe("Skin Journal rendering smoke coverage", () => {
         isRefreshingInsights={false}
         onOpenUpload={jest.fn()}
         onOpenCompare={jest.fn()}
-        onOpenExport={jest.fn()}
         onOpenEntries={onOpenEntries}
         onOpenProduct={jest.fn()}
         onOpenSettings={jest.fn()}

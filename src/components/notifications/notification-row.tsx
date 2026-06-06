@@ -54,11 +54,6 @@ const KIND_STYLES: Record<
     bg: "bg-warning-soft",
     fg: "text-[color:var(--warning)]",
   },
-  export_ready: {
-    emoji: "⤓",
-    bg: "bg-accent-soft",
-    fg: "text-accent-strong",
-  },
   suggestion_ready: {
     emoji: "✨",
     bg: "bg-[color:var(--ai-bg)]",

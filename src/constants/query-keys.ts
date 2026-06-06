@@ -31,7 +31,6 @@ export enum QueryKey {
   SkinJournalSimplificationActive = "skin-journal-simplification-active",
   SkinJournalSimplification = "skin-journal-simplification",
   SkinJournalStats = "skin-journal-stats",
-  SkinJournalExport = "skin-journal-export",
   Notifications = "notifications",
   NotificationPreferences = "notification-preferences",
   SuggestionsToday = "suggestions-today",

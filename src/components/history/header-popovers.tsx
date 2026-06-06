@@ -119,7 +119,7 @@ function OverviewPopover() {
 
 function QuestionsPopover() {
   const t = useTranslations("history.popovers.qa");
-  const items = ["losingData", "whenItShows", "export"] as const;
+  const items = ["losingData", "whenItShows"] as const;
   return (
     <div
       role="dialog"

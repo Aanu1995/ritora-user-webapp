@@ -1,16 +1,13 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
 import { renderWithProviders } from "@/test/utils";
 import { HistoryDayCard } from "@/components/history/history-day-card";
 import { HistoryDayDetailSkeleton } from "@/components/history/history-day-detail-skeleton";
 import { HistoryDaySlotCompare } from "@/components/history/history-day-slot-compare";
-import { HistoryExportButton } from "@/components/history/history-export-button";
 import { HistoryFilterBar } from "@/components/history/history-filter-bar";
 import { HistoryListSkeleton } from "@/components/history/history-list-skeleton";
 import { HistorySummaryStrip } from "@/components/history/history-summary-strip";
-import { exportSuggestionHistoryCsv } from "@/services/suggestions.service";
 import {
   EnvironmentAirQualityRisk,
   EnvironmentProviderName,
@@ -29,28 +26,7 @@ import type {
   ApplicationLogItem,
 } from "@/types/application-tracking";
 
-jest.mock("@/services/suggestions.service", () => ({
-  exportSuggestionHistoryCsv: jest.fn(),
-}));
-
-jest.mock("sonner", () => ({
-  toast: {
-    error: jest.fn(),
-  },
-}));
-
-const mockExportSuggestionHistoryCsv =
-  exportSuggestionHistoryCsv as jest.MockedFunction<
-    typeof exportSuggestionHistoryCsv
-  >;
-
 describe("history suggestion components", () => {
-  beforeEach(() => {
-    mockExportSuggestionHistoryCsv.mockResolvedValue(
-      new Blob(["Date\n"], { type: "text/csv" }),
-    );
-  });
-
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -249,70 +225,6 @@ describe("history suggestion components", () => {
     expect(screen.getByText(/4 of 5 applied/i)).toBeInTheDocument();
     expect(screen.getByText(/2 edited/i)).toBeInTheDocument();
     expect(screen.getByText(/80% adherence/i)).toBeInTheDocument();
-  });
-
-  it("exports all matching history filters as a backend CSV file", async () => {
-    const user = userEvent.setup();
-    Object.defineProperty(URL, "createObjectURL", {
-      configurable: true,
-      value: jest.fn(() => "blob:history"),
-    });
-    Object.defineProperty(URL, "revokeObjectURL", {
-      configurable: true,
-      value: jest.fn(),
-    });
-    const createObjectURL = jest
-      .spyOn(URL, "createObjectURL")
-      .mockReturnValue("blob:history");
-    const revokeObjectURL = jest
-      .spyOn(URL, "revokeObjectURL")
-      .mockImplementation(() => undefined);
-    const click = jest
-      .spyOn(HTMLAnchorElement.prototype, "click")
-      .mockImplementation(() => undefined);
-
-    renderWithProviders(
-      <HistoryExportButton
-        query={{
-          range: "custom",
-          fromDate: "2026-05-01",
-          toDate: "2026-05-04",
-          mode: "mixed",
-          cursor: "visible-page-cursor",
-          limit: 10,
-        }}
-        disabled={false}
-      />,
-    );
-
-    await user.click(screen.getByRole("button", { name: /export/i }));
-    expect(mockExportSuggestionHistoryCsv).toHaveBeenCalledWith({
-      range: "custom",
-      fromDate: "2026-05-01",
-      toDate: "2026-05-04",
-      mode: "mixed",
-      cursor: "visible-page-cursor",
-      limit: 10,
-    });
-    expect(createObjectURL).toHaveBeenCalledWith(expect.any(Blob));
-    expect(click).toHaveBeenCalled();
-    expect(revokeObjectURL).toHaveBeenCalledWith("blob:history");
-
-    createObjectURL.mockRestore();
-    revokeObjectURL.mockRestore();
-    click.mockRestore();
-  });
-
-  it("shows an export failure toast when the backend export fails", async () => {
-    const user = userEvent.setup();
-    mockExportSuggestionHistoryCsv.mockRejectedValue(new Error("nope"));
-
-    renderWithProviders(
-      <HistoryExportButton query={{ range: "7d" }} disabled={false} />,
-    );
-
-    await user.click(screen.getByRole("button", { name: /export/i }));
-    expect(toast.error).toHaveBeenCalledWith(expect.stringMatching(/export/i));
   });
 
   it("updates history filters without fetching scheduled-only days", async () => {

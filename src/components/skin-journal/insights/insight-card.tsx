@@ -35,7 +35,6 @@ function formatDate(locale: string, date: string): string {
 function insightActionLabel(action: InsightAction): string {
   if (action.kind === "view_entries") return "actions.viewEntries";
   if (action.kind === "open_compare") return "actions.openCompare";
-  if (action.kind === "open_export") return "actions.openExport";
   if (action.kind === "open_product") return "actions.openProduct";
   if (action.kind === "open_today_upload") return "actions.openTodayUpload";
   if (action.kind === "open_settings") return "actions.openSettings";

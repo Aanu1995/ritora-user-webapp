@@ -1,4 +1,4 @@
-import { screen, waitFor } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "@/test/utils";
 import { SiteHeaderClient } from "@/components/site-header-client";
@@ -68,5 +68,28 @@ describe("SiteHeaderClient", () => {
     await waitFor(() => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
+  });
+
+  it("omits landing navigation links when none are provided", async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<SiteHeaderClient {...headerProps} navLinks={[]} />);
+
+    expect(
+      screen.queryByRole("link", { name: "How it works" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Privacy" }),
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+    const dialog = screen.getByRole("dialog", { name: "Open menu" });
+
+    expect(
+      within(dialog).getByRole("link", { name: "Create account" }),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByRole("link", { name: "Log in" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
   });
 });

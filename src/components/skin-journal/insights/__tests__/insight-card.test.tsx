@@ -142,7 +142,6 @@ describe("InsightCard", () => {
             },
             { kind: "open_product", inventory_product_id: "product-1" },
             { kind: "open_today_upload" },
-            { kind: "open_export" },
             { kind: "open_settings", tab: "notifications" },
             { kind: "dismiss" },
           ],
@@ -155,10 +154,9 @@ describe("InsightCard", () => {
     await user.click(screen.getByRole("button", { name: "Open compare" }));
     await user.click(screen.getByRole("button", { name: "Open product" }));
     await user.click(screen.getByRole("button", { name: "Add today's photo" }));
-    await user.click(screen.getByRole("button", { name: "Export skin history" }));
     await user.click(screen.getByRole("button", { name: "Open settings" }));
 
-    expect(onAction).toHaveBeenCalledTimes(6);
+    expect(onAction).toHaveBeenCalledTimes(5);
     expect(screen.getByText("entries")).toBeInTheDocument();
     expect(screen.getByText(/rating/)).toBeInTheDocument();
   });

@@ -27,7 +27,6 @@ import {
 import { StatStrip } from "@/components/skin-journal/stat-strip";
 import { JournalPageActions } from "@/components/skin-journal/journal-page-actions";
 import { ReactionDetectedModal } from "@/components/skin-journal/reaction-detected-modal";
-import { DermatologistExportModal } from "@/components/skin-journal/dermatologist-export-modal";
 import { JournalTabPanels } from "@/components/skin-journal/journal-tab-panels";
 import { resolveCanonicalTodayDate } from "@/components/skin-journal/journal-date";
 import { JournalUploadMode } from "@/components/skin-journal/journal-navigation";
@@ -134,7 +133,6 @@ export default function JournalPage() {
     photoDateIndex?.dates.length ??
     photos.length;
 
-  const [exportModalOpen, setExportModalOpen] = useState(false);
   const [dismissedReactionEntryId, setDismissedReactionEntryId] =
     useState<string | null>(null);
 
@@ -231,7 +229,6 @@ export default function JournalPage() {
           <JournalPageActions
             hasTodayEntry={hasTodayEntry}
             photoActionsDisabled={photoActionsDisabled}
-            onOpenExport={() => setExportModalOpen(true)}
             onOpenUpload={() => openTodayUpload()}
           />
         }
@@ -255,19 +252,15 @@ export default function JournalPage() {
               </TabsTrigger>
               <TabsTrigger value="insights">
                 {t("tabs.insights")}
-                {insights.length ? (
-                  <span className="ml-1.5 rounded-full bg-surface-muted px-1.5 py-0.5 text-[10px] font-bold text-muted">
-                    {insights.length}
-                  </span>
-                ) : null}
+                <span className="ml-1.5 rounded-full bg-accent-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent-strong">
+                  {t("comingSoon.tabBadge")}
+                </span>
               </TabsTrigger>
               <TabsTrigger value="wrapped">
                 {t("tabs.wrapped")}
-                {wrapped.length ? (
-                  <span className="ml-1.5 rounded-full bg-surface-muted px-1.5 py-0.5 text-[10px] font-bold text-muted">
-                    {wrapped.length}
-                  </span>
-                ) : null}
+                <span className="ml-1.5 rounded-full bg-accent-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent-strong">
+                  {t("comingSoon.tabBadge")}
+                </span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -329,7 +322,6 @@ export default function JournalPage() {
               : undefined
           }
           onOpenCompare={handleOpenCompare}
-          onOpenExport={() => setExportModalOpen(true)}
           onOpenInsightEntries={handleOpenInsightEntries}
           onOpenProduct={(productId) =>
             router.push(`${AppRoute.Shelf}/${productId}`)
@@ -367,11 +359,6 @@ export default function JournalPage() {
           onDismissInsight={(id) => dismissInsight.mutate(id)}
         />
       </Tabs>
-
-      <DermatologistExportModal
-        open={exportModalOpen}
-        onOpenChange={setExportModalOpen}
-      />
 
       {reactionEntry?.analysis_observations ? (
         <ReactionDetectedModal

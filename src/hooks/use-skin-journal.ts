@@ -56,10 +56,8 @@ export {
 export {
   useAcknowledgeSimplification,
   useActiveSimplification,
-  useCreateJournalExport,
   useDismissInsight,
   useInsights,
-  useJournalExport,
   useJournalStats,
   useMarkInsightSeen,
   useRecordInsightAction,

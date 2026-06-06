@@ -95,7 +95,11 @@
         "journalTitle": "Diario de piel",
         "journalSubtitle": "Hoy · multiángulo",
         "ai": "IA",
-        "photoLabels": ["Frente", "Izquierda", "Derecha"],
+        "photoLabels": [
+          "Frente",
+          "Izquierda",
+          "Derecha"
+        ],
         "redness": "enrojecimiento",
         "dryness": "Sequedad"
       }
@@ -292,7 +296,7 @@
           "bullets": [
             "Captura desde múltiples ángulos con almacenamiento privado y cifrado",
             "La detección de reacciones pausa automáticamente los activos de riesgo",
-            "Compara dos fechas cualesquiera. Exportar un informe dermatólogo.",
+            "Compara dos fechas cualesquiera lado a lado.",
             "Skin Wrapped mensual: un resumen privado de tus fotos"
           ]
         },
@@ -352,7 +356,11 @@
           "title": "Estante · Limpiador Hidratante CeraVe",
           "subtitle": "Comenzó el 14 de enero · 4 meses",
           "status": "Activo",
-          "chips": ["Ceramidas", "ácido hialurónico", "Sin fragancia"],
+          "chips": [
+            "Ceramidas",
+            "ácido hialurónico",
+            "Sin fragancia"
+          ],
           "usedLabel": "Usado",
           "lastedLabel": "Duró"
         },
@@ -407,7 +415,11 @@
           "title": "El análisis de hoy.",
           "subtitle": "3 fotos · analizadas 6:18",
           "ai": "IA",
-          "photoLabels": ["Frente", "Izquierda", "Derecha"],
+          "photoLabels": [
+            "Frente",
+            "Izquierda",
+            "Derecha"
+          ],
           "redness": "enrojecimiento",
           "dryness": "Sequedad",
           "irritation": "irritación",
@@ -478,7 +490,11 @@
           "cardTitle": "Libro de jugadas",
           "cardSubtitle": "Compartido por alguien como tú",
           "authorName": "maya k.",
-          "authorTags": ["combinación", "Fitzpatrick IV", "Hiperpigmentación"],
+          "authorTags": [
+            "combinación",
+            "Fitzpatrick IV",
+            "Hiperpigmentación"
+          ],
           "playbookTitle": "Reconstrucción de barrera más tranquila",
           "playbookSubtitle": "Rutina nocturna de 4 pasos durante 6 semanas.",
           "steps": [
@@ -834,7 +850,8 @@
       "ariaLabel": "{routine} · ready to record",
       "eyebrow": "Next up · {routine}",
       "moreSteps": "+ {count, plural, one {# more step} other {# more steps}}",
-      "openRoutine": "rutina abierta"
+      "openRoutine": "rutina abierta",
+      "recordCta": "Registrar esta sugerencia"
     }
   },
   "currentContext": {
@@ -2335,7 +2352,9 @@
           "Masajear suavemente sobre la piel húmeda con movimientos circulares.",
           "Enjuague bien con agua tibia."
         ],
-        "cautions": ["Evite el área de los ojos."]
+        "cautions": [
+          "Evite el área de los ojos."
+        ]
       },
       "toner": {
         "steps": [
@@ -2412,7 +2431,9 @@
           "Utilice el dedo anular para golpear suavemente alrededor del hueso orbital.",
           "Evite tirar o arrastrar la fina piel del área de los ojos."
         ],
-        "cautions": ["Mantenga el producto fuera del ojo."]
+        "cautions": [
+          "Mantenga el producto fuera del ojo."
+        ]
       },
       "lip-care": {
         "steps": [
@@ -2425,7 +2446,9 @@
           "Siga las instrucciones en el paquete.",
           "Aplicar solo en el área objetivo."
         ],
-        "cautions": ["Pruebe el parche antes del primer uso."]
+        "cautions": [
+          "Pruebe el parche antes del primer uso."
+        ]
       },
       "other": {
         "steps": [],
@@ -3310,7 +3333,6 @@
     "subtitle": "Una entrada por día. Fotografías, calificaciones, observaciones e ideas, todo en un solo lugar.",
     "eyebrow": "El viaje de tu piel",
     "fab": "Añade la foto de hoy",
-    "exportForDermatologist": "Exportación para dermatólogo",
     "prerequisites": {
       "profile": {
         "title": "Termina tu perfil de piel primero",
@@ -3324,6 +3346,18 @@
       "photos": "Fotos",
       "insights": "Perspectivas",
       "wrapped": "envuelto"
+    },
+    "comingSoon": {
+      "badge": "Próximamente",
+      "tabBadge": "Pronto",
+      "insights": {
+        "title": "Análisis muy pronto",
+        "body": "Veremos tus fotos, encontraremos patrones en tu piel y te daremos consejos sencillos. Sigue añadiendo fotos para tenerlo listo."
+      },
+      "wrapped": {
+        "title": "Skin Wrapped muy pronto",
+        "body": "Convertiremos tus fotos diarias en un resumen divertido de cómo ha cambiado tu piel. Sigue añadiendo fotos para tener el tuyo listo."
+      }
     },
     "stats": {
       "currentStreak": "Racha actual",
@@ -3343,7 +3377,15 @@
       "next": "El próximo mes",
       "loading": "Cargando calendario",
       "monthlyWrapped": "Envuelto mensualmente",
-      "weekdays": ["m", "t", "W.", "t", "f", "S", "S"],
+      "weekdays": [
+        "m",
+        "t",
+        "W.",
+        "t",
+        "f",
+        "S",
+        "S"
+      ],
       "legend": {
         "completed": "hecho",
         "noEntry": "Ninguno",
@@ -4022,7 +4064,6 @@
       },
       "showHow": "Muéstrame cómo",
       "dismiss": "Descartar",
-      "exportHistory": "Exportar historial de piel",
       "notNow": "Ahora no",
       "refresh": "Buscar actualizaciones",
       "refreshing": "refrescante",
@@ -4175,7 +4216,6 @@
       "actions": {
         "viewEntries": "Ver entradas",
         "openCompare": "Abrir comparar",
-        "openExport": "Exportar historial de piel",
         "openTodayUpload": "Añade la foto de hoy",
         "openProduct": "Producto abierto",
         "openSettings": "Abrir configuración"
@@ -4392,21 +4432,6 @@
       "tooDark": "Tuvimos problemas para ver tu piel con claridad. Pruebe la luz natural la próxima vez.",
       "futureDate": "No se puede elegir una fecha futura.",
       "uploadFailed": "La carga falló. Por favor inténtalo de nuevo."
-    },
-    "export": {
-      "title": "Exportación para dermatólogo",
-      "body": "Elija un rango de fechas. Reuniremos sus entradas, fotografías, observaciones de IA, eventos e ideas en un resumen que se puede compartir.",
-      "fromLabel": "De",
-      "toLabel": "a",
-      "submit": "Generar exportación",
-      "cancel": "Cancelar",
-      "generating": "Generando…",
-      "readyTitle": "La exportación está lista",
-      "readyBody": "{entries, plural, one {# entry} other {# entries}} included. You'll also receive a notification with the secure export.",
-      "validation": {
-        "invalidDate": "Elija una fecha válida.",
-        "endBeforeStart": "La fecha de finalización debe ser posterior a la fecha de inicio."
-      }
     }
   },
   "dashboardJournal": {
@@ -4588,10 +4613,6 @@
       "analysis_failed": {
         "title": "El análisis falló",
         "body": "Toque para volver a intentar la entrada."
-      },
-      "export_ready": {
-        "title": "Tu exportación está lista",
-        "body": "Toque para descargar."
       },
       "suggestion_ready": {
         "title": "Tu sugerencia está lista",
@@ -5355,12 +5376,10 @@
     "page": {
       "title": "Historia",
       "subtitle": "Sugerencias anteriores y lo que realmente aplicaste. Edite cualquier registro en cualquier momento.",
-      "export": "Exportar",
       "loading": "Cargando historial",
       "errorTitle": "No pudimos cargar el historial.",
       "error": "Algo salió mal al cargar tu historial. Puedes intentarlo de nuevo.",
       "retry": "Inténtalo de nuevo",
-      "exportError": "No pudimos exportar su historial. Intentar otra vez.",
       "loadMore": "Cargar más",
       "loadingMore": "Cargando más",
       "loadMoreError": "No pudimos cargar más historia."
@@ -5444,7 +5463,6 @@
       "backLabel": "toda la historia",
       "subtitle": "{slots} slots, {applied} of {total} applied",
       "viewPhoto": "Ver foto",
-      "export": "Exportar",
       "appliedSummary": "{applied} of {total} applied",
       "daypart": {
         "morning": "mañana",
@@ -5510,10 +5528,6 @@
         "whenItShows": {
           "q": "¿Cuándo aparece aquí la sugerencia de hoy?",
           "a": "Cuando la fecha del calendario cambia en su zona horaria. Hasta entonces, el día de hoy permanece en la página de sugerencias del día."
-        },
-        "export": {
-          "q": "¿Puedo exportar mi historial?",
-          "a": "Sí, con el botón Exportar. Entrégaselo a un dermatólogo o guarda una copia."
         }
       }
     },
