@@ -11,6 +11,7 @@ import {
   LandingProblem,
   LandingTrustStrip,
 } from "@/components/landing/landing-sections";
+import { LandingAppStores } from "@/components/landing/landing-app-stores";
 import { LandingThemeLock } from "@/components/landing/landing-theme-lock";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -58,6 +59,7 @@ export default async function Home() {
           <LandingPrivacy />
           <LandingFaq />
           <LandingFinalCta />
+          <LandingAppStores />
         </main>
         <SiteFooter />
         <script

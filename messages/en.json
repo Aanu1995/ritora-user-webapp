@@ -602,6 +602,19 @@
         "No card required",
         "Delete your data anytime"
       ]
+    },
+    "appStores": {
+      "eyebrow": "Mobile apps",
+      "headline": "Take Ritora with you",
+      "body": "Snap your shelf, log your routine, and check your skin journal on the go. The Ritora app is coming soon to iOS and Android.",
+      "appStoreAlt": "Download on the App Store",
+      "googlePlayAlt": "Get it on Google Play",
+      "dialog": {
+        "title": "Coming soon",
+        "appStoreBody": "The Ritora iOS app isn't out yet. It's on the way to the App Store. In the meantime, you can use everything right here in your browser.",
+        "googlePlayBody": "The Ritora Android app isn't out yet. It's on the way to Google Play. In the meantime, you can use everything right here in your browser.",
+        "dismiss": "Got it"
+      }
     }
   },
   "footer": {

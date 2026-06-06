@@ -602,6 +602,19 @@
         "No se requiere tarjeta",
         "Elimina tus datos en cualquier momento"
       ]
+    },
+    "appStores": {
+      "eyebrow": "Apps móviles",
+      "headline": "Lleva Ritora contigo",
+      "body": "Fotografía tu estante, registra tu rutina y consulta tu diario de piel donde estés. La app de Ritora llegará pronto a iOS y Android.",
+      "appStoreAlt": "Descárgalo en el App Store",
+      "googlePlayAlt": "Disponible en Google Play",
+      "dialog": {
+        "title": "Muy pronto",
+        "appStoreBody": "La app de Ritora para iOS aún no está disponible. Está en camino al App Store. Mientras tanto, puedes usar todo aquí mismo en tu navegador.",
+        "googlePlayBody": "La app de Ritora para Android aún no está disponible. Está en camino a Google Play. Mientras tanto, puedes usar todo aquí mismo en tu navegador.",
+        "dismiss": "Entendido"
+      }
     }
   },
   "footer": {

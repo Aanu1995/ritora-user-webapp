@@ -602,6 +602,19 @@
         "Inget kort krävs",
         "Radera dina uppgifter när som helst"
       ]
+    },
+    "appStores": {
+      "eyebrow": "Mobilappar",
+      "headline": "Ta med dig Ritora",
+      "body": "Fota din hylla, logga din rutin och kolla din huddagbok när du är på språng. Ritora-appen kommer snart till iOS och Android.",
+      "appStoreAlt": "Ladda ner i App Store",
+      "googlePlayAlt": "Hämta på Google Play",
+      "dialog": {
+        "title": "Kommer snart",
+        "appStoreBody": "Ritoras iOS-app är inte ute än. Den är på väg till App Store. Under tiden kan du använda allt direkt här i din webbläsare.",
+        "googlePlayBody": "Ritoras Android-app är inte ute än. Den är på väg till Google Play. Under tiden kan du använda allt direkt här i din webbläsare.",
+        "dismiss": "Okej"
+      }
     }
   },
   "footer": {
