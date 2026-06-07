@@ -82,7 +82,7 @@ jobs:
           . /etc/ritora/user-web.env
           set +a
 
-          npm ci
+          npm ci --include=dev
           npm run build
           npm prune --omit=dev
 
