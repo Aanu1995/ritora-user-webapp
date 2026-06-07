@@ -1,4 +1,5 @@
 import { expect, test, type Page, type Route } from "@playwright/test";
+import { createReadySkinProfile } from "../src/test/skin-profile";
 
 const mockUser = {
   id: "test-user-id",
@@ -62,6 +63,19 @@ async function mockAuthenticatedApi(page: Page) {
         notifications_unread_count: 0,
         skin_journal_warning_count: 0,
       });
+    }),
+    page.route("**/api/v1/skin-profile", async (route) => {
+      if (route.request().method() === "OPTIONS") {
+        await route.fulfill({ status: 204, headers: CORS_HEADERS });
+        return;
+      }
+
+      if (route.request().method() !== "GET") {
+        await route.fallback();
+        return;
+      }
+
+      await fulfillJson(route, 200, createReadySkinProfile());
     }),
     page.route("**/api/v1/auth/**", async (route) => {
       if (route.request().method() === "OPTIONS") {
