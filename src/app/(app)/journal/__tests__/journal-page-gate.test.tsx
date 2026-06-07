@@ -35,10 +35,6 @@ jest.mock("@/components/skin-journal/reaction-detected-modal", () => ({
   ReactionDetectedModal: () => null,
 }));
 
-jest.mock("@/components/skin-journal/dermatologist-export-modal", () => ({
-  DermatologistExportModal: () => null,
-}));
-
 jest.mock("@/hooks/use-skin-journal", () => ({
   useCalendar: () => ({ data: undefined, isLoading: false }),
   useDay: () => ({ data: null, isLoading: false }),
@@ -52,6 +48,7 @@ jest.mock("@/hooks/use-skin-journal", () => ({
   useJournalStats: () => ({ data: undefined }),
   usePhotoDates: () => ({ data: { dates: [], months: [] } }),
   usePhotoFilters: () => ({ data: { filters: [] } }),
+  useRecordAnalysisFeedback: () => ({ mutate: jest.fn(), isPending: false }),
   useRecordInsightAction: () => ({ mutate: jest.fn() }),
   usePhotos: () => ({
     data: { pages: [{ items: [] }] },
@@ -59,6 +56,7 @@ jest.mock("@/hooks/use-skin-journal", () => ({
     hasNextPage: false,
     isFetchingNextPage: false,
   }),
+  useReinterpretAnalysis: () => ({ mutate: jest.fn(), isPending: false }),
   useRetryAnalysis: () => ({ mutate: jest.fn() }),
   useStartSimplification: () => ({ mutate: jest.fn() }),
   useTodayEntry: () => ({ data: mockTodayPayload }),

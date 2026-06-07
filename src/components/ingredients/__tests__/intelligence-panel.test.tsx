@@ -12,10 +12,13 @@ import {
 } from '@/types/ingredients';
 
 const mockUseFocusProductAnalysis = jest.fn();
+const mockUseRetryFocusProductAnalysis = jest.fn();
 
 jest.mock('@/hooks/use-ingredients', () => ({
   useFocusProductAnalysis: (...args: unknown[]) =>
     mockUseFocusProductAnalysis(...args),
+  useRetryFocusProductAnalysis: (...args: unknown[]) =>
+    mockUseRetryFocusProductAnalysis(...args),
 }));
 
 function buildActive(partial: Partial<AnalysisActive> = {}): AnalysisActive {
@@ -55,6 +58,11 @@ function buildResult(partial: Partial<AnalysisResult> = {}): AnalysisResult {
 
 beforeEach(() => {
   mockUseFocusProductAnalysis.mockReset();
+  mockUseRetryFocusProductAnalysis.mockReset();
+  mockUseRetryFocusProductAnalysis.mockReturnValue({
+    isPending: false,
+    mutate: jest.fn(),
+  });
 });
 
 describe('IntelligencePanel', () => {
@@ -93,6 +101,7 @@ describe('IntelligencePanel', () => {
     mockUseFocusProductAnalysis.mockReturnValue({
       isPending: false,
       isError: false,
+      isFetching: false,
       data: buildResult({
         status: AnalysisStatus.InsufficientData,
         productsMissingInci: ['product-1'],
@@ -107,6 +116,53 @@ describe('IntelligencePanel', () => {
     expect(
       screen.getByRole('link', { name: /add ingredients/i }),
     ).toHaveAttribute('href', '/shelf/product-1/edit');
+  });
+
+  it('lets the user run analysis again when an ingredient-backed product has no findings yet', async () => {
+    const user = userEvent.setup();
+    const retry = jest.fn();
+    mockUseRetryFocusProductAnalysis.mockReturnValue({
+      isPending: false,
+      mutate: retry,
+    });
+    mockUseFocusProductAnalysis.mockReturnValue({
+      isPending: false,
+      isError: false,
+      isFetching: false,
+      data: buildResult({
+        status: AnalysisStatus.InsufficientData,
+        productsMissingInci: [],
+      }),
+    });
+
+    renderWithProviders(
+      <IntelligencePanel productId="product-1" hasIngredientList />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /analyze again/i }));
+
+    expect(retry).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides the analyze-again button while analysis is fetching', () => {
+    mockUseFocusProductAnalysis.mockReturnValue({
+      isPending: false,
+      isError: false,
+      isFetching: true,
+      data: buildResult({
+        status: AnalysisStatus.InsufficientData,
+        productsMissingInci: [],
+      }),
+    });
+
+    renderWithProviders(
+      <IntelligencePanel productId="product-1" hasIngredientList />,
+    );
+
+    expect(
+      screen.queryByRole('button', { name: /analyze again/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText(/analyzing/i)).toBeInTheDocument();
   });
 
   it('renders the Key actives section with a category badge and blurb', () => {
@@ -130,7 +186,7 @@ describe('IntelligencePanel', () => {
     expect(screen.getByText(/^Retinoid$/i)).toBeInTheDocument();
   });
 
-  it('renders pairing guidance with the avoid-with pills and mitigation hint', () => {
+  it('renders pairing guidance inline within the active card', () => {
     mockUseFocusProductAnalysis.mockReturnValue({
       isPending: false,
       isError: false,
@@ -141,19 +197,18 @@ describe('IntelligencePanel', () => {
 
     renderWithProviders(<IntelligencePanel productId="product-1" />);
 
-    expect(
-      screen.getByRole('heading', { name: /how to pair it/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/avoid in the same routine with/i),
-    ).toBeInTheDocument();
+    // Pairing concerns are now embedded inside each active's card under
+    // an "Avoid pairing with" warning block rather than a separate
+    // "How to pair it" section.
+    expect(screen.getByText(/avoid pairing with/i)).toBeInTheDocument();
     expect(screen.getByText('AHA')).toBeInTheDocument();
     expect(screen.getByText('BHA')).toBeInTheDocument();
     expect(screen.getByText('Benzoyl peroxide')).toBeInTheDocument();
     expect(screen.getByText(/alternate nights/i)).toBeInTheDocument();
+    expect(screen.getByText(/safer plan/i)).toBeInTheDocument();
   });
 
-  it('omits the pairing section when no active has avoid-targets', () => {
+  it('omits the pairing block when no active has avoid-targets', () => {
     mockUseFocusProductAnalysis.mockReturnValue({
       isPending: false,
       isError: false,
@@ -173,13 +228,15 @@ describe('IntelligencePanel', () => {
 
     renderWithProviders(<IntelligencePanel productId="product-1" />);
 
-    expect(screen.queryByRole('heading', { name: /how to pair it/i })).toBeNull();
+    expect(screen.queryByText(/avoid pairing with/i)).toBeNull();
+    expect(screen.queryByText(/safer plan/i)).toBeNull();
   });
 
   it('renders an empty actives notice when the list is empty', () => {
     mockUseFocusProductAnalysis.mockReturnValue({
       isPending: false,
       isError: false,
+      isFetching: false,
       data: buildResult({ actives: [] }),
     });
 
@@ -188,5 +245,52 @@ describe('IntelligencePanel', () => {
     expect(
       screen.getByText(/couldn't match any active ingredients/i),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /analyze again/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('lets the user run analysis again from the empty actives notice', async () => {
+    const user = userEvent.setup();
+    const retry = jest.fn();
+    mockUseRetryFocusProductAnalysis.mockReturnValue({
+      isPending: false,
+      mutate: retry,
+    });
+    mockUseFocusProductAnalysis.mockReturnValue({
+      isPending: false,
+      isError: false,
+      isFetching: false,
+      data: buildResult({ actives: [] }),
+    });
+
+    renderWithProviders(
+      <IntelligencePanel productId="product-1" hasIngredientList />,
+    );
+
+    expect(
+      screen.getByText(/couldn't match any active ingredients/i),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /analyze again/i }));
+
+    expect(retry).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides the empty-actives analyze-again button while analysis is fetching', () => {
+    mockUseFocusProductAnalysis.mockReturnValue({
+      isPending: false,
+      isError: false,
+      isFetching: true,
+      data: buildResult({ actives: [] }),
+    });
+
+    renderWithProviders(
+      <IntelligencePanel productId="product-1" hasIngredientList />,
+    );
+
+    expect(
+      screen.queryByRole('button', { name: /analyze again/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText(/analyzing/i)).toBeInTheDocument();
   });
 });

@@ -47,7 +47,7 @@ export function DetailIngredientsTab({
           </p>
         ) : null}
       </div>
-      <IntelligencePanel productId={productId} />
+      <IntelligencePanel productId={productId} hasIngredientList />
     </div>
   );
 }

@@ -4,8 +4,10 @@ import {
   getStepInput,
   mockMutate,
   mockPush,
+  mockReplace,
   renderAddProductPage,
   resetAddProductPageMocks,
+  setAddProductSearchParams,
   setSuccessfulPhotoExtraction,
 } from '@/test/shelf/add-product-page.test-harness';
 
@@ -130,15 +132,18 @@ describe('AddProductPage', () => {
 
     await user.click(screen.getByRole('button', { name: /add to shelf/i }));
 
-    expect(screen.getByText(/keep each step short/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/keep each step under 280 characters/i),
+    ).toBeInTheDocument();
     expect(mockMutate).not.toHaveBeenCalled();
   });
 
-  it('creates a product and redirects to the detail page', async () => {
+  it('creates a product and returns to the source page', async () => {
     const user = userEvent.setup();
     mockMutate.mockImplementation((_draft, options) => {
       options?.onSuccess?.({ id: 'product-123' });
     });
+    setAddProductSearchParams(new URLSearchParams('returnTo=/community'));
     setSuccessfulPhotoExtraction();
 
     renderAddProductPage();
@@ -164,8 +169,9 @@ describe('AddProductPage', () => {
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalled();
-      expect(mockPush).toHaveBeenCalledWith('/shelf/product-123');
+      expect(mockReplace).toHaveBeenCalledWith('/community');
     });
+    expect(mockPush).not.toHaveBeenCalledWith('/shelf/product-123');
   });
 
   it('creates a product when the ingredient list is not available yet', async () => {
@@ -193,7 +199,7 @@ describe('AddProductPage', () => {
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalled();
-      expect(mockPush).toHaveBeenCalledWith('/shelf/product-123');
+      expect(mockReplace).toHaveBeenCalledWith('/shelf');
     });
     expect(mockMutate.mock.calls[0]?.[0].identity.inciIngredients).toEqual([]);
   });
@@ -227,7 +233,7 @@ describe('AddProductPage', () => {
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalled();
-      expect(mockPush).toHaveBeenCalledWith('/shelf/product-123');
+      expect(mockReplace).toHaveBeenCalledWith('/shelf');
     });
 
     expect(mockMutate.mock.calls[0]?.[0].userFields.openedAt).toBeNull();

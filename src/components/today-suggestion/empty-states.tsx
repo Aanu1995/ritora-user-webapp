@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { AppRoute } from "@/constants/app-routes";
+import { buildShelfReturnHref } from "@/lib/shelf-return-navigation";
 import { cn } from "@/lib/utils";
 
 export function NoSkinProfileEmptyState() {
@@ -50,7 +52,12 @@ export function NoShelfEmptyState() {
         {t("body")}
       </p>
       <Button asChild className="mt-3">
-        <Link href="/shelf/new">
+        <Link
+          href={buildShelfReturnHref(
+            `${AppRoute.Shelf}/new`,
+            AppRoute.TodaysSuggestion,
+          )}
+        >
           <Plus className="h-3.5 w-3.5" />
           {t("cta")}
         </Link>

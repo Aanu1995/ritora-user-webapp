@@ -1,5 +1,4 @@
 import { screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "@/test/utils";
 import { DashboardLatestSuggestion } from "@/components/dashboard/dashboard-latest-suggestion";
 import type {
@@ -7,19 +6,6 @@ import type {
   SuggestionStep,
   TodaysSuggestionSlot,
 } from "@/types/suggestions";
-
-const mockRecordApplicationMutate = jest.fn();
-
-jest.mock("@/hooks/use-application-tracking", () => ({
-  useRecordApplication: () => ({
-    mutate: mockRecordApplicationMutate,
-    isPending: false,
-  }),
-  useEditApplication: () => ({
-    mutate: jest.fn(),
-    isPending: false,
-  }),
-}));
 
 jest.mock("@/hooks/use-shelf", () => ({
   useShelfProducts: () => ({ data: [], isLoading: false }),
@@ -34,64 +20,67 @@ afterEach(() => {
 });
 
 describe("DashboardLatestSuggestion", () => {
-  it("renders the slot summary and step preview", () => {
-    renderWithProviders(<DashboardLatestSuggestion slot={slot()} timeZone="UTC" />);
+  it("renders the shared Today suggestion card with an apply-style link", () => {
+    renderWithProviders(
+      <DashboardLatestSuggestion slot={slot()} nowMs={Date.now()} />,
+    );
 
     expect(
       screen.getByRole("region", { name: /morning routine/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/next up · morning routine/i)).toBeInTheDocument();
     expect(screen.getByText("8:00 AM")).toBeInTheDocument();
+    expect(screen.getByText(/morning routine/i)).toBeInTheDocument();
     expect(screen.getByText(/keep the routine light/i)).toBeInTheDocument();
     expect(screen.getByText(/barrier serum/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /record this suggestion/i }))
+      .toHaveAttribute("href", "/todays-suggestion");
   });
 
-  it("opens the same RecordApplicationSheet when the user taps Mark as applied", async () => {
-    const user = userEvent.setup();
-    renderWithProviders(<DashboardLatestSuggestion slot={slot()} timeZone="UTC" />);
+  it("routes only the record action to /todays-suggestion", () => {
+    renderWithProviders(
+      <DashboardLatestSuggestion slot={slot()} nowMs={Date.now()} />,
+    );
 
-    await user.click(screen.getByRole("button", { name: /mark as applied/i }));
+    const links = screen.getAllByRole("link");
+    expect(links).toHaveLength(1);
 
-    // The same record sheet from Today's Suggestion identifies itself by this
-    // SheetTitle string. If the dashboard is rendering its own dialog instead
-    // of the shared sheet, this will fail.
-    expect(
-      await screen.findByText(/^Record what you applied$/),
-    ).toBeInTheDocument();
-  });
-
-  it("links the Open routine action to /todays-suggestion", () => {
-    renderWithProviders(<DashboardLatestSuggestion slot={slot()} timeZone="UTC" />);
-
-    const link = screen.getByRole("link", { name: /open routine/i });
+    const link = screen.getByRole("link", { name: /record this suggestion/i });
     expect(link).toHaveAttribute("href", "/todays-suggestion");
   });
 
-  it("uses 'Record what I applied' copy when the slot is recordable", () => {
+  it("keeps the record label when the slot is awaiting application details", () => {
     renderWithProviders(
       <DashboardLatestSuggestion
         slot={slot({ status: "recordable" })}
-        timeZone="UTC"
+        nowMs={Date.now()}
       />,
     );
 
+    expect(screen.getByRole("link", { name: /record this suggestion/i }))
+      .toHaveAttribute("href", "/todays-suggestion");
     expect(
-      screen.getByRole("button", { name: /record what i applied/i }),
-    ).toBeInTheDocument();
+      screen.queryByRole("button", { name: /record this suggestion/i }),
+    ).not.toBeInTheDocument();
   });
 
-  it("collapses extra steps into a +N more line", () => {
+  it("shows the complete shared card instead of collapsing steps", () => {
     const steps = [0, 1, 2, 3, 4].map((index) =>
-      suggestionStep({ id: `step-${index}`, stepOrder: index }),
+      suggestionStep({
+        id: `step-${index}`,
+        stepOrder: index,
+        productName: `Product ${index + 1}`,
+      }),
     );
     renderWithProviders(
       <DashboardLatestSuggestion
         slot={slot({ suggestion: suggestionInstance({ steps }) })}
-        timeZone="UTC"
+        nowMs={Date.now()}
       />,
     );
 
-    expect(screen.getByText(/\+ 2 more steps/)).toBeInTheDocument();
+    expect(screen.getByText("Product 1")).toBeInTheDocument();
+    expect(screen.getByText("Product 5")).toBeInTheDocument();
+    expect(screen.queryByText(/\+ 2 more steps/)).not.toBeInTheDocument();
   });
 });
 

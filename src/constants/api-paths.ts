@@ -9,11 +9,13 @@ const SCHEDULE_SLOTS_BASE = `${SCHEDULE_BASE}/slots`;
 const INGREDIENTS_BASE = "/ingredients";
 const SKIN_JOURNAL_BASE = "/skin-journal";
 const NOTIFICATIONS_BASE = "/notifications";
+const SUPPORT_BASE = "/support";
 const APP_BASE = "/app";
 const SUGGESTIONS_BASE = "/suggestions";
 const SMART_PICKS_BASE = "/smart-picks";
 const APPLICATION_LOGS_BASE = "/application-logs";
 const SUGGESTIONS_HISTORY_BASE = "/suggestions/history";
+const COMMUNITY_BASE = "/community";
 
 const buildInventoryProductPath = (id: string) =>
   `${INVENTORY_PRODUCTS_BASE}/${id}`;
@@ -95,6 +97,10 @@ export const ApiPath = {
   SkinJournalEntry: (id: string) => `${SKIN_JOURNAL_BASE}/entries/${id}`,
   SkinJournalEntryRetry: (id: string) =>
     `${SKIN_JOURNAL_BASE}/entries/${id}/analyze/retry`,
+  SkinJournalEntryReinterpret: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/entries/${id}/analyze/reinterpret`,
+  SkinJournalEntryAnalysisFeedback: (id: string) =>
+    `${SKIN_JOURNAL_BASE}/entries/${id}/analysis-feedback`,
   SkinJournalCompare: `${SKIN_JOURNAL_BASE}/compare`,
   SkinJournalEvents: `${SKIN_JOURNAL_BASE}/events`,
   SkinJournalEventAck: (id: string) =>
@@ -115,8 +121,6 @@ export const ApiPath = {
   SkinJournalSimplificationAck: (id: string) =>
     `${SKIN_JOURNAL_BASE}/simplification/${id}/acknowledge`,
   SkinJournalStats: `${SKIN_JOURNAL_BASE}/stats`,
-  SkinJournalExport: `${SKIN_JOURNAL_BASE}/export`,
-  SkinJournalExportJob: (id: string) => `${SKIN_JOURNAL_BASE}/export/${id}`,
 
   Notifications: NOTIFICATIONS_BASE,
   NotificationRead: (id: string) => `${NOTIFICATIONS_BASE}/${id}/read`,
@@ -127,6 +131,8 @@ export const ApiPath = {
   NotificationPushStatus: `${NOTIFICATIONS_BASE}/push/status`,
   NotificationPushSubscription: (id: string) =>
     `${NOTIFICATIONS_BASE}/push/subscriptions/${id}`,
+
+  SupportFeedback: `${SUPPORT_BASE}/feedback`,
 
   SuggestionsToday: `${SUGGESTIONS_BASE}/today`,
   SuggestionsAiConsent: `${SUGGESTIONS_BASE}/ai-consent`,
@@ -142,7 +148,6 @@ export const ApiPath = {
   SuggestionRegenerate: (id: string) => `${SUGGESTIONS_BASE}/${id}/regenerate`,
   Suggestion: (id: string) => `${SUGGESTIONS_BASE}/${id}`,
   SuggestionsHistory: SUGGESTIONS_HISTORY_BASE,
-  SuggestionsHistoryExport: `${SUGGESTIONS_HISTORY_BASE}/export`,
   SuggestionsHistoryDay: (date: string) =>
     `${SUGGESTIONS_HISTORY_BASE}/${date}`,
 
@@ -155,4 +160,44 @@ export const ApiPath = {
   ApplicationLog: (id: string) => `${APPLICATION_LOGS_BASE}/${id}`,
   ApplicationLogVersions: (id: string) =>
     `${APPLICATION_LOGS_BASE}/${id}/versions`,
+
+  CommunityHome: `${COMMUNITY_BASE}/home`,
+  CommunityEligibility: `${COMMUNITY_BASE}/eligibility`,
+  CommunityAcceptGuidelines: `${COMMUNITY_BASE}/guidelines/accept`,
+  CommunityPeopleLikeMe: `${COMMUNITY_BASE}/people-like-me`,
+  CommunityBookmarks: `${COMMUNITY_BASE}/bookmarks`,
+  CommunityRoutines: `${COMMUNITY_BASE}/routines`,
+  CommunityRoutine: (id: string) => `${COMMUNITY_BASE}/routines/${id}`,
+  CommunityRoutineEdit: (id: string) => `${COMMUNITY_BASE}/routines/${id}`,
+  CommunityRoutineBookmark: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/bookmark`,
+  CommunityRoutineReport: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/report`,
+  CommunityRoutineHelpfulness: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/helpfulness`,
+  CommunityRoutineOutcomeSignal: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/outcome-signal`,
+  CommunityRoutineResults: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/results`,
+  CommunityRoutineAdapt: (id: string) =>
+    `${COMMUNITY_BASE}/routines/${id}/adapt-to-shelf`,
+  CommunityProductEvidence: (id: string) =>
+    `${COMMUNITY_BASE}/products/${id}/evidence`,
+  CommunityReviews: `${COMMUNITY_BASE}/reviews`,
+  CommunityReviewEdit: (id: string) => `${COMMUNITY_BASE}/reviews/${id}`,
+  CommunityReviewBookmark: (id: string) =>
+    `${COMMUNITY_BASE}/reviews/${id}/bookmark`,
+  CommunityReviewReport: (id: string) =>
+    `${COMMUNITY_BASE}/reviews/${id}/report`,
+  CommunityReviewHelpfulness: (id: string) =>
+    `${COMMUNITY_BASE}/reviews/${id}/helpfulness`,
+  CommunityReviewOutcomeSignal: (id: string) =>
+    `${COMMUNITY_BASE}/reviews/${id}/outcome-signal`,
+  CommunityReviewResults: (id: string) =>
+    `${COMMUNITY_BASE}/reviews/${id}/results`,
+  CommunityWarnings: `${COMMUNITY_BASE}/warnings`,
+  CommunityMySubmissions: `${COMMUNITY_BASE}/me/submissions`,
+  CommunityResubmitContent: (id: string) =>
+    `${COMMUNITY_BASE}/content/${id}/resubmit`,
+  CommunityWithdrawContent: (id: string) => `${COMMUNITY_BASE}/content/${id}`,
 } as const;

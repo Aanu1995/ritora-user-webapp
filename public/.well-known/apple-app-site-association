@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "63GXMB43YT.com.getritora.ritora",
+        "paths": [
+          "/reset-password",
+          "/reset-password/*",
+          "/verify-email",
+          "/verify-email/*"
+        ]
+      }
+    ]
+  }
+}

@@ -1,6 +1,7 @@
 import { pickDashboardLatestSlot } from "@/components/dashboard/dashboard-latest-suggestion-utils";
 import type {
   SuggestionInstance,
+  TodaysOnDemandSuggestion,
   TodaysSuggestionResponse,
   TodaysSuggestionSlot,
 } from "@/types/suggestions";
@@ -115,6 +116,53 @@ describe("pickDashboardLatestSlot", () => {
     });
     expect(pickDashboardLatestSlot(response)?.slotId).toBe("noon-ready");
   });
+
+  it("returns a ready quick suggestion when no scheduled slot qualifies", () => {
+    const response = todaysResponse({
+      slots: [slot({ status: "locked", isVisible: false, suggestion: null })],
+      onDemandSuggestions: [
+        onDemandSuggestion({
+          suggestion: suggestionInstance({
+            id: "quick-suggestion",
+            slotId: null,
+            requestSource: "on_demand",
+            daypart: "noon",
+            targetTime: "15:00",
+          }),
+        }),
+      ],
+    });
+
+    expect(pickDashboardLatestSlot(response)?.slotId).toBe(
+      "on-demand:quick-suggestion",
+    );
+  });
+
+  it("skips quick suggestions that are already recorded", () => {
+    const response = todaysResponse({
+      slots: [
+        slot({
+          slotId: "noon-ready",
+          daypart: "noon",
+          slotTime: "13:00",
+          status: "ready",
+        }),
+      ],
+      onDemandSuggestions: [
+        onDemandSuggestion({
+          status: "recorded",
+          recording: recording(),
+          suggestion: suggestionInstance({
+            id: "quick-recorded",
+            slotId: null,
+            requestSource: "on_demand",
+          }),
+        }),
+      ],
+    });
+
+    expect(pickDashboardLatestSlot(response)?.slotId).toBe("noon-ready");
+  });
 });
 
 function todaysResponse(
@@ -209,6 +257,26 @@ function suggestionInstance(
     applicationLogId: null,
     createdAt: "2026-05-04T06:00:00.000Z",
     updatedAt: "2026-05-04T06:00:00.000Z",
+    ...partial,
+  };
+}
+
+function onDemandSuggestion(
+  partial: Partial<TodaysOnDemandSuggestion> = {},
+): TodaysOnDemandSuggestion {
+  return {
+    id: "on-demand-1",
+    status: "ready",
+    requestedAt: "2026-05-04T14:45:00.000Z",
+    recording: null,
+    applicationLog: null,
+    suggestion: suggestionInstance({
+      id: "on-demand-suggestion-1",
+      slotId: null,
+      requestSource: "on_demand",
+      daypart: "noon",
+      targetTime: "15:00",
+    }),
     ...partial,
   };
 }

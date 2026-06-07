@@ -12,6 +12,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 jest.mock("@/hooks/use-smart-picks", () => ({
+  ...jest.requireActual("@/hooks/use-smart-picks"),
   useSmartPicksOverview: () => ({
     data: {
       mode: "refine",

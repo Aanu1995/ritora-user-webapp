@@ -18,9 +18,9 @@ import { useUnsavedChangesStore } from "@/stores/unsaved-changes-store";
  *    than silently discarding edits. On confirm, the hook walks back past
  *    both its sentinel and the form entry so the user reaches the page they
  *    were trying to get to.
- * 4. Exposes `releaseGuard()` — callers invoke this right before a
- *    programmatic `router.push` on save so the sentinel is popped cleanly
- *    and no orphan entry is left in the history stack.
+ * 4. Exposes `releaseGuard()` — callers invoke this when a save/delete makes
+ *    the form clean, either to pop the sentinel deliberately or to mark the
+ *    guard as releasing before their own navigation/close behavior runs.
  *
  * The dialog itself is rendered once at the app shell level, driven by the
  * store; it doesn't live inside this hook's caller.
@@ -38,7 +38,13 @@ function isGuardState(state: unknown): boolean {
 }
 
 export type UnsavedChangesGuard = {
-  releaseGuard: (options?: { removeHistoryEntry?: boolean }) => void;
+  releaseGuard: (options?: {
+    removeHistoryEntry?: boolean;
+  }) => UnsavedChangesGuardRelease;
+};
+
+export type UnsavedChangesGuardRelease = {
+  hadHistoryEntry: boolean;
 };
 
 export function useUnsavedChangesGuard({
@@ -97,6 +103,10 @@ export function useUnsavedChangesGuard({
   useEffect(() => {
     if (!hasUnsavedChanges) return;
     const handler = (event: BeforeUnloadEvent) => {
+      if (!hasUnsavedRef.current || isReleasingRef.current) {
+        return;
+      }
+
       event.preventDefault();
       // returnValue is required for Chrome/Firefox to trigger the native dialog
       event.returnValue = "";
@@ -160,16 +170,25 @@ export function useUnsavedChangesGuard({
       hasUnsavedRef.current = false;
       cancelPendingLeave();
       setStoreDirty(false);
+      const hadHistoryEntry =
+        typeof window !== "undefined" && isGuardState(window.history.state);
 
       if (options?.removeHistoryEntry === false) {
-        return;
+        if (hadHistoryEntry) {
+          isReleasingRef.current = true;
+          scheduleReleaseReset();
+        }
+        return { hadHistoryEntry };
       }
 
-      if (typeof window === "undefined") return;
-      if (!isGuardState(window.history.state)) return;
+      if (!hadHistoryEntry) {
+        return { hadHistoryEntry: false };
+      }
+
       isReleasingRef.current = true;
       window.history.back();
       scheduleReleaseReset();
+      return { hadHistoryEntry: true };
     },
     [cancelPendingLeave, scheduleReleaseReset, setStoreDirty],
   );

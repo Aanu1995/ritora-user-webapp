@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useUpdateSkinProfile } from "@/hooks/use-skin-profile";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
+import type { UnsavedChangesGuardRelease } from "@/hooks/use-unsaved-changes-guard";
 import {
   clearSubmitErrors,
   executeMutation,
@@ -26,12 +27,16 @@ interface ActiveToleranceSectionProps {
   profile: SkinProfile;
   options: SkinProfileOptions;
   onPendingChange?: (pending: boolean) => void;
+  onSaved?: (release: UnsavedChangesGuardRelease) => void;
 }
 
 export const ActiveToleranceSection = forwardRef<
   SectionFormHandle,
   ActiveToleranceSectionProps
->(function ActiveToleranceSection({ profile, options, onPendingChange }, ref) {
+>(function ActiveToleranceSection(
+  { profile, options, onPendingChange, onSaved },
+  ref,
+) {
   const t = useTranslations("skinProfile.activeTolerance");
   const tOptions = useTranslations("skinProfile.options");
   const updateMutation = useUpdateSkinProfile();
@@ -59,8 +64,9 @@ export const ActiveToleranceSection = forwardRef<
     },
     onSubmit: ({ value }) => {
       form.reset(value);
-      releaseGuard();
+      const release = releaseGuard({ removeHistoryEntry: false });
       toast.success(t("saved"));
+      onSaved?.(release);
     },
   });
 

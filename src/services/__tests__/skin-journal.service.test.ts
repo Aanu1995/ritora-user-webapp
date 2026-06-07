@@ -14,13 +14,11 @@ import {
   postRequest,
 } from '@/lib/api';
 import {
-  createJournalExport,
   acknowledgeEvent,
   acknowledgeSimplification,
   deleteEntry,
   dismissInsight,
   getActiveSimplification,
-  getJournalExport,
   getCalendar,
   getDay,
   getJournalStats,
@@ -128,20 +126,6 @@ describe('skin-journal.service', () => {
       '/skin-journal/entries/entry-1',
       { complaint_note: 'tight cheeks' },
     );
-  });
-
-  it('integrates dermatologist export endpoints', async () => {
-    (postRequest as jest.Mock).mockResolvedValue({ id: 'export-1' });
-    (getRequest as jest.Mock).mockResolvedValue({ id: 'export-1' });
-
-    await createJournalExport({ from: '2026-04-01', to: '2026-04-30' });
-    await getJournalExport('export-1');
-
-    expect(postRequest).toHaveBeenCalledWith('/skin-journal/export', {
-      from: '2026-04-01',
-      to: '2026-04-30',
-    });
-    expect(getRequest).toHaveBeenCalledWith('/skin-journal/export/export-1');
   });
 
   it('keeps calendar response scoped to day status only', async () => {

@@ -15,7 +15,9 @@ import {
   useJournalStats,
   usePhotoDates,
   usePhotoFilters,
+  useRecordAnalysisFeedback,
   useRecordInsightAction,
+  useReinterpretAnalysis,
   usePhotos,
   useWrappedList,
   useRetryAnalysis,
@@ -25,7 +27,6 @@ import {
 import { StatStrip } from "@/components/skin-journal/stat-strip";
 import { JournalPageActions } from "@/components/skin-journal/journal-page-actions";
 import { ReactionDetectedModal } from "@/components/skin-journal/reaction-detected-modal";
-import { DermatologistExportModal } from "@/components/skin-journal/dermatologist-export-modal";
 import { JournalTabPanels } from "@/components/skin-journal/journal-tab-panels";
 import { resolveCanonicalTodayDate } from "@/components/skin-journal/journal-date";
 import { JournalUploadMode } from "@/components/skin-journal/journal-navigation";
@@ -112,6 +113,8 @@ export default function JournalPage() {
   const dismissInsight = useDismissInsight();
   const recordInsightAction = useRecordInsightAction();
   const retryAnalysis = useRetryAnalysis();
+  const reinterpretAnalysis = useReinterpretAnalysis();
+  const recordAnalysisFeedback = useRecordAnalysisFeedback();
   const photos = useMemo(
     () => photosQuery.data?.pages.flatMap((page) => page.items) ?? [],
     [photosQuery.data],
@@ -130,7 +133,6 @@ export default function JournalPage() {
     photoDateIndex?.dates.length ??
     photos.length;
 
-  const [exportModalOpen, setExportModalOpen] = useState(false);
   const [dismissedReactionEntryId, setDismissedReactionEntryId] =
     useState<string | null>(null);
 
@@ -227,16 +229,12 @@ export default function JournalPage() {
           <JournalPageActions
             hasTodayEntry={hasTodayEntry}
             photoActionsDisabled={photoActionsDisabled}
-            onOpenExport={() => setExportModalOpen(true)}
             onOpenUpload={() => openTodayUpload()}
           />
         }
       />
 
-      <Tabs
-        value={tab}
-        onValueChange={(v) => setTab(v as typeof tab)}
-      >
+      <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
         <div className="sticky top-[88px] z-[5] -mx-4 bg-background px-4 pt-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="mx-auto max-w-7xl pb-3">
             <StatStrip stats={stats} />
@@ -254,19 +252,15 @@ export default function JournalPage() {
               </TabsTrigger>
               <TabsTrigger value="insights">
                 {t("tabs.insights")}
-                {insights.length ? (
-                  <span className="ml-1.5 rounded-full bg-surface-muted px-1.5 py-0.5 text-[10px] font-bold text-muted">
-                    {insights.length}
-                  </span>
-                ) : null}
+                <span className="ml-1.5 rounded-full bg-accent-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent-strong">
+                  {t("comingSoon.tabBadge")}
+                </span>
               </TabsTrigger>
               <TabsTrigger value="wrapped">
                 {t("tabs.wrapped")}
-                {wrapped.length ? (
-                  <span className="ml-1.5 rounded-full bg-surface-muted px-1.5 py-0.5 text-[10px] font-bold text-muted">
-                    {wrapped.length}
-                  </span>
-                ) : null}
+                <span className="ml-1.5 rounded-full bg-accent-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent-strong">
+                  {t("comingSoon.tabBadge")}
+                </span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -328,7 +322,6 @@ export default function JournalPage() {
               : undefined
           }
           onOpenCompare={handleOpenCompare}
-          onOpenExport={() => setExportModalOpen(true)}
           onOpenInsightEntries={handleOpenInsightEntries}
           onOpenProduct={(productId) =>
             router.push(`${AppRoute.Shelf}/${productId}`)
@@ -346,6 +339,14 @@ export default function JournalPage() {
           onRetryAnalysis={(entry) => {
             if (!aiActionsDisabled) retryAnalysis.mutate(entry.id);
           }}
+          analysisFeedbackDisabled={recordAnalysisFeedback.isPending}
+          onAnalysisFeedback={(entry, feedback) =>
+            recordAnalysisFeedback.mutate({ id: entry.id, ...feedback })
+          }
+          reinterpretAnalysisDisabled={reinterpretAnalysis.isPending}
+          onReinterpretAnalysis={(entry) =>
+            reinterpretAnalysis.mutate(entry.id)
+          }
           onReplacePhoto={
             canUploadForSelectedDate
               ? () => {
@@ -358,11 +359,6 @@ export default function JournalPage() {
           onDismissInsight={(id) => dismissInsight.mutate(id)}
         />
       </Tabs>
-
-      <DermatologistExportModal
-        open={exportModalOpen}
-        onOpenChange={setExportModalOpen}
-      />
 
       {reactionEntry?.analysis_observations ? (
         <ReactionDetectedModal

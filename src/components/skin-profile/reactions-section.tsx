@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { useUpdateSkinProfile } from "@/hooks/use-skin-profile";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
+import type { UnsavedChangesGuardRelease } from "@/hooks/use-unsaved-changes-guard";
 import {
   clearSubmitErrors,
   executeMutation,
@@ -41,12 +42,16 @@ interface ReactionsSectionProps {
   profile: SkinProfile;
   options: SkinProfileOptions;
   onPendingChange?: (pending: boolean) => void;
+  onSaved?: (release: UnsavedChangesGuardRelease) => void;
 }
 
 export const ReactionsSection = forwardRef<
   SectionFormHandle,
   ReactionsSectionProps
->(function ReactionsSection({ profile, options, onPendingChange }, ref) {
+>(function ReactionsSection(
+  { profile, options, onPendingChange, onSaved },
+  ref,
+) {
   const t = useTranslations("skinProfile.reactions");
   const tOptions = useTranslations("skinProfile.options");
   const updateMutation = useUpdateSkinProfile();
@@ -84,7 +89,8 @@ export const ReactionsSection = forwardRef<
     onSubmit: ({ value }) => {
       form.reset(value);
       if (!draftDirtyRef.current) {
-        releaseGuard();
+        const release = releaseGuard({ removeHistoryEntry: false });
+        onSaved?.(release);
       }
       includeConsentRef.current = false;
       setConsentDialogOpen(false);
@@ -115,8 +121,42 @@ export const ReactionsSection = forwardRef<
     );
   };
 
+  const reactionHistoryValidationMessage = () => {
+    const reactionHistory = form.getFieldValue("reactionHistory");
+    const entries = reactionHistory.entries ?? [];
+    const hasKnownReactions = reactionHistory.has_known_reactions;
+
+    if (
+      typeof hasKnownReactions !== "boolean" ||
+      (hasKnownReactions === true && entries.length === 0)
+    ) {
+      return t("validation.reactionHistoryRequired");
+    }
+
+    return undefined;
+  };
+
   const submitReactionHistory = () => {
-    if (!profile.hasHealthContextConsent && reactionHistoryTouchesHealthData()) {
+    if (draftDirtyRef.current) {
+      toast.error(t("draftUnsavedError"));
+      return;
+    }
+
+    const validationMessage = reactionHistoryValidationMessage();
+    if (validationMessage) {
+      form.setErrorMap({
+        onSubmit: {
+          form: validationMessage,
+          fields: {},
+        },
+      });
+      return;
+    }
+
+    if (
+      !profile.hasHealthContextConsent &&
+      reactionHistoryTouchesHealthData()
+    ) {
       pendingConsentSubmitRef.current = true;
       setConsentDialogOpen(true);
       return;
@@ -189,7 +229,10 @@ export const ReactionsSection = forwardRef<
       })}
     >
       {({ entries, hasKnownReactions, submitError }) => {
-        const formError = readSubmissionErrorMessage(submitError);
+        const formError = reactionHistoryFormErrorMessage(
+          readSubmissionErrorMessage(submitError),
+          t("validation.reactionHistoryRequired"),
+        );
 
         return (
           <>
@@ -370,3 +413,14 @@ export const ReactionsSection = forwardRef<
     </form.Subscribe>
   );
 });
+
+function reactionHistoryFormErrorMessage(
+  message: string | undefined,
+  reactionHistoryRequiredMessage: string,
+): string | undefined {
+  if (message === "validation.reactionHistoryRequired") {
+    return reactionHistoryRequiredMessage;
+  }
+
+  return message;
+}

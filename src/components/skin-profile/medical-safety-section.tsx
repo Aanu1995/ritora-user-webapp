@@ -22,7 +22,10 @@ import {
   useDeleteSkinProfileHealthContext,
   useUpdateSkinProfile,
 } from "@/hooks/use-skin-profile";
-import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
+import {
+  useUnsavedChangesGuard,
+  type UnsavedChangesGuardRelease,
+} from "@/hooks/use-unsaved-changes-guard";
 import {
   clearSubmitErrors,
   executeMutation,
@@ -47,6 +50,7 @@ interface MedicalSafetySectionProps {
   profile: SkinProfile;
   options: SkinProfileOptions;
   onPendingChange?: (pending: boolean) => void;
+  onSaved?: (release: UnsavedChangesGuardRelease) => void;
 }
 
 export interface SectionFormHandle {
@@ -79,7 +83,10 @@ const ALL_ANSWERED_KEYS: AnsweredKey[] = [
 export const MedicalSafetySection = forwardRef<
   SectionFormHandle,
   MedicalSafetySectionProps
->(function MedicalSafetySection({ profile, options, onPendingChange }, ref) {
+>(function MedicalSafetySection(
+  { profile, options, onPendingChange, onSaved },
+  ref,
+) {
   const t = useTranslations("skinProfile.medicalSafety");
   const router = useRouter();
   const updateMutation = useUpdateSkinProfile();
@@ -135,8 +142,9 @@ export const MedicalSafetySection = forwardRef<
     },
     onSubmit: ({ value }) => {
       form.reset(value);
-      releaseGuard();
+      const release = releaseGuard({ removeHistoryEntry: false });
       toast.success(t("saved"));
+      onSaved?.(release);
       includeConsentRef.current = false;
       setConsentDialogOpen(false);
     },
@@ -198,7 +206,7 @@ export const MedicalSafetySection = forwardRef<
             recent_procedures: [],
           },
         });
-        releaseGuard();
+        releaseGuard({ removeHistoryEntry: false });
         toast.success(t("deleted"));
         setDeleteDialogOpen(false);
       },

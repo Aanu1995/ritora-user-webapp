@@ -1,16 +1,13 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
 import { renderWithProviders } from "@/test/utils";
 import { HistoryDayCard } from "@/components/history/history-day-card";
 import { HistoryDayDetailSkeleton } from "@/components/history/history-day-detail-skeleton";
 import { HistoryDaySlotCompare } from "@/components/history/history-day-slot-compare";
-import { HistoryExportButton } from "@/components/history/history-export-button";
 import { HistoryFilterBar } from "@/components/history/history-filter-bar";
 import { HistoryListSkeleton } from "@/components/history/history-list-skeleton";
 import { HistorySummaryStrip } from "@/components/history/history-summary-strip";
-import { exportSuggestionHistoryCsv } from "@/services/suggestions.service";
 import {
   EnvironmentAirQualityRisk,
   EnvironmentProviderName,
@@ -29,28 +26,7 @@ import type {
   ApplicationLogItem,
 } from "@/types/application-tracking";
 
-jest.mock("@/services/suggestions.service", () => ({
-  exportSuggestionHistoryCsv: jest.fn(),
-}));
-
-jest.mock("sonner", () => ({
-  toast: {
-    error: jest.fn(),
-  },
-}));
-
-const mockExportSuggestionHistoryCsv =
-  exportSuggestionHistoryCsv as jest.MockedFunction<
-    typeof exportSuggestionHistoryCsv
-  >;
-
 describe("history suggestion components", () => {
-  beforeEach(() => {
-    mockExportSuggestionHistoryCsv.mockResolvedValue(
-      new Blob(["Date\n"], { type: "text/csv" }),
-    );
-  });
-
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -98,7 +74,7 @@ describe("history suggestion components", () => {
     expect(screen.getByText(/Substitute serum/i)).toBeInTheDocument();
     expect(screen.getByText(/Ran out of original/i)).toBeInTheDocument();
     expect(screen.getByText(/8:42 AM/i)).toBeInTheDocument();
-    expect(screen.getByText(/same record your AI saw/i)).toBeInTheDocument();
+    expect(screen.queryByText(/same record your AI saw/i)).not.toBeInTheDocument();
     expect(screen.getByText("Cloudy · 11°C")).toBeInTheDocument();
     expect(screen.getByText("UV 3 · moderate")).toBeInTheDocument();
     expect(
@@ -108,12 +84,15 @@ describe("history suggestion components", () => {
       container.querySelector('img[src*="history-substitute.webp"]'),
     ).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /why this routine/i }));
-    expect(onShowDetail).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "suggestion-1" }),
-    );
+    expect(
+      screen.queryByRole("button", { name: /why this routine/i }),
+    ).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /edit record/i }));
+    const editButton = screen.getByRole("button", { name: /edit record/i });
+    expect(editButton).toHaveClass("min-w-32");
+    expect(editButton.parentElement).toHaveClass("justify-end", "sm:ml-auto");
+
+    await user.click(editButton);
     expect(onEdit).toHaveBeenCalledWith(
       expect.objectContaining({
         slotId: "slot-1",
@@ -121,6 +100,116 @@ describe("history suggestion components", () => {
       }),
       expect.objectContaining({ id: "log-1" }),
     );
+  });
+
+  it("lets users record a missed history suggestion inside the 24-hour window", async () => {
+    const user = userEvent.setup();
+    const onEdit = jest.fn();
+    const onRecord = jest.fn();
+    const missedSlot = historySlot({
+      slotId: "slot-late",
+      suggestionId: "suggestion-late",
+      applicationLogId: null,
+      daypart: "evening",
+      slotTime: "22:30",
+      appliedCount: 0,
+      status: "missed",
+      hasBeenEdited: false,
+      summaryLine: "Late routine was not recorded.",
+      suggestion: suggestionInstance({
+        id: "suggestion-late",
+        slotId: "slot-late",
+        targetTime: "22:30",
+        daypart: "evening",
+        applicationLogId: null,
+      }),
+      applicationLog: null,
+    });
+
+    renderWithProviders(
+      <CompareHarness
+        slot={missedSlot}
+        onEdit={onEdit}
+        onRecord={onRecord}
+        nowMs={new Date("2026-05-04T21:29:00").getTime()}
+      />,
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: /record what i applied/i }),
+    );
+
+    expect(onRecord).toHaveBeenCalledWith(
+      expect.objectContaining({
+        slotId: "slot-late",
+        status: "recordable",
+        recording: null,
+        applicationLog: null,
+        expiresAt: "2026-05-04T22:30:00",
+      }),
+    );
+    expect(onEdit).not.toHaveBeenCalled();
+  });
+
+  it("does not show a history record action when the suggestion has no steps", () => {
+    const onEdit = jest.fn();
+    const onRecord = jest.fn();
+    const emptyStepSlot = historySlot({
+      slotId: "slot-empty",
+      suggestionId: "suggestion-empty",
+      applicationLogId: null,
+      daypart: "evening",
+      slotTime: "22:30",
+      appliedCount: 0,
+      totalSteps: 0,
+      status: "missed",
+      hasBeenEdited: false,
+      summaryLine: "No routine steps were suggested.",
+      suggestion: suggestionInstance({
+        id: "suggestion-empty",
+        slotId: "slot-empty",
+        targetTime: "22:30",
+        daypart: "evening",
+        applicationLogId: null,
+        steps: [],
+      }),
+      applicationLog: null,
+    });
+
+    renderWithProviders(
+      <CompareHarness
+        slot={emptyStepSlot}
+        onEdit={onEdit}
+        onRecord={onRecord}
+        nowMs={new Date("2026-05-04T21:29:00").getTime()}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /record what i applied/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("hides history record and edit actions after the 24-hour window", () => {
+    const onEdit = jest.fn();
+    const onRecord = jest.fn();
+
+    renderWithProviders(
+      <CompareHarness
+        slot={historyDay().slots[0]!}
+        onEdit={onEdit}
+        onRecord={onRecord}
+        nowMs={new Date("2026-05-04T08:01:00").getTime()}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /edit record/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /record what i applied/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText(/same record your AI saw/i)).toBeInTheDocument();
   });
 
   it("shows edited counts in the history summary strip", () => {
@@ -136,70 +225,6 @@ describe("history suggestion components", () => {
     expect(screen.getByText(/4 of 5 applied/i)).toBeInTheDocument();
     expect(screen.getByText(/2 edited/i)).toBeInTheDocument();
     expect(screen.getByText(/80% adherence/i)).toBeInTheDocument();
-  });
-
-  it("exports all matching history filters as a backend CSV file", async () => {
-    const user = userEvent.setup();
-    Object.defineProperty(URL, "createObjectURL", {
-      configurable: true,
-      value: jest.fn(() => "blob:history"),
-    });
-    Object.defineProperty(URL, "revokeObjectURL", {
-      configurable: true,
-      value: jest.fn(),
-    });
-    const createObjectURL = jest
-      .spyOn(URL, "createObjectURL")
-      .mockReturnValue("blob:history");
-    const revokeObjectURL = jest
-      .spyOn(URL, "revokeObjectURL")
-      .mockImplementation(() => undefined);
-    const click = jest
-      .spyOn(HTMLAnchorElement.prototype, "click")
-      .mockImplementation(() => undefined);
-
-    renderWithProviders(
-      <HistoryExportButton
-        query={{
-          range: "custom",
-          fromDate: "2026-05-01",
-          toDate: "2026-05-04",
-          mode: "mixed",
-          cursor: "visible-page-cursor",
-          limit: 10,
-        }}
-        disabled={false}
-      />,
-    );
-
-    await user.click(screen.getByRole("button", { name: /export/i }));
-    expect(mockExportSuggestionHistoryCsv).toHaveBeenCalledWith({
-      range: "custom",
-      fromDate: "2026-05-01",
-      toDate: "2026-05-04",
-      mode: "mixed",
-      cursor: "visible-page-cursor",
-      limit: 10,
-    });
-    expect(createObjectURL).toHaveBeenCalledWith(expect.any(Blob));
-    expect(click).toHaveBeenCalled();
-    expect(revokeObjectURL).toHaveBeenCalledWith("blob:history");
-
-    createObjectURL.mockRestore();
-    revokeObjectURL.mockRestore();
-    click.mockRestore();
-  });
-
-  it("shows an export failure toast when the backend export fails", async () => {
-    const user = userEvent.setup();
-    mockExportSuggestionHistoryCsv.mockRejectedValue(new Error("nope"));
-
-    renderWithProviders(
-      <HistoryExportButton query={{ range: "7d" }} disabled={false} />,
-    );
-
-    await user.click(screen.getByRole("button", { name: /export/i }));
-    expect(toast.error).toHaveBeenCalledWith(expect.stringMatching(/export/i));
   });
 
   it("updates history filters without fetching scheduled-only days", async () => {
@@ -255,11 +280,15 @@ describe("history suggestion components", () => {
 function CompareHarness({
   slot,
   onEdit,
+  onRecord,
   onShowDetail,
+  nowMs = new Date("2026-05-03T10:00:00").getTime(),
 }: {
   slot: SuggestionHistorySlotSummary;
   onEdit: Parameters<typeof HistoryDaySlotCompare>[0]["onEdit"];
+  onRecord?: Parameters<typeof HistoryDaySlotCompare>[0]["onRecord"];
   onShowDetail?: Parameters<typeof HistoryDaySlotCompare>[0]["onShowDetail"];
+  nowMs?: number;
 }) {
   const tSummary = useTranslations("history.dayCard");
   return (
@@ -268,7 +297,9 @@ function CompareHarness({
       date="2026-05-03"
       tSummary={tSummary}
       onEdit={onEdit}
+      onRecord={onRecord}
       onShowDetail={onShowDetail}
+      nowMs={nowMs}
     />
   );
 }

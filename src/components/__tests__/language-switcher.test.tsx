@@ -13,7 +13,7 @@ jest.mock('next/navigation', () => ({
 }));
 
 jest.mock('@/i18n/config', () => ({
-  locales: ['en', 'sv'],
+  locales: ['en', 'sv', 'es'],
   persistLocalePreference: (...args: unknown[]) =>
     mockPersistLocalePreference(...args),
 }));
@@ -34,6 +34,12 @@ describe('LanguageSwitcher', () => {
       expect(mockPersistLocalePreference).toHaveBeenCalledWith('sv');
       expect(mockRefresh).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it('renders Spanish as a selectable locale', () => {
+    const { getByRole } = renderWithProviders(<LanguageSwitcher />);
+
+    expect(getByRole('button', { name: /español/i })).toBeInTheDocument();
   });
 
   it('skips the extra local persistence when an external handler owns it', async () => {

@@ -46,7 +46,7 @@ export function SafetyScoreRing({
       height={size}
       viewBox={`0 0 ${size} ${size}`}
       role="img"
-      aria-label={`${clamped} / 100 — ${label}`}
+      aria-label={`${clamped} of 100. ${label}.`}
       className={TONE_CLASS[tone]}
     >
       <circle

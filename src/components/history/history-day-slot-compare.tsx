@@ -2,6 +2,8 @@
 
 import {
   CheckCheck,
+  Check,
+  Ellipsis,
   Pencil,
   Sparkles,
 } from "lucide-react";
@@ -30,27 +32,53 @@ export function HistoryDaySlotCompare({
   date,
   tSummary,
   onEdit,
+  onRecord,
   onShowDetail,
+  nowMs,
 }: {
   slot: SuggestionHistorySlotSummary;
   date: string;
   tSummary: ReturnType<typeof useTranslations>;
   onEdit: (slot: TodaysSuggestionSlot, log: ApplicationLog) => void;
+  onRecord?: (slot: TodaysSuggestionSlot) => void;
   onShowDetail?: (suggestion: SuggestionInstance) => void;
+  nowMs: number;
 }) {
   const t = useTranslations("history.day");
+  const tSlot = useTranslations("todaysSuggestion.slot");
   const suggestionSteps = [...(slot.suggestion?.steps ?? [])].sort(
     (a, b) => a.stepOrder - b.stepOrder,
   );
   const appliedItems = [...(slot.applicationLog?.items ?? [])].sort(
     (a, b) => a.stepOrder - b.stepOrder,
   );
+  const hasSuggestionSteps = suggestionSteps.length > 0;
   const applicationLog = slot.applicationLog ?? null;
   const detailSuggestion = slot.suggestion ?? null;
-  const editableSlot =
-    slot.suggestion && applicationLog
-      ? toTodaysSlot(date, slot, applicationLog)
-      : null;
+  const actionableSlot = slot.suggestion
+    ? toTodaysSlot(date, slot, applicationLog)
+    : null;
+  const canActOnHistorySlot = actionableSlot
+    ? isWithinHistoryRecordWindow(actionableSlot, nowMs)
+    : false;
+  const canRecordHistorySlot = Boolean(
+    hasSuggestionSteps &&
+      !applicationLog &&
+      actionableSlot &&
+      canActOnHistorySlot &&
+      onRecord,
+  );
+  const canEditHistorySlot = Boolean(
+    slot.applicationLogId &&
+      actionableSlot &&
+      applicationLog &&
+      canActOnHistorySlot,
+  );
+  const canShowDetailInFooter = Boolean(
+    detailSuggestion && onShowDetail && !canActOnHistorySlot,
+  );
+  const shouldShowFooter =
+    !canActOnHistorySlot || canShowDetailInFooter || canEditHistorySlot;
 
   return (
     <article className="rounded-3xl border border-border bg-surface p-4 shadow-[var(--shadow-soft)]">
@@ -120,36 +148,71 @@ export function HistoryDaySlotCompare({
         </CompareColumn>
       </div>
 
-      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="space-y-1">
-          <p className="text-xs text-muted">{t("outcomeNote")}</p>
-          <p className="text-[11.5px] font-medium text-muted">
-            {t("aiSawContext")}
-          </p>
-        </div>
-        <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+      {canRecordHistorySlot && actionableSlot && onRecord ? (
+        <div className="mt-3.5 flex items-center gap-2">
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => onRecord(actionableSlot)}
+            className="flex-1 bg-[color:var(--accent)] text-white shadow-none hover:bg-[color:var(--accent-strong)] hover:opacity-100"
+          >
+            <Check className="h-4 w-4" />
+            {tSlot("recordWhatIApplied")}
+          </Button>
           {detailSuggestion && onShowDetail ? (
             <Button
-              variant="ghost"
+              type="button"
+              variant="outline"
               size="sm"
               onClick={() => onShowDetail(detailSuggestion)}
+              className="w-7 shrink-0 px-0 sm:w-9"
+              aria-label={t("whyThisRoutine")}
             >
-              <Sparkles className="h-3.5 w-3.5" />
-              {t("whyThisRoutine")}
-            </Button>
-          ) : null}
-          {slot.applicationLogId && editableSlot && applicationLog ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onEdit(editableSlot, applicationLog)}
-            >
-              <Pencil className="h-3.5 w-3.5" />
-              {t("editRecord")}
+              <Ellipsis className="h-4 w-4" />
             </Button>
           ) : null}
         </div>
-      </div>
+      ) : null}
+
+      {shouldShowFooter ? (
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          {!canActOnHistorySlot ? (
+            <div className="space-y-1">
+              <p className="text-xs text-muted">{t("outcomeNote")}</p>
+              <p className="text-[11.5px] font-medium text-muted">
+                {t("aiSawContext")}
+              </p>
+            </div>
+          ) : null}
+          <div className="flex w-full shrink-0 flex-wrap justify-end gap-1.5 sm:ml-auto sm:w-auto">
+            {canShowDetailInFooter && detailSuggestion && onShowDetail ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onShowDetail(detailSuggestion)}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                {t("whyThisRoutine")}
+              </Button>
+            ) : null}
+            {slot.applicationLogId &&
+            actionableSlot &&
+            applicationLog &&
+            canActOnHistorySlot ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => onEdit(actionableSlot, applicationLog)}
+                className="min-w-32 justify-center"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                {t("editRecord")}
+              </Button>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
     </article>
   );
 }
@@ -231,10 +294,11 @@ function CompareColumn({
 function toTodaysSlot(
   date: string,
   slot: SuggestionHistorySlotSummary,
-  log: ApplicationLog,
+  log: ApplicationLog | null,
 ): TodaysSuggestionSlot | null {
   const suggestion = slot.suggestion;
   if (!suggestion) return null;
+  const startsAt = buildLocalIso(date, slot.slotTime);
   return {
     slotId: slot.slotId ?? suggestion.slotId ?? suggestion.id,
     daypart: slot.daypart,
@@ -245,19 +309,21 @@ function toTodaysSlot(
     specialistLockedStepCount: countSpecialistLocked(suggestion.steps),
     specialist: null,
     visibleAt: suggestion.visibleAt,
-    status: log.hasBeenEdited ? "edited" : "recorded",
-    slotStartsAt: buildLocalIso(date, slot.slotTime),
-    recordableAt: buildLocalIso(date, slot.slotTime),
-    expiresAt: buildLocalIso(date, "23:59"),
-    recording: {
-      applicationLogId: log.id,
-      appliedAt: log.appliedAt,
-      hasBeenEdited: log.hasBeenEdited,
-      editCount: log.editCount,
-      lastEditedAt: log.lastEditedAt,
-      appliedCount: slot.appliedCount,
-      totalItems: log.items.length,
-    },
+    status: log ? (log.hasBeenEdited ? "edited" : "recorded") : "recordable",
+    slotStartsAt: startsAt,
+    recordableAt: startsAt,
+    expiresAt: addHoursToLocalIso(startsAt, HISTORY_RECORD_WINDOW_HOURS),
+    recording: log
+      ? {
+          applicationLogId: log.id,
+          appliedAt: log.appliedAt,
+          hasBeenEdited: log.hasBeenEdited,
+          editCount: log.editCount,
+          lastEditedAt: log.lastEditedAt,
+          appliedCount: slot.appliedCount,
+          totalItems: log.items.length,
+        }
+      : null,
     recordingReminderSnoozedUntil: null,
     applicationLog: log,
     isVisible: true,
@@ -271,4 +337,35 @@ function countSpecialistLocked(steps: SuggestionStep[]): number {
 
 function buildLocalIso(date: string, time: string): string {
   return `${date}T${time.length === 5 ? `${time}:00` : time}`;
+}
+
+const HISTORY_RECORD_WINDOW_HOURS = 24;
+
+function isWithinHistoryRecordWindow(
+  slot: TodaysSuggestionSlot,
+  nowMs: number,
+): boolean {
+  const recordableAtMs = Date.parse(slot.recordableAt);
+  const expiresAtMs = Date.parse(slot.expiresAt);
+  if (!Number.isFinite(recordableAtMs) || !Number.isFinite(expiresAtMs)) {
+    return false;
+  }
+  return nowMs >= recordableAtMs && nowMs <= expiresAtMs;
+}
+
+function addHoursToLocalIso(value: string, hours: number): string {
+  const date = new Date(Date.parse(value));
+  date.setHours(date.getHours() + hours);
+  return [
+    [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      String(date.getDate()).padStart(2, "0"),
+    ].join("-"),
+    [
+      String(date.getHours()).padStart(2, "0"),
+      String(date.getMinutes()).padStart(2, "0"),
+      String(date.getSeconds()).padStart(2, "0"),
+    ].join(":"),
+  ].join("T");
 }

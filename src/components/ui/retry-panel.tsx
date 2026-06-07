@@ -1,7 +1,9 @@
 'use client';
 
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
+import { ContactSupportButton } from '@/components/support/contact-support-button';
 
 interface RetryPanelProps {
   title: string;
@@ -10,6 +12,13 @@ interface RetryPanelProps {
   onAction: () => void;
   illustrationSrc?: string;
   illustrationAlt?: string;
+  /**
+   * Hide the "Still stuck? Contact support" link beneath the retry button.
+   * Default `false` so most callers automatically get the support escape
+   * hatch when a retry isn't enough. Pass `true` for inline error blocks
+   * where a support prompt would feel out of place.
+   */
+  hideSupportLink?: boolean;
 }
 
 export function RetryPanel({
@@ -19,7 +28,10 @@ export function RetryPanel({
   onAction,
   illustrationSrc = '/illustrations/load-error.svg',
   illustrationAlt = '',
+  hideSupportLink = false,
 }: RetryPanelProps) {
+  const t = useTranslations('common.retryPanel');
+
   return (
     <section
       className="px-6 py-8 text-center sm:px-12 sm:py-14"
@@ -49,6 +61,18 @@ export function RetryPanel({
         >
           {actionLabel}
         </Button>
+
+        {hideSupportLink ? null : (
+          <div className="mt-4 flex items-center gap-2 text-sm text-muted">
+            <span>{t('stillStuck')}</span>
+            <ContactSupportButton
+              variant="link"
+              size="sm"
+              label={t('contactSupport')}
+              className="h-auto text-sm"
+            />
+          </div>
+        )}
       </div>
     </section>
   );

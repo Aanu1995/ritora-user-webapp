@@ -14,7 +14,11 @@ import {
 import { AppRoute } from "@/constants/app-routes";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
-import { useSkinProfile, useSkinProfileOptions } from "@/hooks/use-skin-profile";
+import {
+  useSkinProfile,
+  useSkinProfileOptions,
+} from "@/hooks/use-skin-profile";
+import { useSkinProfileSectionReturn } from "@/hooks/use-skin-profile-section-return";
 
 export default function HormonalPage() {
   const t = useTranslations("skinProfile.hormonal");
@@ -22,6 +26,7 @@ export default function HormonalPage() {
   const router = useRouter();
   const profile = useSkinProfile();
   const options = useSkinProfileOptions();
+  const { backHref, returnAfterSave } = useSkinProfileSectionReturn();
   const sectionRef = useRef<SectionFormHandle>(null);
   const [pending, setPending] = useState(false);
 
@@ -41,6 +46,7 @@ export default function HormonalPage() {
     return (
       <div>
         <SectionPageHeader
+          backHref={backHref}
           title={t("pageTitle")}
           subtitle={t("pageDesc")}
           badge={encryptedBadge}
@@ -55,6 +61,7 @@ export default function HormonalPage() {
     return (
       <div>
         <SectionPageHeader
+          backHref={backHref}
           title={t("pageTitle")}
           subtitle={t("pageDesc")}
           badge={encryptedBadge}
@@ -76,6 +83,7 @@ export default function HormonalPage() {
   return (
     <div>
       <SectionPageHeader
+        backHref={backHref}
         title={t("pageTitle")}
         subtitle={t("pageDesc")}
         badge={encryptedBadge}
@@ -99,6 +107,7 @@ export default function HormonalPage() {
           profile={profile.data}
           options={options.data}
           onPendingChange={setPending}
+          onSaved={returnAfterSave}
         />
       </div>
     </div>

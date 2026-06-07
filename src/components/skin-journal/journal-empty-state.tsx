@@ -14,7 +14,7 @@ interface JournalEmptyStateProps {
 
 function emptyStateToneClass(tone: JournalEmptyStateProps["tone"]): string {
   if (tone === "ai") {
-    return "bg-[color:var(--ai-bg)]";
+    return "bg-ai-bg";
   }
 
   if (tone === "secondary") {
@@ -44,7 +44,12 @@ export function JournalEmptyState({
       <h3 className="mt-4 font-display text-lg font-bold">{title}</h3>
       <p className="mx-auto mt-1.5 max-w-md text-sm text-muted">{body}</p>
       {cta && onCta ? (
-        <Button className="mt-4" disabled={ctaDisabled} onClick={onCta}>
+        <Button
+          size="sm"
+          className="mt-4"
+          disabled={ctaDisabled}
+          onClick={onCta}
+        >
           {cta}
         </Button>
       ) : null}

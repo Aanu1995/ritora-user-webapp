@@ -1,4 +1,5 @@
 import {
+  NO_CLIENT_SIDE_REQUEST_TIMEOUT_MS,
   type ApiRequestOptions,
   deleteRequest,
   getRequest,
@@ -24,7 +25,8 @@ type UploadedProductImage = {
 const PRODUCT_IMAGE_FORM_FIELD = "image";
 const PRODUCT_DRAFT_FORM_FIELD = "product";
 const PRODUCT_IMAGE_UPLOAD_TIMEOUT_MS = 30000;
-const PRODUCT_PHOTO_EXTRACTION_TIMEOUT_MS = 75000;
+const PRODUCT_PHOTO_EXTRACTION_TIMEOUT_MS =
+  NO_CLIENT_SIDE_REQUEST_TIMEOUT_MS;
 
 function buildUploadConfig(
   timeout: number,

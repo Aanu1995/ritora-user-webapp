@@ -125,6 +125,14 @@ export const SMART_PICKS_PRODUCT_GENERATION_REASON = {
 export type SmartPicksProductGenerationReason =
   (typeof SMART_PICKS_PRODUCT_GENERATION_REASON)[keyof typeof SMART_PICKS_PRODUCT_GENERATION_REASON];
 
+export type SmartPicksAiUsageMetrics = {
+  model: string | null;
+  inputTokens: number | null;
+  outputTokens: number | null;
+  totalTokens: number | null;
+  estimatedCostUsd: number | null;
+};
+
 export type SmartPicksProductGenerationState = {
   status: SmartPicksProductGenerationStatus;
   reason: SmartPicksProductGenerationReason | null;
@@ -132,6 +140,7 @@ export type SmartPicksProductGenerationState = {
   isProcessing: boolean;
   attemptedAt: string | null;
   retryAfter: string | null;
+  aiUsage?: SmartPicksAiUsageMetrics;
 };
 
 export type SmartPicksHistoryReadiness = {

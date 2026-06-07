@@ -14,13 +14,18 @@ import {
 } from "@/components/skin-profile/skin-profile-skeleton";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
-import { useSkinProfile, useSkinProfileOptions } from "@/hooks/use-skin-profile";
+import {
+  useSkinProfile,
+  useSkinProfileOptions,
+} from "@/hooks/use-skin-profile";
+import { useSkinProfileSectionReturn } from "@/hooks/use-skin-profile-section-return";
 
 export default function MedicalSafetyPage() {
   const t = useTranslations("skinProfile.medicalSafety");
   const tCommon = useTranslations("common");
   const profile = useSkinProfile();
   const options = useSkinProfileOptions();
+  const { backHref, returnAfterSave } = useSkinProfileSectionReturn();
 
   const sectionRef = useRef<SectionFormHandle>(null);
   const [pending, setPending] = useState(false);
@@ -35,6 +40,7 @@ export default function MedicalSafetyPage() {
     return (
       <div>
         <SectionPageHeader
+          backHref={backHref}
           title={t("pageTitle")}
           subtitle={t("pageDesc")}
           badge={encryptedBadge}
@@ -49,6 +55,7 @@ export default function MedicalSafetyPage() {
     return (
       <div>
         <SectionPageHeader
+          backHref={backHref}
           title={t("pageTitle")}
           subtitle={t("pageDesc")}
           badge={encryptedBadge}
@@ -70,6 +77,7 @@ export default function MedicalSafetyPage() {
   return (
     <div>
       <SectionPageHeader
+        backHref={backHref}
         title={t("pageTitle")}
         subtitle={t("pageDesc")}
         badge={encryptedBadge}
@@ -93,6 +101,7 @@ export default function MedicalSafetyPage() {
           profile={profile.data}
           options={options.data}
           onPendingChange={setPending}
+          onSaved={returnAfterSave}
         />
       </div>
     </div>

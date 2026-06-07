@@ -94,7 +94,7 @@ describe("SkinProfileOverview", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("does not show reaction history as incomplete when none is known", () => {
+  it("shows unanswered reaction history as incomplete", () => {
     renderWithProviders(
       <SkinProfileOverview
         profile={createReadySkinProfile({
@@ -110,10 +110,62 @@ describe("SkinProfileOverview", () => {
 
     expect(reactionCard).not.toBeNull();
     expect(
+      within(reactionCard as HTMLElement).getByText("Add now"),
+    ).toBeInTheDocument();
+    expect(
+      within(reactionCard as HTMLElement).queryByText("No known reactions"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("marks explicit no known reactions as complete", () => {
+    renderWithProviders(
+      <SkinProfileOverview
+        profile={createReadySkinProfile({
+          reactionHistory: {
+            has_known_reactions: false,
+            entries: [],
+          },
+        })}
+        onEdit={jest.fn()}
+      />,
+    );
+
+    const reactionCard = screen
+      .getByText("Reaction history")
+      .closest(".rounded-2xl");
+
+    expect(reactionCard).not.toBeNull();
+    expect(
       within(reactionCard as HTMLElement).getByText("No known reactions"),
     ).toBeInTheDocument();
     expect(
       within(reactionCard as HTMLElement).queryByText("Add now"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("does not mark yes without entries as complete", () => {
+    renderWithProviders(
+      <SkinProfileOverview
+        profile={createReadySkinProfile({
+          reactionHistory: {
+            has_known_reactions: true,
+            entries: [],
+          },
+        })}
+        onEdit={jest.fn()}
+      />,
+    );
+
+    const reactionCard = screen
+      .getByText("Reaction history")
+      .closest(".rounded-2xl");
+
+    expect(reactionCard).not.toBeNull();
+    expect(
+      within(reactionCard as HTMLElement).getByText("Add now"),
+    ).toBeInTheDocument();
+    expect(
+      within(reactionCard as HTMLElement).queryByText("0 entries"),
     ).not.toBeInTheDocument();
   });
 });

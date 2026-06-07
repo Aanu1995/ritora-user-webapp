@@ -232,25 +232,18 @@ describe('LoginPage', () => {
     );
   });
 
-  it('passes implicit consent context when starting Apple OAuth', async () => {
+  it('does not show Apple OAuth while implementation is incomplete', () => {
     renderWithProviders(<LoginPage />);
 
-    await user.click(
-      screen.getByRole('button', { name: /continue with apple/i }),
-    );
-
-    expect(navigateToUrl).toHaveBeenCalledWith(
-      expect.stringContaining('termsAccepted=true'),
-    );
-    expect(navigateToUrl).toHaveBeenCalledWith(
-      expect.stringContaining('privacyPolicyAccepted=true'),
-    );
+    expect(
+      screen.queryByRole('button', { name: /continue with apple/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('has link to register', () => {
     renderWithProviders(<LoginPage />);
     expect(
-      screen.getByRole('link', { name: /create an account/i }),
+      screen.getByRole('link', { name: /create account/i }),
     ).toBeInTheDocument();
   });
 

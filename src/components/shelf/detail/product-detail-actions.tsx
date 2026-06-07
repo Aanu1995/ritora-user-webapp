@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ShelfProductCompareSheet } from "@/components/product-compare/shelf-product-compare-sheet";
 import { Button } from "@/components/ui/button";
+import { buildShelfReturnHref } from "@/lib/shelf-return-navigation";
 import { ProductCompareItemKind } from "@/types/ingredients";
 import { type ShelfProduct } from "@/types/shelf";
 
@@ -62,7 +63,10 @@ export function ProductDetailActions({
 
       <Button asChild size="sm" className="w-7 px-0 sm:w-auto sm:px-4">
         <Link
-          href={`${productDetailPath}/edit`}
+          href={buildShelfReturnHref(
+            `${productDetailPath}/edit`,
+            productDetailPath,
+          )}
           aria-label={tEdit("title")}
           onClick={onEditClick}
         >

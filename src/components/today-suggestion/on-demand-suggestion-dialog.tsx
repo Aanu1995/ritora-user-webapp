@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { firstFieldError } from "@/lib/form-errors";
 import type {
@@ -210,7 +211,7 @@ export function OnDemandSuggestionDialog({
                     >
                       {t("noteLabel")}
                     </label>
-                    <textarea
+                    <Textarea
                       id={field.name}
                       value={value}
                       onChange={(event) =>
@@ -218,7 +219,8 @@ export function OnDemandSuggestionDialog({
                       }
                       placeholder={t("notePlaceholder")}
                       maxLength={NOTE_MAX_LENGTH}
-                      className="mt-1.5 min-h-24 w-full resize-y rounded-2xl border border-[color:var(--border-strong)] bg-surface px-3 py-2 text-sm text-foreground placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30"
+                      rows={3}
+                      className="mt-1.5"
                     />
                     <div className="mt-1 flex items-start justify-between gap-2 text-xs">
                       {field.state.meta.errors.length > 0 ? (

@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "@/test/utils";
 import { ApiError } from "@/lib/api-error";
@@ -6,6 +6,7 @@ import {
   getAppScrollPosition,
   saveAppScrollPosition,
 } from "@/lib/app-scroll-restoration";
+import { SKIN_PROFILE_RETURN_TO_PARAM } from "@/lib/skin-profile-section-return-navigation";
 import type { SkinProfile, SkinProfileOptions } from "@/types/skin-profile";
 
 type RefetchMock = jest.Mock<Promise<void>, []>;
@@ -50,9 +51,7 @@ jest.mock("@/lib/post-login-route", () => ({
 }));
 
 import SkinProfilePage from "@/app/(app)/skin-profile/page";
-import {
-  hasMissingSkinProfileHandoff,
-} from "@/lib/post-login-route";
+import { hasMissingSkinProfileHandoff } from "@/lib/post-login-route";
 import {
   mockSkinProfile,
   mockSkinProfileOptions,
@@ -174,9 +173,7 @@ describe("SkinProfilePage", () => {
     };
 
     renderWithProviders(<SkinProfilePage />);
-    expect(
-      screen.getByText(/tell us your skin baseline/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/tell us your skin baseline/i)).toBeInTheDocument();
   });
 
   it("shows the wizard without fetching profile again when login already confirmed no profile", () => {
@@ -190,9 +187,7 @@ describe("SkinProfilePage", () => {
     };
 
     renderWithProviders(<SkinProfilePage />);
-    expect(
-      screen.getByText(/tell us your skin baseline/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/tell us your skin baseline/i)).toBeInTheDocument();
   });
 
   it("shows the overview if cached profile data exists even after a missing-profile handoff", () => {
@@ -264,9 +259,7 @@ describe("SkinProfilePage", () => {
     await user.click(screen.getByRole("radio", { name: /black/i }));
     await user.click(screen.getByRole("button", { name: /continue/i }));
 
-    expect(
-      screen.getByText(/what concerns you most/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/what concerns you most/i)).toBeInTheDocument();
   });
 
   it("does not show a skip action in the essential track", () => {
@@ -297,6 +290,54 @@ describe("SkinProfilePage", () => {
     expect(screen.getByText("Oily")).toBeInTheDocument();
     expect(screen.getAllByText("Acne").length).toBeGreaterThan(0);
     expect(screen.getAllByText(/edit/i).length).toBeGreaterThan(0);
+  });
+
+  it("restores the overview scroll position after closing mandatory edit mode", async () => {
+    mockSkinProfileReturn = {
+      data: completeProfile,
+      isPending: false,
+      isError: false,
+      error: null,
+      refetch: createRefetchMock(),
+    };
+    let scrollTop = 640;
+    const scrollTo = jest.fn((options?: ScrollToOptions | number) => {
+      scrollTop = typeof options === "number" ? options : (options?.top ?? 0);
+    });
+    const scrollRoot = document.createElement("main");
+    scrollRoot.setAttribute("data-app-scroll-root", "");
+    Object.defineProperties(scrollRoot, {
+      clientHeight: { configurable: true, value: 100 },
+      scrollHeight: { configurable: true, value: 1000 },
+      scrollTop: {
+        configurable: true,
+        get: () => scrollTop,
+      },
+      scrollTo: { configurable: true, value: scrollTo },
+    });
+    document.body.appendChild(scrollRoot);
+
+    renderWithProviders(<SkinProfilePage />);
+
+    await user.click(screen.getAllByRole("button", { name: /edit/i })[0]);
+    await waitFor(() =>
+      expect(scrollTo).toHaveBeenCalledWith({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      }),
+    );
+
+    await user.click(screen.getByRole("button", { name: /back/i }));
+
+    await waitFor(() =>
+      expect(scrollTo).toHaveBeenCalledWith({
+        top: 640,
+        left: 0,
+        behavior: "auto",
+      }),
+    );
+    scrollRoot.remove();
   });
 
   it("renders saved free-text option values without missing-message crashes", () => {
@@ -346,11 +387,16 @@ describe("SkinProfilePage", () => {
     document.body.appendChild(scrollRoot);
 
     const { container } = renderWithProviders(<SkinProfilePage />);
-    const optionalSectionLink = container.querySelector<HTMLAnchorElement>(
-      `a[href="${href}"]`,
-    );
+    const optionalSectionLink = Array.from(
+      container.querySelectorAll<HTMLAnchorElement>("a"),
+    ).find((link) => link.getAttribute("href")?.startsWith(`${href}?`));
 
     expect(optionalSectionLink).not.toBeNull();
+    expect(
+      new URL(optionalSectionLink!.href).searchParams.get(
+        SKIN_PROFILE_RETURN_TO_PARAM,
+      ),
+    ).toBe("/skin-profile");
     await user.click(optionalSectionLink!);
     saveAppScrollPosition("/skin-profile", 0);
 

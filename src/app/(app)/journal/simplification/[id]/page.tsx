@@ -15,6 +15,7 @@ import {
   useAcknowledgeSimplification,
   useSimplification,
 } from "@/hooks/use-skin-journal";
+import { requestAppScrollRestore } from "@/lib/app-scroll-restoration";
 
 export default function SimplificationDetailPage({
   params,
@@ -68,7 +69,10 @@ export default function SimplificationDetailPage({
                 onClick={() => {
                   if (data) {
                     acknowledge.mutate(data.id, {
-                      onSuccess: () => router.push(AppRoute.Journal),
+                      onSuccess: () => {
+                        requestAppScrollRestore(AppRoute.Journal);
+                        router.push(AppRoute.Journal);
+                      },
                     });
                   }
                 }}

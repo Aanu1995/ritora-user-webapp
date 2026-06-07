@@ -15,7 +15,7 @@ jest.mock("sonner", () => ({
 const mockUpdateSlot = jest.fn();
 const mockDeleteSlot = jest.fn();
 const mockUpsertSteps = jest.fn();
-const mockReleaseGuard = jest.fn();
+const mockReleaseGuard = jest.fn(() => ({ hadHistoryEntry: false }));
 const mockUpdateAiConsentMutate = jest.fn();
 let mockAiConsentGranted = false;
 let capabilityOverrides: Partial<Record<string, boolean>> = {};
@@ -228,7 +228,9 @@ describe("SlotEditorContent", () => {
     });
 
     expect(onClose).not.toHaveBeenCalled();
-    expect(mockReleaseGuard).not.toHaveBeenCalled();
+    expect(mockReleaseGuard).toHaveBeenCalledWith({
+      removeHistoryEntry: false,
+    });
     expect(toast.success).toHaveBeenCalledWith("Saved");
   });
 

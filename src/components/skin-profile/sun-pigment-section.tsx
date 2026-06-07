@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { useUpdateSkinProfile } from "@/hooks/use-skin-profile";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
+import type { UnsavedChangesGuardRelease } from "@/hooks/use-unsaved-changes-guard";
 import {
   clearSubmitErrors,
   executeMutation,
@@ -29,12 +30,16 @@ interface SunPigmentSectionProps {
   profile: SkinProfile;
   options: SkinProfileOptions;
   onPendingChange?: (pending: boolean) => void;
+  onSaved?: (release: UnsavedChangesGuardRelease) => void;
 }
 
 export const SunPigmentSection = forwardRef<
   SectionFormHandle,
   SunPigmentSectionProps
->(function SunPigmentSection({ profile, options, onPendingChange }, ref) {
+>(function SunPigmentSection(
+  { profile, options, onPendingChange, onSaved },
+  ref,
+) {
   const t = useTranslations("skinProfile.sunPigment");
   const tOptions = useTranslations("skinProfile.options");
   const updateMutation = useUpdateSkinProfile();
@@ -64,8 +69,9 @@ export const SunPigmentSection = forwardRef<
     },
     onSubmit: ({ value }) => {
       form.reset(value);
-      releaseGuard();
+      const release = releaseGuard({ removeHistoryEntry: false });
       toast.success(t("saved"));
+      onSaved?.(release);
     },
   });
 

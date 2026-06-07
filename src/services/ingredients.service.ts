@@ -1,4 +1,7 @@
-import { postRequest } from "@/lib/api";
+import {
+  NO_CLIENT_SIDE_REQUEST_TIMEOUT_MS,
+  postRequest,
+} from "@/lib/api";
 import { ApiPath } from "@/constants/api-paths";
 import type {
   AnalysisResult,
@@ -9,7 +12,8 @@ import type {
   ProductCompareResponse,
 } from "@/types/ingredients";
 
-export const PRODUCT_CHECK_REQUEST_TIMEOUT_MS = 120000;
+export const PRODUCT_CHECK_REQUEST_TIMEOUT_MS =
+  NO_CLIENT_SIDE_REQUEST_TIMEOUT_MS;
 export const PRODUCT_COMPARE_REQUEST_TIMEOUT_MS = 240000;
 
 export async function analyzeProducts(
@@ -22,6 +26,7 @@ export async function analyzeProducts(
           focusProductId: input.focusProductId,
           language: input.language,
           withExplanations: input.withExplanations ?? false,
+          forceRefresh: input.forceRefresh ?? false,
         }
       : {
           productIds: input.productIds,

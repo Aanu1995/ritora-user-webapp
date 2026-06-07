@@ -5,20 +5,36 @@ import type {
   PhotoAnalysisInterpretation,
   PhotoReferenceQuality,
 } from "./skin-journal-analysis";
+import type { AnalysisFeedback } from "./skin-journal-feedback";
 import type { AnalysisFailureCode } from "./skin-journal-analysis-failure";
 import type { JournalInsight } from "./skin-journal-insights";
+import type { PhotoFilterId, PhotoFilterKind } from "./skin-journal-photo-filters";
 export type {
   AnalysisConcern,
   AnalysisComparisonReference,
   AnalysisObservations,
   PhotoAnalysisInterpretation,
+  PhotoAnalysisConcernGuidance,
+  PhotoAnalysisTextRef,
   PhotoAnalysisSourceCitation,
   PhotoReferenceQuality,
   PhotoReferenceQualityReason,
   PhotoReferenceQualityStatus,
   ReactionSeverity,
 } from "./skin-journal-analysis";
+export {
+  PhotoAnalysisConcernReadLabel,
+  PhotoAnalysisInterpretationVersion,
+  PhotoAnalysisReadingLabel,
+  PhotoAnalysisSchemaVersion,
+} from "./skin-journal-analysis";
 export type { AnalysisFailureCode } from "./skin-journal-analysis-failure";
+export {
+  ANALYSIS_FEEDBACK_REASONS,
+  AnalysisFeedbackReason,
+  AnalysisFeedbackVote,
+} from "./skin-journal-feedback";
+export type { AnalysisFeedback } from "./skin-journal-feedback";
 export type {
   InsightAction,
   InsightBlock,
@@ -39,6 +55,8 @@ export type {
   LocalizedInsightText,
 } from "./skin-journal-insights";
 export type { CompareResponse } from "./skin-journal-compare";
+export { PhotoFilterKind, PhotoFilterStaticId } from "./skin-journal-photo-filters";
+export type { PhotoFilterId } from "./skin-journal-photo-filters";
 export type Angle = "head_on" | "left_profile" | "right_profile";
 export const PHOTO_ANGLES: Angle[] = [
   "left_profile",
@@ -132,21 +150,6 @@ export type WrappedStatus =
   | "ready"
   | "failed";
 
-export enum PhotoFilterKind {
-  All = "all",
-  Reaction = "reaction",
-  Concern = "concern",
-}
-
-export enum PhotoFilterStaticId {
-  All = "all",
-  Reaction = "reaction",
-}
-
-export type PhotoFilterId =
-  | PhotoFilterStaticId
-  | `${PhotoFilterKind.Concern}:${AnalysisConcern}`;
-
 export type ConcernKey =
   | "oiliness"
   | "dryness"
@@ -202,6 +205,9 @@ export interface JournalEntry {
   photo_reference_quality: PhotoReferenceQuality;
   analysis_observations: AnalysisObservations | null;
   analysis_interpretation: PhotoAnalysisInterpretation | null;
+  analysis_feedback: AnalysisFeedback | null;
+  analysis_feedback_submitted: boolean;
+  analysis_feedback_submitted_at: string | null;
   analysis_summary: string | null;
   analysis_model: string | null;
   analysis_version: string | null;
@@ -369,25 +375,4 @@ export interface UpsertEntryPayload {
   skip_check_in?: boolean;
   photo_processing_consent?: boolean;
   remove_photo_angles?: Angle[];
-}
-
-export interface JournalExportPayload {
-  generated_at: string;
-  from: string;
-  to: string;
-  entries: Array<Record<string, unknown> & { photo_url: string | null }>;
-  events: Record<string, unknown>[];
-  insights: Record<string, unknown>[];
-  wrapped: Record<string, unknown>[];
-  simplifications: Record<string, unknown>[];
-}
-
-export interface JournalExportJob {
-  id: string;
-  status: "ready" | "failed";
-  from: string;
-  to: string;
-  payload: JournalExportPayload | null;
-  error: string | null;
-  created_at: string;
 }

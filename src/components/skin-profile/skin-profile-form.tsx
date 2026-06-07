@@ -118,7 +118,7 @@ export const SkinProfileForm = forwardRef<
     },
     onSubmit: ({ value }) => {
       form.reset(value);
-      releaseGuard();
+      releaseGuard({ removeHistoryEntry: false });
       onSaved?.();
     },
   });

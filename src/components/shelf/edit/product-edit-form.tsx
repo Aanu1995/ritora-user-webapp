@@ -2,7 +2,7 @@
 
 import { useForm, useStore } from '@tanstack/react-form';
 import { ArrowLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -40,6 +40,10 @@ import {
   normalizeShelfProductForm,
   shelfProductFormSchema,
 } from '@/lib/shelf-form';
+import {
+  navigateAfterShelfSave,
+  readShelfReturnTo,
+} from '@/lib/shelf-return-navigation';
 import { getShelfSubmitError } from '@/lib/shelf-submit-errors';
 import type { ShelfProduct } from '@/types/shelf';
 
@@ -52,6 +56,11 @@ export function ProductEditForm({ product }: Props) {
   const tDetail = useTranslations('shelf.detail');
   const tShelf = useTranslations('shelf');
   const router = useRouter();
+  const pathname = usePathname() ?? `${AppRoute.Shelf}/${product.id}/edit`;
+  const searchParams = useSearchParams();
+  const returnToHref = readShelfReturnTo(searchParams, pathname);
+  const productDetailHref = `${AppRoute.Shelf}/${product.id}`;
+  const backHref = returnToHref ?? productDetailHref;
   const updateProduct = useUpdateProduct();
   const uploadProductImage = useUploadProductImage();
   const uploadProductImageForProduct = useUploadProductImageForProduct();
@@ -111,8 +120,12 @@ export function ProductEditForm({ product }: Props) {
     onSubmit: () => {
       toast.success(t('successToast'));
       setIsSaved(true);
-      releaseGuard();
-      router.push(`${AppRoute.Shelf}/${product.id}`);
+      navigateAfterShelfSave({
+        router,
+        releaseGuard,
+        fallbackHref: productDetailHref,
+        returnToHref,
+      });
     },
   });
 
@@ -291,8 +304,8 @@ export function ProductEditForm({ product }: Props) {
               <ProductPageHeader
                 leading={
                   <GuardedLink
-                    href={`${AppRoute.Shelf}/${product.id}`}
-                    restoreScrollTo={`${AppRoute.Shelf}/${product.id}`}
+                    href={backHref}
+                    restoreScrollTo={backHref}
                     aria-label={tDetail('backLink')}
                     className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground hover:bg-accent-soft"
                   >

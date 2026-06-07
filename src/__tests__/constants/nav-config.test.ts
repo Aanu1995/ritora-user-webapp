@@ -60,18 +60,23 @@ describe("NAV_ITEMS", () => {
     expect(groups.has(NavGroup.Account)).toBe(true);
   });
 
-  it("has exactly 12 navigation items", () => {
+  it("has exactly 12 MVP navigation items", () => {
     expect(NAV_ITEMS).toHaveLength(12);
+  });
+
+  it("does not show Insights in MVP navigation", () => {
+    expect(NAV_ITEMS.some((item) => item.route === AppRoute.Insights)).toBe(
+      false,
+    );
   });
 
   it("marks implemented account and journal surfaces as live", () => {
     const byRoute = new Map(NAV_ITEMS.map((item) => [item.route, item]));
 
     expect(byRoute.get(AppRoute.Journal)?.status).toBe(NavItemStatus.Live);
-    expect(byRoute.get(AppRoute.CheckProduct)?.status).toBe(
-      NavItemStatus.Live,
-    );
+    expect(byRoute.get(AppRoute.CheckProduct)?.status).toBe(NavItemStatus.Live);
     expect(byRoute.get(AppRoute.SmartPicks)?.status).toBe(NavItemStatus.Live);
+    expect(byRoute.get(AppRoute.Community)?.status).toBe(NavItemStatus.Live);
     expect(byRoute.get(AppRoute.Notifications)?.status).toBe(
       NavItemStatus.Live,
     );
@@ -90,11 +95,11 @@ describe("getNavItemsByGroup", () => {
     expect(getNavItemsByGroup(NavGroup.Main)).toHaveLength(8);
   });
 
-  it("returns 2 items for the More group", () => {
-    expect(getNavItemsByGroup(NavGroup.More)).toHaveLength(2);
+  it("returns 1 item for the More group", () => {
+    expect(getNavItemsByGroup(NavGroup.More)).toHaveLength(1);
   });
 
-  it("returns 2 items for the Account group", () => {
-    expect(getNavItemsByGroup(NavGroup.Account)).toHaveLength(2);
+  it("returns 3 items for the Account group", () => {
+    expect(getNavItemsByGroup(NavGroup.Account)).toHaveLength(3);
   });
 });

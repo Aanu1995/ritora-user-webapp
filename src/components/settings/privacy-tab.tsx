@@ -42,7 +42,6 @@ const LOG_PREVIEW_LIMIT = 12;
 const LEGAL_LINKS = [
   { labelKey: "privacyPolicy", route: AppRoute.Privacy },
   { labelKey: "termsOfService", route: AppRoute.Terms },
-  { labelKey: "cookieNotice", route: AppRoute.Cookies },
 ] as const;
 
 const SKIN_PROFILE_SECTION_ROUTES = {

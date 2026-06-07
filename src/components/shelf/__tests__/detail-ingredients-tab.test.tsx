@@ -3,14 +3,18 @@ import { renderWithProviders } from '@/test/utils';
 import { DetailIngredientsTab } from '@/components/shelf/detail/detail-ingredients-tab';
 
 const mockUseFocusProductAnalysis = jest.fn();
+const mockUseRetryFocusProductAnalysis = jest.fn();
 
 jest.mock('@/hooks/use-ingredients', () => ({
   useFocusProductAnalysis: (...args: unknown[]) =>
     mockUseFocusProductAnalysis(...args),
+  useRetryFocusProductAnalysis: (...args: unknown[]) =>
+    mockUseRetryFocusProductAnalysis(...args),
 }));
 
 beforeEach(() => {
   mockUseFocusProductAnalysis.mockReset();
+  mockUseRetryFocusProductAnalysis.mockReset();
   mockUseFocusProductAnalysis.mockReturnValue({
     isPending: false,
     isError: false,
@@ -27,6 +31,10 @@ beforeEach(() => {
       engineVersion: 'v2',
       generatedAt: '2026-04-24T09:00:00.000Z',
     },
+  });
+  mockUseRetryFocusProductAnalysis.mockReturnValue({
+    isPending: false,
+    mutate: jest.fn(),
   });
 });
 

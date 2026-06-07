@@ -64,6 +64,9 @@ function entry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     analysis_status: "completed",
     analysis_observations: null,
     analysis_interpretation: null,
+    analysis_feedback: null,
+    analysis_feedback_submitted: false,
+    analysis_feedback_submitted_at: null,
     analysis_summary: null,
     analysis_model: null,
     analysis_version: null,
@@ -230,7 +233,6 @@ describe("Skin Journal rendering smoke coverage", () => {
         isRefreshingInsights={false}
         onOpenUpload={jest.fn()}
         onOpenCompare={jest.fn()}
-        onOpenExport={jest.fn()}
         onOpenEntries={onOpenEntries}
         onOpenProduct={jest.fn()}
         onOpenSettings={jest.fn()}

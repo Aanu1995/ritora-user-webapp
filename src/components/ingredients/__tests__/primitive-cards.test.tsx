@@ -51,7 +51,7 @@ describe("ingredient primitive cards", () => {
     );
 
     expect(screen.getByText(/Gel Cleanser/)).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: /88 \/ 100/i })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /88 of 100/i })).toBeInTheDocument();
     expect(screen.getByText(/low/i)).toBeInTheDocument();
 
     rerender(
@@ -62,7 +62,7 @@ describe("ingredient primitive cards", () => {
     );
 
     expect(screen.queryByText(/Gel Cleanser/)).not.toBeInTheDocument();
-    expect(screen.getByRole("img", { name: /42 \/ 100/i })).toHaveClass(
+    expect(screen.getByRole("img", { name: /42 of 100/i })).toHaveClass(
       "text-danger",
     );
   });

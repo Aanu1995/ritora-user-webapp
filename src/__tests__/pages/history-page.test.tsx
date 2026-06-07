@@ -88,10 +88,6 @@ jest.mock("@/hooks/use-suggestions", () => ({
   useSuggestionHistory: () => mockHistoryState,
 }));
 
-jest.mock("@/services/suggestions.service", () => ({
-  exportSuggestionHistoryCsv: jest.fn(),
-}));
-
 import HistoryPage from "@/app/(app)/history/page";
 
 describe("HistoryPage", () => {

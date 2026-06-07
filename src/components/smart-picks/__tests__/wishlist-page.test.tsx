@@ -8,6 +8,7 @@ import {
   useSmartPicksWishlist,
 } from "@/hooks/use-smart-picks";
 import { SuggestionEvidenceSourceId } from "@/types/suggestions";
+import type { SmartPicksWishlistItem } from "@/types/smart-picks";
 
 jest.mock("@/hooks/use-smart-picks", () => ({
   useDeleteSmartPicksWishlistItem: jest.fn(),
@@ -29,13 +30,30 @@ const mockUseDeleteWishlistItem =
     typeof useDeleteSmartPicksWishlistItem
   >;
 
+type SmartPicksWishlistQueryResult = ReturnType<typeof useSmartPicksWishlist>;
+type DeleteSmartPicksWishlistMutationResult = ReturnType<
+  typeof useDeleteSmartPicksWishlistItem
+>;
+
+function smartPicksWishlistQueryResult(
+  result: Partial<SmartPicksWishlistQueryResult>,
+): SmartPicksWishlistQueryResult {
+  return result as SmartPicksWishlistQueryResult;
+}
+
+function deleteSmartPicksWishlistMutationResult(
+  result: Partial<DeleteSmartPicksWishlistMutationResult>,
+): DeleteSmartPicksWishlistMutationResult {
+  return result as DeleteSmartPicksWishlistMutationResult;
+}
+
 afterEach(() => {
   jest.clearAllMocks();
 });
 
 describe("WishlistPage", () => {
   it("shows saved picks with their reason and seller names", () => {
-    mockUseWishlist.mockReturnValue({
+    mockUseWishlist.mockReturnValue(smartPicksWishlistQueryResult({
       data: {
         items: [
           {
@@ -67,11 +85,11 @@ describe("WishlistPage", () => {
       isLoading: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksWishlist>);
-    mockUseDeleteWishlistItem.mockReturnValue({
+    }));
+    mockUseDeleteWishlistItem.mockReturnValue(deleteSmartPicksWishlistMutationResult({
       mutate: jest.fn(),
       isPending: false,
-    } as ReturnType<typeof useDeleteSmartPicksWishlistItem>);
+    }));
 
     renderWithProviders(<WishlistPage />);
 
@@ -98,20 +116,17 @@ describe("WishlistPage", () => {
     const mutate = jest.fn((_actionId, options) => {
       options?.onSuccess?.(undefined, "action-1", undefined);
     });
-    mockUseWishlist.mockReturnValue({
+    mockUseWishlist.mockReturnValue(smartPicksWishlistQueryResult({
       data: { items: [wishlistItem()] },
       isLoading: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksWishlist>);
-    mockUseDeleteWishlistItem.mockReturnValue({
+    }));
+    mockUseDeleteWishlistItem.mockReturnValue(deleteSmartPicksWishlistMutationResult({
       mutate,
       isPending: false,
       variables: undefined,
-    } as Pick<
-      ReturnType<typeof useDeleteSmartPicksWishlistItem>,
-      "mutate" | "isPending" | "variables"
-    > as ReturnType<typeof useDeleteSmartPicksWishlistItem>);
+    }));
 
     renderWithProviders(<WishlistPage />);
 
@@ -124,7 +139,7 @@ describe("WishlistPage", () => {
   });
 
   it("shows a removing indicator only for the wishlist item being removed", () => {
-    mockUseWishlist.mockReturnValue({
+    mockUseWishlist.mockReturnValue(smartPicksWishlistQueryResult({
       data: {
         items: [
           wishlistItem({ actionId: "action-1" }),
@@ -134,15 +149,12 @@ describe("WishlistPage", () => {
       isLoading: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksWishlist>);
-    mockUseDeleteWishlistItem.mockReturnValue({
+    }));
+    mockUseDeleteWishlistItem.mockReturnValue(deleteSmartPicksWishlistMutationResult({
       mutate: jest.fn(),
       isPending: true,
       variables: "action-1",
-    } as Pick<
-      ReturnType<typeof useDeleteSmartPicksWishlistItem>,
-      "mutate" | "isPending" | "variables"
-    > as ReturnType<typeof useDeleteSmartPicksWishlistItem>);
+    }));
 
     renderWithProviders(<WishlistPage />);
 
@@ -152,16 +164,16 @@ describe("WishlistPage", () => {
   });
 
   it("shows the wishlist empty state", () => {
-    mockUseWishlist.mockReturnValue({
+    mockUseWishlist.mockReturnValue(smartPicksWishlistQueryResult({
       data: { items: [] },
       isLoading: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksWishlist>);
-    mockUseDeleteWishlistItem.mockReturnValue({
+    }));
+    mockUseDeleteWishlistItem.mockReturnValue(deleteSmartPicksWishlistMutationResult({
       mutate: jest.fn(),
       isPending: false,
-    } as ReturnType<typeof useDeleteSmartPicksWishlistItem>);
+    }));
 
     renderWithProviders(<WishlistPage />);
 
@@ -182,7 +194,7 @@ function wishlistItem(
     actionId?: string;
     productName?: string;
   } = {},
-) {
+): SmartPicksWishlistItem {
   return {
     actionId: overrides.actionId ?? "action-1",
     savedAt: "2026-05-11T10:00:00.000Z",

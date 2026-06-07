@@ -32,6 +32,28 @@ const cspReportOnly = [
   `connect-src 'self' ${apiOrigin}`,
 ].join('; ');
 
+const mobileAssociationHeaders = [
+  {
+    key: 'Content-Type',
+    value: 'application/json',
+  },
+  {
+    key: 'Cache-Control',
+    value: 'public, max-age=3600',
+  },
+];
+
+const actionLinkHeaders = [
+  {
+    key: 'Referrer-Policy',
+    value: 'no-referrer',
+  },
+  {
+    key: 'Cache-Control',
+    value: 'no-store, max-age=0',
+  },
+];
+
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
@@ -58,32 +80,6 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
-      {
-        source: '/verify-email',
-        headers: [
-          {
-            key: 'Referrer-Policy',
-            value: 'no-referrer',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'no-store, max-age=0',
-          },
-        ],
-      },
-      {
-        source: '/reset-password',
-        headers: [
-          {
-            key: 'Referrer-Policy',
-            value: 'no-referrer',
-          },
-          {
-            key: 'Cache-Control',
-            value: 'no-store, max-age=0',
-          },
-        ],
-      },
       {
         source: '/(.*)',
         headers: [
@@ -117,6 +113,30 @@ const nextConfig: NextConfig = {
               'camera=(self), geolocation=(), microphone=(), payment=(), usb=()',
           },
         ],
+      },
+      {
+        source: '/.well-known/apple-app-site-association',
+        headers: mobileAssociationHeaders,
+      },
+      {
+        source: '/.well-known/assetlinks.json',
+        headers: mobileAssociationHeaders,
+      },
+      {
+        source: '/verify-email',
+        headers: actionLinkHeaders,
+      },
+      {
+        source: '/verify-email/:token*',
+        headers: actionLinkHeaders,
+      },
+      {
+        source: '/reset-password',
+        headers: actionLinkHeaders,
+      },
+      {
+        source: '/reset-password/:token*',
+        headers: actionLinkHeaders,
       },
     ];
   },

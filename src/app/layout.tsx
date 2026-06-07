@@ -28,6 +28,10 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 function getOpenGraphLocale(locale: string) {
+  if (locale === 'es') {
+    return 'es_ES';
+  }
+
   return locale === 'sv' ? 'sv_SE' : 'en_US';
 }
 

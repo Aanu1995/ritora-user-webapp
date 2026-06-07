@@ -141,27 +141,14 @@ export async function getSuggestionHistory(
   options?: ApiRequestOptions,
 ): Promise<SuggestionHistoryListResponse> {
   return getWithOptions<SuggestionHistoryListResponse>(
-    buildSuggestionHistoryPath(ApiPath.SuggestionsHistory, query, true),
+    buildSuggestionHistoryPath(ApiPath.SuggestionsHistory, query),
     options,
-  );
-}
-
-export async function exportSuggestionHistoryCsv(
-  query: SuggestionHistoryListQuery = {},
-): Promise<Blob> {
-  return getRequest<Blob>(
-    buildSuggestionHistoryPath(ApiPath.SuggestionsHistoryExport, query, false),
-    {
-      headers: { Accept: "text/csv" },
-      responseType: "blob",
-    },
   );
 }
 
 function buildSuggestionHistoryPath(
   basePath: string,
   query: SuggestionHistoryListQuery,
-  includePagination: boolean,
 ): string {
   const params = new URLSearchParams();
   if (query.range) params.set("range", query.range);
@@ -174,9 +161,8 @@ function buildSuggestionHistoryPath(
   if (query.hasBeenEdited !== undefined) {
     params.set("edited", String(query.hasBeenEdited));
   }
-  if (includePagination && query.cursor) params.set("cursor", query.cursor);
-  if (includePagination && query.limit)
-    params.set("limit", String(query.limit));
+  if (query.cursor) params.set("cursor", query.cursor);
+  if (query.limit) params.set("limit", String(query.limit));
   const qs = params.toString();
   return qs ? `${basePath}?${qs}` : basePath;
 }

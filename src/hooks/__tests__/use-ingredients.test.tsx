@@ -5,6 +5,7 @@ import {
   useCheckProduct,
   useCompareProducts,
   useFocusProductAnalysis,
+  useRetryFocusProductAnalysis,
 } from '@/hooks/use-ingredients';
 import { ProductCategory } from '@/types/shelf';
 import {
@@ -79,6 +80,30 @@ describe('useFocusProductAnalysis', () => {
       },
       expect.any(AbortSignal),
     );
+  });
+});
+
+describe('useRetryFocusProductAnalysis', () => {
+  it('forces a fresh focus-product analysis and updates the query cache', async () => {
+    useAuthStore.setState({ isAuthenticated: true });
+    (analyzeProducts as jest.Mock).mockResolvedValue(ANALYSIS_RESULT);
+
+    const { result } = renderHookWithProviders(() =>
+      useRetryFocusProductAnalysis('product-1', { withExplanations: false }),
+    );
+
+    result.current.mutate();
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
+
+    expect(analyzeProducts).toHaveBeenCalledWith({
+      focusProductId: 'product-1',
+      language: 'en',
+      withExplanations: false,
+      forceRefresh: true,
+    });
   });
 });
 

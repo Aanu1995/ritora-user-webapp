@@ -12,13 +12,18 @@ import {
 } from "@/components/skin-profile/skin-profile-skeleton";
 import { Button } from "@/components/ui/button";
 import { RetryPanel } from "@/components/ui/retry-panel";
-import { useSkinProfile, useSkinProfileOptions } from "@/hooks/use-skin-profile";
+import {
+  useSkinProfile,
+  useSkinProfileOptions,
+} from "@/hooks/use-skin-profile";
+import { useSkinProfileSectionReturn } from "@/hooks/use-skin-profile-section-return";
 
 export default function ActiveTolerancePage() {
   const t = useTranslations("skinProfile.activeTolerance");
   const tCommon = useTranslations("common");
   const profile = useSkinProfile();
   const options = useSkinProfileOptions();
+  const { backHref, returnAfterSave } = useSkinProfileSectionReturn();
 
   const sectionRef = useRef<SectionFormHandle>(null);
   const [pending, setPending] = useState(false);
@@ -27,6 +32,7 @@ export default function ActiveTolerancePage() {
     return (
       <div>
         <SectionPageHeader
+          backHref={backHref}
           title={t("pageTitle")}
           subtitle={t("pageDesc")}
           action={<SkinProfileSaveActionSkeleton />}
@@ -39,7 +45,11 @@ export default function ActiveTolerancePage() {
   if (profile.isError || options.isError || !profile.data || !options.data) {
     return (
       <div>
-        <SectionPageHeader title={t("pageTitle")} subtitle={t("pageDesc")} />
+        <SectionPageHeader
+          backHref={backHref}
+          title={t("pageTitle")}
+          subtitle={t("pageDesc")}
+        />
         <div className="mx-auto mt-6 w-full max-w-3xl">
           <RetryPanel
             title={tCommon("error")}
@@ -57,6 +67,7 @@ export default function ActiveTolerancePage() {
   return (
     <div>
       <SectionPageHeader
+        backHref={backHref}
         title={t("pageTitle")}
         subtitle={t("pageDesc")}
         action={
@@ -79,6 +90,7 @@ export default function ActiveTolerancePage() {
           profile={profile.data}
           options={options.data}
           onPendingChange={setPending}
+          onSaved={returnAfterSave}
         />
       </div>
     </div>

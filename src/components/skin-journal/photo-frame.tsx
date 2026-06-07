@@ -1,5 +1,6 @@
 "use client";
 
+import type { ImageProps } from "next/image";
 import { SmoothImage } from "@/components/ui/smooth-image";
 import { cn } from "@/lib/utils";
 import { buildBackendUrl } from "@/lib/media-url";
@@ -11,6 +12,8 @@ interface PhotoFrameProps {
   fallbackTone?: "warm" | "cool" | "deep" | "default";
   className?: string;
   aspect?: "square" | "portrait" | "wide";
+  loading?: ImageProps["loading"];
+  fetchPriority?: ImageProps["fetchPriority"];
 }
 
 const TONES: Record<NonNullable<PhotoFrameProps["fallbackTone"]>, string> = {
@@ -27,6 +30,8 @@ export function PhotoFrame({
   fallbackTone = "default",
   className,
   aspect = "portrait",
+  loading,
+  fetchPriority,
 }: PhotoFrameProps) {
   const aspectClass =
     aspect === "square"
@@ -50,6 +55,8 @@ export function PhotoFrame({
           alt={alt}
           className="h-full w-full"
           sizes="(max-width: 640px) 100vw, 480px"
+          loading={loading}
+          fetchPriority={fetchPriority}
         />
       ) : (
         <div

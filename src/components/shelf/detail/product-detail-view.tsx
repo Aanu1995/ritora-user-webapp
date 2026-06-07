@@ -19,6 +19,7 @@ import { DetailIngredientsTab } from './detail-ingredients-tab';
 import { DetailManufacturerTab } from './detail-manufacturer-tab';
 import { ProductDetailActions } from './product-detail-actions';
 import { ProductPageHeader } from '../product-page-header';
+import { CommunityProductEvidencePanel } from '@/components/community/community-product-evidence-panel';
 import {
   isProductDetailTab,
   readProductDetailTab,
@@ -333,6 +334,8 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
           />
         </TabsContent>
       </Tabs>
+
+      <CommunityProductEvidencePanel productId={product.id} />
 
       <ConfirmDialog
         open={deleteOpen}

@@ -37,6 +37,7 @@ import {
 import { useSkinProfile } from "@/hooks/use-skin-profile";
 import { useJournalCapabilityFlags } from "@/components/skin-journal/use-journal-capability-flags";
 import { getApiErrorMessage } from "@/lib/api-error";
+import { requestAppScrollRestore } from "@/lib/app-scroll-restoration";
 import {
   CYCLE_MARKER_DONT_TRACK,
   FRONT_PHOTO_ANGLE,
@@ -60,8 +61,9 @@ export default function JournalUploadPage() {
   const [isPreRoutineDraft, setIsPreRoutineDraft] = useState<boolean | null>(
     null,
   );
-  const [checkInDraft, setCheckInDraft] =
-    useState<CheckInFormValue | null>(null);
+  const [checkInDraft, setCheckInDraft] = useState<CheckInFormValue | null>(
+    null,
+  );
   const [checkInValidationAttempted, setCheckInValidationAttempted] =
     useState(false);
   const { data: todayPayload } = useTodayEntry();
@@ -72,8 +74,7 @@ export default function JournalUploadPage() {
   const date = resolveCanonicalTodayDate(todayPayload?.date, todayYmd());
   const requestedMode = searchParams.get("mode");
   const isRequestedEditMode = requestedMode === JournalUploadMode.Edit;
-  const isEditEntryLoading =
-    isRequestedEditMode && todayPayload === undefined;
+  const isEditEntryLoading = isRequestedEditMode && todayPayload === undefined;
   const isEditMode = isRequestedEditMode && entry !== null;
   const editableEntry = isRequestedEditMode ? entry : null;
 
@@ -210,12 +211,13 @@ export default function JournalUploadPage() {
           }),
         };
 
-    const mutationInput = hasNewPhotos
-      ? { payload, photos }
-      : { payload };
+    const mutationInput = hasNewPhotos ? { payload, photos } : { payload };
 
     upsertToday.mutate(mutationInput, {
-      onSuccess: () => router.push(AppRoute.Journal),
+      onSuccess: () => {
+        requestAppScrollRestore(AppRoute.Journal);
+        router.push(AppRoute.Journal);
+      },
       onError: (error) => {
         toast.error(getApiErrorMessage(error) ?? t("saveFailed"));
       },
@@ -367,7 +369,10 @@ export default function JournalUploadPage() {
         isDeleting={isDeleting}
         onConfirm={(entryToDelete) => {
           deleteEntry.mutate(entryToDelete.id, {
-            onSuccess: () => router.push(AppRoute.Journal),
+            onSuccess: () => {
+              requestAppScrollRestore(AppRoute.Journal);
+              router.push(AppRoute.Journal);
+            },
           });
         }}
       />

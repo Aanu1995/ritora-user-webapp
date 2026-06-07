@@ -24,10 +24,12 @@ import {
   Sparkles,
   Sun,
   Sunrise,
+  ThumbsUp,
   Thermometer,
   User,
   UserCheck,
   UserCog,
+  Users,
   Wand,
   Wind,
 } from 'lucide-react';
@@ -68,6 +70,158 @@ interface FaqItem {
   question: string;
   answer: string;
 }
+interface HeroPreviewCopy {
+  suggestionTitle: string;
+  suggestionTime: string;
+  ready: string;
+  morning: string;
+  weather: string;
+  photoLogged: string;
+  cleanserHint: string;
+  niacinamideHint: string;
+  sunscreenHint: string;
+  suggestionNote: string;
+  journalTitle: string;
+  journalSubtitle: string;
+  ai: string;
+  photoLabels: [string, string, string];
+  redness: string;
+  dryness: string;
+}
+interface HowItWorksVisualCopy {
+  skinProfile: {
+    title: string;
+    step: string;
+    chips: string[];
+    progress: string;
+  };
+  shelf: {
+    title: string;
+    subtitle: string;
+    items: Array<{
+      badge: string;
+      badgeTone?: 'finished';
+      shape: 'pump' | 'dropper' | 'tube' | 'jar';
+      tone: 'green' | 'cream' | 'aqua' | 'blush' | 'amber' | 'lavender';
+      brand: string;
+      name: string;
+      sub: string;
+    }>;
+  };
+  dayPlan: {
+    title: string;
+    subtitle: string;
+    status: {
+      ready: string;
+      locked: string;
+      done: string;
+    };
+    slots: Array<{
+      daypart: 'morning' | 'noon' | 'evening';
+      time: string;
+      detail: string;
+      state: 'ready' | 'locked' | 'done';
+    }>;
+  };
+}
+interface LandingFeatureVisualCopy {
+  shelf: {
+    title: string;
+    subtitle: string;
+    status: string;
+    chips: string[];
+    usedLabel: string;
+    lastedLabel: string;
+  };
+  ingredients: {
+    title: string;
+    subtitle: string;
+    cleanserRole: string;
+    cleanserName: string;
+    tonerRole: string;
+    tonerName: string;
+    tonerWarning: string;
+    treatmentRole: string;
+    treatmentName: string;
+    treatmentWarning: string;
+    alertTitle: string;
+    alertBody: string;
+    swap: string;
+  };
+  suggestions: {
+    title: string;
+    subtitle: string;
+    aiTuned: string;
+    question: string;
+    ask: string;
+    status: HowItWorksVisualCopy['dayPlan']['status'];
+    slots: HowItWorksVisualCopy['dayPlan']['slots'];
+  };
+  journal: {
+    title: string;
+    subtitle: string;
+    ai: string;
+    photoLabels: [string, string, string];
+    redness: string;
+    dryness: string;
+    irritation: string;
+    reactionTitle: string;
+    reactionBody: string;
+  };
+  quickCheck: {
+    title: string;
+    subtitle: string;
+    brand: string;
+    product: string;
+    ingredients: string;
+    verdictLabel: string;
+    verdict: string;
+    confidence: string;
+    safetyLabel: string;
+    warning: string;
+    friendly: string;
+    compare: string;
+  };
+  smartPicks: {
+    title: string;
+    subtitle: string;
+    gapTitle: string;
+    gapBody: string;
+    save: string;
+    picks: Array<{
+      shape: 'pump' | 'dropper' | 'tube' | 'jar';
+      tone: 'green' | 'cream' | 'aqua' | 'blush' | 'amber' | 'lavender';
+      brand: string;
+      name: string;
+      tier: string;
+      tierTone?: 'mid' | 'luxe';
+      meta: string;
+      featured?: boolean;
+    }>;
+  };
+  climate: {
+    title: string;
+    subtitle: string;
+    city: string;
+    temperature: string;
+    climate: string;
+    uv: string;
+    humidity: string;
+    note: string;
+  };
+  community: {
+    cardTitle: string;
+    cardSubtitle: string;
+    authorName: string;
+    authorTags: string[];
+    playbookTitle: string;
+    playbookSubtitle: string;
+    steps: string[];
+    outcome: string;
+    outcomeMixed: string;
+    adaptCta: string;
+  };
+}
 
 /* ====================================================================== */
 /*                                   HERO                                  */
@@ -75,6 +229,7 @@ interface FaqItem {
 
 export async function LandingHero() {
   const t = await getTranslations('landing.hero');
+  const preview = t.raw('preview') as HeroPreviewCopy;
 
   return (
     <section className="relative overflow-hidden">
@@ -98,14 +253,14 @@ export async function LandingHero() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href={AppRoute.Register}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-base font-semibold text-background shadow-soft transition hover:-translate-y-0.5 hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-soft transition hover:-translate-y-0.5 hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:px-7 sm:py-3.5 sm:text-base"
               >
                 {t('ctaPrimary')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
                 href="#how-it-works"
-                className="inline-flex items-center justify-center rounded-full border border-border-strong bg-surface px-7 py-3.5 text-base font-semibold text-foreground transition hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="inline-flex items-center justify-center rounded-full border border-border-strong bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:px-7 sm:py-3.5 sm:text-base"
               >
                 {t('ctaSecondary')}
               </Link>
@@ -140,25 +295,27 @@ export async function LandingHero() {
               <header className="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <p className="font-display text-[15px] font-bold text-foreground">
-                    Today&apos;s Suggestion
+                    {preview.suggestionTitle}
                   </p>
-                  <p className="text-[11.5px] text-muted">Sunday · 6:30 AM</p>
+                  <p className="text-[11.5px] text-muted">
+                    {preview.suggestionTime}
+                  </p>
                 </div>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--note-cool-border)] bg-[color:var(--note-cool-bg)] px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-[color:var(--note-cool-fg)]">
                   <Sparkles className="h-3 w-3" aria-hidden="true" />
-                  Ready
+                  {preview.ready}
                 </span>
               </header>
 
               <div className="mb-3 flex flex-wrap gap-1.5">
                 <SummaryPill icon={<Sun className="h-3 w-3" />} tone="ready">
-                  Morning
+                  {preview.morning}
                 </SummaryPill>
                 <SummaryPill icon={<Thermometer className="h-3 w-3" />}>
-                  9°C · UV 4 later
+                  {preview.weather}
                 </SummaryPill>
                 <SummaryPill icon={<Camera className="h-3 w-3" />}>
-                  Photo logged 6:14
+                  {preview.photoLogged}
                 </SummaryPill>
               </div>
 
@@ -171,7 +328,7 @@ export async function LandingHero() {
                   hint={
                     <>
                       <Check className="h-3 w-3" />
-                      Gentle, fragrance-free
+                      {preview.cleanserHint}
                     </>
                   }
                 />
@@ -183,7 +340,7 @@ export async function LandingHero() {
                   hint={
                     <>
                       <Sparkles className="h-3 w-3" />
-                      Pairs safely with vitamin C
+                      {preview.niacinamideHint}
                     </>
                   }
                 />
@@ -194,7 +351,7 @@ export async function LandingHero() {
                   hint={
                     <>
                       <Sun className="h-3 w-3" />
-                      UV 4 later, last step
+                      {preview.sunscreenHint}
                     </>
                   }
                 />
@@ -205,10 +362,7 @@ export async function LandingHero() {
                   className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--ai-strong)]"
                   aria-hidden="true"
                 />
-                <span>
-                  Skipped retinol tonight. Yesterday&apos;s photo showed mild
-                  redness. Tomorrow&apos;s suggestion will reintroduce gently.
-                </span>
+                <span>{preview.suggestionNote}</span>
               </div>
             </article>
 
@@ -219,25 +373,27 @@ export async function LandingHero() {
               <header className="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <p className="font-display text-[15px] font-bold text-foreground">
-                    Skin Journal
+                    {preview.journalTitle}
                   </p>
-                  <p className="text-[11.5px] text-muted">Today · multi-angle</p>
+                  <p className="text-[11.5px] text-muted">
+                    {preview.journalSubtitle}
+                  </p>
                 </div>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--ai-border)] bg-[color:var(--ai-bg)] px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-[color:var(--ai-fg)]">
                   <ScanFace className="h-3 w-3" aria-hidden="true" />
-                  AI
+                  {preview.ai}
                 </span>
               </header>
 
               <div className="mb-3 grid grid-cols-3 gap-2">
-                <JournalPhoto label="Front" />
-                <JournalPhoto label="Left" />
-                <JournalPhoto label="Right" />
+                {preview.photoLabels.map((label) => (
+                  <JournalPhoto key={label} label={label} />
+                ))}
               </div>
 
               <div className="flex flex-col gap-2">
-                <Reading label="Redness" pct={60} tone="mid" score="3/5" />
-                <Reading label="Dryness" pct={30} tone="low" score="1/5" />
+                <Reading label={preview.redness} pct={60} tone="mid" score="3/5" />
+                <Reading label={preview.dryness} pct={30} tone="low" score="1/5" />
               </div>
             </article>
           </div>
@@ -258,7 +414,7 @@ export async function LandingTrustStrip() {
 
   return (
     <section
-      aria-label="What Ritora gives you"
+      aria-label={t('trustLabel')}
       className="border-y border-border bg-surface/60"
     >
       <div className="mx-auto w-full max-w-7xl px-5 py-5 sm:px-6 lg:px-8">
@@ -354,6 +510,7 @@ export async function LandingProblem() {
 export async function LandingHowItWorks() {
   const t = await getTranslations('landing.howItWorks');
   const steps = t.raw('steps') as HowStep[];
+  const visuals = t.raw('visuals') as HowItWorksVisualCopy;
   const hintIcons = [UserCog, Package, Sunrise];
 
   return (
@@ -379,21 +536,24 @@ export async function LandingHowItWorks() {
           <HowStep
             number={1}
             step={steps[0]}
+            stepLabel={t('stepLabel', { number: 1 })}
             HintIcon={hintIcons[0]}
-            visual={<SkinProfileCard />}
+            visual={<SkinProfileCard copy={visuals.skinProfile} />}
           />
           <HowStep
             number={2}
             step={steps[1]}
+            stepLabel={t('stepLabel', { number: 2 })}
             HintIcon={hintIcons[1]}
             reverse
-            visual={<ShelfGridCard />}
+            visual={<ShelfGridCard copy={visuals.shelf} />}
           />
           <HowStep
             number={3}
             step={steps[2]}
+            stepLabel={t('stepLabel', { number: 3 })}
             HintIcon={hintIcons[2]}
-            visual={<DayPlanCard />}
+            visual={<DayPlanCard copy={visuals.dayPlan} />}
           />
         </div>
       </div>
@@ -404,12 +564,14 @@ export async function LandingHowItWorks() {
 function HowStep({
   number,
   step,
+  stepLabel,
   HintIcon,
   reverse,
   visual,
 }: {
   number: number;
   step: HowStep;
+  stepLabel: string;
   HintIcon: typeof Sun;
   reverse?: boolean;
   visual: React.ReactNode;
@@ -421,7 +583,7 @@ function HowStep({
           <span className="inline-grid h-9 w-9 place-items-center rounded-full bg-accent-soft font-bold text-accent-strong">
             {number}
           </span>
-          Step {number}
+          {stepLabel}
         </p>
         <h3 className="font-display mt-4 text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-3xl">
           {step.title}
@@ -454,6 +616,7 @@ function HowStep({
 export async function LandingFeatures() {
   const t = await getTranslations('landing.features');
   const items = t.raw('items') as FeatureItem[];
+  const visuals = t.raw('visuals') as LandingFeatureVisualCopy;
 
   return (
     <section id="features" className="scroll-mt-24 sm:scroll-mt-28">
@@ -470,7 +633,12 @@ export async function LandingFeatures() {
 
         <div className="mt-12 divide-y divide-border">
           {items.map((feature, i) => (
-            <FeatureBand key={feature.key} feature={feature} reverse={i % 2 === 1} />
+            <FeatureBand
+              key={feature.key}
+              feature={feature}
+              reverse={i % 2 === 1}
+              visuals={visuals}
+            />
           ))}
         </div>
       </div>
@@ -478,7 +646,15 @@ export async function LandingFeatures() {
   );
 }
 
-function FeatureBand({ feature, reverse }: { feature: FeatureItem; reverse: boolean }) {
+function FeatureBand({
+  feature,
+  reverse,
+  visuals,
+}: {
+  feature: FeatureItem;
+  reverse: boolean;
+  visuals: LandingFeatureVisualCopy;
+}) {
   return (
     <article className="grid items-center gap-10 py-14 lg:grid-cols-[1fr_1.05fr] lg:gap-20 lg:py-20">
       <div className={reverse ? 'lg:order-2' : ''}>
@@ -507,13 +683,24 @@ function FeatureBand({ feature, reverse }: { feature: FeatureItem; reverse: bool
           }}
         />
         <div className="relative">
-          {feature.key === 'shelf' && <ShelfDetailCard />}
-          {feature.key === 'ingredients' && <ConflictCard />}
-          {feature.key === 'suggestions' && <TimelineCard />}
-          {feature.key === 'journal' && <JournalCard />}
-          {feature.key === 'quickCheck' && <QuickCheckCard />}
-          {feature.key === 'smartPicks' && <SmartPicksCard />}
-          {feature.key === 'climate' && <ClimateCard />}
+          {feature.key === 'shelf' && <ShelfDetailCard copy={visuals.shelf} />}
+          {feature.key === 'ingredients' && (
+            <ConflictCard copy={visuals.ingredients} />
+          )}
+          {feature.key === 'suggestions' && (
+            <TimelineCard copy={visuals.suggestions} />
+          )}
+          {feature.key === 'community' && (
+            <CommunityCard copy={visuals.community} />
+          )}
+          {feature.key === 'journal' && <JournalCard copy={visuals.journal} />}
+          {feature.key === 'quickCheck' && (
+            <QuickCheckCard copy={visuals.quickCheck} />
+          )}
+          {feature.key === 'smartPicks' && (
+            <SmartPicksCard copy={visuals.smartPicks} />
+          )}
+          {feature.key === 'climate' && <ClimateCard copy={visuals.climate} />}
         </div>
       </div>
     </article>
@@ -666,14 +853,14 @@ export async function LandingFinalCta() {
         <div className="relative mt-8 flex flex-wrap justify-center gap-3">
           <Link
             href={AppRoute.Register}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-base font-semibold text-background shadow-soft transition hover:-translate-y-0.5 hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-soft transition hover:-translate-y-0.5 hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface sm:px-7 sm:py-3.5 sm:text-base"
           >
             {t('ctaPrimary')}
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
           <Link
             href={AppRoute.Login}
-            className="inline-flex items-center justify-center rounded-full border border-border-strong bg-background px-7 py-3.5 text-base font-semibold text-foreground transition hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            className="inline-flex items-center justify-center rounded-full border border-border-strong bg-background px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface sm:px-7 sm:py-3.5 sm:text-base"
           >
             {t('ctaSecondary')}
           </Link>
@@ -832,15 +1019,15 @@ function Reading({
 /*               Section visuals — How it works (steps 1-3)                 */
 /* ====================================================================== */
 
-function SkinProfileCard() {
+function SkinProfileCard({ copy }: { copy: HowItWorksVisualCopy['skinProfile'] }) {
   return (
     <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="font-display text-[15px] font-bold text-foreground">
-            Your Skin Profile
+            {copy.title}
           </p>
-          <p className="text-[11.5px] text-muted">Step 4 of 7 · Lifestyle</p>
+          <p className="text-[11.5px] text-muted">{copy.step}</p>
         </div>
         <span
           className="inline-grid h-8 w-8 place-items-center rounded-lg text-background"
@@ -852,15 +1039,15 @@ function SkinProfileCard() {
         </span>
       </header>
       <div className="mb-2.5 flex flex-wrap gap-1.5">
-        <Chip tone="accent">Combination</Chip>
-        <Chip>Fitzpatrick IV</Chip>
-        <Chip icon={<MapPin className="h-3 w-3" />}>Your city</Chip>
+        <Chip tone="accent">{copy.chips[0]}</Chip>
+        <Chip>{copy.chips[1]}</Chip>
+        <Chip icon={<MapPin className="h-3 w-3" />}>{copy.chips[2]}</Chip>
       </div>
       <div className="flex flex-wrap gap-1.5">
-        <Chip tone="warm">Hyperpigmentation</Chip>
-        <Chip tone="warm">Sensitivity</Chip>
-        <Chip>Even tone</Chip>
-        <Chip>Barrier support</Chip>
+        <Chip tone="warm">{copy.chips[3]}</Chip>
+        <Chip tone="warm">{copy.chips[4]}</Chip>
+        <Chip>{copy.chips[5]}</Chip>
+        <Chip>{copy.chips[6]}</Chip>
       </div>
       <div className="mt-4 flex items-center gap-3">
         <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-muted">
@@ -872,7 +1059,9 @@ function SkinProfileCard() {
             }}
           />
         </span>
-        <span className="text-xs font-bold text-accent-strong">64% complete</span>
+        <span className="text-xs font-bold text-accent-strong">
+          {copy.progress}
+        </span>
       </div>
     </div>
   );
@@ -902,29 +1091,15 @@ function Chip({
   );
 }
 
-function ShelfGridCard() {
-  const items: Array<{
-    badge: string;
-    badgeTone?: 'finished';
-    shape: 'pump' | 'dropper' | 'tube' | 'jar';
-    tone: 'green' | 'cream' | 'aqua' | 'blush' | 'amber' | 'lavender';
-    brand: string;
-    name: string;
-    sub: string;
-  }> = [
-    { badge: 'Active', shape: 'pump', tone: 'green', brand: 'CeraVe', name: 'Hydrating Cleanser', sub: 'CeraVe · 2 mo' },
-    { badge: 'Active', shape: 'dropper', tone: 'cream', brand: 'Ordinary', name: 'Niacinamide 10%', sub: 'The Ordinary · 6 wk' },
-    { badge: 'Active', shape: 'tube', tone: 'aqua', brand: 'LRP SPF', name: 'Anthelios SPF 50', sub: 'La Roche-Posay' },
-    { badge: 'Active', shape: 'dropper', tone: 'blush', brand: "Paula's", name: 'Retinol 0.3%', sub: "Paula's Choice" },
-    { badge: 'Finished', badgeTone: 'finished', shape: 'dropper', tone: 'amber', brand: 'AHA 7%', name: 'Glycolic Toner', sub: 'Lasted 4 months' },
-    { badge: 'Active', shape: 'jar', tone: 'lavender', brand: 'Avène', name: 'Ceramide Cream', sub: 'Avene · 3 mo' },
-  ];
+function ShelfGridCard({ copy }: { copy: HowItWorksVisualCopy['shelf'] }) {
   return (
     <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <p className="font-display text-[15px] font-bold text-foreground">Your Shelf</p>
-          <p className="text-[11.5px] text-muted">8 active · 2 finished</p>
+          <p className="font-display text-[15px] font-bold text-foreground">
+            {copy.title}
+          </p>
+          <p className="text-[11.5px] text-muted">{copy.subtitle}</p>
         </div>
         <span
           className="inline-grid h-8 w-8 place-items-center rounded-lg text-background"
@@ -936,7 +1111,7 @@ function ShelfGridCard() {
         </span>
       </header>
       <div className="grid grid-cols-3 gap-2">
-        {items.map((item) => (
+        {copy.items.map((item) => (
           <div
             key={item.name}
             className="relative flex flex-col items-center rounded-xl border border-border bg-surface-muted p-2.5 pt-7"
@@ -971,15 +1146,15 @@ function ShelfGridCard() {
   );
 }
 
-function DayPlanCard() {
+function DayPlanCard({ copy }: { copy: HowItWorksVisualCopy['dayPlan'] }) {
   return (
     <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="font-display text-[15px] font-bold text-foreground">
-            Today · Sunday
+            {copy.title}
           </p>
-          <p className="text-[11.5px] text-muted">3 routines tuned to your skin</p>
+          <p className="text-[11.5px] text-muted">{copy.subtitle}</p>
         </div>
         <span
           className="inline-grid h-8 w-8 place-items-center rounded-lg text-background"
@@ -991,24 +1166,16 @@ function DayPlanCard() {
         </span>
       </header>
       <div className="flex flex-col gap-3">
-        <TimelineSlot
-          daypart="morning"
-          time="Morning"
-          detail="8:30 AM · 4 steps · ready"
-          state="ready"
-        />
-        <TimelineSlot
-          daypart="noon"
-          time="Midday"
-          detail="Unlocks at 1:00 PM · SPF reapply"
-          state="locked"
-        />
-        <TimelineSlot
-          daypart="evening"
-          time="Evening"
-          detail="Unlocks at 8:00 PM · barrier-first"
-          state="locked"
-        />
+        {copy.slots.map((slot) => (
+          <TimelineSlot
+            key={slot.time}
+            daypart={slot.daypart}
+            time={slot.time}
+            detail={slot.detail}
+            state={slot.state}
+            stateLabel={copy.status[slot.state]}
+          />
+        ))}
       </div>
     </div>
   );
@@ -1019,11 +1186,13 @@ function TimelineSlot({
   time,
   detail,
   state,
+  stateLabel,
 }: {
   daypart: 'morning' | 'noon' | 'evening';
   time: string;
   detail: string;
   state: 'ready' | 'locked' | 'done';
+  stateLabel: string;
 }) {
   const daypartStyles: Record<
     'morning' | 'noon' | 'evening',
@@ -1046,21 +1215,18 @@ function TimelineSlot({
     },
   };
   const dp = daypartStyles[daypart];
-  const stateChip: Record<typeof state, { cls: string; icon: React.ReactNode; text: string }> = {
+  const stateChip: Record<typeof state, { cls: string; icon: React.ReactNode }> = {
     ready: {
       cls: 'border-[color:var(--note-cool-border)] bg-[color:var(--note-cool-bg)] text-[color:var(--note-cool-fg)]',
       icon: <Sparkles className="h-3 w-3" />,
-      text: 'Ready',
     },
     locked: {
       cls: 'border-border bg-surface-muted text-muted',
       icon: <Lock className="h-3 w-3" />,
-      text: 'Locked',
     },
     done: {
       cls: 'border-[rgba(47,122,82,0.32)] bg-accent-soft text-accent-strong',
       icon: <Check className="h-3 w-3" />,
-      text: 'Done',
     },
   };
   const chip = stateChip[state];
@@ -1084,7 +1250,7 @@ function TimelineSlot({
         className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10.5px] font-bold uppercase tracking-wider ${chip.cls}`}
       >
         {chip.icon}
-        {chip.text}
+        {stateLabel}
       </span>
     </div>
   );
@@ -1094,19 +1260,23 @@ function TimelineSlot({
 /*               Section visuals — Feature bands (1-6)                      */
 /* ====================================================================== */
 
-function ShelfDetailCard() {
+function ShelfDetailCard({
+  copy,
+}: {
+  copy: LandingFeatureVisualCopy['shelf'];
+}) {
   return (
     <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="font-display text-[15px] font-bold text-foreground">
-            Shelf · CeraVe Hydrating Cleanser
+            {copy.title}
           </p>
-          <p className="text-[11.5px] text-muted">Started Jan 14 · 4 mo old</p>
+          <p className="text-[11.5px] text-muted">{copy.subtitle}</p>
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(47,122,82,0.32)] bg-accent-soft px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-accent-strong">
           <Check className="h-3 w-3" aria-hidden="true" />
-          Active
+          {copy.status}
         </span>
       </header>
       <div className="grid grid-cols-[96px_1fr] items-center gap-3.5">
@@ -1121,15 +1291,15 @@ function ShelfDetailCard() {
         />
         <div>
           <div className="flex flex-wrap gap-1">
-            <DetailChip>Ceramides</DetailChip>
-            <DetailChip>Hyaluronic acid</DetailChip>
-            <DetailChip>Fragrance-free</DetailChip>
+            {copy.chips.map((chip) => (
+              <DetailChip key={chip}>{chip}</DetailChip>
+            ))}
           </div>
           <div className="mt-3">
-            <Reading label="Used" pct={62} tone="low" score="62%" />
+            <Reading label={copy.usedLabel} pct={62} tone="low" score="62%" />
           </div>
           <div className="mt-2">
-            <Reading label="Lasted" pct={80} tone="mid" score="~ 5 mo" />
+            <Reading label={copy.lastedLabel} pct={80} tone="mid" score="~ 5 mo" />
           </div>
         </div>
       </div>
@@ -1145,15 +1315,19 @@ function DetailChip({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ConflictCard() {
+function ConflictCard({
+  copy,
+}: {
+  copy: LandingFeatureVisualCopy['ingredients'];
+}) {
   return (
     <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="font-display text-[15px] font-bold text-foreground">
-            Evening · ingredient check
+            {copy.title}
           </p>
-          <p className="text-[11.5px] text-muted">Across 4 products</p>
+          <p className="text-[11.5px] text-muted">{copy.subtitle}</p>
         </div>
         <span
           className="inline-grid h-8 w-8 place-items-center rounded-lg text-background"
@@ -1167,8 +1341,8 @@ function ConflictCard() {
       <div className="flex flex-col gap-2">
         <MiniStep
           bottle={<ProductBottle shape="pump" tone="green" brand="CeraVe" />}
-          brand="Cleanser"
-          name="Gentle, fragrance-free"
+          brand={copy.cleanserRole}
+          name={copy.cleanserName}
         />
         <div
           className="flex items-center gap-2.5 rounded-xl border p-2.5"
@@ -1182,17 +1356,17 @@ function ConflictCard() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-[9.5px] font-bold uppercase tracking-wider text-muted">
-              Glycolic toner
+              {copy.tonerRole}
             </p>
             <p className="mt-0.5 text-[13px] font-semibold leading-tight text-foreground">
-              AHA 7%
+              {copy.tonerName}
             </p>
             <p
               className="mt-1 inline-flex items-center gap-1 text-[11px]"
               style={{ color: 'var(--warning)' }}
             >
               <AlertTriangle className="h-2.5 w-2.5" aria-hidden="true" />
-              Stacks with retinol below
+              {copy.tonerWarning}
             </p>
           </div>
         </div>
@@ -1208,17 +1382,17 @@ function ConflictCard() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-[9.5px] font-bold uppercase tracking-wider text-muted">
-              Treatment
+              {copy.treatmentRole}
             </p>
             <p className="mt-0.5 text-[13px] font-semibold leading-tight text-foreground">
-              Retinol 0.3%
+              {copy.treatmentName}
             </p>
             <p
               className="mt-1 inline-flex items-center gap-1 text-[11px]"
               style={{ color: 'var(--warning)' }}
             >
               <AlertTriangle className="h-2.5 w-2.5" aria-hidden="true" />
-              Pair-up too strong tonight
+              {copy.treatmentWarning}
             </p>
           </div>
         </div>
@@ -1240,14 +1414,12 @@ function ConflictCard() {
           style={{ color: 'var(--note-warm-fg)' }}
         >
           <p className="mb-1 font-bold" style={{ color: 'var(--warning)' }}>
-            Retinol + AHA flagged
+            {copy.alertTitle}
           </p>
-          Layering both tonight is a common cause of redness for sensitive skin.
+          {copy.alertBody}
           <div className="mt-2 flex items-center gap-2 rounded-lg border border-border bg-surface px-2.5 py-2 text-foreground">
             <Sparkles className="h-3 w-3 shrink-0 text-accent" aria-hidden="true" />
-            <span className="text-[12px]">
-              Suggested swap: niacinamide tonight, retinol Wednesday.
-            </span>
+            <span className="text-[12px]">{copy.swap}</span>
           </div>
         </div>
       </div>
@@ -1255,40 +1427,36 @@ function ConflictCard() {
   );
 }
 
-function TimelineCard() {
+function TimelineCard({
+  copy,
+}: {
+  copy: LandingFeatureVisualCopy['suggestions'];
+}) {
   return (
     <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="font-display text-[15px] font-bold text-foreground">
-            Today&apos;s day plan
+            {copy.title}
           </p>
-          <p className="text-[11.5px] text-muted">Sunday · adapted to today</p>
+          <p className="text-[11.5px] text-muted">{copy.subtitle}</p>
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--ai-border)] bg-[color:var(--ai-bg)] px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-[color:var(--ai-fg)]">
           <Sparkles className="h-3 w-3" aria-hidden="true" />
-          AI tuned
+          {copy.aiTuned}
         </span>
       </header>
       <div className="flex flex-col gap-3">
-        <TimelineSlot
-          daypart="morning"
-          time="Morning · 8:30"
-          detail="Cleanser · niacinamide · SPF 50"
-          state="done"
-        />
-        <TimelineSlot
-          daypart="noon"
-          time="Midday · 1:30"
-          detail="SPF reapply · 2 steps"
-          state="ready"
-        />
-        <TimelineSlot
-          daypart="evening"
-          time="Evening · 9:00"
-          detail="Barrier-first · skip retinol tonight"
-          state="locked"
-        />
+        {copy.slots.map((slot) => (
+          <TimelineSlot
+            key={slot.time}
+            daypart={slot.daypart}
+            time={slot.time}
+            detail={slot.detail}
+            state={slot.state}
+            stateLabel={copy.status[slot.state]}
+          />
+        ))}
       </div>
       <div className="mt-4 flex items-center gap-2.5 rounded-2xl border border-[color:var(--ai-border)] bg-[color:var(--ai-soft)] p-3.5">
         <span
@@ -1298,43 +1466,144 @@ function TimelineCard() {
           <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
         </span>
         <span className="flex-1 text-[13px] italic text-foreground">
-          &quot;Just back from the gym, what should I use?&quot;
+          {copy.question}
         </span>
         <span
           className="inline-flex items-center rounded-full border border-[color:var(--ai-border)] bg-surface px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider"
           style={{ color: 'var(--ai-strong)' }}
         >
-          Ask Ritora
+          {copy.ask}
         </span>
       </div>
     </div>
   );
 }
 
-function JournalCard() {
+function CommunityCard({
+  copy,
+}: {
+  copy: LandingFeatureVisualCopy['community'];
+}) {
+  // Author initials for the avatar circle.
+  const initials = copy.authorName
+    .split(/\s+/)
+    .map((part) => part.charAt(0))
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="font-display text-[15px] font-bold text-foreground">
-            Today&apos;s analysis
+            {copy.cardTitle}
           </p>
-          <p className="text-[11.5px] text-muted">3 photos · analysed 6:18 AM</p>
+          <p className="text-[11.5px] text-muted">{copy.cardSubtitle}</p>
+        </div>
+        <span
+          className="inline-grid h-8 w-8 place-items-center rounded-lg text-background"
+          style={{
+            background:
+              'linear-gradient(140deg, var(--accent), var(--accent-strong))',
+          }}
+        >
+          <Users className="h-4 w-4" aria-hidden="true" />
+        </span>
+      </header>
+
+      {/* Author row: avatar initials + skin-profile tags so the visual
+          immediately communicates "this is from someone similar to me". */}
+      <div className="mb-4 flex items-center gap-3 rounded-2xl border border-border bg-surface-muted p-3">
+        <span className="inline-grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent-soft text-[12px] font-bold text-accent-strong">
+          {initials}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] font-semibold leading-tight text-foreground">
+            {copy.authorName}
+          </p>
+          <div className="mt-1 flex flex-wrap gap-1">
+            {copy.authorTags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-surface px-1.5 py-0.5 text-[9.5px] font-medium text-muted"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Playbook title + step chips */}
+      <p className="font-display text-[16px] font-bold leading-tight text-foreground">
+        {copy.playbookTitle}
+      </p>
+      <p className="mt-1 text-[12.5px] text-muted">{copy.playbookSubtitle}</p>
+
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {copy.steps.map((step) => (
+          <span
+            key={step}
+            className="inline-flex items-center rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] font-medium text-foreground"
+          >
+            {step}
+          </span>
+        ))}
+      </div>
+
+      {/* Outcome signals: positive count + mixed-results chip */}
+      <div className="mt-4 flex items-center gap-2 rounded-xl border border-[rgba(47,122,82,0.28)] bg-accent-soft px-3 py-2">
+        <ThumbsUp
+          className="h-3.5 w-3.5 shrink-0 text-accent-strong"
+          aria-hidden="true"
+        />
+        <span className="text-[11.5px] font-semibold text-accent-strong">
+          {copy.outcome}
+        </span>
+        <span className="text-[11px] text-muted">· {copy.outcomeMixed}</span>
+      </div>
+
+      {/* Adapt-to-shelf CTA — the key conversion moment of the community */}
+      <button
+        type="button"
+        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full border border-accent bg-accent-soft px-3 py-2 text-[12.5px] font-semibold text-accent-strong"
+      >
+        <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+        {copy.adaptCta}
+      </button>
+    </div>
+  );
+}
+
+function JournalCard({
+  copy,
+}: {
+  copy: LandingFeatureVisualCopy['journal'];
+}) {
+  return (
+    <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
+      <header className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <p className="font-display text-[15px] font-bold text-foreground">
+            {copy.title}
+          </p>
+          <p className="text-[11.5px] text-muted">{copy.subtitle}</p>
         </div>
         <span className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--ai-border)] bg-[color:var(--ai-bg)] px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-[color:var(--ai-fg)]">
           <ScanFace className="h-3 w-3" aria-hidden="true" />
-          AI
+          {copy.ai}
         </span>
       </header>
       <div className="mb-3 grid grid-cols-3 gap-2">
-        <JournalPhoto label="Front" />
-        <JournalPhoto label="Left" />
-        <JournalPhoto label="Right" />
+        {copy.photoLabels.map((label) => (
+          <JournalPhoto key={label} label={label} />
+        ))}
       </div>
       <div className="mb-4 flex flex-col gap-2">
-        <Reading label="Redness" pct={60} tone="mid" score="3/5" />
-        <Reading label="Dryness" pct={30} tone="low" score="1/5" />
-        <Reading label="Irritation" pct={22} tone="low" score="1/5" />
+        <Reading label={copy.redness} pct={60} tone="mid" score="3/5" />
+        <Reading label={copy.dryness} pct={30} tone="low" score="1/5" />
+        <Reading label={copy.irritation} pct={22} tone="low" score="1/5" />
       </div>
       <div
         className="flex gap-3 rounded-2xl border p-3.5"
@@ -1354,11 +1623,10 @@ function JournalCard() {
         </span>
         <div>
           <p className="text-[14px] font-bold" style={{ color: 'var(--danger)' }}>
-            Reaction detected · tonight simplified
+            {copy.reactionTitle}
           </p>
           <p className="mt-0.5 text-[12.5px] leading-snug text-muted">
-            Retinol paused while your skin recovers. Ritora switched the evening
-            plan to barrier-first.
+            {copy.reactionBody}
           </p>
         </div>
       </div>
@@ -1366,15 +1634,19 @@ function JournalCard() {
   );
 }
 
-function QuickCheckCard() {
+function QuickCheckCard({
+  copy,
+}: {
+  copy: LandingFeatureVisualCopy['quickCheck'];
+}) {
   return (
     <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="font-display text-[15px] font-bold text-foreground">
-            Quick Check
+            {copy.title}
           </p>
-          <p className="text-[11.5px] text-muted">Verdict in seconds</p>
+          <p className="text-[11.5px] text-muted">{copy.subtitle}</p>
         </div>
         <span
           className="inline-grid h-8 w-8 place-items-center rounded-lg text-background"
@@ -1392,12 +1664,12 @@ function QuickCheckCard() {
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-[9.5px] font-bold uppercase tracking-wider text-muted">
-            The Lab Co
+            {copy.brand}
           </p>
           <p className="mt-0.5 text-[13px] font-semibold leading-tight text-foreground">
-            Brightening Serum 10%
+            {copy.product}
           </p>
-          <p className="mt-1 text-[11px] text-muted">12 ingredients detected</p>
+          <p className="mt-1 text-[11px] text-muted">{copy.ingredients}</p>
         </div>
       </div>
 
@@ -1423,13 +1695,13 @@ function QuickCheckCard() {
               className="text-[10px] font-bold uppercase tracking-wider"
               style={{ color: 'var(--warning)' }}
             >
-              Product verdict
+              {copy.verdictLabel}
             </p>
             <p
               className="mt-0.5 text-[14px] font-bold"
               style={{ color: 'var(--note-warm-fg)' }}
             >
-              Good with limits
+              {copy.verdict}
             </p>
           </div>
         </div>
@@ -1437,12 +1709,12 @@ function QuickCheckCard() {
           className="rounded-full bg-surface px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted"
           style={{ borderColor: 'rgba(184, 84, 10, 0.32)' }}
         >
-          High confidence
+          {copy.confidence}
         </span>
       </div>
 
       <div className="mb-3">
-        <Reading label="Safety" pct={64} tone="mid" score="64%" />
+        <Reading label={copy.safetyLabel} pct={64} tone="mid" score="64%" />
       </div>
 
       <div className="mb-4 flex flex-wrap gap-1.5">
@@ -1454,11 +1726,11 @@ function QuickCheckCard() {
           }}
         >
           <AlertTriangle className="h-2.5 w-2.5" aria-hidden="true" />
-          Stacks with your evening retinol
+          {copy.warning}
         </span>
         <span className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-2 py-1 text-[10.5px] font-medium text-muted">
           <Check className="h-2.5 w-2.5 text-accent" aria-hidden="true" />
-          Niacinamide friendly
+          {copy.friendly}
         </span>
       </div>
 
@@ -1467,21 +1739,25 @@ function QuickCheckCard() {
         className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-accent bg-accent-soft px-3 py-2 text-[12.5px] font-semibold text-accent-strong"
       >
         <Package className="h-3.5 w-3.5" aria-hidden="true" />
-        Compare with your Shelf
+        {copy.compare}
       </button>
     </div>
   );
 }
 
-function SmartPicksCard() {
+function SmartPicksCard({
+  copy,
+}: {
+  copy: LandingFeatureVisualCopy['smartPicks'];
+}) {
   return (
     <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="font-display text-[15px] font-bold text-foreground">
-            Smart Picks
+            {copy.title}
           </p>
-          <p className="text-[11.5px] text-muted">Based on your profile + shelf</p>
+          <p className="text-[11.5px] text-muted">{copy.subtitle}</p>
         </div>
         <span
           className="inline-grid h-8 w-8 place-items-center rounded-lg text-background"
@@ -1498,41 +1774,17 @@ function SmartPicksCard() {
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-[13.5px] font-bold text-[color:var(--ai-fg)]">
-            Daily SPF · gap detected
+            {copy.gapTitle}
           </p>
           <p className="mt-0.5 text-[11.5px] text-muted">
-            You have evening retinol but no broad-spectrum SPF for daily wear.
+            {copy.gapBody}
           </p>
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <Pick
-          shape="tube"
-          tone="aqua"
-          brand="CeraVe"
-          name="Hydrating Mineral SPF 30"
-          tier="Drugstore"
-          meta="Fragrance-free · Zinc oxide"
-        />
-        <Pick
-          shape="tube"
-          tone="cream"
-          brand="LRP UV"
-          name="Anthelios UVMune 400 SPF 50+"
-          tier="Mid · best match"
-          tierTone="mid"
-          meta="Sensitive-safe · UV 4 today"
-          featured
-        />
-        <Pick
-          shape="pump"
-          tone="blush"
-          brand="SC UV"
-          name="Daily Brightening UV Defense"
-          tier="Luxury"
-          tierTone="luxe"
-          meta="Niacinamide-rich · Antioxidant layer"
-        />
+        {copy.picks.map((pick) => (
+          <Pick key={pick.name} {...pick} saveLabel={copy.save} />
+        ))}
       </div>
     </div>
   );
@@ -1547,6 +1799,7 @@ function Pick({
   tierTone,
   meta,
   featured,
+  saveLabel,
 }: {
   shape: 'pump' | 'dropper' | 'tube' | 'jar';
   tone: 'green' | 'cream' | 'aqua' | 'blush' | 'amber' | 'lavender';
@@ -1556,6 +1809,7 @@ function Pick({
   tierTone?: 'mid' | 'luxe';
   meta: string;
   featured?: boolean;
+  saveLabel: string;
 }) {
   let tierClass = 'bg-surface-muted text-muted';
   if (tierTone === 'mid') tierClass = 'bg-accent-soft text-accent-strong';
@@ -1596,21 +1850,25 @@ function Pick({
         type="button"
         className="inline-flex shrink-0 items-center rounded-full border border-accent bg-surface px-2.5 py-1.5 text-[11.5px] font-semibold text-accent-strong"
       >
-        Save
+        {saveLabel}
       </button>
     </div>
   );
 }
 
-function ClimateCard() {
+function ClimateCard({
+  copy,
+}: {
+  copy: LandingFeatureVisualCopy['climate'];
+}) {
   return (
     <div className="rounded-[22px] border border-border bg-surface p-6 shadow-soft">
       <header className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="font-display text-[15px] font-bold text-foreground">
-            Today&apos;s context
+            {copy.title}
           </p>
-          <p className="text-[11.5px] text-muted">Adapted to where you are</p>
+          <p className="text-[11.5px] text-muted">{copy.subtitle}</p>
         </div>
         <span
           className="inline-grid h-8 w-8 place-items-center rounded-lg text-background"
@@ -1636,7 +1894,7 @@ function ClimateCard() {
             style={{ color: 'var(--note-cool-fg)' }}
           />
           <strong className="font-bold" style={{ color: 'var(--note-cool-fg)' }}>
-            Your city
+            {copy.city}
           </strong>
         </p>
         <p className="flex items-center gap-2 text-[13px] text-foreground">
@@ -1646,7 +1904,8 @@ function ClimateCard() {
             style={{ color: 'var(--note-cool-fg)' }}
           />
           <span>
-            <strong className="font-bold">9°C</strong> · cool, dry
+            <strong className="font-bold">{copy.temperature}</strong> ·{' '}
+            {copy.climate}
           </span>
         </p>
         <p className="flex items-center gap-2 text-[13px] text-foreground">
@@ -1655,7 +1914,7 @@ function ClimateCard() {
             aria-hidden="true"
             style={{ color: 'var(--note-cool-fg)' }}
           />
-          UV 4 later · last frost expected this week
+          {copy.uv}
         </p>
         <p className="flex items-center gap-2 text-[13px] text-foreground">
           <Wind
@@ -1663,7 +1922,7 @@ function ClimateCard() {
             aria-hidden="true"
             style={{ color: 'var(--note-cool-fg)' }}
           />
-          Humidity 48%, barrier support recommended
+          {copy.humidity}
         </p>
       </div>
       <div className="flex gap-2.5 rounded-xl bg-surface-muted p-3 text-[12.5px] leading-snug text-muted">
@@ -1671,10 +1930,7 @@ function ClimateCard() {
           className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent"
           aria-hidden="true"
         />
-        <span>
-          Ritora added an extra moisturising step tonight and shifted SPF earlier
-          in your day. The climate engine reviews your context twice a day.
-        </span>
+        <span>{copy.note}</span>
       </div>
     </div>
   );

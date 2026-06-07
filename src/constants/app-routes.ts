@@ -18,13 +18,13 @@ export enum AppRoute {
   Journal = '/journal',
   SmartPicks = '/smart-picks',
   SmartPicksWishlist = '/smart-picks/wishlist',
+  Community = '/community',
   History = '/history',
   Insights = '/insights',
   Notifications = '/notifications',
   Settings = '/settings',
   Privacy = '/privacy',
   Terms = '/terms',
-  Cookies = '/cookies',
 }
 
 export const NOTIFICATION_SETTINGS_ROUTE = `${AppRoute.Settings}?tab=notifications`;
@@ -40,6 +40,7 @@ export const PROTECTED_APP_ROUTES = [
   AppRoute.Journal,
   AppRoute.SmartPicks,
   AppRoute.SmartPicksWishlist,
+  AppRoute.Community,
   AppRoute.History,
   AppRoute.Insights,
   AppRoute.Notifications,
@@ -50,5 +51,4 @@ export const PUBLIC_METADATA_ROUTES = [
   AppRoute.Home,
   AppRoute.Privacy,
   AppRoute.Terms,
-  AppRoute.Cookies,
 ] as const;

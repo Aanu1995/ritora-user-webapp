@@ -1,5 +1,6 @@
 "use client";
 
+import type { ImageProps } from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -16,6 +17,10 @@ interface PhotoGridProps {
   isFetchingNextPage?: boolean;
   onLoadMore?: () => void;
 }
+
+const FIRST_TILE_LOADING: ImageProps["loading"] = "eager";
+const DEFERRED_TILE_LOADING: ImageProps["loading"] = "lazy";
+const FIRST_TILE_FETCH_PRIORITY: ImageProps["fetchPriority"] = "high";
 
 export function PhotoGrid({
   entries,
@@ -44,15 +49,19 @@ export function PhotoGrid({
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {entries.map((entry) => {
+        {entries.map((entry, index) => {
           const url = buildBackendUrl(entry.photo_url);
+          const shouldLoadEagerly = index === 0;
           return (
             <button
               type="button"
               key={entry.id}
               onClick={() => router.push(`/journal/days/${entry.entry_date}`)}
               className={cn(
-                "group relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-[linear-gradient(135deg,#d6c2a3,#c2a886)] text-left transition hover:-translate-y-0.5",
+                // Neutral surface fallback behind the photo while it loads.
+                // Previous hardcoded skin-tone gradient broke in dark mode
+                // and bypassed the semantic-color system.
+                "group relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-surface-muted text-left transition hover:-translate-y-0.5",
                 entry.has_reaction && "ring-2 ring-danger ring-offset-0",
               )}
             >
@@ -62,6 +71,14 @@ export function PhotoGrid({
                   alt={entry.entry_date}
                   className="h-full w-full"
                   sizes="(max-width: 640px) 50vw, 240px"
+                  loading={
+                    shouldLoadEagerly
+                      ? FIRST_TILE_LOADING
+                      : DEFERRED_TILE_LOADING
+                  }
+                  fetchPriority={
+                    shouldLoadEagerly ? FIRST_TILE_FETCH_PRIORITY : undefined
+                  }
                 />
               ) : null}
               {(entry.angle_count ?? 0) > 1 ? (

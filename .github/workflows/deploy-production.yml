@@ -1,0 +1,102 @@
+name: Deploy Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: user-web-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Verify build
+        env:
+          NEXT_PUBLIC_API_URL: https://api.getritora.com/api/v1
+          NEXT_PUBLIC_SITE_URL: https://getritora.com
+          NEXT_PUBLIC_SUPPORT_EMAIL: support@getritora.com
+          NEXT_PUBLIC_PRODUCT_MEDIA_URL: ${{ vars.NEXT_PUBLIC_PRODUCT_MEDIA_URL }}
+        run: |
+          npm ci
+          npm run build
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.HETZNER_WEB_SSH_KEY }}
+          SSH_HOST: ${{ secrets.HETZNER_WEB_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/ritora_web
+          chmod 600 ~/.ssh/ritora_web
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+      - name: Upload release
+        env:
+          SSH_HOST: ${{ secrets.HETZNER_WEB_HOST }}
+          SSH_USER: ${{ secrets.HETZNER_WEB_USER }}
+          RELEASE: ${{ github.sha }}
+        run: |
+          : "${SSH_USER:=deploy}"
+          ssh -i ~/.ssh/ritora_web "$SSH_USER@$SSH_HOST" \
+            "mkdir -p /opt/ritora/user-web/releases/$RELEASE"
+          tar \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.next' \
+            --exclude='coverage' \
+            --exclude='playwright-report' \
+            --exclude='.env' \
+            --exclude='.env.*' \
+            -czf - . | ssh -i ~/.ssh/ritora_web "$SSH_USER@$SSH_HOST" \
+              "tar -xzf - -C /opt/ritora/user-web/releases/$RELEASE"
+
+      - name: Install, build, and restart
+        env:
+          SSH_HOST: ${{ secrets.HETZNER_WEB_HOST }}
+          SSH_USER: ${{ secrets.HETZNER_WEB_USER }}
+          RELEASE: ${{ github.sha }}
+        run: |
+          : "${SSH_USER:=deploy}"
+          ssh -i ~/.ssh/ritora_web "$SSH_USER@$SSH_HOST" "RELEASE='$RELEASE' bash -s" <<'REMOTE'
+          set -euo pipefail
+
+          release_dir="/opt/ritora/user-web/releases/$RELEASE"
+          cd "$release_dir"
+
+          set -a
+          . /etc/ritora/user-web.env
+          set +a
+
+          npm ci
+          npm run build
+          npm prune --omit=dev
+
+          ln -sfn "$release_dir" /opt/ritora/user-web/current
+          sudo -n systemctl restart ritora-user-web
+
+          for attempt in {1..30}; do
+            if curl -fsS "http://127.0.0.1:3000" >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+
+          sudo -n systemctl status ritora-user-web || true
+          journalctl -u ritora-user-web -n 80 --no-pager || true
+          exit 1
+          REMOTE

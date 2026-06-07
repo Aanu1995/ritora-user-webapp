@@ -2,13 +2,19 @@ import { getTranslations } from "next-intl/server";
 import { siteConfig } from "@/lib/site";
 import { SiteHeaderClient } from "./site-header-client";
 
-export async function SiteHeader() {
+interface SiteHeaderProps {
+  showNavLinks?: boolean;
+}
+
+export async function SiteHeader({ showNavLinks = true }: SiteHeaderProps = {}) {
   const t = await getTranslations("nav");
 
-  const navLinks = siteConfig.nav.map((item) => ({
-    href: item.href,
-    label: t(item.labelKey),
-  }));
+  const navLinks = showNavLinks
+    ? siteConfig.nav.map((item) => ({
+        href: item.href,
+        label: t(item.labelKey),
+      }))
+    : [];
 
   return (
     <>

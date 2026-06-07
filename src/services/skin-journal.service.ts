@@ -10,13 +10,15 @@ import { ApiPath } from "@/constants/api-paths";
 import {
   PhotoFilterStaticId,
   type Angle,
+  type AnalysisFeedback,
+  type AnalysisFeedbackReason,
+  type AnalysisFeedbackVote,
   type CalendarPayload,
   type CompareResponse,
   type DayDetail,
   type JournalEntry,
   type JournalEvent,
   type JournalEventFilters,
-  type JournalExportJob,
   type InsightAction,
   type JournalInsightsResponse,
   type InsightWindow,
@@ -198,6 +200,21 @@ export async function retryAnalysis(id: string): Promise<JournalEntry> {
   return postRequest(ApiPath.SkinJournalEntryRetry(id), {});
 }
 
+export async function reinterpretAnalysis(id: string): Promise<JournalEntry> {
+  return postRequest(ApiPath.SkinJournalEntryReinterpret(id), {});
+}
+
+export async function recordAnalysisFeedback(
+  id: string,
+  payload: {
+    vote: AnalysisFeedbackVote;
+    reason?: AnalysisFeedbackReason | null;
+    note?: string | null;
+  },
+): Promise<AnalysisFeedback> {
+  return postRequest(ApiPath.SkinJournalEntryAnalysisFeedback(id), payload);
+}
+
 export async function compareDays(
   from: string,
   to: string,
@@ -323,21 +340,4 @@ export async function getJournalStats(
   options?: ApiRequestOptions,
 ): Promise<JournalStats> {
   return getWithOptions<JournalStats>(ApiPath.SkinJournalStats, options);
-}
-
-export async function createJournalExport(payload: {
-  from: string;
-  to: string;
-}): Promise<JournalExportJob> {
-  return postRequest(ApiPath.SkinJournalExport, payload);
-}
-
-export async function getJournalExport(
-  id: string,
-  options?: ApiRequestOptions,
-): Promise<JournalExportJob> {
-  return getWithOptions<JournalExportJob>(
-    ApiPath.SkinJournalExportJob(id),
-    options,
-  );
 }

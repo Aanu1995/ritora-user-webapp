@@ -28,6 +28,7 @@ import { useAuthStore } from "@/stores/auth-store";
 const LOCALE_LABELS: Record<Locale, string> = {
   en: "English",
   sv: "Svenska",
+  es: "Español",
 };
 
 export function LanguageTab() {

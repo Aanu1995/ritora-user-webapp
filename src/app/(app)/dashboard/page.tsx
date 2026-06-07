@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { HeaderContextSubtitle } from "@/components/app/header-context-subtitle";
 import { PageHeader } from "@/components/app/page-header";
+import { ContactSupportButton } from "@/components/support/contact-support-button";
 import { Button } from "@/components/ui/button";
 import { DashboardClimatePanel } from "@/components/dashboard/dashboard-climate-panel";
 import { DashboardFreshAccount } from "@/components/dashboard/dashboard-fresh-account";
@@ -66,6 +67,7 @@ function DashboardHeader({
           headline={headline}
         />
       }
+      action={<ContactSupportButton variant="outline" size="sm" />}
     />
   );
 }
@@ -73,6 +75,7 @@ function DashboardHeader({
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const tNudge = useTranslations("dashboardJournal");
+  const locale = useLocale();
   const user = useAuthStore((s) => s.user);
   const router = useRouter();
   const [renderedAt] = useState(() => new Date().toISOString());
@@ -90,8 +93,9 @@ export default function DashboardPage() {
         todaysSuggestion.data?.date ??
           getTodayDateInTimeZone(timeZone, renderedAt),
         timeZone,
+        locale,
       ),
-    [renderedAt, todaysSuggestion.data?.date, timeZone],
+    [locale, renderedAt, todaysSuggestion.data?.date, timeZone],
   );
 
   const isLoadingDashboard =
@@ -144,6 +148,7 @@ export default function DashboardPage() {
         <PageHeader
           title={t("fresh.welcome", { firstName: user?.firstName ?? "" })}
           subtitle={t("fresh.subtitle")}
+          action={<ContactSupportButton variant="outline" size="sm" />}
         />
         <DashboardFreshAccount
           profileDone={profileDone}
@@ -176,6 +181,7 @@ export default function DashboardPage() {
           <DashboardLatestSuggestion
             slot={latestSuggestionSlot}
             timeZone={timeZone}
+            nowMs={new Date(renderedAt).getTime()}
           />
         ) : null}
         <CompactSimplificationAlert />

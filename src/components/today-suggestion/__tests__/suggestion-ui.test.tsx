@@ -253,7 +253,9 @@ describe("today suggestion UI contract", () => {
     });
 
     expect(regenerateButton).toBeDisabled();
-    expect(screen.queryByText(/temporarily unavailable/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/temporarily unavailable/i),
+    ).not.toBeInTheDocument();
     await user.click(regenerateButton);
     expect(mockRegenerateMutate).not.toHaveBeenCalled();
   });
@@ -462,7 +464,9 @@ describe("today suggestion UI contract", () => {
 
     const retryButton = screen.getByRole("button", { name: /try again/i });
     expect(retryButton).toBeDisabled();
-    expect(screen.queryByText(/temporarily unavailable/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/temporarily unavailable/i),
+    ).not.toBeInTheDocument();
     await user.click(retryButton);
     expect(onRetry).not.toHaveBeenCalled();
   });
@@ -536,6 +540,79 @@ describe("today suggestion UI contract", () => {
     expect(
       screen.getByText(/key active ingredients not matched/i),
     ).toBeInTheDocument();
+  });
+
+  it("renders a clear zero-step state for ready on-demand suggestions", () => {
+    renderWithProviders(
+      <OnDemandSuggestionSection
+        suggestions={[
+          onDemandSuggestion({
+            id: "on-demand-no-steps",
+            status: "ready",
+            suggestion: suggestionInstance({
+              id: "on-demand-no-steps",
+              slotId: null,
+              requestSource: "on_demand",
+              steps: [],
+              explanation: {
+                headline: "No extra step needed",
+                body: ["Your skin does not need another shelf product now."],
+                perStepReasons: [],
+                skipped: [],
+                inputs: [],
+              },
+              gapRecommendations: [],
+            }),
+          }),
+        ]}
+        onRetry={jest.fn()}
+        onRecord={jest.fn()}
+        onEdit={jest.fn()}
+        onShowDetail={jest.fn()}
+        nowMs={TEST_NOW_MS}
+      />,
+    );
+
+    expect(screen.getByText(/No product steps right now/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Ritora did not find a shelf product/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /mark as applied/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /why this routine/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("does not show record prompts for zero-step recordable slots", () => {
+    renderWithProviders(
+      <SuggestionSlotCard
+        slot={slot({
+          status: "recordable",
+          suggestion: suggestionInstance({
+            steps: [],
+            explanation: {
+              headline: "No extra step needed",
+              body: ["Your skin does not need another shelf product now."],
+              perStepReasons: [],
+              skipped: [],
+              inputs: [],
+            },
+          }),
+        })}
+        onRecord={jest.fn()}
+        nowMs={TEST_NOW_MS}
+      />,
+    );
+
+    expect(screen.queryByText(/awaiting record/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /record what i applied/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /mark as applied/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("shows the why-this-routine card from explanation copy when headline is missing", () => {
@@ -1136,6 +1213,25 @@ describe("today suggestion UI contract", () => {
       suggestionInstanceId: "suggestion-1",
       minutes: 60,
     });
+  });
+
+  it("does not render recording reminders for zero-step slots", () => {
+    renderWithProviders(
+      <RecordingReminderBanner
+        slots={[
+          slot({
+            status: "recordable",
+            suggestion: suggestionInstance({ steps: [] }),
+          }),
+        ]}
+        onRecord={jest.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /record morning now/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/awaiting record/i)).not.toBeInTheDocument();
   });
 
   it("wires gap recommendation browse, save, and dismiss actions", async () => {

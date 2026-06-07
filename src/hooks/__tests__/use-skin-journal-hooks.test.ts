@@ -3,25 +3,31 @@ import { QueryKey } from "@/constants/query-keys";
 import { invalidateAppNavBadges } from "@/lib/query-invalidation";
 import * as journalService from "@/services/skin-journal.service";
 import {
+  AnalysisFeedbackReason,
+  AnalysisFeedbackVote,
+  PhotoAnalysisInterpretationVersion,
+  PhotoAnalysisReadingLabel,
+} from "@/types/skin-journal";
+import {
   useAcknowledgeEvent,
   useAcknowledgeSimplification,
   useActiveSimplification,
   useCalendar,
   useCompareDays,
-  useCreateJournalExport,
   useDay,
   useDeleteEntry,
   useDismissInsight,
   useEvents,
   useInsights,
-  useJournalExport,
   useJournalStats,
   useMarkInsightSeen,
   useMonthEntries,
   usePhotoDates,
   usePhotoFilters,
   usePhotos,
+  useRecordAnalysisFeedback,
   useRecordInsightAction,
+  useReinterpretAnalysis,
   useRetryAnalysis,
   useSimplification,
   useStartSimplification,
@@ -63,13 +69,11 @@ jest.mock("@/services/skin-journal.service", () => ({
   acknowledgeEvent: jest.fn(),
   acknowledgeSimplification: jest.fn(),
   compareDays: jest.fn(),
-  createJournalExport: jest.fn(),
   deleteEntry: jest.fn(),
   dismissInsight: jest.fn(),
   getActiveSimplification: jest.fn(),
   getCalendar: jest.fn(),
   getDay: jest.fn(),
-  getJournalExport: jest.fn(),
   getJournalStats: jest.fn(),
   getSimplification: jest.fn(),
   getTodayEntry: jest.fn(),
@@ -83,6 +87,8 @@ jest.mock("@/services/skin-journal.service", () => ({
   listWrapped: jest.fn(),
   markInsightSeen: jest.fn(),
   recordInsightAction: jest.fn(),
+  recordAnalysisFeedback: jest.fn(),
+  reinterpretAnalysis: jest.fn(),
   retryAnalysis: jest.fn(),
   startSimplification: jest.fn(),
   updateEntry: jest.fn(),
@@ -107,7 +113,7 @@ type InfiniteQueryOptions = {
 
 type MutationOptions<TInput, TResult = unknown> = {
   mutationFn: (input: TInput) => unknown;
-  onSuccess?: (result: TResult) => void;
+  onSuccess?: (result: TResult, variables: TInput) => void;
 };
 
 function asQuery(value: unknown): QueryOptions {
@@ -152,8 +158,6 @@ describe("useSkinJournal hooks", () => {
     asQuery(useActiveSimplification()).queryFn(queryContext());
     asQuery(useSimplification("simplification-1")).queryFn(queryContext());
     asQuery(useJournalStats()).queryFn(queryContext());
-    asQuery(useJournalExport("export-1")).queryFn(queryContext());
-
     expect(journalService.getTodayEntry).toHaveBeenCalledWith(
       expect.objectContaining({ signal: expect.any(AbortSignal) }),
     );
@@ -293,6 +297,89 @@ describe("useSkinJournal hooks", () => {
     expect(invalidateAppNavBadges).toHaveBeenCalledWith(mockQueryClient);
   });
 
+  it("keeps anonymous analysis feedback in local query state only", async () => {
+    const feedback = {
+      vote: AnalysisFeedbackVote.NotHelpful,
+      reason: AnalysisFeedbackReason.TooGeneric,
+      note: "Needed more specific routine guidance.",
+      interpretation_version: PhotoAnalysisInterpretationVersion.V1_1,
+      reading_label: PhotoAnalysisReadingLabel.Useful,
+      created_at: "2026-05-27T08:00:00.000Z",
+      updated_at: "2026-05-27T08:00:00.000Z",
+    };
+    jest.mocked(journalService.recordAnalysisFeedback).mockResolvedValue(
+      feedback,
+    );
+
+    const mutation = asMutation<
+      {
+        id: string;
+        note: string;
+        reason: AnalysisFeedbackReason.TooGeneric;
+        vote: AnalysisFeedbackVote.NotHelpful;
+      },
+      { entryId: string; feedback: typeof feedback }
+    >(useRecordAnalysisFeedback());
+    const result = await mutation.mutationFn({
+      id: "entry-1",
+      note: "Needed more specific routine guidance.",
+      reason: AnalysisFeedbackReason.TooGeneric,
+      vote: AnalysisFeedbackVote.NotHelpful,
+    });
+    mutation.onSuccess?.(
+      result as { entryId: string; feedback: typeof feedback },
+      {
+        id: "entry-1",
+        note: "Needed more specific routine guidance.",
+        reason: AnalysisFeedbackReason.TooGeneric,
+        vote: AnalysisFeedbackVote.NotHelpful,
+      },
+    );
+
+    expect(journalService.recordAnalysisFeedback).toHaveBeenCalledWith(
+      "entry-1",
+      {
+        note: "Needed more specific routine guidance.",
+        reason: AnalysisFeedbackReason.TooGeneric,
+        vote: AnalysisFeedbackVote.NotHelpful,
+      },
+    );
+    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
+      [QueryKey.SkinJournalAnalysisFeedback, "entry-1"],
+      feedback,
+    );
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalled();
+  });
+
+  it("clears local analysis feedback when analysis is rerun", () => {
+    asMutation<string>(useRetryAnalysis()).onSuccess?.({}, "entry-1");
+
+    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
+      [QueryKey.SkinJournalAnalysisFeedback, "entry-1"],
+      null,
+    );
+
+    jest.clearAllMocks();
+    asMutation<string>(useReinterpretAnalysis()).onSuccess?.({}, "entry-1");
+
+    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
+      [QueryKey.SkinJournalAnalysisFeedback, "entry-1"],
+      null,
+    );
+  });
+
+  it("refreshes journal event, day detail, and badge state when an event is acknowledged", () => {
+    asMutation<string>(useAcknowledgeEvent()).onSuccess?.({}, "event-1");
+
+    expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+      queryKey: [QueryKey.SkinJournalEvents],
+    });
+    expect(mockQueryClient.invalidateQueries).toHaveBeenCalledWith({
+      queryKey: [QueryKey.SkinJournalDay],
+    });
+    expect(invalidateAppNavBadges).toHaveBeenCalledWith(mockQueryClient);
+  });
+
   it("does not upload an unsupported front photo when the angle map is empty", () => {
     asMutation<{
       payload: { is_pre_routine: boolean };
@@ -308,7 +395,7 @@ describe("useSkinJournal hooks", () => {
     );
   });
 
-  it("wires event, insight, simplification, and export mutations", () => {
+  it("wires event, insight, and simplification mutations", () => {
     asMutation<string>(useAcknowledgeEvent()).mutationFn("event-1");
     asMutation<string>(useDismissInsight()).mutationFn("insight-1");
     asMutation<string>(useMarkInsightSeen()).mutationFn("insight-1");
@@ -321,13 +408,6 @@ describe("useSkinJournal hooks", () => {
     asMutation<string>(useAcknowledgeSimplification()).mutationFn(
       "simplification-1",
     );
-    const exportMutation = asMutation<
-      { from: string; to: string },
-      { id: string }
-    >(useCreateJournalExport());
-    exportMutation.mutationFn({ from: "2026-05-01", to: "2026-05-31" });
-    exportMutation.onSuccess?.({ id: "export-1" });
-
     expect(journalService.acknowledgeEvent).toHaveBeenCalledWith("event-1");
     expect(journalService.dismissInsight).toHaveBeenCalledWith("insight-1");
     expect(journalService.markInsightSeen).toHaveBeenCalledWith("insight-1");
@@ -340,14 +420,6 @@ describe("useSkinJournal hooks", () => {
     });
     expect(journalService.acknowledgeSimplification).toHaveBeenCalledWith(
       "simplification-1",
-    );
-    expect(journalService.createJournalExport).toHaveBeenCalledWith({
-      from: "2026-05-01",
-      to: "2026-05-31",
-    });
-    expect(mockQueryClient.setQueryData).toHaveBeenCalledWith(
-      [QueryKey.SkinJournalExport, "export-1"],
-      { id: "export-1" },
     );
   });
 

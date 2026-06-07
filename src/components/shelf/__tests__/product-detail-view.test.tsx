@@ -1,5 +1,5 @@
 import svMessages from '../../../../messages/sv.json';
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NextIntlClientProvider } from 'next-intl';
 import { renderWithProviders } from '@/test/utils';
@@ -10,6 +10,7 @@ const mockFinish = jest.fn();
 const mockDelete = jest.fn();
 const mockCompare = jest.fn();
 const mockPush = jest.fn();
+const mockGetCommunityProductEvidence = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -51,6 +52,11 @@ jest.mock('@/hooks/use-ingredients', () => ({
     isPending: false,
     data: null,
   }),
+}));
+
+jest.mock('@/services/community.service', () => ({
+  getCommunityProductEvidence: (...args: unknown[]) =>
+    mockGetCommunityProductEvidence(...args),
 }));
 
 import { ProductDetailView } from '@/components/shelf/detail/product-detail-view';
@@ -117,6 +123,38 @@ beforeEach(() => {
   mockFinish.mockReset();
   mockDelete.mockReset();
   mockCompare.mockReset();
+  mockGetCommunityProductEvidence.mockReset();
+  mockGetCommunityProductEvidence.mockResolvedValue({
+    averageEffectivenessRating: 4,
+    averageIrritationRating: 1,
+    averageOverallRating: 5,
+    outcomeSignalCounts: {
+      caused_irritation: 0,
+      did_not_work: 1,
+      mixed_result: 1,
+      not_relevant: 0,
+      worked_for_me_too: 8,
+      worked_with_changes: 2,
+    },
+    playbookCount: 3,
+    productBrand: 'CeraVe',
+    productId: 'p1',
+    productName: 'Resurfacing Retinol Serum',
+    reviewCount: 5,
+    similarAuthorEvidenceCount: 4,
+    similarOutcomeConfirmationCount: 3,
+    similarOutcomeSignalCounts: {
+      caused_irritation: 0,
+      did_not_work: 0,
+      mixed_result: 0,
+      not_relevant: 0,
+      worked_for_me_too: 3,
+      worked_with_changes: 0,
+    },
+    topAvoids: [{ value: 'over-exfoliation', count: 2 }],
+    topGoals: [{ value: 'smoother-texture', count: 3 }],
+    topOutcomes: [{ value: 'smoothing', count: 4 }],
+  });
   window.sessionStorage.clear();
 });
 
@@ -159,6 +197,37 @@ describe('ProductDetailView', () => {
     ).toBeInTheDocument();
   });
 
+  it('surfaces community evidence on the product decision page', async () => {
+    renderWithProviders(<ProductDetailView product={PRODUCT} />);
+
+    const evidenceHeading = await screen.findByRole('heading', {
+      name: /community evidence/i,
+    });
+
+    expect(evidenceHeading).toBeInTheDocument();
+    expect(
+      screen
+        .getByRole('tab', { name: /manufacturer/i })
+        .compareDocumentPosition(evidenceHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    // Metric tiles now render label and value separately. Verify the
+    // labels appear and the right numbers show up inside the evidence
+    // section as a whole.
+    const sectionText = evidenceHeading.closest('section')?.textContent ?? '';
+    expect(sectionText).toContain('Reviews');
+    expect(sectionText).toContain('Playbooks');
+    expect(sectionText).toContain('5'); // review count
+    expect(sectionText).toContain('3'); // playbook count + confirmation count
+
+    // Plural template renders the number via Intl, so the count and
+    // the rest of the phrase can land in separate text nodes. Match
+    // both halves inside the same section instead.
+    expect(sectionText).toMatch(/3\s*similar-user confirmations/);
+    expect(screen.getByText(/over-exfoliation/i)).toBeInTheDocument();
+  });
+
   it('restores the active tab for the product detail page', async () => {
     const user = userEvent.setup();
     const { unmount } = renderWithProviders(
@@ -191,6 +260,11 @@ describe('ProductDetailView', () => {
     document.body.appendChild(scrollRoot);
 
     renderWithProviders(<ProductDetailView product={PRODUCT} />);
+
+    expect(screen.getByRole('link', { name: /edit/i })).toHaveAttribute(
+      'href',
+      '/shelf/p1/edit?returnTo=%2Fshelf%2Fp1',
+    );
 
     await user.click(screen.getByRole('link', { name: /edit/i }));
 
@@ -253,7 +327,7 @@ describe('ProductDetailView', () => {
   it('renders translated delete confirmation copy when the locale changes', async () => {
     const user = userEvent.setup();
 
-    render(
+    renderWithProviders(
       <NextIntlClientProvider locale="sv" messages={svMessages}>
         <ProductDetailView product={PRODUCT} />
       </NextIntlClientProvider>,

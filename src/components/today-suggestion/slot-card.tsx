@@ -1,12 +1,15 @@
 "use client";
 
+import type { ReactNode } from "react";
 import {
   Check,
   CircleCheck,
+  CircleSlash,
   Ellipsis,
   Sparkles,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatSlotTime12h } from "@/lib/suggestion-daypart";
 import { SuggestionDaypartIcon } from "@/components/today-suggestion/daypart-icon";
@@ -28,6 +31,8 @@ type Props = {
   onRecord?: (slot: TodaysSuggestionSlot) => void;
   onEdit?: (slot: TodaysSuggestionSlot, applicationLogId: string) => void;
   onShowDetail?: (slot: TodaysSuggestionSlot) => void;
+  actionControls?: ReactNode;
+  showActions?: boolean;
   personalizationOff?: boolean;
   timeZone?: string;
   nowMs: number;
@@ -38,6 +43,8 @@ export function SuggestionSlotCard({
   onRecord,
   onEdit,
   onShowDetail,
+  actionControls,
+  showActions = true,
   personalizationOff = false,
   timeZone,
   nowMs,
@@ -56,8 +63,6 @@ export function SuggestionSlotCard({
   const applicationLogId =
     slot.recording?.applicationLogId ?? suggestion.applicationLogId;
   const isRecorded = Boolean(applicationLogId);
-  const isAwaitingRecord =
-    !isRecorded && (slot.status === "recordable" || slot.status === "missed");
 
   const isSpecialistOnly =
     suggestion.steps.length > 0 &&
@@ -66,6 +71,11 @@ export function SuggestionSlotCard({
   const stepsByOrder = [...suggestion.steps].sort(
     (a, b) => a.stepOrder - b.stepOrder,
   );
+  const hasSuggestionSteps = stepsByOrder.length > 0;
+  const isAwaitingRecord =
+    hasSuggestionSteps &&
+    !isRecorded &&
+    (slot.status === "recordable" || slot.status === "missed");
   const rationale = buildSlotRationale(suggestion);
   const routineLabel = t(daypartRoutineLabelKey(suggestion.daypart));
 
@@ -147,35 +157,92 @@ export function SuggestionSlotCard({
         />
       ) : null}
 
-      <ol className="mt-3 flex flex-col gap-2.5">
-        {stepsByOrder.map((step, index) => (
-          <li key={step.id}>
-            <SuggestionStepRow step={step} index={index} />
-          </li>
-        ))}
-      </ol>
+      {hasSuggestionSteps ? (
+        <>
+          <ol className="mt-3 flex flex-col gap-2.5">
+            {stepsByOrder.map((step, index) => (
+              <li key={step.id}>
+                <SuggestionStepRow step={step} index={index} />
+              </li>
+            ))}
+          </ol>
 
-      <div className="mt-3.5 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => onRecord?.(slot)}
-          className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-full bg-[color:var(--accent)] px-3.5 text-xs font-semibold text-white transition hover:bg-[color:var(--accent-strong)] sm:h-11 sm:px-5 sm:text-sm"
-        >
-          <Check className="h-4 w-4" />
-          {isAwaitingRecord ? t("recordWhatIApplied") : t("markAsApplied")}
-        </button>
+          {showActions ? (
+            <div className="mt-3.5 flex items-center gap-2">
+              {actionControls ?? (
+                <>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => onRecord?.(slot)}
+                    className="flex-1 bg-[color:var(--accent)] text-white shadow-none hover:bg-[color:var(--accent-strong)] hover:opacity-100"
+                  >
+                    <Check className="h-4 w-4" />
+                    {isAwaitingRecord
+                      ? t("recordWhatIApplied")
+                      : t("markAsApplied")}
+                  </Button>
+                  {onShowDetail ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onShowDetail(slot)}
+                      className="w-7 shrink-0 px-0 sm:w-9"
+                      aria-label={t("whyThisRoutine")}
+                    >
+                      <Ellipsis className="h-4 w-4" />
+                    </Button>
+                  ) : null}
+                </>
+              )}
+            </div>
+          ) : null}
+        </>
+      ) : (
+        <NoSuggestionStepsState
+          hasGapRecommendations={suggestion.gapRecommendations.length > 0}
+          onShowDetail={
+            !rationale && onShowDetail ? () => onShowDetail(slot) : undefined
+          }
+        />
+      )}
+    </article>
+  );
+}
+
+function NoSuggestionStepsState({
+  hasGapRecommendations,
+  onShowDetail,
+}: {
+  hasGapRecommendations: boolean;
+  onShowDetail?: () => void;
+}) {
+  const t = useTranslations("todaysSuggestion.slot");
+  return (
+    <div className="mt-3 flex items-start gap-3 rounded-2xl bg-surface-muted px-3 py-3 text-sm leading-relaxed text-muted">
+      <span
+        aria-hidden
+        className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-surface text-muted"
+      >
+        <CircleSlash className="h-4 w-4" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="font-semibold text-foreground">{t("noStepsTitle")}</p>
+        <p className="mt-0.5">
+          {t(hasGapRecommendations ? "noStepsGapBody" : "noStepsBody")}
+        </p>
         {onShowDetail ? (
           <button
             type="button"
-            onClick={() => onShowDetail(slot)}
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[color:var(--border-strong)] bg-surface text-foreground transition hover:bg-accent-soft hover:text-accent-strong sm:h-11 sm:w-11"
-            aria-label={t("whyThisRoutine")}
+            onClick={onShowDetail}
+            className="mt-2 text-xs font-semibold text-accent-strong"
           >
-            <Ellipsis className="h-4 w-4" />
+            {t("whyThisRoutine")} →
           </button>
         ) : null}
       </div>
-    </article>
+    </div>
   );
 }
 

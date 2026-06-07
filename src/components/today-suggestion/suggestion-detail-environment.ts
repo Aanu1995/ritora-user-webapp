@@ -1,4 +1,5 @@
 import type { TodaysSuggestionEnvironmentSummary } from "@/types/suggestions";
+import { translateWeatherCondition } from "@/components/dashboard/dashboard-climate-formatters";
 import {
   EnvironmentAirQualityRisk,
   EnvironmentWaterHardness,
@@ -35,7 +36,9 @@ function weatherRow(
   t: DetailTranslate,
 ): EnvironmentReasonRow | null {
   const parts = [
-    environment.conditionLabel,
+    environment.conditionLabel
+      ? translateWeatherCondition(t, environment.conditionLabel)
+      : null,
     environment.temperatureCelsius !== null
       ? `${Math.round(environment.temperatureCelsius)}°C`
       : null,

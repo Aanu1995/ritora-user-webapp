@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocale } from 'next-intl';
 import { QueryKey } from '@/constants/query-keys';
 import { useAuthEnabled } from '@/hooks/use-auth-enabled';
@@ -11,6 +11,7 @@ import {
   compareProducts,
 } from '@/services/ingredients.service';
 import type {
+  AnalysisResult,
   ProductCheckInput,
   ProductCheckResponse,
   ProductCompareInput,
@@ -22,6 +23,20 @@ const MISSING_PRODUCT_ID_ERROR = 'MISSING_PRODUCT_ID';
 
 enum IngredientsAnalysisQueryScope {
   FocusProduct = 'focus-product',
+}
+
+function buildFocusProductAnalysisQueryKey(
+  productId: string | null,
+  locale: ReturnType<typeof normalizeLocale>,
+  withExplanations: boolean,
+) {
+  return [
+    QueryKey.IngredientsAnalysis,
+    IngredientsAnalysisQueryScope.FocusProduct,
+    productId,
+    locale,
+    withExplanations,
+  ] as const;
 }
 
 /**
@@ -39,13 +54,11 @@ export function useFocusProductAnalysis(
   const isEnabled = useAuthEnabled(callerEnabled && Boolean(productId));
 
   return useQuery({
-    queryKey: [
-      QueryKey.IngredientsAnalysis,
-      IngredientsAnalysisQueryScope.FocusProduct,
+    queryKey: buildFocusProductAnalysisQueryKey(
       productId,
       locale,
       withExplanations,
-    ],
+    ),
     queryFn: ({ signal }) => {
       if (!productId) {
         throw new Error(MISSING_PRODUCT_ID_ERROR);
@@ -58,6 +71,48 @@ export function useFocusProductAnalysis(
     },
     enabled: isEnabled,
     staleTime: STALE_MS,
+  });
+}
+
+export function useRetryFocusProductAnalysis(
+  productId: string | null,
+  options?: { withExplanations?: boolean },
+) {
+  const queryClient = useQueryClient();
+  const locale = normalizeLocale(useLocale());
+  const withExplanations = options?.withExplanations ?? false;
+
+  return useMutation<AnalysisResult, Error, void>({
+    mutationKey: [
+      QueryKey.IngredientsAnalysis,
+      IngredientsAnalysisQueryScope.FocusProduct,
+      'retry',
+      productId,
+      locale,
+      withExplanations,
+    ],
+    mutationFn: () => {
+      if (!productId) {
+        throw new Error(MISSING_PRODUCT_ID_ERROR);
+      }
+
+      return analyzeProducts({
+        focusProductId: productId,
+        language: locale,
+        withExplanations,
+        forceRefresh: true,
+      });
+    },
+    onSuccess: (result) => {
+      queryClient.setQueryData(
+        buildFocusProductAnalysisQueryKey(
+          productId,
+          locale,
+          withExplanations,
+        ),
+        result,
+      );
+    },
   });
 }
 

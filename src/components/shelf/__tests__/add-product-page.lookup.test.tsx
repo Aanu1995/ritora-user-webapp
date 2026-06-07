@@ -5,6 +5,7 @@ import {
   mockCreateWithImageMutate,
   mockMutate,
   mockPush,
+  mockReplace,
   mockToastError,
   mockToastSuccess,
   renderAddProductPage,
@@ -160,8 +161,9 @@ describe("AddProductPage lookup imports", () => {
 
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalled();
-      expect(mockPush).toHaveBeenCalledWith("/shelf/product-123");
+      expect(mockReplace).toHaveBeenCalledWith("/shelf");
     });
+    expect(mockPush).not.toHaveBeenCalledWith("/shelf/product-123");
     expect(mockMutate.mock.calls[0]?.[0].identity.inciIngredients).toEqual([
       "Aqua",
       "Glycerin",
@@ -457,8 +459,9 @@ describe("AddProductPage lookup imports", () => {
 
     await waitFor(() => {
       expect(mockCreateWithImageMutate).toHaveBeenCalled();
-      expect(mockPush).toHaveBeenCalledWith("/shelf/product-with-image");
+      expect(mockReplace).toHaveBeenCalledWith("/shelf");
     });
+    expect(mockPush).not.toHaveBeenCalledWith("/shelf/product-with-image");
     expect(mockMutate).not.toHaveBeenCalled();
     expect(mockCreateWithImageMutate.mock.calls[0]?.[0]).toEqual({
       draft: expect.objectContaining({

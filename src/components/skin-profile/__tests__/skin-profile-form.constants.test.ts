@@ -79,9 +79,9 @@ describe("skinProfileSchema", () => {
 
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues.map((issue) => issue.path.join("."))).toContain(
-        "concernSeverities.dark_marks",
-      );
+      expect(
+        result.error.issues.map((issue) => issue.path.join(".")),
+      ).toContain("concernSeverities.dark_marks");
     }
   });
 
@@ -251,6 +251,51 @@ describe("skinProfileSchema", () => {
         water_hardness: validValues.waterHardness,
         water_sensitivity: validValues.waterSensitivity,
       },
+    });
+  });
+
+  it("preserves optional lifestyle data when the mandatory water context is edited", () => {
+    const existingProfile = createReadySkinProfile({
+      lifestyleContext: {
+        sleep: "low",
+        stress: "high",
+        water_intake: "moderate",
+        water_hardness: "hard",
+        water_sensitivity: "suspected",
+        water_reaction_notes: "Tight after showering",
+        diet_flags: ["vegan"],
+        smoking: "none",
+        alcohol: "low",
+        mask_wearing: true,
+        shaving: false,
+        climate_sensitivities: ["dry_air"],
+      },
+    });
+
+    expect(
+      buildSkinProfilePayload(
+        {
+          ...validValues,
+          waterHardness: "soft",
+          waterSensitivity: "none",
+          waterReactionNotes: "",
+        },
+        existingProfile,
+        true,
+      ).lifestyleContext,
+    ).toEqual({
+      sleep: "low",
+      stress: "high",
+      water_intake: "moderate",
+      water_hardness: "soft",
+      water_sensitivity: "none",
+      water_reaction_notes: null,
+      diet_flags: ["vegan"],
+      smoking: "none",
+      alcohol: "low",
+      mask_wearing: true,
+      shaving: false,
+      climate_sensitivities: ["dry_air"],
     });
   });
 });

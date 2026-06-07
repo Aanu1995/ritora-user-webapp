@@ -1,6 +1,29 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+
+/* ===========================================================
+ * Face zone overlay
+ *
+ * Anatomical diagram that maps detected concerns onto a face
+ * silhouette. The same severity scale used by the chip variants
+ * drives the zone fill, so a "moderate" chip and a "moderate"
+ * zone read with the same color.
+ *
+ * Visual choices:
+ *   - Background is `bg-surface-muted` (theme-aware) instead of
+ *     a hardcoded skin-tone gradient, so the diagram doesn't
+ *     pick a single skin color and works in dark mode.
+ *   - The face oval is drawn with `border-border-strong` so it
+ *     reads as an illustration, not as a photo.
+ *   - Severity tones are CSS variables (`--warning`, `--danger`),
+ *     not RGBA hex, so they track theme changes.
+ *   - A small legend under the diagram makes the severity color
+ *     scale self-explanatory.
+ *   - When there are no concerns, the empty state is a friendly
+ *     line instead of a blank face.
+ * ========================================================= */
 
 interface DetectedConcern {
   concern: string;
@@ -29,52 +52,123 @@ const ZONE_POSITIONS: Record<
   neck: { top: "88%", left: "30%", width: "40%", height: "8%" },
 };
 
-const SEVERITY_TONES: Record<DetectedConcern["severity"], string> = {
-  mild: "rgba(184, 84, 10, 0.55)",
-  moderate: "rgba(179, 38, 30, 0.55)",
-  severe: "rgba(179, 38, 30, 0.75)",
+const SEVERITY_FILL: Record<DetectedConcern["severity"], string> = {
+  mild: "color-mix(in srgb, var(--warning) 52%, transparent)",
+  moderate: "color-mix(in srgb, var(--danger) 48%, transparent)",
+  severe: "color-mix(in srgb, var(--danger) 68%, transparent)",
 };
 
+const LEGEND_SEVERITIES: DetectedConcern["severity"][] = [
+  "mild",
+  "moderate",
+  "severe",
+];
+
 export function FaceZoneOverlay({ concerns, className }: FaceZoneOverlayProps) {
+  const t = useTranslations("journal.analysis.faceMap");
+  const tSeverity = useTranslations("journal.severity");
+  const tConcerns = useTranslations("journal.concerns");
+  const detected = concerns ?? [];
+  const mappedZones = detected.flatMap((concern) =>
+    concern.locations.flatMap((location, locationIndex) => {
+      const position = ZONE_POSITIONS[location];
+      return position
+        ? [{ concern, location, locationIndex, position }]
+        : [];
+    }),
+  );
+  const statusMessage =
+    detected.length === 0
+      ? t("empty")
+      : mappedZones.length === 0
+        ? t("noMappedZones")
+        : null;
+
   return (
-    <div
-      className={cn(
-        "relative aspect-[1/1.1] overflow-hidden rounded-2xl",
-        className,
-      )}
-      style={{
-        background:
-          "linear-gradient(135deg, #d6c2a3 0%, #c2a886 50%, #a78c66 100%)",
-      }}
-    >
+    <figure className={cn("flex flex-col gap-3", className)}>
+      <figcaption className="space-y-0.5">
+        <p className="text-sm font-semibold text-foreground">{t("title")}</p>
+        <p className="text-xs leading-relaxed text-muted">{t("subtitle")}</p>
+      </figcaption>
+
       <div
-        className="absolute"
-        style={{
-          inset: "12% 22% 6% 22%",
-          borderRadius: "50% / 60%",
-          border: "1.5px solid rgba(255,255,255,0.4)",
-        }}
-      />
-      {(concerns ?? []).flatMap((c) =>
-        c.locations.map((loc) => {
-          const pos = ZONE_POSITIONS[loc];
-          if (!pos) return null;
+        role="img"
+        aria-label={
+          mappedZones.length > 0 ? t("title") : statusMessage ?? t("title")
+        }
+        className="relative aspect-[1/1.1] overflow-hidden rounded-2xl border border-border bg-surface-muted"
+      >
+        {/* Face oval — purely illustrative, sits inside the
+            diagram so positions can be mapped to it. */}
+        <div
+          aria-hidden
+          className="absolute border border-border-strong"
+          style={{
+            inset: "12% 22% 6% 22%",
+            borderRadius: "50% / 60%",
+          }}
+        />
+        {mappedZones.map(({ concern, location, locationIndex, position }) => {
           return (
             <span
-              key={`${c.concern}-${loc}`}
+              key={`${concern.concern}-${location}-${locationIndex}`}
               className="absolute rounded-full border-2 border-white/85"
               style={{
-                top: pos.top,
-                left: pos.left,
-                width: pos.width,
-                height: pos.height,
-                background: SEVERITY_TONES[c.severity],
+                top: position.top,
+                left: position.left,
+                width: position.width,
+                height: position.height,
+                background: SEVERITY_FILL[concern.severity],
               }}
-              aria-label={`${c.concern} on ${loc}`}
+              aria-label={t("zoneAria", {
+                concern: safeConcernLabel(tConcerns, concern.concern),
+                location: location.replace(/_/g, " "),
+                severity: tSeverity(concern.severity),
+              })}
             />
           );
-        }),
-      )}
-    </div>
+        })}
+
+        {statusMessage ? (
+          <div className="absolute inset-x-3 bottom-3 rounded-xl bg-surface/85 px-3 py-2 text-center text-xs font-medium text-muted backdrop-blur-sm">
+            {statusMessage}
+          </div>
+        ) : null}
+      </div>
+
+      {mappedZones.length > 0 ? (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted">
+          <span className="font-semibold text-foreground">
+            {t("legendLabel")}
+          </span>
+          {LEGEND_SEVERITIES.map((severity) => (
+            <span key={severity} className="inline-flex items-center gap-1.5">
+              <span
+                aria-hidden
+                className="inline-block h-2.5 w-2.5 rounded-full border border-white/85"
+                style={{ background: SEVERITY_FILL[severity] }}
+              />
+              {tSeverity(severity)}
+            </span>
+          ))}
+        </div>
+      ) : null}
+    </figure>
   );
+}
+
+/**
+ * `useTranslations` throws on missing keys, but the concern set
+ * is open-ended (the AI can return new tags). Fall back to the
+ * raw concern name (humanised) instead of crashing.
+ */
+function safeConcernLabel(
+  tConcerns: ReturnType<typeof useTranslations>,
+  concern: string,
+): string {
+  try {
+    return tConcerns(concern);
+  } catch {
+    return concern.replace(/_/g, " ");
+  }
 }

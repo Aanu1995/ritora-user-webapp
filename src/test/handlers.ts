@@ -118,6 +118,17 @@ export const handlers = [
     });
   }),
 
+  http.post(`${API}/support/feedback`, () => {
+    return HttpResponse.json(
+      {
+        createdAt: "2026-05-22T08:00:00.000Z",
+        id: "feedback-1",
+        status: "new",
+      },
+      { status: 201 },
+    );
+  }),
+
   http.get(`${API}/skin-profile`, () => {
     return HttpResponse.json(mockSkinProfile);
   }),

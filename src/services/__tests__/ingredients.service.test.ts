@@ -1,5 +1,6 @@
 jest.mock('@/lib/api', () => ({
   getRequest: jest.fn(),
+  NO_CLIENT_SIDE_REQUEST_TIMEOUT_MS: 0,
   postRequest: jest.fn(),
 }));
 
@@ -21,8 +22,8 @@ import {
 afterEach(() => jest.clearAllMocks());
 
 describe('ingredients.service', () => {
-  it('keeps product-check timeout long enough for chained AI review calls', () => {
-    expect(PRODUCT_CHECK_REQUEST_TIMEOUT_MS).toBeGreaterThanOrEqual(120_000);
+  it('does not apply a client-side timeout to synchronous product checks', () => {
+    expect(PRODUCT_CHECK_REQUEST_TIMEOUT_MS).toBe(0);
   });
 
   it('keeps product-compare timeout long enough for AI-backed comparison', () => {
@@ -60,8 +61,43 @@ describe('ingredients.service', () => {
         focusProductId: 'product-1',
         language: 'sv',
         withExplanations: true,
+        forceRefresh: false,
       },
       { signal: controller.signal },
+    );
+  });
+
+  it('posts forced focus-product analysis requests when requested', async () => {
+    (postRequest as jest.Mock).mockResolvedValue({
+      mode: 'focus',
+      status: 'ok',
+      confidence: 'high',
+      safetyScore: null,
+      actives: [],
+      conflicts: [],
+      overlaps: [],
+      layeringOrder: [],
+      productsMissingInci: [],
+      engineVersion: 'v2',
+      generatedAt: '2026-04-24T09:00:00.000Z',
+    });
+
+    await analyzeProducts({
+      focusProductId: 'product-1',
+      language: 'en',
+      withExplanations: false,
+      forceRefresh: true,
+    });
+
+    expect(postRequest).toHaveBeenCalledWith(
+      '/ingredients/analyze',
+      {
+        focusProductId: 'product-1',
+        language: 'en',
+        withExplanations: false,
+        forceRefresh: true,
+      },
+      { signal: undefined },
     );
   });
 

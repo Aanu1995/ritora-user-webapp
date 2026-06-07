@@ -1,5 +1,5 @@
 import userEvent from "@testing-library/user-event";
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import { toast } from "sonner";
 import { renderWithProviders } from "@/test/utils";
 import { SmartPicksPage } from "@/components/smart-picks/smart-picks-page";
@@ -20,6 +20,7 @@ jest.mock("next/navigation", () => ({
 }));
 
 jest.mock("@/hooks/use-smart-picks", () => ({
+  ...jest.requireActual("@/hooks/use-smart-picks"),
   useSmartPicksOverview: jest.fn(),
 }));
 
@@ -42,19 +43,27 @@ const mockUseRecordGapAction =
     typeof useRecordSuggestionGapAction
   >;
 
+type SmartPicksOverviewQueryResult = ReturnType<typeof useSmartPicksOverview>;
+
+function smartPicksOverviewQueryResult(
+  result: Partial<SmartPicksOverviewQueryResult>,
+): SmartPicksOverviewQueryResult {
+  return result as SmartPicksOverviewQueryResult;
+}
+
 afterEach(() => {
   jest.clearAllMocks();
 });
 
 describe("SmartPicksPage", () => {
   it("renders a loading skeleton while overview fetches", () => {
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: undefined,
       isLoading: true,
       isFetching: true,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -63,13 +72,13 @@ describe("SmartPicksPage", () => {
   });
 
   it("shows the consent state instead of product cards", () => {
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({ consentRequired: true, priorityGaps: [] }),
       isLoading: false,
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -80,13 +89,13 @@ describe("SmartPicksPage", () => {
 
   it("renders priority gaps and saves picks through the shared gap-action endpoint", async () => {
     const mutation = recordMutation();
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview(),
       isLoading: false,
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(mutation);
 
     renderWithProviders(<SmartPicksPage />);
@@ -144,6 +153,24 @@ describe("SmartPicksPage", () => {
     );
   });
 
+  it("keeps the mode tabs fixed with compact spacing above tab content", () => {
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
+      data: overview(),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    }));
+    mockUseRecordGapAction.mockReturnValue(recordMutation());
+
+    renderWithProviders(<SmartPicksPage />);
+
+    const tabBar = screen.getByTestId("smart-picks-tab-bar");
+    expect(tabBar).toHaveClass("sticky", "top-[88px]", "py-2");
+    expect(tabBar).not.toHaveClass("mt-6");
+    expect(screen.getByTestId("smart-picks-tab-content")).toHaveClass("mt-3");
+  });
+
   it("shows save progress for the active pick and confirms when it is saved", async () => {
     const mutate = jest.fn((payload, options) => {
       options?.onSuccess?.(
@@ -159,13 +186,13 @@ describe("SmartPicksPage", () => {
         undefined,
       );
     });
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview(),
       isLoading: false,
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation({ mutate }));
 
     renderWithProviders(<SmartPicksPage />);
@@ -191,13 +218,13 @@ describe("SmartPicksPage", () => {
         productName: "Barrier Cream",
       },
     };
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({ priorityGaps: [firstGap, secondGap] }),
       isLoading: false,
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(
       recordMutation({
         isPending: true,
@@ -217,13 +244,13 @@ describe("SmartPicksPage", () => {
   });
 
   it("shows spinner-only feedback while dismissing a product", () => {
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview(),
       isLoading: false,
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(
       recordMutation({
         isPending: true,
@@ -242,7 +269,7 @@ describe("SmartPicksPage", () => {
   });
 
   it("renders coverage from goal-specific roles instead of a fixed checklist", () => {
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         coverage: {
           filled: 1,
@@ -283,7 +310,7 @@ describe("SmartPicksPage", () => {
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -299,13 +326,13 @@ describe("SmartPicksPage", () => {
     const pick = data.priorityGaps[0]?.pick;
     if (!pick) throw new Error("Expected Smart Picks fixture pick.");
     pick.sellerNames = ["Derm Store", "Derm Store", "Stylevana"];
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data,
       isLoading: false,
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -320,7 +347,7 @@ describe("SmartPicksPage", () => {
     if (!priorityGap?.pick) {
       throw new Error("Expected Smart Picks fixture gap and pick.");
     }
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         considerGaps: [
           {
@@ -367,7 +394,7 @@ describe("SmartPicksPage", () => {
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -441,13 +468,13 @@ describe("SmartPicksPage", () => {
         },
       },
     ];
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data,
       isLoading: false,
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -465,7 +492,7 @@ describe("SmartPicksPage", () => {
   });
 
   it("does not describe dismissed picks as a complete shelf", () => {
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         priorityGaps: [],
         emptyState: {
@@ -479,7 +506,7 @@ describe("SmartPicksPage", () => {
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -492,7 +519,7 @@ describe("SmartPicksPage", () => {
   });
 
   it("keeps the duplicate active check visible when there are no gaps to buy", () => {
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         priorityGaps: [],
         redundancy: [
@@ -518,7 +545,7 @@ describe("SmartPicksPage", () => {
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -562,13 +589,13 @@ describe("SmartPicksPage", () => {
         ],
       },
     });
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: starterOverview,
       isLoading: false,
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -587,8 +614,8 @@ describe("SmartPicksPage", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("keeps starter steps visible while product picks are still processing", () => {
-    mockUseOverview.mockReturnValue({
+  it("keeps starter steps visible while product picks are still pending", () => {
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         mode: "starter",
         productSuggestionsUnavailable: true,
@@ -596,7 +623,7 @@ describe("SmartPicksPage", () => {
           status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Pending,
           reason: null,
           missingPickCount: 1,
-          isProcessing: true,
+          isProcessing: false,
           attemptedAt: null,
           retryAfter: null,
         },
@@ -619,7 +646,7 @@ describe("SmartPicksPage", () => {
       isFetching: true,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -631,15 +658,69 @@ describe("SmartPicksPage", () => {
     expect(
       screen.getByText("Product name is still being matched for this step."),
     ).toBeInTheDocument();
+    const tabContent = screen.getByTestId("smart-picks-tab-content");
+    expect(
+      within(tabContent).getByText("Preparing product matches"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Ritora is preparing product matches. This page refreshes automatically, so you can leave and come back.",
+      ),
+    ).toBeInTheDocument();
     expect(
       screen.queryByText("Your product picks are being prepared"),
     ).not.toBeInTheDocument();
   });
 
+  it("keeps the preparing banner visible when Starter Kit products are unmatched", () => {
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
+      data: overview({
+        mode: "starter",
+        productSuggestionsUnavailable: true,
+        productGeneration: {
+          status: SMART_PICKS_PRODUCT_GENERATION_STATUS.Ready,
+          reason: null,
+          missingPickCount: 0,
+          isProcessing: false,
+          attemptedAt: null,
+          retryAfter: null,
+        },
+        starterKit: {
+          summary: "Start with the essentials. Add treatment last.",
+          steps: [
+            starterStep({
+              order: 1,
+              role: "spf",
+              title: "Protect",
+              ingredientOrCategory: "Broad-spectrum sunscreen SPF 30+",
+              normalizedKey: "broad-spectrum-sunscreen-spf-30",
+              reason: "Daily sunscreen is the protection step.",
+              pick: null,
+            }),
+          ],
+        },
+      }),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    }));
+    mockUseRecordGapAction.mockReturnValue(recordMutation());
+
+    renderWithProviders(<SmartPicksPage />);
+
+    expect(
+      screen.getByText("Preparing product matches"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Product name is still being matched for this step."),
+    ).toBeInTheDocument();
+  });
+
   it("shows a clear message when product matching failed instead of endless matching copy", () => {
     const failedGap = overview().priorityGaps[0];
     if (!failedGap) throw new Error("Expected Smart Picks fixture gap.");
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         productSuggestionsUnavailable: true,
         productGeneration: {
@@ -661,7 +742,7 @@ describe("SmartPicksPage", () => {
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -682,7 +763,7 @@ describe("SmartPicksPage", () => {
   it("shows Starter Kit seller names without links or prices", () => {
     const pick = overview().priorityGaps[0]?.pick;
     if (!pick) throw new Error("Expected Smart Picks fixture pick.");
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         mode: "starter",
         priorityGaps: [],
@@ -702,7 +783,7 @@ describe("SmartPicksPage", () => {
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -724,7 +805,7 @@ describe("SmartPicksPage", () => {
   it("shows spinner-only feedback while saving a Starter Kit pick", () => {
     const pick = overview().priorityGaps[0]?.pick;
     if (!pick) throw new Error("Expected Smart Picks fixture pick.");
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         mode: "starter",
         priorityGaps: [],
@@ -737,7 +818,7 @@ describe("SmartPicksPage", () => {
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(
       recordMutation({
         isPending: true,
@@ -758,7 +839,7 @@ describe("SmartPicksPage", () => {
   it("does not render blank Starter Kit seller names", () => {
     const pick = overview().priorityGaps[0]?.pick;
     if (!pick) throw new Error("Expected Smart Picks fixture pick.");
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         mode: "starter",
         priorityGaps: [],
@@ -778,7 +859,7 @@ describe("SmartPicksPage", () => {
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -788,7 +869,7 @@ describe("SmartPicksPage", () => {
   });
 
   it("shows owned Starter Kit steps as already covered", () => {
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         mode: "starter",
         priorityGaps: [],
@@ -814,7 +895,7 @@ describe("SmartPicksPage", () => {
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
@@ -824,7 +905,7 @@ describe("SmartPicksPage", () => {
   });
 
   it("shows a wait state when Starter Kit treatment is not needed yet", () => {
-    mockUseOverview.mockReturnValue({
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview({
         mode: "starter",
         priorityGaps: [],
@@ -851,7 +932,7 @@ describe("SmartPicksPage", () => {
       isFetching: false,
       isError: false,
       refetch: jest.fn(),
-    } as ReturnType<typeof useSmartPicksOverview>);
+    }));
     mockUseRecordGapAction.mockReturnValue(recordMutation());
 
     renderWithProviders(<SmartPicksPage />);
