@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useLayoutEffect,
@@ -11,12 +12,13 @@ import {
 } from 'react';
 import {
   APP_PREFERENCE_MAX_AGE,
+  DEFAULT_THEME_PREFERENCE,
   PLAIN_LANGUAGE_STORAGE_KEY,
   ResolvedTheme,
   THEME_PREFERENCE_COOKIE_NAME,
   THEME_PREFERENCE_STORAGE_KEY,
   ThemePreference,
-  parseResolvedTheme,
+  normalizeThemePreference,
   parseThemePreference,
   resolveThemePreference,
 } from '@/lib/theme-preferences';
@@ -35,17 +37,6 @@ type AppPreferencesContextValue = {
 const AppPreferencesContext = createContext<AppPreferencesContextValue | null>(
   null,
 );
-
-function getSystemTheme(): ResolvedTheme {
-  if (
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  ) {
-    return ResolvedTheme.Dark;
-  }
-
-  return ResolvedTheme.Light;
-}
 
 function applyThemeToDocument(theme: ResolvedTheme): void {
   if (typeof document === 'undefined') {
@@ -68,17 +59,17 @@ export function AppPreferencesProvider({
   const [themePreference, setThemePreferenceState] = useState<ThemePreference>(
     () => {
       if (initialThemePreference) {
-        return initialThemePreference;
+        return normalizeThemePreference(initialThemePreference);
       }
 
       if (typeof window === 'undefined') {
-        return ThemePreference.System;
+        return DEFAULT_THEME_PREFERENCE;
       }
 
-      return (
+      return normalizeThemePreference(
         parseThemePreference(
           window.localStorage.getItem(THEME_PREFERENCE_STORAGE_KEY),
-        ) ?? ThemePreference.System
+        ),
       );
     },
   );
@@ -89,21 +80,13 @@ export function AppPreferencesProvider({
 
     return window.localStorage.getItem(PLAIN_LANGUAGE_STORAGE_KEY) === 'true';
   });
-  const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(() => {
-    if (typeof document !== 'undefined') {
-      return (
-        parseResolvedTheme(document.documentElement.dataset.theme) ??
-        getSystemTheme()
-      );
-    }
-
-    return ResolvedTheme.Light;
-  });
-
   const resolvedTheme = useMemo(
-    () => resolveThemePreference(themePreference, systemTheme),
-    [systemTheme, themePreference],
+    () => resolveThemePreference(themePreference),
+    [themePreference],
   );
+  const setThemePreference = useCallback((value: ThemePreference) => {
+    setThemePreferenceState(normalizeThemePreference(value));
+  }, []);
 
   useLayoutEffect(() => {
     applyThemeToDocument(resolvedTheme);
@@ -130,35 +113,15 @@ export function AppPreferencesProvider({
     );
   }, [plainLanguageMode]);
 
-  useEffect(() => {
-    if (
-      typeof window === 'undefined' ||
-      themePreference !== ThemePreference.System
-    ) {
-      return;
-    }
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (event: MediaQueryListEvent) => {
-      setSystemTheme(event.matches ? ResolvedTheme.Dark : ResolvedTheme.Light);
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-
-    return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-    };
-  }, [themePreference]);
-
   const value = useMemo<AppPreferencesContextValue>(
     () => ({
       themePreference,
       resolvedTheme,
       plainLanguageMode,
-      setThemePreference: setThemePreferenceState,
+      setThemePreference,
       setPlainLanguageMode: setPlainLanguageModeState,
     }),
-    [plainLanguageMode, resolvedTheme, themePreference],
+    [plainLanguageMode, resolvedTheme, setThemePreference, themePreference],
   );
 
   return (

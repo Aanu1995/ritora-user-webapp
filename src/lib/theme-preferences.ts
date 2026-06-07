@@ -2,12 +2,14 @@ export const THEME_PREFERENCE_STORAGE_KEY = 'ritora-theme-preference';
 export const THEME_PREFERENCE_COOKIE_NAME = 'ritora-theme-preference';
 export const PLAIN_LANGUAGE_STORAGE_KEY = 'ritora-plain-language-mode';
 export const APP_PREFERENCE_MAX_AGE = 60 * 60 * 24 * 365;
+const LEGACY_SYSTEM_THEME_PREFERENCE = 'system';
 
 export enum ThemePreference {
-  System = 'system',
   Light = 'light',
   Dark = 'dark',
 }
+
+export const DEFAULT_THEME_PREFERENCE = ThemePreference.Light;
 
 export enum ResolvedTheme {
   Light = 'light',
@@ -15,7 +17,6 @@ export enum ResolvedTheme {
 }
 
 const THEME_PREFERENCE_VALUES = new Set<string>(Object.values(ThemePreference));
-const RESOLVED_THEME_VALUES = new Set<string>(Object.values(ResolvedTheme));
 
 export function parseThemePreference(
   value: string | null | undefined,
@@ -27,31 +28,24 @@ export function parseThemePreference(
   return null;
 }
 
-export function parseResolvedTheme(
-  value: string | null | undefined,
-): ResolvedTheme | null {
-  if (value && RESOLVED_THEME_VALUES.has(value)) {
-    return value as ResolvedTheme;
-  }
-
-  return null;
+export function normalizeThemePreference(
+  value: ThemePreference | null | undefined,
+): ThemePreference {
+  return value === ThemePreference.Dark
+    ? ThemePreference.Dark
+    : DEFAULT_THEME_PREFERENCE;
 }
 
 export function resolveThemePreference(
   themePreference: ThemePreference,
-  systemTheme: ResolvedTheme,
 ): ResolvedTheme {
-  if (themePreference === ThemePreference.System) {
-    return systemTheme;
-  }
-
   return themePreference === ThemePreference.Dark
     ? ResolvedTheme.Dark
     : ResolvedTheme.Light;
 }
 
 export function getThemeInitializationScript(): string {
-  const systemPreference = JSON.stringify(ThemePreference.System);
+  const systemPreference = JSON.stringify(LEGACY_SYSTEM_THEME_PREFERENCE);
   const lightPreference = JSON.stringify(ThemePreference.Light);
   const darkPreference = JSON.stringify(ThemePreference.Dark);
 
@@ -88,16 +82,12 @@ export function getThemeInitializationScript(): string {
           ) {
             themePreference = storedTheme;
           } else {
-            themePreference = systemPreference;
+            themePreference = lightPreference;
           }
         }
 
         const resolvedTheme =
-          themePreference === systemPreference
-            ? window.matchMedia('(prefers-color-scheme: dark)').matches
-              ? darkPreference
-              : lightPreference
-            : themePreference;
+          themePreference === darkPreference ? darkPreference : lightPreference;
 
         document.documentElement.dataset.theme = resolvedTheme;
         document.documentElement.style.colorScheme = resolvedTheme;

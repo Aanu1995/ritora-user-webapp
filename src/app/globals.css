@@ -74,72 +74,6 @@
   --note-cool-border: #6366f1;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f1712;
-    --foreground: #edf5ef;
-    --surface: #16211b;
-    --surface-muted: #1c2a22;
-    --muted: #b8c4bb;
-    --border: rgba(237, 245, 239, 0.12);
-    --border-strong: rgba(237, 245, 239, 0.22);
-    --accent: #6fc38d;
-    --accent-strong: #bfeecf;
-    --accent-soft: rgba(111, 195, 141, 0.14);
-    --accent-glow: rgba(111, 195, 141, 0.12);
-    --secondary: #d98c62;
-    --secondary-soft: rgba(217, 140, 98, 0.14);
-    --secondary-glow: rgba(217, 140, 98, 0.12);
-    --warning: #f2b267;
-  --warning-soft: rgba(242, 178, 103, 0.18);
-    --danger: #ff8f86;
-    --danger-soft: rgba(255, 143, 134, 0.18);
-    --success: #75d399;
-    --shadow-soft: 0 24px 70px rgba(0, 0, 0, 0.32);
-    --shadow-hero: 0 32px 90px rgba(0, 0, 0, 0.4);
-    --shadow-ring: 0 0 0 3px rgba(111, 195, 141, 0.2);
-
-    --google-fill: #131314;
-    --google-stroke: #8e918f;
-    --google-text: #e3e3e3;
-
-    --apple-fill: #000000;
-    --apple-stroke: rgba(255, 255, 255, 0.18);
-    --apple-text: #ffffff;
-
-    --daypart-morning-bg: rgba(251, 191, 36, 0.16);
-    --daypart-morning-fg: #fcd34d;
-    --daypart-morning-border: rgba(251, 191, 36, 0.32);
-    --daypart-morning-accent: #fbbf24;
-
-    --daypart-noon-bg: rgba(251, 146, 60, 0.16);
-    --daypart-noon-fg: #fdba74;
-    --daypart-noon-border: rgba(251, 146, 60, 0.32);
-    --daypart-noon-accent: #fb923c;
-
-    --daypart-evening-bg: rgba(129, 140, 248, 0.20);
-    --daypart-evening-fg: #c7d2fe;
-    --daypart-evening-border: rgba(129, 140, 248, 0.38);
-    --daypart-evening-accent: #818cf8;
-
-    --ai-bg: rgba(139, 92, 246, 0.18);
-    --ai-fg: #ddd6fe;
-    --ai-strong: #a78bfa;
-    --ai-badge-bg: #8b5cf6;
-    --ai-badge-fg: #ffffff;
-    --ai-soft: rgba(139, 92, 246, 0.1);
-    --ai-border: rgba(139, 92, 246, 0.35);
-
-    --note-warm-bg: rgba(251, 191, 36, 0.1);
-    --note-warm-fg: #fde68a;
-    --note-warm-border: rgba(251, 191, 36, 0.55);
-
-    --note-cool-bg: rgba(129, 140, 248, 0.1);
-    --note-cool-fg: #c7d2fe;
-    --note-cool-border: rgba(129, 140, 248, 0.55);
-  }
-}
-
 :root[data-theme='light'] {
   --background: #f7f5f0;
   --foreground: #14201a;
@@ -304,12 +238,6 @@
 html {
   scroll-behavior: smooth;
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
 }
 
 html[data-theme='light'] {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Moon, Monitor, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { SettingsRow } from "@/components/settings/settings-row";
 import { SettingsSection } from "@/components/settings/settings-section";
@@ -12,7 +12,6 @@ import {
 import { cn } from "@/lib/utils";
 
 const THEME_OPTIONS: { value: ThemePreference; icon: typeof Sun; labelKey: string }[] = [
-  { value: ThemePreference.System, icon: Monitor, labelKey: "themeSystem" },
   { value: ThemePreference.Light, icon: Sun, labelKey: "themeLight" },
   { value: ThemePreference.Dark, icon: Moon, labelKey: "themeDark" },
 ];
