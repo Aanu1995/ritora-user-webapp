@@ -1,6 +1,8 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TodaysSuggestionPage from "@/app/(app)/todays-suggestion/page";
+import { AppRoute } from "@/constants/app-routes";
+import { createReadySkinProfile } from "@/test/skin-profile";
 import { renderWithProviders } from "@/test/utils";
 import {
   EnvironmentAirQualityRisk,
@@ -19,6 +21,7 @@ const mockStartBreakMutate = jest.fn();
 const mockCreateOnDemandMutate = jest.fn();
 const mockUpdateAiConsentMutate = jest.fn();
 const mockRouterPush = jest.fn();
+const mockUseSkinProfile = jest.fn();
 let mockAiConsentGranted = true;
 let mockTodayData: TodaysSuggestionResponse | null = null;
 
@@ -69,14 +72,12 @@ jest.mock("@/hooks/use-application-tracking", () => ({
   useRecordApplication: () => ({ mutate: jest.fn(), isPending: false }),
 }));
 
+jest.mock("@/hooks/use-skin-journal", () => ({
+  useTodayEntry: () => ({ data: { entry: null }, isLoading: false }),
+}));
+
 jest.mock("@/hooks/use-skin-profile", () => ({
-  useSkinProfile: () => ({
-    data: {
-      city: "Stockholm",
-      countryCode: "SE",
-    },
-    isLoading: false,
-  }),
+  useSkinProfile: () => mockUseSkinProfile(),
 }));
 
 jest.mock("@/stores/auth-store", () => ({
@@ -89,6 +90,19 @@ jest.mock("next/navigation", () => ({
 }));
 
 describe("TodaysSuggestionPage routine break integration", () => {
+  beforeEach(() => {
+    mockUseSkinProfile.mockReturnValue({
+      data: createReadySkinProfile({
+        city: "Stockholm",
+        countryCode: "SE",
+        hasLocationContextConsent: true,
+      }),
+      error: null,
+      isError: false,
+      isLoading: false,
+    });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
     mockAiConsentGranted = true;
@@ -139,6 +153,69 @@ describe("TodaysSuggestionPage routine break integration", () => {
         onError: expect.any(Function),
       }),
     );
+  });
+
+  it("gates quick suggestions behind a completed skin profile", async () => {
+    const user = userEvent.setup();
+    mockUseSkinProfile.mockReturnValue({
+      data: null,
+      error: null,
+      isError: false,
+      isLoading: false,
+    });
+
+    renderWithProviders(<TodaysSuggestionPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /quick suggestion/i }),
+    );
+
+    expect(
+      screen.getByRole("heading", { name: /finish your skin profile first/i }),
+    ).toBeInTheDocument();
+    expect(mockCreateOnDemandMutate).not.toHaveBeenCalled();
+    expect(mockUpdateAiConsentMutate).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: /open skin profile/i }));
+
+    expect(mockRouterPush).toHaveBeenCalledWith(AppRoute.SkinProfile);
+  });
+
+  it("gates the empty-state photo action behind a completed skin profile", async () => {
+    const user = userEvent.setup();
+    mockUseSkinProfile.mockReturnValue({
+      data: null,
+      error: null,
+      isError: false,
+      isLoading: false,
+    });
+
+    renderWithProviders(<TodaysSuggestionPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /add today's photo/i }),
+    );
+
+    expect(
+      screen.getByRole("heading", { name: /finish your skin profile first/i }),
+    ).toBeInTheDocument();
+    expect(mockRouterPush).not.toHaveBeenCalledWith("/journal/upload");
+
+    await user.click(screen.getByRole("button", { name: /open skin profile/i }));
+
+    expect(mockRouterPush).toHaveBeenCalledWith(AppRoute.SkinProfile);
+  });
+
+  it("opens the empty-state photo upload when the skin profile is complete", async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<TodaysSuggestionPage />);
+
+    await user.click(
+      screen.getByRole("button", { name: /add today's photo/i }),
+    );
+
+    expect(mockRouterPush).toHaveBeenCalledWith(`${AppRoute.Journal}/upload`);
   });
 
   it("asks for AI consent before opening quick suggestions", async () => {

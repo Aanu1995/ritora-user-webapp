@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { translateLocationLabel } from "./analysis-card-utils";
 
 /* ===========================================================
  * Face zone overlay
@@ -66,6 +67,7 @@ const LEGEND_SEVERITIES: DetectedConcern["severity"][] = [
 
 export function FaceZoneOverlay({ concerns, className }: FaceZoneOverlayProps) {
   const t = useTranslations("journal.analysis.faceMap");
+  const tLocations = useTranslations("journal.insightsTab.locations");
   const tSeverity = useTranslations("journal.severity");
   const tConcerns = useTranslations("journal.concerns");
   const detected = concerns ?? [];
@@ -122,7 +124,7 @@ export function FaceZoneOverlay({ concerns, className }: FaceZoneOverlayProps) {
               }}
               aria-label={t("zoneAria", {
                 concern: safeConcernLabel(tConcerns, concern.concern),
-                location: location.replace(/_/g, " "),
+                location: translateLocationLabel(tLocations, location),
                 severity: tSeverity(concern.severity),
               })}
             />

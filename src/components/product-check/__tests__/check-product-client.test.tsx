@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { renderWithProviders } from "@/test/utils";
 import { CheckProductClient } from "@/components/product-check/check-product-client";
 import { ProductCheckResultDetails } from "@/components/product-check/product-check-result-details";
+import { AppRoute } from "@/constants/app-routes";
+import { mockSkinProfile } from "@/test/skin-profile-fixtures";
 import {
   AnalysisConfidence,
   IngredientCategory,
@@ -35,8 +37,15 @@ import {
 const mockCheckMutate = jest.fn();
 const mockCompareMutate = jest.fn();
 const mockExtractMutate = jest.fn();
+const mockPush = jest.fn();
 const mockToastError = jest.fn();
 let capabilityOverrides: Partial<Record<string, boolean>> = {};
+let mockSkinProfileQuery: {
+  data: typeof mockSkinProfile | null;
+  error: unknown;
+  isError: boolean;
+  isLoading: boolean;
+};
 
 let checkPending = false;
 let comparePending = false;
@@ -62,6 +71,12 @@ jest.mock("sonner", () => ({
   },
 }));
 
+jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+}));
+
 jest.mock("@/hooks/use-ingredients", () => ({
   useCheckProduct: () => ({
     mutate: mockCheckMutate,
@@ -83,6 +98,10 @@ jest.mock("@/hooks/use-shelf", () => ({
     data: shelfProducts,
     isLoading: false,
   }),
+}));
+
+jest.mock("@/hooks/use-skin-profile", () => ({
+  useSkinProfile: () => mockSkinProfileQuery,
 }));
 
 jest.mock("@/hooks/use-user-capabilities", () => ({
@@ -114,6 +133,12 @@ beforeEach(() => {
   comparePending = false;
   shelfProducts = [];
   capabilityOverrides = {};
+  mockSkinProfileQuery = {
+    data: mockSkinProfile,
+    error: null,
+    isError: false,
+    isLoading: false,
+  };
 });
 
 function createDraft(): ShelfProductDraft {
@@ -494,6 +519,37 @@ describe("CheckProductClient", () => {
     expect(mockCheckMutate).not.toHaveBeenCalled();
   });
 
+  it("gates pasted quick checks behind a completed skin profile", async () => {
+    const user = userEvent.setup();
+    mockSkinProfileQuery = {
+      data: null,
+      error: null,
+      isError: false,
+      isLoading: false,
+    };
+
+    renderWithProviders(<CheckProductClient />);
+
+    fireEvent.change(screen.getByLabelText(/^brand$/i), {
+      target: { value: "Ritora Lab" },
+    });
+    fireEvent.change(screen.getByLabelText(/product name/i), {
+      target: { value: "Barrier Serum" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/paste inci ingredients/i), {
+      target: { value: "Aqua, Niacinamide" },
+    });
+    await user.click(screen.getByRole("button", { name: /quick check/i }));
+
+    expect(mockCheckMutate).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("heading", { name: /finish your skin profile first/i }),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /open skin profile/i }));
+    expect(mockPush).toHaveBeenCalledWith(AppRoute.SkinProfile);
+  });
+
   it("checks extracted label photos and stays verdict-only", async () => {
     const user = userEvent.setup();
     mockExtractMutate.mockImplementation((_payload, options) => {
@@ -548,6 +604,28 @@ describe("CheckProductClient", () => {
     expect(
       screen.queryByRole("button", { name: /add to shelf/i }),
     ).not.toBeInTheDocument();
+  });
+
+  it("gates photo quick checks before extracting label photos", async () => {
+    const user = userEvent.setup();
+    mockSkinProfileQuery = {
+      data: null,
+      error: null,
+      isError: false,
+      isLoading: false,
+    };
+
+    renderWithProviders(<CheckProductClient />);
+
+    await user.click(screen.getByRole("tab", { name: /photos/i }));
+    await user.upload(screen.getByLabelText(/^add photo$/i), labelFile);
+    await user.click(screen.getByRole("button", { name: /quick check/i }));
+
+    expect(mockExtractMutate).not.toHaveBeenCalled();
+    expect(mockCheckMutate).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("heading", { name: /finish your skin profile first/i }),
+    ).toBeInTheDocument();
   });
 
   it("disables photo extraction when image upload is unavailable", async () => {

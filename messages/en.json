@@ -3460,6 +3460,7 @@
       "zoomOut": "Zoom out",
       "closePhoto": "Close photo",
       "openPhoto": "Open photo full size",
+      "photoLightboxDescription": "Expanded journal photo. Use the zoom control or click the photo to inspect details, then close the dialog to return to the journal day.",
       "statusCompleted": "Analysis complete",
       "statusAnalysing": "Analysing…",
       "statusFailed": "Analysis failed",
@@ -4943,6 +4944,14 @@
       "gapSaved": "Saved to your Today wishlist.",
       "gapDismissed": "Recommendation dismissed for now."
     },
+    "prerequisites": {
+      "profile": {
+        "title": "Finish your skin profile first",
+        "body": "Ritora needs your skin profile before quick suggestions or new journal photos can safely shape today's routine.",
+        "cta": "Open skin profile",
+        "loadError": "We couldn't reach your skin profile right now. Check your connection and try again."
+      }
+    },
     "aiConsentDialog": {
       "title": "Allow AI suggestions",
       "body": "Quick suggestions use AI to read your shelf, schedule, skin profile, journals, and past application history. Sensitive profile or journal context is only used when the matching consent is also active.",
@@ -5557,6 +5566,14 @@
   "community": {
     "title": "Community",
     "subtitle": "Products, playbooks, and what to skip, confirmed by people like you.",
+    "prerequisites": {
+      "profile": {
+        "title": "Finish your skin profile first",
+        "body": "Ritora needs your skin profile before it can safely match community playbooks, reviews, and product evidence to you.",
+        "cta": "Open skin profile",
+        "loadError": "We couldn't reach your skin profile right now. Check your connection and try again."
+      }
+    },
     "tabs": {
       "peopleLikeMe": "People like me",
       "playbooks": "Playbooks",

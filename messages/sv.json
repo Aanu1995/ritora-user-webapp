@@ -48,7 +48,7 @@
     },
     "retryPanel": {
       "stillStuck": "Fortfarande problem?",
-      "contactSupport": "Kontakta support"
+      "contactSupport": "Kontakta kundstöd"
     }
   },
   "nav": {
@@ -281,11 +281,11 @@
         },
         {
           "key": "community",
-          "eyebrow": "Community",
+          "eyebrow": "Gemenskap",
           "title": "Rutiner som fungerat för personer som du.",
           "bullets": [
-            "Bläddra bland playbooks från användare med din hudtyp och dina besvär",
-            "Anpassa vilken playbook som helst till produkterna på din hylla med ett tryck",
+            "Bläddra bland Playbooks från användare med din hudtyp och dina besvär",
+            "Anpassa valfri Playbook till produkterna på din hylla med ett tryck",
             "Riktiga utfallssignaler: fungerade, blandat, fungerade inte"
           ]
         },
@@ -575,8 +575,8 @@
           "answer": "Nej. Huddagboken är frivillig. Rutiner, ingredienskontroller och Smarta val fungerar utan ett enda foto. Uppladdning gör bara vägledningen mer anpassningsbar."
         },
         {
-          "question": "Är community öppen för alla? Måste jag dela?",
-          "answer": "Att dela är frivilligt. Din hylla och din huddagbok är privata som standard. Endast de playbooks och recensioner du själv väljer att publicera går till community, och du kan ta bort dem när som helst."
+          "question": "Är gemenskapen öppen för alla? Måste jag dela?",
+          "answer": "Att dela är frivilligt. Din hylla och din huddagbok är privata som standard. Endast de Playbooks och recensioner du själv väljer att publicera går till gemenskapen, och du kan ta bort dem när som helst."
         },
         {
           "question": "Är det gratis?",
@@ -695,7 +695,7 @@
     "accountDeletionInvalidTokenHelp": "Den här länken saknas, har gått ut eller är redan använd. Logga in för att kontrollera din kontostatus eller avbryta en väntande radering.",
     "accountDeletionGoToLogin": "Logga in på mitt konto",
     "accountDeletionGoToSettings": "Öppna inställningar",
-    "accountDeletionContactSupport": "Kontakta support",
+    "accountDeletionContactSupport": "Kontakta kundstöd",
     "accountDeletionRedirecting": "Tar dig till inloggning om ett ögonblick...",
     "accountDeletionRequestTimedOutTitle": "Begäran tog för lång tid",
     "accountDeletionRequestTimedOutBody": "Ritora fick inget färdigt svar i den här webbläsaren. Försök igen för att kontrollera länkens status, eller logga in för att kontrollera ditt konto.",
@@ -733,7 +733,7 @@
     "accountDeletionInvalidTokenWhatTitle": "Vad du kan göra",
     "accountDeletionInvalidTokenWhatItem1": "Logga in för att se om din radering fortfarande är schemalagd",
     "accountDeletionInvalidTokenWhatItem2": "Starta en ny radering från inställningar om du fortfarande vill fortsätta",
-    "accountDeletionInvalidTokenWhatItem3": "Kontakta support om något ser konstigt ut",
+    "accountDeletionInvalidTokenWhatItem3": "Kontakta kundstöd om något ser konstigt ut",
     "verificationFailed": "Verifiering misslyckades. Länken kan ha gått ut.",
     "verifyingEmail": "Verifierar din e-post...",
     "emailVerifiedSuccess": "E-post verifierad!",
@@ -890,7 +890,7 @@
       "stormy": "Stormigt"
     },
     "seasonLabel": "Säsong",
-    "temperature": "Temp",
+    "temperature": "Temperatur",
     "uv": "UV",
     "uvValue": "{risk} · UV {index}",
     "uvIndexOnly": "UV {index}",
@@ -902,7 +902,7 @@
     "pm25": "PM2.5",
     "pm10": "PM10",
     "micrograms": "{value} µg/m³",
-    "pollen": "Pollen",
+    "pollen": "Pollenhalt",
     "water": "Vatten",
     "waterValue": "{hardness} · {sensitivity}",
     "sensitivities": "Känslig för",
@@ -979,7 +979,7 @@
     "logout": "Logga ut",
     "loggingOut": "Loggar ut...",
     "badges": {
-      "start": "Start",
+      "start": "Starta",
       "continue": "Fortsätt",
       "ready": "Redo"
     },
@@ -1018,7 +1018,7 @@
         "label": "Uppföljning",
         "description": "Följ hur huden förändras över tid och hur den reagerar på rutinändringar.",
         "children": {
-          "checkIns": "Check-ins, reaktioner och välmåendesignaler",
+          "checkIns": "Avstämningar, reaktioner och välmåendesignaler",
           "timeline": "Fototidslinje och framstegsinsikter"
         }
       },
@@ -1073,11 +1073,11 @@
       "signOutAllConfirmCancel": "Avbryt",
       "signOutAllFailed": "Det gick inte att logga ut från alla enheter. Försök igen.",
       "support": {
-        "title": "Support",
+        "title": "Hjälp",
         "description": "Skicka feedback eller be Ritora-teamet om hjälp.",
-        "contactTitle": "Kontakta support",
+        "contactTitle": "Kontakta kundstöd",
         "contactDescription": "Dela ett fel, ett förvirrande resultat, ett problem med produktdata eller en kontofråga.",
-        "contactAction": "Kontakta support",
+        "contactAction": "Kontakta kundstöd",
         "dialogTitle": "Kontakta Ritora-supporten",
         "dialogBody": "Skicka tillräckligt med information för att teamet ska förstå vad som hände. Undvik att lägga till mycket känslig hälsoinformation om det inte är nödvändigt för ärendet.",
         "typeLabel": "Vad gäller det?",
@@ -1086,9 +1086,9 @@
         "cancel": "Avbryt",
         "submit": "Skicka meddelande",
         "sending": "Skickar meddelande...",
-        "sent": "Supportmeddelandet har skickats.",
-        "submitFailed": "Supportmeddelandet kunde inte skickas. Försök igen.",
-        "rateLimited": "Vänta en stund innan du skickar ett nytt supportmeddelande.",
+        "sent": "Kundstödsmeddelandet har skickats.",
+        "submitFailed": "Kundstödsmeddelandet kunde inte skickas. Försök igen.",
+        "rateLimited": "Vänta en stund innan du skickar ett nytt kundstödsmeddelande.",
         "titleRequired": "Ämnet måste vara minst 3 tecken.",
         "titleTooLong": "Ämnet får vara högst 160 tecken.",
         "descriptionRequired": "Detaljerna måste vara minst 8 tecken.",
@@ -1334,7 +1334,7 @@
       "sunscreenFilterHint": "Kemiska filter absorberar UV; mineralfilter reflekterar. Hybrider kombinerar båda.",
       "sunscreenFinishLabel": "Solskyddsfinish",
       "sunscreenFinishHint": "Hur formulan ser ut och känns efter applicering.",
-      "budgetTierLabel": "Budget",
+      "budgetTierLabel": "Budgetnivå",
       "budgetTierHint": "Ditt vanliga prisspann per produkt.",
       "allowSmartPicksLabel": "Låt Smarta val föreslå nya produkter?",
       "allowSmartPicksHint": "Låter Ritora rekommendera produkter utöver dem som redan finns i din hylla.",
@@ -1632,14 +1632,14 @@
       "deleteTitle": "Radera ditt konto",
       "deleteDesc": "Schemalägger radering av din profil, hälsokontext, hylla, schema, communityinlägg och granskningslogg efter en respitperiod på 30 dagar.",
       "deleteAction": "Radera konto",
-      "deleteUnavailable": "Kontoborttagning kommer snart. Kontakta support tills vidare.",
+      "deleteUnavailable": "Kontoborttagning kommer snart. Kontakta kundstöd tills vidare.",
       "deleteDialogTitle": "Radera ditt Ritora-konto?",
       "deleteDialogPasswordBody": "Bekräfta ditt lösenord för att schemalägga raderingen. Vi loggar ut alla dina enheter direkt.",
       "deleteDialogOAuthBody": "Vi skickar en bekräftelselänk till din inkorg. När du bekräftar loggar vi ut alla dina enheter direkt.",
       "deleteDialogWhatHappensTitle": "Detta raderas",
       "deleteDialogWhatHappensItem1": "Din profil, dina hudbilder och rutinhistorik",
       "deleteDialogWhatHappensItem2": "Din hylla, ditt schema och sparade förslag",
-      "deleteDialogWhatHappensItem3": "Dina gemenskapsrecensioner och spelplaner tas bort från offentliga bevis",
+      "deleteDialogWhatHappensItem3": "Dina gemenskapsrecensioner och Playbooks tas bort från offentliga bevis",
       "deleteDialogWhatHappensItem4": "Alla sessioner på alla inloggade enheter",
       "deleteDialogGraceTitle": "Du har 30 dagar att ångra dig",
       "deleteDialogGraceBody": "Vi sparar allt i 30 dagar. Logga in igen eller använd länken i mejlet för att avbryta innan dess. Efter dag 30 är raderingen permanent och kan inte ångras.",
@@ -1749,11 +1749,11 @@
       "very_light": "Mycket ljus",
       "light": "Ljus",
       "light_medium": "Ljus medium",
-      "medium": "Medium",
+      "medium": "Medel",
       "medium_dark": "Medium mörk",
       "dark": "Mörk",
       "very_dark": "Mycket mörk",
-      "under_18": "Under 18",
+      "under_18": "Under 18 år",
       "18_24": "18-24",
       "25_34": "25-34",
       "35_44": "35-44",
@@ -1785,7 +1785,7 @@
       "clear_acne": "Ren akne",
       "fade_dark_marks": "Tona ut mörka märken",
       "improve_texture": "Förbättra struktur",
-      "anti_aging": "Anti-aging",
+      "anti_aging": "Anti-age",
       "strengthen_barrier": "Stärk barriär",
       "minimize_pores": "Minimera porer",
       "even_tone": "Jämn ton",
@@ -1849,7 +1849,7 @@
       "often_irritating": "Ofta irriterande",
       "havent_tried_many": "Har inte testat många",
       "chemical": "Kemisk",
-      "mineral": "Mineral",
+      "mineral": "Mineraliskt",
       "hybrid": "Hybrid",
       "matte": "Matt",
       "dewy": "Daggig",
@@ -1868,7 +1868,7 @@
       "breakout_reaction": "Utbrott",
       "hives": "Nässelutslag",
       "swelling": "Svullnad",
-      "mild": "Mild",
+      "mild": "Lindrig",
       "severe": "Allvarlig",
       "suspected": "Misstänkt",
       "confirmed_repeat": "Bekräftad (upprepad exponering)",
@@ -1880,8 +1880,8 @@
       "high_dairy": "Mycket mejeri",
       "low_sugar": "Lite socker",
       "low_dairy": "Lite mejeri",
-      "vegan_diet": "Vegan",
-      "vegetarian": "Vegetarian",
+      "vegan_diet": "Vegansk",
+      "vegetarian": "Vegetarisk",
       "occasional": "Ibland",
       "regular": "Regelbundet",
       "dry_air": "Torr luft",
@@ -1911,7 +1911,7 @@
       "luxury": "Lyx",
       "lightweight": "Lätt",
       "rich": "Rik",
-      "gel": "Gel",
+      "gel": "Gelé",
       "cream": "Kräm",
       "oil_free": "Oljefri",
       "vegan": "Vegansk",
@@ -1960,7 +1960,7 @@
     "category": {
       "all": "Alla",
       "cleanser": "Rengöring",
-      "toner": "Toner",
+      "toner": "Ansiktsvatten",
       "essence": "Essens",
       "serum": "Serum",
       "moisturizer": "Fuktkräm",
@@ -2709,7 +2709,7 @@
     },
     "categories": {
       "cleanser": "Rengöring",
-      "toner": "Toner",
+      "toner": "Ansiktsvatten",
       "essence": "Essens",
       "serum": "Serum",
       "moisturizer": "Fuktkräm",
@@ -3099,7 +3099,7 @@
     },
     "stepLabels": {
       "cleanser": "Rengöring",
-      "toner": "Toner",
+      "toner": "Ansiktsvatten",
       "essence": "Essens",
       "serum": "Serum",
       "moisturizer": "Fuktkräm",
@@ -3254,7 +3254,7 @@
         "p1": "Ritora är för personer som är 16 år eller äldre. Vi samlar inte medvetet in information från någon som är yngre. Om du tror att ett barn har skapat ett konto, skriv till <support>{supportEmail}</support> så tar vi bort kontot."
       },
       "cookies": {
-        "title": "Cookies",
+        "title": "Kakor",
         "lead": "Vi använder ett litet antal cookies, alla för grundläggande funktionalitet.",
         "bullets": [
           "En sessionscookie som håller dig inloggad.",
@@ -3357,7 +3357,7 @@
       "calendar": "Kalender",
       "photos": "Foton",
       "insights": "Insikter",
-      "wrapped": "Wrapped"
+      "wrapped": "Årsöversikt"
     },
     "comingSoon": {
       "badge": "Kommer snart",
@@ -3460,6 +3460,7 @@
       "zoomOut": "Zooma ut",
       "closePhoto": "Stäng foto",
       "openPhoto": "Öppna foto i fullstorlek",
+      "photoLightboxDescription": "Förstorat hudjournalfoto. Använd zoomkontrollen eller klicka på fotot för att granska detaljer och stäng sedan dialogen för att återgå till journaldagen.",
       "statusCompleted": "Analys klar",
       "statusAnalysing": "Analyserar…",
       "statusFailed": "Analys misslyckades",
@@ -3501,7 +3502,7 @@
     },
     "analysis": {
       "title": "Hudobservationer idag",
-      "modelBadge": "AI · {model}",
+      "modelBadge": "AI-modell · {model}",
       "confidence": "Säkerhet {value}",
       "reading": {
         "photoRead": "Fotoläsning: {label}",
@@ -3801,7 +3802,7 @@
     },
     "severity": {
       "none": "Ingen",
-      "mild": "Mild",
+      "mild": "Lindrig",
       "moderate": "Måttlig",
       "severe": "Svår"
     },
@@ -4056,7 +4057,7 @@
       "subtitle": "Förslag i vanligt språk från dina foton, avstämningar och betrodda hudkällor.",
       "kinds": {
         "onboarding_progress": "Framsteg",
-        "trend": "Trend",
+        "trend": "Trendlinje",
         "correlation": "Korrelation",
         "effectiveness": "Effektivitet",
         "referral": "Hudläkarremiss",
@@ -4072,7 +4073,7 @@
         "ai_pattern": "AI mönster"
       },
       "severity": {
-        "info": "Info",
+        "info": "Information",
         "warning": "Bevaka",
         "critical": "Viktigt"
       },
@@ -4114,11 +4115,11 @@
       "factors": {
         "highStress": "Dagar med hög stress",
         "travelled": "Resdagar",
-        "stress_today": "stress"
+        "stress_today": "stressnivå"
       },
       "categories": {
         "cleanser": "rengöring",
-        "toner": "toner",
+        "toner": "ansiktsvatten",
         "essence": "essens",
         "serum": "serum",
         "moisturizer": "fuktkräm",
@@ -4247,10 +4248,10 @@
         "trigger": "Utlösare",
         "model": "Modell",
         "promptVersion": "Promptversion",
-        "cache": "Cache",
+        "cache": "Mellanlager",
         "notUsed": "Inte använd",
         "cacheHit": "träff",
-        "cacheMiss": "miss",
+        "cacheMiss": "missad träff",
         "sources": "Källor",
         "provenance": "Texten förfinades av AI med endast fakta och granskade källor som visas här."
       },
@@ -4335,7 +4336,7 @@
         "yearly": "Årlig"
       },
       "viewer": {
-        "title": "Wrapped",
+        "title": "Årsöversikt",
         "subtitle": "{kind} · {period}",
         "notFound": "Wrapped hittades inte.",
         "noFrames": "Inga bildrutor tillgängliga.",
@@ -4655,7 +4656,7 @@
       },
       "community_moderation": {
         "title": "Gemenskapsuppdatering",
-        "body": "En recension eller spelplan som du delade har en modereringsuppdatering."
+        "body": "En recension eller Playbook som du delade har en modereringsuppdatering."
       }
     }
   },
@@ -4711,13 +4712,13 @@
         "goal": "Mål",
         "skinType": "Hudtyp",
         "location": "Plats",
-        "budget": "Budget",
+        "budget": "Budgetnivå",
         "unset": "Ej valt"
       },
       "budget": {
         "drugstore": "Budget",
         "mid": "Mellan",
-        "premium": "Premium",
+        "premium": "Premiumklass",
         "luxury": "Lyx"
       },
       "coverage": {
@@ -4845,7 +4846,7 @@
         },
         "historyInsufficient": {
           "title": "Fortsätt med det du har",
-          "body": "Din hylla täcker grunderna, men det finns inte tillräckligt med rutinhistorik ännu för att säga att en produkt bör bytas ut. Fortsätt logga användning och tydliga check-in-bilder innan du köper mer."
+          "body": "Din hylla täcker grunderna, men det finns inte tillräckligt med rutinhistorik ännu för att säga att en produkt bör bytas ut. Fortsätt logga användning och tydliga avstämningsbilder innan du köper mer."
         },
         "productGenerationUnavailable": {
           "title": "Dina produktval förbereds",
@@ -4900,7 +4901,7 @@
           "sunscreen_finish": "Solskyddsfinish",
           "water_hardness": "Vattenhårdhet",
           "water_sensitivity": "Vattenkänslighet",
-          "budget_tier": "Budget",
+          "budget_tier": "Budgetnivå",
           "smart_picks_consent": "Val för Smarta val",
           "more": "{count, plural, one {+1 till} other {+# till}}"
         }
@@ -4942,6 +4943,14 @@
       "aiConsentFailed": "Vi kunde inte spara samtycket. Försök igen.",
       "gapSaved": "Sparat i dagens önskelista.",
       "gapDismissed": "Rekommendationen dold tills vidare."
+    },
+    "prerequisites": {
+      "profile": {
+        "title": "Slutför din hudprofil först",
+        "body": "Ritora behöver din hudprofil innan snabba förslag eller nya journalfoton säkert kan påverka dagens rutin.",
+        "cta": "Öppna hudprofilen",
+        "loadError": "Vi kunde inte nå din hudprofil just nu. Kontrollera anslutningen och försök igen."
+      }
     },
     "aiConsentDialog": {
       "title": "Tillåt AI-förslag",
@@ -5002,9 +5011,9 @@
       "submit": "Generera förslag",
       "noteTooLong": "Håll detta under 280 tecken.",
       "intensity": {
-        "minimal": "Minimal",
+        "minimal": "Minimal nivå",
         "minimalDescription": "Bara det viktigaste",
-        "standard": "Standard",
+        "standard": "Standardnivå",
         "standardDescription": "Hela minirutinen"
       }
     },
@@ -5161,7 +5170,7 @@
       "appliedSummary": "{count} av {total} applicerade",
       "awaitingRecord": "Väntar på registrering",
       "simplified": "Förenklad",
-      "specialist": "Specialist",
+      "specialist": "Specialistkontakt",
       "basicSuggestion": "Grundförslag",
       "personalizationOffTitle": "Personalisering är av.",
       "personalizationOffBody": "Detta förslag undviker profil-, journal- och historikkontext tills samtycke för AI-förslag har beviljats.",
@@ -5174,7 +5183,7 @@
       "availableAt": "Tillgänglig {time}",
       "unlocksIn": "Låser upp om {eta}.",
       "unlocksInRich": "Låser upp om <strong>{eta}</strong>.",
-      "lockedExplainer": "Vi visar bara förslag när ditt inställda ankomstfönster öppnas så de speglar ditt senaste foto, sömn och incheckning.",
+      "lockedExplainer": "Vi visar bara förslag när ditt inställda ankomstfönster öppnas så de speglar ditt senaste foto, sömn och avstämning.",
       "generatingExplainer": "Ritora förbereder detta förslag med ditt senaste schema, din hylla, hudprofil och senaste registreringar.",
       "failedExplainer": "Detta förslag kunde inte förberedas. Det förblir synligt så att problemet inte försvinner från dagen.",
       "missedExplainer": "Detta förslag passerade utan en sparad appliceringsregistrering. Du kan fortfarande registrera eller redigera det från Historik efter idag.",
@@ -5406,7 +5415,7 @@
       "mode_all": "Visa alla typer",
       "source": "Källa",
       "source_all": "Visa alla källor",
-      "status": "Status",
+      "status": "Statusläge",
       "status_all": "Visa alla statusar",
       "last7d": "Senaste 7 dagarna",
       "last30d": "Senaste 30 dagarna",
@@ -5556,10 +5565,18 @@
   },
   "community": {
     "title": "Gemenskap",
-    "subtitle": "Produkter, spelplaner och vad du bör hoppa över, bekräftat av personer som dig.",
+    "subtitle": "Produkter, Playbooks och vad du bör hoppa över, bekräftat av personer som dig.",
+    "prerequisites": {
+      "profile": {
+        "title": "Slutför din hudprofil först",
+        "body": "Ritora behöver din hudprofil innan gemenskapens Playbooks, recensioner och produktbevis kan matchas säkert till dig.",
+        "cta": "Öppna hudprofilen",
+        "loadError": "Vi kunde inte nå din hudprofil just nu. Kontrollera anslutningen och försök igen."
+      }
+    },
     "tabs": {
       "peopleLikeMe": "Personer som jag",
-      "playbooks": "Spelplaner",
+      "playbooks": "Playbooks",
       "reviews": "Recensioner",
       "bookmarks": "Bokmärken",
       "submissions": "Mina",
@@ -5573,14 +5590,14 @@
       "emptyProfile": "Slutför din hudprofil för bättre matchning. När den är klar kan vi rangordna rutiner kring det som faktiskt passar dig."
     },
     "lists": {
-      "playbooksTitle": "Målspelplaner",
-      "playbooksEmptyTitle": "Inga målspelplaner ännu",
-      "playbooksEmptyBody": "Målspelplaner visas här efter att de godkänts av vår säkerhetskontroll.",
-      "playbooksFilterEmptyTitle": "Inga spelplaner matchar de filtren",
+      "playbooksTitle": "Playbooks för mål",
+      "playbooksEmptyTitle": "Inga Playbooks för mål ännu",
+      "playbooksEmptyBody": "Playbooks för mål visas här efter att de godkänts av vår säkerhetskontroll.",
+      "playbooksFilterEmptyTitle": "Inga Playbooks matchar de filtren",
       "playbooksFilterEmptyBody": "Pröva ett bredare mål, resultat eller tidsram.",
       "playbooksTopN": "Topp {count}",
-      "playbooksLoaded": "{count} laddade",
-      "playbooksShownTotal": "{shown}/{total} visade",
+      "playbooksLoaded": "{count} Playbooks laddade",
+      "playbooksShownTotal": "{shown}/{total} Playbooks visade",
       "reviewsTitle": "Matchade recensioner",
       "reviewsEmptyTitle": "Inga publicerade recensioner ännu",
       "reviewsEmptyBody": "När personer delar recensioner med det krävda sammanhanget visas de här.",
@@ -5593,12 +5610,12 @@
       "loadMoreError": "Vi kunde inte läsa in mer gemenskapsbevis.",
       "retry": "Försök igen",
       "peopleEmptyTitle": "Inga gemenskapsbevis ännu",
-      "peopleEmptyBody": "När personer med hud som din delar spelplaner och recensioner ser du dem här."
+      "peopleEmptyBody": "När personer med hud som din delar Playbooks och recensioner ser du dem här."
     },
     "bookmarks": {
       "title": "Bokmärken",
       "emptyTitle": "Inga sparade gemenskapsbevis ännu",
-      "emptyBody": "Spara recensioner och spelplaner som du vill återkomma till innan du provar något nytt.",
+      "emptyBody": "Spara recensioner och Playbooks som du vill återkomma till innan du provar något nytt.",
       "loaded": "{count} sparade",
       "save": "Spara",
       "bookmarked": "Bokmärkt",
@@ -5611,11 +5628,11 @@
     },
     "cards": {
       "adapt": "Kontrollera min hylla",
-      "viewPlaybook": "Visa spelplan",
+      "viewPlaybook": "Visa Playbook",
       "reportRoutine": "Rapportera rutin",
       "reportReview": "Rapportera recension",
       "typeReview": "Recension",
-      "typePlaybook": "Spelplan",
+      "typePlaybook": "Playbook",
       "context": "Parad med",
       "usedAloneContextLabel": "Använd ensam",
       "notSureContextLabel": "Andra produkter ej noterade",
@@ -5623,14 +5640,14 @@
       "moreSteps": "+{count} fler"
     },
     "share": {
-      "playbookTitle": "Dela en spelplan",
-      "playbookDescription": "Gå igenom målet, rutinen och resultatet. Vi säkerhetskontrollerar det innan det publiceras.",
-      "playbookAction": "Dela en spelplan",
+      "playbookTitle": "Dela en Playbook",
+      "playbookDescription": "Gå igenom målet, rutinen och resultatet. Vi säkerhetskontrollerar den innan den publiceras.",
+      "playbookAction": "Dela en Playbook",
       "reviewTitle": "Skriv en recension",
       "reviewDescription": "Lägg till sammanhanget någon som du behöver innan de provar den här produkten.",
       "reviewAction": "Skriv en recension",
       "submitReview": "Skicka recension",
-      "sharePlaybook": "Dela spelplan",
+      "sharePlaybook": "Dela Playbook",
       "submitting": "Skickar…",
       "scanning": "Skannar…",
       "saveEdits": "Spara ändringar",
@@ -5643,25 +5660,25 @@
       "keepEditing": "Fortsätt redigera"
     },
     "unsavedPlaybook": {
-      "title": "Kasta spelplanens ändringar?",
-      "description": "Ditt spelplansutkast går förlorat om du stänger panelen nu.",
+      "title": "Kasta Playbook-ändringar?",
+      "description": "Ditt Playbook-utkast går förlorat om du stänger panelen nu.",
       "discard": "Kasta ändringar",
       "keepEditing": "Fortsätt redigera"
     },
     "editability": {
       "heading": "Innan du skickar in",
       "reviewBody": "När din recension är publicerad är det bara recensionstexten du kan redigera, och bara om våra moderatorer ber dig. Betyg, produkt, användningsuppgifter och taggar är låsta.",
-      "playbookBody": "När din spelplan är publicerad är det bara titeln och sammanfattningen du kan redigera, och bara om våra moderatorer ber dig. Steg, produkter, mål och taggar är låsta."
+      "playbookBody": "När din Playbook är publicerad är det bara titeln och sammanfattningen du kan redigera, och bara om våra moderatorer ber dig. Steg, produkter, mål och taggar är låsta."
     },
     "confirm": {
       "reviewTitle": "Skicka in den här recensionen?",
       "reviewBody": "Vi kör en säkerhetskontroll och AI-moderering innan den publiceras. Efter det är det bara recensionstexten du kan redigera, och bara om moderatorer ber dig.",
-      "playbookTitle": "Dela den här spelplanen?",
+      "playbookTitle": "Dela den här Playbooken?",
       "playbookBody": "Vi kör en säkerhetskontroll och AI-moderering innan den publiceras. Efter det är det bara titeln och sammanfattningen du kan redigera, och bara om moderatorer ber dig.",
       "keepEditing": "Fortsätt redigera"
     },
     "filters": {
-      "searchPlaybooks": "Sök spelplaner",
+      "searchPlaybooks": "Sök Playbooks",
       "searchPlaybooksPlaceholder": "Sök mål, produkter, vanor, undvikna triggers…",
       "searchReviews": "Sök recensioner",
       "searchReviewsPlaceholder": "Sök produkt, varumärke, resultat eller parad produkt…",
@@ -5691,8 +5708,8 @@
       "filtersWithCount": "Filter · {count}",
       "allFiltersTitle": "Filtrera recensioner",
       "allFiltersDescription": "Välj vilken kombination du vill av resultat, hudprofil, rutinsammanhang och intressekoppling.",
-      "playbooksFiltersTitle": "Filtrera spelplaner",
-      "playbooksFiltersDescription": "Välj vilken kombination du vill av mål, hudprofil, produkter och säkerhet.",
+      "playbooksFiltersTitle": "Filtrera Playbooks",
+      "playbooksFiltersDescription": "Välj vilken kombination du vill av mål, hudprofil, produkter och säkerhet för att begränsa det du ser.",
       "done": "Klart",
       "activeFiltersLabel": "{count, plural, =0 {Inga aktiva filter} one {# aktivt filter} other {# aktiva filter}}"
     },
@@ -5757,7 +5774,7 @@
       },
       "productCategory": {
         "cleanser": "Rengöring",
-        "toner": "Toner",
+        "toner": "Ansiktsvatten",
         "essence": "Essens",
         "serum": "Serum",
         "moisturizer": "Fuktkräm",
@@ -5826,11 +5843,11 @@
         "professional-care-involved": "Professionell vård ingick"
       },
       "minimumRating": {
-        "5": "5 stjärnor",
-        "4": "4+ stjärnor",
-        "3": "3+ stjärnor",
+        "1": "1+ stjärnor",
         "2": "2+ stjärnor",
-        "1": "1+ stjärnor"
+        "3": "3+ stjärnor",
+        "4": "4+ stjärnor",
+        "5": "5 stjärnor"
       },
       "outcomeSignal": {
         "worked_for_me_too": "Fungerade för mig också",
@@ -5861,7 +5878,7 @@
       },
       "outcomeIrritation": {
         "none": "Ingen irritation",
-        "mild": "Mild irritation",
+        "mild": "Lindrig irritation",
         "moderate": "Måttlig irritation",
         "severe": "Svår irritation"
       }
@@ -5879,7 +5896,7 @@
         "effectivenessLabel": "Effekt",
         "effectivenessHint": "Hur mycket den hjälpte.",
         "effectivenessPlaceholder": "Betygsätt effekten",
-        "irritationLabel": "Irritation",
+        "irritationLabel": "Hudirritation",
         "irritationHint": "1 = ingen, 5 = svår.",
         "irritationPlaceholder": "Betygsätt irritation",
         "skinResponseLabel": "Hudrespons",
@@ -5928,13 +5945,13 @@
       },
       "playbook": {
         "srTitle": "Dela vad som fungerade",
-        "submitFailed": "Målspelplanen kunde inte skickas.",
+        "submitFailed": "Playbooken kunde inte skickas.",
         "goalSection": "Mål och resultat",
         "titleLabel": "Titel",
         "titleHint": "Ett kort namn för det som fungerade.",
         "titlePlaceholder": "t.ex. Det som lugnade mina utbrott",
         "goalLabel": "Mål",
-        "goalHint": "Vad spelplanen var till för.",
+        "goalHint": "Vad Playbooken var till för.",
         "goalPlaceholder": "Välj mål",
         "resultLabel": "Resultat",
         "resultHint": "Valfritt. Välj närmaste resultat.",
@@ -5945,7 +5962,7 @@
         "routineSection": "Produkter och rutin",
         "routineDescription": "Lägg till varje steg i ordning. Välj från din hylla när du kan. Manuell inmatning fungerar när produkten inte finns på hyllan.",
         "changedSection": "Vad förändrades",
-        "changedDescription": "Valfritt. Taggar gör spelplanen sökbar för personer med samma mål.",
+        "changedDescription": "Valfritt. Taggar gör Playbooken sökbar för personer med samma mål.",
         "avoidLabel": "Vad jag undvek",
         "avoidHint": "Saker som hjälpte eftersom du slutade göra dem.",
         "habitLabel": "Vanor som hjälpte",
@@ -6045,11 +6062,11 @@
       "failedToast": "Kunde inte spara ditt resultat.",
       "confirmed": "{worked} av {total} personer bekräftade att det fungerade",
       "reviewConfirmed": "{worked} av {total} personer bekräftade att produkten fungerade för dem",
-      "helper": "Tryck på en ikon nedan för att dela ditt eget resultat med den här spelplanen. Varje ikon står för ett olika slags resultat.",
+      "helper": "Tryck på en ikon nedan för att dela ditt eget resultat med den här Playbooken. Varje ikon står för ett olika slags resultat.",
       "reviewHelper": "Tryck på en ikon nedan för att säga om den recenserade produkten fungerade för dig också. Din kontext hjälper Ritora att rangordna produktbevis.",
       "viewResults": "Visa gemenskapsresultat",
       "resultsTitle": "Gemenskapsresultat",
-      "resultsDescription": "Strukturerade bekräftelser från personer som provade den här recensionen eller spelplanen. Resultatanteckningar visas först efter moderering.",
+      "resultsDescription": "Strukturerade bekräftelser från personer som provade den här recensionen eller Playbooken. Resultatanteckningar visas först efter moderering.",
       "resultsForProduct": "För {product}",
       "resultMatchedPartsLabel": "Matchande sammanhang",
       "resultUsedWithLabel": "Använd med",
@@ -6090,7 +6107,7 @@
       "manualUsedWithProduct": "Produktnamn",
       "manualUsedWithProductPlaceholder": "t.ex. Hydrating Cleanser",
       "reviewOwnContentToast": "Du kan inte bekräfta din egen recension.",
-      "routineOwnContentToast": "Du kan inte bekräfta din egen spelplan.",
+      "routineOwnContentToast": "Du kan inte bekräfta din egen Playbook.",
       "shortLabels": {
         "worked_for_me_too": "Fungerade",
         "worked_with_changes": "Ändrade",
@@ -6114,7 +6131,7 @@
       "sameGoalYes": "Ja, samma mål",
       "sameGoalNo": "Nej, relaterat men annorlunda",
       "trialDuration": "Hur länge provade du det?",
-      "trialDurationHint": "Hur länge du provade den här spelplanen eller metoden innan du bestämde dig.",
+      "trialDurationHint": "Hur länge du provade den här Playbooken eller metoden innan du bestämde dig.",
       "reviewTrialDurationHint": "Hur länge du använde den recenserade produkten innan du avgjorde om den fungerade för dig.",
       "irritation": "Irritationsnivå",
       "irritationHint": "Någon sveda, rodnad eller utbrott du märkte.",
@@ -6133,11 +6150,11 @@
       "loadError": "Gemenskapsbevis kunde inte laddas.",
       "retry": "Försök igen",
       "title": "Gemenskapsbevis",
-      "description": "Strukturerade recensioner, spelplaner och bekräftelser från personer med jämförbara hudfasetter.",
+      "description": "Strukturerade recensioner, Playbooks och bekräftelser från personer med jämförbara hudfasetter.",
       "noConfirmations": "Inga bekräftelser från liknande användare ännu",
       "similarConfirmations": "{count, plural, one {# bekräftelse från liknande användare} other {# bekräftelser från liknande användare}}",
       "reviews": "Recensioner",
-      "playbooks": "Spelplaner",
+      "playbooks": "Playbooks",
       "workedSignals": "Fungerade för dem",
       "averageEffectiveness": "Snitt-effekt",
       "notAvailable": "Saknas",
@@ -6150,12 +6167,12 @@
       "loadErrorTitle": "Rutinen kunde inte laddas",
       "loadErrorBody": "Den här gemenskapsrutinen kan vara otillgänglig eller under moderering.",
       "tryAgain": "Försök igen",
-      "sheetTitle": "Spelplansdetaljer",
-      "sheetEyebrow": "Spelplan",
+      "sheetTitle": "Playbook-detaljer",
+      "sheetEyebrow": "Playbook",
       "sheetDescription": "Granska delade produkter, rutinmönster, säkerhetsnoteringar och vad din hylla redan täcker.",
       "matchReasonsLabel": "Varför detta matchar dig",
       "noRelevanceReasons": "Delad utan en specifik matchningsorsak.",
-      "subtitle": "En målspelplan som du kan jämföra med personer som dig och kontrollera mot din egen hylla.",
+      "subtitle": "En mål-Playbook som du kan jämföra med personer som dig och kontrollera mot din egen hylla.",
       "backToCommunity": "Gemenskap",
       "report": "Rapportera",
       "reporting": "Rapporterar…",
@@ -6165,7 +6182,7 @@
       "categoryOnlyStep": "Endast kategoristeg",
       "adaptLabel": "Hyllkontroll",
       "adaptTitle": "Se vad du redan har och vad som saknas",
-      "adaptBody": "Ritora jämför den här spelplanen med din hylla så att du ser vilka steg du redan äger, vilka steg som kan använda en liknande säker produkt du äger och vilka produktkategorier som saknas. Det raderar inte produkter från hyllan och ändrar inte din rutin.",
+      "adaptBody": "Ritora jämför den här Playbooken med din hylla så att du ser vilka steg du redan äger, vilka steg som kan använda en liknande säker produkt du äger och vilka produktkategorier som saknas. Det raderar inte produkter från hyllan och ändrar inte din rutin.",
       "adapting": "Kontrollerar hyllan…",
       "adaptAgain": "Kontrollera hyllan igen",
       "adaptAction": "Kontrollera min hylla",
@@ -6215,7 +6232,7 @@
       "withdraw": "Dra tillbaka",
       "withdrawing": "Drar tillbaka…",
       "viewReview": "Visa recension",
-      "viewPlaybook": "Visa spelplan",
+      "viewPlaybook": "Visa Playbook",
       "resultTitle": "Resultat på {title}",
       "resultFallbackTarget": "gemenskapsinlägg",
       "withdrawConfirmTitle": "Dra tillbaka gemenskapsinlägg?",
@@ -6223,8 +6240,8 @@
       "cancel": "Avbryt",
       "editReviewTitle": "Redigera recension",
       "editReviewDescription": "Uppdatera den returnerade recensionen och spara den för en ny säkerhetskontroll.",
-      "editPlaybookTitle": "Redigera spelplan",
-      "editPlaybookDescription": "Uppdatera den returnerade spelplanen och spara den för en ny säkerhetskontroll.",
+      "editPlaybookTitle": "Redigera Playbook",
+      "editPlaybookDescription": "Uppdatera den returnerade Playbooken och spara den för en ny säkerhetskontroll.",
       "guidanceTitle": "Vad som behöver ändras",
       "guidanceFallback": "Granska inlägget för osäkra påståenden, saknat rutinsammanhang eller problem med upplysningar innan du sparar ändringar.",
       "safetyFlagTitleFallback": "Säkerhetsgranskning",
@@ -6245,34 +6262,34 @@
         "rejected": "Avvisad"
       },
       "type": {
-        "routine": "Spelplan",
+        "routine": "Playbook",
         "review": "Recension",
         "result": "Resultatnotis"
       },
       "resultOnReview": "Resultat på recension",
-      "resultOnPlaybook": "Resultat på spelplan",
+      "resultOnPlaybook": "Resultat på Playbook",
       "resultOnFallback": "Resultat på gemenskapsinlägg",
       "resultUnknownProduct": "Namnlös produkt",
       "parentReviewUnderModerationTitle": "Ursprunglig recension granskas",
       "parentReviewUnderModerationBody": "Din resultatnotis är sparad, men recensionen är inte offentligt synlig medan Ritora granskar den.",
-      "parentPlaybookUnderModerationTitle": "Ursprunglig spelplan granskas",
-      "parentPlaybookUnderModerationBody": "Din resultatnotis är sparad, men spelplanen är inte offentligt synlig medan Ritora granskar den.",
+      "parentPlaybookUnderModerationTitle": "Ursprunglig Playbook granskas",
+      "parentPlaybookUnderModerationBody": "Din resultatnotis är sparad, men Playbooken är inte offentligt synlig medan Ritora granskar den.",
       "parentNeedsEditReviewTitle": "Ursprunglig recension återlämnad till författaren",
       "parentNeedsEditReviewBody": "Din notis visas igen så snart författaren bearbetar och skickar in recensionen på nytt.",
-      "parentNeedsEditPlaybookTitle": "Ursprunglig spelplan återlämnad till författaren",
-      "parentNeedsEditPlaybookBody": "Din notis visas igen så snart författaren bearbetar och skickar in spelplanen på nytt.",
+      "parentNeedsEditPlaybookTitle": "Ursprunglig Playbook återlämnad till författaren",
+      "parentNeedsEditPlaybookBody": "Din notis visas igen så snart författaren bearbetar och skickar in Playbooken på nytt.",
       "parentRejectedReviewTitle": "Ursprunglig recension avvisades",
       "parentRejectedReviewBody": "Din notis kommer inte att visas offentligt. Du kan dra tillbaka den om du hellre vill ta bort den från ditt konto.",
-      "parentRejectedPlaybookTitle": "Ursprunglig spelplan avvisades",
+      "parentRejectedPlaybookTitle": "Ursprunglig Playbook avvisades",
       "parentRejectedPlaybookBody": "Din notis kommer inte att visas offentligt. Du kan dra tillbaka den om du hellre vill ta bort den från ditt konto.",
       "parentHiddenReviewTitle": "Ursprunglig recension togs bort",
       "parentHiddenReviewBody": "Din notis är inte längre kopplad till en offentlig recension. Du kan dra tillbaka den om du hellre vill ta bort den från ditt konto.",
-      "parentHiddenPlaybookTitle": "Ursprunglig spelplan togs bort",
-      "parentHiddenPlaybookBody": "Din notis är inte längre kopplad till en offentlig spelplan. Du kan dra tillbaka den om du hellre vill ta bort den från ditt konto."
+      "parentHiddenPlaybookTitle": "Ursprunglig Playbook togs bort",
+      "parentHiddenPlaybookBody": "Din notis är inte längre kopplad till en offentlig Playbook. Du kan dra tillbaka den om du hellre vill ta bort den från ditt konto."
     },
     "eligibility": {
       "dialogTitle": "Publicering i gemenskapen är inte tillgänglig ännu",
-      "dialogDescription": "Att bläddra är öppet för alla. För att dela en recension eller spelplan måste ditt konto klara kontrollerna nedan först.",
+      "dialogDescription": "Att bläddra är öppet för alla. För att dela en recension eller Playbook måste ditt konto klara kontrollerna nedan först.",
       "gateTitle": "Det här låser upp publicering",
       "gateIntro": "Att bläddra är på för alla. För att dela något måste ditt konto klara några kontroller, inklusive att vara minst {days} dagar gammalt.",
       "unlockDate": "Publicering låses upp {date}.",
@@ -6314,8 +6331,8 @@
       "guidelinesFailed": "Kunde inte godkänna riktlinjer.",
       "reviewPublished": "Recension publicerad.",
       "reviewModerating": "Recension skickad till moderering.",
-      "playbookPublished": "Spelplan publicerad.",
-      "playbookModerating": "Spelplan skickad till moderering.",
+      "playbookPublished": "Playbook publicerad.",
+      "playbookModerating": "Playbook skickad till moderering.",
       "editsSaved": "Ändringar sparade och skickade till säkerhetsgranskning.",
       "editsFailed": "Kunde inte spara ändringar.",
       "resubmitted": "Inlägg återskickat för säkerhetsgranskning.",
@@ -6323,7 +6340,7 @@
       "withdrawn": "Inlägg tillbakadraget från gemenskapsbevis.",
       "withdrawFailed": "Kunde inte dra tillbaka detta.",
       "routineAdapted": "Hyllkontroll klar.",
-      "routineAdaptFailed": "Kunde inte kontrollera den här spelplanen mot din hylla."
+      "routineAdaptFailed": "Kunde inte kontrollera den här Playbooken mot din hylla."
     },
     "errors": {
       "couldNotLoadTitle": "Gemenskapen kunde inte laddas",

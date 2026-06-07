@@ -1,24 +1,22 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { HeaderContextSubtitle } from "@/components/app/header-context-subtitle";
 import { PageHeader } from "@/components/app/page-header";
 import { RetryPanel } from "@/components/ui/retry-panel";
-import { DaySummaryPills } from "@/components/today-suggestion/day-summary-pills";
 import { NoCurrentSlotEmptyState } from "@/components/today-suggestion/empty-states";
-import { ReactionBanner } from "@/components/today-suggestion/reaction-banner";
-import { RecordApplicationSheet } from "@/components/today-suggestion/record-application-sheet";
-import { RecordingReminderBanner } from "@/components/today-suggestion/recording-reminder-banner";
-import { RoutineBreakBanner } from "@/components/today-suggestion/routine-break-banner";
-import { RoutineBreakStartDialog } from "@/components/today-suggestion/routine-break-start-dialog";
 import { onDemandToSlot } from "@/components/today-suggestion/on-demand-suggestion-adapter";
-import { SuggestionDetailDrawer } from "@/components/today-suggestion/suggestion-detail-drawer";
 import { SuggestionSlotCard } from "@/components/today-suggestion/slot-card";
-import { TodayAiConsentCard } from "@/components/today-suggestion/today-ai-consent-card";
 import { TodayOnDemandSuggestionSection } from "@/components/today-suggestion/today-on-demand-suggestion-section";
 import { TodayGapRecommendationSection } from "@/components/today-suggestion/today-gap-recommendation-section";
+import {
+  TodayPageDialogs,
+  type TodayEditSlot,
+} from "@/components/today-suggestion/today-page-dialogs";
 import { TodayPageHeaderActions } from "@/components/today-suggestion/today-page-header-actions";
+import { TodayStatusStack } from "@/components/today-suggestion/today-status-stack";
 import { regenerateSimplifiedSuggestions } from "@/components/today-suggestion/today-normal-routine";
 import { useTodayQuickSuggestionFlow } from "@/components/today-suggestion/use-today-quick-suggestion-flow";
 import {
@@ -45,16 +43,21 @@ import {
   isCapabilityDisabled,
   useUserCapabilities,
 } from "@/hooks/use-user-capabilities";
-import { getApiErrorMessage } from "@/lib/api-error";
+import { AppRoute } from "@/constants/app-routes";
+import { getApiErrorMessage, getApiErrorStatus } from "@/lib/api-error";
+import { isSkinProfileReady } from "@/lib/skin-profile-readiness";
 import { useSkinProfile } from "@/hooks/use-skin-profile";
 import type {
   SuggestionInstance,
   TodaysSuggestionSlot,
+  UpdateRoutineBreakPayload,
 } from "@/types/suggestions";
 
 export default function TodaysSuggestionPage() {
   const t = useTranslations("todaysSuggestion.page");
+  const tPrerequisites = useTranslations("todaysSuggestion.prerequisites");
   const locale = useLocale();
+  const router = useRouter();
   const todaysSuggestion = useTodaysSuggestion();
   const normalRoutine = useNormalRoutineToday();
   const regenerateSuggestion = useRegenerateSuggestion();
@@ -65,6 +68,12 @@ export default function TodaysSuggestionPage() {
   const skinProfile = useSkinProfile();
   const capabilities = useUserCapabilities();
   const isAiDisabled = isCapabilityDisabled(capabilities.aiGeneration);
+  const canUsePersonalizedActions = isSkinProfileReady(skinProfile.data);
+  const profileFetchFailed =
+    skinProfile.isError && getApiErrorStatus(skinProfile.error) !== 404;
+  const profileDialogDescription = profileFetchFailed
+    ? tPrerequisites("profile.loadError")
+    : tPrerequisites("profile.body");
 
   const [now, setNow] = useState(() => new Date());
   const nowMs = now.getTime();
@@ -79,13 +88,11 @@ export default function TodaysSuggestionPage() {
     null,
   );
   const [startBreakOpen, setStartBreakOpen] = useState(false);
+  const [profileRequiredOpen, setProfileRequiredOpen] = useState(false);
   const quickSuggestionFlow = useTodayQuickSuggestionFlow({
     disabled: isAiDisabled,
   });
-  const [editSlot, setEditSlot] = useState<{
-    slot: TodaysSuggestionSlot;
-    applicationLogId: string;
-  } | null>(null);
+  const [editSlot, setEditSlot] = useState<TodayEditSlot | null>(null);
   const [detailSuggestion, setDetailSuggestion] =
     useState<SuggestionInstance | null>(null);
 
@@ -111,6 +118,68 @@ export default function TodaysSuggestionPage() {
   const showRoutineBreakError = (error: unknown) => {
     toast.error(getApiErrorMessage(error) ?? t("routineBreakActionFailed"));
   };
+  const openSkinProfile = () => {
+    setProfileRequiredOpen(false);
+    router.push(AppRoute.SkinProfile);
+  };
+  const openProfileRequiredDialog = () => {
+    if (skinProfile.isLoading) {
+      return;
+    }
+
+    setProfileRequiredOpen(true);
+  };
+  const openQuickSuggestion = () => {
+    if (!canUsePersonalizedActions) {
+      openProfileRequiredDialog();
+      return;
+    }
+
+    quickSuggestionFlow.openQuickSuggestion();
+  };
+  const openJournalUpload = () => {
+    if (!canUsePersonalizedActions) {
+      openProfileRequiredDialog();
+      return;
+    }
+
+    router.push(`${AppRoute.Journal}/upload`);
+  };
+  const resumeBreak = () => {
+    resumeRoutineBreak.mutate(undefined, {
+      onSuccess: () => {
+        toast.success(t("routineBreakResumed"));
+      },
+      onError: showRoutineBreakError,
+    });
+  };
+  const updateBreak = (payload: UpdateRoutineBreakPayload) => {
+    if (!data?.routineBreak) return;
+    updateRoutineBreak.mutate(
+      { id: data.routineBreak.id, payload },
+      {
+        onSuccess: () => {
+          toast.success(t("routineBreakResumeUpdated"));
+        },
+        onError: showRoutineBreakError,
+      },
+    );
+  };
+  const resetToNormalRoutine = () => {
+    if (isAiDisabled || !data) return;
+    normalRoutine.mutate(undefined, {
+      onSuccess: () => {
+        regenerateSimplifiedSuggestions(data.slots, (id) =>
+          regenerateSuggestion.mutate({
+            id,
+            payload: { reason: "normal_routine_requested" },
+          }),
+        );
+        void todaysSuggestion.refetch();
+        toast.success(t("normalRoutineRestored"));
+      },
+    });
+  };
 
   const groupedSlots = useMemo(
     () => groupSlotsByDaypart(data?.slots ?? []),
@@ -134,20 +203,36 @@ export default function TodaysSuggestionPage() {
     <TodayPageHeaderActions
       hasData={Boolean(data)}
       routineBreak={data?.routineBreak}
-      quickSuggestionDisabled={isAiDisabled}
-      onQuickSuggestion={quickSuggestionFlow.openQuickSuggestion}
+      quickSuggestionDisabled={isAiDisabled || skinProfile.isLoading}
+      onQuickSuggestion={openQuickSuggestion}
       onStartBreak={() => setStartBreakOpen(true)}
     />
   );
   const pageHeader = (
     <PageHeader title={t("title")} subtitle={headerSubtitle} action={headerAction} />
   );
-  const routineBreakStartDialog = (
-    <RoutineBreakStartDialog
-      open={startBreakOpen}
-      isStarting={startRoutineBreak.isPending}
-      onOpenChange={setStartBreakOpen}
-      onStart={(payload) => {
+  const pageDialogs = (
+    <TodayPageDialogs
+      recordSlot={recordSlot}
+      editSlot={editSlot}
+      editingExistingLog={editingExistingLog}
+      detailSuggestion={detailSuggestion}
+      startBreakOpen={startBreakOpen}
+      isStartingRoutineBreak={startRoutineBreak.isPending}
+      quickSuggestionDialogs={quickSuggestionFlow.dialogs}
+      profileRequiredOpen={profileRequiredOpen}
+      profileGateTitle={tPrerequisites("profile.title")}
+      profileGateDescription={profileDialogDescription}
+      profileGateConfirmLabel={tPrerequisites("profile.cta")}
+      timeZone={userTimeZone}
+      onRecordClose={closeRecord}
+      onEditClose={closeEdit}
+      onDetailClose={closeDetail}
+      onMarkDetailApplied={() => openRecordForSuggestion(detailSuggestion)}
+      onStartBreakOpenChange={setStartBreakOpen}
+      onProfileRequiredOpenChange={setProfileRequiredOpen}
+      onProfileGateConfirm={openSkinProfile}
+      onStartBreak={(payload) => {
         startRoutineBreak.mutate(payload, {
           onSuccess: () => {
             setStartBreakOpen(false);
@@ -163,6 +248,7 @@ export default function TodaysSuggestionPage() {
       <div>
         {pageHeader}
         <TodaysSuggestionSkeleton />
+        {pageDialogs}
       </div>
     );
   }
@@ -180,6 +266,7 @@ export default function TodaysSuggestionPage() {
             }}
           />
         </div>
+        {pageDialogs}
       </div>
     );
   }
@@ -194,10 +281,13 @@ export default function TodaysSuggestionPage() {
       <div>
         {pageHeader}
         <div className="mx-auto w-full lg:w-[70%]">
-          <NoCurrentSlotEmptyState nextSlotLabel={t("nextSlotTomorrow")} />
+          <NoCurrentSlotEmptyState
+            nextSlotLabel={t("nextSlotTomorrow")}
+            photoActionDisabled={skinProfile.isLoading}
+            onPhotoAction={openJournalUpload}
+          />
         </div>
-        {routineBreakStartDialog}
-        {quickSuggestionFlow.dialogs}
+        {pageDialogs}
       </div>
     );
   }
@@ -207,98 +297,35 @@ export default function TodaysSuggestionPage() {
       <div>
         {pageHeader}
         <TodaysSuggestionSkeleton />
+        {pageDialogs}
       </div>
     );
   }
-
-  const routineBreak = data.routineBreak;
 
   return (
     <div>
       {pageHeader}
 
       <div className="mx-auto w-full lg:w-[70%]">
-        {routineBreak ? (
-          <RoutineBreakBanner
-            key={`${routineBreak.id}:${routineBreak.endsAt ?? "none"}`}
-            routineBreak={routineBreak}
-            isResuming={resumeRoutineBreak.isPending}
-            isUpdating={updateRoutineBreak.isPending}
-            onResume={() => {
-              resumeRoutineBreak.mutate(undefined, {
-                onSuccess: () => {
-                  toast.success(t("routineBreakResumed"));
-                },
-                onError: showRoutineBreakError,
-              });
-            }}
-            onUpdateEndsAt={(payload) => {
-              updateRoutineBreak.mutate(
-                { id: routineBreak.id, payload },
-                {
-                  onSuccess: () => {
-                    toast.success(t("routineBreakResumeUpdated"));
-                  },
-                  onError: showRoutineBreakError,
-                },
-              );
-            }}
-          />
-        ) : null}
-
-        {data.reactionAlert ? (
-          <ReactionBanner
-            alert={data.reactionAlert}
-            isResetting={
-              normalRoutine.isPending || regenerateSuggestion.isPending
-            }
-            resetDisabled={isAiDisabled}
-            onResetToNormalRoutine={
-              data.reactionAlert.canUseNormalRoutine
-                ? () => {
-                    if (isAiDisabled) {
-                      return;
-                    }
-
-                    normalRoutine.mutate(undefined, {
-                      onSuccess: () => {
-                        regenerateSimplifiedSuggestions(data.slots, (id) =>
-                          regenerateSuggestion.mutate({
-                            id,
-                            payload: {
-                              reason: "normal_routine_requested",
-                            },
-                          }),
-                        );
-                        void todaysSuggestion.refetch();
-                        toast.success(t("normalRoutineRestored"));
-                      },
-                    });
-                  }
-                : undefined
-            }
-          />
-        ) : null}
-
-        {routineBreak ? null : (
-          <RecordingReminderBanner
-            slots={data.slots}
-            onRecord={(target) => setRecordSlot(target)}
-          />
-        )}
-
-        <TodayAiConsentCard
-          visible={
-            quickSuggestionFlow.aiConsentMissing &&
-            data.slots.length > 0 &&
-            !routineBreak
+        <TodayStatusStack
+          data={data}
+          isResettingReaction={
+            normalRoutine.isPending || regenerateSuggestion.isPending
           }
-          pending={quickSuggestionFlow.isGrantingAiConsent}
-          disabled={isAiDisabled}
-          onGrant={quickSuggestionFlow.grantAiConsentForScheduled}
+          resetReactionDisabled={isAiDisabled}
+          aiConsentMissing={quickSuggestionFlow.aiConsentMissing}
+          isGrantingAiConsent={quickSuggestionFlow.isGrantingAiConsent}
+          userTimeZone={userTimeZone}
+          onGrantAiConsentForScheduled={
+            quickSuggestionFlow.grantAiConsentForScheduled
+          }
+          onRecord={setRecordSlot}
+          onResetToNormalRoutine={resetToNormalRoutine}
+          onResumeRoutineBreak={resumeBreak}
+          onUpdateRoutineBreak={updateBreak}
+          routineBreakIsResuming={resumeRoutineBreak.isPending}
+          routineBreakIsUpdating={updateRoutineBreak.isPending}
         />
-
-        <DaySummaryPills data={data} timeZone={userTimeZone} />
 
         <TodayOnDemandSuggestionSection
           suggestions={data.onDemandSuggestions}
@@ -356,42 +383,7 @@ export default function TodaysSuggestionPage() {
         />
       </div>
 
-      <RecordApplicationSheet
-        open={recordSlot !== null}
-        onOpenChange={(open) => (open ? null : closeRecord())}
-        mode={recordSlot ? { kind: "record", slot: recordSlot } : null}
-        onSaved={closeRecord}
-        timeZone={userTimeZone}
-      />
-
-      <RecordApplicationSheet
-        open={editSlot !== null && editingExistingLog !== null}
-        onOpenChange={(open) => (open ? null : closeEdit())}
-        mode={
-          editSlot && editingExistingLog
-            ? {
-                kind: "edit",
-                slot: editSlot.slot,
-                existingLog: editingExistingLog,
-              }
-            : null
-        }
-        onSaved={closeEdit}
-        timeZone={userTimeZone}
-      />
-
-      <SuggestionDetailDrawer
-        open={detailSuggestion !== null}
-        onOpenChange={(open) => (open ? null : closeDetail())}
-        suggestion={detailSuggestion}
-        onMarkApplied={() => {
-          openRecordForSuggestion(detailSuggestion);
-        }}
-        allowRegeneration
-      />
-
-      {routineBreakStartDialog}
-      {quickSuggestionFlow.dialogs}
+      {pageDialogs}
     </div>
   );
 }

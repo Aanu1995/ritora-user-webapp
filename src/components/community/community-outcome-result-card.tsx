@@ -10,6 +10,7 @@ import type {
   CommunityReviewResult,
 } from "@/types/community";
 import {
+  humaniseCommunityTag,
   labelFromOptions,
   useCommunityTranslatedOptions,
 } from "./community-i18n-options";
@@ -33,13 +34,14 @@ export function CommunityOutcomeResultCard({
   const t = useTranslations("community.outcomeSignals");
   const options = useCommunityTranslatedOptions();
   const signalLabel =
-    labelFromOptions(options.outcomeSignals, item.signal) ?? item.signal;
+    labelFromOptions(options.outcomeSignals, item.signal) ??
+    humaniseCommunityTag(item.signal);
   const durationLabel =
     labelFromOptions(options.outcomeTrialDurations, item.trialDuration) ??
-    item.trialDuration;
+    humaniseCommunityTag(item.trialDuration);
   const irritationLabel =
     labelFromOptions(options.outcomeIrritations, item.irritationLevel) ??
-    item.irritationLevel;
+    humaniseCommunityTag(item.irritationLevel);
   const routineSlotLabel = labelFromOptions(
     options.reviewRoutineSlots,
     item.routineSlot,
@@ -153,7 +155,7 @@ function formatOutcomeProductLabel(
   return (
     [product.productBrand, product.productName].filter(Boolean).join(" ") ||
     labelFromOptions(options.productCategories, product.category) ||
-    product.category
+    humaniseCommunityTag(product.category)
   );
 }
 
@@ -172,7 +174,9 @@ function getFollowedPartLabel(
       : options.reviewOutcomeFollowedParts;
 
   return (
-    labelFromOptions(primary, part) ?? labelFromOptions(fallback, part) ?? part
+    labelFromOptions(primary, part) ??
+    labelFromOptions(fallback, part) ??
+    humaniseCommunityTag(part)
   );
 }
 

@@ -16,6 +16,7 @@ import type { SmartPicksProductPick } from "@/types/smart-picks";
 import type { SuggestionGapActionKind } from "@/types/suggestions";
 import { sellerDisplayNames } from "./seller-guidance";
 import { SellerNameList } from "./seller-name-list";
+import { translateSmartPicksProfileValue } from "./smart-picks-format";
 
 interface ProductPickPanelProps {
   pick: SmartPicksProductPick;
@@ -54,6 +55,7 @@ export function ProductPickPanel({
   mode = "default",
 }: ProductPickPanelProps) {
   const t = useTranslations("smartPicks.page");
+  const tProfile = useTranslations("skinProfile");
   const resolvedDismissLabel = dismissLabel ?? t("actions.dismiss");
   const resolvedDismissingLabel = dismissingLabel ?? t("actions.dismissing");
   const isSavedMode = mode === "saved";
@@ -90,7 +92,7 @@ export function ProductPickPanel({
                     innerSurfaceClass,
                   )}
                 >
-                  {chip.text}
+                  {translateSmartPicksProfileValue(tProfile, chip.text)}
                 </span>
               ))}
             </div>
@@ -192,6 +194,7 @@ export function ProductPickPanel({
 
 function WhyThisContent({ pick }: { pick: SmartPicksProductPick }) {
   const t = useTranslations("smartPicks.page");
+  const tProfile = useTranslations("skinProfile");
   const facts = Object.entries(pick.reasoningFacts);
 
   return (
@@ -205,9 +208,11 @@ function WhyThisContent({ pick }: { pick: SmartPicksProductPick }) {
           {facts.map(([label, value]) => (
             <div key={label}>
               <dt className="text-xs font-semibold uppercase text-muted">
-                {label}
+                {translateSmartPicksProfileValue(tProfile, label)}
               </dt>
-              <dd className="text-sm text-foreground">{value}</dd>
+              <dd className="text-sm text-foreground">
+                {translateSmartPicksProfileValue(tProfile, value)}
+              </dd>
             </div>
           ))}
         </dl>
