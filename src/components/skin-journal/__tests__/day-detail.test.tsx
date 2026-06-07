@@ -334,6 +334,22 @@ describe("DayDetailPanel journal-day edit lock", () => {
     expect(sidePhoto).toHaveAttribute("loading", "lazy");
   });
 
+  it("describes the full-size photo dialog for assistive technology", async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<DayDetailPanel detail={dayDetail(journalEntry())} />);
+
+    await user.click(
+      screen.getByRole("button", { name: /open photo full size/i }),
+    );
+
+    expect(
+      screen.getByRole("dialog", {
+        description: /expanded journal photo/i,
+      }),
+    ).toBeInTheDocument();
+  });
+
   it("shows a specific failed analysis explanation when the API returns a failure code", () => {
     renderWithProviders(
       <DayDetailPanel

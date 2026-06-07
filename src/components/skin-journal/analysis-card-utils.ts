@@ -201,12 +201,29 @@ function keepFirstRepeatedStrings(
   });
 }
 
-function humanizeLocation(location: string): string {
-  return location.replace(/_/g, " ");
+export function translateLocationLabel(
+  tLocations: AnalysisTranslation,
+  location: string,
+): string {
+  try {
+    return tLocations(location);
+  } catch {
+    return location.replace(/_/g, " ");
+  }
 }
 
-export function formatLocations(locations: string[]): string {
-  return locations.length > 0 ? locations.map(humanizeLocation).join(", ") : "";
+export function formatLocations(
+  locations: string[],
+  tLocations?: AnalysisTranslation,
+): string {
+  if (locations.length === 0) return "";
+  return locations
+    .map((location) =>
+      tLocations
+        ? translateLocationLabel(tLocations, location)
+        : location.replace(/_/g, " "),
+    )
+    .join(", ");
 }
 
 export function fallbackSummaryKey(

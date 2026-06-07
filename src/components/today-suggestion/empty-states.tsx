@@ -99,8 +99,12 @@ export function NoScheduleEmptyState() {
 
 export function NoCurrentSlotEmptyState({
   nextSlotLabel,
+  onPhotoAction,
+  photoActionDisabled = false,
 }: {
   nextSlotLabel: string;
+  onPhotoAction?: () => void;
+  photoActionDisabled?: boolean;
 }) {
   const t = useTranslations("todaysSuggestion.empty.recoverable");
   return (
@@ -118,12 +122,23 @@ export function NoCurrentSlotEmptyState({
         {t("body", { nextSlotLabel })}
       </p>
       <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-        <Button asChild>
-          <Link href="/journal/upload">
+        {onPhotoAction ? (
+          <Button
+            type="button"
+            disabled={photoActionDisabled}
+            onClick={onPhotoAction}
+          >
             <Camera className="h-3.5 w-3.5" />
             {t("ctaPhoto")}
-          </Link>
-        </Button>
+          </Button>
+        ) : (
+          <Button asChild>
+            <Link href="/journal/upload">
+              <Camera className="h-3.5 w-3.5" />
+              {t("ctaPhoto")}
+            </Link>
+          </Button>
+        )}
         <Button asChild variant="outline">
           <Link href="/routine">
             <CalendarPlus className="h-3.5 w-3.5" />

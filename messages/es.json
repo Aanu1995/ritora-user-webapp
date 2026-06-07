@@ -35,12 +35,12 @@
     "countrySelect": {
       "placeholder": "Seleccione un país",
       "searchPlaceholder": "Buscar países",
-      "noMatch": "No countries match “{query}”."
+      "noMatch": "Ningún país coincide con “{query}”."
     },
     "timeZoneSelect": {
       "placeholder": "Seleccione una zona horaria",
       "searchPlaceholder": "Buscar zonas horarias",
-      "noMatch": "No timezones match “{query}”."
+      "noMatch": "Ninguna zona horaria coincide con “{query}”."
     },
     "confirmDialog": {
       "cancel": "Cancelar",
@@ -145,7 +145,7 @@
       "eyebrow": "como funciona",
       "headline": "Tres pasos tranquilos desde el desorden de los estantes hasta la claridad diaria.",
       "lead": "Cuéntale a Ritora sobre tu piel, mapea los productos que ya tienes y sigue un plan adaptado a la actualidad. No el mes pasado. No el de otra persona.",
-      "stepLabel": "Step {number}",
+      "stepLabel": "Paso {number}",
       "steps": [
         {
           "title": "Cuéntale a Ritora sobre tu piel.",
@@ -284,8 +284,8 @@
           "eyebrow": "Comunidad",
           "title": "Rutinas que funcionaron para personas como tú.",
           "bullets": [
-            "Explore manuales de estrategias de usuarios con su tipo de piel y sus inquietudes",
-            "Un toque adapta cualquier manual a los productos de su estantería",
+            "Explora Playbooks de usuarios con tu tipo de piel y tus inquietudes",
+            "Adapta cualquier Playbook a los productos de tu estante con un toque",
             "Señales de resultados reales: funcionó, mixto, no funcionó"
           ]
         },
@@ -487,7 +487,7 @@
           "note": "Ritora agregó un paso adicional de humectación esta noche y cambió el SPF más temprano en el día. El motor climático revisa su contexto dos veces al día."
         },
         "community": {
-          "cardTitle": "Libro de jugadas",
+          "cardTitle": "Playbook",
           "cardSubtitle": "Compartido por alguien como tú",
           "authorName": "maya k.",
           "authorTags": [
@@ -576,7 +576,7 @@
         },
         {
           "question": "¿La comunidad es pública? ¿Tengo que compartir?",
-          "answer": "Compartir es optar por participar. Su estante y Skin Journal permanecen privados de forma predeterminada. Solo los manuales y reseñas que elijas publicar van a la comunidad, y puedes retirar cualquiera de ellos en cualquier momento."
+          "answer": "Compartir es opcional. Tu estante y Skin Journal permanecen privados de forma predeterminada. Solo los Playbooks y las reseñas que elijas publicar van a la comunidad, y puedes retirar cualquiera de ellos en cualquier momento."
         },
         {
           "question": "¿Es gratis?",
@@ -647,8 +647,8 @@
     "hasAccount": "¿Ya tienes una cuenta?",
     "signUp": "Crear cuenta",
     "signIn": "Iniciar sesión",
-    "acceptTerms": "I accept the {terms}",
-    "acceptPrivacy": "I accept the {privacy}",
+    "acceptTerms": "Acepto los {terms}",
+    "acceptPrivacy": "Acepto la {privacy}",
     "acceptTermsPrefix": "Acepto el",
     "acceptPrivacyPrefix": "Acepto el",
     "termsOfService": "Términos de servicio",
@@ -663,7 +663,7 @@
     "sendVerificationEmail": "Enviar correo electrónico de verificación",
     "verifyEmail": "Verificar correo electrónico",
     "verifyEmailSent": "Se ha enviado un correo electrónico de verificación a su bandeja de entrada.",
-    "verifyEmailAfterRegistrationDescription": "We've sent a verification link to {email}. You'll be able to log in after verifying your email.",
+    "verifyEmailAfterRegistrationDescription": "Hemos enviado un enlace de verificación a {email}. Podrás iniciar sesión después de verificar tu correo.",
     "resendVerification": "Reenviar correo electrónico de verificación",
     "resendVerificationTitle": "Reenviar verificación",
     "resendVerificationDescription": "Ingrese su correo electrónico para recibir un nuevo enlace de verificación.",
@@ -798,7 +798,7 @@
       "complete": "Tu perfil de piel está listo. Las recomendaciones de IA utilizarán este contexto.",
       "incomplete": "Su perfil de piel necesita algunos detalles más para desbloquear recomendaciones completas.",
       "notStarted": "Configure su perfil de piel para que Ritora pueda personalizar su experiencia.",
-      "progress": "{completed} of {total} sections complete",
+      "progress": "{completed} de {total} secciones completadas",
       "start": "Iniciar perfil de piel",
       "continue": "Continuar con la configuración",
       "review": "Revisar perfil"
@@ -821,7 +821,7 @@
     },
     "setup": {
       "title": "Terminar de configurar",
-      "progress": "{completed}/{total} done",
+      "progress": "{completed}/{total} completados",
       "steps": {
         "profile": {
           "title": "Perfil de piel",
@@ -841,12 +841,12 @@
       }
     },
     "fresh": {
-      "welcome": "Welcome to Ritora, {firstName}.",
+      "welcome": "Bienvenida a Ritora, {firstName}.",
       "subtitle": "Unos minutos de configuración y tu rutina comenzará a volverse más inteligente.",
       "eyebrow": "Paso 1 de 2",
       "title": "Cuéntanos sobre tu piel.",
       "body": "Tipo, inquietudes, clima y cualquier cosa a la que haya reaccionado. Lo usamos para leer tu Estante y construir rutinas más tranquilas.",
-      "progress": "{completed} of {total} done",
+      "progress": "{completed} de {total} completados",
       "primaryCta": "Crear perfil de piel",
       "secondary": "¿Ya tienes un producto?",
       "secondaryCta": "Pruebe primero la comprobación rápida"
@@ -860,9 +860,9 @@
       "toneBody": "Probado en los tipos Fitzpatrick I a VI. Las advertencias sobre ingredientes y la selección de productos explican la piel más oscura donde la mayoría de las aplicaciones pasan desapercibidas."
     },
     "latestSuggestion": {
-      "ariaLabel": "{routine} · ready to record",
-      "eyebrow": "Next up · {routine}",
-      "moreSteps": "+ {count, plural, one {# more step} other {# more steps}}",
+      "ariaLabel": "{routine} · lista para registrar",
+      "eyebrow": "Siguiente · {routine}",
+      "moreSteps": "+ {count, plural, one {# paso más} other {# pasos más}}",
       "openRoutine": "rutina abierta",
       "recordCta": "Registrar esta sugerencia"
     }
@@ -892,10 +892,10 @@
     "seasonLabel": "Temporada",
     "temperature": "temperatura",
     "uv": "ultravioleta",
-    "uvValue": "{risk} · UV {index}",
+    "uvValue": "UV {index} · {risk}",
     "uvIndexOnly": "UV {index}",
     "humidity": "Humedad",
-    "humidityValue": "{band} · {value}%",
+    "humidityValue": "{band} · {value}% de humedad",
     "airQuality": "aire",
     "airQualityValue": "{risk} · AQI {index}",
     "airQualityIndexOnly": "AQI {index}",
@@ -1048,7 +1048,7 @@
       "name": "Nombre",
       "firstName": "Nombre",
       "lastName": "Apellido",
-      "email": "Email",
+      "email": "Correo electrónico",
       "editName": "Editar",
       "save": "Guardar",
       "saving": "Guardando...",
@@ -1154,7 +1154,7 @@
   },
   "onboarding": {
     "eyebrow": "Configuración guiada",
-    "title": "Welcome, {firstName}",
+    "title": "Bienvenida, {firstName}",
     "subtitle": "Ritora funciona mejor cuando su cuenta, preferencias y perfil de máscara están configurados juntos. Este flujo de incorporación presenta primero el espacio de trabajo y luego le entrega el formulario de perfil sin copiarlo.",
     "loading": "Preparando su espacio de trabajo de incorporación...",
     "goToDashboard": "Saltar al panel",
@@ -1267,7 +1267,7 @@
       "skip": "Saltar",
       "save": "Guardar perfil",
       "saving": "Guardando...",
-      "stepOf": "Step {current} of {total}",
+      "stepOf": "Paso {current} de {total}",
       "baseline": {
         "heading": "Cuéntanos tu línea base de piel",
         "description": "Los conceptos básicos que anclan cada sugerencia. Puedes actualizar esto en cualquier momento."
@@ -1298,7 +1298,7 @@
       "concernsHint": "Elija todo lo que le gustaría que Ritora abordara.",
       "primaryGoalLabel": "Máxima prioridad",
       "primaryGoalHint": "Elige uno. Ritora optimiza para esto primero.",
-      "severityLabel": "{concern} severity",
+      "severityLabel": "Gravedad de {concern}",
       "severityHint": "Aproximadamente lo fuerte que se siente el día a día."
     },
     "sunPigmentStep": {
@@ -1363,7 +1363,7 @@
       "essentialsHint": "Los conceptos básicos que impulsan cada sugerencia.",
       "completenessTitle": "Completitud del perfil",
       "completenessHint": "Agregue las secciones opcionales a continuación para obtener sugerencias más personalizadas.",
-      "completenessPercent": "{value}% complete",
+      "completenessPercent": "{value}% completado",
       "optionalSectionsTitle": "Secciones opcionales",
       "optionalSectionsHint": "Cada uno ayuda a Ritora de una manera específica. Omita lo que no se sienta cómodo compartiendo.",
       "allOptionalLabel": "Todo opcional",
@@ -1371,9 +1371,9 @@
       "addNow": "Añadir ahora",
       "notApplicable": "No aplicable",
       "review": "Revisión",
-      "reactionEntriesCount": "{count} entries",
+      "reactionEntriesCount": "{count} entradas",
       "noKnownReactions": "No se conocen reacciones",
-      "activeToleranceCount": "{count} tracked",
+      "activeToleranceCount": "{count} en seguimiento",
       "encryptedBadge": "cifrado",
       "consentRequired": "Primero pide consentimiento",
       "controlBannerTitle": "Tu estas en control",
@@ -1407,7 +1407,7 @@
       "sunscreen": "protector solar",
       "routinePace": "ritmo de rutina",
       "edit": "Editar elementos esenciales",
-      "ageYears": "{age} years"
+      "ageYears": "{age} años"
     },
     "sunPigment": {
       "pageTitle": "Comportamiento del sol y los pigmentos.",
@@ -1436,7 +1436,7 @@
       "pageTitle": "Historial de reacciones",
       "pageDesc": "Enumere los ingredientes o productos que hayan provocado reacciones antes. Ritora evitará sugerirlos.",
       "logged": "Reacciones registradas",
-      "entriesCount": "{count} entries",
+      "entriesCount": "{count} entradas",
       "entriesNone": "Aún no se han registrado reacciones.",
       "historyQuestion": "¿Ha tenido reacciones cutáneas antes?",
       "historyQuestionHint": "Responder no todavía cuenta. Ritora debería saber si esto se omitió o si realmente no se aplica a usted.",
@@ -1547,7 +1547,7 @@
       "pageDesc": "Ayuda a Ritora a evitar sugerir cosas que tu cuerpo no debería hacer. Cada pregunta es opcional.",
       "encryptedBadge": "cifrado",
       "consentActiveTitle": "Consentimiento de datos de salud activo",
-      "consentActiveBody": "Granted on {date}. Withdraw anytime in Settings · Privacy.",
+      "consentActiveBody": "Concedido el {date}. Puedes retirarlo cuando quieras en Configuración · Privacidad.",
       "consentDialogTitle": "Antes de compartir el contexto médico",
       "consentDialogEncryptedBadge": "cifrado",
       "consentDialogLede": "Estos son datos sensibles. Lea lo que le preguntaremos, por qué y cómo se protege antes de decidir.",
@@ -1584,7 +1584,7 @@
       "whyWeAsk": "¿Por qué preguntamos?",
       "skipRemaining": "Saltar restante",
       "save": "Guardar",
-      "questionsAnswered": "{answered} of {total} questions answered",
+      "questionsAnswered": "{answered} de {total} preguntas respondidas",
       "questionsAnsweredHint": "Puedes dejar el resto en blanco.",
       "deleteThisData": "Eliminar estos datos",
       "deleteConfirmTitle": "¿Eliminar su contexto médico?",
@@ -1639,7 +1639,7 @@
       "deleteDialogWhatHappensTitle": "lo que se elimina",
       "deleteDialogWhatHappensItem1": "Tu perfil, fotos de piel e historial de rutina.",
       "deleteDialogWhatHappensItem2": "Su estante, horario y sugerencias guardadas",
-      "deleteDialogWhatHappensItem3": "Las reseñas y manuales de estrategia de tu comunidad se eliminan de la evidencia pública.",
+      "deleteDialogWhatHappensItem3": "Tus reseñas y Playbooks de la comunidad se eliminan de la evidencia pública",
       "deleteDialogWhatHappensItem4": "Todas las sesiones en todos los dispositivos registrados",
       "deleteDialogGraceTitle": "Tienes 30 días para cambiar de opinión.",
       "deleteDialogGraceBody": "Retendremos todo durante 30 días. Inicie sesión nuevamente o use el enlace en nuestro correo electrónico para cancelar en cualquier momento antes de esa fecha. Después del día 30, la eliminación es permanente y no se puede deshacer.",
@@ -2036,11 +2036,11 @@
       "saving": "Guardando..."
     },
     "bulk": {
-      "selected": "{count} selected",
+      "selected": "{count} seleccionados",
       "archiveTooltip": "El archivo oculta productos de la vista activa pero mantiene el historial.",
       "finishedTooltip": "Marca un producto como agotado para que puedas conservar su historial sin saturar tu estante activo.",
       "deleteTooltip": "Retírelo permanentemente de su estante.",
-      "deleteConfirmTitle": "Delete {count} products?",
+      "deleteConfirmTitle": "¿Eliminar {count} productos?",
       "deleteConfirmTitleSingle": "¿Eliminar este producto?",
       "deleteConfirmBody": "Esto no se puede deshacer. También se eliminarán todas las notas o el historial de estos productos.",
       "deleteConfirmCancel": "mantener"
@@ -2049,7 +2049,7 @@
       "title": "Añadir a tu estante",
       "subtitle": "Cargue una foto del producto más fotos de la etiqueta para que Ritora pueda leer el producto antes de guardarlo.",
       "close": "Cerrar",
-      "step": "Step {current} of 2",
+      "step": "Paso {current} de 2",
       "photos": {
         "productPhoto": {
           "sectionTitle": "La foto de tu producto",
@@ -2096,7 +2096,7 @@
       },
       "lookupReview": {
         "title": "Detalles importados para revisar",
-        "description": "We filled what we could from {source}. Review the details before saving to your shelf.",
+        "description": "Completamos lo que pudimos desde {source}. Revisa los detalles antes de guardarlo en tu estante.",
         "reviewRequired": "Revisión recomendada",
         "confidenceLabel": "confianza",
         "warningsLabel": "Que revisar",
@@ -2225,14 +2225,14 @@
         "expires": "Vence",
         "size": "Tamaño",
         "pao": "PAO",
-        "paoValue": "{count} months"
+        "paoValue": "{count} meses"
       },
       "shelfLife": {
         "label": "Vida útil",
-        "remainingDay": "{count} day remaining",
-        "remainingDays": "{count} days remaining",
-        "remainingMonth": "{count} month remaining",
-        "remainingMonths": "{count} months remaining",
+        "remainingDay": "Queda {count} día",
+        "remainingDays": "Quedan {count} días",
+        "remainingMonth": "Queda {count} mes",
+        "remainingMonths": "Quedan {count} meses",
         "expired": "Caducado",
         "unopened": "Aún no abierto",
         "noData": "Establezca una fecha de apertura para realizar un seguimiento de la vida útil."
@@ -2255,7 +2255,7 @@
       },
       "ingredients": {
         "heading": "Ingredientes",
-        "lastConfirmed": "Last confirmed on {date}.",
+        "lastConfirmed": "Confirmado por última vez el {date}.",
         "empty": "No hay lista de ingredientes archivada. Ritora aún puede mantener este producto en su estante, pero los controles de seguridad de los ingredientes seguirán siendo limitados hasta que agregue uno.",
         "intelligenceStub": "Próximamente información sobre ingredientes.",
         "intelligenceBody": "Ritora marcará los ingredientes que no coincidan con el perfil de tu piel una vez que aparezca la siguiente función."
@@ -2267,19 +2267,19 @@
         "steps": "Pasos",
         "cautions": "Precauciones",
         "addStep": "Agregar paso",
-        "removeStep": "Remove step {index}",
-        "stepInput": "Step {index}",
+        "removeStep": "Quitar paso {index}",
+        "stepInput": "Paso {index}",
         "addCaution": "Añadir precaución",
-        "removeCaution": "Remove caution {index}",
-        "cautionInput": "Caution {index}",
+        "removeCaution": "Quitar precaución {index}",
+        "cautionInput": "Precaución {index}",
         "waitTimerLabel": "Temporizador de espera",
         "waitTimerHint": "Para productos que necesitan reposar sobre la piel antes del siguiente paso, como exfoliaciones o mascarillas. Las sugerencias rutinarias de Ritora se adaptarán a esta espera.",
         "waitTimerPlaceholder": "Por ejemplo, 10",
-        "waitMinute": "Leave on for {minutes} minute.",
-        "waitMinutes": "Leave on for {minutes} minutes.",
+        "waitMinute": "Dejar actuar durante {minutes} minuto.",
+        "waitMinutes": "Dejar actuar durante {minutes} minutos.",
         "empty": "Aún no hay instrucciones. Abra Editar para agregar pasos y precauciones.",
         "routineNote": "Cuándo aplicar este producto dentro de su rutina matutina o vespertina lo decide la sugerencia del día, no el estante.",
-        "preferredNote": "You told Ritora you prefer to use this in the {time}."
+        "preferredNote": "Le dijiste a Ritora que prefieres usarlo por la {time}."
       },
       "manufacturer": {
         "heading": "Fabricante",
@@ -2287,9 +2287,9 @@
         "parent": "Empresa matriz",
         "madeIn": "hecho en",
         "support": "Soporte",
-        "productLink": "Open product page on {domain}",
+        "productLink": "Abrir la página del producto en {domain}",
         "empty": "Aún no hay detalles del fabricante registrados.",
-        "source": "Data resolved from {source}, confirmed by you on {date}."
+        "source": "Datos resueltos desde {source}, confirmados por ti el {date}."
       },
       "actions": {
         "compare": "Comparar",
@@ -2298,7 +2298,7 @@
         "markFinished": "marca terminada",
         "delete": "Eliminar",
         "unarchive": "Restaurar",
-        "deleteConfirmTitle": "Delete {name}?",
+        "deleteConfirmTitle": "¿Eliminar {name}?",
         "deleteConfirmBody": "Esto no se puede deshacer. Se eliminarán todos los antecedentes y notas personales de este producto.",
         "deleteConfirmCancel": "mantener"
       }
@@ -2357,7 +2357,7 @@
     },
     "templates": {
       "pickOne": "Elige una plantilla inicial",
-      "applyTemplate": "Use {category} template",
+      "applyTemplate": "Usar plantilla de {category}",
       "cleanser": {
         "steps": [
           "Dispense una pequeña cantidad sobre las yemas de los dedos húmedos.",
@@ -2476,7 +2476,7 @@
   "mobileNav": {
     "ariaLabel": "Navegación primaria",
     "menuAriaLabel": "abrir menú",
-    "badge": "{count, plural, one {# unread} other {# unread}}",
+    "badge": "{count, plural, one {# sin leer} other {# sin leer}}",
     "items": {
       "home": "Inicio",
       "check": "comprobar",
@@ -2494,7 +2494,7 @@
       "account": "cuenta"
     },
     "soonBadge": "pronto",
-    "badgeLabel": "{count, plural, one {# item needs attention} other {# items need attention}}",
+    "badgeLabel": "{count, plural, one {# elemento requiere atención} other {# elementos requieren atención}}",
     "items": {
       "home": "Inicio",
       "checkProduct": "Comprobación rápida",
@@ -2598,7 +2598,7 @@
       "categoryLabel": "categoría",
       "ingredientsLabel": "Ingredientes",
       "ingredientsPlaceholder": "Pegue los ingredientes INCI separados por comas o líneas nuevas.",
-      "parsedCount": "{count, plural, =0 {No ingredients detected yet} one {# ingredient detected} other {# ingredients detected}}",
+      "parsedCount": "{count, plural, =0 {Aún no se detectaron ingredientes} one {# ingrediente detectado} other {# ingredientes detectados}}",
       "checkingAction": "Comprobando...",
       "checkAction": "Ejecutar verificación rápida"
     },
@@ -2672,8 +2672,8 @@
       "findingsBody": "Estas son las parejas específicas detrás del veredicto.",
       "reactionHeading": "Evidencia de reacción",
       "reactionBody": "Ritora comprobó el historial de reacciones consentidas y las señales de rutina recientes sin utilizar notas de diario ni fotografías sin editar.",
-      "reactionStats": "{reactions, plural, one {# reaction signal} other {# reaction signals}} near {usageDays, plural, one {# logged use day} other {# logged use days}}.",
-      "evidenceIngredients": "Ingredient match: {ingredients}",
+      "reactionStats": "{reactions, plural, one {# señal de reacción} other {# señales de reacción}} cerca de {usageDays, plural, one {# día de uso registrado} other {# días de uso registrados}}.",
+      "evidenceIngredients": "Coincidencia de ingredientes: {ingredients}",
       "evidence": {
         "profile_reaction_trigger": "Coincide con su historial de reacciones",
         "shelf_reaction_signal": "Un producto similar en estantería tenía señales de reacción."
@@ -2683,8 +2683,8 @@
       "smartPicksTitle": "Compara antes de comprar",
       "smartPicksBody": "Smart Picks puede ayudarle a encontrar alternativas que se ajusten a su rutina y presupuesto.",
       "smartPicksCta": "Abrir selecciones inteligentes",
-      "alternativeCategory": "For: {category}",
-      "alternativeSellers": "Available from: {sellers}",
+      "alternativeCategory": "Para: {category}",
+      "alternativeSellers": "Disponible en: {sellers}",
       "context": {
         "educationalTitle": "Modo educativo de ingredientes",
         "educationalBody": "Ritora puede explicar los ingredientes, pero no puede predecir su riesgo de reacción personal hasta que agregue el contexto de la piel, el estante, el diario o el historial de sugerencias.",
@@ -2738,14 +2738,14 @@
           "bullet4": "¿Tendría más sentido como sustituto que como extra?"
         },
         "anchorLabel": "Nuevo producto",
-        "selectionCount": "{count}/{max} selected",
+        "selectionCount": "{count}/{max} seleccionados",
         "pickHeading": "Productos que ya tienes",
         "clearSelection": "Borrar",
-        "ingredientCount": "{count, plural, one {# ingredient} other {# ingredients}}",
+        "ingredientCount": "{count, plural, one {# ingrediente} other {# ingredientes}}",
         "emptyShelf": "Agregue productos con ingredientes a su estante antes de comparar.",
         "emptyShelfAction": "Ir al estante",
         "compareCta": "Elija productos de estantería",
-        "compareSelected": "{count, plural, one {Compare with # Shelf product} other {Compare with # Shelf products}}",
+        "compareSelected": "{count, plural, one {Comparar con # producto del estante} other {Comparar con # productos del estante}}",
         "compareAgain": "Comparar de nuevo",
         "compareAction": "Ejecutar cheque de compra",
         "comparing": "Comparando con el estante...",
@@ -2756,13 +2756,13 @@
         "winner": "Mejor elección",
         "noWinnerProduct": "No hay un motivo de compra claro",
         "unknownScore": "desconocido",
-        "itemMeta": "Score {score} · {confidence}",
-        "keyActives": "Key actives: {actives}",
+        "itemMeta": "Puntuación {score} · {confidence}",
+        "keyActives": "Activos clave: {actives}",
         "ingredients": "({ingredients})",
         "stats": {
-          "conflicts": "{count, plural, one {# conflict} other {# conflicts}}",
-          "overlaps": "{count, plural, one {# overlap} other {# overlaps}}",
-          "reactions": "{count, plural, one {# reaction signal} other {# reaction signals}}"
+          "conflicts": "{count, plural, one {# conflicto} other {# conflictos}}",
+          "overlaps": "{count, plural, one {# coincidencia} other {# coincidencias}}",
+          "reactions": "{count, plural, one {# señal de reacción} other {# señales de reacción}}"
         },
         "confidence": {
           "high": "alta confianza",
@@ -2770,8 +2770,8 @@
           "low": "baja confianza"
         },
         "outcomes": {
-          "choose_anchor": "{product} looks worth considering",
-          "choose_candidate": "Keep using {product} instead",
+          "choose_anchor": "{product} parece valer la pena considerarlo",
+          "choose_candidate": "Sigue usando {product} en su lugar",
           "no_clear_winner": "No hay una razón clara para comprar",
           "not_enough_data": "No hay suficientes datos"
         },
@@ -2807,14 +2807,14 @@
           "bullet4": "Si se pueden compartir los factores desencadenantes de reacciones pasadas"
         },
         "anchorLabel": "Producto de estantería",
-        "selectionCount": "{count}/{max} selected",
+        "selectionCount": "{count}/{max} seleccionados",
         "pickHeading": "Comparar con",
         "clearSelection": "Borrar",
-        "ingredientCount": "{count, plural, one {# ingredient} other {# ingredients}}",
+        "ingredientCount": "{count, plural, one {# ingrediente} other {# ingredientes}}",
         "emptyShelf": "Agregue otro producto activo con ingredientes antes de comparar productos propios.",
         "emptyShelfAction": "Ir al estante",
         "compareCta": "Elija productos propios",
-        "compareSelected": "{count, plural, one {Review # owned product} other {Review # owned products}}",
+        "compareSelected": "{count, plural, one {Revisar # producto propio} other {Revisar # productos propios}}",
         "compareAgain": "Revisar nuevamente",
         "compareAction": "Revisar productos propios",
         "comparing": "Revisando productos...",
@@ -2825,13 +2825,13 @@
         "winner": "elección principal",
         "noWinnerProduct": "Ningún producto necesita ganar",
         "unknownScore": "desconocido",
-        "itemMeta": "Score {score} · {confidence}",
-        "keyActives": "Key actives: {actives}",
+        "itemMeta": "Puntuación {score} · {confidence}",
+        "keyActives": "Activos clave: {actives}",
         "ingredients": "({ingredients})",
         "stats": {
-          "conflicts": "{count, plural, one {# conflict} other {# conflicts}}",
-          "overlaps": "{count, plural, one {# overlap} other {# overlaps}}",
-          "reactions": "{count, plural, one {# reaction signal} other {# reaction signals}}"
+          "conflicts": "{count, plural, one {# conflicto} other {# conflictos}}",
+          "overlaps": "{count, plural, one {# coincidencia} other {# coincidencias}}",
+          "reactions": "{count, plural, one {# señal de reacción} other {# señales de reacción}}"
         },
         "confidence": {
           "high": "alta confianza",
@@ -2839,8 +2839,8 @@
           "low": "baja confianza"
         },
         "outcomes": {
-          "choose_anchor": "{product} is stronger to keep using",
-          "choose_candidate": "{product} is stronger to keep using",
+          "choose_anchor": "{product} es más fuerte para seguir usándolo",
+          "choose_candidate": "{product} es más fuerte para seguir usándolo",
           "no_clear_winner": "Ningún producto tiene por qué ganar",
           "not_enough_data": "No hay suficientes datos"
         },
@@ -2886,8 +2886,8 @@
     },
     "overlap": {
       "title": "{ingredient}",
-      "productCountSingle": "Found in {count} product",
-      "productCountPlural": "Found in {count} products",
+      "productCountSingle": "Encontrado en {count} producto",
+      "productCountPlural": "Encontrado en {count} productos",
       "showWhy": "Mostrar por qué",
       "hideWhy": "Ocultar por qué"
     },
@@ -2900,7 +2900,7 @@
       "avoidWith": "Evitar en la misma rutina con:",
       "avoidLabel": "Evite el emparejamiento con",
       "saferPlanLabel": "Plan más seguro",
-      "mitigationHint": "Tip: {hint}"
+      "mitigationHint": "Consejo: {hint}"
     },
     "category": {
       "retinoid": "retinoide",
@@ -2924,8 +2924,8 @@
     },
     "insufficientData": {
       "title": "Necesitamos más datos sobre ingredientes.",
-      "bodySingle": "{count} product is missing an ingredient list. Ritora will skip ingredient safety checks for it until one is added.",
-      "bodyPlural": "{count} products are missing ingredient lists. Ritora will skip ingredient safety checks for them until they are added.",
+      "bodySingle": "A {count} producto le falta la lista de ingredientes. Ritora omitirá sus controles de seguridad de ingredientes hasta que se añada una.",
+      "bodyPlural": "A {count} productos les faltan listas de ingredientes. Ritora omitirá sus controles de seguridad de ingredientes hasta que se añadan.",
       "cta": "Agregar ingredientes",
       "list": {
         "itemFallback": "Producto sin nombre"
@@ -2936,7 +2936,7 @@
     "title": "Rutina",
     "subtitle": "Configura tus rutinas diarias de cuidado de la piel.",
     "timeZone": {
-      "label": "Schedule timezone: {timeZone}"
+      "label": "Zona horaria del horario: {timeZone}"
     },
     "view": {
       "list": "Lista",
@@ -2991,16 +2991,16 @@
       "todayBadge": "hoy",
       "noRoutines": "No hay rutinas programadas",
       "addTime": "Agregar tiempo",
-      "timeCount": "{count, plural, =0 {No times} one {# time} other {# times}}"
+      "timeCount": "{count, plural, =0 {Sin horas} one {# hora} other {# horas}}"
     },
     "slot": {
-      "stepCount": "{count, plural, =0 {No steps} one {# step} other {# steps}}",
+      "stepCount": "{count, plural, =0 {Sin pasos} one {# paso} other {# pasos}}",
       "noNotes": "Sin notas",
       "hasNotes": "Notas"
     },
     "mode": {
-      "manual": "manuales",
-      "manualShort": "m",
+      "manual": "Manual",
+      "manualShort": "M",
       "manualDescription": "tu rutina",
       "ai": "IA",
       "aiShort": "IA",
@@ -3033,12 +3033,12 @@
       "timeHint": "En cualquier momento. Por ejemplo, 07:30, 14:00 o 22:15.",
       "modeLabel": "Modo",
       "submitSingle": "Agregar tiempo",
-      "submitMultiple": "Add to {count} days",
+      "submitMultiple": "Añadir a {count} días",
       "duplicateNote": "Se omitirán los días que ya utilicen ese tiempo.",
       "selectAtLeastOneDay": "Seleccione al menos un día"
     },
     "editor": {
-      "sheetTitle": "{day} at {time}",
+      "sheetTitle": "{day} a las {time}",
       "sheetDescription": "Editar la ranura de rutina seleccionada",
       "titleTime": "{time}",
       "deleteButton": "Eliminar",
@@ -3070,7 +3070,7 @@
       "stepsDescription": "Tu rutina en orden de aplicación. Primero los limpiadores, al final el SPF. Arrastre para reordenar.",
       "stepsCount": "{current} / {max}",
       "addStep": "Agregar paso",
-      "stepsMaxReached": "You’ve reached the maximum of {max} steps",
+      "stepsMaxReached": "Has alcanzado el máximo de {max} pasos",
       "manualEmpty": "Aún no hay pasos. Agrega un producto para comenzar a construir tu rutina.",
       "aiPlaceholderTitle": "Próximamente sugerencias de IA",
       "aiPlaceholderBody": "Cuando se inicie el motor de IA, seleccionará productos de su estantería utilizando sus notas anteriores como contexto.",
@@ -3119,7 +3119,7 @@
       "empty": "Ningún producto coincide con su búsqueda.",
       "emptyShelf": "Primero agregue productos a su estante.",
       "addToShelf": "Agregar al estante",
-      "preferredConflict": "This product is usually used in the {preferred}."
+      "preferredConflict": "Este producto suele usarse en la {preferred}."
     },
     "calendar": {
       "dragHint": "Arrastra cualquier espacio a otro día",
@@ -3181,15 +3181,15 @@
           "No entrenamos modelos de IA con sus fotos o su perfil de piel.",
           "Puedes eliminar tu cuenta y todo lo que contiene desde la aplicación cuando quieras."
         ],
-        "tail": "If anything on this page is unclear, write to <support>{supportEmail}</support> and a human will reply."
+        "tail": "Si algo en esta página no queda claro, escribe a <support>{supportEmail}</support> y una persona te responderá."
       },
       "whatWeCollect": {
         "title": "lo que recopilamos",
         "lead": "Recopilamos cuatro tipos de información, y solo cuando usted nos la proporciona o cuando es necesaria para que la aplicación funcione.",
-        "accountInfo": "<strong>Account information.</strong> When you create an account we ask for your email address and a password. We never see your password in plain text. We store it as a one way cryptographic hash, which means even we cannot read it. You can also tell us your name, language, time zone, date of birth, and sex at birth. The last two are optional and help us give you better skincare suggestions.",
-        "skinProfile": "<strong>Skin profile.</strong> During onboarding we ask you about your skin. Your skin type, the concerns you have, allergies and past reactions, medications, sun and sleep habits, and the kinds of products you prefer. You can change or remove any answer at any time.",
-        "photosAndRoutine": "<strong>Photos and routine activity.</strong> If you use the skin journal we keep the photos you upload, the dates they were taken, and the notes the AI generates from them. We also store the products you add to your shelf, the routine you build, and the records of what you actually applied each day.",
-        "basicTech": "<strong>Basic technical information.</strong> Standard server logs. Your IP address, browser, request times, and any errors. Plus your notification preferences.",
+        "accountInfo": "<strong>Información de la cuenta.</strong> Cuando creas una cuenta te pedimos tu dirección de correo electrónico y una contraseña. Nunca vemos tu contraseña en texto plano. La almacenamos como un hash criptográfico unidireccional, lo que significa que ni siquiera nosotros podemos leerla. También puedes indicarnos tu nombre, idioma, zona horaria, fecha de nacimiento y sexo asignado al nacer. Los dos últimos datos son opcionales y nos ayudan a darte mejores sugerencias de cuidado de la piel.",
+        "skinProfile": "<strong>Perfil de piel.</strong> Durante el onboarding te preguntamos sobre tu piel: tu tipo de piel, tus preocupaciones, alergias y reacciones anteriores, medicamentos, hábitos de sol y sueño, y los tipos de productos que prefieres. Puedes cambiar o eliminar cualquier respuesta en cualquier momento.",
+        "photosAndRoutine": "<strong>Fotos y actividad de rutina.</strong> Si usas el diario de piel, guardamos las fotos que subes, las fechas en que se tomaron y las notas que la IA genera a partir de ellas. También almacenamos los productos que añades a tu estante, la rutina que construyes y los registros de lo que realmente aplicas cada día.",
+        "basicTech": "<strong>Información técnica básica.</strong> Registros estándar del servidor: tu dirección IP, navegador, horas de solicitud y cualquier error. También tus preferencias de notificación.",
         "tail": "No recopilamos su ubicación precisa. No utilizamos rastreadores de publicidad. No hay cookies de marketing en el producto."
       },
       "howWeUse": {
@@ -3213,7 +3213,7 @@
           "Eliminamos la información GPS de tus fotos antes de almacenarlas.",
           "No realizamos reconocimiento facial. No construimos una plantilla de cara. El análisis mira la piel, no la persona."
         ],
-        "bulletStrong": "<strong>We do not use your photos or skin profile to train any AI model. Not ours. Not anyone else's.</strong>",
+        "bulletStrong": "<strong>No usamos tus fotos ni tu perfil de piel para entrenar ningún modelo de IA. Ni los nuestros. Ni los de nadie más.</strong>",
         "disclaimer": "Ritora te da sugerencias. No es un consejo médico. Si su piel reacciona, consulte a un dermatólogo o farmacéutico. Puedes anular u omitir cualquier sugerencia que te brinde la aplicación."
       },
       "sharing": {
@@ -3234,11 +3234,11 @@
         "title": "Seguridad",
         "p1": "Tratamos la seguridad como parte del producto, no como una ocurrencia tardía.",
         "p2": "Sus datos están cifrados en tránsito y en reposo. Los campos confidenciales de su perfil de máscara obtienen una capa adicional de cifrado antes de que entren en contacto con la base de datos.",
-        "p3": "No system is perfectly secure. If anything ever goes wrong, we will tell you. If you find a problem, please write to <support>{supportEmail}</support>."
+        "p3": "Ningún sistema es perfectamente seguro. Si algo sale mal, te lo diremos. Si encuentras un problema, escribe a <support>{supportEmail}</support>."
       },
       "rights": {
         "title": "Tus derechos y opciones",
-        "lead": "You stay in control of your information. From <em>Settings</em> inside the app you can:",
+        "lead": "Tú mantienes el control de tu información. Desde <em>Configuración</em> dentro de la app puedes:",
         "bullets": [
           "Descargue una copia de todo lo que tenemos sobre usted.",
           "Edite o elimine cualquier parte de su perfil de máscara.",
@@ -3246,12 +3246,12 @@
           "Desactive las funciones opcionales de IA.",
           "Elimina tu cuenta por completo."
         ],
-        "p1": "If you would rather do any of this by email, write to <support>{supportEmail}</support>. We respond within a month, usually much sooner, and we do not charge for it.",
+        "p1": "Si prefieres hacer cualquiera de estas cosas por correo, escribe a <support>{supportEmail}</support>. Respondemos en menos de un mes, normalmente mucho antes, y no cobramos por ello.",
         "p2": "Si vive en la Unión Europea o el Reino Unido, también tiene derecho a presentar una queja ante la autoridad local de protección de datos. Esperamos que nos lo digas primero para que podamos solucionarlo, pero ese derecho es tuyo de cualquier manera."
       },
       "children": {
         "title": "niños",
-        "p1": "Ritora is for people aged 16 and over. We do not knowingly collect information from anyone younger. If you think a child has signed up, write to <support>{supportEmail}</support> and we will remove the account."
+        "p1": "Ritora es para personas de 16 años o más. No recopilamos intencionadamente información de personas más jóvenes. Si crees que un menor se ha registrado, escribe a <support>{supportEmail}</support> y eliminaremos la cuenta."
       },
       "cookies": {
         "title": "galletas",
@@ -3269,7 +3269,7 @@
       },
       "contact": {
         "title": "Contáctenos",
-        "p1": "For anything about this policy, or about your information, write to <support>{supportEmail}</support>. We read every message."
+        "p1": "Para cualquier consulta sobre esta política o sobre tu información, escribe a <support>{supportEmail}</support>. Leemos todos los mensajes."
       }
     },
     "terms": {
@@ -3287,7 +3287,7 @@
       },
       "account": {
         "title": "tu cuenta",
-        "p1": "You are responsible for keeping your password safe and for everything that happens on your account. If you think someone else has got in, tell us straight away at <support>{supportEmail}</support>."
+        "p1": "Eres responsable de mantener segura tu contraseña y de todo lo que ocurra en tu cuenta. Si crees que alguien más ha entrado, avísanos de inmediato en <support>{supportEmail}</support>."
       },
       "ritoraIs": {
         "title": "Qué es y qué no es Ritora",
@@ -3336,7 +3336,7 @@
       },
       "contact": {
         "title": "Contáctenos",
-        "p1": "If you have a question about these terms, write to <support>{supportEmail}</support>. We read every message."
+        "p1": "Si tienes una pregunta sobre estos términos, escribe a <support>{supportEmail}</support>. Leemos todos los mensajes."
       }
     }
   },
@@ -3373,18 +3373,18 @@
     },
     "stats": {
       "currentStreak": "Racha actual",
-      "currentStreakValue": "{days, plural, one {# day} other {# days}}",
+      "currentStreakValue": "{days, plural, one {# día} other {# días}}",
       "totalEntries": "Entradas totales",
       "weeklyUploadRate": "Tasa de carga semanal",
-      "weeklyUploadValue": "{count} of {target} days",
-      "streakDelta": "+{count} vs last week",
-      "sinceDate": "since {date}",
+      "weeklyUploadValue": "{count} de {target} días",
+      "streakDelta": "+{count} frente a la semana pasada",
+      "sinceDate": "desde {date}",
       "loadingLabel": "Cargando estadísticas del diario"
     },
     "calendar": {
       "selectMonth": "elegir mes",
       "selectTrackedMonth": "Saltar al mes registrado",
-      "trackedMonthLabel": "{month} · {count, plural, one {# photo} other {# photos}}",
+      "trackedMonthLabel": "{month} · {count, plural, one {# foto} other {# fotos}}",
       "previous": "Mes anterior",
       "next": "El próximo mes",
       "loading": "Cargando calendario",
@@ -3416,16 +3416,16 @@
     },
     "dayDetail": {
       "today": "hoy",
-      "metaToday": "{weekday} · {date} · today",
+      "metaToday": "{weekday} · {date} · hoy",
       "meta": "{weekday} · {date}",
       "reactionFlagged": "Reacción marcada",
       "dayDetailSubtitle": "Detalle del día",
       "backToJournal": "Volver al diario de la piel",
       "loadingLabel": "Detalle del día de carga",
-      "title": "{date} entry",
+      "title": "Entrada del {date}",
       "todayTitle": "la entrada de hoy",
       "noEntry": "No hay entrada para este día.",
-      "noEntryBody": "Añade una foto o un check-in rápido para este día.",
+      "noEntryBody": "Añade una foto o un registro rápido para este día.",
       "lockedNoEntryBody": "Las entradas solo se pueden agregar el día en sí, y no es hoy.",
       "addPhoto": "Añadir foto",
       "editEntry": "Editar foto",
@@ -3437,7 +3437,7 @@
       "retryAnalysis": "Reintentar análisis",
       "replacePhoto": "Reemplazar foto",
       "addPhotoForDay": "Añade una foto para este día.",
-      "ratingsTitle": "Tu check-in",
+      "ratingsTitle": "Tu registro",
       "ratingsRecorded": "Calificaciones registradas",
       "noteLabel": "Queja/nota",
       "feelLabel": "Sensación de la piel",
@@ -3445,8 +3445,8 @@
       "preRoutineTag": "pre-rutina",
       "photoSavedTag": "foto guardada",
       "noPhotoTag": "Sin foto",
-      "photoAlt": "Skin journal photo for {date}",
-      "photoAngleAlt": "{angle} skin journal photo for {date}",
+      "photoAlt": "Foto del diario de piel de {date}",
+      "photoAngleAlt": "Foto del diario de piel de {angle} para {date}",
       "angles": {
         "head_on": "Frente",
         "left_profile": "Lado izquierdo",
@@ -3455,16 +3455,17 @@
       "captured": "capturado",
       "notCaptured": "No capturado",
       "optionalAngleMissing": "Foto lateral opcional no capturada",
-      "angleCount": "{count, plural, one {# angle} other {# angles}}",
+      "angleCount": "{count, plural, one {# ángulo} other {# ángulos}}",
       "zoomIn": "Acercar",
       "zoomOut": "alejar",
       "closePhoto": "Cerrar foto",
       "openPhoto": "Abrir foto en tamaño completo",
+      "photoLightboxDescription": "Foto ampliada del diario de piel. Usa el control de zoom o haz clic en la foto para revisar detalles; luego cierra el diálogo para volver al día del diario.",
       "statusCompleted": "Análisis completo",
       "statusAnalysing": "Analizando…",
       "statusFailed": "El análisis falló",
       "statusNeedsReview": "Necesita revisión",
-      "noPhotoTitle": "Sólo check-in",
+      "noPhotoTitle": "Solo registro",
       "noPhotoBody": "Registraste cómo se sentía tu piel sin una foto. Por hoy se omite el análisis de IA.",
       "attentionTitle": "Necesita tu atención",
       "eventWorseningBody": "{concern} cambió de {previous} a {current} en comparación con la entrada anterior.",
@@ -3483,14 +3484,14 @@
         "limited_reference": "Foto de referencia limitada",
         "not_trend_safe": "No es seguro para las tendencias"
       },
-      "comparedWith": "Compared with {date}",
+      "comparedWith": "Comparado con {date}",
       "reason": {
         "no_photo": "Aún no hay foto",
         "analysis_pending": "El análisis aún está en ejecución.",
         "analysis_failed": "El análisis falló",
         "analysis_unavailable": "El análisis aún no está disponible",
         "face_missing": "cara no clara",
-        "needs_retake": "Necesita retomar",
+          "needs_retake": "Necesita repetir la foto",
         "poor_lighting": "Comparación de límites de iluminación",
         "poor_framing": "Comparación de límites de encuadre",
         "blur": "Comparación de límites de desenfoque",
@@ -3501,7 +3502,7 @@
     },
     "analysis": {
       "title": "Observaciones de la piel hoy",
-      "modelBadge": "AI · {model}",
+      "modelBadge": "IA · {model}",
       "confidence": "Confianza {value}",
       "reading": {
         "photoRead": "Lectura de foto: {label}",
@@ -3531,12 +3532,15 @@
       },
       "feedback": {
         "prompt": "¿Te resultó útil este análisis?",
+        "subtitle": "Tu voto ayuda a Ritora a reescribir análisis futuros.",
+        "thanks": "Gracias por tu feedback.",
         "helpful": "Útil",
         "notHelpful": "No útil",
         "reasonPrompt": "¿Qué lo hizo poco útil?",
         "reasonHelp": "Esto ayuda a Ritora a ordenar y mejorar análisis futuros.",
         "noteLabel": "Nota opcional de feedback",
         "notePlaceholder": "Añade una nota breve si quieres. No incluyas nombres, correo ni otros identificadores.",
+        "noteCount": "{count}/{max}",
         "saving": "Guardando feedback",
         "submit": "Enviar feedback",
         "reasons": {
@@ -3633,7 +3637,6 @@
           "guidance": "Siga usando iluminación y encuadres similares para que Ritora pueda comparar los cambios de manera más justa a lo largo del tiempo."
         },
         "caveats": {
-          "notDiagnosis": "Esto no es un diagnóstico. Ritora utiliza señales visibles para respaldar el seguimiento y la reflexión.",
           "qualityLimited": "La baja calidad de las fotografías puede ocultar o exagerar los cambios visibles.",
           "progressNeedsTime": "El progreso de la piel puede ser lento, por lo que los cambios de un solo día deben leerse con atención."
         }
@@ -3673,7 +3676,7 @@
         "photoSensitive": {
           "title": "Seguimiento sensible a la foto",
           "summary": "Hay cambio visible {severity} alrededor de {locations}, pero esta zona depende mucho de luz, sueño y ángulo.",
-          "track": "Compara solo fotos similares y acompaña el resultado con check-ins de sueño y comodidad."
+          "track": "Compara solo fotos similares y acompaña el resultado con registros de sueño y comodidad."
         },
         "factors": {
           "checkInBreakouts": "Registraste brotes hoy, así que revisa posibles causas cercanas como cambios de producto, sudor, estrés, notas de dieta o fricción.",
@@ -3874,10 +3877,10 @@
       "title": "Añade la foto de hoy",
       "subtitle": "Tome una foto con buena luz del día. Tu yo futuro te agradecerá la coherencia.",
       "editTitle": "Editar la foto de hoy",
-      "editSubtitle": "Reemplace la foto de hoy o actualice el check-in antes de que termine el día.",
+      "editSubtitle": "Reemplaza la foto de hoy o actualiza el registro antes de que termine el día.",
       "dateLabel": "Fecha",
-      "dateToday": "Today · {date}",
-      "dateBackfill": "{date} (backfill)",
+      "dateToday": "Hoy · {date}",
+      "dateBackfill": "{date} (relleno)",
       "guidanceTitle": "Consejos para comparaciones más claras",
       "guidanceSubtitle": "Al mismo tiempo y en el mismo lugar, la IA recibe la señal de tendencia más fuerte.",
       "hideTips": "Ocultar consejos",
@@ -3912,11 +3915,11 @@
       },
       "angleRequired": "Requerido",
       "angleOptional": "Opcional",
-      "angleAlt": "{angle} journal photo",
+      "angleAlt": "Foto de diario de {angle}",
       "dropZoneTitle": "Toca para elegir una foto",
       "dropZoneDesc": "O arrastrar y soltar · JPG, PNG, HEIC, WebP hasta 10 MB",
       "dropZoneTitleFront": "Añadir foto frontal",
-      "dropZoneTitleSide": "Add {angle}",
+      "dropZoneTitleSide": "Añadir {angle}",
       "dropZoneDescFront": "Requerido para el análisis de IA",
       "dropZoneDescSide": "Cobertura lateral opcional",
       "noWebcam": "Una foto tomada con luz natural hace que la comparación del día a día sea más limpia.",
@@ -3928,13 +3931,13 @@
       "fileMeta": "{name} · {size}",
       "processedKind": "WebP después de la carga · EXIF eliminado",
       "photoPreviewAlt": "Foto de diario seleccionada",
-      "currentPhotoAlt": "Current journal photo for {date}",
+      "currentPhotoAlt": "Foto actual del diario para {date}",
       "currentPhotoBadge": "Foto actual",
       "currentPhotoHint": "Elija una foto nueva solo si desea reemplazar la foto guardada de hoy.",
       "cropBadge": "Vista previa cuadrada",
-      "replaceAngle": "Replace {angle} photo",
-      "removeAngle": "Remove {angle} photo",
-      "cropAngle": "Crop {angle} photo",
+      "replaceAngle": "Reemplazar foto de {angle}",
+      "removeAngle": "Quitar foto de {angle}",
+      "cropAngle": "Recortar foto de {angle}",
       "cropDialog": {
         "title": "Recortar foto",
         "body": "Centra tu cara y elimina el fondo antes de subirlo. Ritora guardará la versión cuadrada recortada.",
@@ -3950,12 +3953,12 @@
       },
       "photoProcessingConsent": "Doy mi consentimiento para el análisis de este conjunto de fotografías.",
       "preRoutine": "Tomado antes de los productos de hoy (pre-rutina)",
-      "nextStepHint": "Su check-in está en el siguiente paso. También puedes guardar solo la foto y agregar calificaciones más tarde.",
+      "nextStepHint": "Tu registro está en el siguiente paso. También puedes guardar solo la foto y añadir calificaciones más tarde.",
       "frontRequired": "Agregue una foto frontal para guardar el análisis de la foto.",
       "frontRequiredWithSides": "Las fotos laterales necesitan una foto frontal para que Ritora pueda analizar el set.",
       "savePhotoOnly": "Guardar solo foto",
       "saveChanges": "Guardar cambios",
-      "continueToCheckIn": "Continuar con el check-in",
+      "continueToCheckIn": "Continuar al registro",
       "saveEntry": "Guardar entrada",
       "back": "Atrás",
       "cancel": "Cancelar",
@@ -3964,12 +3967,12 @@
       "deleting": "Eliminando…",
       "saveFailed": "No pudimos guardar esta entrada. Por favor inténtalo de nuevo.",
       "savedToast": "Foto guardada. Ritora está echando un vistazo (entre 10 y 20 segundos)...",
-      "noPhotoSaved": "Check-in guardado sin foto.",
+      "noPhotoSaved": "Registro guardado sin foto.",
       "futureDateError": "No se pueden crear entradas para fechas futuras.",
-      "checkInTitle": "El check-in de hoy",
-      "editCheckInTitle": "Editar el check-in de hoy",
-      "validationTitle": "Completa el check-in para ahorrar",
-      "validationBody": "Elija la sensación de la piel, las siete clasificaciones de preocupaciones y el contexto actual. Para omitir el check-in, regrese y guarde solo la foto.",
+      "checkInTitle": "Registro de hoy",
+      "editCheckInTitle": "Editar el registro de hoy",
+      "validationTitle": "Completa el registro para guardar",
+      "validationBody": "Elige la sensación de la piel, las siete calificaciones de preocupaciones y el contexto actual. Para omitir el registro, vuelve y guarda solo la foto.",
       "privacyLabel": "Privacidad",
       "privacyBody": "Las fotos y calificaciones se almacenan cifradas. Sólo se envía la imagen para su análisis.",
       "privacyLink": "Cómo protegemos tus datos",
@@ -3991,30 +3994,30 @@
       "pickPhotoDate": "Elige la fecha de la foto",
       "notEnoughTitle": "Se necesitan al menos dos días de fotos subidas.",
       "notEnoughBody": "Añade otra foto diaria antes de comparar el progreso. Sólo se pueden seleccionar días con fotos cargadas.",
-      "deltaTitle": "What's changed in {days, plural, one {# day} other {# days}}",
+      "deltaTitle": "Qué cambió en {days, plural, one {# día} other {# días}}",
       "noBaseline": "Elija dos fechas para comparar.",
       "events": "Eventos de rutina entre estas fechas",
       "concernsThen": "Preocupaciones entonces",
       "concernsNow": "Preocupaciones ahora",
-      "fromPhotoAlt": "Skin journal photo from {date}",
-      "toPhotoAlt": "Skin journal photo from {date}",
+      "fromPhotoAlt": "Foto del diario de piel del {date}",
+      "toPhotoAlt": "Foto del diario de piel del {date}",
       "aiDeltaBadge": "delta de IA",
-      "angleCount": "{count, plural, one {# angle} other {# angles}}",
+      "angleCount": "{count, plural, one {# ángulo} other {# ángulos}}",
       "openFullViewer": "Abrir todos los ángulos",
       "none": "Ninguno",
       "delta": {
-        "ratingImproved": "{concern} eased from {from} to {to}",
-        "ratingWorsened": "{concern} increased from {from} to {to}",
+        "ratingImproved": "{concern} bajó de {from} a {to}",
+        "ratingWorsened": "{concern} subió de {from} a {to}",
         "reactionCleared": "Los signos de reacción ya no se marcan",
         "reactionSignalIncreased": "Las señales de reacción aumentaron en el análisis fotográfico.",
         "reactionSignalReduced": "Señales de reacción reducidas en el análisis fotográfico.",
         "barrierSignalWorsened": "Los signos de estrés de barrera aumentaron en el análisis fotográfico.",
         "barrierSignalImproved": "Señales de estrés de barrera reducidas en el análisis fotográfico.",
-        "photoConcernImproved": "{concern} looks less noticeable in the photo analysis.",
-        "photoConcernWorsened": "{concern} looks more noticeable in the photo analysis.",
-        "photoConcernNew": "{concern} newly appears in the photo analysis.",
-        "photoConcernCleared": "{concern} is no longer visible in the photo analysis.",
-        "notComparable": "Photo comparison is limited by {reason}.",
+        "photoConcernImproved": "{concern} parece menos visible en el análisis de la foto.",
+        "photoConcernWorsened": "{concern} parece más visible en el análisis de la foto.",
+        "photoConcernNew": "{concern} aparece por primera vez en el análisis de la foto.",
+        "photoConcernCleared": "{concern} ya no es visible en el análisis de la foto.",
+        "notComparable": "La comparación de fotos está limitada por {reason}.",
         "noMajorChange": "No hay cambios visibles importantes",
         "unknownConcern": "Preocupación",
         "qualityReasons": {
@@ -4023,7 +4026,7 @@
           "analysis_failed": "análisis fallido",
           "analysis_unavailable": "análisis faltante",
           "face_missing": "claridad de la cara",
-          "needs_retake": "retomar la guía",
+          "needs_retake": "indicación de repetir la foto",
           "poor_lighting": "iluminación",
           "poor_framing": "encuadre",
           "blur": "desenfoque",
@@ -4039,7 +4042,7 @@
       "compareCta": "Comparar",
       "filtersAll": "Todas las fotos",
       "filterReaction": "tiene reacción",
-      "filterConcern": "Concern · {concern}",
+      "filterConcern": "Preocupación · {concern}",
       "unknownConcern": "Preocupación desconocida",
       "reactionTag": "reacción",
       "noFilterMatches": "Ninguna foto coincide con este filtro todavía.",
@@ -4048,7 +4051,7 @@
       "emptyBody": "Una vez que comiences a agregar fotos diarias, aparecerán aquí para que puedas escanear tu estante de un vistazo.",
       "loadMore": "Cargar más fotos",
       "loadingMore": "Cargando más fotos",
-      "angleBadge": "{count, plural, one {# angle} other {# angles}}"
+      "angleBadge": "{count, plural, one {# ángulo} other {# ángulos}}"
     },
     "insightsTab": {
       "subtitle": "Sugerencias en lenguaje sencillo a partir de sus fotografías, registros y fuentes dermatológicas confiables.",
@@ -4080,8 +4083,8 @@
       "refresh": "Buscar actualizaciones",
       "refreshing": "refrescante",
       "trendsTitle": "Cubierta de tendencias",
-      "generatedLine": "Generated {date}",
-      "basedOnLine": "Based on {start} to {end}",
+      "generatedLine": "Generado el {date}",
+      "basedOnLine": "Basado en {start} a {end}",
       "windows": {
         "all": "Todos",
         "week": "esta semana",
@@ -4130,35 +4133,35 @@
         "custom": "paso de rutina personalizado"
       },
       "metric": {
-        "previous": "{value} before",
-        "sampleCount": "{count, plural, one {# entry} other {# entries}}",
+        "previous": "{value} antes",
+        "sampleCount": "{count, plural, one {# entrada} other {# entradas}}",
         "units": {
           "entries": "entradas",
           "rating": "calificación"
         }
       },
       "progress": {
-        "title": "{count, plural, one {# journal entry} other {# journal entries}} tracked",
-        "next": "{count, plural, one {# more entry} other {# more entries}} until the next insight unlocks",
+        "title": "{count, plural, one {# entrada del diario} other {# entradas del diario}} registradas",
+        "next": "{count, plural, one {# entrada más} other {# entradas más}} para desbloquear la próxima percepción",
         "ready": "Sus datos están listos para recibir sugerencias de insights más completas.",
         "generating": "Ritora está preparando nuevas sugerencias de conocimientos a partir de los datos más recientes de su revista."
       },
       "headlines": {
-        "onboarding_progress": "{count} entries logged. Your next insight unlocks at {nextUnlock}.",
+        "onboarding_progress": "{count} entradas registradas. Tu próxima percepción se desbloquea en {nextUnlock}.",
         "daily": "La entrada del diario de hoy está lista para revisar.",
-        "weekly": "{entriesCount} recent entries are enough for a first pattern check.",
-        "trend": "{concern} has {direction} in your recent entries.",
-        "monthly": "Your month has {entriesCount} entries and {photosCount} photos.",
-        "reaction_recovery": "Your skin looks calmer after {days} tracked days.",
-        "referral": "{referralCount} recent entries need a closer safety review.",
-        "effectiveness": "{concern} {direction} after a product change.",
-        "face_zone_pattern": "{concern} appears most often around your {location}.",
-        "routine_adherence": "{category} was skipped on {skippedCount} logged routine days.",
-        "photo_quality_drift": "{poorCount} recent photos need better light for analysis.",
-        "correlation": "{factor} appears alongside changes in {concern}.",
-        "cycle": "{concern} looks higher around {phase}.",
-        "ai_summary": "Ritora found a short pattern across {entriesCount} entries.",
-        "ai_pattern": "{factor} may be worth watching in your journal."
+        "weekly": "{entriesCount} entradas recientes son suficientes para una primera revisión de patrones.",
+        "trend": "{concern} tiene {direction} en tus entradas recientes.",
+        "monthly": "Tu mes tiene {entriesCount} entradas y {photosCount} fotos.",
+        "reaction_recovery": "Tu piel se ve más calmada después de {days} días registrados.",
+        "referral": "{referralCount} entradas recientes necesitan una revisión de seguridad más cercana.",
+        "effectiveness": "{concern} {direction} después de un cambio de producto.",
+        "face_zone_pattern": "{concern} aparece con más frecuencia alrededor de {location}.",
+        "routine_adherence": "{category} se omitió en {skippedCount} días de rutina registrados.",
+        "photo_quality_drift": "{poorCount} fotos recientes necesitan mejor luz para el análisis.",
+        "correlation": "{factor} aparece junto con cambios en {concern}.",
+        "cycle": "{concern} parece más alto alrededor de {phase}.",
+        "ai_summary": "Ritora encontró un patrón breve en {entriesCount} entradas.",
+        "ai_pattern": "{factor} podría valer la pena seguirlo en tu diario."
       },
       "blocks": {
         "unknown": "Nuevo formato de información",
@@ -4167,47 +4170,47 @@
           "text": "Siga agregando fotos y registros diarios. El motor de sugerencias se vuelve más útil a medida que crece su base personal."
         },
         "daily": {
-          "analysis": "This uses your latest saved entry from {date} and its analysis status: {status}."
+          "analysis": "Esto usa tu última entrada guardada de {date} y su estado de análisis: {status}."
         },
         "weekly": {
-          "recap": "Ritora reviewed {entriesCount} recent entries. {reactionCount} had moderate or stronger reaction signals."
+          "recap": "Ritora revisó {entriesCount} entradas recientes. {reactionCount} tenían señales de reacción moderadas o más fuertes."
         },
         "trend": {
-          "explanation": "Your {concern} rating has {direction} compared with your earlier entries in this window."
+          "explanation": "Tu valoración de {concern} tiene {direction} en comparación con tus entradas anteriores en esta ventana."
         },
         "monthly": {
-          "recap": "This month includes {entriesCount} journal entries and {photosCount} photos."
+          "recap": "Este mes incluye {entriesCount} entradas del diario y {photosCount} fotos."
         },
         "reaction_recovery": {
-          "text": "Reaction signals eased across {days} tracked days. Keep using gentle, simple routines while the skin settles."
+          "text": "Las señales de reacción disminuyeron durante {days} días registrados. Mantén rutinas suaves y sencillas mientras la piel se estabiliza."
         },
         "referral": {
-          "text": "{referralCount} of the last 7 entries showed moderate or stronger reaction signals, or repeated doctor review flags."
+          "text": "{referralCount} de las últimas 7 entradas mostraron señales de reacción moderadas o más fuertes, o alertas repetidas para revisión médica."
         },
         "effectiveness": {
-          "text": "After a product change, {concern} moved enough to be worth watching. This is a correlation, not proof.",
+          "text": "Después de un cambio de producto, {concern} se movió lo suficiente como para observarlo. Es una correlación, no una prueba.",
           "marker": "Cambio de producto"
         },
         "face_zone_pattern": {
-          "text": "The repeated zone is your {location}. This can help you compare photos without scanning every entry."
+          "text": "La zona repetida es {location}. Esto puede ayudarte a comparar fotos sin revisar cada entrada."
         },
         "routine_adherence": {
-          "text": "Your routine records show {category} was skipped {skippedCount} times across {loggedCount} logged steps. This is useful context for future skin pattern checks."
+          "text": "Tus registros de rutina muestran que {category} se omitió {skippedCount} veces en {loggedCount} pasos registrados. Es contexto útil para futuras revisiones de patrones de piel."
         },
         "photo_quality_drift": {
-          "text": "{poorCount} recent photos had low light or retake flags. Natural daylight gives the analysis a clearer view."
+          "text": "{poorCount} fotos recientes tenían poca luz o marcas de repetición. La luz natural da al análisis una vista más clara."
         },
         "correlation": {
-          "text": "{factor} appears alongside a change in {concern}. Treat this as a clue to watch, not a conclusion."
+          "text": "{factor} aparece junto con un cambio en {concern}. Trátalo como una pista para observar, no como una conclusión."
         },
         "cycle": {
-          "text": "Your entries suggest a possible cycle pattern around {phase}. Confidence grows when more cycles are logged."
+          "text": "Tus entradas sugieren un posible patrón de ciclo alrededor de {phase}. La confianza crece cuando se registran más ciclos."
         },
         "ai_summary": {
           "text": "Este resumen conecta los patrones recientes más fuertes en una sugerencia en lenguaje sencillo."
         },
         "ai_pattern": {
-          "text": "Ritora noticed {factor} in entries that may deserve closer tracking."
+          "text": "Ritora notó {factor} en entradas que podrían merecer seguimiento más cercano."
         }
       },
       "evidenceGrade": {
@@ -4216,11 +4219,11 @@
         "limited": "Evidencia limitada",
         "anecdotal": "Solo tus registros",
         "basis": {
-          "trend": "based on a {windowDays} day personal trend",
+          "trend": "basado en una tendencia personal de {windowDays} días",
           "reaction_recovery": "Basado en marcadores de reacción y recuperación.",
           "referral": "basado en repetidas banderas de seguridad",
           "effectiveness": "basado en una ventana de cambio de producto",
-          "routine_adherence": "based on {loggedCount} logged routine steps",
+          "routine_adherence": "basado en {loggedCount} pasos de rutina registrados",
           "ownLogs": "basado únicamente en las entradas de su diario",
           "cycle": "basado en marcadores de ciclo en su diario"
         }
@@ -4253,7 +4256,7 @@
         "provenance": "AI perfeccionó la redacción utilizando solo los hechos y las fuentes examinadas que se muestran aquí."
       },
       "kb": {
-        "lastVerified": "Verified {date}",
+        "lastVerified": "Verificado el {date}",
         "derm_6_8_week_acne_window": {
           "title": "Momento del tratamiento del acné",
           "summary": "La guía de la AAD explica que el cuidado del acné lleva tiempo y los cambios visibles generalmente se juzgan a lo largo de semanas."
@@ -4298,7 +4301,7 @@
       "charts": {
         "trendTitle": "Gravedad de la preocupación a lo largo del tiempo",
         "reactionsTitle": "Frecuencia de reacción · semanal",
-        "checkInTitle": "Promedios de check-in · 7 ejes",
+        "checkInTitle": "Promedios del registro · 7 ejes",
         "thisWeek": "esta semana",
         "lastWeek": "la semana pasada"
       },
@@ -4316,10 +4319,10 @@
       "almostReady": "Casi listo",
       "notYet": "Próximamente",
       "status": {
-        "ready": "Ready · {photos} photos",
-        "generating": "Preparing… · {photos} photos",
-        "ready_to_generate": "Almost ready · {photos} photos",
-        "not_enough_photos": "We'll prepare this once you have {min}+ photos",
+        "ready": "Listo · {photos} fotos",
+        "generating": "Preparando… · {photos} fotos",
+        "ready_to_generate": "Casi listo · {photos} fotos",
+        "not_enough_photos": "Lo prepararemos cuando tengas {min}+ fotos",
         "failed": "No se pudo preparar este envuelto. Lo intentaremos de nuevo.",
         "pending": "En cola"
       },
@@ -4337,9 +4340,9 @@
         "subtitle": "{kind} · {period}",
         "notFound": "Envuelto no encontrado.",
         "noFrames": "No hay marcos disponibles.",
-        "frameAlt": "Skin journal photo from {date}",
+        "frameAlt": "Foto del diario de piel del {date}",
         "frameCaption": "{date} · {caption}",
-        "captionsAuto": "{count} photos · {label} · captions written by AI",
+        "captionsAuto": "{count} fotos · {label} · subtítulos escritos por IA",
         "play": "Jugar",
         "pause": "Pausa",
         "previous": "Anterior",
@@ -4349,7 +4352,7 @@
     },
     "reaction": {
       "modalTitle": "Notamos una posible irritación.",
-      "modalLede": "Your photo from {date} shows signs that may indicate a reaction. {comparedNote}",
+      "modalLede": "Tu foto del {date} muestra señales que pueden indicar una reacción. {comparedNote}",
       "comparedWorse": "Comparado con tu entrada anterior: aparece peor en las mejillas y el mentón.",
       "indicatorsTitle": "Indicadores",
       "disclaimer": "No es un diagnóstico médico. Si los síntomas empeoran o persisten, consulte a un dermatólogo.",
@@ -4361,7 +4364,7 @@
       "severeWarning": "Si los síntomas incluyen dificultad para respirar o hinchazón facial, busque atención de emergencia.",
       "severePrimary": "Reconocer y mantener simplificado",
       "severeSecondary": "Restaurar mi rutina de todos modos",
-      "simplificationReason": "Reaction detected on {date}"
+      "simplificationReason": "Reacción detectada el {date}"
     },
     "indicators": {
       "redness_spike": "Pico de enrojecimiento",
@@ -4378,16 +4381,16 @@
     },
     "simplification": {
       "bannerTitle": "Rutina simplificada al modo de reparación de barreras",
-      "bannerBody": "We detected possible irritation in your photo from {date}. Your usual routine is paused until you acknowledge.",
+      "bannerBody": "Detectamos posible irritación en tu foto del {date}. Tu rutina habitual queda en pausa hasta que lo confirmes.",
       "viewDetails": "Ver detalles",
       "restoreRoutine": "Restaurar rutina",
       "keepSimplified": "Mantener simplificado",
       "compactAlert": "Rutina simplificada. Ver en el diario",
-      "compactAlertSubtitle": "Since {date} · barrier-repair mode active",
+      "compactAlertSubtitle": "Desde {date} · modo de reparación de barrera activo",
       "viewInJournal": "Ver en el diario",
       "detail": {
         "eyebrow": "Diario de la piel · seguridad",
-        "title": "Routine simplification · {start} – {endLabel}",
+        "title": "Simplificación de rutina · {start} – {endLabel}",
         "ongoing": "en curso",
         "subtitle": "Started from a journal safety event on {date}",
         "noticedTitle": "lo que notamos",
@@ -4399,7 +4402,7 @@
         "presetAmBody": "Limpieza suave, hidratación y protección solar.",
         "presetPmBody": "Limpia e hidrata suavemente.",
         "pausedTitle": "lo que estaba en pausa",
-        "pausedSubtitle": "If a schedule snapshot was captured on {date}, it appears below.",
+        "pausedSubtitle": "Si se capturó una instantánea del horario el {date}, aparece abajo.",
         "pausedAmTitle": "AM (en pausa)",
         "pausedPmTitle": "PM (en pausa)",
         "noSnapshot": "No había ninguna programación activa cuando comenzó esta simplificación.",
@@ -4475,9 +4478,9 @@
     "reminderTimeNote": "La hora está en tu zona horaria · {timeZone}.",
     "channels": "Canales",
     "channelInApp": "En la app",
-    "channelEmail": "Email",
+    "channelEmail": "Correo electrónico",
     "channelPush": "Push",
-    "channelToggleLabel": "{channel} for {notification}",
+    "channelToggleLabel": "{channel} para {notification}",
     "noChannelsWarning": "No se entregará hasta que elijas un canal.",
     "browserPushTitle": "Empuje del navegador",
     "browserPushBody": "Envíe notificaciones del dispositivo desde este navegador para los tipos de notificación habilitados.",
@@ -4504,14 +4507,14 @@
     "browserPushDeviceIos": "dispositivo iOS",
     "browserPushDeviceAndroid": "dispositivo Android",
     "browserPushDeviceUnknown": "Dispositivo de empuje",
-    "browserPushDeviceLastSeen": "Last seen {date}",
+    "browserPushDeviceLastSeen": "Visto por última vez el {date}",
     "browserPushDeviceNeverSeen": "Visto por última vez desconocido",
-    "browserPushDeviceFailures": "{count, plural, one {# recent failure} other {# recent failures}}",
+    "browserPushDeviceFailures": "{count, plural, one {# fallo reciente} other {# fallos recientes}}",
     "browserPushDeviceRemove": "Quitar",
     "browserPushDeviceRemoving": "Eliminando",
     "browserPushDeviceRemoved": "Dispositivo de empuje retirado.",
     "browserPushDeviceRemoveFailed": "No se pudo quitar el dispositivo de empuje.",
-    "browserPushDeliveryIssues": "{failing, plural, =0 {No failing devices} one {# failing device} other {# failing devices}} · {retries, plural, =0 {no pending retries} one {# pending retry} other {# pending retries}}",
+    "browserPushDeliveryIssues": "{failing, plural, =0 {Sin dispositivos con fallos} one {# dispositivo con fallos} other {# dispositivos con fallos}} · {retries, plural, =0 {sin reintentos pendientes} one {# reintento pendiente} other {# reintentos pendientes}}",
     "reactionAlertsTitle": "Alertas de reacción",
     "reactionDetectedTitle": "Posible reacción",
     "reactionAlertsBody": "Avisarme cuando la IA detecte una posible reacción",
@@ -4640,12 +4643,12 @@
       },
       "product_nearing_expiry": {
         "title": "Producto a punto de caducar",
-        "body": "{productName} expires in {daysUntilExpiry, plural, one {# day} other {# days}} on {expiresDate}.",
-        "bodyFallback": "{productName} is nearing expiry on {expiresDate}."
+        "body": "{productName} vence en {daysUntilExpiry, plural, one {# día} other {# días}} el {expiresDate}.",
+        "bodyFallback": "{productName} está cerca de vencer el {expiresDate}."
       },
       "product_expired": {
         "title": "Producto caducado",
-        "body": "{productName} expired on {expiresDate}."
+        "body": "{productName} venció el {expiresDate}."
       },
       "smart_pick_ready": {
         "title": "Nueva selección inteligente disponible",
@@ -4653,7 +4656,7 @@
       },
       "community_moderation": {
         "title": "Actualización de comunidad",
-        "body": "Una reseña o guía que compartiste tiene una actualización de moderación."
+        "body": "Una reseña o Playbook que compartiste tiene una actualización de moderación."
       }
     }
   },
@@ -4720,7 +4723,7 @@
       },
       "coverage": {
         "title": "medidor de cobertura",
-        "summary": "{filled} of {total} goal steps covered",
+        "summary": "{filled} de {total} pasos del objetivo cubiertos",
         "states": {
           "filled": "Cubierto",
           "missing": "Espacio opcional",
@@ -4781,8 +4784,8 @@
       "starterKit": {
         "eyebrow": "Equipo de inicio",
         "title": "Rutina de inicio",
-        "stepCount": "{count, plural, one {1 step} other {# steps}}",
-        "step": "Step {order}",
+        "stepCount": "{count, plural, one {1 paso} other {# pasos}}",
+        "step": "Paso {order}",
         "pickFallback": "Elegido para mantener la primera rutina simple y de bajo riesgo.",
         "noPickTitle": "El nombre del producto todavía coincide con este paso.",
         "noPick": "Mantenga este paso en la rutina. El nombre del producto específico aparecerá aquí cuando finalice la coincidencia.",
@@ -4796,10 +4799,10 @@
         }
       },
       "replacement": {
-        "title": "Replacement for {productName}",
-        "usage90": "{count} use days in 90d",
-        "photos": "{count} photo checkpoints",
-        "reactions": "{count} reaction signals",
+        "title": "Reemplazo para {productName}",
+        "usage90": "{count} días de uso en 90 días",
+        "photos": "{count} controles con foto",
+        "reactions": "{count} señales de reacción",
         "caveat": "Las fotos pueden respaldar una decisión de reemplazo, pero no prueban que el producto haya fallado. Ritora espera a que se registre suficiente uso y repite los puntos de control fotográfico antes de sugerir un intercambio."
       },
       "product": {
@@ -4865,15 +4868,15 @@
         "shelfCta": "Estante de revisión",
         "journalCta": "diario abierto",
         "facts": {
-          "coverage": "Coverage {filled}/{total}",
-          "activeProducts": "{count, plural, =0 {No active products} one {1 active product} other {# active products}}",
-          "hiddenPicks": "{count, plural, one {1 hidden pick} other {# hidden picks}}",
-          "pauseEnds": "Paused until {date}"
+          "coverage": "Cobertura {filled}/{total}",
+          "activeProducts": "{count, plural, =0 {Sin productos activos} one {1 producto activo} other {# productos activos}}",
+          "hiddenPicks": "{count, plural, one {1 elección oculta} other {# elecciones ocultas}}",
+          "pauseEnds": "En pausa hasta {date}"
         },
         "history": {
-          "ready": "{days} use days, {photos} clear photo checks",
-          "needs_usage_logs": "{photos} clear photo checks. More use logs needed.",
-          "needs_clear_photos": "{days} use days. Add clearer photo checks.",
+          "ready": "{days} días de uso, {photos} controles con foto claros",
+          "needs_usage_logs": "{photos} controles con foto claros. Se necesitan más registros de uso.",
+          "needs_clear_photos": "{days} días de uso. Añade controles con foto más claros.",
           "needs_usage_and_photos": "Necesita más registros de uso y fotografías claras antes de realizar comprobaciones de reemplazo."
         },
         "missingFields": {
@@ -4900,7 +4903,7 @@
           "water_sensitivity": "Sensibilidad al agua",
           "budget_tier": "Presupuesto",
           "smart_picks_consent": "Elección de selecciones inteligentes",
-          "more": "{count, plural, one {+1 more} other {+# more}}"
+          "more": "{count, plural, one {+1 más} other {+# más}}"
         }
       },
       "wishlist": {
@@ -4909,9 +4912,9 @@
         "emptyTitle": "Aún no hay selecciones inteligentes guardadas",
         "emptyBody": "Toque el corazón en cualquier recomendación de Smart Pick para guardarla aquí. Puede revisar los productos guardados antes de comparar vendedores.",
         "emptyCta": "Explorar selecciones inteligentes",
-        "savedForGoal": "Saved for your {goal} goal.",
+        "savedForGoal": "Guardado para tu objetivo de {goal}.",
         "savedFallback": "Guardado de una selección inteligente reciente.",
-        "savedOn": "Saved {date}",
+        "savedOn": "Guardado el {date}",
         "savedBadge": "Guardado"
       }
     }
@@ -4941,6 +4944,14 @@
       "gapSaved": "Guardado en tu lista de deseos de Hoy.",
       "gapDismissed": "Recomendación descartada por ahora."
     },
+    "prerequisites": {
+      "profile": {
+        "title": "Completa primero tu perfil de piel",
+        "body": "Ritora necesita tu perfil de piel antes de que las sugerencias rápidas o las nuevas fotos del diario puedan influir de forma segura en la rutina de hoy.",
+        "cta": "Abrir perfil de piel",
+        "loadError": "No pudimos acceder a tu perfil de piel ahora mismo. Revisa tu conexión e inténtalo de nuevo."
+      }
+    },
     "aiConsentDialog": {
       "title": "Permitir sugerencias de IA",
       "body": "Las sugerencias rápidas utilizan IA para leer su estante, agenda, perfil de piel, diarios e historial de aplicaciones anteriores. El perfil confidencial o el contexto de la revista solo se utilizan cuando el consentimiento de coincidencia también está activo.",
@@ -4965,7 +4976,7 @@
       "statusLabel": "en un descanso",
       "title": "Estás en un descanso de rutina",
       "body": "Ritora mantendrá su agenda intacta, pausará nuevas sugerencias y detendrá los recordatorios de rutina hasta que reanude.",
-      "resumeOn": "Planned resume: {date}",
+      "resumeOn": "Reanudación prevista: {date}",
       "resumeIndefinite": "En pausa hasta reanudar",
       "resumeDateLabel": "Fecha de reanudación",
       "saveResumeDate": "Guardar fecha de currículum",
@@ -5027,12 +5038,12 @@
     "lockedDay": {
       "title": "Como llegan las sugerencias",
       "body": "Cada rutina se prepara poco antes de su llegada, utilizando su última foto, estantería y perfil de piel.",
-      "leadFact": "Visible {leadTime} before each suggestion arrives.",
-      "notifyFact": "We notify you when ready and at the scheduled time. Manage in <link>Notifications</link>.",
-      "leadTimeHour": "{count} hour",
-      "leadTimeHours": "{count} hours",
-      "leadTimeMinute": "{count} minute",
-      "leadTimeMinutes": "{count} minutes"
+      "leadFact": "Visible {leadTime} antes de que llegue cada sugerencia.",
+      "notifyFact": "Te avisamos cuando esté lista y a la hora programada. Gestiona esto en <link>Notificaciones</link>.",
+      "leadTimeHour": "{count} hora",
+      "leadTimeHours": "{count} horas",
+      "leadTimeMinute": "{count} minuto",
+      "leadTimeMinutes": "{count} minutos"
     },
     "section": {
       "morning": "mañana",
@@ -5040,16 +5051,16 @@
       "evening": "tarde"
     },
     "summary": {
-      "applied": "{count, plural, one {# applied} other {# applied}}",
-      "ready": "{count, plural, one {# ready} other {# ready}}",
-      "locked": "{count, plural, one {# locked} other {# locked}}",
+      "applied": "{count, plural, one {# aplicado} other {# aplicados}}",
+      "ready": "{count, plural, one {# listo} other {# listos}}",
+      "locked": "{count, plural, one {# bloqueado} other {# bloqueados}}",
       "weatherWithTemperature": "{condition} · {temperature}°C",
       "temperature": "{temperature}°C",
       "uvIndex": "UV {index}",
       "uvRisk": "UV {index} · {risk}",
-      "humidity": "{band} · {value}% humidity",
-      "airQuality": "Air {risk}",
-      "waterContext": "{hardness} water",
+      "humidity": "{band} · {value}% de humedad",
+      "airQuality": "Aire {risk}",
+      "waterContext": "Agua {hardness}",
       "environment": {
         "unknown": "Desconocido",
         "uv": {
@@ -5084,9 +5095,9 @@
       },
       "photoNudge": "Foto registrada hoy",
       "logPhoto": "Foto de registro",
-      "photoLoggedAt": "Photo logged at {time}",
-      "notifications": "{count, plural, one {# notification} other {# notifications}}",
-      "adherence": "{percent}% adherence"
+      "photoLoggedAt": "Foto registrada a las {time}",
+      "notifications": "{count, plural, one {# notificación} other {# notificaciones}}",
+      "adherence": "{percent}% de adherencia"
     },
     "environment": {
       "climateAwareTitle": "Hacer sugerencias conscientes del clima",
@@ -5095,7 +5106,7 @@
     },
     "modeBadge": {
       "ai": "IA",
-      "manual": "manuales",
+      "manual": "Manual",
       "mixed": "Mixto"
     },
     "provenance": {
@@ -5117,7 +5128,7 @@
       "temperature": "{temperature}°C",
       "uvIndex": "UV {index}",
       "uvRisk": "UV {index} · {risk}",
-      "humidity": "{band} · {value}% humidity",
+      "humidity": "{band} · {value}% de humedad",
       "airQuality": "AQI · {risk}",
       "airQualityWithIndex": "AQI {index} · {risk}",
       "environment": {
@@ -5150,13 +5161,13 @@
       "routineNote": "Nota de rutina:"
     },
     "slot": {
-      "stepCount": "{count, plural, one {# step} other {# steps}}",
+      "stepCount": "{count, plural, one {# paso} other {# pasos}}",
       "ready": "Listo",
       "generating": "preparando",
       "failed": "Necesita volver a intentarlo",
       "missed": "perdido",
       "applied": "Aplicado",
-      "appliedSummary": "{count} of {total} applied",
+      "appliedSummary": "{count} de {total} aplicados",
       "awaitingRecord": "Esperando registro",
       "simplified": "simplificado",
       "specialist": "Especialista",
@@ -5169,10 +5180,10 @@
       "morningLabel": "rutina matutina",
       "noonLabel": "recordatorio del medio día",
       "eveningLabel": "rutina nocturna",
-      "availableAt": "Available {time}",
-      "unlocksIn": "Unlocks in {eta}.",
-      "unlocksInRich": "Unlocks in <strong>{eta}</strong>.",
-      "lockedExplainer": "Solo mostramos sugerencias cuando se abre la ventana de llegada configurada para que reflejen su última foto, sueño y check-in.",
+      "availableAt": "Disponible a las {time}",
+      "unlocksIn": "Se desbloquea en {eta}.",
+      "unlocksInRich": "Se desbloquea en <strong>{eta}</strong>.",
+      "lockedExplainer": "Solo mostramos sugerencias cuando se abre la ventana de llegada configurada para que reflejen tu última foto, sueño y registro.",
       "generatingExplainer": "Ritora está preparando esta sugerencia con su programación, estante, perfil de piel y registros recientes más recientes.",
       "failedExplainer": "Esta sugerencia no se pudo preparar. Permanece visible para que el problema no desaparezca del día.",
       "missedExplainer": "Esta sugerencia fue aprobada sin un registro de solicitud guardado. Aún puedes grabarlo o editarlo desde el Historial después de hoy.",
@@ -5182,33 +5193,33 @@
       "more": "Más",
       "edit": "Editar",
       "edited": "Editado",
-      "appliedAt": "Applied at {time}",
-      "recordedSummary": "Applied {time} · {count} of {total}",
-      "recordedAt": "Recorded {time}.",
-      "editedAt": "Edited at {time}.",
-      "editedSubstitutionSummary": "Substituted {from} with {to}.",
+      "appliedAt": "Aplicado a las {time}",
+      "recordedSummary": "Aplicado {time} · {count} de {total}",
+      "recordedAt": "Registrado {time}.",
+      "editedAt": "Editado {time}.",
+      "editedSubstitutionSummary": "Sustituido {from} por {to}.",
       "recordedMatchesSuggestion": "Coincide con la sugerencia.",
       "recordedItem": {
         "applied": "Aplicado",
         "skipped": "Saltado",
         "substituted": "sustituido",
-        "insteadOf": "Instead of {name}",
+        "insteadOf": "En lugar de {name}",
         "addedByYou": "Añadido por ti",
-        "itemAppliedAt": "Applied {time}",
+        "itemAppliedAt": "Aplicado {time}",
         "unknownProduct": "Producto"
       }
     },
     "reactionBanner": {
       "title": "Posible reacción en la foto de esta mañana.",
-      "paused": "Paused while it settles: {names}",
-      "confidence": "{percent}% confidence",
-      "photosUntilClear": "{count, plural, =0 {Clear criteria met} one {# more photo to clear} other {# more photos to clear}}",
+      "paused": "En pausa mientras se estabiliza: {names}",
+      "confidence": "{percent}% de confianza",
+      "photosUntilClear": "{count, plural, =0 {Criterios de recuperación cumplidos} one {# foto más para recuperarse} other {# fotos más para recuperarse}}",
       "clearCriteria": "Criterios para eliminar barreras",
       "viewPhoto": "Ver foto",
       "resetRoutine": "Usa mi rutina normal"
     },
     "gapRecommendation": {
-      "title": "Consider adding a {ingredient}",
+      "title": "Considera añadir {ingredient}",
       "browse": "Opciones de exploración",
       "saveToWishlist": "Guardar en la lista de deseos",
       "saved": "Guardado",
@@ -5217,8 +5228,8 @@
     "recordSheet": {
       "recordTitle": "Registra lo que aplicaste",
       "editTitle": "Editar aplicación",
-      "recordSubtitle": "Suggestion at {time}, {count} suggested steps",
-      "editSubtitle": "Suggestion at {time}. Originally recorded {firstRecordedAt}.",
+      "recordSubtitle": "Sugerencia a las {time}, {count} pasos sugeridos",
+      "editSubtitle": "Sugerencia a las {time}. Registrada originalmente a las {firstRecordedAt}.",
       "appliedAt": "Aplicado en",
       "rowSuggestedTag": "sugerido",
       "rowAddedTag": "Añadido por ti",
@@ -5254,7 +5265,7 @@
       },
       "substitution": {
         "chooseProduct": "¿Qué usaste en su lugar?",
-        "selected": "Substituted with {name}",
+        "selected": "Sustituido por {name}",
         "selectedShelf": "producto de estantería seleccionado",
         "offShelfBrand": "Marca disponible en el mercado",
         "offShelfName": "Producto disponible en el mercado",
@@ -5271,12 +5282,12 @@
       "editHistory": {
         "willMarkAsEdited": "Este registro será marcado como",
         "editedMarker": "Editado",
-        "firstSavedAt": "First saved {time} by you",
+        "firstSavedAt": "Guardado por primera vez a las {time} por ti",
         "versionsAreKept": "Se conservan todas las versiones anteriores, por lo que nunca recomendamos algo basado en un registro modificado. Puede revisar versiones anteriores en la página Historial del día."
       }
     },
     "reminderBanner": {
-      "title": "Record your {time} routine",
+      "title": "Registra tu rutina de {time}",
       "body": "Esta sugerencia está lista para registrarse. Registrar lo que realmente sucedió mantiene precisas las sugerencias de la tarde y la noche.",
       "recordNow": "Graba la mañana ahora",
       "skippedToday": "Saltado hoy",
@@ -5288,8 +5299,8 @@
       "eyebrow": "¿Por qué esta rutina?",
       "title": "{daypart}, {time}",
       "description": "Razonamiento detrás de la rutina sugerida hoy.",
-      "generatedAt": "Generated {time}",
-      "aiModel": "Model {model}",
+      "generatedAt": "Generado a las {time}",
+      "aiModel": "Modelo {model}",
       "daypart": {
         "morning": "mañana",
         "noon": "Mediodía",
@@ -5308,10 +5319,10 @@
         "uv": "ultravioleta",
         "uvDetail": "UV {index}, {risk}",
         "humidity": "Humedad",
-        "humidityDetail": "{value}% humidity, {band}",
+        "humidityDetail": "{value}% de humedad, {band}",
         "air": "Calidad del aire",
         "water": "Contexto del agua",
-        "waterDetail": "{hardness} water may make gentle cleansing and barrier support more important.",
+        "waterDetail": "El agua {hardness} puede hacer que la limpieza suave y el apoyo de barrera sean más importantes.",
         "uvRisk": {
           "low": "bajo riesgo",
           "moderate": "riesgo moderado",
@@ -5351,7 +5362,7 @@
         "showers": "Chubascos",
         "stormy": "Tormentoso"
       },
-      "evidenceReviewed": "reviewed {date}",
+      "evidenceReviewed": "revisado el {date}",
       "noRationale": "No se captura ninguna justificación para esta sugerencia.",
       "markApplied": "Marcar como aplicado",
       "tryAnotherSuggestion": "Prueba otra sugerencia"
@@ -5378,7 +5389,7 @@
       },
       "recoverable": {
         "title": "Nada programado por ahora",
-        "body": "Your next routine is {nextSlotLabel}. While you wait, log a photo so the AI has fresh data when it generates.",
+        "body": "Tu próxima rutina es {nextSlotLabel}. Mientras esperas, registra una foto para que la IA tenga datos recientes cuando la genere.",
         "ctaPhoto": "Añade la foto de hoy",
         "ctaAddSlot": "Agregar tiempo de rutina"
       }
@@ -5418,7 +5429,7 @@
       "noon": "Mediodía",
       "evening": "tarde",
       "ai": "IA",
-      "manual": "manuales",
+      "manual": "Manual",
       "mixed": "Mixto",
       "scheduled": "Programado",
       "on_demand": "Bajo demanda",
@@ -5430,12 +5441,12 @@
       "edited": "Editado"
     },
     "summary": {
-      "appliedOf": "{applied} of {total} applied",
-      "edited": "{count} edited",
-      "adherence": "{percent}% adherence"
+      "appliedOf": "{applied} de {total} aplicados",
+      "edited": "{count} editados",
+      "adherence": "{percent}% de adherencia"
     },
     "dayCard": {
-      "mood": "Mood {score} of 5",
+      "mood": "Ánimo {score} de 5",
       "hydration": {
         "up": "Hidratación arriba",
         "flat": "Hidratación constante",
@@ -5447,7 +5458,7 @@
         "noon": "Mediodía",
         "evening": "tarde"
       },
-      "onDemandLabel": "On-demand · {intent}",
+      "onDemandLabel": "A demanda · {intent}",
       "onDemandIntent": {
         "post_workout": "Después del entrenamiento",
         "post_sun": "despues del sol",
@@ -5473,9 +5484,9 @@
       "error": "Algo salió mal al cargar este día. Puedes intentarlo de nuevo.",
       "retry": "Inténtalo de nuevo",
       "backLabel": "toda la historia",
-      "subtitle": "{slots} slots, {applied} of {total} applied",
+      "subtitle": "{slots} espacios, {applied} de {total} aplicados",
       "viewPhoto": "Ver foto",
-      "appliedSummary": "{applied} of {total} applied",
+      "appliedSummary": "{applied} de {total} aplicados",
       "daypart": {
         "morning": "mañana",
         "noon": "Mediodía",
@@ -5499,10 +5510,10 @@
         "added_shelf": "Añadido desde el estante",
         "added_off_shelf": "Agregado disponible en el mercado"
       },
-      "substitutedFor": "Substituted for {product}",
+      "substitutedFor": "Sustituido por {product}",
       "outcomeNote": "Las ideas sobre resultados utilizan lo que realmente aplicó, no lo que se sugirió.",
       "aiSawContext": "Este es el mismo registro que vio su IA cuando aprendió de este día.",
-      "itemAppliedAt": "Applied {time}",
+      "itemAppliedAt": "Aplicado {time}",
       "whyThisRoutine": "¿Por qué esta rutina?",
       "editRecord": "Editar registro"
     },
@@ -5545,7 +5556,7 @@
     },
     "patternNotice": {
       "title": "Patrón notado",
-      "body": "Your adherence is at {percent}% across this period. Want me to adapt next week's plan based on what you actually apply most?"
+      "body": "Tu adherencia es del {percent}% en este periodo. ¿Quieres que adapte el plan de la próxima semana según lo que realmente aplicas más?"
     }
   },
   "validation": {
@@ -5554,10 +5565,18 @@
   },
   "community": {
     "title": "Comunidad",
-    "subtitle": "Productos, guías y qué omitir, confirmados por personas como usted.",
+    "subtitle": "Productos, Playbooks y qué omitir, confirmados por personas como tú.",
+    "prerequisites": {
+      "profile": {
+        "title": "Completa primero tu perfil de piel",
+        "body": "Ritora necesita tu perfil de piel antes de poder emparejar de forma segura contigo los Playbooks, reseñas y evidencia de productos de la comunidad.",
+        "cta": "Abrir perfil de piel",
+        "loadError": "No pudimos acceder a tu perfil de piel ahora mismo. Revisa tu conexión e inténtalo de nuevo."
+      }
+    },
     "tabs": {
       "peopleLikeMe": "gente como yo",
-      "playbooks": "Libros de jugadas",
+      "playbooks": "Playbooks",
       "reviews": "Reseñas",
       "bookmarks": "Guardados",
       "submissions": "mio",
@@ -5568,35 +5587,35 @@
       "matching": "Coincidencia",
       "privacy": "Privacidad",
       "privacyBody": "Sólo utilizamos las facetas anteriores para clasificar lo que ves. Su correo electrónico, ubicación, fotografías, contexto médico y notas privadas permanecen privados.",
-      "emptyProfile": "Complete su perfil de piel para una mejor combinación. Una vez hecho esto, podemos clasificar los manuales de estrategias según lo que realmente se adapta a sus necesidades."
+      "emptyProfile": "Completa tu perfil de piel para una mejor coincidencia. Una vez hecho, podemos clasificar Playbooks según lo que realmente encaja contigo."
     },
     "lists": {
-      "playbooksTitle": "Libros de jugadas de objetivos",
-      "playbooksEmptyTitle": "Aún no hay manuales de objetivos",
-      "playbooksEmptyBody": "Los libros de jugadas de objetivos aparecen aquí después de pasar nuestro control de seguridad.",
-      "playbooksFilterEmptyTitle": "Ningún libro de jugadas coincide con esos filtros",
-      "playbooksFilterEmptyBody": "Pruebe con un objetivo, resultado o plazo más amplio.",
-      "playbooksTopN": "Top {count}",
-      "playbooksLoaded": "{count} cargados",
-      "playbooksShownTotal": "{shown}/{total} shown",
+      "playbooksTitle": "Playbooks de objetivos",
+      "playbooksEmptyTitle": "Aún no hay Playbooks de objetivos",
+      "playbooksEmptyBody": "Los Playbooks de objetivos aparecen aquí después de pasar nuestro control de seguridad.",
+      "playbooksFilterEmptyTitle": "Ningún Playbook coincide con esos filtros",
+      "playbooksFilterEmptyBody": "Prueba con un objetivo, resultado o plazo más amplio.",
+      "playbooksTopN": "{count} principales",
+      "playbooksLoaded": "{count} Playbooks cargados",
+      "playbooksShownTotal": "{shown}/{total} Playbooks mostrados",
       "reviewsTitle": "Reseñas para ti",
       "reviewsEmptyTitle": "Aún no hay reseñas publicadas",
       "reviewsEmptyBody": "Una vez que las personas comparten reseñas con el contexto requerido, aparecen aquí.",
       "reviewsFilterEmptyTitle": "Ninguna reseña coincide con esos filtros",
       "reviewsFilterEmptyBody": "Prueba con un filtro de producto, perfil de piel o resultado más amplio.",
-      "reviewsTopN": "Top {count}",
+      "reviewsTopN": "{count} principales",
       "reviewsLoaded": "{count} cargadas",
-      "reviewsTotal": "{count} total",
+      "reviewsTotal": "{count} en total",
       "loadingMore": "Cargando más evidencia de la comunidad…",
       "loadMoreError": "No pudimos cargar más evidencia de la comunidad.",
       "retry": "Intentarlo de nuevo",
       "peopleEmptyTitle": "Aún no hay evidencia comunitaria",
-      "peopleEmptyBody": "Una vez que las personas con una piel como la tuya compartan guías y reseñas, las verás aquí."
+      "peopleEmptyBody": "Cuando personas con piel como la tuya compartan Playbooks y reseñas, los verás aquí."
     },
     "bookmarks": {
       "title": "Guardados",
       "emptyTitle": "Aún no hay evidencia comunitaria guardada",
-      "emptyBody": "Guarda reseñas y guías que quieras volver a consultar antes de probar algo nuevo.",
+      "emptyBody": "Guarda reseñas y Playbooks que quieras volver a consultar antes de probar algo nuevo.",
       "loaded": "{count} guardados",
       "save": "Guardar",
       "bookmarked": "Guardado",
@@ -5609,26 +5628,26 @@
     },
     "cards": {
       "adapt": "Revisar mi estante",
-      "viewPlaybook": "Ver guía",
+      "viewPlaybook": "Ver Playbook",
       "reportRoutine": "Informe de rutina",
       "reportReview": "Revisión del informe",
       "typeReview": "Reseña",
-      "typePlaybook": "Guía",
+      "typePlaybook": "Playbook",
       "context": "Emparejado con",
       "usedAloneContextLabel": "Usado solo",
       "notSureContextLabel": "Otros productos no indicados",
       "routineStepsLabel": "Pasos de la rutina",
-      "moreSteps": "+{count} more"
+      "moreSteps": "+{count} más"
     },
     "share": {
-      "playbookTitle": "Comparte un libro de jugadas",
-      "playbookDescription": "Recorre el objetivo, la rutina y el resultado. Lo comprobamos de seguridad antes de que entre en funcionamiento.",
-      "playbookAction": "Comparte un libro de jugadas",
+      "playbookTitle": "Comparte un Playbook",
+      "playbookDescription": "Recorre el objetivo, la rutina y el resultado. Lo comprobamos por seguridad antes de publicarlo.",
+      "playbookAction": "Comparte un Playbook",
       "reviewTitle": "Escribe una reseña",
       "reviewDescription": "Agregue el contexto que alguien como usted necesita antes de probar este producto.",
       "reviewAction": "Escribe una reseña",
       "submitReview": "Enviar reseña",
-      "sharePlaybook": "Compartir libro de jugadas",
+      "sharePlaybook": "Compartir Playbook",
       "submitting": "Enviando…",
       "scanning": "Escaneando…",
       "saveEdits": "Guardar ediciones",
@@ -5641,25 +5660,25 @@
       "keepEditing": "Seguir editando"
     },
     "unsavedPlaybook": {
-      "title": "¿Descartar cambios del libro de jugadas?",
-      "description": "Tu borrador del libro de jugadas se perderá si cierras este panel ahora.",
+      "title": "¿Descartar cambios del Playbook?",
+      "description": "Tu borrador de Playbook se perderá si cierras este panel ahora.",
       "discard": "Descartar cambios",
       "keepEditing": "Seguir editando"
     },
     "editability": {
       "heading": "Aviso antes de enviar",
       "reviewBody": "Una vez que su reseña esté publicada, solo podrá editar el texto de la reseña, y solo si nuestros moderadores se lo solicitan. Las calificaciones, el producto, los detalles de uso y las etiquetas están bloqueados.",
-      "playbookBody": "Una vez que tu libro de estrategias esté activo, solo podrás editar el título y el resumen, y solo si nuestros moderadores te lo piden. Los pasos, productos, objetivos y etiquetas están bloqueados."
+      "playbookBody": "Una vez que tu Playbook esté publicado, solo podrás editar el título y el resumen, y solo si nuestros moderadores te lo piden. Los pasos, productos, objetivos y etiquetas quedan bloqueados."
     },
     "confirm": {
       "reviewTitle": "¿Enviar esta reseña?",
       "reviewBody": "Lo escanearemos de forma segura y ejecutaremos moderación de IA antes de que entre en funcionamiento. Después de eso, sólo podrás editar el texto de la reseña, y sólo si los moderadores te lo piden.",
-      "playbookTitle": "¿Compartir este libro de jugadas?",
-      "playbookBody": "Lo escanearemos de forma segura y ejecutaremos moderación de IA antes de que entre en funcionamiento. Después de eso, sólo podrás editar el título y el resumen, y sólo si los moderadores te lo piden.",
+      "playbookTitle": "¿Compartir este Playbook?",
+      "playbookBody": "Ejecutaremos un escaneo de seguridad y moderación de IA antes de publicarlo. Después de eso, solo podrás editar el título y el resumen, y solo si los moderadores te lo piden.",
       "keepEditing": "Sigue editando"
     },
     "filters": {
-      "searchPlaybooks": "Buscar guías",
+      "searchPlaybooks": "Buscar Playbooks",
       "searchPlaybooksPlaceholder": "Busca objetivos, productos, hábitos, desencadenantes evitados…",
       "searchReviews": "Buscar reseñas",
       "searchReviewsPlaceholder": "Busca producto, marca, resultado o producto combinado…",
@@ -5689,8 +5708,8 @@
       "filtersWithCount": "Filtros · {count}",
       "allFiltersTitle": "Filtrar reseñas",
       "allFiltersDescription": "Elige la combinación que quieras de resultado, perfil de piel, contexto de rutina y divulgación.",
-      "playbooksFiltersTitle": "Filtrar planes",
-      "playbooksFiltersDescription": "Elige la combinación que quieras de objetivo, perfil de piel, productos y seguridad.",
+      "playbooksFiltersTitle": "Filtrar Playbooks",
+      "playbooksFiltersDescription": "Elige cualquier combinación de objetivo, perfil de piel, productos y seguridad para acotar lo que ves.",
       "done": "Listo",
       "activeFiltersLabel": "{count, plural, =0 {Sin filtros activos} one {# filtro activo} other {# filtros activos}}"
     },
@@ -5824,11 +5843,11 @@
         "professional-care-involved": "Atención profesional involucrada"
       },
       "minimumRating": {
-        "5": "5 estrellas",
-        "4": "4+ estrellas",
-        "3": "3+ estrellas",
+        "1": "1+ estrellas",
         "2": "2+ estrellas",
-        "1": "1+ estrellas"
+        "3": "3+ estrellas",
+        "4": "4+ estrellas",
+        "5": "5 estrellas"
       },
       "outcomeSignal": {
         "worked_for_me_too": "Funcionó para mí también",
@@ -5926,13 +5945,13 @@
       },
       "playbook": {
         "srTitle": "Comparte lo que funcionó",
-        "submitFailed": "No se pudo enviar el libro de jugadas de objetivos.",
+        "submitFailed": "No se pudo enviar el Playbook de objetivos.",
         "goalSection": "Objetivo y resultado",
         "titleLabel": "Título",
         "titleHint": "Un nombre corto para lo que funcionó.",
         "titlePlaceholder": "por ej. Lo que calmó mis brotes",
         "goalLabel": "Objetivo",
-        "goalHint": "Para qué servía este libro de jugadas.",
+        "goalHint": "Para qué servía este Playbook.",
         "goalPlaceholder": "Elige objetivo",
         "resultLabel": "Resultado",
         "resultHint": "Opcional. Elija el resultado más cercano.",
@@ -5943,7 +5962,7 @@
         "routineSection": "Productos y rutina",
         "routineDescription": "Añade cada paso en orden. Elija de su estante donde pueda: la entrada manual está bien cuando un producto no está en su estante.",
         "changedSection": "que cambio",
-        "changedDescription": "Opcional. Las etiquetas hacen que este manual pueda ser buscado por personas que persiguen el mismo objetivo.",
+        "changedDescription": "Opcional. Las etiquetas hacen que este Playbook pueda ser encontrado por personas que persiguen el mismo objetivo.",
         "avoidLabel": "lo que evité",
         "avoidHint": "Cosas que te ayudaron porque dejaste de hacerlas.",
         "habitLabel": "Hábitos que ayudaron",
@@ -6003,8 +6022,8 @@
       "label": "Productos y pasos de rutina.",
       "hint": "Elija de su estantería siempre que sea posible para que la evidencia pueda conectarse con las decisiones sobre productos.",
       "otherProduct": "Otro (no en mi estante)",
-      "step": "Step {number}",
-      "removeStep": "Remove step {number}",
+      "step": "Paso {number}",
+      "removeStep": "Eliminar paso {number}",
       "product": "Producto",
       "loadingShelf": "Cargando estante…",
       "pickProduct": "Elige un producto",
@@ -6043,11 +6062,11 @@
       "failedToast": "No se pudo guardar el resultado.",
       "confirmed": "{worked} de {total} personas confirmaron que funcionó",
       "reviewConfirmed": "{worked} de {total} personas confirmaron que este producto les funcionó",
-      "helper": "Toca un icono debajo para compartir tu propio resultado con esta guía. Cada icono representa un tipo de resultado distinto.",
+      "helper": "Toca un icono debajo para compartir tu propio resultado con este Playbook. Cada icono representa un tipo de resultado distinto.",
       "reviewHelper": "Toca un icono debajo para decir si este producto reseñado también te funcionó. Tu contexto ayuda a Ritora a clasificar la evidencia del producto.",
       "viewResults": "Ver resultados comunitarios",
       "resultsTitle": "Resultados comunitarios",
-      "resultsDescription": "Confirmaciones estructuradas de personas que probaron esta reseña o guía. Las notas de resultado solo aparecen después de moderación.",
+      "resultsDescription": "Confirmaciones estructuradas de personas que probaron esta reseña o Playbook. Las notas de resultado solo aparecen después de moderación.",
       "resultsForProduct": "Para {product}",
       "resultMatchedPartsLabel": "Contexto coincidente",
       "resultUsedWithLabel": "Usado con",
@@ -6088,7 +6107,7 @@
       "manualUsedWithProduct": "Nombre del producto",
       "manualUsedWithProductPlaceholder": "p. ej. Hydrating Cleanser",
       "reviewOwnContentToast": "No puedes confirmar tu propia reseña.",
-      "routineOwnContentToast": "No puedes confirmar tu propia guía.",
+      "routineOwnContentToast": "No puedes confirmar tu propio Playbook.",
       "shortLabels": {
         "worked_for_me_too": "Funcionó",
         "worked_with_changes": "Con cambios",
@@ -6112,7 +6131,7 @@
       "sameGoalYes": "Si, mismo objetivo",
       "sameGoalNo": "No, relacionados pero diferentes.",
       "trialDuration": "¿Cuánto tiempo lo intentaste?",
-      "trialDurationHint": "Cuánto tiempo probaste esta guía o enfoque antes de decidir.",
+      "trialDurationHint": "Cuánto tiempo probaste este Playbook o enfoque antes de decidir.",
       "reviewTrialDurationHint": "Cuánto tiempo usaste este producto reseñado antes de decidir si funcionó para ti.",
       "irritation": "Irritación",
       "irritationHint": "Cualquier escozor, enrojecimiento o brote que notaste.",
@@ -6131,11 +6150,11 @@
       "loadError": "No se pudo cargar la evidencia comunitaria.",
       "retry": "Reintentar",
       "title": "evidencia comunitaria",
-      "description": "Reseñas estructuradas, guías y confirmaciones de personas con facetas de piel comparables.",
+      "description": "Reseñas estructuradas, Playbooks y confirmaciones de personas con facetas de piel comparables.",
       "noConfirmations": "Aún no hay confirmaciones de usuarios similares",
-      "similarConfirmations": "{count, plural, one {# similar-user confirmation} other {# similar-user confirmations}}",
+      "similarConfirmations": "{count, plural, one {# confirmación de usuario similar} other {# confirmaciones de usuarios similares}}",
       "reviews": "Reseñas",
-      "playbooks": "Libros de jugadas",
+      "playbooks": "Playbooks",
       "workedSignals": "Trabajó para ellos",
       "averageEffectiveness": "Promedio efectividad",
       "notAvailable": "—",
@@ -6148,28 +6167,28 @@
       "loadErrorTitle": "La rutina no se pudo cargar.",
       "loadErrorBody": "Es posible que esta rutina comunitaria no esté disponible o esté moderada.",
       "tryAgain": "Inténtalo de nuevo",
-      "sheetTitle": "Detalles de la guía",
-      "sheetEyebrow": "Guía",
+      "sheetTitle": "Detalles del Playbook",
+      "sheetEyebrow": "Playbook",
       "sheetDescription": "Revisa los productos compartidos, el patrón de rutina, las notas de seguridad y lo que tu estante ya cubre.",
       "matchReasonsLabel": "Por qué te coincide",
       "noRelevanceReasons": "Compartido sin un motivo de coincidencia específico.",
-      "subtitle": "Una guía de objetivo que puedes comparar con personas como tú y revisar contra tu propio estante.",
+      "subtitle": "Un Playbook de objetivo que puedes comparar con personas como tú y revisar contra tu propio estante.",
       "backToCommunity": "Comunidad",
       "report": "Informe",
       "reporting": "Informando…",
       "safetyScanned": "Seguridad escaneada. Sin banderas de alto riesgo.",
       "stepsTitle": "Productos y patrón de rutina.",
-      "stepsCount": "{count, plural, one {# step} other {# steps}}",
+      "stepsCount": "{count, plural, one {# paso} other {# pasos}}",
       "categoryOnlyStep": "Paso solo de categoría",
       "adaptLabel": "Revisión del estante",
       "adaptTitle": "Ver lo que ya tienes y lo que falta",
-      "adaptBody": "Ritora compara esta guía con tu estante para mostrar qué pasos ya tienes, qué pasos pueden usar un producto seguro y similar que ya tienes, y qué categorías de producto faltan. No elimina productos del estante ni cambia tu rutina.",
+      "adaptBody": "Ritora compara este Playbook con tu estante para mostrar qué pasos ya tienes, qué pasos pueden usar un producto seguro y similar que ya tienes, y qué categorías de producto faltan. No elimina productos del estante ni cambia tu rutina.",
       "adapting": "Revisando estante…",
       "adaptAgain": "Revisar estante otra vez",
       "adaptAction": "Revisar mi estante",
       "previewOnlyHint": "Esta revisión del estante es una guía temporal. No se guarda en tu cuenta, no compra productos, no elimina artículos del estante y no cambia tu rutina.",
       "adaptError": "Algo salió mal al adaptar esta rutina. Inténtalo de nuevo o infórmalo si el problema continúa.",
-      "changeStep": "Step {step} · {label}",
+      "changeStep": "Paso {step} · {label}",
       "change": {
         "kept": "Ya está en tu estante",
         "swapped": "Usa un producto similar que tienes",
@@ -6213,7 +6232,7 @@
       "withdraw": "Retirar",
       "withdrawing": "Retirándose…",
       "viewReview": "Ver reseña",
-      "viewPlaybook": "Ver guía",
+      "viewPlaybook": "Ver Playbook",
       "resultTitle": "Resultado en {title}",
       "resultFallbackTarget": "publicación comunitaria",
       "withdrawConfirmTitle": "¿Retirar el envío de la comunidad?",
@@ -6221,8 +6240,8 @@
       "cancel": "Cancelar",
       "editReviewTitle": "Editar reseña",
       "editReviewDescription": "Actualiza la reseña devuelta y guárdala para otra revisión de seguridad.",
-      "editPlaybookTitle": "Editar libro de jugadas",
-      "editPlaybookDescription": "Actualiza el libro de jugadas devuelto y guárdalo para otra revisión de seguridad.",
+      "editPlaybookTitle": "Editar Playbook",
+      "editPlaybookDescription": "Actualiza el Playbook devuelto y guárdalo para otra revisión de seguridad.",
       "guidanceTitle": "Qué editar",
       "guidanceFallback": "Revisa este envío por afirmaciones inseguras, falta de contexto de rutina o problemas de divulgación antes de guardar los cambios.",
       "safetyFlagTitleFallback": "Revisión de seguridad",
@@ -6243,38 +6262,38 @@
         "rejected": "Rechazado"
       },
       "type": {
-        "routine": "Libro de jugadas",
+        "routine": "Playbook",
         "review": "Revisión",
         "result": "Nota de resultado"
       },
       "resultOnReview": "Resultado sobre reseña",
-      "resultOnPlaybook": "Resultado sobre plan",
+      "resultOnPlaybook": "Resultado en Playbook",
       "resultOnFallback": "Resultado sobre publicación de la comunidad",
       "resultUnknownProduct": "Producto sin título",
       "parentReviewUnderModerationTitle": "La reseña original está en moderación",
       "parentReviewUnderModerationBody": "Tu nota de resultado está guardada, pero esta reseña no es visible públicamente mientras Ritora la revisa.",
-      "parentPlaybookUnderModerationTitle": "La guía original está en moderación",
-      "parentPlaybookUnderModerationBody": "Tu nota de resultado está guardada, pero esta guía no es visible públicamente mientras Ritora la revisa.",
+      "parentPlaybookUnderModerationTitle": "El Playbook original está en moderación",
+      "parentPlaybookUnderModerationBody": "Tu nota de resultado está guardada, pero este Playbook no es visible públicamente mientras Ritora lo revisa.",
       "parentNeedsEditReviewTitle": "Reseña original devuelta a su autor",
       "parentNeedsEditReviewBody": "Tu nota aparecerá de nuevo en cuanto el autor revise y vuelva a enviar la reseña.",
-      "parentNeedsEditPlaybookTitle": "Plan original devuelto a su autor",
-      "parentNeedsEditPlaybookBody": "Tu nota aparecerá de nuevo en cuanto el autor revise y vuelva a enviar el plan.",
+      "parentNeedsEditPlaybookTitle": "Playbook original devuelto a su autor",
+      "parentNeedsEditPlaybookBody": "Tu nota aparecerá de nuevo en cuanto el autor revise y vuelva a enviar el Playbook.",
       "parentRejectedReviewTitle": "La reseña original fue rechazada",
       "parentRejectedReviewBody": "Tu nota no aparecerá públicamente. Puedes retirarla si prefieres eliminarla de tu registro.",
-      "parentRejectedPlaybookTitle": "El plan original fue rechazado",
+      "parentRejectedPlaybookTitle": "El Playbook original fue rechazado",
       "parentRejectedPlaybookBody": "Tu nota no aparecerá públicamente. Puedes retirarla si prefieres eliminarla de tu registro.",
       "parentHiddenReviewTitle": "La reseña original fue eliminada",
       "parentHiddenReviewBody": "Tu nota ya no está vinculada a una reseña pública. Puedes retirarla si prefieres eliminarla de tu registro.",
-      "parentHiddenPlaybookTitle": "El plan original fue eliminado",
-      "parentHiddenPlaybookBody": "Tu nota ya no está vinculada a un plan público. Puedes retirarla si prefieres eliminarla de tu registro."
+      "parentHiddenPlaybookTitle": "El Playbook original fue eliminado",
+      "parentHiddenPlaybookBody": "Tu nota ya no está vinculada a un Playbook público. Puedes retirarla si prefieres eliminarla de tu registro."
     },
     "eligibility": {
       "dialogTitle": "La publicación comunitaria aún no está disponible",
-      "dialogDescription": "La navegación está abierta para todos. Para compartir una reseña o un libro de jugadas, su cuenta debe pasar primero las comprobaciones a continuación.",
+      "dialogDescription": "La navegación está abierta para todos. Para compartir una reseña o Playbook, tu cuenta debe pasar primero las comprobaciones a continuación.",
       "gateTitle": "¿Qué desbloquea la publicación?",
-      "gateIntro": "Browsing is on for everyone. To share something, your account needs to pass a few checks, including being at least {days} days old.",
-      "unlockDate": "Posting unlocks on {date}.",
-      "accountAgeNotice": "Your account is {accountAgeDays} days old. Posting unlocks at {minimumAccountAgeDays} days.",
+      "gateIntro": "La exploración está activa para todos. Para compartir algo, tu cuenta debe pasar algunas comprobaciones, incluida tener al menos {days} días de antigüedad.",
+      "unlockDate": "La publicación se desbloquea el {date}.",
+      "accountAgeNotice": "Tu cuenta tiene {accountAgeDays} días. La publicación se desbloquea a los {minimumAccountAgeDays} días.",
       "acceptRules": "Aceptar reglas",
       "accepting": "Aceptando…",
       "whyNotNow": "¿Por qué no ahora?",
@@ -6299,8 +6318,8 @@
         "shelfDetail": "Para que su reseña o rutina pueda apuntar a un producto real.",
         "guidelinesLabel": "Pautas aceptadas",
         "guidelinesDetail": "Cubre las reglas de divulgación y seguridad.",
-        "ageLabel": "At least {days} days old",
-        "ageDetail": "Your account is {days, plural, one {# day} other {# days}} old.",
+        "ageLabel": "Al menos {days} días de antigüedad",
+        "ageDetail": "Tu cuenta tiene {days, plural, one {# día} other {# días}}.",
         "abuseLabel": "No hay abuso de moderación reciente",
         "abuseDetail": "Las violaciones graves recientes suspendieron la publicación por un tiempo."
       }
@@ -6312,8 +6331,8 @@
       "guidelinesFailed": "No se pudieron aceptar las pautas.",
       "reviewPublished": "Reseña publicada.",
       "reviewModerating": "Revisión enviada a moderación.",
-      "playbookPublished": "Libro de jugadas publicado.",
-      "playbookModerating": "Libro de jugadas enviado a moderación.",
+      "playbookPublished": "Playbook publicado.",
+      "playbookModerating": "Playbook enviado a moderación.",
       "editsSaved": "Ediciones guardadas y enviadas a través de revisión de seguridad.",
       "editsFailed": "No se pudieron guardar las ediciones.",
       "resubmitted": "Presentación reenviada para revisión de seguridad.",
@@ -6321,7 +6340,7 @@
       "withdrawn": "Presentación retirada de la evidencia comunitaria.",
       "withdrawFailed": "No se pudo retirar este artículo.",
       "routineAdapted": "Revisión del estante completada.",
-      "routineAdaptFailed": "No se pudo revisar esta guía contra tu estante."
+      "routineAdaptFailed": "No se pudo revisar este Playbook contra tu estante."
     },
     "errors": {
       "couldNotLoadTitle": "La comunidad no pudo cargar",
@@ -6332,7 +6351,7 @@
       "required": "Requerido",
       "loading": "Cargando",
       "selectPlaceholder": "Seleccionar",
-      "matchBadge": "{score}% match",
+      "matchBadge": "{score}% de coincidencia",
       "disclosureHint": "Cuéntale a la gente sobre cualquier relación con la marca.",
       "disclosureLabel": "Divulgación",
       "disclosurePlaceholder": "Elija la divulgación",

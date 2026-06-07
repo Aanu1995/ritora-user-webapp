@@ -13,6 +13,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { buildBackendUrl } from "@/lib/media-url";
@@ -143,6 +144,9 @@ export function PhotoLightbox({
         showClose={false}
       >
         <DialogTitle className="sr-only">{title ?? alt}</DialogTitle>
+        <DialogDescription className="sr-only">
+          {t("photoLightboxDescription")}
+        </DialogDescription>
         <div className="flex items-center justify-between gap-2 bg-gradient-to-b from-black/60 to-transparent px-4 py-3 text-white">
           <p className="truncate text-sm font-semibold">
             {title ?? alt}

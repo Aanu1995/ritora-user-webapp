@@ -26,6 +26,7 @@ import { emptyPlaybookFilters } from "@/components/community/community-playbook-
 import { emptyReviewFilters } from "@/components/community/community-review-filters";
 import { CommunityRoutineDetailPage } from "@/components/community/community-routine-detail-page";
 import { MySubmissions } from "@/components/community/community-submissions";
+import { CommunityOutcomeResultCard } from "@/components/community/community-outcome-result-card";
 import {
   adaptCommunityRoutine,
   acceptCommunityGuidelines,
@@ -52,6 +53,8 @@ import {
   updateCommunityRoutine,
   withdrawCommunityContent,
 } from "@/services/community.service";
+import { AppRoute } from "@/constants/app-routes";
+import { createReadySkinProfile } from "@/test/skin-profile";
 import { renderWithProviders } from "@/test/utils";
 import {
   adaptationFixture,
@@ -63,8 +66,11 @@ import {
   submissionsFixture,
 } from "../test-fixtures";
 import { useAuthStore } from "@/stores/auth-store";
+import type { CommunityReviewResult } from "@/types/community";
 
 const mockUseShelfProducts = jest.fn();
+const mockUseSkinProfile = jest.fn();
+const mockPush = jest.fn();
 let mockSearchParams = new URLSearchParams();
 
 type MockIntersectionObserverInstance = {
@@ -133,6 +139,9 @@ function triggerLastIntersection(target: Element) {
 }
 
 jest.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
   useSearchParams: () => mockSearchParams,
 }));
 
@@ -175,6 +184,10 @@ jest.mock("@/hooks/use-shelf", () => ({
   useShelfProducts: () => mockUseShelfProducts(),
 }));
 
+jest.mock("@/hooks/use-skin-profile", () => ({
+  useSkinProfile: () => mockUseSkinProfile(),
+}));
+
 jest.mock("@/hooks/use-shelf-time-zone", () => ({
   useShelfDateContext: () => ({ timeZone: "UTC" }),
 }));
@@ -213,6 +226,12 @@ beforeEach(() => {
   intersectionObservers.length = 0;
   mockSearchParams = new URLSearchParams();
   useAuthStore.setState({ isAuthenticated: true, isLoading: false });
+  mockUseSkinProfile.mockReturnValue({
+    data: createReadySkinProfile(),
+    error: null,
+    isError: false,
+    isLoading: false,
+  });
   mockUseShelfProducts.mockReturnValue({
     data: [
       {
@@ -292,6 +311,49 @@ describe("ReviewEvidenceSummary", () => {
     expect(screen.getByText("Mörka märken")).toBeInTheDocument();
     expect(screen.queryByText("Temperate")).not.toBeInTheDocument();
     expect(screen.queryByText("Dark Marks")).not.toBeInTheDocument();
+  });
+});
+
+describe("CommunityOutcomeResultCard", () => {
+  it("humanizes unknown enum fallback labels instead of showing raw keys", () => {
+    const item: CommunityReviewResult = {
+      id: "outcome-unknown",
+      signal: "unexpected_signal" as CommunityReviewResult["signal"],
+      sameGoal: true,
+      trialDuration:
+        "longer_than_expected" as CommunityReviewResult["trialDuration"],
+      followedParts: [
+        "custom_part" as CommunityReviewResult["followedParts"][number],
+      ],
+      irritationLevel:
+        "very_high" as CommunityReviewResult["irritationLevel"],
+      routineSlot: null,
+      usedWithProducts: [
+        {
+          productBrand: null,
+          productName: null,
+          category: "special-mask",
+        },
+      ],
+      note: null,
+      noteModerationStatus: "published",
+      similarToViewer: false,
+      createdAt: "2026-06-07T12:00:00.000Z",
+      updatedAt: "2026-06-07T12:00:00.000Z",
+    };
+
+    renderWithProviders(
+      <CommunityOutcomeResultCard contentType="review" item={item} />,
+    );
+
+    expect(screen.getByText("Unexpected Signal")).toBeInTheDocument();
+    expect(screen.getByText("Longer Than Expected")).toBeInTheDocument();
+    expect(screen.getByText("Very High")).toBeInTheDocument();
+    expect(screen.getByText("Custom Part")).toBeInTheDocument();
+    expect(screen.getByText("Special Mask")).toBeInTheDocument();
+    expect(screen.queryByText("unexpected_signal")).not.toBeInTheDocument();
+    expect(screen.queryByText("longer_than_expected")).not.toBeInTheDocument();
+    expect(screen.queryByText("custom_part")).not.toBeInTheDocument();
   });
 });
 
@@ -508,6 +570,38 @@ describe("Community lists pagination", () => {
 });
 
 describe("CommunityPage", () => {
+  it("gates Community behind a completed skin profile", async () => {
+    const user = userEvent.setup();
+    mockUseSkinProfile.mockReturnValue({
+      data: null,
+      error: null,
+      isError: false,
+      isLoading: false,
+    });
+
+    renderWithProviders(<CommunityPage />);
+
+    expect(screen.getByText("Community")).toBeInTheDocument();
+    expect(
+      screen.getAllByText(
+        "Ritora needs your skin profile before it can safely match community playbooks, reviews, and product evidence to you.",
+      ).length,
+    ).toBeGreaterThan(0);
+    const dialog = await screen.findByRole("alertdialog", {
+      name: "Finish your skin profile first",
+    });
+
+    expect(mockedGetCommunityHome).not.toHaveBeenCalled();
+    expect(mockedGetPeopleLikeMe).not.toHaveBeenCalled();
+    expect(mockedListRoutines).not.toHaveBeenCalled();
+    expect(mockedListReviews).not.toHaveBeenCalled();
+
+    await user.click(
+      within(dialog).getByRole("button", { name: "Open skin profile" }),
+    );
+    expect(mockPush).toHaveBeenCalledWith(AppRoute.SkinProfile);
+  });
+
   it("renders matched evidence, tab navigation, disabled reporting, and blocked-posting guidance", async () => {
     mockedGetCommunityHome.mockResolvedValue(communityHomeFixture);
     mockedAcceptGuidelines.mockResolvedValue({

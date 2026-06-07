@@ -13,6 +13,7 @@ import type {
 } from "@/types/smart-picks";
 import type { SuggestionGapActionKind } from "@/types/suggestions";
 import { ProductPickPanel } from "./product-pick-panel";
+import { translateSmartPicksProfileValue } from "./smart-picks-format";
 
 interface GapCardProps {
   gap: SmartPicksGap;
@@ -34,7 +35,15 @@ export function GapCard({
   onAction,
 }: GapCardProps) {
   const t = useTranslations("smartPicks.page");
+  const tProfile = useTranslations("skinProfile");
   const isConsider = gap.priority === "consider";
+  const displayCategory = translateSmartPicksProfileValue(
+    tProfile,
+    gap.ingredientOrCategory,
+  );
+  const displayGoalAlignment = gap.goalAlignment
+    ? translateSmartPicksProfileValue(tProfile, gap.goalAlignment)
+    : null;
 
   return (
     <article
@@ -63,14 +72,14 @@ export function GapCard({
             )}
             {t(`priority.${gap.priority}`)}
           </span>
-          {gap.goalAlignment ? (
+          {displayGoalAlignment ? (
             <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-[11px] font-semibold text-accent-strong">
-              {gap.goalAlignment}
+              {displayGoalAlignment}
             </span>
           ) : null}
         </div>
         <h3 className="mt-1.5 font-display text-base font-bold leading-tight text-foreground sm:text-[17px]">
-          {gap.ingredientOrCategory}
+          {displayCategory}
         </h3>
         {isConsider ? (
           <p className="mt-2 text-[13px] leading-relaxed text-muted">

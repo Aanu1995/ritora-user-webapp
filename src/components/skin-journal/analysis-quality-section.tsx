@@ -9,6 +9,7 @@ import { safeDynamicTranslation } from "./safe-translation";
 import {
   SEVERITY_VARIANT,
   sortPerAngleQuality,
+  translateLocationLabel,
 } from "./analysis-card-utils";
 
 type AnalysisQualitySectionProps = {
@@ -41,6 +42,7 @@ export function AnalysisQualitySection({
 }: AnalysisQualitySectionProps) {
   const t = useTranslations("journal.analysis");
   const tConcerns = useTranslations("journal.concerns");
+  const tLocations = useTranslations("journal.insightsTab.locations");
   const tSeverity = useTranslations("journal.severity");
   const lighting = observations.image_quality.lighting_quality;
   const framing = observations.image_quality.framing_quality;
@@ -92,7 +94,7 @@ export function AnalysisQualitySection({
                           key={`${location}-${locationIndex}`}
                           className="inline-flex items-center rounded-full border border-border bg-surface px-2 py-0.5 text-[11px] font-medium text-foreground"
                         >
-                          {location.replace(/_/g, " ")}
+                          {translateLocationLabel(tLocations, location)}
                         </span>
                       ))}
                     </div>

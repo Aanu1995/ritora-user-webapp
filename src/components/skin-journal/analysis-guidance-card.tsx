@@ -9,6 +9,7 @@ import { safeDynamicTranslation } from "./safe-translation";
 import { InlineSourceLinks } from "./analysis-source-links";
 import {
   SEVERITY_VARIANT,
+  translateLocationLabel,
   translateKey,
   translateTextRef,
 } from "./analysis-card-utils";
@@ -139,6 +140,7 @@ export function ConcernGuidanceCard({
 }) {
   const t = useTranslations("journal.analysis");
   const tConcerns = useTranslations("journal.concerns");
+  const tLocations = useTranslations("journal.insightsTab.locations");
   const tSeverity = useTranslations("journal.severity");
   const concernLabel = safeDynamicTranslation(
     tConcerns,
@@ -189,7 +191,7 @@ export function ConcernGuidanceCard({
                 key={`${location}-${locationIndex}`}
                 className="inline-flex items-center rounded-full border border-border bg-surface px-2 py-0.5 text-[11px] font-medium text-foreground"
               >
-                {location.replace(/_/g, " ")}
+                {translateLocationLabel(tLocations, location)}
               </span>
             ))}
           </div>

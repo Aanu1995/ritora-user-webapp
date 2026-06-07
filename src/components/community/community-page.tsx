@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { MessageSquarePlus, TrendingUp } from "lucide-react";
+import { MessageSquarePlus, TrendingUp, UserCircle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/app/page-header";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { RetryPanel } from "@/components/ui/retry-panel";
+import { AppRoute } from "@/constants/app-routes";
 import { QueryKey } from "@/constants/query-keys";
 import {
   useCommunityBookmarks,
@@ -16,6 +18,9 @@ import {
   useCommunityRoutines,
 } from "@/hooks/use-community";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { useSkinProfile } from "@/hooks/use-skin-profile";
+import { getApiErrorStatus } from "@/lib/api-error";
+import { isSkinProfileReady } from "@/lib/skin-profile-readiness";
 import { getCommunityHome } from "@/services/community.service";
 import type { CommunityListQuery } from "@/types/community";
 import { BookmarksList } from "./community-bookmarks";
@@ -58,6 +63,7 @@ type CommunityComposer = "playbook" | "review" | null;
 
 export function CommunityPage() {
   const t = useTranslations("community");
+  const router = useRouter();
   const searchParams = useSearchParams();
   const initialTabParam = searchParams.get("tab");
   const [tab, setTab] = useState<CommunityTab>(() =>
@@ -82,20 +88,35 @@ export function CommunityPage() {
     debouncedReviewSearch,
   );
   const [postingDialogOpen, setPostingDialogOpen] = useState(false);
+  const [profileGateDismissed, setProfileGateDismissed] = useState(false);
+  const skinProfile = useSkinProfile();
+  const canUseCommunity = isSkinProfileReady(skinProfile.data);
+  const profileRequiredOpen =
+    !skinProfile.isLoading && !canUseCommunity && !profileGateDismissed;
+  const profileFetchFailed =
+    skinProfile.isError && getApiErrorStatus(skinProfile.error) !== 404;
+  const profileDialogDescription = profileFetchFailed
+    ? t("prerequisites.profile.loadError")
+    : t("prerequisites.profile.body");
   const query = useQuery({
     queryKey: [QueryKey.CommunityHome],
     queryFn: ({ signal }) => getCommunityHome(signal),
+    enabled: canUseCommunity,
   });
   const routinesQuery = useCommunityRoutines(
     playbookQueryFilters,
-    tab === "routines",
+    canUseCommunity && tab === "routines",
   );
   const reviewsQuery = useCommunityReviews(
     reviewQueryFilters,
-    tab === "reviews",
+    canUseCommunity && tab === "reviews",
   );
-  const peopleQuery = useCommunityPeopleLikeMe(tab === "people");
-  const bookmarksQuery = useCommunityBookmarks(tab === "bookmarks");
+  const peopleQuery = useCommunityPeopleLikeMe(
+    canUseCommunity && tab === "people",
+  );
+  const bookmarksQuery = useCommunityBookmarks(
+    canUseCommunity && tab === "bookmarks",
+  );
   const activeTargetReady =
     tab === "people"
       ? !peopleQuery.isPending
@@ -121,8 +142,53 @@ export function CommunityPage() {
     return () => window.cancelAnimationFrame(frame);
   }, [activeTargetReady, query.isSuccess, tab]);
 
-  if (query.isLoading) {
+  const openSkinProfile = () => {
+    setProfileGateDismissed(true);
+    router.push(AppRoute.SkinProfile);
+  };
+
+  const profileGateDialog = (
+    <ConfirmDialog
+      open={profileRequiredOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          setProfileGateDismissed(true);
+        }
+      }}
+      title={t("prerequisites.profile.title")}
+      description={profileDialogDescription}
+      confirmLabel={t("prerequisites.profile.cta")}
+      onConfirm={openSkinProfile}
+    />
+  );
+
+  if (skinProfile.isLoading || query.isLoading) {
     return <CommunitySkeleton />;
+  }
+
+  if (!canUseCommunity) {
+    return (
+      <div className="mx-auto max-w-6xl pb-10 motion-safe:animate-in motion-safe:fade-in">
+        <PageHeader title={t("title")} subtitle={t("subtitle")} />
+        <div className="mx-auto mt-2 w-full max-w-[54rem]">
+          <section className="rounded-2xl border border-dashed border-border bg-surface px-6 py-12 text-center">
+            <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-accent-soft text-accent-strong">
+              <UserCircle className="h-5 w-5" aria-hidden />
+            </div>
+            <h2 className="mt-4 font-display text-base font-bold text-foreground">
+              {t("prerequisites.profile.title")}
+            </h2>
+            <p className="mx-auto mt-1.5 max-w-md text-sm leading-6 text-muted">
+              {profileDialogDescription}
+            </p>
+            <Button type="button" className="mt-4" onClick={openSkinProfile}>
+              {t("prerequisites.profile.cta")}
+            </Button>
+          </section>
+        </div>
+        {profileGateDialog}
+      </div>
+    );
   }
 
   if (query.isError || !query.data) {
@@ -283,6 +349,7 @@ export function CommunityPage() {
         open={activeComposer === "playbook"}
         onOpenChange={(next) => setComposer(next ? "playbook" : null)}
       />
+      {profileGateDialog}
     </div>
   );
 }

@@ -22,17 +22,21 @@ import {
 import { ProductCategory } from '@/types/shelf';
 
 type Props = {
+  canRunCheck?: boolean;
   disabled?: boolean;
   isPending: boolean;
   onCheck: (input: ProductCheckProductInput) => void;
+  onCheckBlocked?: () => void;
 };
 
 const CATEGORY_OPTIONS = Object.values(ProductCategory);
 
 export function IngredientPastePanel({
+  canRunCheck = true,
   disabled = false,
   isPending,
   onCheck,
+  onCheckBlocked,
 }: Props) {
   const t = useTranslations('checkProduct.paste');
   const tCategories = useTranslations('checkProduct.categories');
@@ -57,6 +61,11 @@ export function IngredientPastePanel({
       onSubmit={(event) => {
         event.preventDefault();
         if (!canSubmit) {
+          return;
+        }
+
+        if (!canRunCheck) {
+          onCheckBlocked?.();
           return;
         }
 

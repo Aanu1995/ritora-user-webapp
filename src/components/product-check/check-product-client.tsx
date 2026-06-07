@@ -3,17 +3,23 @@
 import { GitCompareArrows, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { QuickCheckProductCompareSheet } from "@/components/product-compare/product-compare-sheet";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AppRoute } from "@/constants/app-routes";
 import { useCheckProduct } from "@/hooks/use-ingredients";
 import { useRefreshUserCapabilitiesOnRestriction } from "@/hooks/use-refresh-user-capabilities";
+import { useSkinProfile } from "@/hooks/use-skin-profile";
 import {
   isCapabilityDisabled,
   useUserCapabilities,
 } from "@/hooks/use-user-capabilities";
+import { getApiErrorStatus } from "@/lib/api-error";
 import { normalizeLocale } from "@/i18n/config";
+import { isSkinProfileReady } from "@/lib/skin-profile-readiness";
 import { IngredientPastePanel } from "./ingredient-paste-panel";
 import { ProductCheckResultDetails } from "./product-check-result-details";
 import { ProductPhotoCheckPanel } from "./product-photo-check-panel";
@@ -32,22 +38,35 @@ enum CheckProductTab {
 
 export function CheckProductClient() {
   const t = useTranslations("checkProduct");
+  const tShelf = useTranslations("shelf");
   const locale = normalizeLocale(useLocale());
+  const router = useRouter();
   const checkProduct = useCheckProduct();
   const refreshCapabilitiesOnRestriction =
     useRefreshUserCapabilitiesOnRestriction();
+  const skinProfile = useSkinProfile();
   const capabilities = useUserCapabilities();
   const isAiDisabled = isCapabilityDisabled(capabilities.aiGeneration);
   const isPhotoCheckDisabled =
     isCapabilityDisabled(capabilities.imageUpload) ||
     isCapabilityDisabled(capabilities.productExtraction) ||
     isAiDisabled;
+  const canRunQuickCheck = isSkinProfileReady(skinProfile.data);
+  const profileFetchFailed =
+    skinProfile.isError && getApiErrorStatus(skinProfile.error) !== 404;
+  const profileDialogDescription = profileFetchFailed
+    ? tShelf("prerequisites.profile.loadError")
+    : tShelf("prerequisites.profile.body");
+  const [profileRequiredOpen, setProfileRequiredOpen] = useState(false);
   const [result, setResult] = useState<ProductCheckResponse | null>(null);
   const [lastCheckedProduct, setLastCheckedProduct] =
     useState<ProductCheckProductInput | null>(null);
 
   const runCheck = (product: ProductCheckProductInput) => {
-    if (isAiDisabled) {
+    if (isAiDisabled || !canRunQuickCheck) {
+      if (!isAiDisabled && !canRunQuickCheck) {
+        setProfileRequiredOpen(true);
+      }
       return;
     }
 
@@ -94,9 +113,11 @@ export function CheckProductClient() {
             className="-mr-2 flex-1 overflow-y-auto pr-2 data-[state=inactive]:hidden"
           >
             <IngredientPastePanel
+              canRunCheck={canRunQuickCheck}
               disabled={isAiDisabled}
               isPending={checkProduct.isPending}
               onCheck={(input) => runCheck(input)}
+              onCheckBlocked={() => setProfileRequiredOpen(true)}
             />
           </TabsContent>
           <TabsContent
@@ -104,9 +125,11 @@ export function CheckProductClient() {
             className="-mr-2 flex-1 overflow-y-auto pr-2 data-[state=inactive]:hidden"
           >
             <ProductPhotoCheckPanel
+              canRunCheck={canRunQuickCheck}
               disabled={isPhotoCheckDisabled}
               isPending={checkProduct.isPending}
               onCheck={(input) => runCheck(input)}
+              onCheckBlocked={() => setProfileRequiredOpen(true)}
             />
           </TabsContent>
         </Tabs>
@@ -134,6 +157,18 @@ export function CheckProductClient() {
           <EmptyVerdictPanel />
         )}
       </aside>
+
+      <ConfirmDialog
+        open={profileRequiredOpen}
+        onOpenChange={setProfileRequiredOpen}
+        title={tShelf("prerequisites.profile.title")}
+        description={profileDialogDescription}
+        confirmLabel={tShelf("prerequisites.profile.cta")}
+        onConfirm={() => {
+          setProfileRequiredOpen(false);
+          router.push(AppRoute.SkinProfile);
+        }}
+      />
     </div>
   );
 }

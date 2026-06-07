@@ -153,6 +153,53 @@ describe("SmartPicksPage", () => {
     );
   });
 
+  it("translates skin profile enum values shown in Smart Picks", () => {
+    const data = overview();
+    const firstGap = data.priorityGaps[0];
+    if (!firstGap?.pick) throw new Error("Expected Smart Picks fixture pick.");
+
+    mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
+      data: overview({
+        recap: {
+          ...data.recap,
+          primaryGoal: "dark_marks",
+          skinType: "combination",
+        },
+        priorityGaps: [
+          {
+            ...firstGap,
+            ingredientOrCategory: "large_pores",
+            normalizedKey: "large_pores",
+            goalAlignment: "uneven_tone",
+            pick: {
+              ...firstGap.pick,
+              reasoningChips: [
+                { tone: "goal", text: "acne", icon: "target" },
+              ],
+            },
+          },
+        ],
+      }),
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: jest.fn(),
+    }));
+    mockUseRecordGapAction.mockReturnValue(recordMutation());
+
+    renderWithProviders(<SmartPicksPage />);
+
+    expect(screen.getByText("Dark marks")).toBeInTheDocument();
+    expect(screen.getByText("Combination")).toBeInTheDocument();
+    expect(screen.getByText("Large pores")).toBeInTheDocument();
+    expect(screen.getByText("Uneven tone")).toBeInTheDocument();
+    expect(screen.getByText("Acne")).toBeInTheDocument();
+    expect(screen.queryByText("dark_marks")).not.toBeInTheDocument();
+    expect(screen.queryByText("large_pores")).not.toBeInTheDocument();
+    expect(screen.queryByText("uneven_tone")).not.toBeInTheDocument();
+    expect(screen.queryByText("acne")).not.toBeInTheDocument();
+  });
+
   it("keeps the mode tabs fixed with compact spacing above tab content", () => {
     mockUseOverview.mockReturnValue(smartPicksOverviewQueryResult({
       data: overview(),

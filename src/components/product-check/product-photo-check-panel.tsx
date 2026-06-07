@@ -53,15 +53,19 @@ function toUploadFiles(
 }
 
 type Props = {
+  canRunCheck?: boolean;
   disabled?: boolean;
   isPending: boolean;
   onCheck: (input: ProductCheckProductInput) => void;
+  onCheckBlocked?: () => void;
 };
 
 export function ProductPhotoCheckPanel({
+  canRunCheck = true,
   disabled = false,
   isPending,
   onCheck,
+  onCheckBlocked,
 }: Props) {
   const t = useTranslations('checkProduct.photos');
   const tErrors = useTranslations('checkProduct.errors');
@@ -113,6 +117,11 @@ export function ProductPhotoCheckPanel({
 
   const handleCheck = () => {
     if (disabled || labelPhotos.length === 0) return;
+
+    if (!canRunCheck) {
+      onCheckBlocked?.();
+      return;
+    }
 
     extractProductFromImages.mutate(
       {

@@ -15,6 +15,7 @@ import {
 import type { SmartPicksWishlistItem } from "@/types/smart-picks";
 import type { SuggestionGapActionKind } from "@/types/suggestions";
 import { ProductPickPanel } from "./product-pick-panel";
+import { translateSmartPicksProfileValue } from "./smart-picks-format";
 import { SmartPicksSkeleton } from "./smart-picks-skeleton";
 
 export function WishlistPage() {
@@ -113,7 +114,15 @@ function WishlistCard({
   onRemove: () => void;
 }) {
   const t = useTranslations("smartPicks.page");
+  const tProfile = useTranslations("skinProfile");
   const locale = useLocale();
+  const displayCategory = translateSmartPicksProfileValue(
+    tProfile,
+    item.ingredientOrCategory,
+  );
+  const displayGoalAlignment = item.goalAlignment
+    ? translateSmartPicksProfileValue(tProfile, item.goalAlignment)
+    : null;
   const savedDate = (() => {
     try {
       return new Intl.DateTimeFormat(locale, {
@@ -143,14 +152,14 @@ function WishlistCard({
             <Heart className="h-2.5 w-2.5 fill-current" aria-hidden="true" />
             {t("wishlist.savedBadge")}
           </span>
-          {item.goalAlignment ? (
+          {displayGoalAlignment ? (
             <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-[11px] font-semibold text-accent-strong">
-              {item.goalAlignment}
+              {displayGoalAlignment}
             </span>
           ) : null}
         </div>
         <h2 className="mt-1.5 font-display text-base font-bold leading-tight text-foreground sm:text-[17px]">
-          {item.ingredientOrCategory}
+          {displayCategory}
         </h2>
         {item.reason ? (
           <p className="mt-2 text-sm leading-6 text-muted">{item.reason}</p>

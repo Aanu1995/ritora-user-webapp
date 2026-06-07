@@ -15,6 +15,7 @@ import {
 import type { SuggestionGapActionKind } from "@/types/suggestions";
 import { sellerDisplayNames } from "./seller-guidance";
 import { SellerNameList } from "./seller-name-list";
+import { translateSmartPicksProfileValue } from "./smart-picks-format";
 
 interface StarterKitSectionProps {
   overview: SmartPicksOverview;
@@ -91,8 +92,14 @@ function StarterKitStepCard({
   onAction: (pickId: string, action: SuggestionGapActionKind) => void;
 }) {
   const t = useTranslations("smartPicks.page");
+  const tProfile = useTranslations("skinProfile");
   const isCovered = step.status === SMART_PICKS_STARTER_KIT_STEP_STATUS.Covered;
   const isWait = step.status === SMART_PICKS_STARTER_KIT_STEP_STATUS.Wait;
+  const displayTitle = translateSmartPicksProfileValue(tProfile, step.title);
+  const displayCategory = translateSmartPicksProfileValue(
+    tProfile,
+    step.ingredientOrCategory,
+  );
 
   return (
     <article className="rounded-lg border border-border bg-background p-4">
@@ -105,12 +112,12 @@ function StarterKitStepCard({
             <StarterStatusPill status={step.status} />
           </div>
           <h3 className="mt-2 text-base font-bold text-foreground">
-            {step.title}
+            {displayTitle}
           </h3>
           <p className="mt-1 text-sm font-semibold text-foreground">
             {isCovered && step.ownedProductName
               ? step.ownedProductName
-              : step.ingredientOrCategory}
+              : displayCategory}
           </p>
           <p className="mt-1 text-sm leading-6 text-muted">{step.reason}</p>
         </div>
