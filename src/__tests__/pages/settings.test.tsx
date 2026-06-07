@@ -377,7 +377,7 @@ describe("SettingsPage", () => {
     renderWithProviders(<SettingsPage />);
 
     await user.click(screen.getByRole("tab", { name: /appearance/i }));
-    expect(screen.getByText("System")).toBeInTheDocument();
+    expect(screen.queryByText("System")).not.toBeInTheDocument();
     expect(screen.getByText("Light")).toBeInTheDocument();
     expect(screen.getByText("Dark")).toBeInTheDocument();
   });

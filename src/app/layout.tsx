@@ -7,10 +7,12 @@ import './globals.css';
 import { CookieConsent } from '@/components/cookie-consent';
 import { COOKIE_CONSENT_NAME } from '@/constants/cookies';
 import {
+  DEFAULT_THEME_PREFERENCE,
   THEME_PREFERENCE_COOKIE_NAME,
-  ThemePreference,
   getThemeInitializationScript,
+  normalizeThemePreference,
   parseThemePreference,
+  resolveThemePreference,
 } from '@/lib/theme-preferences';
 import { Providers } from './providers';
 import { getSiteUrl, siteConfig } from '@/lib/site';
@@ -71,11 +73,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f7f5f0' },
-    { media: '(prefers-color-scheme: dark)', color: '#0f1712' },
-  ],
-  colorScheme: 'light dark' as const,
+  themeColor: '#f7f5f0',
+  colorScheme: 'light' as const,
 };
 
 export default async function RootLayout({
@@ -92,11 +91,9 @@ export default async function RootLayout({
   const storedThemePreference = parseThemePreference(
     cookieStore.get(THEME_PREFERENCE_COOKIE_NAME)?.value,
   );
-  const initialTheme =
-    storedThemePreference &&
-    storedThemePreference !== ThemePreference.System
-      ? storedThemePreference
-      : undefined;
+  const initialTheme = resolveThemePreference(
+    normalizeThemePreference(storedThemePreference ?? DEFAULT_THEME_PREFERENCE),
+  );
 
   return (
     <html
@@ -105,7 +102,7 @@ export default async function RootLayout({
       data-theme={initialTheme}
       suppressHydrationWarning
       className={`${inter.variable} ${plusJakartaSans.variable} h-full scroll-smooth`}
-      style={initialTheme ? { colorScheme: initialTheme } : undefined}
+      style={{ colorScheme: initialTheme }}
     >
       <head>
         <script
