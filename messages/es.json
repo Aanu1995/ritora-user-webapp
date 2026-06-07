@@ -6356,5 +6356,12 @@
         "stopped-using": "Dejó de usar"
       }
     }
+  },
+  "notFound": {
+    "metadataTitle": "Página no encontrada",
+    "metadataDescription": "No pudimos encontrar la página que buscabas.",
+    "title": "No encontramos esa página",
+    "body": "Puede que el enlace esté roto o que la página se haya movido.",
+    "backHome": "Volver al inicio"
   }
 }

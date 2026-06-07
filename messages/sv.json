@@ -6358,5 +6358,12 @@
         "stopped-using": "Slutade använda"
       }
     }
+  },
+  "notFound": {
+    "metadataTitle": "Sidan hittades inte",
+    "metadataDescription": "Vi kunde inte hitta sidan du letade efter.",
+    "title": "Vi hittar inte sidan",
+    "body": "Länken kan vara trasig, eller så har sidan flyttats.",
+    "backHome": "Till startsidan"
   }
 }

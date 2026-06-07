@@ -6358,5 +6358,12 @@
         "stopped-using": "Stopped using"
       }
     }
+  },
+  "notFound": {
+    "metadataTitle": "Page not found",
+    "metadataDescription": "We couldn't find the page you were looking for.",
+    "title": "We can't find that page",
+    "body": "The link might be broken, or the page may have moved.",
+    "backHome": "Back to home"
   }
 }
