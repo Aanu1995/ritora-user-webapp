@@ -110,18 +110,18 @@ export function MarketingPage({
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
-      <SiteHeader />
+      <SiteHeader navAnchorPrefix="/" />
       <main>
         {/* ---------------------------------------------------------------- */}
         {/* Hero                                                             */}
         {/* ---------------------------------------------------------------- */}
-        <section className="relative overflow-hidden border-b border-border bg-[linear-gradient(180deg,var(--surface)_0%,var(--background)_100%)]">
+        <section className="relative overflow-hidden border-b border-border">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 h-24 opacity-70"
+            className="pointer-events-none absolute -top-24 right-0 h-[420px] w-[420px] rounded-full blur-3xl"
             style={{
               background:
-                'linear-gradient(90deg, transparent, var(--accent-glow), var(--secondary-glow), transparent)',
+                'radial-gradient(circle at 50% 40%, var(--accent-glow), transparent 65%), radial-gradient(circle at 70% 80%, var(--secondary-glow), transparent 60%)',
             }}
           />
           <div className="relative mx-auto grid w-full max-w-7xl gap-12 px-5 py-16 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.78fr)] lg:items-center lg:gap-16 lg:px-8 lg:py-24">
@@ -153,7 +153,7 @@ export function MarketingPage({
               </div>
             </div>
 
-            <aside className="animate-fade-up-delay-1 self-start rounded-lg border border-border bg-surface p-6 shadow-hero sm:p-7">
+            <aside className="animate-fade-up-delay-1 self-start rounded-[var(--radius-card)] border border-border bg-surface p-6 shadow-hero sm:p-7">
               <p className="inline-flex items-center gap-2 text-sm font-semibold text-foreground">
                 <BadgeCheck className="h-4 w-4 text-accent-strong" aria-hidden="true" />
                 What you get
@@ -202,10 +202,10 @@ export function MarketingPage({
                 return (
                   <article
                     key={section.title}
-                    className="group rounded-lg border border-border bg-surface p-6 shadow-soft transition hover:-translate-y-1 hover:border-accent"
+                    className="group rounded-[var(--radius-card)] border border-border bg-surface p-6 shadow-soft transition hover:-translate-y-1 hover:border-accent"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-accent-soft text-accent-strong transition group-hover:scale-105">
+                      <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-soft text-accent-strong transition group-hover:scale-105">
                         <Icon className="h-5 w-5" aria-hidden="true" />
                       </span>
                       {numberedSections ? (
@@ -244,7 +244,7 @@ export function MarketingPage({
               {faqs.map((faq, index) => (
                 <details
                   key={faq.question}
-                  className="group rounded-lg border border-border bg-surface px-5 shadow-soft transition open:border-accent"
+                  className="group rounded-2xl border border-border bg-surface px-5 shadow-soft transition open:border-accent"
                   open={index === 0}
                 >
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base font-semibold text-foreground marker:hidden [&::-webkit-details-marker]:hidden">
@@ -277,7 +277,7 @@ export function MarketingPage({
                 <Link
                   key={item.path}
                   href={item.path}
-                  className="group flex flex-col rounded-lg border border-border bg-surface p-6 shadow-soft transition hover:-translate-y-1 hover:border-accent"
+                  className="group flex flex-col rounded-[var(--radius-card)] border border-border bg-surface p-6 shadow-soft transition hover:-translate-y-1 hover:border-accent"
                 >
                   <p className="text-base font-semibold text-foreground">
                     {item.label}
@@ -303,13 +303,13 @@ export function MarketingPage({
         {/* ---------------------------------------------------------------- */}
         <section className="border-t border-border bg-surface/60">
           <div className="mx-auto w-full max-w-7xl px-5 py-16 sm:px-6 lg:px-8 lg:py-20">
-            <div className="relative overflow-hidden rounded-lg border border-border bg-surface px-6 py-12 text-center shadow-hero sm:px-12 sm:py-16">
+            <div className="relative overflow-hidden rounded-[var(--radius-card)] border border-border bg-surface px-6 py-12 text-center shadow-hero sm:px-12 sm:py-16">
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 top-0 h-24 opacity-75"
+                className="pointer-events-none absolute inset-0"
                 style={{
                   background:
-                    'linear-gradient(90deg, transparent, var(--accent-glow), transparent)',
+                    'radial-gradient(circle at 50% 0%, var(--accent-glow), transparent 60%)',
                 }}
               />
               <div className="relative">

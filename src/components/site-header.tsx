@@ -4,14 +4,21 @@ import { SiteHeaderClient } from "./site-header-client";
 
 interface SiteHeaderProps {
   showNavLinks?: boolean;
+  navAnchorPrefix?: string;
 }
 
-export async function SiteHeader({ showNavLinks = true }: SiteHeaderProps = {}) {
+export async function SiteHeader({
+  showNavLinks = true,
+  navAnchorPrefix = '',
+}: SiteHeaderProps = {}) {
   const t = await getTranslations("nav");
 
   const navLinks = showNavLinks
     ? siteConfig.nav.map((item) => ({
-        href: item.href,
+        href:
+          navAnchorPrefix && item.href.startsWith('#')
+            ? `${navAnchorPrefix}${item.href}`
+            : item.href,
         label: t(item.labelKey),
       }))
     : [];
