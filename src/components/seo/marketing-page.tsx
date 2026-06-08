@@ -110,7 +110,7 @@ export function MarketingPage({
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
-      <SiteHeader />
+      <SiteHeader navAnchorPrefix="/" />
       <main>
         {/* ---------------------------------------------------------------- */}
         {/* Hero                                                             */}
