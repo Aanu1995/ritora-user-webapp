@@ -33,8 +33,6 @@ export function WhyThisModal({
           <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2">
             <dt className="text-muted">{t("ai.trigger")}</dt>
             <dd>{insight.generation_trigger}</dd>
-            <dt className="text-muted">{t("ai.model")}</dt>
-            <dd>{insight.metadata.model ?? t("ai.notUsed")}</dd>
             <dt className="text-muted">{t("ai.promptVersion")}</dt>
             <dd>{insight.metadata.prompt_version ?? t("ai.notUsed")}</dd>
             <dt className="text-muted">{t("ai.cache")}</dt>

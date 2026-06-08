@@ -1,5 +1,10 @@
 export enum AppRoute {
   Home = '/',
+  Features = '/features',
+  HowItWorks = '/how-it-works',
+  SkinJournalMarketing = '/skin-journal',
+  SmartRoutine = '/smart-routine',
+  ProductCheckerMarketing = '/product-checker',
   Login = '/login',
   Register = '/register',
   ForgotPassword = '/forgot-password',
@@ -49,6 +54,11 @@ export const PROTECTED_APP_ROUTES = [
 
 export const PUBLIC_METADATA_ROUTES = [
   AppRoute.Home,
+  AppRoute.Features,
+  AppRoute.HowItWorks,
+  AppRoute.SkinJournalMarketing,
+  AppRoute.SmartRoutine,
+  AppRoute.ProductCheckerMarketing,
   AppRoute.Privacy,
   AppRoute.Terms,
 ] as const;

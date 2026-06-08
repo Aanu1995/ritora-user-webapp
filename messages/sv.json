@@ -55,6 +55,8 @@
     "whyRitora": "Varför Ritora",
     "howItWorks": "Så fungerar det",
     "features": "Funktioner",
+    "skinJournal": "Huddagbok",
+    "productChecker": "Produktkontroll",
     "privacy": "Integritet",
     "faq": "Vanliga frågor",
     "login": "Logga in",
@@ -3502,7 +3504,6 @@
     },
     "analysis": {
       "title": "Hudobservationer idag",
-      "modelBadge": "AI-modell · {model}",
       "confidence": "Säkerhet {value}",
       "reading": {
         "photoRead": "Fotoläsning: {label}",
@@ -4246,7 +4247,6 @@
         "whyThisTitle": "Varför Ritora säger detta",
         "whyThisBody": "Här visas fakta, källor och skapandedetaljer bakom förslaget.",
         "trigger": "Utlösare",
-        "model": "Modell",
         "promptVersion": "Promptversion",
         "cache": "Mellanlager",
         "notUsed": "Inte använd",
@@ -5300,7 +5300,6 @@
       "title": "{daypart}, {time}",
       "description": "Resonemanget bakom dagens föreslagna rutin.",
       "generatedAt": "Genererad {time}",
-      "aiModel": "Modell {model}",
       "daypart": {
         "morning": "Morgon",
         "noon": "Mitt på dagen",

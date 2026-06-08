@@ -55,6 +55,8 @@
     "whyRitora": "Por qué Ritora",
     "howItWorks": "como funciona",
     "features": "Características",
+    "skinJournal": "Diario de piel",
+    "productChecker": "Comprobador de productos",
     "privacy": "Privacidad",
     "faq": "Preguntas frecuentes",
     "login": "Iniciar sesión",
@@ -3491,7 +3493,7 @@
         "analysis_failed": "El análisis falló",
         "analysis_unavailable": "El análisis aún no está disponible",
         "face_missing": "cara no clara",
-          "needs_retake": "Necesita repetir la foto",
+        "needs_retake": "Necesita repetir la foto",
         "poor_lighting": "Comparación de límites de iluminación",
         "poor_framing": "Comparación de límites de encuadre",
         "blur": "Comparación de límites de desenfoque",
@@ -3502,7 +3504,6 @@
     },
     "analysis": {
       "title": "Observaciones de la piel hoy",
-      "modelBadge": "IA · {model}",
       "confidence": "Confianza {value}",
       "reading": {
         "photoRead": "Lectura de foto: {label}",
@@ -4246,7 +4247,6 @@
         "whyThisTitle": "¿Por qué Ritora dice esto?",
         "whyThisBody": "Esto muestra los hechos, las fuentes y los detalles de generación detrás de la sugerencia.",
         "trigger": "gatillo",
-        "model": "modelo",
         "promptVersion": "versión inmediata",
         "cache": "caché",
         "notUsed": "No usado",
@@ -5300,7 +5300,6 @@
       "title": "{daypart}, {time}",
       "description": "Razonamiento detrás de la rutina sugerida hoy.",
       "generatedAt": "Generado a las {time}",
-      "aiModel": "Modelo {model}",
       "daypart": {
         "morning": "mañana",
         "noon": "Mediodía",
