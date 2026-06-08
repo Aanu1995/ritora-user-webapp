@@ -15,7 +15,7 @@ export interface MarketingPageData extends MarketingPageProps {
 export const marketingPages = {
   features: {
     path: AppRoute.Features,
-    metadataTitle: 'Ritora Features | AI skincare routine planner',
+    metadataTitle: 'Features | AI skincare routine planner',
     metadataDescription:
       'Explore Ritora features for skincare shelf tracking, product checks, skin journaling, smart routine planning, and privacy-first AI suggestions.',
     navLabel: 'Features',
@@ -199,7 +199,7 @@ export const marketingPages = {
   },
   smartRoutine: {
     path: AppRoute.SmartRoutine,
-    metadataTitle: 'Smart Skincare Routine Planner | Ritora',
+    metadataTitle: 'Smart Skincare Routine Planner',
     metadataDescription:
       'Plan morning, midday, and evening skincare routines with Ritora using your actual products, skin profile, and ingredient guardrails.',
     navLabel: 'Smart routine',
@@ -260,7 +260,7 @@ export const marketingPages = {
   },
   productChecker: {
     path: AppRoute.ProductCheckerMarketing,
-    metadataTitle: 'Skincare Product Checker | Ritora',
+    metadataTitle: 'Skincare Product Checker',
     metadataDescription:
       'Check skincare products against your shelf, skin profile, and routine context before adding them to your routine.',
     navLabel: 'Product checker',
