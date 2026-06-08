@@ -132,10 +132,7 @@ export function AnalysisCard({
             <Sparkles className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[color:var(--ai-fg)]">
-              {t("modelBadge", { model: observations.model_version })}
-            </p>
-            <h3 className="mt-0.5 font-display text-base font-bold text-foreground">
+            <h3 className="font-display text-base font-bold text-foreground">
               {t("title")}
             </h3>
           </div>

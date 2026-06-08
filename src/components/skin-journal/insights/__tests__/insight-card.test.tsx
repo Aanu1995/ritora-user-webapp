@@ -100,7 +100,7 @@ describe("InsightCard", () => {
     expect(link).toHaveAttribute("rel", "noopener noreferrer");
   });
 
-  it("opens a why-this modal for AI touched insights", async () => {
+  it("opens a why-this modal for AI touched insights without exposing the model", async () => {
     const user = userEvent.setup();
     renderWithProviders(<InsightCard insight={insight()} />);
 
@@ -108,7 +108,7 @@ describe("InsightCard", () => {
 
     expect(screen.getByText("Why Ritora is saying this")).toBeInTheDocument();
     expect(screen.getByText("scheduled_refresh")).toBeInTheDocument();
-    expect(screen.getByText("gpt-4o-mini")).toBeInTheDocument();
+    expect(screen.queryByText("gpt-4o-mini")).not.toBeInTheDocument();
   });
 
   it("does not crash on unknown block types", () => {

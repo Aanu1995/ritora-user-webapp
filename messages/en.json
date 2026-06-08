@@ -55,6 +55,8 @@
     "whyRitora": "Why Ritora",
     "howItWorks": "How it works",
     "features": "Features",
+    "skinJournal": "Skin journal",
+    "productChecker": "Product checker",
     "privacy": "Privacy",
     "faq": "FAQ",
     "login": "Log in",
@@ -3502,7 +3504,6 @@
     },
     "analysis": {
       "title": "Skin observations today",
-      "modelBadge": "AI · {model}",
       "confidence": "Confidence {value}",
       "reading": {
         "photoRead": "Photo read: {label}",
@@ -4246,7 +4247,6 @@
         "whyThisTitle": "Why Ritora is saying this",
         "whyThisBody": "This shows the facts, sources, and generation details behind the suggestion.",
         "trigger": "Trigger",
-        "model": "Model",
         "promptVersion": "Prompt version",
         "cache": "Cache",
         "notUsed": "Not used",
@@ -5300,7 +5300,6 @@
       "title": "{daypart}, {time}",
       "description": "Reasoning behind today's suggested routine.",
       "generatedAt": "Generated {time}",
-      "aiModel": "Model {model}",
       "daypart": {
         "morning": "Morning",
         "noon": "Mid-day",
@@ -5843,11 +5842,11 @@
         "professional-care-involved": "Professional care involved"
       },
       "minimumRating": {
-        "5": "5 stars",
-        "4": "4+ stars",
-        "3": "3+ stars",
+        "1": "1+ stars",
         "2": "2+ stars",
-        "1": "1+ stars"
+        "3": "3+ stars",
+        "4": "4+ stars",
+        "5": "5 stars"
       },
       "outcomeSignal": {
         "worked_for_me_too": "Worked for me too",
