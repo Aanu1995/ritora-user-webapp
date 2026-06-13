@@ -71,16 +71,16 @@
   },
   "landing": {
     "hero": {
-      "badge": "Inventory-first skincare decision support",
-      "headlineLead": "Build safer skincare routines from the",
-      "headlineAccent": "products you already own.",
-      "lead": "Ritora catches ingredient clashes in the products you already own and turns them into a calm morning, midday, and evening plan tuned to your skin. No shopping needed.",
+      "badge": "Free skincare app, built on what you own",
+      "headlineLead": "When your skin reacts,",
+      "headlineAccent": "know exactly what to do next.",
+      "lead": "Ritora reads your skin and tells you what to keep, pause, or stop, using the products already on your shelf. No shopping needed.",
       "ctaPrimary": "Create your account",
       "ctaSecondary": "See how it works",
       "imageAlt": "Today's Suggestion app card with morning routine and Skin Journal preview.",
       "pills": {
-        "a": "Inventory first",
-        "b": "Ingredient guardrails",
+        "a": "Reacts to your skin",
+        "b": "Built on your shelf",
         "c": "Private by design"
       },
       "preview": {
@@ -107,7 +107,7 @@
       }
     },
     "trust": [
-      "Privacy first",
+      "Tells you what to do next",
       "Works with every brand",
       "Free to use",
       "Photo analysis included",
@@ -115,54 +115,54 @@
     ],
     "trustLabel": "What Ritora gives you",
     "problem": {
-      "eyebrow": "Why routines break",
-      "headline": "Good products, still guessing.",
-      "body": "You own the right bottles and still wake up unsure what to layer or skip. Ritora gives you the decision layer that was missing.",
+      "eyebrow": "The real problem",
+      "headline": "Building a routine is easy. Knowing what to do next isn't.",
+      "body": "You own the right products. You just don't know when to keep going, slow down, or stop. Ritora does.",
       "problems": [
         {
-          "title": "Shelf confusion",
-          "body": "You own great products and still guess each morning what to apply and what to skip."
+          "title": "Reaction or purge?",
+          "body": "Breakout after a new active. Adjusting, or damage? Guess wrong and it gets worse."
         },
         {
-          "title": "Silent ingredient stacking",
-          "body": "Strong actives pile up between cleansers, toners, and serums. Irritation shows up long before you spot the cause."
+          "title": "Actives quietly stacking",
+          "body": "Strong actives pile up. Irritation hits before you spot the cause."
         },
         {
-          "title": "Buying over building",
-          "body": "Most routines don't need another serum. They need structure, sequencing, and safer choices with what you already own."
+          "title": "Is this even working?",
+          "body": "Weeks in, still no idea. So you switch too soon and start over."
         }
       ],
       "stats": [
         {
           "figure": "10+",
-          "body": "The average enthusiast owns ten or more skincare products. Most of them sit on the shelf, underused."
+          "body": "Products on the average shelf. Most sit unused because no one knows what to apply."
         },
         {
           "figure": "#1",
-          "body": "Over-exfoliation is the most common self-inflicted barrier injury. Quietly stacked actives are usually the cause."
+          "body": "Cause of self-inflicted skin damage: too many actives, stacked unnoticed."
         }
       ]
     },
     "howItWorks": {
       "eyebrow": "How it works",
-      "headline": "Three calm steps from shelf clutter to daily clarity.",
-      "lead": "Tell Ritora about your skin, map the products you already own, and follow a plan tuned to today. Not last month. Not someone else's.",
+      "headline": "From a shelf full of guesses to a clear answer every day.",
+      "lead": "Three steps. Then a plan that adapts as your skin changes.",
       "stepLabel": "Step {number}",
       "steps": [
         {
           "title": "Tell Ritora about your skin.",
-          "body": "Skin type, concerns, sensitivities, climate. Every answer shapes the guidance you get.",
-          "hint": "Skin tone, ethnicity, and climate aware from the first step"
+          "body": "Type, concerns, sensitivities, climate. It all shapes your guidance.",
+          "hint": "Skin tone, ethnicity, and climate aware from step one"
         },
         {
           "title": "Add what's already on your shelf.",
-          "body": "Add what you use today. Ritora spots overlap and flags risky pairings.",
-          "hint": "Add by photo or manual entry"
+          "body": "Add what you use. Ritora flags overlaps and risky pairings.",
+          "hint": "Add by photo or by hand"
         },
         {
-          "title": "Follow a calmer daily plan.",
-          "body": "Wake up to clear guidance for morning and evening, tuned to your shelf.",
-          "hint": "Morning, midday, and evening, with on-demand help any time"
+          "title": "Get a plan that reacts as your skin does.",
+          "body": "Clear guidance morning and night. React, and Ritora pauses the risky step and tells you why.",
+          "hint": "Adapts to your latest photo, check-in, and weather"
         }
       ],
       "visuals": {
@@ -268,17 +268,17 @@
     },
     "features": {
       "eyebrow": "What's inside",
-      "headline": "Every part of your routine, intelligently aware of the others.",
-      "lead": "Eight capabilities working together so your plan stays safe, even on the messy days.",
+      "headline": "Every part of your routine, aware of how your skin responded.",
+      "lead": "Eight tools, one job: your next safe move.",
       "items": [
         {
           "key": "suggestions",
           "eyebrow": "Today's Suggestion",
-          "title": "Daily suggestions, not rigid routines.",
+          "title": "Daily guidance that reacts to your skin.",
           "bullets": [
-            "Prepared before you wake up",
-            "On-demand suggestions any time of day",
-            "Evening plan reacts to what you actually applied earlier"
+            "Ready before you wake up",
+            "Evening adapts to what you applied",
+            "Ask any time: back from the gym, what now?"
           ]
         },
         {
@@ -286,20 +286,20 @@
           "eyebrow": "Community",
           "title": "Routines that worked for people like you.",
           "bullets": [
-            "Browse playbooks from users with your skin type and concerns",
-            "One tap adapts any playbook to the products on your shelf",
-            "Real outcome signals: worked, mixed, did not work"
+            "Browse playbooks from people like you",
+            "One tap adapts any to your shelf",
+            "Real outcomes: worked, mixed, didn't"
           ]
         },
         {
           "key": "journal",
           "eyebrow": "Skin Journal",
-          "title": "Photo journal with AI analysis built in.",
+          "title": "Photo journal that catches reactions early.",
           "bullets": [
-            "Multi-angle capture with private, encrypted storage",
-            "Reaction detection auto-pauses risky actives",
-            "Compare any two dates side by side.",
-            "Monthly Skin Wrapped: a private recap from your photos"
+            "Multi-angle, private, encrypted",
+            "Catches reactions, auto-pauses the cause",
+            "Compare any two dates to see progress",
+            "Monthly Skin Wrapped recap"
           ]
         },
         {
@@ -318,8 +318,8 @@
           "title": "Vet any product before you buy or use it.",
           "bullets": [
             "Paste the ingredients or snap the label",
-            "Verdict in seconds with safety score and confidence",
-            "Compare straight against products on your shelf"
+            "Verdict in seconds, against your reaction history",
+            "Compare straight against your shelf"
           ]
         },
         {
@@ -327,19 +327,19 @@
           "eyebrow": "Smart Picks",
           "title": "Gap analysis, not shopping ads.",
           "bullets": [
-            "Four budget tiers: drugstore, mid, premium, luxury",
-            "Redundancy checks so you never duplicate an active you already own",
-            "Save picks to your wishlist. No upsells, no sponsored placements."
+            "Four budget tiers, drugstore to luxury",
+            "Never duplicate an active you own",
+            "Save to wishlist. No upsells, ever."
           ]
         },
         {
           "key": "shelf",
-          "eyebrow": "Inventory first",
+          "eyebrow": "Your Shelf",
           "title": "Your shelf comes first. Always.",
           "bullets": [
-            "Add by photo or manually, with ingredients pulled from the label",
+            "Add by photo or by hand, ingredients pulled from the label",
             "Full lifecycle: started, active, finished, repurchased",
-            "Cleansers, actives, SPF, body, lip, hand. Every category."
+            "Every category, cleanser to SPF"
           ]
         },
         {
@@ -514,7 +514,7 @@
     "privacy": {
       "eyebrow": "Private by design",
       "headline": "Your shelf stays yours.",
-      "lead": "Ritora runs on explicit consent and essential cookies only. Every step of how your data moves is something you can see, and undo.",
+      "lead": "Explicit consent, essential cookies only. Every step is something you can see and undo.",
       "points": [
         {
           "title": "Consent before anything sensitive.",
@@ -562,31 +562,43 @@
       "items": [
         {
           "question": "Is Ritora a medical product?",
-          "answer": "No. Ritora helps you make safer daily routine choices with the products you already own. It does not diagnose, treat, or replace a dermatologist."
+          "answer": "No. It helps you make safer daily choices with the products you own. It doesn't diagnose or replace a dermatologist, and it tells you when to see one."
         },
         {
-          "question": "Do I need to buy new products to use it well?",
-          "answer": "Not at all. Ritora starts with your shelf. It helps you get more out of the products you already own before it suggests anything new."
+          "question": "What does Ritora do when my skin reacts?",
+          "answer": "It pauses the active behind the reaction, simplifies that evening, and reintroduces gently once your skin settles. You always see why."
+        },
+        {
+          "question": "Purging or a bad reaction?",
+          "answer": "Ritora reads your photos and check-ins, weighs them against your history, and gives you a clear next step: continue, slow down, or pause."
+        },
+        {
+          "question": "How do I know it's working?",
+          "answer": "Compare any two dates side by side. Ritora also tells you when it's too early to judge, so you stop switching every week."
+        },
+        {
+          "question": "Do I need to buy new products?",
+          "answer": "No. Ritora starts with your shelf and gets more from what you already own before suggesting anything new."
         },
         {
           "question": "Will it work for beginners?",
-          "answer": "Yes. Beginners and collectors overwhelmed by their own shelf are exactly who Ritora is built for. It's a simpler path to a routine that actually works."
+          "answer": "Yes. Beginners and overwhelmed collectors are exactly who it's built for."
         },
         {
           "question": "Do I need to upload photos?",
-          "answer": "No. The Skin Journal is optional. Routines, ingredient checks, and Smart Picks all work without a single photo. Uploading just makes the guidance more adaptive."
+          "answer": "No. The Skin Journal is optional. Routines, checks, and Smart Picks all work without it. Photos just make guidance more adaptive."
         },
         {
-          "question": "Is the community public? Do I have to share?",
-          "answer": "Sharing is opt-in. Your shelf and Skin Journal stay private by default. Only the playbooks and reviews you choose to publish go to the community, and you can withdraw any of them at any time."
+          "question": "Do I have to share with the community?",
+          "answer": "No. Sharing is opt-in. Your shelf and journal stay private by default, and you can withdraw anything you publish."
         },
         {
           "question": "Is it free?",
-          "answer": "Yes, the core experience is free. No card required to sign up. Optional paid tiers may arrive later for advanced features, but the 'stop buying, start using' experience stays free."
+          "answer": "Yes. The core experience is free, no card required. Paid tiers may come later, but the core stays free."
         },
         {
           "question": "How is my data handled?",
-          "answer": "With care. Ritora runs on explicit consent, careful data boundaries, and secure authentication. Privacy-conscious handling is built in from day one. See the data flow above."
+          "answer": "With explicit consent, tight boundaries, and secure auth. Built in from day one. See the data flow above."
         },
         {
           "question": "Which languages are supported?",
@@ -595,8 +607,8 @@
       ]
     },
     "finalCta": {
-      "headline": "Your shelf, your skin, your routine.",
-      "body": "Create your account in under a minute. Add a few products, answer a few questions about your skin, and you'll have a calmer plan for tomorrow morning, built from what's already in your bathroom.",
+      "headline": "Your shelf, your skin, your next move.",
+      "body": "Under a minute to start. Add a few products, answer a few questions, and wake up knowing what to use and what to skip.",
       "ctaPrimary": "Create your account",
       "ctaSecondary": "Log in",
       "trust": [
@@ -3165,8 +3177,8 @@
     }
   },
   "site": {
-    "title": "Ritora · A calmer skincare routine from the shelf you already own",
-    "description": "Ritora turns the skincare products you already own into a calmer morning and evening routine, with ingredient safety checks and guidance shaped by your skin."
+    "title": "Ritora · Know what skincare to use, pause, or stop",
+    "description": "Ritora is a free skincare app that reads your skin and tells you what to keep, pause, or stop, all from the products you already own. No shopping needed."
   },
   "legalPages": {
     "privacy": {

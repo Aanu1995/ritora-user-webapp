@@ -15,21 +15,21 @@ export interface MarketingPageData extends MarketingPageProps {
 export const marketingPages = {
   features: {
     path: AppRoute.Features,
-    metadataTitle: 'Features | AI skincare routine planner',
+    metadataTitle: 'Features | AI skincare app that guides your routine',
     metadataDescription:
-      'Explore Ritora features for skincare shelf tracking, product checks, skin journaling, smart routine planning, and privacy-first AI suggestions.',
+      'See how Ritora reads your skin and tells you what to keep, pause, or stop: shelf tracking, ingredient checks, skin journal, and daily routine guidance.',
     navLabel: 'Features',
-    navBlurb: 'Everything Ritora does, in one shelf-first view.',
+    navBlurb: 'Everything Ritora does, built on the shelf you own.',
     eyebrow: 'Ritora features',
-    title: 'One place to understand your shelf, your routine, and your skin.',
+    title: 'Everything you need to know what to use, pause, or stop.',
     description:
-      'Ritora connects the products you already own with ingredient guardrails, skin journal signals, and daily routine suggestions, so skincare feels calmer and easier to repeat.',
+      'Ritora connects the products you already own with ingredient checks, skin journal signals, and daily guidance, so you always know your next move.',
     primaryKeyword:
       'AI skincare routine planner, skincare shelf tracker, skincare app, product compatibility checker',
     benefits: [
       'Track the products already on your shelf',
       'Catch ingredient conflicts before you layer',
-      'Turn skin journal signals into routine changes',
+      'Spot reactions early and pause the cause',
       'Keep sensitive skin and privacy in view',
     ],
     whyHeading:
@@ -38,121 +38,121 @@ export const marketingPages = {
       {
         icon: 'shelf',
         title: 'Shelf-first product tracking',
-        body: 'Add cleansers, serums, moisturizers, sunscreens, treatments, and actives so Ritora reasons from what you actually use, not a generic template.',
+        body: 'Add cleansers, serums, moisturizers, sunscreens, and actives so Ritora reasons from what you actually use, not a generic template.',
       },
       {
         icon: 'routine',
-        title: 'Routine suggestions',
-        body: 'Get morning, midday, and evening suggestions that account for product type, conflicts, recovery days, and your saved preferences.',
+        title: 'Daily routine guidance',
+        body: 'Get morning, midday, and evening guidance that reacts to your products, conflicts, recovery days, and what you applied earlier.',
       },
       {
         icon: 'checks',
         title: 'Product compatibility checks',
-        body: 'See whether a product fits your routine before you layer it with exfoliants, retinoids, vitamin C, sunscreen, or calming steps.',
+        body: 'See whether a product fits before you layer it with exfoliants, retinoids, vitamin C, or sunscreen.',
       },
       {
         icon: 'journal',
-        title: 'Skin journal context',
-        body: 'Use photo-backed skin notes to understand changes over time and stop repeating routines that leave your skin irritated.',
+        title: 'Skin journal that catches reactions',
+        body: 'Photo-backed notes let Ritora spot a reaction early and pause the active behind it before things get worse.',
       },
     ],
     faqs: [
       {
-        question: 'Is Ritora only for people who buy many skincare products?',
+        question: 'Is Ritora only for people who buy lots of products?',
         answer:
-          'No. Ritora is designed around the products you already own, whether your routine is minimal or more advanced.',
+          'No. Ritora is built around the products you already own, whether your routine is minimal or advanced.',
       },
       {
         question: 'Does Ritora replace medical advice?',
         answer:
-          'No. Ritora helps organize routine decisions and product context, but it is not a medical diagnosis or treatment service.',
+          'No. Ritora supports routine decisions, but it is not medical diagnosis or treatment.',
       },
       {
         question: 'Can I use Ritora with any brand?',
         answer:
-          'Yes. Ritora is brand-neutral and focuses on your product details, routine timing, and skin profile.',
+          'Yes. Ritora is brand-neutral and works from your product details, routine timing, and skin profile.',
       },
     ],
   },
   howItWorks: {
     path: AppRoute.HowItWorks,
-    metadataTitle: 'How Ritora Works | Build a safer skincare routine',
+    metadataTitle: 'How Ritora Works | Know what to use, pause, or stop',
     metadataDescription:
-      'Learn how Ritora turns your skincare shelf, skin profile, and journal signals into practical routine suggestions in a few simple steps.',
+      'See how Ritora turns your skin profile, product shelf, and daily check-ins into clear guidance on what to use, pause, or stop, in a few simple steps.',
     navLabel: 'How it works',
     navBlurb: 'From skin profile to a daily plan in a few steps.',
     eyebrow: 'How Ritora works',
-    title: 'From product shelf to daily skincare plan in a few focused steps.',
+    title: 'From a shelf full of guesses to a clear answer every day.',
     description:
-      'Ritora starts with your skin profile and product shelf, then uses those details to suggest what to use, what to skip, and when to slow down.',
+      'Ritora starts with your skin profile and the products you own, then tells you what to use, what to skip, and when to slow down.',
     primaryKeyword:
       'how to build skincare routine, personalized skincare routine app, skincare routine planner',
     benefits: [
       'Start with your skin profile',
       'Add the products you already own',
       'Let Ritora flag risky combinations',
-      'Follow a clearer daily routine',
+      'Follow a plan that reacts as your skin does',
     ],
     whyHeading:
-      'Your shelf and skin profile become a routine you can actually repeat.',
+      'Your shelf and skin profile become a plan you can actually repeat.',
     numberedSections: true,
     sections: [
       {
         icon: 'profile',
         title: 'Create your skin profile',
-        body: 'Save your skin goals, sensitivities, tolerance, lifestyle context, and routine preferences so suggestions begin with the right guardrails.',
+        body: 'Save your skin goals, sensitivities, tolerance, and lifestyle so guidance starts with the right guardrails.',
       },
       {
         icon: 'shelf',
         title: 'Build your product shelf',
-        body: 'Add products manually or with images. Ritora keeps brand, category, description, and ingredient context connected to your routine.',
+        body: 'Add products by photo or by hand. Ritora keeps brand, category, and ingredient context tied to your routine.',
       },
       {
         icon: 'checks',
         title: 'Review compatibility',
-        body: 'Before a product enters a routine, Ritora checks for common friction points such as repeated actives or irritating combinations.',
+        body: 'Before a product enters your routine, Ritora checks for friction like repeated actives or irritating combinations.',
       },
       {
         icon: 'routine',
-        title: 'Use daily suggestions',
-        body: 'Ritora turns the shelf and profile into practical morning, midday, and evening steps that are easier to follow.',
+        title: 'Get guidance that reacts',
+        body: 'Ritora turns your shelf and profile into daily steps, and pauses the risky one when your skin reacts.',
       },
     ],
     faqs: [
       {
         question: 'Do I need to know ingredients already?',
         answer:
-          'No. Ritora is built to reduce ingredient guesswork, not require you to become an ingredient expert first.',
+          'No. Ritora is built to remove ingredient guesswork, not require you to be an expert first.',
       },
       {
         question: 'Can I skip steps?',
         answer:
-          'Yes. Ritora is meant to guide routine decisions, while you remain in control of what you use.',
+          'Yes. Ritora guides the decisions, but you stay in control of what you use.',
       },
       {
         question: 'Does Ritora help if my skin is reactive?',
         answer:
-          'It can help you keep better context around sensitivities, recent reactions, and cautious product layering.',
+          'Yes. It keeps context around sensitivities and recent reactions, and pauses strong actives when your skin needs a break.',
       },
     ],
   },
   skinJournal: {
     path: AppRoute.SkinJournalMarketing,
-    metadataTitle: 'Skin Journal App | Track skin changes with Ritora',
+    metadataTitle: 'Skin Journal App | Catch reactions and track progress',
     metadataDescription:
-      'Use Ritora as a private skin journal app to track photos, routine changes, reactions, and progress over time.',
+      'Use Ritora as a private skin journal app to track photos, spot reactions early, and see whether your routine is actually working over time.',
     navLabel: 'Skin journal',
     navBlurb: 'Track skin changes with routine context, privately.',
     eyebrow: 'Skin journal app',
-    title: 'Track skin changes with more context than a camera roll.',
+    title: 'See whether your routine is actually working.',
     description:
-      'Ritora connects skin photos, routine history, product use, and visible changes, so you can see what may be helping or irritating your skin.',
+      'Ritora connects your skin photos, routine history, and visible changes, so you can tell what is helping and what is irritating your skin.',
     primaryKeyword:
       'skin journal app, skincare progress tracker, skin diary, skincare photo tracker',
     benefits: [
       'Log visible changes over time',
-      'Connect photos with routine history',
-      'Notice irritation and recovery patterns',
+      'Compare any two dates to see progress',
+      'Spot reactions before they get worse',
       'Keep journal data private by design',
     ],
     whyHeading:
@@ -161,39 +161,39 @@ export const marketingPages = {
       {
         icon: 'journal',
         title: 'Photo-backed history',
-        body: 'Save skin journal entries so progress is easier to compare than scattered photos buried in your camera roll.',
+        body: 'Save entries so progress is easy to compare, instead of scattered photos lost in your camera roll.',
       },
       {
         icon: 'routine',
         title: 'Routine context',
-        body: 'Pair entries with recent routine choices, so you can understand what changed before redness, dryness, texture, or calm days.',
+        body: 'Pair entries with recent routine choices, so you can see what changed before redness, dryness, or calm days.',
       },
       {
         icon: 'sensitive',
-        title: 'Sensitive-skin awareness',
-        body: 'Use journal signals to support slower reintroductions and more cautious active ingredient timing.',
+        title: 'Reaction detection',
+        body: 'When a photo shows a reaction, Ritora pauses the active behind it and reintroduces it gently later.',
       },
       {
         icon: 'privacy',
         title: 'Private records',
-        body: 'Skin journaling is personal. Ritora keeps your routine and skin notes tied to your account, not a public feed.',
+        body: 'Your skin notes stay tied to your account, encrypted, never a public feed.',
       },
     ],
     faqs: [
       {
         question: 'Can a skin journal help my routine?',
         answer:
-          'Yes. A consistent journal can reveal patterns between products, timing, irritation, recovery, and visible skin changes.',
+          'Yes. A consistent journal reveals patterns between products, timing, irritation, and visible changes.',
       },
       {
         question: 'Do I need to upload photos?',
         answer:
-          'Photos add useful context, but Ritora can still help organize products and routine decisions without them.',
+          'Photos add context, but Ritora still helps organize products and decisions without them.',
       },
       {
         question: 'Is my skin journal public?',
         answer:
-          'No. Ritora is not built as a public social feed for your private skin records.',
+          'No. Ritora is not a public feed. Your records stay private by default.',
       },
     ],
   },
@@ -201,19 +201,19 @@ export const marketingPages = {
     path: AppRoute.SmartRoutine,
     metadataTitle: 'Smart Skincare Routine Planner',
     metadataDescription:
-      'Plan morning, midday, and evening skincare routines with Ritora using your actual products, skin profile, and ingredient guardrails.',
+      'Plan morning, midday, and evening routines with Ritora using your real products, skin profile, and ingredient guardrails, with recovery days built in.',
     navLabel: 'Smart routine',
     navBlurb: 'Plan morning and evening routines around your shelf.',
     eyebrow: 'Smart routine planner',
-    title: 'A skincare routine planner that knows what is already on your shelf.',
+    title: 'A routine planner that adapts when your skin reacts.',
     description:
-      'Ritora plans practical routines around your real products, skin profile, active ingredient tolerance, and recovery needs.',
+      'Ritora plans practical routines around your real products and skin profile, then slows things down when your skin needs to recover.',
     primaryKeyword:
       'smart skincare routine planner, morning evening skincare routine, personalized skincare planner',
     benefits: [
       'Plan morning and evening routines',
       'Avoid overusing strong actives',
-      'Adjust around recovery days',
+      'Get a calmer plan on recovery days',
       'Time sunscreen and treatments clearly',
     ],
     whyHeading:
@@ -222,39 +222,39 @@ export const marketingPages = {
       {
         icon: 'morning',
         title: 'Morning clarity',
-        body: 'Ritora organizes cleanser, serum, moisturizer, and sunscreen choices into a morning routine that is easy to repeat.',
+        body: 'Ritora organizes cleanser, serum, moisturizer, and sunscreen into a morning routine that is easy to repeat.',
       },
       {
         icon: 'evening',
         title: 'Evening guardrails',
-        body: 'Evening routines often include stronger actives. Ritora helps you decide when to avoid stacking too much at once.',
+        body: 'Evenings carry the strong actives. Ritora helps you decide when stacking is too much for one night.',
       },
       {
         icon: 'recovery',
         title: 'Recovery days',
-        body: 'Not every day needs an active. Ritora supports gentler routines when your skin needs a pause.',
+        body: 'Not every day needs an active. When your skin reacts, Ritora switches you to a calmer, barrier-first plan.',
       },
       {
         icon: 'history',
         title: 'Routine history',
-        body: 'Keeping routine history in one place makes it easier to understand what your skin tolerated well.',
+        body: 'Keeping history in one place makes it clear what your skin tolerated well.',
       },
     ],
     faqs: [
       {
-        question: 'Can Ritora build a routine without selling products?',
+        question: 'Can Ritora build a routine without selling me products?',
         answer:
-          'Yes. Ritora is inventory-first, so the starting point is your own shelf rather than a shopping list.',
+          'Yes. Ritora starts from your own shelf, not a shopping list.',
       },
       {
         question: 'Does Ritora support simple routines?',
         answer:
-          'Yes. A simple cleanser, moisturizer, and sunscreen routine can still benefit from reminders and consistency.',
+          'Yes. Even a cleanser, moisturizer, and sunscreen routine benefits from consistency and clear timing.',
       },
       {
         question: 'Can Ritora help with active ingredients?',
         answer:
-          'Ritora can help flag routine decisions around exfoliants, retinoids, vitamin C, and other active-heavy steps.',
+          'Yes. It flags decisions around exfoliants, retinoids, vitamin C, and other active-heavy steps.',
       },
     ],
   },
@@ -262,19 +262,19 @@ export const marketingPages = {
     path: AppRoute.ProductCheckerMarketing,
     metadataTitle: 'Skincare Product Checker',
     metadataDescription:
-      'Check skincare products against your shelf, skin profile, and routine context before adding them to your routine.',
+      'Check any skincare product against your shelf, skin profile, and reaction history before you buy or layer it. Get a clear verdict in seconds.',
     navLabel: 'Product checker',
-    navBlurb: 'Check if a product fits before you layer it.',
+    navBlurb: 'Check if a product fits before you buy or layer it.',
     eyebrow: 'Skincare product checker',
-    title: 'Check whether a skincare product makes sense for your routine.',
+    title: 'Vet any product before you buy or use it.',
     description:
-      'Ritora reviews products in context: what you already use, what your skin tolerates, and which combinations may need caution.',
+      'Ritora reviews a product in context: what you already use, what your skin tolerates, and which combinations need caution.',
     primaryKeyword:
       'skincare product checker, skincare ingredient checker, product compatibility checker',
     benefits: [
-      'Review products before routine changes',
+      'Get a verdict in seconds',
       'Catch common ingredient conflicts',
-      'Understand product fit by skin profile',
+      'Check it against your reaction history',
       'Reduce trial-and-error layering',
     ],
     whyHeading: 'Judge a product by how it fits your shelf, not by hype.',
@@ -282,39 +282,39 @@ export const marketingPages = {
       {
         icon: 'checks',
         title: 'Context-aware checks',
-        body: 'A product is not good or bad in isolation. Ritora checks how it fits with your existing shelf and routine.',
+        body: 'A product is not good or bad in isolation. Ritora checks how it fits your shelf and routine.',
       },
       {
         icon: 'guardrails',
         title: 'Ingredient guardrails',
-        body: 'Ritora highlights common caution areas such as strong active combinations, repeated exfoliation, and irritation risk.',
+        body: 'Ritora flags caution areas like strong active combinations, repeated exfoliation, and irritation risk.',
       },
       {
         icon: 'shelf',
-        title: 'Shelf decisions',
-        body: 'Run a product check before adding something new to your shelf or deciding where it belongs in your routine.',
+        title: 'Reaction-aware verdict',
+        body: 'Ritora weighs a product against your own reaction history, not just a generic ingredient list.',
       },
       {
         icon: 'clarity',
         title: 'Less guessing',
-        body: 'Instead of searching every ingredient manually, Ritora gives you a focused product-level decision layer.',
+        body: 'Instead of searching every ingredient by hand, you get a focused product-level decision in seconds.',
       },
     ],
     faqs: [
       {
         question: 'Is Ritora an ingredient database?',
         answer:
-          'Ritora uses ingredient and product context, but its main job is to help you make routine decisions around your own shelf.',
+          'Ritora uses ingredient and product context, but its job is to help you decide around your own shelf.',
       },
       {
         question: 'Can Ritora tell me if a product is safe for me?',
         answer:
-          'Ritora can provide decision support based on your profile and routine context, but it cannot guarantee medical safety.',
+          'It gives decision support from your profile and reaction history, but it cannot guarantee medical safety.',
       },
       {
         question: 'Can I check products I already own?',
         answer:
-          'Yes. Ritora is especially useful for understanding products already sitting on your shelf.',
+          'Yes. Ritora is especially useful for products already on your shelf.',
       },
     ],
   },
