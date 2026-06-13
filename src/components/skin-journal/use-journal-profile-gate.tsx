@@ -13,6 +13,10 @@ import {
   buildJournalUploadHref,
 } from "@/components/skin-journal/journal-navigation";
 
+interface OpenTodayUploadOptions {
+  reaction?: boolean;
+}
+
 export function useJournalProfileGate() {
   const t = useTranslations("journal.prerequisites.profile");
   const router = useRouter();
@@ -23,15 +27,16 @@ export function useJournalProfileGate() {
     skinProfile.isError &&
     getApiErrorStatus(skinProfile.error) !== 404;
 
-  const openTodayUpload = (mode?: JournalUploadMode) => {
+  const openTodayUpload = (
+    mode?: JournalUploadMode,
+    options: OpenTodayUploadOptions = {},
+  ) => {
     if (!canOpenUpload) {
       setProfileRequiredOpen(true);
       return;
     }
 
-    router.push(
-      mode ? buildJournalUploadHref({ mode }) : buildJournalUploadHref(),
-    );
+    router.push(buildJournalUploadHref({ mode, reaction: options.reaction }));
   };
 
   const profileGateDialog = (

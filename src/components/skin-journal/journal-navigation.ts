@@ -9,14 +9,20 @@ export enum JournalUploadMode {
 
 interface BuildJournalUploadHrefOptions {
   mode?: JournalUploadMode;
+  reaction?: boolean;
 }
 
 export function buildJournalUploadHref(
   options: BuildJournalUploadHrefOptions = {},
 ): string {
-  if (!options.mode || options.mode === JournalUploadMode.Create) {
-    return JOURNAL_UPLOAD_ROUTE;
+  const params = new URLSearchParams();
+  if (options.mode && options.mode !== JournalUploadMode.Create) {
+    params.set("mode", options.mode);
+  }
+  if (options.reaction) {
+    params.set("reaction", "1");
   }
 
-  return `${JOURNAL_UPLOAD_ROUTE}?mode=${options.mode}`;
+  const query = params.toString();
+  return query ? `${JOURNAL_UPLOAD_ROUTE}?${query}` : JOURNAL_UPLOAD_ROUTE;
 }

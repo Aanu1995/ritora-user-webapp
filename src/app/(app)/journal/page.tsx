@@ -230,6 +230,12 @@ export default function JournalPage() {
             hasTodayEntry={hasTodayEntry}
             photoActionsDisabled={photoActionsDisabled}
             onOpenUpload={() => openTodayUpload()}
+            onReportReaction={() =>
+              openTodayUpload(
+                hasTodayEntry ? JournalUploadMode.Edit : undefined,
+                { reaction: true },
+              )
+            }
           />
         }
       />

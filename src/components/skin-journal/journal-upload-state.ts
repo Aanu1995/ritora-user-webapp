@@ -1,4 +1,7 @@
-import type { CheckInFormValue } from "@/components/skin-journal/daily-check-in-form";
+import {
+  createEmptyReactionReport,
+  type CheckInFormValue,
+} from "@/components/skin-journal/daily-check-in-validation";
 import {
   FRONT_PHOTO_ANGLE,
   type JournalEntry,
@@ -24,7 +27,27 @@ export function entryToCheckIn(entry: JournalEntry): CheckInFormValue {
     sweat_exercise_today: entry.sweat_exercise_today ?? undefined,
     cycle_marker: entry.cycle_marker ?? undefined,
     recent_change: entry.recent_change ?? null,
+    reaction_report: entry.reaction_report ?? null,
     complaint_note: entry.complaint_note ?? null,
+  };
+}
+
+export function withReactionReportDraft(
+  value: CheckInFormValue,
+  enabled: boolean,
+): CheckInFormValue {
+  const draft = {
+    ...value,
+    ratings: { ...value.ratings },
+  };
+
+  if (!enabled || draft.reaction_report) {
+    return draft;
+  }
+
+  return {
+    ...draft,
+    reaction_report: createEmptyReactionReport(),
   };
 }
 

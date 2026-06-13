@@ -3359,6 +3359,7 @@
     "subtitle": "One entry per day. Photo, ratings, observations and insights, all in one place.",
     "eyebrow": "Your skin journey",
     "fab": "Add today's photo",
+    "reportReaction": "My skin is reacting",
     "prerequisites": {
       "profile": {
         "title": "Finish your skin profile first",
@@ -3996,6 +3997,78 @@
       "noteLabel": "Complaint or note (optional)",
       "addNote": "Add complaint or note",
       "notePlaceholder": "Tell us anything. Feels tight, itches, looks dull…",
+      "reactionReport": {
+        "start": "My skin is reacting",
+        "title": "Symptom report",
+        "savedTitle": "Reaction you reported",
+        "body": "Use this when the reaction is something you feel, even if it is hard to see in a photo.",
+        "clear": "Clear symptom report",
+        "validationSymptoms": "Choose at least one symptom, or clear the symptom report before saving.",
+        "symptomsLabel": "What are you feeling?",
+        "severityLabel": "How intense is it?",
+        "onsetLabel": "When did it start?",
+        "locationsLabel": "Where is it happening?",
+        "triggerLabel": "Possible trigger",
+        "redFlagsLabel": "Red flags",
+        "redFlagsHint": "Choose any that apply. Ritora will treat these as higher attention.",
+        "noteLabel": "Reaction note (optional)",
+        "notePlaceholder": "For example, burning near cheeks after a new serum.",
+        "symptoms": {
+          "burning": "Burning",
+          "stinging": "Stinging",
+          "itching": "Itching",
+          "tightness": "Tightness",
+          "heat": "Heat",
+          "pain": "Pain",
+          "swelling": "Swelling",
+          "hives": "Hives",
+          "peeling": "Peeling",
+          "breakout": "Breakout",
+          "other": "Other"
+        },
+        "severity": {
+          "mild": "Mild",
+          "moderate": "Moderate",
+          "severe": "Severe"
+        },
+        "onset": {
+          "today": "Today",
+          "yesterday": "Yesterday",
+          "two_to_three_days": "2-3 days ago",
+          "four_to_seven_days": "4-7 days ago",
+          "more_than_week": "More than a week",
+          "unsure": "Not sure"
+        },
+        "locations": {
+          "forehead": "Forehead",
+          "cheeks": "Cheeks",
+          "chin_jaw": "Chin/jaw",
+          "around_mouth": "Around mouth",
+          "eye_area": "Eye area",
+          "neck": "Neck",
+          "all_over_face": "All over face",
+          "body": "Body",
+          "other": "Other"
+        },
+        "triggers": {
+          "new_product": "New product",
+          "changed_frequency": "Changed frequency",
+          "active_ingredient": "Active ingredient",
+          "sunscreen": "Sunscreen",
+          "treatment": "Treatment",
+          "weather_or_environment": "Weather/environment",
+          "unknown": "Unknown"
+        },
+        "redFlags": {
+          "eye_or_lip_swelling": "Eye or lip swelling",
+          "trouble_breathing": "Trouble breathing",
+          "blistering": "Blistering",
+          "open_skin": "Open or cracked skin",
+          "spreading_fast": "Spreading fast",
+          "severe_pain": "Severe pain",
+          "infection_signs": "Possible infection signs"
+        }
+      },
       "privacyNote": "Your photo and ratings are encrypted at rest. The AI only sees the photo. Never your name, email, or user id."
     },
     "compare": {
@@ -4954,7 +5027,8 @@
       "aiConsentGranted": "AI suggestions enabled.",
       "aiConsentFailed": "We couldn't save that consent. Please try again.",
       "gapSaved": "Saved to your Today wishlist.",
-      "gapDismissed": "Recommendation dismissed for now."
+      "gapDismissed": "Recommendation dismissed for now.",
+      "reportReaction": "My skin is reacting"
     },
     "prerequisites": {
       "profile": {

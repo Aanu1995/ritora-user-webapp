@@ -15,11 +15,13 @@ import { ConcernRatingRow } from "./concern-rating-row";
 import { AnalysisCard } from "./analysis-card";
 import { DayDetailPhotoSet } from "./day-detail-photo-set";
 import { DayDetailAttentionEvents } from "./day-detail-attention-events";
+import { DayDetailReactionReport } from "./day-detail-reaction-report";
 import {
   type DayDetailAnalysisFeedbackPayload,
   useDayDetailAnalysisFeedback,
 } from "./day-detail-analysis-feedback";
 import { JournalDayDetailSkeleton } from "./journal-loading-skeletons";
+import { formatDayDetailDate, weekdayShort } from "./day-detail-date";
 import { formatJournalShortDate } from "./journal-date";
 import { PhotoReferenceQualityBadge } from "./photo-reference-quality-badge";
 import {
@@ -67,28 +69,6 @@ const ANALYSIS_FAILURE_BODY_KEYS: Partial<Record<AnalysisFailureCode, string>> =
 function analysisFailedBodyKey(code: AnalysisFailureCode | null): string {
   if (!code) return "analysisFailedBody";
   return ANALYSIS_FAILURE_BODY_KEYS[code] ?? "analysisFailedBody";
-}
-
-function weekdayShort(date: string, locale: string): string {
-  try {
-    return new Intl.DateTimeFormat(locale, { weekday: "short" }).format(
-      new Date(`${date}T12:00:00Z`),
-    );
-  } catch {
-    return "";
-  }
-}
-
-function formatDayDetailDate(date: string, locale: string): string {
-  try {
-    return new Intl.DateTimeFormat(locale, {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(new Date(`${date}T12:00:00Z`));
-  } catch {
-    return date;
-  }
 }
 
 export function DayDetailPanel({
@@ -320,7 +300,10 @@ export function DayDetailPanel({
         </div>
       ) : null}
 
-      {(entry.ratings || entry.complaint_note || entry.overall_feel) && (
+      {(entry.ratings ||
+        entry.complaint_note ||
+        entry.overall_feel ||
+        entry.reaction_report) && (
         <div className="rounded-2xl border border-border bg-surface p-4 sm:p-5">
           <p className="text-sm font-semibold">{t("ratingsTitle")}</p>
           <div className="mt-2 grid grid-cols-1 gap-3 xl:grid-cols-2">
@@ -360,6 +343,10 @@ export function DayDetailPanel({
               </div>
             </div>
           </div>
+
+          {entry.reaction_report ? (
+            <DayDetailReactionReport report={entry.reaction_report} />
+          ) : null}
 
           {entry.ratings ? (
             <div className="mt-3">

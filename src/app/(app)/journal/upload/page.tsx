@@ -15,11 +15,13 @@ import { JournalPhotoUpload } from "@/components/skin-journal/journal-photo-uplo
 import { JournalDeleteTodayDialog } from "@/components/skin-journal/journal-delete-today-dialog";
 import { JournalUploadSkeleton } from "@/components/skin-journal/journal-loading-skeletons";
 import { JournalUploadPhotoActions } from "@/components/skin-journal/journal-upload-photo-actions";
+import { JournalCheckInValidationAlert } from "@/components/skin-journal/journal-check-in-validation-alert";
 import {
   EMPTY_CHECK_IN,
   entryPhotosForUpload,
   entryToCheckIn,
   todayYmd,
+  withReactionReportDraft,
 } from "@/components/skin-journal/journal-upload-state";
 import {
   DailyCheckInForm,
@@ -52,8 +54,11 @@ export default function JournalUploadPage() {
   const t = useTranslations("journal.upload");
   const router = useRouter();
   const searchParams = useSearchParams();
+  const isReactionReportMode = searchParams.get("reaction") === "1";
 
-  const [step, setStep] = useState<Step>("photo");
+  const [step, setStep] = useState<Step>(
+    isReactionReportMode ? "checkin" : "photo",
+  );
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [photos, setPhotos] = useState<Partial<Record<Angle, File>>>({});
   const [removedPhotoAngles, setRemovedPhotoAngles] = useState<Angle[]>([]);
@@ -91,7 +96,10 @@ export default function JournalUploadPage() {
     isPreRoutineDraft ?? editableEntry?.is_pre_routine ?? true;
   const checkIn =
     checkInDraft ??
-    (editableEntry ? entryToCheckIn(editableEntry) : EMPTY_CHECK_IN);
+    withReactionReportDraft(
+      editableEntry ? entryToCheckIn(editableEntry) : EMPTY_CHECK_IN,
+      isReactionReportMode,
+    );
   const checkInValidation = validateCheckInForSave(checkIn, {
     requireCycleMarker: showCycleQuestion,
   });
@@ -302,15 +310,7 @@ export default function JournalUploadPage() {
             />
 
             {shouldShowCheckInValidation ? (
-              <div
-                role="alert"
-                className="mt-4 rounded-2xl border border-danger/30 bg-danger/5 p-3 text-sm leading-relaxed text-danger"
-              >
-                <p className="font-semibold">{t("validationTitle")}</p>
-                <p className="mt-1 text-xs text-danger/85">
-                  {t("validationBody")}
-                </p>
-              </div>
+              <JournalCheckInValidationAlert validation={checkInValidation} />
             ) : null}
 
             <div className="mt-4 rounded-2xl border border-border bg-surface-muted p-3 text-xs leading-[1.6] text-muted">

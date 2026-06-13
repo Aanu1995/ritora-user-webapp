@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TodaysSuggestionPage from "@/app/(app)/todays-suggestion/page";
 import { AppRoute } from "@/constants/app-routes";
@@ -216,6 +216,64 @@ describe("TodaysSuggestionPage routine break integration", () => {
     );
 
     expect(mockRouterPush).toHaveBeenCalledWith(`${AppRoute.Journal}/upload`);
+  });
+
+  it("opens reaction report upload from the empty Today state", async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<TodaysSuggestionPage />);
+
+    const headerActions = screen.getByTestId("today-header-actions");
+    expect(
+      screen.getAllByRole("button", { name: /my skin is reacting/i }),
+    ).toHaveLength(1);
+
+    await user.click(
+      within(headerActions).getByRole("button", {
+        name: /my skin is reacting/i,
+      }),
+    );
+
+    expect(mockRouterPush).toHaveBeenCalledWith(
+      `${AppRoute.Journal}/upload?mode=edit&reaction=1`,
+    );
+  });
+
+  it("opens reaction report upload from the Today reaction action", async () => {
+    const user = userEvent.setup();
+    mockTodayData = mockTodayResponse({
+      summary: {
+        total: 1,
+        locked: 0,
+        upcoming: 0,
+        ready: 1,
+        recordable: 0,
+        recorded: 0,
+        edited: 0,
+        failed: 0,
+        onDemand: 0,
+      },
+      slots: [mockSlot()],
+    });
+
+    renderWithProviders(<TodaysSuggestionPage />);
+
+    expect(screen.queryByText("Routine review")).not.toBeInTheDocument();
+
+    const headerActions = screen.getByTestId("today-header-actions");
+    expect(
+      screen.getAllByRole("button", { name: /my skin is reacting/i }),
+    ).toHaveLength(1);
+
+    await user.click(
+      within(headerActions).getByRole("button", {
+        name: /my skin is reacting/i,
+      }),
+    );
+
+    expect(mockRouterPush).toHaveBeenCalledWith(
+      `${AppRoute.Journal}/upload?mode=edit&reaction=1`,
+    );
   });
 
   it("asks for AI consent before opening quick suggestions", async () => {

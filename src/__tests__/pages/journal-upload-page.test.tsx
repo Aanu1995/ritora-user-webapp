@@ -78,6 +78,7 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     sweat_exercise_today: null,
     cycle_marker: null,
     recent_change: null,
+    reaction_report: null,
     complaint_note: null,
     analysis_status: "completed",
     analysis_reference: null,
@@ -312,6 +313,57 @@ describe("JournalUploadPage edit actions", () => {
     fireEvent.click(continueButton);
 
     expect(screen.getByText(/today's check-in/i)).toBeInTheDocument();
+  });
+
+  it("opens reaction reports directly on the check-in step and saves symptoms", () => {
+    mockSearchParams = new URLSearchParams("mode=edit&reaction=1");
+    mockTodayPayload = {
+      date: "2026-04-30",
+      entry: null,
+      events: [],
+      insights: [],
+    };
+
+    renderWithProviders(<JournalUploadPage />);
+
+    expect(screen.getByText(/today's check-in/i)).toBeInTheDocument();
+    expect(screen.getByText("Symptom report")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Burning" }));
+    completeCheckIn();
+    fireEvent.click(screen.getByRole("button", { name: /save entry/i }));
+
+    expect(mockUpsertTodayMutate).toHaveBeenCalledWith(
+      {
+        payload: expect.objectContaining({
+          reaction_report: expect.objectContaining({
+            symptoms: ["burning"],
+            severity: "mild",
+          }),
+        }),
+      },
+      expect.objectContaining({ onSuccess: expect.any(Function) }),
+    );
+  });
+
+  it("requires a symptom when a reaction report is open", () => {
+    mockSearchParams = new URLSearchParams("mode=edit&reaction=1");
+    mockTodayPayload = {
+      date: "2026-04-30",
+      entry: null,
+      events: [],
+      insights: [],
+    };
+
+    renderWithProviders(<JournalUploadPage />);
+
+    completeCheckIn();
+    fireEvent.click(screen.getByRole("button", { name: /save entry/i }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      /choose at least one symptom/i,
+    );
+    expect(mockUpsertTodayMutate).not.toHaveBeenCalled();
   });
 
   it("saves a complete check-in without a photo", () => {

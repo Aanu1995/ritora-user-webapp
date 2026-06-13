@@ -125,6 +125,7 @@ function journalEntry(overrides: Partial<JournalEntry> = {}): JournalEntry {
     sweat_exercise_today: null,
     cycle_marker: null,
     recent_change: null,
+    reaction_report: null,
     complaint_note: null,
     analysis_status: "failed",
     analysis_reference: null,
@@ -288,6 +289,34 @@ describe("DayDetailPanel journal-day edit lock", () => {
     expect(screen.getByText(/compared with/i)).toHaveTextContent(
       /apr 18, 2026/i,
     );
+  });
+
+  it("shows a saved user-reported reaction report", () => {
+    renderWithProviders(
+      <DayDetailPanel
+        detail={dayDetail(
+          journalEntry({
+            has_reaction: true,
+            reaction_report: {
+              symptoms: ["burning", "itching"],
+              severity: "moderate",
+              onset: "today",
+              locations: ["cheeks"],
+              red_flags: ["spreading_fast"],
+              suspected_trigger: "new_product",
+              note: "Started after cleanser.",
+            },
+          }),
+        )}
+        isToday
+      />,
+    );
+
+    expect(screen.getByText("Reaction you reported")).toBeInTheDocument();
+    expect(screen.getByText("Burning")).toBeInTheDocument();
+    expect(screen.getByText("Itching")).toBeInTheDocument();
+    expect(screen.getByText("Spreading fast")).toBeInTheDocument();
+    expect(screen.getByText(/started after cleanser/i)).toBeInTheDocument();
   });
 
   it("loads the primary above-the-fold photo angle eagerly", () => {

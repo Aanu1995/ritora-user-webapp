@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { TriangleAlert } from "lucide-react";
 import { useForm } from "@tanstack/react-form";
 import { useTranslations } from "next-intl";
 import {
@@ -17,13 +18,17 @@ import { Chip } from "./chip";
 import { ConcernRatingRow } from "./concern-rating-row";
 import { FeelPicker } from "./feel-picker";
 import { RecentChangeInput } from "./recent-change-input";
+import { ReactionReportInput } from "./reaction-report-input";
 import {
   checkInFormSchema,
+  createEmptyReactionReport,
   type CheckInFormValue,
 } from "./daily-check-in-validation";
 
 export {
+  EMPTY_REACTION_REPORT,
   checkInToPayload,
+  createEmptyReactionReport,
   validateCheckInForSave,
 } from "./daily-check-in-validation";
 export type { CheckInFormValue } from "./daily-check-in-validation";
@@ -42,7 +47,9 @@ export function DailyCheckInForm({
   const t = useTranslations("journal.upload");
   const tConcerns = useTranslations("journal.concerns");
   const tCtx = useTranslations("journal.context");
+  const tReaction = useTranslations("journal.upload.reactionReport");
   const [showNote, setShowNote] = useState(!!value.complaint_note);
+  const [showReaction, setShowReaction] = useState(!!value.reaction_report);
 
   const form = useForm({
     defaultValues: value,
@@ -67,8 +74,11 @@ export function DailyCheckInForm({
 
   return (
     <form.Subscribe selector={(state) => state.values}>
-      {(values) => (
-        <div className="divide-y divide-border [&>*]:py-6 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
+      {(values) => {
+        const reactionIsVisible = showReaction || !!values.reaction_report;
+
+        return (
+          <div className="divide-y divide-border [&>*]:py-6 [&>*:first-child]:pt-0 [&>*:last-child]:pb-0">
           <div className="space-y-6">
             <div>
               <p className="mb-3 text-sm font-semibold">
@@ -217,6 +227,38 @@ export function DailyCheckInForm({
           </div>
 
           <div>
+            {!reactionIsVisible ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="border-danger/40 bg-surface text-danger hover:-translate-y-0.5 hover:border-danger/40 hover:bg-surface hover:text-danger hover:opacity-95 focus-visible:ring-danger/30"
+                onClick={() => {
+                  const reactionReport = createEmptyReactionReport();
+                  setShowReaction(true);
+                  form.setFieldValue("reaction_report", reactionReport);
+                  onChange({
+                    ...values,
+                    reaction_report: reactionReport,
+                  });
+                }}
+              >
+                <TriangleAlert className="h-3.5 w-3.5" />
+                {tReaction("start")}
+              </Button>
+            ) : (
+              <ReactionReportInput
+                value={values.reaction_report ?? null}
+                onChange={(next) => {
+                  form.setFieldValue("reaction_report", next);
+                  onChange({ ...values, reaction_report: next });
+                  if (!next) setShowReaction(false);
+                }}
+              />
+            )}
+          </div>
+
+          <div>
             <RecentChangeInput
               value={values.recent_change ?? null}
               onChange={(next) => {
@@ -254,8 +296,9 @@ export function DailyCheckInForm({
               </>
             )}
           </div>
-        </div>
-      )}
+          </div>
+        );
+      }}
     </form.Subscribe>
   );
 }

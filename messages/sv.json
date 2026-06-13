@@ -3347,6 +3347,7 @@
     "subtitle": "En post per dag. Foto, betyg, observationer och insikter, allt på ett ställe.",
     "eyebrow": "Din hudresa",
     "fab": "Lägg till dagens foto",
+    "reportReaction": "Min hud reagerar",
     "prerequisites": {
       "profile": {
         "title": "Slutför din hudprofil först",
@@ -3984,6 +3985,78 @@
       "noteLabel": "Klagomål eller anteckning (valfritt)",
       "addNote": "Lägg till anteckning",
       "notePlaceholder": "Berätta vad som helst. Sträv, kliar, ser tråkig ut…",
+      "reactionReport": {
+        "start": "Min hud reagerar",
+        "title": "Symtomrapport",
+        "savedTitle": "Reaktion du rapporterade",
+        "body": "Använd detta när reaktionen är något du känner, även om den är svår att se på bild.",
+        "clear": "Ta bort symtomrapport",
+        "validationSymptoms": "Välj minst ett symtom eller ta bort symtomrapporten innan du sparar.",
+        "symptomsLabel": "Vad känner du?",
+        "severityLabel": "Hur intensivt är det?",
+        "onsetLabel": "När började det?",
+        "locationsLabel": "Var märker du det?",
+        "triggerLabel": "Möjlig orsak",
+        "redFlagsLabel": "Varningssignaler",
+        "redFlagsHint": "Välj de som stämmer. Ritora markerar dem som extra viktiga.",
+        "noteLabel": "Anteckning om reaktionen (valfritt)",
+        "notePlaceholder": "Till exempel sveda på kinderna efter ett nytt serum.",
+        "symptoms": {
+          "burning": "Brännande känsla",
+          "stinging": "Svidande",
+          "itching": "Klåda",
+          "tightness": "Stramhet",
+          "heat": "Värme",
+          "pain": "Smärta",
+          "swelling": "Svullnad",
+          "hives": "Nässelutslag",
+          "peeling": "Fjällning",
+          "breakout": "Utslag eller finnar",
+          "other": "Annat"
+        },
+        "severity": {
+          "mild": "Lätt",
+          "moderate": "Måttlig",
+          "severe": "Kraftig"
+        },
+        "onset": {
+          "today": "Idag",
+          "yesterday": "Igår",
+          "two_to_three_days": "För 2-3 dagar sedan",
+          "four_to_seven_days": "För 4-7 dagar sedan",
+          "more_than_week": "För mer än en vecka sedan",
+          "unsure": "Inte säker"
+        },
+        "locations": {
+          "forehead": "Panna",
+          "cheeks": "Kinder",
+          "chin_jaw": "Haka/käke",
+          "around_mouth": "Runt munnen",
+          "eye_area": "Runt ögonen",
+          "neck": "Hals eller nacke",
+          "all_over_face": "Hela ansiktet",
+          "body": "Kropp",
+          "other": "Annat"
+        },
+        "triggers": {
+          "new_product": "Ny produkt",
+          "changed_frequency": "Ändrad frekvens",
+          "active_ingredient": "Aktiv ingrediens",
+          "sunscreen": "Solskydd",
+          "treatment": "Behandling",
+          "weather_or_environment": "Väder eller miljö",
+          "unknown": "Okänd"
+        },
+        "redFlags": {
+          "eye_or_lip_swelling": "Svullnad runt ögon eller läppar",
+          "trouble_breathing": "Andningsbesvär",
+          "blistering": "Blåsor",
+          "open_skin": "Öppen eller sprucken hud",
+          "spreading_fast": "Sprider sig snabbt",
+          "severe_pain": "Stark smärta",
+          "infection_signs": "Möjliga tecken på infektion"
+        }
+      },
       "privacyNote": "Ditt foto och dina betyg är krypterade. AI:n ser bara fotot. Aldrig namn, e-post eller användar-id."
     },
     "compare": {
@@ -4942,7 +5015,8 @@
       "aiConsentGranted": "AI-förslag aktiverade.",
       "aiConsentFailed": "Vi kunde inte spara samtycket. Försök igen.",
       "gapSaved": "Sparat i dagens önskelista.",
-      "gapDismissed": "Rekommendationen dold tills vidare."
+      "gapDismissed": "Rekommendationen dold tills vidare.",
+      "reportReaction": "Min hud reagerar"
     },
     "prerequisites": {
       "profile": {
@@ -4979,13 +5053,13 @@
       "resumeOn": "Planerad återstart: {date}",
       "resumeIndefinite": "Pausad tills du återupptar",
       "resumeDateLabel": "Återupptagningsdatum",
-      "saveResumeDate": "Spara datum",
+      "saveResumeDate": "Spara återupptagningsdatum",
       "resumeNow": "Återuppta rutin",
       "changeResumeDate": "Ändra",
       "cancelEdit": "Avbryt",
       "validation": {
-        "resumeDateInvalid": "Välj ett giltigt datum.",
-        "resumeDatePast": "Välj ett framtida datum."
+        "resumeDateInvalid": "Välj ett giltigt återupptagningsdatum.",
+        "resumeDatePast": "Välj ett framtida återupptagningsdatum."
       }
     },
     "routineBreakStart": {
@@ -4996,8 +5070,8 @@
       "cancel": "Avbryt",
       "start": "Starta paus",
       "validation": {
-        "resumeDateInvalid": "Välj ett giltigt datum.",
-        "resumeDatePast": "Välj ett framtida datum."
+        "resumeDateInvalid": "Välj ett giltigt återupptagningsdatum.",
+        "resumeDatePast": "Välj ett framtida återupptagningsdatum."
       }
     },
     "onDemandDialog": {
