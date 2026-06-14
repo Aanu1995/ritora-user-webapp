@@ -22,6 +22,7 @@ import {
   getCalendar,
   getDay,
   getJournalStats,
+  getRoutineMemory,
   getSimplification,
   getTodayEntry,
   getWrapped,
@@ -215,6 +216,22 @@ describe('skin-journal.service', () => {
 
     expect(getRequest).toHaveBeenCalledWith(
       '/skin-journal/events?kind=reaction_detected&from=2026-04-01&to=2026-04-30&acknowledged=false',
+    );
+  });
+
+  it('loads routine memory with an optional date window', async () => {
+    (getRequest as jest.Mock).mockResolvedValue({
+      timeline: [],
+      suspiciousProducts: [],
+    });
+
+    await getRoutineMemory({
+      from: '2026-06-01',
+      to: '2026-06-13',
+    });
+
+    expect(getRequest).toHaveBeenCalledWith(
+      '/routine-memory/timeline?from=2026-06-01&to=2026-06-13',
     );
   });
 

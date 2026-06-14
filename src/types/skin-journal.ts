@@ -58,6 +58,7 @@ export type {
 export type { CompareResponse } from "./skin-journal-compare";
 export { PhotoFilterKind, PhotoFilterStaticId } from "./skin-journal-photo-filters";
 export type { PhotoFilterId } from "./skin-journal-photo-filters";
+export type { SimplificationEvent } from "./skin-journal-simplification";
 export {
   REACTION_REPORT_LOCATIONS,
   REACTION_REPORT_ONSETS,
@@ -356,18 +357,6 @@ export interface Wrapped {
   photo_count: number;
   generated_at: string | null;
   error: string | null;
-}
-
-export interface SimplificationEvent {
-  id: string;
-  triggered_by_event_id: string | null;
-  started_at: string;
-  ended_at: string | null;
-  simplification_mode: "barrier_repair";
-  reason: string | null;
-  acknowledged_at: string | null;
-  restore_strategy: "full" | "phased";
-  original_schedule_snapshot: unknown | null;
 }
 
 export interface JournalStats {

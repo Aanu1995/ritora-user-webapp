@@ -9,8 +9,11 @@ const mockRestore = jest.fn();
 const mockFinish = jest.fn();
 const mockDelete = jest.fn();
 const mockCompare = jest.fn();
+const mockUpdateIntroduction = jest.fn();
 const mockPush = jest.fn();
 const mockGetCommunityProductEvidence = jest.fn();
+const mockToastSuccess = jest.fn();
+const mockToastError = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
@@ -44,6 +47,10 @@ jest.mock('@/hooks/use-shelf', () => ({
     mutate: mockDelete,
     isPending: false,
   }),
+  useUpdateProductIntroduction: () => ({
+    mutate: mockUpdateIntroduction,
+    isPending: false,
+  }),
 }));
 
 jest.mock('@/hooks/use-ingredients', () => ({
@@ -59,11 +66,19 @@ jest.mock('@/services/community.service', () => ({
     mockGetCommunityProductEvidence(...args),
 }));
 
+jest.mock('sonner', () => ({
+  toast: {
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
+  },
+}));
+
 import { ProductDetailView } from '@/components/shelf/detail/product-detail-view';
 import { getAppScrollPosition } from '@/lib/app-scroll-restoration';
 import {
   ApplicationMethod,
   DataProvenance,
+  ProductIntroductionStatus,
   ProductCategory,
   Quantity,
   ShelfStatus,
@@ -111,6 +126,11 @@ const PRODUCT: ShelfProduct = {
     personalNotes: null,
     preferredTimeOfDay: null,
   },
+  introduction: {
+    status: ProductIntroductionStatus.Week1,
+    startedAt: '2026-06-14T08:00:00.000Z',
+    statusUpdatedAt: '2026-06-14T08:00:00.000Z',
+  },
   status: ShelfStatus.Active,
   provenance: DataProvenance.PhotoLookup,
   createdAt: '2026-03-27T00:00:00.000Z',
@@ -123,6 +143,9 @@ beforeEach(() => {
   mockFinish.mockReset();
   mockDelete.mockReset();
   mockCompare.mockReset();
+  mockUpdateIntroduction.mockReset();
+  mockToastSuccess.mockReset();
+  mockToastError.mockReset();
   mockGetCommunityProductEvidence.mockReset();
   mockGetCommunityProductEvidence.mockResolvedValue({
     averageEffectivenessRating: 4,
@@ -184,10 +207,13 @@ describe('ProductDetailView', () => {
     expect(screen.getByRole('button', { name: /delete/i })).toBeInTheDocument();
   });
 
-  it('renders the all four detail tabs', () => {
+  it('renders all product detail tabs', () => {
     renderWithProviders(<ProductDetailView product={PRODUCT} />);
 
     expect(screen.getByRole('tab', { name: /about/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: /introduction/i }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('tab', { name: /ingredients/i }),
     ).toBeInTheDocument();
@@ -278,6 +304,52 @@ describe('ProductDetailView', () => {
     expect(screen.queryByText('AM')).not.toBeInTheDocument();
     expect(screen.queryByText('PM')).not.toBeInTheDocument();
     expect(screen.queryByText(/step \d/i)).not.toBeInTheDocument();
+  });
+
+  it('shows and updates the product introduction lifecycle', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ProductDetailView product={PRODUCT} />);
+
+    await user.click(screen.getByRole('tab', { name: /introduction/i }));
+
+    expect(
+      screen.getByRole('heading', { name: /product introduction/i }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText(/week 1/i).length).toBeGreaterThan(0);
+
+    await user.click(
+      screen.getByRole('button', { name: /building tolerance/i }),
+    );
+
+    expect(mockUpdateIntroduction).toHaveBeenCalledWith(
+      {
+        id: PRODUCT.id,
+        payload: { status: ProductIntroductionStatus.BuildingTolerance },
+      },
+      expect.any(Object),
+    );
+  });
+
+  it('explains each product introduction status in the detail tab dialog', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<ProductDetailView product={PRODUCT} />);
+
+    await user.click(screen.getByRole('tab', { name: /introduction/i }));
+    await user.click(
+      screen.getByRole('button', {
+        name: /explain product introduction statuses/i,
+      }),
+    );
+
+    expect(
+      screen.getByRole('dialog', { name: /how introduction statuses work/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByText(/lower frequency/i).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getAllByText(/Ritora can use it normally in suggestions/i).length,
+    ).toBeGreaterThan(0);
   });
 
   it('archives, finishes, and deletes through the action handlers', async () => {

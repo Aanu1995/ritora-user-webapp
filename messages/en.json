@@ -2035,6 +2035,98 @@
       "sizeSuffix": "ml",
       "lowStock": "Low"
     },
+    "introduction": {
+      "title": "Product introduction",
+      "body": "Bring this product in slowly so Ritora can suggest it at a safer pace while your skin response becomes clearer.",
+      "legacyBody": "Start tracking when you want to see how your skin handles this one.",
+      "paceRule": "Early products can still appear in suggestions, but Ritora keeps them lower frequency until use history looks stable.",
+      "started": "Started {date}",
+      "updated": "Product introduction updated.",
+      "filterLabel": "Product introduction status",
+      "filterAll": "All introduction statuses",
+      "filterAllShort": "Stage",
+      "quick": {
+        "openLabel": "Change product introduction status. Current status: {status}",
+        "title": "How Ritora suggests this",
+        "description": "Pick how often Ritora should reach for this product.",
+        "selectLabel": "Set product introduction status to {status}",
+        "details": {
+          "new": "Still settling in.",
+          "patch_testing": "Held back while you patch test.",
+          "week_1": "Suggested gently.",
+          "building_tolerance": "Suggested carefully while it settles.",
+          "paused": "Set aside for now.",
+          "tolerated": "Used normally when it fits.",
+          "failed": "Not suggested unless you change this."
+        },
+        "groupActive": "Bringing it in",
+        "groupAside": "Set aside"
+      },
+      "info": {
+        "openLabel": "Explain product introduction statuses",
+        "title": "How introduction statuses work",
+        "description": "Ritora uses these statuses to control suggestion pace. It can update them from logged use, and you can correct them when you already know the product.",
+        "details": {
+          "new": {
+            "meaning": "Legacy status for a product added before a starting pace was chosen.",
+            "suggestions": "Ritora treats it like an early introduction and may suggest it cautiously."
+          },
+          "patch_testing": {
+            "meaning": "Legacy cautious status for products that were held back before the pace model changed.",
+            "suggestions": "Ritora may suggest it cautiously and can move it to Week 1 when you log real use."
+          },
+          "week_1": {
+            "meaning": "You are introducing this product now or have just started using it.",
+            "suggestions": "Ritora may suggest it with lower frequency, then can move it to building tolerance after about 7 days of use."
+          },
+          "building_tolerance": {
+            "meaning": "You are building confidence without treating it as fully tolerated yet.",
+            "suggestions": "Ritora may suggest it cautiously and can mark it tolerated after about 28 days of stable use."
+          },
+          "paused": {
+            "meaning": "Use this when you want to stop the product without calling it failed.",
+            "suggestions": "Ritora will not suggest it until you change the status."
+          },
+          "tolerated": {
+            "meaning": "Your skin already handles this product well.",
+            "suggestions": "Ritora can use it normally in suggestions when it fits the routine."
+          },
+          "failed": {
+            "meaning": "The product did not work for your skin or caused a reaction.",
+            "suggestions": "Ritora will not suggest it again unless you manually change the status."
+          }
+        }
+      },
+      "errors": {
+        "updateFailed": "Could not update product introduction."
+      },
+      "status": {
+        "new": "Not started",
+        "patch_testing": "Very cautious",
+        "week_1": "Week 1",
+        "building_tolerance": "Building tolerance",
+        "paused": "Paused",
+        "tolerated": "Tolerated",
+        "failed": "Not for me"
+      },
+      "statusShort": {
+        "new": "New",
+        "patch_testing": "Cautious",
+        "week_1": "Week 1",
+        "building_tolerance": "Building",
+        "paused": "Paused",
+        "tolerated": "Tolerated",
+        "failed": "Not for me"
+      },
+      "currentStage": "Where it is now",
+      "nextUp": "Up next: {stage}",
+      "journeyTitle": "Suggestion pace",
+      "offRampHint": "Not going well? You can pause it or stop it for your skin.",
+      "actions": {
+        "pause": "Pause for now",
+        "fail": "Not for me"
+      }
+    },
     "actions": {
       "add": "Add product",
       "edit": "Edit",
@@ -2132,6 +2224,7 @@
           "about": "About this product",
           "lookup": "From the lookup",
           "yours": "Only you know these",
+          "introduction": "Suggestion pace",
           "guidance": "How to use"
         },
         "hints": {
@@ -2148,6 +2241,7 @@
           "paoHint": "Usually printed on the jar icon as 12M, 24M, etc.",
           "expiresAtHint": "Ritora fills this from opened date and PAO. You can override it.",
           "preferredTimeHint": "If you typically reach for this in the morning or evening, Ritora's AI suggestions will respect that when building your routine.",
+          "introductionDescription": "Tell Ritora whether this should be introduced cautiously or treated like a product your skin already knows.",
           "priceHint": "For later spend insights. Optional.",
           "purchasedFromHint": "Where you bought it.",
           "personalNotesHint": "How it feels on your skin. Only you see this.",
@@ -2204,6 +2298,28 @@
           "evening": "Evening",
           "either": "Either"
         },
+        "introductionStatusOptions": {
+          "week_1": {
+            "title": "I'm introducing it now",
+            "description": "Ritora can suggest it, but with lower frequency while your skin response is still new."
+          },
+          "building_tolerance": {
+            "title": "I've used it a few times",
+            "description": "Ritora can suggest it carefully and avoid increasing too quickly."
+          },
+          "tolerated": {
+            "title": "I already use it",
+            "description": "Ritora can treat it as a normal routine product when it fits."
+          },
+          "paused": {
+            "title": "Pause suggestions",
+            "description": "Keep it on your shelf, but do not include it in routine suggestions yet."
+          },
+          "failed": {
+            "title": "Not for my skin",
+            "description": "Keep the record, but do not suggest this product unless you change it later."
+          }
+        },
         "submit": "Add to shelf",
         "submitting": "Adding...",
         "successToast": "Added to your shelf"
@@ -2253,6 +2369,7 @@
       },
       "tabs": {
         "about": "About",
+        "introduction": "Introduction",
         "ingredients": "Ingredients",
         "howToUse": "How to use",
         "manufacturer": "Manufacturer"
@@ -3371,8 +3488,65 @@
     "tabs": {
       "calendar": "Calendar",
       "photos": "Photos",
+      "memory": "Memory",
       "insights": "Insights",
       "wrapped": "Wrapped"
+    },
+    "routineMemory": {
+      "title": "Routine Memory",
+      "subtitle": "See how your products, your logged use, and your skin all line up over time, in one place.",
+      "loadingLabel": "Loading routine memory",
+      "emptyTitle": "Nothing to show here yet",
+      "emptyBody": "Keep logging your routine and how your skin feels. Ritora will line up what changed, when symptoms showed up, and what helped your skin settle.",
+      "disclaimer": "Timing is a clue, not proof. Use this to notice what changed and stay gentle with your skin.",
+      "possibleLinksTitle": "Products worth a second look",
+      "timelineTitle": "What changed",
+      "productTimelineTitle": "A timeline for each product",
+      "productTimelineSubtitle": "Every product gets its own dated timeline, so you can see what happened before, during, and after a reaction.",
+      "treeScrollLabel": "Scrollable routine timeline tree",
+      "treeProductAriaSuffix": "timeline tree",
+      "unknownProduct": "Unknown product",
+      "durationLabel": "Memory window",
+      "durationOptions": {
+        "7": "7 days",
+        "14": "14 days",
+        "30": "30 days",
+        "90": "90 days"
+      },
+      "firstUse": "First used on {date}",
+      "noFirstUse": "No use logged yet",
+      "noProductEvents": "Nothing changed for this product in this window.",
+      "summary": {
+        "reactionSignalCount": "Reaction signals",
+        "applicationLogCount": "Routine logs",
+        "productChangeCount": "Routine changes"
+      },
+      "levels": {
+        "watch": "Keep an eye on this",
+        "possible": "Review this product",
+        "higher_attention": "Look at this one first"
+      },
+      "reasons": {
+        "reaction_after_first_logged_use": "A reaction showed up soon after you first used this",
+        "reaction_after_product_added": "A reaction showed up soon after you added this",
+        "reaction_after_frequency_change": "A reaction showed up after you changed how often you use it",
+        "skipped_after_reaction": "You skipped this after the reaction",
+        "active_category_near_reaction": "An active product was in use around the reaction"
+      },
+      "events": {
+        "product_added": "Added",
+        "first_logged_use": "First logged use",
+        "product_used": "Used",
+        "frequency_changed": "Frequency changed",
+        "product_skipped": "Skipped",
+        "reaction_signal": "Reaction signal",
+        "recovery_started": "Recovery started",
+        "recent_change_logged": "Recent change logged"
+      },
+      "eventDetails": {
+        "skinJournal": "From your skin journal",
+        "recovery": "During your calmer routine window"
+      }
     },
     "comingSoon": {
       "badge": "Coming soon",
@@ -4018,6 +4192,7 @@
           "stinging": "Stinging",
           "itching": "Itching",
           "tightness": "Tightness",
+          "redness": "Redness",
           "heat": "Heat",
           "pain": "Pain",
           "swelling": "Swelling",
@@ -4465,27 +4640,50 @@
       "cracking_appearance": "Cracking appearance"
     },
     "simplification": {
-      "bannerTitle": "Routine simplified to barrier-repair mode",
-      "bannerBody": "We detected possible irritation in your photo from {date}. Your usual routine is paused until you acknowledge.",
+      "bannerTitle": "Recovery Mode is active",
+      "bannerBody": "Ritora paused stronger routine steps from {date} so your skin can settle before a phased return.",
       "viewDetails": "View details",
-      "restoreRoutine": "Restore routine",
-      "keepSimplified": "Keep simplified",
-      "compactAlert": "Routine simplified. View in Journal",
-      "compactAlertSubtitle": "Since {date} · barrier-repair mode active",
+      "restoreRoutine": "End Recovery Mode",
+      "keepSimplified": "Keep recovering",
+      "compactAlert": "Recovery Mode active. View in Journal",
+      "compactAlertSubtitle": "Since {date} · phased return protected",
       "viewInJournal": "View in Journal",
       "detail": {
         "eyebrow": "Skin Journal · safety",
-        "title": "Routine simplification · {start} – {endLabel}",
+        "title": "Recovery Mode · {start} – {endLabel}",
         "ongoing": "ongoing",
-        "subtitle": "Started from a journal safety event on {date}",
-        "noticedTitle": "What we noticed",
-        "noticedFallback": "A journal safety event suggested simplifying your routine while your skin settles.",
-        "presetTitle": "Barrier-repair preset (active)",
-        "presetSubtitle": "A conservative barrier-support routine to use while you review the alert.",
+        "subtitle": "Started from a recovery trigger on {date}",
+        "noticedTitle": "Why this started",
+        "noticedFallback": "A reaction signal suggested pausing stronger steps while your skin settles.",
+        "symptomsTitle": "Trigger symptoms",
+        "activeOveruse": "Active overuse signal",
+        "presetTitle": "Recovery routine",
+        "presetSubtitle": "A conservative barrier-support routine to use until the exit checks look clear.",
         "presetAm": "AM",
         "presetPm": "PM",
         "presetAmBody": "Gentle cleanse, moisturise, and sunscreen.",
         "presetPmBody": "Gentle cleanse and moisturise.",
+        "exitTitle": "Exit checks",
+        "exitNoRedFlags": "No severe swelling, blistering, open skin, severe pain, breathing trouble, or infection signs.",
+        "exitSymptomsSettled": "Burning, stinging, tightness, peeling, or redness has clearly settled.",
+        "exitNoNewActives": "No new exfoliant, retinoid, acid, vitamin C, or treatment step was added during recovery.",
+        "reviewAfter": "Review after {date}",
+        "exitEligible": "Earliest exit {date}",
+        "returnTitle": "Phased return",
+        "returnBarrierOnly": "Keep the barrier routine first.",
+        "returnOneActive": "Bring back only one active or treatment step.",
+        "returnBuildFrequency": "Increase frequency only if symptoms stay calm.",
+        "phase": {
+          "stabilize": "Stabilize",
+          "observe": "Observe",
+          "phased_return": "Phased return"
+        },
+        "source": {
+          "unknown": "Recovery trigger",
+          "manual": "Started manually",
+          "reaction_report": "You reported symptoms",
+          "photo_analysis": "Photo analysis signal"
+        },
         "pausedTitle": "What was paused",
         "pausedSubtitle": "If a schedule snapshot was captured on {date}, it appears below.",
         "pausedAmTitle": "AM (paused)",

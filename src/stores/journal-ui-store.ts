@@ -1,9 +1,18 @@
 "use client";
 
 import { create } from "zustand";
+import {
+  RoutineMemoryDurationDay,
+  type RoutineMemoryDurationDays,
+} from "@/types/routine-memory";
 import type { InsightWindow } from "@/types/skin-journal";
 
-export type JournalTab = "calendar" | "photos" | "insights" | "wrapped";
+export type JournalTab =
+  | "calendar"
+  | "photos"
+  | "memory"
+  | "insights"
+  | "wrapped";
 
 interface JournalUiState {
   selectedDate: string | null;
@@ -17,6 +26,8 @@ interface JournalUiState {
   setCompareDates: (from: string | null, to: string | null) => void;
   insightsWindow: InsightWindow;
   setInsightsWindow: (window: InsightWindow) => void;
+  routineMemoryDurationDays: RoutineMemoryDurationDays;
+  setRoutineMemoryDurationDays: (days: RoutineMemoryDurationDays) => void;
 }
 
 export const useJournalUiStore = create<JournalUiState>((set) => ({
@@ -31,4 +42,7 @@ export const useJournalUiStore = create<JournalUiState>((set) => ({
   setCompareDates: (from, to) => set({ compareFrom: from, compareTo: to }),
   insightsWindow: "all",
   setInsightsWindow: (window) => set({ insightsWindow: window }),
+  routineMemoryDurationDays: RoutineMemoryDurationDay.Thirty,
+  setRoutineMemoryDurationDays: (days) =>
+    set({ routineMemoryDurationDays: days }),
 }));

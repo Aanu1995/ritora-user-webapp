@@ -6,7 +6,9 @@ import { useShelfUiStore } from '@/stores/shelf-ui-store';
 import {
   DataProvenance,
   ProductCategory,
+  ProductIntroductionStatus,
   ShelfCategoryFilter,
+  ShelfIntroductionStatusFilter,
   ShelfSort,
   ShelfStatFilter,
   ShelfStatus,
@@ -80,6 +82,7 @@ const mockUseShelfProducts = jest.fn();
 const mockUseShelfStats = jest.fn();
 const mockUseSkinProfile = jest.fn();
 const mockFetchNextPage = jest.fn();
+const mockUpdateIntroductionMutate = jest.fn();
 const intersectionObservers: MockIntersectionObserverInstance[] = [];
 
 type MockIntersectionObserverInstance = {
@@ -154,12 +157,16 @@ function triggerIntersection(testId: string) {
 }
 
 jest.mock('@/hooks/use-shelf', () => ({
-  useShelfProducts: () => mockUseShelfProducts(),
-  useShelfStats: () => mockUseShelfStats(),
+  useShelfProducts: (...args: unknown[]) => mockUseShelfProducts(...args),
+  useShelfStats: (...args: unknown[]) => mockUseShelfStats(...args),
   useArchiveProducts: () => ({ archive: jest.fn(), isPending: false }),
   useMarkFinished: () => ({ markFinished: jest.fn(), isPending: false }),
   useDeleteProducts: () => ({ mutate: jest.fn(), isPending: false }),
   useCreateProduct: () => ({ mutate: jest.fn(), isPending: false }),
+  useUpdateProductIntroduction: () => ({
+    mutate: mockUpdateIntroductionMutate,
+    isPending: false,
+  }),
 }));
 
 jest.mock('@/hooks/use-skin-profile', () => ({
@@ -174,6 +181,7 @@ beforeEach(() => {
   mockUseShelfStats.mockReset();
   mockUseSkinProfile.mockReset();
   mockFetchNextPage.mockReset();
+  mockUpdateIntroductionMutate.mockReset();
   mockUseSkinProfile.mockReturnValue({
     data: createReadySkinProfile(),
     error: null,
@@ -187,6 +195,7 @@ beforeEach(() => {
     sort: ShelfSort.RecentlyAdded,
     view: ShelfViewMode.Grid,
     stat: ShelfStatFilter.All,
+    introductionStatus: ShelfIntroductionStatusFilter.All,
     activeCategory: ShelfCategoryFilter.All,
     search: '',
   });
@@ -338,6 +347,135 @@ describe('ShelfPage', () => {
     expect(
       screen.getByText(/resurfacing retinol/i),
     ).toBeInTheDocument();
+  });
+
+  it('passes the selected introduction status filter into the shelf products query', () => {
+    useShelfUiStore.setState({
+      introductionStatus: ProductIntroductionStatus.Paused,
+    });
+    mockUseShelfProducts.mockReturnValue({
+      data: mockProducts,
+      isPending: false,
+      isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+    mockUseShelfStats.mockReturnValue({
+      data: { all: 1 },
+      isPending: false,
+      isError: false,
+    });
+
+    renderWithProviders(<ShelfPage />);
+
+    expect(mockUseShelfProducts.mock.calls[0]?.[0]).toEqual(
+      expect.objectContaining({
+        introductionStatus: ProductIntroductionStatus.Paused,
+      }),
+    );
+  });
+
+  it('shows an introduction status filter on the shelf toolbar', () => {
+    mockUseShelfProducts.mockReturnValue({
+      data: mockProducts,
+      isPending: false,
+      isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+    mockUseShelfStats.mockReturnValue({
+      data: { all: 1 },
+      isPending: false,
+      isError: false,
+    });
+
+    renderWithProviders(<ShelfPage />);
+
+    const introductionFilter = screen.getByRole('combobox', {
+      name: /product introduction status/i,
+    });
+
+    expect(introductionFilter).toBeInTheDocument();
+    expect(introductionFilter).toHaveTextContent('Stage');
+    expect(introductionFilter).not.toHaveTextContent(
+      /all introduction statuses/i,
+    );
+  });
+
+  it('keeps selected introduction status filter labels compact', () => {
+    useShelfUiStore.setState({
+      introductionStatus: ProductIntroductionStatus.BuildingTolerance,
+    });
+    mockUseShelfProducts.mockReturnValue({
+      data: mockProducts,
+      isPending: false,
+      isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+    mockUseShelfStats.mockReturnValue({
+      data: { all: 1 },
+      isPending: false,
+      isError: false,
+    });
+
+    renderWithProviders(<ShelfPage />);
+
+    const introductionFilter = screen.getByRole('combobox', {
+      name: /product introduction status/i,
+    });
+
+    expect(introductionFilter).toHaveTextContent('Building');
+    expect(introductionFilter).not.toHaveTextContent(/building tolerance/i);
+  });
+
+  it('updates product introduction status from the shelf card popover', async () => {
+    const user = userEvent.setup();
+    mockUseShelfProducts.mockReturnValue({
+      data: [
+        {
+          ...mockProducts[0],
+          introduction: {
+            status: ProductIntroductionStatus.Week1,
+            startedAt: '2026-06-14T08:00:00.000Z',
+            statusUpdatedAt: '2026-06-14T08:00:00.000Z',
+          },
+        },
+      ],
+      isPending: false,
+      isError: false,
+      hasNextPage: false,
+      isFetchingNextPage: false,
+      fetchNextPage: mockFetchNextPage,
+    });
+    mockUseShelfStats.mockReturnValue({
+      data: { all: 1 },
+      isPending: false,
+      isError: false,
+    });
+
+    renderWithProviders(<ShelfPage />);
+
+    await user.click(
+      screen.getByRole('button', {
+        name: /change product introduction status/i,
+      }),
+    );
+    await user.click(screen.getByRole('button', { name: /tolerated/i }));
+
+    expect(mockUpdateIntroductionMutate).toHaveBeenCalledWith(
+      {
+        id: 'p1',
+        payload: { status: ProductIntroductionStatus.Tolerated },
+      },
+      expect.objectContaining({
+        onSuccess: expect.any(Function),
+        onError: expect.any(Function),
+      }),
+    );
   });
 
   it('does not include morning/evening counts in any subtitle text', () => {

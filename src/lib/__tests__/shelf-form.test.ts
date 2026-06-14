@@ -2,6 +2,7 @@ import {
   createEmptyIdentity,
   createEmptyManufacturer,
   createEmptyUserFields,
+  createDefaultIntroductionStatus,
   isSafeExternalUrl,
   isSafeProductImageUrl,
   normalizeShelfProductForm,
@@ -13,6 +14,7 @@ import {
   ApplicationMethod,
   DataProvenance,
   ProductCategory,
+  ProductIntroductionStatus,
   Quantity,
   ShelfFormValidationCode,
   ShelfStatus,
@@ -55,6 +57,7 @@ function createValue(
       purchasedFrom: '  Apotek  ',
       personalNotes: '  Feels calming.  ',
     },
+    introductionStatus: ProductIntroductionStatus.Week1,
     ...overrides,
   };
 }
@@ -78,6 +81,9 @@ describe('shelf-form', () => {
       periodAfterOpeningMonths: 12,
       preferredTimeOfDay: null,
     });
+    expect(createDefaultIntroductionStatus()).toBe(
+      ProductIntroductionStatus.Week1,
+    );
   });
 
   it('validates required brand and name', () => {
@@ -334,13 +340,17 @@ describe('shelf-form', () => {
     expect(normalized.userFields.purchasedFrom).toBe('Apotek');
     expect(normalized.userFields.personalNotes).toBe('Feels calming.');
     expect(normalized.userFields.expiresAt).toBe('2027-04-01T00:00:00.000Z');
+    expect(normalized.introductionStatus).toBe(ProductIntroductionStatus.Week1);
   });
 
-  it('builds a normalized draft with active status and provenance', () => {
-    const draft = toShelfProductDraft(createValue());
+  it('builds a normalized draft with active status, provenance, and introduction status', () => {
+    const draft = toShelfProductDraft(
+      createValue({ introductionStatus: ProductIntroductionStatus.Tolerated }),
+    );
 
     expect(draft.status).toBe(ShelfStatus.Active);
     expect(draft.provenance).toBe(DataProvenance.PhotoLookup);
+    expect(draft.introductionStatus).toBe(ProductIntroductionStatus.Tolerated);
     expect(draft.identity.brand).toBe('CeraVe');
     expect(draft.manufacturer.productUrl).toBe(
       'https://www.cerave.com/products/retinol',

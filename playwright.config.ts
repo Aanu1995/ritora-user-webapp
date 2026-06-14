@@ -1,8 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const playwrightPort = process.env.PLAYWRIGHT_PORT ?? '3010';
+const playwrightHost = process.env.PLAYWRIGHT_HOST ?? '127.0.0.1';
 const baseURL =
-  process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${playwrightPort}`;
+  process.env.PLAYWRIGHT_BASE_URL ??
+  `http://${playwrightHost}:${playwrightPort}`;
 const apiBaseURL = process.env.PLAYWRIGHT_API_BASE_URL ?? `${baseURL}/api/v1`;
 const supportEmail =
   process.env.NEXT_PUBLIC_SUPPORT_EMAIL?.trim() || 'support@getritora.com';
@@ -36,7 +38,7 @@ export default defineConfig({
     : {
         command:
           `${appEnv} npm run build && ` +
-          `${appEnv} PORT=${JSON.stringify(playwrightPort)} npm start`,
+          `${appEnv} npm start -- --hostname ${JSON.stringify(playwrightHost)} --port ${JSON.stringify(playwrightPort)}`,
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 120000,

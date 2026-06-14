@@ -29,15 +29,18 @@ import {
   useMarkFinished,
   useShelfProducts,
   useShelfStats,
+  useUpdateProductIntroduction,
 } from "@/hooks/use-shelf";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { getApiErrorStatus } from "@/lib/api-error";
+import { getApiErrorMessage, getApiErrorStatus } from "@/lib/api-error";
 import { saveCurrentAppScrollPosition } from "@/lib/app-scroll-restoration";
 import { buildShelfReturnHref } from "@/lib/shelf-return-navigation";
 import { isSkinProfileReady } from "@/lib/skin-profile-readiness";
 import { useShelfUiStore } from "@/stores/shelf-ui-store";
 import {
+  ProductIntroductionStatus,
   ShelfCategoryFilter,
+  ShelfIntroductionStatusFilter,
   ShelfStatFilter,
   ShelfViewMode,
   type ShelfListFilters,
@@ -58,6 +61,10 @@ export function ShelfPage() {
   const setView = useShelfUiStore((s) => s.setView);
   const activeCategory = useShelfUiStore((s) => s.activeCategory);
   const setActiveCategory = useShelfUiStore((s) => s.setActiveCategory);
+  const introductionStatus = useShelfUiStore((s) => s.introductionStatus);
+  const setIntroductionStatus = useShelfUiStore(
+    (s) => s.setIntroductionStatus,
+  );
   const search = useShelfUiStore((s) => s.search);
   const setSearch = useShelfUiStore((s) => s.setSearch);
   const selectedIds = useShelfUiStore((s) => s.selectedIds);
@@ -69,10 +76,11 @@ export function ShelfPage() {
     () => ({
       stat,
       category: activeCategory,
+      introductionStatus,
       search: debouncedSearch,
       sort,
     }),
-    [stat, activeCategory, debouncedSearch, sort],
+    [stat, activeCategory, introductionStatus, debouncedSearch, sort],
   );
 
   const products = useShelfProducts(filters, shelfDateContext);
@@ -81,6 +89,7 @@ export function ShelfPage() {
   const archive = useArchiveProducts();
   const finish = useMarkFinished();
   const remove = useDeleteProducts();
+  const updateIntroduction = useUpdateProductIntroduction();
 
   const selectedArray = useMemo(() => Array.from(selectedIds), [selectedIds]);
   const canAddProduct = isSkinProfileReady(skinProfile.data);
@@ -120,6 +129,24 @@ export function ShelfPage() {
       },
     });
   };
+  const handleIntroductionStatusChange = (
+    productId: string,
+    status: ProductIntroductionStatus,
+  ) => {
+    updateIntroduction.mutate(
+      { id: productId, payload: { status } },
+      {
+        onSuccess: () => {
+          toast.success(t("introduction.updated"));
+        },
+        onError: (error) => {
+          toast.error(
+            getApiErrorMessage(error) ?? t("introduction.errors.updateFailed"),
+          );
+        },
+      },
+    );
+  };
 
   const isLoading = products.isPending;
   const productList = products.data ?? [];
@@ -132,6 +159,7 @@ export function ShelfPage() {
     productList.length === 0 &&
     stat === ShelfStatFilter.All &&
     activeCategory === ShelfCategoryFilter.All &&
+    introductionStatus === ShelfIntroductionStatusFilter.All &&
     !debouncedSearch.trim();
   const loadMoreSentinelRef = useAutoLoadMore({
     enabled:
@@ -204,6 +232,8 @@ export function ShelfPage() {
         selectedIds={selectedIds}
         onOpen={(id) => navigateFromShelf(`${AppRoute.Shelf}/${id}`)}
         onToggleSelect={toggleSelected}
+        onIntroductionStatusChange={handleIntroductionStatusChange}
+        isIntroductionPending={updateIntroduction.isPending}
       />
     );
   } else {
@@ -214,6 +244,8 @@ export function ShelfPage() {
         selectedIds={selectedIds}
         onOpen={(id) => navigateFromShelf(`${AppRoute.Shelf}/${id}`)}
         onToggleSelect={toggleSelected}
+        onIntroductionStatusChange={handleIntroductionStatusChange}
+        isIntroductionPending={updateIntroduction.isPending}
       />
     );
   }
@@ -259,6 +291,8 @@ export function ShelfPage() {
             counts={statsToCounts(stats.data)}
             category={activeCategory}
             onCategoryChange={setActiveCategory}
+            introductionStatus={introductionStatus}
+            onIntroductionStatusChange={setIntroductionStatus}
             sort={sort}
             onSortChange={setSort}
             view={view}

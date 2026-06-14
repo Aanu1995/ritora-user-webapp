@@ -3,6 +3,7 @@ export type ReactionReportSymptom =
   | "stinging"
   | "itching"
   | "tightness"
+  | "redness"
   | "heat"
   | "pain"
   | "swelling"
@@ -16,6 +17,7 @@ export const REACTION_REPORT_SYMPTOMS: ReactionReportSymptom[] = [
   "stinging",
   "itching",
   "tightness",
+  "redness",
   "heat",
   "pain",
   "swelling",

@@ -10,6 +10,7 @@ import {
   setAddProductSearchParams,
   setSuccessfulPhotoExtraction,
 } from '@/test/shelf/add-product-page.test-harness';
+import { ProductIntroductionStatus } from '@/types/shelf';
 
 function setInputValue(label: RegExp, value: string): void {
   fireEvent.change(screen.getByLabelText(label), {
@@ -171,7 +172,46 @@ describe('AddProductPage', () => {
       expect(mockMutate).toHaveBeenCalled();
       expect(mockReplace).toHaveBeenCalledWith('/community');
     });
+    expect(mockMutate.mock.calls[0]?.[0].introductionStatus).toBe(
+      ProductIntroductionStatus.Week1,
+    );
     expect(mockPush).not.toHaveBeenCalledWith('/shelf/product-123');
+  });
+
+  it('lets the user mark an added product as already tolerated', async () => {
+    const user = userEvent.setup();
+    mockMutate.mockImplementation((_draft, options) => {
+      options?.onSuccess?.({ id: 'product-123' });
+    });
+    setSuccessfulPhotoExtraction();
+
+    renderAddProductPage();
+
+    setInputValue(/^brand$/i, 'CeraVe');
+    setInputValue(/^product name$/i, 'Barrier Serum');
+    setInputValue(
+      /^description$/i,
+      'A calming serum that supports smoother texture overnight.',
+    );
+    setInputValue(/^benefits$/i, 'calming, smoothing');
+    setInputValue(/^suited for$/i, 'dry, sensitive');
+    setInputValue(/^ingredients \(inci\)$/i, 'Aqua, Glycerin, Niacinamide');
+    setInputValue(/^size$/i, '30');
+    await user.click(screen.getByRole('button', { name: /add step/i }));
+    fireEvent.change(getStepInput(1), {
+      target: { value: 'Pat onto clean skin.' },
+    });
+    await user.click(screen.getByLabelText(/i already use it/i));
+    await user.click(screen.getByRole('button', { name: /import lookup/i }));
+
+    await user.click(screen.getByRole('button', { name: /add to shelf/i }));
+
+    await waitFor(() => {
+      expect(mockMutate).toHaveBeenCalled();
+    });
+    expect(mockMutate.mock.calls[0]?.[0].introductionStatus).toBe(
+      ProductIntroductionStatus.Tolerated,
+    );
   });
 
   it('creates a product when the ingredient list is not available yet', async () => {

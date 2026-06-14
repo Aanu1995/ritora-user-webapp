@@ -30,6 +30,7 @@ jest.mock('@/hooks/use-shelf', () => ({
   useRestoreProduct: () => ({ mutate: jest.fn(), isPending: false }),
   useMarkProductFinished: () => ({ mutate: jest.fn(), isPending: false }),
   useDeleteProduct: () => ({ mutate: jest.fn(), isPending: false }),
+  useUpdateProductIntroduction: () => ({ mutate: jest.fn(), isPending: false }),
 }));
 
 jest.mock('@/hooks/use-ingredients', () => ({

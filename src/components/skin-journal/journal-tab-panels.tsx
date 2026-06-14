@@ -9,6 +9,7 @@ import { JournalComingSoon } from "@/components/skin-journal/journal-coming-soon
 import { JournalEmptyState } from "@/components/skin-journal/journal-empty-state";
 import { JournalCalendar } from "@/components/skin-journal/journal-calendar";
 import { PhotoGrid } from "@/components/skin-journal/photo-grid";
+import { RoutineMemoryTab } from "@/components/skin-journal/routine-memory-tab";
 import {
   PhotoFilterKind,
   type AnalysisFeedbackReason,
@@ -245,6 +246,10 @@ export function JournalTabPanels({
             )}
           </>
         )}
+      </TabsContent>
+
+      <TabsContent value="memory" className="mt-4">
+        <RoutineMemoryTab />
       </TabsContent>
 
       <TabsContent value="insights" className="mt-4">

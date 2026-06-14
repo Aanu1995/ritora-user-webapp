@@ -2,6 +2,7 @@ import {
   ApplicationMethod,
   PreferredTimeOfDay,
   ProductCategory,
+  ProductIntroductionStatus,
   Quantity,
   ShelfFormValidationCode,
   type ShelfProductFormValue,
@@ -114,6 +115,7 @@ export const shelfProductFormSchema = z
       personalNotes: nullableStringSchema(),
       preferredTimeOfDay: z.nativeEnum(PreferredTimeOfDay).nullable(),
     }),
+    introductionStatus: z.nativeEnum(ProductIntroductionStatus),
   })
   .superRefine((value, ctx) => {
     addRequiredIssue(

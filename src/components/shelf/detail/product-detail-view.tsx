@@ -18,6 +18,7 @@ import { DetailHowToUseTab } from './detail-how-to-use-tab';
 import { DetailIngredientsTab } from './detail-ingredients-tab';
 import { DetailManufacturerTab } from './detail-manufacturer-tab';
 import { ProductDetailActions } from './product-detail-actions';
+import { ProductIntroductionPanel } from '../product-introduction-status';
 import { ProductPageHeader } from '../product-page-header';
 import { CommunityProductEvidencePanel } from '@/components/community/community-product-evidence-panel';
 import {
@@ -42,12 +43,14 @@ import {
   useDeleteProduct,
   useMarkProductFinished,
   useRestoreProduct,
+  useUpdateProductIntroduction,
 } from '@/hooks/use-shelf';
 import { useShelfDateContext } from '@/hooks/use-shelf-time-zone';
 import {
   requestAppScrollRestore,
   saveCurrentAppScrollPosition,
 } from '@/lib/app-scroll-restoration';
+import { getApiErrorMessage } from '@/lib/api-error';
 import { formatLocalizedDate } from '@/lib/dayjs';
 import { cn } from '@/lib/utils';
 import {
@@ -59,6 +62,7 @@ import {
   ShelfLifeState,
   type ShelfProduct,
   ShelfStatus,
+  type UpdateProductIntroductionPayload,
 } from '@/types/shelf';
 
 type Props = {
@@ -81,6 +85,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
   const tMethod = useTranslations('shelf.method');
   const tQty = useTranslations('shelf.quantity');
   const tCard = useTranslations('shelf.card');
+  const tIntroduction = useTranslations('shelf.introduction');
   const locale = useLocale();
   const router = useRouter();
   const { timeZone } = useShelfDateContext();
@@ -88,6 +93,7 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
   const restore = useRestoreProduct();
   const finish = useMarkProductFinished();
   const remove = useDeleteProduct();
+  const updateIntroduction = useUpdateProductIntroduction();
   const [activeTab, setActiveTab] = useState(() =>
     readProductDetailTab(product.id),
   );
@@ -122,7 +128,11 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
 
   const isArchived = product.status === ShelfStatus.Archived;
   const isMutating =
-    archive.isPending || restore.isPending || finish.isPending || remove.isPending;
+    archive.isPending ||
+    restore.isPending ||
+    finish.isPending ||
+    remove.isPending ||
+    updateIntroduction.isPending;
 
   const navigateToShelfWithRestore = () => {
     requestAppScrollRestore(AppRoute.Shelf);
@@ -175,6 +185,25 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
         navigateToShelfWithRestore();
       },
     });
+  };
+
+  const handleIntroductionChange = (
+    payload: UpdateProductIntroductionPayload,
+  ) => {
+    updateIntroduction.mutate(
+      { id: product.id, payload },
+      {
+        onSuccess: () => {
+          toast.success(tIntroduction('updated'));
+          onAfterMutation?.();
+        },
+        onError: (error) => {
+          const message =
+            getApiErrorMessage(error) ?? tIntroduction('errors.updateFailed');
+          toast.error(message);
+        },
+      },
+    );
   };
 
   return (
@@ -304,29 +333,37 @@ export function ProductDetailView({ product, onAfterMutation }: Props) {
         onValueChange={handleTabChange}
         className="mx-auto mt-8 max-w-5xl overflow-hidden rounded-3xl border border-border bg-surface"
       >
-        <TabsList className="w-full justify-start rounded-none border-b border-border bg-surface-muted">
+        <TabsList className="w-full justify-start overflow-x-auto rounded-none border-b border-border bg-surface-muted">
           <TabsTrigger value="about">{t('tabs.about')}</TabsTrigger>
+          <TabsTrigger value="introduction">{t('tabs.introduction')}</TabsTrigger>
           <TabsTrigger value="ingredients">{t('tabs.ingredients')}</TabsTrigger>
           <TabsTrigger value="how-to-use">{t('tabs.howToUse')}</TabsTrigger>
           <TabsTrigger value="manufacturer">{t('tabs.manufacturer')}</TabsTrigger>
         </TabsList>
-        <TabsContent value="about" className="px-6 py-6">
+        <TabsContent value="about" className="mt-0 px-6 py-6">
           <DetailAboutTab identity={product.identity} />
         </TabsContent>
-        <TabsContent value="ingredients" className="px-6 py-6">
+        <TabsContent value="introduction" className="mt-0 px-6 py-6">
+          <ProductIntroductionPanel
+            introduction={product.introduction}
+            isPending={updateIntroduction.isPending}
+            onChange={handleIntroductionChange}
+          />
+        </TabsContent>
+        <TabsContent value="ingredients" className="mt-0 px-6 py-6">
           <DetailIngredientsTab
             productId={product.id}
             ingredients={product.identity.inciIngredients}
             lastConfirmedAt={product.identity.inciLastConfirmedAt}
           />
         </TabsContent>
-        <TabsContent value="how-to-use" className="px-6 py-6">
+        <TabsContent value="how-to-use" className="mt-0 px-6 py-6">
           <DetailHowToUseTab
             guidance={product.guidance}
             preferredTimeOfDay={product.userFields.preferredTimeOfDay}
           />
         </TabsContent>
-        <TabsContent value="manufacturer" className="px-6 py-6">
+        <TabsContent value="manufacturer" className="mt-0 px-6 py-6">
           <DetailManufacturerTab
             manufacturer={product.manufacturer}
             provenance={product.provenance}

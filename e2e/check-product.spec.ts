@@ -14,7 +14,7 @@ const mockUser = {
 
 const PLAYWRIGHT_ORIGIN =
   process.env.PLAYWRIGHT_BASE_URL ??
-  `http://localhost:${process.env.PLAYWRIGHT_PORT ?? "3010"}`;
+  `http://${process.env.PLAYWRIGHT_HOST ?? "127.0.0.1"}:${process.env.PLAYWRIGHT_PORT ?? "3010"}`;
 
 const CORS_HEADERS = {
   "access-control-allow-origin": PLAYWRIGHT_ORIGIN,

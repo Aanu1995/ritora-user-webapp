@@ -2,6 +2,7 @@
 
 import { QueryKey } from '@/constants/query-keys';
 import {
+  ShelfIntroductionStatusFilter,
   type ShelfListFilters,
   ShelfStatFilter,
 } from '@/types/shelf';
@@ -22,10 +23,13 @@ export function buildShelfProductsQueryKey(
   filters: ShelfListFilters,
   dateContext: ShelfQueryDateContext,
 ): string[] {
+  const introductionStatus =
+    filters.introductionStatus ?? ShelfIntroductionStatusFilter.All;
   const queryKey = [
     QueryKey.Shelf,
     filters.stat,
     filters.category,
+    introductionStatus,
     filters.search,
     filters.sort,
   ];

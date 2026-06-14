@@ -1,7 +1,10 @@
 'use client';
 
 import { ProductCard } from './product-card';
-import type { ShelfProduct } from '@/types/shelf';
+import {
+  ProductIntroductionStatus,
+  type ShelfProduct,
+} from '@/types/shelf';
 
 type Props = {
   products: ShelfProduct[];
@@ -9,6 +12,11 @@ type Props = {
   selectedIds: ReadonlySet<string>;
   onOpen: (id: string) => void;
   onToggleSelect: (id: string) => void;
+  onIntroductionStatusChange?: (
+    productId: string,
+    status: ProductIntroductionStatus,
+  ) => void;
+  isIntroductionPending?: boolean;
 };
 
 export function ProductGrid({
@@ -17,6 +25,8 @@ export function ProductGrid({
   selectedIds,
   onOpen,
   onToggleSelect,
+  onIntroductionStatusChange,
+  isIntroductionPending = false,
 }: Props) {
   return (
     <div
@@ -31,6 +41,8 @@ export function ProductGrid({
           isSelected={selectedIds.has(product.id)}
           onOpen={onOpen}
           onToggleSelect={onToggleSelect}
+          onIntroductionStatusChange={onIntroductionStatusChange}
+          isIntroductionPending={isIntroductionPending}
         />
       ))}
     </div>

@@ -57,6 +57,16 @@ export enum ShelfStatus {
   FinishedUp = 'finished-up',
 }
 
+export enum ProductIntroductionStatus {
+  New = 'new',
+  PatchTesting = 'patch_testing',
+  Week1 = 'week_1',
+  BuildingTolerance = 'building_tolerance',
+  Paused = 'paused',
+  Tolerated = 'tolerated',
+  Failed = 'failed',
+}
+
 export enum ShelfSort {
   RecentlyAdded = 'recently-added',
   ExpiringSoon = 'expiring-soon',
@@ -70,6 +80,10 @@ export enum ShelfViewMode {
 }
 
 export enum ShelfCategoryFilter {
+  All = 'all',
+}
+
+export enum ShelfIntroductionStatusFilter {
   All = 'all',
 }
 
@@ -151,12 +165,19 @@ export type UserFields = {
   preferredTimeOfDay: PreferredTimeOfDay | null;
 };
 
+export type ProductIntroduction = {
+  status: ProductIntroductionStatus;
+  startedAt: string;
+  statusUpdatedAt: string;
+};
+
 export type ShelfProduct = {
   id: string;
   identity: CatalogueIdentity;
   guidance: ApplicationGuidance;
   manufacturer: ManufacturerInfo;
   userFields: UserFields;
+  introduction?: ProductIntroduction | null;
   status: ShelfStatus;
   provenance: DataProvenance;
   createdAt: string;
@@ -165,8 +186,10 @@ export type ShelfProduct = {
 
 export type ShelfProductDraft = Omit<
   ShelfProduct,
-  'id' | 'createdAt' | 'updatedAt'
->;
+  'id' | 'createdAt' | 'updatedAt' | 'introduction'
+> & {
+  introductionStatus?: ProductIntroductionStatus | null;
+};
 
 export type DeepPartial<T> = {
   [K in keyof T]?: T[K] extends Array<infer TItem>
@@ -179,7 +202,9 @@ export type DeepPartial<T> = {
 export type ShelfProductFormValue = Pick<
   ShelfProductDraft,
   'identity' | 'guidance' | 'manufacturer' | 'userFields'
->;
+> & {
+  introductionStatus: ProductIntroductionStatus;
+};
 
 export enum ShelfFormValidationCode {
   BrandRequired = 'brand-required',
@@ -209,6 +234,7 @@ export type ShelfProductPartial = {
   guidance?: Partial<ApplicationGuidance>;
   manufacturer?: Partial<ManufacturerInfo>;
   userFields?: Partial<UserFields>;
+  introductionStatus?: ProductIntroductionStatus | null;
   status?: ShelfStatus;
   provenance?: DataProvenance;
 };
@@ -256,6 +282,9 @@ export type ShelfLifeSnapshot = {
 export type ShelfListFilters = {
   stat: ShelfStatFilter;
   category: ProductCategory | ShelfCategoryFilter.All;
+  introductionStatus?:
+    | ProductIntroductionStatus
+    | ShelfIntroductionStatusFilter.All;
   search: string;
   sort: ShelfSort;
 };
@@ -263,4 +292,8 @@ export type ShelfListFilters = {
 export type PaginatedResult<T> = {
   items: T[];
   nextCursor: string | null;
+};
+
+export type UpdateProductIntroductionPayload = {
+  status: ProductIntroductionStatus;
 };

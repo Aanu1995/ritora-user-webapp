@@ -10,10 +10,12 @@ import {
   ProductManufacturerSection,
   ProductUserFieldsSection,
 } from './form/product-form-metadata-sections';
+import { ProductIntroductionStartSection } from './form/product-introduction-start-section';
 import type {
   ApplicationGuidance,
   CatalogueIdentity,
   ManufacturerInfo,
+  ProductIntroductionStatus,
   ShelfProductFormValue,
   UserFields,
 } from '@/types/shelf';
@@ -47,12 +49,14 @@ type ProductFormBodyProps = {
   onManufacturerChange: (next: ManufacturerInfo) => void;
   onUserFieldsChange: (next: UserFields) => void;
   onGuidanceChange: (next: ApplicationGuidance) => void;
+  onIntroductionStatusChange?: (next: ProductIntroductionStatus) => void;
   fieldErrors?: ShelfFormFieldErrors;
   guidanceErrors?: ProductFormGuidanceErrors;
   identityReadOnly?: boolean;
   identitySourceLabel?: string;
   reviewFields?: ProductFormReviewFields;
   photoUpload?: ProductIdentityPhotoUploadProps;
+  showIntroductionStatus?: boolean;
 };
 
 export function ProductFormBody({
@@ -61,12 +65,14 @@ export function ProductFormBody({
   onManufacturerChange,
   onUserFieldsChange,
   onGuidanceChange,
+  onIntroductionStatusChange,
   fieldErrors,
   guidanceErrors,
   identityReadOnly = false,
   identitySourceLabel,
   reviewFields,
   photoUpload,
+  showIntroductionStatus = false,
 }: ProductFormBodyProps) {
   const patchIdentity = (patch: Partial<CatalogueIdentity>) =>
     onIdentityChange({ ...value.identity, ...patch });
@@ -104,6 +110,12 @@ export function ProductFormBody({
         onChange={patchUserFields}
         fieldErrors={fieldErrors}
       />
+      {showIntroductionStatus && onIntroductionStatusChange ? (
+        <ProductIntroductionStartSection
+          value={value.introductionStatus}
+          onChange={onIntroductionStatusChange}
+        />
+      ) : null}
       <ProductHowToUseSection
         guidance={value.guidance}
         onChange={patchGuidance}

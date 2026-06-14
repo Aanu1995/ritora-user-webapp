@@ -2,6 +2,7 @@ import {
   DataProvenance,
   type ManufacturerInfo,
   type CatalogueIdentity,
+  ProductIntroductionStatus,
   ProductCategory,
   type ShelfProductDraft,
   type ShelfProductFormValue,
@@ -68,6 +69,10 @@ export function createEmptyUserFields(): UserFields {
   };
 }
 
+export function createDefaultIntroductionStatus(): ProductIntroductionStatus {
+  return ProductIntroductionStatus.Week1;
+}
+
 export function normalizeShelfProductForm(
   value: ShelfProductFormValue,
 ): ShelfProductFormValue {
@@ -95,6 +100,7 @@ export function normalizeShelfProductForm(
       purchasedFrom: trimOrNull(value.userFields.purchasedFrom),
       personalNotes: trimOrNull(value.userFields.personalNotes),
     },
+    introductionStatus: value.introductionStatus,
   };
 }
 
@@ -108,6 +114,7 @@ export function toShelfProductDraft(
     manufacturer: normalized.manufacturer,
     guidance: normalized.guidance,
     userFields: normalized.userFields,
+    introductionStatus: normalized.introductionStatus,
     status: ShelfStatus.Active,
     provenance: DataProvenance.PhotoLookup,
   };

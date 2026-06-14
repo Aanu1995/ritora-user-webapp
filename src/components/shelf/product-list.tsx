@@ -2,8 +2,11 @@
 
 import { Calendar, Check, Clock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import type { MouseEvent } from 'react';
+import { useRef, type MouseEvent } from 'react';
 import { ProductIllustration } from './product-illustration';
+import { ProductIntroductionInfoDialog } from './product-introduction-info-dialog';
+import { ProductIntroductionBadge } from './product-introduction-status';
+import { ProductIntroductionStatusPopover } from './product-introduction-status-popover';
 import { SmoothImage } from '@/components/ui/smooth-image';
 import { cn } from '@/lib/utils';
 import {
@@ -12,6 +15,7 @@ import {
   formatRemainingToken,
 } from '@/lib/shelf-life';
 import {
+  ProductIntroductionStatus,
   ShelfLifeState,
   type ShelfProduct,
 } from '@/types/shelf';
@@ -22,6 +26,11 @@ type Props = {
   selectedIds: ReadonlySet<string>;
   onOpen: (id: string) => void;
   onToggleSelect: (id: string) => void;
+  onIntroductionStatusChange?: (
+    productId: string,
+    status: ProductIntroductionStatus,
+  ) => void;
+  isIntroductionPending?: boolean;
 };
 
 const STATE_DOT_CLASS: Record<ShelfLifeState, string> = {
@@ -39,6 +48,8 @@ export function ProductList({
   selectedIds,
   onOpen,
   onToggleSelect,
+  onIntroductionStatusChange,
+  isIntroductionPending = false,
 }: Props) {
   return (
     <div
@@ -53,6 +64,8 @@ export function ProductList({
           isSelected={selectedIds.has(product.id)}
           onOpen={onOpen}
           onToggleSelect={onToggleSelect}
+          onIntroductionStatusChange={onIntroductionStatusChange}
+          isIntroductionPending={isIntroductionPending}
         />
       ))}
     </div>
@@ -64,6 +77,11 @@ type RowProps = {
   isSelected: boolean;
   onOpen: (id: string) => void;
   onToggleSelect: (id: string) => void;
+  onIntroductionStatusChange?: (
+    productId: string,
+    status: ProductIntroductionStatus,
+  ) => void;
+  isIntroductionPending: boolean;
   timeZone: string;
 };
 
@@ -72,6 +90,8 @@ function ProductListRow({
   isSelected,
   onOpen,
   onToggleSelect,
+  onIntroductionStatusChange,
+  isIntroductionPending,
   timeZone,
 }: RowProps) {
   const tCat = useTranslations('shelf.category');
@@ -84,10 +104,22 @@ function ProductListRow({
   const isExpired = life.state === ShelfLifeState.Expired;
   const imageUrl = product.identity.imageUrls[0] ?? null;
   const accessibleName = `${product.identity.brand}, ${product.identity.name}`;
+  const suppressRowOpenUntilRef = useRef(0);
 
   const handleCheckboxClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     onToggleSelect(product.id);
+  };
+  const handleRowClick = () => {
+    if (Date.now() < suppressRowOpenUntilRef.current) {
+      suppressRowOpenUntilRef.current = 0;
+      return;
+    }
+
+    onOpen(product.id);
+  };
+  const handleStatusPopoverOutsideDismiss = () => {
+    suppressRowOpenUntilRef.current = Date.now() + 350;
   };
 
   return (
@@ -96,7 +128,7 @@ function ProductListRow({
       tabIndex={0}
       aria-label={accessibleName}
       aria-pressed={isSelected}
-      onClick={() => onOpen(product.id)}
+      onClick={handleRowClick}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
@@ -127,30 +159,39 @@ function ProductListRow({
         <Check className="h-3 w-3" strokeWidth={3} />
       </button>
 
-      <div className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-surface-muted">
-        {imageUrl ? (
-          <SmoothImage
-            src={imageUrl}
-            alt=""
-            sizes="48px"
-            className="h-full w-full rounded-xl"
-            fallback={
-              <span className="flex h-full w-full items-center justify-center">
-                <ProductIllustration
-                  category={product.identity.category}
-                  brand={product.identity.brand}
-                  className="h-[72%] w-auto"
-                />
-              </span>
-            }
-          />
-        ) : (
-          <ProductIllustration
-            category={product.identity.category}
-            brand={product.identity.brand}
-            className="h-[72%] w-auto"
-          />
-        )}
+      <div
+        data-testid={`product-list-image-${product.id}`}
+        className="relative flex h-16 w-[5.5rem] shrink-0 items-center justify-center"
+      >
+        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-surface-muted">
+          {imageUrl ? (
+            <SmoothImage
+              src={imageUrl}
+              alt=""
+              sizes="48px"
+              className="h-full w-full rounded-xl"
+              fallback={
+                <span className="flex h-full w-full items-center justify-center">
+                  <ProductIllustration
+                    category={product.identity.category}
+                    brand={product.identity.brand}
+                    className="h-[72%] w-auto"
+                  />
+                </span>
+              }
+            />
+          ) : (
+            <ProductIllustration
+              category={product.identity.category}
+              brand={product.identity.brand}
+              className="h-[72%] w-auto"
+            />
+          )}
+        </div>
+        <ProductIntroductionBadge
+          introduction={product.introduction}
+          className="absolute bottom-0 left-1/2 max-w-[5.25rem] -translate-x-1/2 scale-[0.82] truncate bg-surface/95 shadow-sm"
+        />
       </div>
 
       <div className="flex-1 min-w-0">
@@ -169,9 +210,25 @@ function ProductListRow({
         <p className="truncate text-[15px] font-semibold -tracking-[0.005em]">
           {product.identity.name}
         </p>
-        <p className="truncate text-xs text-muted">
-          {product.identity.brand}
-        </p>
+        <div
+          data-testid={`product-list-introduction-actions-${product.id}`}
+          className="-mr-1.5 flex items-center gap-0.5"
+        >
+          <p className="min-w-0 flex-1 truncate text-xs text-muted">
+            {product.identity.brand}
+          </p>
+          <ProductIntroductionStatusPopover
+            productId={product.id}
+            introduction={product.introduction}
+            onChange={onIntroductionStatusChange}
+            onOutsideDismiss={handleStatusPopoverOutsideDismiss}
+            isPending={isIntroductionPending}
+          />
+          <ProductIntroductionInfoDialog
+            stopPropagation
+            triggerClassName="-my-1.5 h-7 w-7 shrink-0 rounded-full hover:bg-surface-muted"
+          />
+        </div>
       </div>
 
       <div className="hidden items-center gap-3 text-xs text-muted sm:flex">

@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
@@ -16,18 +15,6 @@ import {
 } from '@/lib/theme-preferences';
 import { Providers } from './providers';
 import { getSiteUrl, siteConfig } from '@/lib/site';
-
-const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-  display: 'swap',
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: '--font-plus-jakarta',
-  subsets: ['latin'],
-  display: 'swap',
-});
 
 function getOpenGraphLocale(locale: string) {
   if (locale === 'es') {
@@ -101,7 +88,7 @@ export default async function RootLayout({
       data-scroll-behavior="smooth"
       data-theme={initialTheme}
       suppressHydrationWarning
-      className={`${inter.variable} ${plusJakartaSans.variable} h-full scroll-smooth`}
+      className="h-full scroll-smooth"
       style={{ colorScheme: initialTheme }}
     >
       <head>
