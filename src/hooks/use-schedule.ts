@@ -29,10 +29,11 @@ import type {
   UpsertRoutineStepsPayload,
 } from '@/types/schedule';
 
-function invalidateTodaysScheduleQuery(
+function invalidateScheduleDependentTodayQueries(
   queryClient: ReturnType<typeof useQueryClient>,
 ) {
   void queryClient.invalidateQueries({ queryKey: [QueryKey.ScheduleToday] });
+  void queryClient.invalidateQueries({ queryKey: [QueryKey.SuggestionsToday] });
 }
 
 function replaceSlotInSchedule(
@@ -89,7 +90,7 @@ export function useCreateSlot() {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], (prev) =>
         replaceSlotInSchedule(prev, slot),
       );
-      invalidateTodaysScheduleQuery(queryClient);
+      invalidateScheduleDependentTodayQueries(queryClient);
     },
   });
 }
@@ -101,7 +102,7 @@ export function useCreateSlots() {
       createSlots(payload),
     onSuccess: (schedule) => {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], schedule);
-      invalidateTodaysScheduleQuery(queryClient);
+      invalidateScheduleDependentTodayQueries(queryClient);
     },
   });
 }
@@ -113,7 +114,7 @@ export function useApplyPreset() {
       applyEveryDayPreset(payload),
     onSuccess: (schedule) => {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], schedule);
-      invalidateTodaysScheduleQuery(queryClient);
+      invalidateScheduleDependentTodayQueries(queryClient);
     },
   });
 }
@@ -127,7 +128,7 @@ export function useUpdateSlot() {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], (prev) =>
         replaceSlotInSchedule(prev, slot),
       );
-      invalidateTodaysScheduleQuery(queryClient);
+      invalidateScheduleDependentTodayQueries(queryClient);
     },
   });
 }
@@ -140,7 +141,7 @@ export function useDeleteSlot() {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], (prev) =>
         removeSlotFromSchedule(prev, id),
       );
-      invalidateTodaysScheduleQuery(queryClient);
+      invalidateScheduleDependentTodayQueries(queryClient);
     },
   });
 }
@@ -159,7 +160,7 @@ export function useUpsertSteps() {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], (prev) =>
         replaceSlotInSchedule(prev, slot),
       );
-      invalidateTodaysScheduleQuery(queryClient);
+      invalidateScheduleDependentTodayQueries(queryClient);
     },
   });
 }
@@ -173,7 +174,7 @@ export function useMoveSlot() {
       queryClient.setQueryData<Schedule>([QueryKey.Schedule], (prev) =>
         replaceSlotInSchedule(prev, slot),
       );
-      invalidateTodaysScheduleQuery(queryClient);
+      invalidateScheduleDependentTodayQueries(queryClient);
     },
   });
 }
