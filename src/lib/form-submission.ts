@@ -1,5 +1,5 @@
 import type { UseMutateFunction } from '@tanstack/react-query';
-import type { AnyFieldMetaBase } from '@tanstack/form-core';
+import type { AnyFieldLikeMetaBase } from '@tanstack/form-core';
 
 export type SubmissionFieldErrors<TField extends string> = Partial<
   Record<TField, string>
@@ -10,7 +10,7 @@ export type SubmissionValidationResult<TField extends string> = {
   fields: SubmissionFieldErrors<TField>;
 };
 
-type FieldMetaWithSubmitErrors = AnyFieldMetaBase;
+type FieldMetaWithSubmitErrors = AnyFieldLikeMetaBase;
 
 type FormApiWithSubmitErrors<TField extends string> = {
   setErrorMap: (errorMap: {
