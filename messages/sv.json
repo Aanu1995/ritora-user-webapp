@@ -2023,6 +2023,98 @@
       "sizeSuffix": "ml",
       "lowStock": "Lite kvar"
     },
+    "introduction": {
+      "title": "Produktintroduktion",
+      "body": "Inför produkten långsamt så att Ritora kan föreslå den i en tryggare takt medan hudens reaktion blir tydligare.",
+      "legacyBody": "Börja spåra när du vill se hur din hud hanterar den här.",
+      "paceRule": "Tidiga produkter kan fortfarande visas i förslag, men Ritora håller frekvensen lägre tills användningshistoriken ser stabil ut.",
+      "started": "Startade {date}",
+      "updated": "Produktintroduktionen uppdaterades.",
+      "filterLabel": "Produktintroduktionens status",
+      "filterAll": "Alla introduktionsstatusar",
+      "filterAllShort": "Steg",
+      "quick": {
+        "openLabel": "Ändra produktintroduktionens status. Nuvarande status: {status}",
+        "title": "Hur Ritora föreslår den",
+        "description": "Välj hur ofta Ritora ska ta till den här produkten.",
+        "selectLabel": "Sätt produktintroduktionens status till {status}",
+        "details": {
+          "new": "Håller fortfarande på att landa.",
+          "patch_testing": "Hålls tillbaka medan du lapptestar.",
+          "week_1": "Föreslås försiktigt.",
+          "building_tolerance": "Föreslås varsamt medan den landar.",
+          "paused": "Lagd åt sidan för nu.",
+          "tolerated": "Används normalt när den passar.",
+          "failed": "Föreslås inte förrän du ändrar det här."
+        },
+        "groupActive": "På väg in",
+        "groupAside": "Lägg åt sidan"
+      },
+      "info": {
+        "openLabel": "Förklara produktintroduktionens statusar",
+        "title": "Så fungerar introduktionsstatusar",
+        "description": "Ritora använder dessa statusar för att styra förslagstakten. De kan uppdateras från loggad användning, och du kan korrigera dem när du redan känner produkten.",
+        "details": {
+          "new": {
+            "meaning": "Äldre status för en produkt som lades till innan starttakten valdes.",
+            "suggestions": "Ritora behandlar den som en tidig introduktion och kan föreslå den försiktigt."
+          },
+          "patch_testing": {
+            "meaning": "Äldre försiktig status för produkter som hölls tillbaka innan taktmodellen ändrades.",
+            "suggestions": "Ritora kan föreslå den försiktigt och flytta den till vecka 1 när du loggar faktisk användning."
+          },
+          "week_1": {
+            "meaning": "Du introducerar produkten nu eller har precis börjat använda den.",
+            "suggestions": "Ritora kan föreslå den med lägre frekvens och sedan flytta den till bygger tolerans efter ungefär 7 dagars användning."
+          },
+          "building_tolerance": {
+            "meaning": "Du bygger trygghet utan att behandla produkten som helt tolererad ännu.",
+            "suggestions": "Ritora kan föreslå den försiktigt och markera den som tolererad efter ungefär 28 dagar med stabil användning."
+          },
+          "paused": {
+            "meaning": "Använd detta när du vill stoppa produkten utan att markera den som misslyckad.",
+            "suggestions": "Ritora föreslår den inte förrän du ändrar statusen."
+          },
+          "tolerated": {
+            "meaning": "Din hud hanterar redan den här produkten bra.",
+            "suggestions": "Ritora kan använda den normalt i förslag när den passar rutinen."
+          },
+          "failed": {
+            "meaning": "Produkten fungerade inte för din hud eller orsakade en reaktion.",
+            "suggestions": "Ritora föreslår den inte igen om du inte ändrar statusen manuellt."
+          }
+        }
+      },
+      "errors": {
+        "updateFailed": "Kunde inte uppdatera produktintroduktionen."
+      },
+      "status": {
+        "new": "Inte startad",
+        "patch_testing": "Mycket försiktig",
+        "week_1": "Vecka 1",
+        "building_tolerance": "Bygger tolerans",
+        "paused": "Pausad",
+        "tolerated": "Tolererad",
+        "failed": "Inte för mig"
+      },
+      "statusShort": {
+        "new": "Ny",
+        "patch_testing": "Försiktig",
+        "week_1": "Vecka 1",
+        "building_tolerance": "Bygger",
+        "paused": "Pausad",
+        "tolerated": "Tolererad",
+        "failed": "Inte för mig"
+      },
+      "currentStage": "Var den är nu",
+      "nextUp": "Härnäst: {stage}",
+      "journeyTitle": "Förslagstakt",
+      "offRampHint": "Går det inte bra? Du kan pausa den eller stoppa den för din hud.",
+      "actions": {
+        "pause": "Pausa tills vidare",
+        "fail": "Inte för mig"
+      }
+    },
     "actions": {
       "add": "Lägg till produkt",
       "edit": "Redigera",
@@ -2120,6 +2212,7 @@
           "about": "Om produkten",
           "lookup": "Från uppslagningen",
           "yours": "Bara du vet dessa",
+          "introduction": "Förslagstakt",
           "guidance": "Så använder du produkten"
         },
         "hints": {
@@ -2136,6 +2229,7 @@
           "paoHint": "Brukar stå på burksymbolen som 12M, 24M och liknande.",
           "expiresAtHint": "Ritora fyller i detta från öppningsdatum och PAO. Du kan ändra det.",
           "preferredTimeHint": "Om du brukar använda den här på morgonen eller kvällen tar Ritoras AI-förslag hänsyn till det när din rutin byggs.",
+          "introductionDescription": "Berätta för Ritora om produkten ska introduceras försiktigt eller behandlas som något huden redan känner.",
           "priceHint": "För framtida insikter om kostnader. Valfritt.",
           "purchasedFromHint": "Var du köpte den.",
           "personalNotesHint": "Hur den känns på huden. Det ser bara du.",
@@ -2192,6 +2286,28 @@
           "evening": "Kväll",
           "either": "Antingen"
         },
+        "introductionStatusOptions": {
+          "week_1": {
+            "title": "Jag introducerar den nu",
+            "description": "Ritora kan föreslå den, men med lägre frekvens medan hudens reaktion fortfarande är ny."
+          },
+          "building_tolerance": {
+            "title": "Jag har använt den några gånger",
+            "description": "Ritora kan föreslå den försiktigt och undvika att öka för snabbt."
+          },
+          "tolerated": {
+            "title": "Jag använder den redan",
+            "description": "Ritora kan behandla den som en vanlig rutinprodukt när den passar."
+          },
+          "paused": {
+            "title": "Pausa förslag",
+            "description": "Behåll den på hyllan, men ta inte med den i rutinförslag ännu."
+          },
+          "failed": {
+            "title": "Inte för min hud",
+            "description": "Behåll historiken, men föreslå inte produkten om du inte ändrar detta senare."
+          }
+        },
         "submit": "Lägg till på hyllan",
         "submitting": "Lägger till...",
         "successToast": "Tillagd på din hylla"
@@ -2241,6 +2357,7 @@
       },
       "tabs": {
         "about": "Om",
+        "introduction": "Introduktion",
         "ingredients": "Ingredienser",
         "howToUse": "Användning",
         "manufacturer": "Tillverkare"
@@ -3347,6 +3464,7 @@
     "subtitle": "En post per dag. Foto, betyg, observationer och insikter, allt på ett ställe.",
     "eyebrow": "Din hudresa",
     "fab": "Lägg till dagens foto",
+    "reportReaction": "Min hud reagerar",
     "prerequisites": {
       "profile": {
         "title": "Slutför din hudprofil först",
@@ -3358,8 +3476,65 @@
     "tabs": {
       "calendar": "Kalender",
       "photos": "Foton",
+      "memory": "Minne",
       "insights": "Insikter",
       "wrapped": "Årsöversikt"
+    },
+    "routineMemory": {
+      "title": "Rutinminne",
+      "subtitle": "Se hur dina produkter, din loggade användning och din hud hänger ihop över tid, på ett ställe.",
+      "loadingLabel": "Laddar rutinminne",
+      "emptyTitle": "Inget att visa här ännu",
+      "emptyBody": "Fortsätt logga din rutin och hur din hud känns. Ritora kopplar ihop vad som ändrades, när symtom dök upp och vad som hjälpte huden att lugna sig.",
+      "disclaimer": "Tajmingen är en ledtråd, inte ett bevis. Använd det för att se vad som ändrades och var snäll mot din hud.",
+      "possibleLinksTitle": "Produkter värda en extra titt",
+      "timelineTitle": "Vad som ändrades",
+      "productTimelineTitle": "En tidslinje för varje produkt",
+      "productTimelineSubtitle": "Varje produkt får en egen daterad tidslinje, så att du kan se vad som hände före, under och efter en reaktion.",
+      "treeScrollLabel": "Rullbar tidslinje för rutinen",
+      "treeProductAriaSuffix": "tidslinje",
+      "unknownProduct": "Okänd produkt",
+      "durationLabel": "Minnesfönster",
+      "durationOptions": {
+        "7": "7 dagar",
+        "14": "14 dagar",
+        "30": "30 dagar",
+        "90": "90 dagar"
+      },
+      "firstUse": "Första användningen {date}",
+      "noFirstUse": "Ingen användning loggad ännu",
+      "noProductEvents": "Inget ändrades för den här produkten i det här fönstret.",
+      "summary": {
+        "reactionSignalCount": "Reaktionssignaler",
+        "applicationLogCount": "Rutinloggar",
+        "productChangeCount": "Rutinändringar"
+      },
+      "levels": {
+        "watch": "Håll koll på den här",
+        "possible": "Granska den här produkten",
+        "higher_attention": "Titta på den här först"
+      },
+      "reasons": {
+        "reaction_after_first_logged_use": "En reaktion dök upp strax efter att du använde den första gången",
+        "reaction_after_product_added": "En reaktion dök upp strax efter att du lade till den",
+        "reaction_after_frequency_change": "En reaktion dök upp efter att du ändrade hur ofta du använder den",
+        "skipped_after_reaction": "Du hoppade över den efter reaktionen",
+        "active_category_near_reaction": "En aktiv produkt användes kring reaktionen"
+      },
+      "events": {
+        "product_added": "Tillagd",
+        "first_logged_use": "Första loggade användning",
+        "product_used": "Användes",
+        "frequency_changed": "Frekvens ändrad",
+        "product_skipped": "Överhoppad",
+        "reaction_signal": "Reaktionssignal",
+        "recovery_started": "Återhämtning började",
+        "recent_change_logged": "Ny ändring loggad"
+      },
+      "eventDetails": {
+        "skinJournal": "Från din huddagbok",
+        "recovery": "Under ditt lugnare rutinfönster"
+      }
     },
     "comingSoon": {
       "badge": "Kommer snart",
@@ -3984,6 +4159,79 @@
       "noteLabel": "Klagomål eller anteckning (valfritt)",
       "addNote": "Lägg till anteckning",
       "notePlaceholder": "Berätta vad som helst. Sträv, kliar, ser tråkig ut…",
+      "reactionReport": {
+        "start": "Min hud reagerar",
+        "title": "Symtomrapport",
+        "savedTitle": "Reaktion du rapporterade",
+        "body": "Använd detta när reaktionen är något du känner, även om den är svår att se på bild.",
+        "clear": "Ta bort symtomrapport",
+        "validationSymptoms": "Välj minst ett symtom eller ta bort symtomrapporten innan du sparar.",
+        "symptomsLabel": "Vad känner du?",
+        "severityLabel": "Hur intensivt är det?",
+        "onsetLabel": "När började det?",
+        "locationsLabel": "Var märker du det?",
+        "triggerLabel": "Möjlig orsak",
+        "redFlagsLabel": "Varningssignaler",
+        "redFlagsHint": "Välj de som stämmer. Ritora markerar dem som extra viktiga.",
+        "noteLabel": "Anteckning om reaktionen (valfritt)",
+        "notePlaceholder": "Till exempel sveda på kinderna efter ett nytt serum.",
+        "symptoms": {
+          "burning": "Brännande känsla",
+          "stinging": "Svidande",
+          "itching": "Klåda",
+          "tightness": "Stramhet",
+          "redness": "Rodnad",
+          "heat": "Värme",
+          "pain": "Smärta",
+          "swelling": "Svullnad",
+          "hives": "Nässelutslag",
+          "peeling": "Fjällning",
+          "breakout": "Utslag eller finnar",
+          "other": "Annat"
+        },
+        "severity": {
+          "mild": "Lätt",
+          "moderate": "Måttlig",
+          "severe": "Kraftig"
+        },
+        "onset": {
+          "today": "Idag",
+          "yesterday": "Igår",
+          "two_to_three_days": "För 2-3 dagar sedan",
+          "four_to_seven_days": "För 4-7 dagar sedan",
+          "more_than_week": "För mer än en vecka sedan",
+          "unsure": "Inte säker"
+        },
+        "locations": {
+          "forehead": "Panna",
+          "cheeks": "Kinder",
+          "chin_jaw": "Haka/käke",
+          "around_mouth": "Runt munnen",
+          "eye_area": "Runt ögonen",
+          "neck": "Hals eller nacke",
+          "all_over_face": "Hela ansiktet",
+          "body": "Kropp",
+          "other": "Annat"
+        },
+        "triggers": {
+          "new_product": "Ny produkt",
+          "changed_frequency": "Ändrad frekvens",
+          "active_ingredient": "Aktiv ingrediens",
+          "sunscreen": "Solskydd",
+          "treatment": "Behandling",
+          "weather_or_environment": "Väder eller miljö",
+          "unknown": "Okänd"
+        },
+        "redFlags": {
+          "eye_or_lip_swelling": "Svullnad runt ögon eller läppar",
+          "trouble_breathing": "Andningsbesvär",
+          "blistering": "Blåsor",
+          "open_skin": "Öppen eller sprucken hud",
+          "spreading_fast": "Sprider sig snabbt",
+          "severe_pain": "Stark smärta",
+          "infection_signs": "Möjliga tecken på infektion"
+        }
+      },
       "privacyNote": "Ditt foto och dina betyg är krypterade. AI:n ser bara fotot. Aldrig namn, e-post eller användar-id."
     },
     "compare": {
@@ -4380,27 +4628,50 @@
       "cracking_appearance": "Sprickbildning"
     },
     "simplification": {
-      "bannerTitle": "Rutin förenklad till barriär-reparation",
-      "bannerBody": "Vi upptäckte möjlig irritation i ditt foto från {date}. Din vanliga rutin är pausad tills du bekräftar.",
+      "bannerTitle": "Återhämtningsläge är aktivt",
+      "bannerBody": "Ritora pausade starkare rutinsteg från {date} så att huden kan lugna sig innan en stegvis återgång.",
       "viewDetails": "Visa detaljer",
-      "restoreRoutine": "Återställ rutin",
-      "keepSimplified": "Behåll förenklat",
-      "compactAlert": "Rutin förenklad. Visa i Journal",
-      "compactAlertSubtitle": "Sedan {date} · barriär-reparation aktiv",
+      "restoreRoutine": "Avsluta återhämtningsläge",
+      "keepSimplified": "Fortsätt återhämta",
+      "compactAlert": "Återhämtningsläge aktivt. Visa i Journal",
+      "compactAlertSubtitle": "Sedan {date} · stegvis återgång skyddad",
       "viewInJournal": "Visa i Journal",
       "detail": {
         "eyebrow": "Hudjournal · säkerhet",
-        "title": "Rutinförenkling · {start} – {endLabel}",
+        "title": "Återhämtningsläge · {start} – {endLabel}",
         "ongoing": "pågår",
-        "subtitle": "Startad från en säkerhetshändelse i journalen {date}",
-        "noticedTitle": "Vad vi märkte",
-        "noticedFallback": "En säkerhetshändelse i journalen föreslog att förenkla rutinen medan huden lugnar sig.",
-        "presetTitle": "Barriär-reparation (aktiv)",
-        "presetSubtitle": "En konservativ barriärstödjande rutin att använda medan du granskar varningen.",
+        "subtitle": "Startade från en återhämtningssignal {date}",
+        "noticedTitle": "Varför detta startade",
+        "noticedFallback": "En reaktionssignal föreslog att pausa starkare steg medan huden lugnar sig.",
+        "symptomsTitle": "Utlösande symtom",
+        "activeOveruse": "Signal om för mycket aktiva ingredienser",
+        "presetTitle": "Återhämtningsrutin",
+        "presetSubtitle": "En försiktig barriärstödjande rutin tills avslutskontrollerna ser lugna ut.",
         "presetAm": "FM",
         "presetPm": "EM",
         "presetAmBody": "Mild rengöring, fukt och solskydd.",
         "presetPmBody": "Mild rengöring och fukt.",
+        "exitTitle": "Kontroller innan avslut",
+        "exitNoRedFlags": "Ingen kraftig svullnad, blåsor, öppen hud, svår smärta, andningsbesvär eller tecken på infektion.",
+        "exitSymptomsSettled": "Brännande känsla, sveda, stramhet, fjällning eller rodnad har tydligt lugnat sig.",
+        "exitNoNewActives": "Ingen ny peeling, retinoid, syra, C-vitamin eller behandlingsprodukt lades till under återhämtningen.",
+        "reviewAfter": "Granska efter {date}",
+        "exitEligible": "Tidigast avslut {date}",
+        "returnTitle": "Stegvis återgång",
+        "returnBarrierOnly": "Behåll barriärrutinen först.",
+        "returnOneActive": "Lägg tillbaka endast en aktiv ingrediens eller behandling.",
+        "returnBuildFrequency": "Öka frekvensen bara om symtomen förblir lugna.",
+        "phase": {
+          "stabilize": "Stabilisera",
+          "observe": "Observera",
+          "phased_return": "Stegvis återgång"
+        },
+        "source": {
+          "unknown": "Återhämtningssignal",
+          "manual": "Startad manuellt",
+          "reaction_report": "Du rapporterade symtom",
+          "photo_analysis": "Signal från fotoanalys"
+        },
         "pausedTitle": "Vad som pausades",
         "pausedSubtitle": "Om en schemakopia sparades {date} visas den nedan.",
         "pausedAmTitle": "FM (pausad)",
@@ -4942,7 +5213,8 @@
       "aiConsentGranted": "AI-förslag aktiverade.",
       "aiConsentFailed": "Vi kunde inte spara samtycket. Försök igen.",
       "gapSaved": "Sparat i dagens önskelista.",
-      "gapDismissed": "Rekommendationen dold tills vidare."
+      "gapDismissed": "Rekommendationen dold tills vidare.",
+      "reportReaction": "Min hud reagerar"
     },
     "prerequisites": {
       "profile": {
@@ -4979,13 +5251,13 @@
       "resumeOn": "Planerad återstart: {date}",
       "resumeIndefinite": "Pausad tills du återupptar",
       "resumeDateLabel": "Återupptagningsdatum",
-      "saveResumeDate": "Spara datum",
+      "saveResumeDate": "Spara återupptagningsdatum",
       "resumeNow": "Återuppta rutin",
       "changeResumeDate": "Ändra",
       "cancelEdit": "Avbryt",
       "validation": {
-        "resumeDateInvalid": "Välj ett giltigt datum.",
-        "resumeDatePast": "Välj ett framtida datum."
+        "resumeDateInvalid": "Välj ett giltigt återupptagningsdatum.",
+        "resumeDatePast": "Välj ett framtida återupptagningsdatum."
       }
     },
     "routineBreakStart": {
@@ -4996,8 +5268,8 @@
       "cancel": "Avbryt",
       "start": "Starta paus",
       "validation": {
-        "resumeDateInvalid": "Välj ett giltigt datum.",
-        "resumeDatePast": "Välj ett framtida datum."
+        "resumeDateInvalid": "Välj ett giltigt återupptagningsdatum.",
+        "resumeDatePast": "Välj ett framtida återupptagningsdatum."
       }
     },
     "onDemandDialog": {

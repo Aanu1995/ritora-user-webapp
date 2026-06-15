@@ -1,10 +1,8 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { HeaderContextSubtitle } from "@/components/app/header-context-subtitle";
-import { PageHeader } from "@/components/app/page-header";
 import { RetryPanel } from "@/components/ui/retry-panel";
 import { NoCurrentSlotEmptyState } from "@/components/today-suggestion/empty-states";
 import { onDemandToSlot } from "@/components/today-suggestion/on-demand-suggestion-adapter";
@@ -15,9 +13,10 @@ import {
   TodayPageDialogs,
   type TodayEditSlot,
 } from "@/components/today-suggestion/today-page-dialogs";
-import { TodayPageHeaderActions } from "@/components/today-suggestion/today-page-header-actions";
+import { TodayPageHeader } from "@/components/today-suggestion/today-page-header";
 import { TodayStatusStack } from "@/components/today-suggestion/today-status-stack";
 import { regenerateSimplifiedSuggestions } from "@/components/today-suggestion/today-normal-routine";
+import { useTodayPageClock } from "@/hooks/use-today-page-clock";
 import { useTodayQuickSuggestionFlow } from "@/components/today-suggestion/use-today-quick-suggestion-flow";
 import {
   buildHeadline,
@@ -30,6 +29,10 @@ import {
 } from "@/components/today-suggestion/today-timeline-layout";
 import { TodaysSuggestionSkeleton } from "@/components/today-suggestion/todays-suggestion-skeleton";
 import { useApplicationLog } from "@/hooks/use-application-tracking";
+import {
+  JournalUploadMode,
+  buildJournalUploadHref,
+} from "@/components/skin-journal/journal-navigation";
 import { useAuthStore } from "@/stores/auth-store";
 import {
   useNormalRoutineToday,
@@ -74,13 +77,8 @@ export default function TodaysSuggestionPage() {
   const profileDialogDescription = profileFetchFailed
     ? tPrerequisites("profile.loadError")
     : tPrerequisites("profile.body");
-
-  const [now, setNow] = useState(() => new Date());
+  const now = useTodayPageClock();
   const nowMs = now.getTime();
-  useEffect(() => {
-    const interval = setInterval(() => setNow(new Date()), 30_000);
-    return () => clearInterval(interval);
-  }, []);
 
   const data = todaysSuggestion.data;
 
@@ -145,6 +143,19 @@ export default function TodaysSuggestionPage() {
 
     router.push(`${AppRoute.Journal}/upload`);
   };
+  const openReactionReport = () => {
+    if (!canUsePersonalizedActions) {
+      openProfileRequiredDialog();
+      return;
+    }
+
+    router.push(
+      buildJournalUploadHref({
+        mode: JournalUploadMode.Edit,
+        reaction: true,
+      }),
+    );
+  };
   const resumeBreak = () => {
     resumeRoutineBreak.mutate(undefined, {
       onSuccess: () => {
@@ -190,26 +201,21 @@ export default function TodaysSuggestionPage() {
     () => buildHeadline(data?.date, userTimeZone, locale),
     [data?.date, locale, userTimeZone],
   );
-  const headerSubtitle = (
-    <HeaderContextSubtitle
+  const pageHeader = (
+    <TodayPageHeader
+      title={t("title")}
       generatedAt={data?.generatedAt ?? now.toISOString()}
       timeZone={data?.timeZone ?? userTimeZone}
-      city={skinProfile.data?.city ?? null}
+      city={skinProfile.data?.city}
       locationLoading={skinProfile.isLoading}
       headline={headline}
-    />
-  );
-  const headerAction = (
-    <TodayPageHeaderActions
       hasData={Boolean(data)}
       routineBreak={data?.routineBreak}
       quickSuggestionDisabled={isAiDisabled || skinProfile.isLoading}
       onQuickSuggestion={openQuickSuggestion}
+      onReportReaction={openReactionReport}
       onStartBreak={() => setStartBreakOpen(true)}
     />
-  );
-  const pageHeader = (
-    <PageHeader title={t("title")} subtitle={headerSubtitle} action={headerAction} />
   );
   const pageDialogs = (
     <TodayPageDialogs

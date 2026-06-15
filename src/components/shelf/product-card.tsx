@@ -2,8 +2,11 @@
 
 import { Calendar, Check, Clock, Droplet } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import type { MouseEvent } from 'react';
+import { useRef, type MouseEvent } from 'react';
 import { ProductIllustration } from './product-illustration';
+import { ProductIntroductionInfoDialog } from './product-introduction-info-dialog';
+import { ProductIntroductionBadge } from './product-introduction-status';
+import { ProductIntroductionStatusPopover } from './product-introduction-status-popover';
 import { SmoothImage } from '@/components/ui/smooth-image';
 import { cn } from '@/lib/utils';
 import {
@@ -12,6 +15,7 @@ import {
   formatRemainingToken,
 } from '@/lib/shelf-life';
 import {
+  ProductIntroductionStatus,
   ShelfLifeState,
   type ShelfProduct,
 } from '@/types/shelf';
@@ -22,6 +26,11 @@ type Props = {
   isSelected: boolean;
   onOpen: (id: string) => void;
   onToggleSelect: (id: string) => void;
+  onIntroductionStatusChange?: (
+    productId: string,
+    status: ProductIntroductionStatus,
+  ) => void;
+  isIntroductionPending?: boolean;
 };
 
 const STATE_DOT_CLASS: Record<ShelfLifeState, string> = {
@@ -48,6 +57,8 @@ export function ProductCard({
   isSelected,
   onOpen,
   onToggleSelect,
+  onIntroductionStatusChange,
+  isIntroductionPending = false,
 }: Props) {
   const tCat = useTranslations('shelf.category');
   const tCard = useTranslations('shelf.card');
@@ -61,8 +72,14 @@ export function ProductCard({
   const categoryLabel = tCat(product.identity.category);
   const imageUrl = product.identity.imageUrls[0] ?? null;
   const accessibleName = `${product.identity.brand}, ${product.identity.name}`;
+  const suppressCardOpenUntilRef = useRef(0);
 
   const handleCardClick = () => {
+    if (Date.now() < suppressCardOpenUntilRef.current) {
+      suppressCardOpenUntilRef.current = 0;
+      return;
+    }
+
     onOpen(product.id);
   };
 
@@ -76,6 +93,9 @@ export function ProductCard({
   const handleCheckboxClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     onToggleSelect(product.id);
+  };
+  const handleStatusPopoverOutsideDismiss = () => {
+    suppressCardOpenUntilRef.current = Date.now() + 350;
   };
 
   return (
@@ -96,7 +116,10 @@ export function ProductCard({
           : 'border-border hover:border-border-strong',
       )}
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-surface-muted">
+      <div
+        data-testid={`product-card-image-${product.id}`}
+        className="relative aspect-[4/5] w-full overflow-hidden bg-surface-muted"
+      >
         {imageUrl ? (
           <SmoothImage
             src={imageUrl}
@@ -123,13 +146,22 @@ export function ProductCard({
           </div>
         )}
 
-        <span
-          className={cn(
-            'absolute right-3 top-3 h-2.5 w-2.5 rounded-full ring-[3px] ring-surface',
-            STATE_DOT_CLASS[life.state],
-          )}
-          aria-hidden
-        />
+        <div
+          data-testid={`product-card-image-status-row-${product.id}`}
+          className="pointer-events-none absolute left-10 right-3 top-3 flex items-center justify-end gap-1.5"
+        >
+          <ProductIntroductionBadge
+            introduction={product.introduction}
+            className="min-w-0 bg-surface/80 shadow-sm backdrop-blur-md"
+          />
+          <span
+            className={cn(
+              'h-2.5 w-2.5 shrink-0 rounded-full ring-[3px] ring-surface',
+              STATE_DOT_CLASS[life.state],
+            )}
+            aria-hidden
+          />
+        </div>
 
         <button
           type="button"
@@ -164,9 +196,25 @@ export function ProductCard({
       </div>
 
       <div className="flex flex-col gap-0.5 px-3.5 py-3">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
-          {product.identity.brand}
-        </span>
+        <div
+          data-testid={`product-card-introduction-actions-${product.id}`}
+          className="-mr-1.5 flex items-center gap-0.5"
+        >
+          <span className="min-w-0 flex-1 truncate text-[11px] font-semibold uppercase tracking-[0.1em] text-muted">
+            {product.identity.brand}
+          </span>
+          <ProductIntroductionStatusPopover
+            productId={product.id}
+            introduction={product.introduction}
+            onChange={onIntroductionStatusChange}
+            onOutsideDismiss={handleStatusPopoverOutsideDismiss}
+            isPending={isIntroductionPending}
+          />
+          <ProductIntroductionInfoDialog
+            stopPropagation
+            triggerClassName="-my-1.5 h-7 w-7 shrink-0 rounded-full hover:bg-surface-muted"
+          />
+        </div>
         <span className="line-clamp-1 text-[15px] font-semibold leading-snug -tracking-[0.01em]">
           {product.identity.name}
         </span>

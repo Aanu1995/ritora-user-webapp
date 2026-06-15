@@ -71,16 +71,16 @@
   },
   "landing": {
     "hero": {
-      "badge": "Inventory-first skincare decision support",
-      "headlineLead": "Build safer skincare routines from the",
-      "headlineAccent": "products you already own.",
-      "lead": "Ritora catches ingredient clashes in the products you already own and turns them into a calm morning, midday, and evening plan tuned to your skin. No shopping needed.",
+      "badge": "Free skincare app, built on what you own",
+      "headlineLead": "When your skin reacts,",
+      "headlineAccent": "know exactly what to do next.",
+      "lead": "Ritora reads your skin and tells you what to keep, pause, or stop, using the products already on your shelf. No shopping needed.",
       "ctaPrimary": "Create your account",
       "ctaSecondary": "See how it works",
       "imageAlt": "Today's Suggestion app card with morning routine and Skin Journal preview.",
       "pills": {
-        "a": "Inventory first",
-        "b": "Ingredient guardrails",
+        "a": "Reacts to your skin",
+        "b": "Built on your shelf",
         "c": "Private by design"
       },
       "preview": {
@@ -107,7 +107,7 @@
       }
     },
     "trust": [
-      "Privacy first",
+      "Tells you what to do next",
       "Works with every brand",
       "Free to use",
       "Photo analysis included",
@@ -115,54 +115,54 @@
     ],
     "trustLabel": "What Ritora gives you",
     "problem": {
-      "eyebrow": "Why routines break",
-      "headline": "Good products, still guessing.",
-      "body": "You own the right bottles and still wake up unsure what to layer or skip. Ritora gives you the decision layer that was missing.",
+      "eyebrow": "The real problem",
+      "headline": "Building a routine is easy. Knowing what to do next isn't.",
+      "body": "You own the right products. You just don't know when to keep going, slow down, or stop. Ritora does.",
       "problems": [
         {
-          "title": "Shelf confusion",
-          "body": "You own great products and still guess each morning what to apply and what to skip."
+          "title": "Reaction or purge?",
+          "body": "Breakout after a new active. Adjusting, or damage? Guess wrong and it gets worse."
         },
         {
-          "title": "Silent ingredient stacking",
-          "body": "Strong actives pile up between cleansers, toners, and serums. Irritation shows up long before you spot the cause."
+          "title": "Actives quietly stacking",
+          "body": "Strong actives pile up. Irritation hits before you spot the cause."
         },
         {
-          "title": "Buying over building",
-          "body": "Most routines don't need another serum. They need structure, sequencing, and safer choices with what you already own."
+          "title": "Is this even working?",
+          "body": "Weeks in, still no idea. So you switch too soon and start over."
         }
       ],
       "stats": [
         {
           "figure": "10+",
-          "body": "The average enthusiast owns ten or more skincare products. Most of them sit on the shelf, underused."
+          "body": "Products on the average shelf. Most sit unused because no one knows what to apply."
         },
         {
           "figure": "#1",
-          "body": "Over-exfoliation is the most common self-inflicted barrier injury. Quietly stacked actives are usually the cause."
+          "body": "Cause of self-inflicted skin damage: too many actives, stacked unnoticed."
         }
       ]
     },
     "howItWorks": {
       "eyebrow": "How it works",
-      "headline": "Three calm steps from shelf clutter to daily clarity.",
-      "lead": "Tell Ritora about your skin, map the products you already own, and follow a plan tuned to today. Not last month. Not someone else's.",
+      "headline": "From a shelf full of guesses to a clear answer every day.",
+      "lead": "Three steps. Then a plan that adapts as your skin changes.",
       "stepLabel": "Step {number}",
       "steps": [
         {
           "title": "Tell Ritora about your skin.",
-          "body": "Skin type, concerns, sensitivities, climate. Every answer shapes the guidance you get.",
-          "hint": "Skin tone, ethnicity, and climate aware from the first step"
+          "body": "Type, concerns, sensitivities, climate. It all shapes your guidance.",
+          "hint": "Skin tone, ethnicity, and climate aware from step one"
         },
         {
           "title": "Add what's already on your shelf.",
-          "body": "Add what you use today. Ritora spots overlap and flags risky pairings.",
-          "hint": "Add by photo or manual entry"
+          "body": "Add what you use. Ritora flags overlaps and risky pairings.",
+          "hint": "Add by photo or by hand"
         },
         {
-          "title": "Follow a calmer daily plan.",
-          "body": "Wake up to clear guidance for morning and evening, tuned to your shelf.",
-          "hint": "Morning, midday, and evening, with on-demand help any time"
+          "title": "Get a plan that reacts as your skin does.",
+          "body": "Clear guidance morning and night. React, and Ritora pauses the risky step and tells you why.",
+          "hint": "Adapts to your latest photo, check-in, and weather"
         }
       ],
       "visuals": {
@@ -268,17 +268,17 @@
     },
     "features": {
       "eyebrow": "What's inside",
-      "headline": "Every part of your routine, intelligently aware of the others.",
-      "lead": "Eight capabilities working together so your plan stays safe, even on the messy days.",
+      "headline": "Every part of your routine, aware of how your skin responded.",
+      "lead": "Eight tools, one job: your next safe move.",
       "items": [
         {
           "key": "suggestions",
           "eyebrow": "Today's Suggestion",
-          "title": "Daily suggestions, not rigid routines.",
+          "title": "Daily guidance that reacts to your skin.",
           "bullets": [
-            "Prepared before you wake up",
-            "On-demand suggestions any time of day",
-            "Evening plan reacts to what you actually applied earlier"
+            "Ready before you wake up",
+            "Evening adapts to what you applied",
+            "Ask any time: back from the gym, what now?"
           ]
         },
         {
@@ -286,20 +286,20 @@
           "eyebrow": "Community",
           "title": "Routines that worked for people like you.",
           "bullets": [
-            "Browse playbooks from users with your skin type and concerns",
-            "One tap adapts any playbook to the products on your shelf",
-            "Real outcome signals: worked, mixed, did not work"
+            "Browse playbooks from people like you",
+            "One tap adapts any to your shelf",
+            "Real outcomes: worked, mixed, didn't"
           ]
         },
         {
           "key": "journal",
           "eyebrow": "Skin Journal",
-          "title": "Photo journal with AI analysis built in.",
+          "title": "Photo journal that catches reactions early.",
           "bullets": [
-            "Multi-angle capture with private, encrypted storage",
-            "Reaction detection auto-pauses risky actives",
-            "Compare any two dates side by side.",
-            "Monthly Skin Wrapped: a private recap from your photos"
+            "Multi-angle, private, encrypted",
+            "Catches reactions, auto-pauses the cause",
+            "Compare any two dates to see progress",
+            "Monthly Skin Wrapped recap"
           ]
         },
         {
@@ -318,8 +318,8 @@
           "title": "Vet any product before you buy or use it.",
           "bullets": [
             "Paste the ingredients or snap the label",
-            "Verdict in seconds with safety score and confidence",
-            "Compare straight against products on your shelf"
+            "Verdict in seconds, against your reaction history",
+            "Compare straight against your shelf"
           ]
         },
         {
@@ -327,19 +327,19 @@
           "eyebrow": "Smart Picks",
           "title": "Gap analysis, not shopping ads.",
           "bullets": [
-            "Four budget tiers: drugstore, mid, premium, luxury",
-            "Redundancy checks so you never duplicate an active you already own",
-            "Save picks to your wishlist. No upsells, no sponsored placements."
+            "Four budget tiers, drugstore to luxury",
+            "Never duplicate an active you own",
+            "Save to wishlist. No upsells, ever."
           ]
         },
         {
           "key": "shelf",
-          "eyebrow": "Inventory first",
+          "eyebrow": "Your Shelf",
           "title": "Your shelf comes first. Always.",
           "bullets": [
-            "Add by photo or manually, with ingredients pulled from the label",
+            "Add by photo or by hand, ingredients pulled from the label",
             "Full lifecycle: started, active, finished, repurchased",
-            "Cleansers, actives, SPF, body, lip, hand. Every category."
+            "Every category, cleanser to SPF"
           ]
         },
         {
@@ -514,7 +514,7 @@
     "privacy": {
       "eyebrow": "Private by design",
       "headline": "Your shelf stays yours.",
-      "lead": "Ritora runs on explicit consent and essential cookies only. Every step of how your data moves is something you can see, and undo.",
+      "lead": "Explicit consent, essential cookies only. Every step is something you can see and undo.",
       "points": [
         {
           "title": "Consent before anything sensitive.",
@@ -562,31 +562,43 @@
       "items": [
         {
           "question": "Is Ritora a medical product?",
-          "answer": "No. Ritora helps you make safer daily routine choices with the products you already own. It does not diagnose, treat, or replace a dermatologist."
+          "answer": "No. It helps you make safer daily choices with the products you own. It doesn't diagnose or replace a dermatologist, and it tells you when to see one."
         },
         {
-          "question": "Do I need to buy new products to use it well?",
-          "answer": "Not at all. Ritora starts with your shelf. It helps you get more out of the products you already own before it suggests anything new."
+          "question": "What does Ritora do when my skin reacts?",
+          "answer": "It pauses the active behind the reaction, simplifies that evening, and reintroduces gently once your skin settles. You always see why."
+        },
+        {
+          "question": "Purging or a bad reaction?",
+          "answer": "Ritora reads your photos and check-ins, weighs them against your history, and gives you a clear next step: continue, slow down, or pause."
+        },
+        {
+          "question": "How do I know it's working?",
+          "answer": "Compare any two dates side by side. Ritora also tells you when it's too early to judge, so you stop switching every week."
+        },
+        {
+          "question": "Do I need to buy new products?",
+          "answer": "No. Ritora starts with your shelf and gets more from what you already own before suggesting anything new."
         },
         {
           "question": "Will it work for beginners?",
-          "answer": "Yes. Beginners and collectors overwhelmed by their own shelf are exactly who Ritora is built for. It's a simpler path to a routine that actually works."
+          "answer": "Yes. Beginners and overwhelmed collectors are exactly who it's built for."
         },
         {
           "question": "Do I need to upload photos?",
-          "answer": "No. The Skin Journal is optional. Routines, ingredient checks, and Smart Picks all work without a single photo. Uploading just makes the guidance more adaptive."
+          "answer": "No. The Skin Journal is optional. Routines, checks, and Smart Picks all work without it. Photos just make guidance more adaptive."
         },
         {
-          "question": "Is the community public? Do I have to share?",
-          "answer": "Sharing is opt-in. Your shelf and Skin Journal stay private by default. Only the playbooks and reviews you choose to publish go to the community, and you can withdraw any of them at any time."
+          "question": "Do I have to share with the community?",
+          "answer": "No. Sharing is opt-in. Your shelf and journal stay private by default, and you can withdraw anything you publish."
         },
         {
           "question": "Is it free?",
-          "answer": "Yes, the core experience is free. No card required to sign up. Optional paid tiers may arrive later for advanced features, but the 'stop buying, start using' experience stays free."
+          "answer": "Yes. The core experience is free, no card required. Paid tiers may come later, but the core stays free."
         },
         {
           "question": "How is my data handled?",
-          "answer": "With care. Ritora runs on explicit consent, careful data boundaries, and secure authentication. Privacy-conscious handling is built in from day one. See the data flow above."
+          "answer": "With explicit consent, tight boundaries, and secure auth. Built in from day one. See the data flow above."
         },
         {
           "question": "Which languages are supported?",
@@ -595,8 +607,8 @@
       ]
     },
     "finalCta": {
-      "headline": "Your shelf, your skin, your routine.",
-      "body": "Create your account in under a minute. Add a few products, answer a few questions about your skin, and you'll have a calmer plan for tomorrow morning, built from what's already in your bathroom.",
+      "headline": "Your shelf, your skin, your next move.",
+      "body": "Under a minute to start. Add a few products, answer a few questions, and wake up knowing what to use and what to skip.",
       "ctaPrimary": "Create your account",
       "ctaSecondary": "Log in",
       "trust": [
@@ -2023,6 +2035,98 @@
       "sizeSuffix": "ml",
       "lowStock": "Low"
     },
+    "introduction": {
+      "title": "Product introduction",
+      "body": "Bring this product in slowly so Ritora can suggest it at a safer pace while your skin response becomes clearer.",
+      "legacyBody": "Start tracking when you want to see how your skin handles this one.",
+      "paceRule": "Early products can still appear in suggestions, but Ritora keeps them lower frequency until use history looks stable.",
+      "started": "Started {date}",
+      "updated": "Product introduction updated.",
+      "filterLabel": "Product introduction status",
+      "filterAll": "All introduction statuses",
+      "filterAllShort": "Stage",
+      "quick": {
+        "openLabel": "Change product introduction status. Current status: {status}",
+        "title": "How Ritora suggests this",
+        "description": "Pick how often Ritora should reach for this product.",
+        "selectLabel": "Set product introduction status to {status}",
+        "details": {
+          "new": "Still settling in.",
+          "patch_testing": "Held back while you patch test.",
+          "week_1": "Suggested gently.",
+          "building_tolerance": "Suggested carefully while it settles.",
+          "paused": "Set aside for now.",
+          "tolerated": "Used normally when it fits.",
+          "failed": "Not suggested unless you change this."
+        },
+        "groupActive": "Bringing it in",
+        "groupAside": "Set aside"
+      },
+      "info": {
+        "openLabel": "Explain product introduction statuses",
+        "title": "How introduction statuses work",
+        "description": "Ritora uses these statuses to control suggestion pace. It can update them from logged use, and you can correct them when you already know the product.",
+        "details": {
+          "new": {
+            "meaning": "Legacy status for a product added before a starting pace was chosen.",
+            "suggestions": "Ritora treats it like an early introduction and may suggest it cautiously."
+          },
+          "patch_testing": {
+            "meaning": "Legacy cautious status for products that were held back before the pace model changed.",
+            "suggestions": "Ritora may suggest it cautiously and can move it to Week 1 when you log real use."
+          },
+          "week_1": {
+            "meaning": "You are introducing this product now or have just started using it.",
+            "suggestions": "Ritora may suggest it with lower frequency, then can move it to building tolerance after about 7 days of use."
+          },
+          "building_tolerance": {
+            "meaning": "You are building confidence without treating it as fully tolerated yet.",
+            "suggestions": "Ritora may suggest it cautiously and can mark it tolerated after about 28 days of stable use."
+          },
+          "paused": {
+            "meaning": "Use this when you want to stop the product without calling it failed.",
+            "suggestions": "Ritora will not suggest it until you change the status."
+          },
+          "tolerated": {
+            "meaning": "Your skin already handles this product well.",
+            "suggestions": "Ritora can use it normally in suggestions when it fits the routine."
+          },
+          "failed": {
+            "meaning": "The product did not work for your skin or caused a reaction.",
+            "suggestions": "Ritora will not suggest it again unless you manually change the status."
+          }
+        }
+      },
+      "errors": {
+        "updateFailed": "Could not update product introduction."
+      },
+      "status": {
+        "new": "Not started",
+        "patch_testing": "Very cautious",
+        "week_1": "Week 1",
+        "building_tolerance": "Building tolerance",
+        "paused": "Paused",
+        "tolerated": "Tolerated",
+        "failed": "Not for me"
+      },
+      "statusShort": {
+        "new": "New",
+        "patch_testing": "Cautious",
+        "week_1": "Week 1",
+        "building_tolerance": "Building",
+        "paused": "Paused",
+        "tolerated": "Tolerated",
+        "failed": "Not for me"
+      },
+      "currentStage": "Where it is now",
+      "nextUp": "Up next: {stage}",
+      "journeyTitle": "Suggestion pace",
+      "offRampHint": "Not going well? You can pause it or stop it for your skin.",
+      "actions": {
+        "pause": "Pause for now",
+        "fail": "Not for me"
+      }
+    },
     "actions": {
       "add": "Add product",
       "edit": "Edit",
@@ -2120,6 +2224,7 @@
           "about": "About this product",
           "lookup": "From the lookup",
           "yours": "Only you know these",
+          "introduction": "Suggestion pace",
           "guidance": "How to use"
         },
         "hints": {
@@ -2136,6 +2241,7 @@
           "paoHint": "Usually printed on the jar icon as 12M, 24M, etc.",
           "expiresAtHint": "Ritora fills this from opened date and PAO. You can override it.",
           "preferredTimeHint": "If you typically reach for this in the morning or evening, Ritora's AI suggestions will respect that when building your routine.",
+          "introductionDescription": "Tell Ritora whether this should be introduced cautiously or treated like a product your skin already knows.",
           "priceHint": "For later spend insights. Optional.",
           "purchasedFromHint": "Where you bought it.",
           "personalNotesHint": "How it feels on your skin. Only you see this.",
@@ -2192,6 +2298,28 @@
           "evening": "Evening",
           "either": "Either"
         },
+        "introductionStatusOptions": {
+          "week_1": {
+            "title": "I'm introducing it now",
+            "description": "Ritora can suggest it, but with lower frequency while your skin response is still new."
+          },
+          "building_tolerance": {
+            "title": "I've used it a few times",
+            "description": "Ritora can suggest it carefully and avoid increasing too quickly."
+          },
+          "tolerated": {
+            "title": "I already use it",
+            "description": "Ritora can treat it as a normal routine product when it fits."
+          },
+          "paused": {
+            "title": "Pause suggestions",
+            "description": "Keep it on your shelf, but do not include it in routine suggestions yet."
+          },
+          "failed": {
+            "title": "Not for my skin",
+            "description": "Keep the record, but do not suggest this product unless you change it later."
+          }
+        },
         "submit": "Add to shelf",
         "submitting": "Adding...",
         "successToast": "Added to your shelf"
@@ -2241,6 +2369,7 @@
       },
       "tabs": {
         "about": "About",
+        "introduction": "Introduction",
         "ingredients": "Ingredients",
         "howToUse": "How to use",
         "manufacturer": "Manufacturer"
@@ -3165,8 +3294,8 @@
     }
   },
   "site": {
-    "title": "Ritora · A calmer skincare routine from the shelf you already own",
-    "description": "Ritora turns the skincare products you already own into a calmer morning and evening routine, with ingredient safety checks and guidance shaped by your skin."
+    "title": "Ritora · Know what skincare to use, pause, or stop",
+    "description": "Ritora is a free skincare app that reads your skin and tells you what to keep, pause, or stop, all from the products you already own. No shopping needed."
   },
   "legalPages": {
     "privacy": {
@@ -3347,6 +3476,7 @@
     "subtitle": "One entry per day. Photo, ratings, observations and insights, all in one place.",
     "eyebrow": "Your skin journey",
     "fab": "Add today's photo",
+    "reportReaction": "My skin is reacting",
     "prerequisites": {
       "profile": {
         "title": "Finish your skin profile first",
@@ -3358,8 +3488,65 @@
     "tabs": {
       "calendar": "Calendar",
       "photos": "Photos",
+      "memory": "Memory",
       "insights": "Insights",
       "wrapped": "Wrapped"
+    },
+    "routineMemory": {
+      "title": "Routine Memory",
+      "subtitle": "See how your products, your logged use, and your skin all line up over time, in one place.",
+      "loadingLabel": "Loading routine memory",
+      "emptyTitle": "Nothing to show here yet",
+      "emptyBody": "Keep logging your routine and how your skin feels. Ritora will line up what changed, when symptoms showed up, and what helped your skin settle.",
+      "disclaimer": "Timing is a clue, not proof. Use this to notice what changed and stay gentle with your skin.",
+      "possibleLinksTitle": "Products worth a second look",
+      "timelineTitle": "What changed",
+      "productTimelineTitle": "A timeline for each product",
+      "productTimelineSubtitle": "Every product gets its own dated timeline, so you can see what happened before, during, and after a reaction.",
+      "treeScrollLabel": "Scrollable routine timeline tree",
+      "treeProductAriaSuffix": "timeline tree",
+      "unknownProduct": "Unknown product",
+      "durationLabel": "Memory window",
+      "durationOptions": {
+        "7": "7 days",
+        "14": "14 days",
+        "30": "30 days",
+        "90": "90 days"
+      },
+      "firstUse": "First used on {date}",
+      "noFirstUse": "No use logged yet",
+      "noProductEvents": "Nothing changed for this product in this window.",
+      "summary": {
+        "reactionSignalCount": "Reaction signals",
+        "applicationLogCount": "Routine logs",
+        "productChangeCount": "Routine changes"
+      },
+      "levels": {
+        "watch": "Keep an eye on this",
+        "possible": "Review this product",
+        "higher_attention": "Look at this one first"
+      },
+      "reasons": {
+        "reaction_after_first_logged_use": "A reaction showed up soon after you first used this",
+        "reaction_after_product_added": "A reaction showed up soon after you added this",
+        "reaction_after_frequency_change": "A reaction showed up after you changed how often you use it",
+        "skipped_after_reaction": "You skipped this after the reaction",
+        "active_category_near_reaction": "An active product was in use around the reaction"
+      },
+      "events": {
+        "product_added": "Added",
+        "first_logged_use": "First logged use",
+        "product_used": "Used",
+        "frequency_changed": "Frequency changed",
+        "product_skipped": "Skipped",
+        "reaction_signal": "Reaction signal",
+        "recovery_started": "Recovery started",
+        "recent_change_logged": "Recent change logged"
+      },
+      "eventDetails": {
+        "skinJournal": "From your skin journal",
+        "recovery": "During your calmer routine window"
+      }
     },
     "comingSoon": {
       "badge": "Coming soon",
@@ -3984,6 +4171,79 @@
       "noteLabel": "Complaint or note (optional)",
       "addNote": "Add complaint or note",
       "notePlaceholder": "Tell us anything. Feels tight, itches, looks dull…",
+      "reactionReport": {
+        "start": "My skin is reacting",
+        "title": "Symptom report",
+        "savedTitle": "Reaction you reported",
+        "body": "Use this when the reaction is something you feel, even if it is hard to see in a photo.",
+        "clear": "Clear symptom report",
+        "validationSymptoms": "Choose at least one symptom, or clear the symptom report before saving.",
+        "symptomsLabel": "What are you feeling?",
+        "severityLabel": "How intense is it?",
+        "onsetLabel": "When did it start?",
+        "locationsLabel": "Where is it happening?",
+        "triggerLabel": "Possible trigger",
+        "redFlagsLabel": "Red flags",
+        "redFlagsHint": "Choose any that apply. Ritora will treat these as higher attention.",
+        "noteLabel": "Reaction note (optional)",
+        "notePlaceholder": "For example, burning near cheeks after a new serum.",
+        "symptoms": {
+          "burning": "Burning",
+          "stinging": "Stinging",
+          "itching": "Itching",
+          "tightness": "Tightness",
+          "redness": "Redness",
+          "heat": "Heat",
+          "pain": "Pain",
+          "swelling": "Swelling",
+          "hives": "Hives",
+          "peeling": "Peeling",
+          "breakout": "Breakout",
+          "other": "Other"
+        },
+        "severity": {
+          "mild": "Mild",
+          "moderate": "Moderate",
+          "severe": "Severe"
+        },
+        "onset": {
+          "today": "Today",
+          "yesterday": "Yesterday",
+          "two_to_three_days": "2-3 days ago",
+          "four_to_seven_days": "4-7 days ago",
+          "more_than_week": "More than a week",
+          "unsure": "Not sure"
+        },
+        "locations": {
+          "forehead": "Forehead",
+          "cheeks": "Cheeks",
+          "chin_jaw": "Chin/jaw",
+          "around_mouth": "Around mouth",
+          "eye_area": "Eye area",
+          "neck": "Neck",
+          "all_over_face": "All over face",
+          "body": "Body",
+          "other": "Other"
+        },
+        "triggers": {
+          "new_product": "New product",
+          "changed_frequency": "Changed frequency",
+          "active_ingredient": "Active ingredient",
+          "sunscreen": "Sunscreen",
+          "treatment": "Treatment",
+          "weather_or_environment": "Weather/environment",
+          "unknown": "Unknown"
+        },
+        "redFlags": {
+          "eye_or_lip_swelling": "Eye or lip swelling",
+          "trouble_breathing": "Trouble breathing",
+          "blistering": "Blistering",
+          "open_skin": "Open or cracked skin",
+          "spreading_fast": "Spreading fast",
+          "severe_pain": "Severe pain",
+          "infection_signs": "Possible infection signs"
+        }
+      },
       "privacyNote": "Your photo and ratings are encrypted at rest. The AI only sees the photo. Never your name, email, or user id."
     },
     "compare": {
@@ -4380,27 +4640,50 @@
       "cracking_appearance": "Cracking appearance"
     },
     "simplification": {
-      "bannerTitle": "Routine simplified to barrier-repair mode",
-      "bannerBody": "We detected possible irritation in your photo from {date}. Your usual routine is paused until you acknowledge.",
+      "bannerTitle": "Recovery Mode is active",
+      "bannerBody": "Ritora paused stronger routine steps from {date} so your skin can settle before a phased return.",
       "viewDetails": "View details",
-      "restoreRoutine": "Restore routine",
-      "keepSimplified": "Keep simplified",
-      "compactAlert": "Routine simplified. View in Journal",
-      "compactAlertSubtitle": "Since {date} · barrier-repair mode active",
+      "restoreRoutine": "End Recovery Mode",
+      "keepSimplified": "Keep recovering",
+      "compactAlert": "Recovery Mode active. View in Journal",
+      "compactAlertSubtitle": "Since {date} · phased return protected",
       "viewInJournal": "View in Journal",
       "detail": {
         "eyebrow": "Skin Journal · safety",
-        "title": "Routine simplification · {start} – {endLabel}",
+        "title": "Recovery Mode · {start} – {endLabel}",
         "ongoing": "ongoing",
-        "subtitle": "Started from a journal safety event on {date}",
-        "noticedTitle": "What we noticed",
-        "noticedFallback": "A journal safety event suggested simplifying your routine while your skin settles.",
-        "presetTitle": "Barrier-repair preset (active)",
-        "presetSubtitle": "A conservative barrier-support routine to use while you review the alert.",
+        "subtitle": "Started from a recovery trigger on {date}",
+        "noticedTitle": "Why this started",
+        "noticedFallback": "A reaction signal suggested pausing stronger steps while your skin settles.",
+        "symptomsTitle": "Trigger symptoms",
+        "activeOveruse": "Active overuse signal",
+        "presetTitle": "Recovery routine",
+        "presetSubtitle": "A conservative barrier-support routine to use until the exit checks look clear.",
         "presetAm": "AM",
         "presetPm": "PM",
         "presetAmBody": "Gentle cleanse, moisturise, and sunscreen.",
         "presetPmBody": "Gentle cleanse and moisturise.",
+        "exitTitle": "Exit checks",
+        "exitNoRedFlags": "No severe swelling, blistering, open skin, severe pain, breathing trouble, or infection signs.",
+        "exitSymptomsSettled": "Burning, stinging, tightness, peeling, or redness has clearly settled.",
+        "exitNoNewActives": "No new exfoliant, retinoid, acid, vitamin C, or treatment step was added during recovery.",
+        "reviewAfter": "Review after {date}",
+        "exitEligible": "Earliest exit {date}",
+        "returnTitle": "Phased return",
+        "returnBarrierOnly": "Keep the barrier routine first.",
+        "returnOneActive": "Bring back only one active or treatment step.",
+        "returnBuildFrequency": "Increase frequency only if symptoms stay calm.",
+        "phase": {
+          "stabilize": "Stabilize",
+          "observe": "Observe",
+          "phased_return": "Phased return"
+        },
+        "source": {
+          "unknown": "Recovery trigger",
+          "manual": "Started manually",
+          "reaction_report": "You reported symptoms",
+          "photo_analysis": "Photo analysis signal"
+        },
         "pausedTitle": "What was paused",
         "pausedSubtitle": "If a schedule snapshot was captured on {date}, it appears below.",
         "pausedAmTitle": "AM (paused)",
@@ -4942,7 +5225,8 @@
       "aiConsentGranted": "AI suggestions enabled.",
       "aiConsentFailed": "We couldn't save that consent. Please try again.",
       "gapSaved": "Saved to your Today wishlist.",
-      "gapDismissed": "Recommendation dismissed for now."
+      "gapDismissed": "Recommendation dismissed for now.",
+      "reportReaction": "My skin is reacting"
     },
     "prerequisites": {
       "profile": {

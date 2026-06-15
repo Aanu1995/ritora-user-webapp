@@ -69,12 +69,15 @@ describe("skin journal primitive components", () => {
     );
 
     expect(screen.getByLabelText(/loading day detail/i)).toBeInTheDocument();
+    expect(screen.getByText(/recovery mode is active/i)).toBeInTheDocument();
     expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(
       15,
     );
 
     await user.click(screen.getByRole("button", { name: /view details/i }));
-    await user.click(screen.getByRole("button", { name: /restore/i }));
+    await user.click(
+      screen.getByRole("button", { name: /end recovery mode/i }),
+    );
     await user.click(screen.getByRole("button", { name: /view in journal/i }));
 
     expect(mockPush).toHaveBeenCalledWith(

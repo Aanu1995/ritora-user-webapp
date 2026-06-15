@@ -1,5 +1,5 @@
 import type { ProductFormValue } from '../product-form-body';
-import type { ShelfProduct } from '@/types/shelf';
+import { ProductIntroductionStatus, type ShelfProduct } from '@/types/shelf';
 
 export function getProductEditDefaultValues(
   product: ShelfProduct,
@@ -9,6 +9,8 @@ export function getProductEditDefaultValues(
     guidance: product.guidance,
     manufacturer: product.manufacturer,
     userFields: product.userFields,
+    introductionStatus:
+      product.introduction?.status ?? ProductIntroductionStatus.Tolerated,
   };
 }
 

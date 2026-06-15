@@ -31,6 +31,7 @@ function invalidateAfterRecord(
   void queryClient.invalidateQueries({
     queryKey: [QueryKey.SuggestionsHistoryDay],
   });
+  void queryClient.invalidateQueries({ queryKey: [QueryKey.RoutineMemory] });
 }
 
 export function useRecordApplication() {

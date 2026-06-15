@@ -87,6 +87,24 @@ function collectKeys(
   return output;
 }
 
+function collectStringValues(value: unknown, output: string[] = []): string[] {
+  if (typeof value === "string") {
+    output.push(value);
+    return output;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((child) => collectStringValues(child, output));
+    return output;
+  }
+
+  if (value && typeof value === "object") {
+    Object.values(value).forEach((child) => collectStringValues(child, output));
+  }
+
+  return output;
+}
+
 function collectFeatureKeys(messages: typeof enMessages): Set<string> {
   const featureMessages = {
     schedule: messages.schedule,
@@ -234,6 +252,58 @@ describe("Spanish visible copy localization", () => {
       enMessages.currentContext.weatherCondition.clear,
     );
   });
+
+  it("uses polished Spanish for the reaction report and Today actions", () => {
+    expect(esMessages.journal.prerequisites.profile.body).toBe(
+      "Ritora necesita tu perfil de piel antes de poder analizar fotos, registros y progreso de la piel de forma segura.",
+    );
+    expect(esMessages.journal.prerequisites.profile.cta).toBe(
+      "Abrir perfil de piel",
+    );
+    expect(esMessages.journal.tabs.insights).toBe("Análisis");
+    expect(esMessages.journal.tabs.wrapped).toBe("Resumen");
+    expect(esMessages.journal.calendar.monthlyWrapped).toBe("Resumen mensual");
+    expect(esMessages.journal.wrapped.title).toBe("Tu resumen de piel");
+    expect(esMessages.journal.calendar.weekdays).toEqual([
+      "L",
+      "M",
+      "X",
+      "J",
+      "V",
+      "S",
+      "D",
+    ]);
+    expect(esMessages.journal.upload.reactionReport.redFlagsHint).toBe(
+      "Elige las que correspondan. Ritora las marcará como señales de mayor atención.",
+    );
+    expect(esMessages.todaysSuggestion.page.history).toBe("Historial");
+    expect(esMessages.todaysSuggestion.page.takeBreak).toBe(
+      "Tomar una pausa",
+    );
+    expect(esMessages.todaysSuggestion.page.aiConsentFailed).toBe(
+      "No pudimos guardar ese consentimiento. Inténtalo de nuevo.",
+    );
+    expect(esMessages.todaysSuggestion.routineBreak.saveResumeDate).toBe(
+      "Guardar fecha de reanudación",
+    );
+    expect(
+      esMessages.todaysSuggestion.routineBreak.validation.resumeDateInvalid,
+    ).toBe("Elige una fecha de reanudación válida.");
+  });
+
+  it("does not reintroduce common machine-translation leftovers", () => {
+    const visibleCopy = collectStringValues(esMessages).join("\n");
+
+    expect(visibleCopy).not.toMatch(
+      /salvar|currículum|muy humedo|despues del sol|sugerencias rapidas|Como llegan/i,
+    );
+    expect(visibleCopy).not.toMatch(/Perfil de piel abierto/i);
+    expect(visibleCopy).not.toMatch(/envuelto/i);
+    expect(visibleCopy).not.toMatch(
+      /\b(Skin Wrapped|Wrapped|Insights?|Smart Picks|Quick Check|Photo AI)\b/i,
+    );
+    expect(visibleCopy).not.toMatch(/\bAI\b/);
+  });
 });
 
 describe("Swedish navigation copy", () => {
@@ -341,6 +411,43 @@ describe("Swedish visible copy localization", () => {
     ],
   ] as const)("%s", (_key, actual, expected) => {
     expect(actual).toBe(expected);
+  });
+
+  it("uses natural Swedish for the reaction report controls", () => {
+    expect(svMessages.journal.upload.reactionReport.clear).toBe(
+      "Ta bort symtomrapport",
+    );
+    expect(svMessages.journal.upload.reactionReport.redFlagsHint).toBe(
+      "Välj de som stämmer. Ritora markerar dem som extra viktiga.",
+    );
+    expect(svMessages.journal.upload.reactionReport.locationsLabel).toBe(
+      "Var märker du det?",
+    );
+    expect(svMessages.journal.upload.reactionReport.triggerLabel).toBe(
+      "Möjlig orsak",
+    );
+    expect(svMessages.journal.upload.reactionReport.symptoms.burning).toBe(
+      "Brännande känsla",
+    );
+    expect(svMessages.journal.upload.reactionReport.symptoms.breakout).toBe(
+      "Utslag eller finnar",
+    );
+    expect(svMessages.journal.upload.reactionReport.severity.mild).toBe(
+      "Lätt",
+    );
+    expect(svMessages.journal.upload.reactionReport.severity.severe).toBe(
+      "Kraftig",
+    );
+    expect(svMessages.journal.upload.reactionReport.onset.more_than_week).toBe(
+      "För mer än en vecka sedan",
+    );
+    expect(
+      svMessages.journal.upload.reactionReport.triggers
+        .weather_or_environment,
+    ).toBe("Väder eller miljö");
+    expect(svMessages.todaysSuggestion.routineBreak.saveResumeDate).toBe(
+      "Spara återupptagningsdatum",
+    );
   });
 });
 

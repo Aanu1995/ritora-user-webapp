@@ -1584,14 +1584,10 @@ describe("CommunityPage", () => {
 });
 
 describe("community publish forms", () => {
-  it("submits TanStack/Zod-backed review and routine forms from separate posting tabs", async () => {
+  it("submits the TanStack/Zod-backed review form", async () => {
     mockedCreateReview.mockResolvedValue({
       moderationStatus: "pending_review",
       safetyFlags: [],
-    });
-    mockedCreateRoutine.mockResolvedValue({
-      ...routineFixture,
-      moderationStatus: "published",
     });
 
     const onReviewSaved = jest.fn();
@@ -1772,6 +1768,13 @@ describe("community publish forms", () => {
     );
 
     reviewRender.unmount();
+  });
+
+  it("submits the TanStack/Zod-backed routine form", async () => {
+    mockedCreateRoutine.mockResolvedValue({
+      ...routineFixture,
+      moderationStatus: "published",
+    });
 
     const onPlaybookSaved = jest.fn();
     const routineRender = renderWithProviders(
@@ -1902,6 +1905,8 @@ describe("community publish forms", () => {
         ],
       }),
     );
+
+    routineRender.unmount();
   });
 
   it("keeps manual playbook step fields aligned after removing earlier steps", async () => {

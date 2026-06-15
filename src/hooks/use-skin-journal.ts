@@ -22,6 +22,7 @@ import {
   deleteEntry,
   getCalendar,
   getDay,
+  getRoutineMemory,
   getTodayEntry,
   listEvents,
   listPhotoFilters,
@@ -285,5 +286,14 @@ export function useAcknowledgeEvent() {
       void qc.invalidateQueries({ queryKey: [QueryKey.SkinJournalDay] });
       invalidateAppNavBadges(qc);
     },
+  });
+}
+
+export function useRoutineMemory(filters: { from?: string; to?: string } = {}) {
+  const enabled = useAuthEnabled();
+  return useQuery({
+    queryKey: [QueryKey.RoutineMemory, filters],
+    queryFn: ({ signal }) => getRoutineMemory(filters, { signal }),
+    enabled,
   });
 }

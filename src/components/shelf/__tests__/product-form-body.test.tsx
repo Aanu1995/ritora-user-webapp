@@ -6,6 +6,7 @@ import {
   ApplicationMethod,
   PreferredTimeOfDay,
   ProductCategory,
+  ProductIntroductionStatus,
   Quantity,
 } from '@/types/shelf';
 
@@ -49,6 +50,7 @@ const VALUE: ProductFormValue = {
     personalNotes: 'Feels good',
     preferredTimeOfDay: PreferredTimeOfDay.Evening,
   },
+  introductionStatus: ProductIntroductionStatus.Week1,
 };
 
 describe('ProductFormBody', () => {
@@ -75,5 +77,32 @@ describe('ProductFormBody', () => {
 
     await user.type(screen.getByLabelText(/your notes/i), ' now');
     expect(onUserFieldsChange).toHaveBeenCalled();
+  });
+
+  it('renders the add-product introduction status selector when requested', async () => {
+    const user = userEvent.setup();
+    const onIntroductionStatusChange = jest.fn();
+
+    renderWithProviders(
+      <ProductFormBody
+        value={VALUE}
+        onIdentityChange={jest.fn()}
+        onManufacturerChange={jest.fn()}
+        onUserFieldsChange={jest.fn()}
+        onGuidanceChange={jest.fn()}
+        onIntroductionStatusChange={onIntroductionStatusChange}
+        showIntroductionStatus
+      />,
+    );
+
+    expect(
+      screen.getByText(/tell ritora whether this should be introduced/i),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByLabelText(/i already use it/i));
+
+    expect(onIntroductionStatusChange).toHaveBeenCalledWith(
+      ProductIntroductionStatus.Tolerated,
+    );
   });
 });

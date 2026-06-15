@@ -31,6 +31,7 @@ import {
   type SimplificationEvent,
   type UpsertEntryPayload,
 } from "@/types/skin-journal";
+import type { RoutineMemoryResponse } from "@/types/routine-memory";
 import type { UploadProgressOptions } from "@/lib/upload-progress";
 
 export type PhotoAngleUpload = Partial<Record<Angle, File>>;
@@ -340,4 +341,20 @@ export async function getJournalStats(
   options?: ApiRequestOptions,
 ): Promise<JournalStats> {
   return getWithOptions<JournalStats>(ApiPath.SkinJournalStats, options);
+}
+
+export async function getRoutineMemory(
+  filters: { from?: string; to?: string } = {},
+  options?: ApiRequestOptions,
+): Promise<RoutineMemoryResponse> {
+  const params = new URLSearchParams();
+  if (filters.from) params.set("from", filters.from);
+  if (filters.to) params.set("to", filters.to);
+  const query = params.toString();
+  return getWithOptions<RoutineMemoryResponse>(
+    query
+      ? `${ApiPath.RoutineMemoryTimeline}?${query}`
+      : ApiPath.RoutineMemoryTimeline,
+    options,
+  );
 }

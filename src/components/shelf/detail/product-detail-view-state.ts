@@ -1,5 +1,6 @@
 export type ProductDetailTab =
   | 'about'
+  | 'introduction'
   | 'ingredients'
   | 'how-to-use'
   | 'manufacturer';
@@ -8,6 +9,7 @@ const PRODUCT_DETAIL_TAB_STORAGE_PREFIX = 'ritora:shelf:product-detail-tab:';
 
 const PRODUCT_DETAIL_TABS = new Set<string>([
   'about',
+  'introduction',
   'ingredients',
   'how-to-use',
   'manufacturer',

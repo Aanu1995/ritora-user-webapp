@@ -26,6 +26,7 @@ export default function SimplificationDetailPage({
   const t = useTranslations("journal.simplification.detail");
   const tSimplification = useTranslations("journal.simplification");
   const tDayDetail = useTranslations("journal.dayDetail");
+  const tSymptoms = useTranslations("journal.upload.reactionReport.symptoms");
   const locale = useLocale();
   const router = useRouter();
   const { data, isLoading } = useSimplification(id);
@@ -42,6 +43,15 @@ export default function SimplificationDetailPage({
   const isOngoing = !data?.ended_at;
   const triggerDate = startedAt;
   const noticedSummary = data?.reason?.trim() || t("noticedFallback");
+  const recoveryPhase = data?.recovery_phase ?? "stabilize";
+  const triggerSource = data?.recovery_trigger_source ?? "unknown";
+  const triggerSymptoms = data?.recovery_trigger_symptoms ?? [];
+  const reviewAfter = data?.recovery_review_after
+    ? formatJournalShortDate(data.recovery_review_after.slice(0, 10), locale)
+    : null;
+  const exitEligibleAt = data?.recovery_exit_eligible_at
+    ? formatJournalShortDate(data.recovery_exit_eligible_at.slice(0, 10), locale)
+    : null;
   const hasScheduleSnapshot =
     data?.original_schedule_snapshot !== null &&
     data?.original_schedule_snapshot !== undefined;
@@ -98,6 +108,36 @@ export default function SimplificationDetailPage({
             <p className="mt-1 text-sm leading-relaxed text-muted">
               {noticedSummary}
             </p>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              <span className="rounded-full bg-warning-soft px-2.5 py-1 text-xs font-semibold text-warning">
+                {t(`phase.${recoveryPhase}`)}
+              </span>
+              <span className="rounded-full bg-surface-muted px-2.5 py-1 text-xs font-semibold text-muted">
+                {t(`source.${triggerSource}`)}
+              </span>
+              {data?.recovery_active_overuse ? (
+                <span className="rounded-full bg-danger-soft px-2.5 py-1 text-xs font-semibold text-danger">
+                  {t("activeOveruse")}
+                </span>
+              ) : null}
+            </div>
+            {triggerSymptoms.length > 0 ? (
+              <div className="mt-3">
+                <p className="text-xs font-semibold uppercase text-muted">
+                  {t("symptomsTitle")}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {triggerSymptoms.map((symptom) => (
+                    <span
+                      key={symptom}
+                      className="rounded-full border border-danger/30 bg-danger-soft px-2.5 py-1 text-xs font-semibold text-danger"
+                    >
+                      {tSymptoms(symptom)}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
 
           <div className="rounded-2xl border border-border bg-surface p-4 sm:p-5">
@@ -113,6 +153,38 @@ export default function SimplificationDetailPage({
                 <strong>{t("presetPm")}:</strong> {t("presetPmBody")}
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
+          <div className="rounded-2xl border border-border bg-surface p-4 sm:p-5">
+            <p className="text-sm font-semibold">{t("exitTitle")}</p>
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted marker:text-muted/50">
+              <li>{t("exitNoRedFlags")}</li>
+              <li>{t("exitSymptomsSettled")}</li>
+              <li>{t("exitNoNewActives")}</li>
+            </ul>
+            <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted">
+              {reviewAfter ? (
+                <span className="rounded-full bg-surface-muted px-2.5 py-1">
+                  {t("reviewAfter", { date: reviewAfter })}
+                </span>
+              ) : null}
+              {exitEligibleAt ? (
+                <span className="rounded-full bg-surface-muted px-2.5 py-1">
+                  {t("exitEligible", { date: exitEligibleAt })}
+                </span>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-surface p-4 sm:p-5">
+            <p className="text-sm font-semibold">{t("returnTitle")}</p>
+            <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-muted marker:font-semibold marker:text-accent-strong">
+              <li>{t("returnBarrierOnly")}</li>
+              <li>{t("returnOneActive")}</li>
+              <li>{t("returnBuildFrequency")}</li>
+            </ol>
           </div>
         </div>
 

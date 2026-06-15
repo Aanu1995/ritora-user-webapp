@@ -299,7 +299,7 @@
             "Captura desde múltiples ángulos con almacenamiento privado y cifrado",
             "La detección de reacciones pausa automáticamente los activos de riesgo",
             "Compara dos fechas cualesquiera lado a lado.",
-            "Skin Wrapped mensual: un resumen privado de tus fotos"
+            "Resumen mensual de piel: un resumen privado de tus fotos"
           ]
         },
         {
@@ -933,7 +933,7 @@
       "dry": "seco",
       "balanced": "equilibrado",
       "humid": "húmedo",
-      "veryHumid": "muy humedo"
+      "veryHumid": "muy húmedo"
     },
     "airRisk": {
       "good": "bueno",
@@ -1338,7 +1338,7 @@
       "sunscreenFinishHint": "Cómo se ve y se siente la fórmula una vez aplicada.",
       "budgetTierLabel": "Presupuesto",
       "budgetTierHint": "Su rango de comodidad típico por producto.",
-      "allowSmartPicksLabel": "¿Dejar que Smart Picks sugiera nuevos productos?",
+      "allowSmartPicksLabel": "¿Permitir que Selecciones inteligentes sugiera nuevos productos?",
       "allowSmartPicksHint": "Permita que Ritora recomiende productos más allá de los que ya tiene en su estantería.",
       "yes": "si",
       "no": "No",
@@ -1737,7 +1737,7 @@
       "sunscreenFilterRequired": "Elija un filtro de protección solar.",
       "sunscreenFinishRequired": "Elige un acabado de protección solar.",
       "budgetTierRequired": "Elija un presupuesto.",
-      "allowSmartPicksRequired": "Elija sí o no para Smart Picks.",
+      "allowSmartPicksRequired": "Elige sí o no para Selecciones inteligentes.",
       "waterHardnessRequired": "Elija una opción de dureza del agua.",
       "waterSensitivityRequired": "Elija una opción de sensibilidad al agua.",
       "waterNotesTooLong": "Mantenga la nota de agua por debajo de 180 caracteres."
@@ -1995,16 +1995,16 @@
     },
     "empty": {
       "title": "Tu estante está vacío",
-      "description": "Agregue productos de su propiedad y Ritora creará una rutina más tranquila en torno a ellos.",
+      "description": "Agrega los productos que tienes y Ritora creará una rutina más tranquila alrededor de ellos.",
       "cta": "Añade tu primer producto",
-      "filtered": "Ningún producto coincide con su filtro actual."
+      "filtered": "Ningún producto coincide con tu filtro actual."
     },
     "prerequisites": {
       "profile": {
         "title": "Termina tu perfil de piel primero",
-        "body": "Ritora necesita el perfil de su piel antes de que los detalles del producto puedan dar forma de forma segura a rutinas, análisis o sugerencias.",
-        "cta": "Perfil de piel abierto",
-        "loadError": "No pudimos acceder a su perfil de piel en este momento. Comprueba tu conexión y vuelve a intentarlo."
+        "body": "Ritora necesita tu perfil de piel antes de que los detalles del producto puedan dar forma segura a rutinas, análisis o sugerencias.",
+        "cta": "Abrir perfil de piel",
+        "loadError": "No pudimos acceder a tu perfil de piel en este momento. Comprueba tu conexión y vuelve a intentarlo."
       }
     },
     "errors": {
@@ -2022,6 +2022,98 @@
       "archived": "Archivado",
       "sizeSuffix": "ml",
       "lowStock": "Bajo"
+    },
+    "introduction": {
+      "title": "Introducción del producto",
+      "body": "Introduce este producto poco a poco para que Ritora pueda sugerirlo a un ritmo más seguro mientras la respuesta de tu piel se vuelve más clara.",
+      "legacyBody": "Empieza a seguirlo cuando quieras ver cómo lo maneja tu piel.",
+      "paceRule": "Los productos tempranos aún pueden aparecer en sugerencias, pero Ritora mantiene una frecuencia más baja hasta que el historial de uso parezca estable.",
+      "started": "Empezó el {date}",
+      "updated": "Introducción del producto actualizada.",
+      "filterLabel": "Estado de introducción del producto",
+      "filterAll": "Todos los estados de introducción",
+      "filterAllShort": "Etapa",
+      "quick": {
+        "openLabel": "Cambiar el estado de introducción del producto. Estado actual: {status}",
+        "title": "Cómo la sugiere Ritora",
+        "description": "Elige con qué frecuencia Ritora debería recurrir a este producto.",
+        "selectLabel": "Cambiar el estado de introducción del producto a {status}",
+        "details": {
+          "new": "Todavía asentándose.",
+          "patch_testing": "En pausa mientras haces la prueba de parche.",
+          "week_1": "Se sugiere con suavidad.",
+          "building_tolerance": "Se sugiere con cuidado mientras se asienta.",
+          "paused": "Apartado por ahora.",
+          "tolerated": "Se usa con normalidad cuando encaja.",
+          "failed": "No se sugiere a menos que lo cambies."
+        },
+        "groupActive": "Incorporándolo",
+        "groupAside": "Dejar de lado"
+      },
+      "info": {
+        "openLabel": "Explicar los estados de introducción del producto",
+        "title": "Cómo funcionan los estados de introducción",
+        "description": "Ritora usa estos estados para controlar el ritmo de las sugerencias. Puede actualizarlos a partir del uso registrado, y tú puedes corregirlos cuando ya conoces el producto.",
+        "details": {
+          "new": {
+            "meaning": "Estado anterior para un producto añadido antes de elegir un ritmo inicial.",
+            "suggestions": "Ritora lo trata como una introducción temprana y puede sugerirlo con cautela."
+          },
+          "patch_testing": {
+            "meaning": "Estado cauteloso anterior para productos que se retenían antes del cambio al modelo de ritmo.",
+            "suggestions": "Ritora puede sugerirlo con cautela y moverlo a Semana 1 cuando registres uso real."
+          },
+          "week_1": {
+            "meaning": "Estás introduciendo este producto ahora o acabas de empezar a usarlo.",
+            "suggestions": "Ritora puede sugerirlo con menor frecuencia y luego moverlo a desarrollando tolerancia después de unos 7 días de uso."
+          },
+          "building_tolerance": {
+            "meaning": "Estás ganando confianza sin tratarlo todavía como totalmente tolerado.",
+            "suggestions": "Ritora puede sugerirlo con cautela y marcarlo como tolerado después de unos 28 días de uso estable."
+          },
+          "paused": {
+            "meaning": "Usa esto cuando quieras detener el producto sin marcarlo como fallido.",
+            "suggestions": "Ritora no lo sugerirá hasta que cambies el estado."
+          },
+          "tolerated": {
+            "meaning": "Tu piel ya tolera bien este producto.",
+            "suggestions": "Ritora puede usarlo normalmente en sugerencias cuando encaje con la rutina."
+          },
+          "failed": {
+            "meaning": "El producto no funcionó para tu piel o causó una reacción.",
+            "suggestions": "Ritora no volverá a sugerirlo a menos que cambies el estado manualmente."
+          }
+        }
+      },
+      "errors": {
+        "updateFailed": "No se pudo actualizar la introducción del producto."
+      },
+      "status": {
+        "new": "No iniciado",
+        "patch_testing": "Muy cauteloso",
+        "week_1": "Semana 1",
+        "building_tolerance": "Desarrollando tolerancia",
+        "paused": "Pausado",
+        "tolerated": "Tolerado",
+        "failed": "No es para mí"
+      },
+      "statusShort": {
+        "new": "Nuevo",
+        "patch_testing": "Cauto",
+        "week_1": "Semana 1",
+        "building_tolerance": "Tolerancia",
+        "paused": "Pausado",
+        "tolerated": "Tolerado",
+        "failed": "No es para mí"
+      },
+      "currentStage": "Dónde está ahora",
+      "nextUp": "A continuación: {stage}",
+      "journeyTitle": "Ritmo de sugerencia",
+      "offRampHint": "¿No va bien? Puedes pausarlo o detenerlo por tu piel.",
+      "actions": {
+        "pause": "Pausar por ahora",
+        "fail": "No es para mí"
+      }
     },
     "actions": {
       "add": "Añadir producto",
@@ -2120,6 +2212,7 @@
           "about": "Acerca de este producto",
           "lookup": "De la búsqueda",
           "yours": "Sólo tú sabes estos",
+          "introduction": "Ritmo de sugerencia",
           "guidance": "como usar"
         },
         "hints": {
@@ -2136,6 +2229,7 @@
           "paoHint": "Generalmente impreso en el ícono del frasco como 12M, 24M, etc.",
           "expiresAtHint": "Ritora llena esto desde la fecha de apertura y PAO. Puedes anularlo.",
           "preferredTimeHint": "Si normalmente utiliza esto por la mañana o por la noche, las sugerencias de IA de Ritora lo respetarán al desarrollar su rutina.",
+          "introductionDescription": "Dile a Ritora si debe introducir este producto con cautela o tratarlo como algo que tu piel ya conoce.",
           "priceHint": "Para obtener información sobre gastos posteriores. Opcional.",
           "purchasedFromHint": "Donde lo compraste.",
           "personalNotesHint": "Cómo se siente en tu piel. Sólo tú ves esto.",
@@ -2192,6 +2286,28 @@
           "evening": "tarde",
           "either": "Cualquiera"
         },
+        "introductionStatusOptions": {
+          "week_1": {
+            "title": "Lo estoy introduciendo ahora",
+            "description": "Ritora puede sugerirlo, pero con menor frecuencia mientras la respuesta de tu piel aún es nueva."
+          },
+          "building_tolerance": {
+            "title": "Lo he usado algunas veces",
+            "description": "Ritora puede sugerirlo con cautela y evitar aumentarlo demasiado rápido."
+          },
+          "tolerated": {
+            "title": "Ya lo uso",
+            "description": "Ritora puede tratarlo como un producto normal de rutina cuando encaje."
+          },
+          "paused": {
+            "title": "Pausar sugerencias",
+            "description": "Mantenlo en tu estante, pero no lo incluyas todavía en sugerencias de rutina."
+          },
+          "failed": {
+            "title": "No es para mi piel",
+            "description": "Mantén el registro, pero no sugieras este producto a menos que lo cambies más tarde."
+          }
+        },
         "submit": "Añadir al estante",
         "submitting": "Añadiendo...",
         "successToast": "Agregado a tu estante"
@@ -2241,6 +2357,7 @@
       },
       "tabs": {
         "about": "Acerca de",
+        "introduction": "Introducción",
         "ingredients": "Ingredientes",
         "howToUse": "como usar",
         "manufacturer": "Fabricante"
@@ -2608,7 +2725,7 @@
       "heading": "Fotos",
       "helper": {
         "needLabels": "Añade una foto para que Ritora pueda leer la lista INCI.",
-        "ready": "Se ve bien. Ejecute Quick Check cuando esté listo."
+        "ready": "Se ve bien. Ejecuta la revisión rápida cuando esté listo."
       },
       "addAction": "Añadir foto",
       "removeAction": "Quitar foto",
@@ -2645,7 +2762,7 @@
         "use_as_planned": "Parece adecuado usarlo si se adapta a su rutina.",
         "review_and_patch_test": "Revise los ingredientes y haga una prueba de parche antes de usar.",
         "review_ingredients": "Consulta la lista de ingredientes antes de decidirte.",
-        "review_smart_picks": "Compare con Smart Picks antes de comprar.",
+        "review_smart_picks": "Compara con Selecciones inteligentes antes de comprar.",
         "complete_profile": "Agregue el contexto de su piel antes de confiar en esto por el riesgo de reacción.",
         "skip_product": "Omita este producto por ahora."
       },
@@ -2683,7 +2800,7 @@
       "routineHeading": "Contexto de ahorro de dinero",
       "routineBody": "Ritora comparó este producto con productos activos de Shelf para detectar duplicados antes de comprarlo.",
       "smartPicksTitle": "Compara antes de comprar",
-      "smartPicksBody": "Smart Picks puede ayudarle a encontrar alternativas que se ajusten a su rutina y presupuesto.",
+      "smartPicksBody": "Selecciones inteligentes puede ayudarte a encontrar alternativas que se ajusten a tu rutina y presupuesto.",
       "smartPicksCta": "Abrir selecciones inteligentes",
       "alternativeCategory": "Para: {category}",
       "alternativeSellers": "Disponible en: {sellers}",
@@ -3010,17 +3127,17 @@
     },
     "aiConsentNudge": {
       "title": "Rutinas personalizadas, hechas para tu piel",
-      "body": "Active las sugerencias de IA y Ritora adaptará cada rutina programada a su perfil de piel, estante y entradas recientes de su diario.",
+      "body": "Activa las sugerencias de IA y Ritora adaptará cada rutina programada a tu perfil de piel, estante y entradas recientes del diario.",
       "benefits": {
-        "matchProfile": "Rutinas que coinciden con tus objetivos y tolerancias.",
-        "adaptToShelf": "Se adapta a los productos que realmente posee",
+        "matchProfile": "Rutinas que coinciden con tus objetivos y tolerancias",
+        "adaptToShelf": "Se adapta a los productos que realmente tienes",
         "revokeAnytime": "Tú mantienes el control. Apágalo en cualquier momento en Configuración."
       },
-      "privacy": "Sus datos permanecen cifrados y nunca se venden.",
+      "privacy": "Tus datos permanecen cifrados y nunca se venden.",
       "action": "Permitir sugerencias de IA",
-      "dismiss": "tal vez más tarde",
+      "dismiss": "Tal vez más tarde",
       "saved": "Sugerencias de IA habilitadas.",
-      "error": "No pudimos salvar ese consentimiento. Por favor inténtalo de nuevo."
+      "error": "No pudimos guardar ese consentimiento. Inténtalo de nuevo."
     },
     "addDialog": {
       "titleSingle": "Agregar tiempo",
@@ -3344,22 +3461,80 @@
   },
   "journal": {
     "title": "Diario de piel",
-    "subtitle": "Una entrada por día. Fotografías, calificaciones, observaciones e ideas, todo en un solo lugar.",
+    "subtitle": "Una entrada por día. Fotos, valoraciones, observaciones y análisis, todo en un solo lugar.",
     "eyebrow": "El viaje de tu piel",
     "fab": "Añade la foto de hoy",
+    "reportReaction": "Mi piel está reaccionando",
     "prerequisites": {
       "profile": {
         "title": "Termina tu perfil de piel primero",
-        "body": "Ritora necesita su perfil de piel antes de poder analizar fotos, registros y progreso de la piel de forma segura.",
-        "cta": "Perfil de piel abierto",
+        "body": "Ritora necesita tu perfil de piel antes de poder analizar fotos, registros y progreso de la piel de forma segura.",
+        "cta": "Abrir perfil de piel",
         "loadError": "No pudimos acceder a su perfil de piel en este momento. Comprueba tu conexión y vuelve a intentarlo."
       }
     },
     "tabs": {
       "calendar": "Calendario",
       "photos": "Fotos",
-      "insights": "Perspectivas",
-      "wrapped": "envuelto"
+      "memory": "Memoria",
+      "insights": "Análisis",
+      "wrapped": "Resumen"
+    },
+    "routineMemory": {
+      "title": "Memoria de rutina",
+      "subtitle": "Mira cómo tus productos, tu uso registrado y tu piel encajan a lo largo del tiempo, en un solo lugar.",
+      "loadingLabel": "Cargando memoria de rutina",
+      "emptyTitle": "Aún no hay nada que mostrar",
+      "emptyBody": "Sigue registrando tu rutina y cómo se siente tu piel. Ritora conectará qué cambió, cuándo aparecieron los síntomas y qué ayudó a que tu piel se calmara.",
+      "disclaimer": "El momento es una pista, no una prueba. Úsalo para notar qué cambió y trata tu piel con suavidad.",
+      "possibleLinksTitle": "Productos que vale la pena revisar",
+      "timelineTitle": "Qué cambió",
+      "productTimelineTitle": "Una línea de tiempo para cada producto",
+      "productTimelineSubtitle": "Cada producto tiene su propia línea de tiempo con fechas, para que veas qué pasó antes, durante y después de una reacción.",
+      "treeScrollLabel": "Línea de tiempo de la rutina desplazable",
+      "treeProductAriaSuffix": "línea de tiempo",
+      "unknownProduct": "Producto desconocido",
+      "durationLabel": "Ventana de memoria",
+      "durationOptions": {
+        "7": "7 días",
+        "14": "14 días",
+        "30": "30 días",
+        "90": "90 días"
+      },
+      "firstUse": "Usado por primera vez el {date}",
+      "noFirstUse": "Aún no hay uso registrado",
+      "noProductEvents": "Nada cambió para este producto en esta ventana.",
+      "summary": {
+        "reactionSignalCount": "Señales de reacción",
+        "applicationLogCount": "Registros de rutina",
+        "productChangeCount": "Cambios de rutina"
+      },
+      "levels": {
+        "watch": "Vigila este producto",
+        "possible": "Revisa este producto",
+        "higher_attention": "Mira este primero"
+      },
+      "reasons": {
+        "reaction_after_first_logged_use": "Apareció una reacción poco después de que lo usaras por primera vez",
+        "reaction_after_product_added": "Apareció una reacción poco después de que lo agregaras",
+        "reaction_after_frequency_change": "Apareció una reacción después de que cambiaras la frecuencia de uso",
+        "skipped_after_reaction": "Lo omitiste después de la reacción",
+        "active_category_near_reaction": "Un producto activo estaba en uso cerca de la reacción"
+      },
+      "events": {
+        "product_added": "Agregado",
+        "first_logged_use": "Primer uso registrado",
+        "product_used": "Usado",
+        "frequency_changed": "Frecuencia cambiada",
+        "product_skipped": "Omitido",
+        "reaction_signal": "Señal de reacción",
+        "recovery_started": "Recuperación iniciada",
+        "recent_change_logged": "Cambio reciente registrado"
+      },
+      "eventDetails": {
+        "skinJournal": "De tu diario de piel",
+        "recovery": "Durante tu ventana de rutina más tranquila"
+      }
     },
     "comingSoon": {
       "badge": "Próximamente",
@@ -3369,7 +3544,7 @@
         "body": "Veremos tus fotos, encontraremos patrones en tu piel y te daremos consejos sencillos. Sigue añadiendo fotos para tenerlo listo."
       },
       "wrapped": {
-        "title": "Skin Wrapped muy pronto",
+        "title": "Resumen de piel muy pronto",
         "body": "Convertiremos tus fotos diarias en un resumen divertido de cómo ha cambiado tu piel. Sigue añadiendo fotos para tener el tuyo listo."
       }
     },
@@ -3384,31 +3559,31 @@
       "loadingLabel": "Cargando estadísticas del diario"
     },
     "calendar": {
-      "selectMonth": "elegir mes",
+      "selectMonth": "Elegir mes",
       "selectTrackedMonth": "Saltar al mes registrado",
       "trackedMonthLabel": "{month} · {count, plural, one {# foto} other {# fotos}}",
       "previous": "Mes anterior",
-      "next": "El próximo mes",
+      "next": "Mes siguiente",
       "loading": "Cargando calendario",
-      "monthlyWrapped": "Envuelto mensualmente",
+      "monthlyWrapped": "Resumen mensual",
       "weekdays": [
-        "m",
-        "t",
-        "W.",
-        "t",
-        "f",
+        "L",
+        "M",
+        "X",
+        "J",
+        "V",
         "S",
-        "S"
+        "D"
       ],
       "legend": {
-        "completed": "hecho",
-        "noEntry": "Ninguno",
-        "pending": "analizando",
+        "completed": "Hecho",
+        "noEntry": "Sin entrada",
+        "pending": "Analizando",
         "reaction": "Reacción",
-        "insight": "Perspectiva"
+        "insight": "Análisis"
       },
       "tooltip": {
-        "completed": "Foto y análisis realizados.",
+        "completed": "Foto y análisis listos",
         "no_entry": "Sin entrada",
         "entry_no_photo": "Entrada sin foto",
         "pending": "Análisis pendiente",
@@ -3984,6 +4159,79 @@
       "noteLabel": "Queja o nota (opcional)",
       "addNote": "Agregar queja o nota",
       "notePlaceholder": "Cuéntanos cualquier cosa. Se siente tirante, pica, se ve aburrido...",
+      "reactionReport": {
+        "start": "Mi piel está reaccionando",
+        "title": "Reporte de síntomas",
+        "savedTitle": "Reacción que registraste",
+        "body": "Úsalo cuando la reacción es algo que sientes, aunque sea difícil verla en una foto.",
+        "clear": "Borrar informe de síntomas",
+        "validationSymptoms": "Elige al menos un síntoma o borra el informe de síntomas antes de guardar.",
+        "symptomsLabel": "¿Qué estás sintiendo?",
+        "severityLabel": "¿Qué tan intenso es?",
+        "onsetLabel": "¿Cuándo empezó?",
+        "locationsLabel": "¿Dónde ocurre?",
+        "triggerLabel": "Posible desencadenante",
+        "redFlagsLabel": "Señales de alerta",
+        "redFlagsHint": "Elige las que correspondan. Ritora las marcará como señales de mayor atención.",
+        "noteLabel": "Nota de reacción (opcional)",
+        "notePlaceholder": "Por ejemplo, ardor en las mejillas después de un sérum nuevo.",
+        "symptoms": {
+          "burning": "Ardor",
+          "stinging": "Escozor",
+          "itching": "Picazón",
+          "tightness": "Tirantez",
+          "redness": "Enrojecimiento",
+          "heat": "Calor",
+          "pain": "Dolor",
+          "swelling": "Hinchazón",
+          "hives": "Urticaria",
+          "peeling": "Descamación",
+          "breakout": "Brote",
+          "other": "Otro"
+        },
+        "severity": {
+          "mild": "Leve",
+          "moderate": "Moderada",
+          "severe": "Intensa"
+        },
+        "onset": {
+          "today": "Hoy",
+          "yesterday": "Ayer",
+          "two_to_three_days": "Hace 2-3 días",
+          "four_to_seven_days": "Hace 4-7 días",
+          "more_than_week": "Hace más de una semana",
+          "unsure": "No lo sé"
+        },
+        "locations": {
+          "forehead": "Frente",
+          "cheeks": "Mejillas",
+          "chin_jaw": "Mentón/mandíbula",
+          "around_mouth": "Alrededor de la boca",
+          "eye_area": "Área de los ojos",
+          "neck": "Cuello",
+          "all_over_face": "Toda la cara",
+          "body": "Cuerpo",
+          "other": "Otro"
+        },
+        "triggers": {
+          "new_product": "Producto nuevo",
+          "changed_frequency": "Cambio de frecuencia",
+          "active_ingredient": "Ingrediente activo",
+          "sunscreen": "Protector solar",
+          "treatment": "Tratamiento",
+          "weather_or_environment": "Clima o entorno",
+          "unknown": "Desconocido"
+        },
+        "redFlags": {
+          "eye_or_lip_swelling": "Hinchazón de ojos o labios",
+          "trouble_breathing": "Dificultad para respirar",
+          "blistering": "Ampollas",
+          "open_skin": "Piel abierta o agrietada",
+          "spreading_fast": "Se extiende rápido",
+          "severe_pain": "Dolor intenso",
+          "infection_signs": "Posibles signos de infección"
+        }
+      },
       "privacyNote": "Su foto y calificaciones están encriptadas en reposo. La IA sólo ve la foto. Nunca su nombre, correo electrónico o identificación de usuario."
     },
     "compare": {
@@ -4144,7 +4392,7 @@
       "progress": {
         "title": "{count, plural, one {# entrada del diario} other {# entradas del diario}} registradas",
         "next": "{count, plural, one {# entrada más} other {# entradas más}} para desbloquear la próxima percepción",
-        "ready": "Sus datos están listos para recibir sugerencias de insights más completas.",
+        "ready": "Tus datos están listos para recibir sugerencias de análisis más completas.",
         "generating": "Ritora está preparando nuevas sugerencias de conocimientos a partir de los datos más recientes de su revista."
       },
       "headlines": {
@@ -4253,7 +4501,7 @@
         "cacheHit": "golpear",
         "cacheMiss": "señorita",
         "sources": "Fuentes",
-        "provenance": "AI perfeccionó la redacción utilizando solo los hechos y las fuentes examinadas que se muestran aquí."
+        "provenance": "La IA perfeccionó la redacción utilizando solo los hechos y las fuentes examinadas que se muestran aquí."
       },
       "kb": {
         "lastVerified": "Verificado el {date}",
@@ -4312,8 +4560,8 @@
       }
     },
     "wrapped": {
-      "title": "Tu piel envuelta",
-      "subtitle": "Convertimos tus fotos diarias en un Wrapped privado cada mes, trimestre y año. Aparecen aquí cuando están listos.",
+      "title": "Tu resumen de piel",
+      "subtitle": "Convertimos tus fotos diarias en un resumen privado cada mes, trimestre y año. Aparecen aquí cuando están listos.",
       "save": "Guardar",
       "play": "Jugar",
       "almostReady": "Casi listo",
@@ -4323,12 +4571,12 @@
         "generating": "Preparando… · {photos} fotos",
         "ready_to_generate": "Casi listo · {photos} fotos",
         "not_enough_photos": "Lo prepararemos cuando tengas {min}+ fotos",
-        "failed": "No se pudo preparar este envuelto. Lo intentaremos de nuevo.",
+        "failed": "No se pudo preparar este resumen. Lo intentaremos de nuevo.",
         "pending": "En cola"
       },
       "empty": {
-        "title": "Tu Skin Envuelto aparece aquí",
-        "body": "Cada mes revisamos tus fotos diarias y armamos un Wrapped privado. Sigue agregando fotos y la primera estará lista pronto."
+        "title": "Tu resumen de piel aparece aquí",
+        "body": "Cada mes revisamos tus fotos diarias y armamos un resumen privado. Sigue agregando fotos y la primera estará lista pronto."
       },
       "periodKind": {
         "monthly": "Mensual",
@@ -4336,9 +4584,9 @@
         "yearly": "Anual"
       },
       "viewer": {
-        "title": "envuelto",
+        "title": "Resumen",
         "subtitle": "{kind} · {period}",
-        "notFound": "Envuelto no encontrado.",
+        "notFound": "Resumen no encontrado.",
         "noFrames": "No hay marcos disponibles.",
         "frameAlt": "Foto del diario de piel del {date}",
         "frameCaption": "{date} · {caption}",
@@ -4380,28 +4628,51 @@
       "cracking_appearance": "Aspecto agrietado"
     },
     "simplification": {
-      "bannerTitle": "Rutina simplificada al modo de reparación de barreras",
-      "bannerBody": "Detectamos posible irritación en tu foto del {date}. Tu rutina habitual queda en pausa hasta que lo confirmes.",
+      "bannerTitle": "El modo de recuperación está activo",
+      "bannerBody": "Ritora pausó los pasos más fuertes desde {date} para que tu piel se calme antes de volver por fases.",
       "viewDetails": "Ver detalles",
-      "restoreRoutine": "Restaurar rutina",
-      "keepSimplified": "Mantener simplificado",
-      "compactAlert": "Rutina simplificada. Ver en el diario",
-      "compactAlertSubtitle": "Desde {date} · modo de reparación de barrera activo",
+      "restoreRoutine": "Finalizar modo de recuperación",
+      "keepSimplified": "Seguir recuperando",
+      "compactAlert": "Modo de recuperación activo. Ver en el diario",
+      "compactAlertSubtitle": "Desde {date} · regreso por fases protegido",
       "viewInJournal": "Ver en el diario",
       "detail": {
         "eyebrow": "Diario de la piel · seguridad",
-        "title": "Simplificación de rutina · {start} – {endLabel}",
+        "title": "Modo de recuperación · {start} – {endLabel}",
         "ongoing": "en curso",
-        "subtitle": "Started from a journal safety event on {date}",
-        "noticedTitle": "lo que notamos",
-        "noticedFallback": "Un evento de seguridad de una revista sugirió simplificar su rutina mientras su piel se calma.",
-        "presetTitle": "Preajuste de reparación de barreras (activo)",
-        "presetSubtitle": "Una rutina conservadora de barrera de apoyo para usar mientras revisa la alerta.",
-        "presetAm": "soy",
+        "subtitle": "Empezó por una señal de recuperación el {date}",
+        "noticedTitle": "Por qué empezó",
+        "noticedFallback": "Una señal de reacción sugirió pausar los pasos más fuertes mientras tu piel se calma.",
+        "symptomsTitle": "Síntomas desencadenantes",
+        "activeOveruse": "Señal de exceso de activos",
+        "presetTitle": "Rutina de recuperación",
+        "presetSubtitle": "Una rutina conservadora de apoyo a la barrera hasta que los controles de salida estén claros.",
+        "presetAm": "AM",
         "presetPm": "PM",
         "presetAmBody": "Limpieza suave, hidratación y protección solar.",
         "presetPmBody": "Limpia e hidrata suavemente.",
-        "pausedTitle": "lo que estaba en pausa",
+        "exitTitle": "Controles antes de salir",
+        "exitNoRedFlags": "Sin hinchazón intensa, ampollas, piel abierta, dolor fuerte, dificultad para respirar ni señales de infección.",
+        "exitSymptomsSettled": "El ardor, escozor, tirantez, descamación o enrojecimiento se ha calmado claramente.",
+        "exitNoNewActives": "No se añadió ningún exfoliante, retinoide, ácido, vitamina C ni tratamiento nuevo durante la recuperación.",
+        "reviewAfter": "Revisar después del {date}",
+        "exitEligible": "Salida más temprana {date}",
+        "returnTitle": "Regreso por fases",
+        "returnBarrierOnly": "Mantén primero la rutina de barrera.",
+        "returnOneActive": "Vuelve a introducir solo un activo o tratamiento.",
+        "returnBuildFrequency": "Aumenta la frecuencia solo si los síntomas siguen tranquilos.",
+        "phase": {
+          "stabilize": "Estabilizar",
+          "observe": "Observar",
+          "phased_return": "Regreso por fases"
+        },
+        "source": {
+          "unknown": "Señal de recuperación",
+          "manual": "Iniciado manualmente",
+          "reaction_report": "Reportaste síntomas",
+          "photo_analysis": "Señal del análisis fotográfico"
+        },
+        "pausedTitle": "Lo que se pausó",
         "pausedSubtitle": "Si se capturó una instantánea del horario el {date}, aparece abajo.",
         "pausedAmTitle": "AM (en pausa)",
         "pausedPmTitle": "PM (en pausa)",
@@ -4430,20 +4701,20 @@
     },
     "empty": {
       "title": "El viaje de tu piel comienza aquí",
-      "body": "Tome una foto con buena luz del día para comenzar el seguimiento. Nosotros nos encargaremos del resto: análisis, tendencias y un Wrapped mensual.",
+      "body": "Toma una foto con buena luz del día para comenzar el seguimiento. Nosotros nos encargaremos del resto: análisis, tendencias y un resumen mensual.",
       "addFirst": "+ Agrega tu primera foto"
     },
     "errors": {
       "analysisFailedTitle": "No se pudo analizar esta foto.",
       "analysisFailedBody": "Problema en la red · o iluminación demasiado baja. Tu foto se guarda de cualquier manera.",
-      "analysisFailedProviderUnavailable": "El servicio de fotografía AI no está disponible temporalmente. Tu foto se guarda y podrás volver a intentarlo en breve.",
-      "analysisFailedProviderTimeout": "El servicio de fotografía AI tardó demasiado en responder. Tu foto se guarda y podrás volver a intentarlo en breve.",
-      "analysisFailedProviderInvalidResponse": "La foto de respuesta de AI no pasó nuestros controles de seguridad. Tu foto se guarda y puedes volver a intentarlo.",
+      "analysisFailedProviderUnavailable": "El servicio de IA fotográfica no está disponible temporalmente. Tu foto se guarda y podrás volver a intentarlo en breve.",
+      "analysisFailedProviderTimeout": "El servicio de IA fotográfica tardó demasiado en responder. Tu foto se guarda y podrás volver a intentarlo en breve.",
+      "analysisFailedProviderInvalidResponse": "La respuesta de la IA fotográfica no pasó nuestros controles de seguridad. Tu foto se guarda y puedes volver a intentarlo.",
       "analysisFailedPhotoPreflight": "Esta foto no pudo pasar el control de calidad local. Pruebe con una foto de rostro más grande y clara con luz uniforme.",
       "analysisFailedPayloadTooLarge": "Este conjunto de fotografías es demasiado grande para analizarlo de forma segura. Intente reemplazarlo con fotografías recortadas más pequeñas.",
       "analysisFailedCostLimit": "La IA de la fotografía está temporalmente limitada por motivos de seguridad. Tu foto se guarda y puedes volver a intentarlo más tarde.",
-      "analysisFailedConfiguration": "Photo AI no está configurado en este momento. Su foto se guarda y el soporte técnico puede revisarla.",
-      "analysisFailedInvalidPhoto": "Se requiere una foto frontal antes de que Photo AI pueda analizar esta entrada.",
+      "analysisFailedConfiguration": "La IA fotográfica no está configurada en este momento. Tu foto se guarda y soporte puede revisarla.",
+      "analysisFailedInvalidPhoto": "Se requiere una foto frontal antes de que la IA fotográfica pueda analizar esta entrada.",
       "tooDark": "Tuvimos problemas para ver tu piel con claridad. Pruebe la luz natural la próxima vez.",
       "futureDate": "No se puede elegir una fecha futura.",
       "uploadFailed": "La carga falló. Por favor inténtalo de nuevo."
@@ -4521,12 +4792,12 @@
     "routineSimplificationTitle": "Simplificación de rutina",
     "autoSimplifyBody": "Simplificar automáticamente la rutina ante reacciones moderadas/graves",
     "autoSimplifyNote": "Cuando está desactivado, seguirás recibiendo una alerta, pero tu rutina nunca se cambiará automáticamente.",
-    "insightsTitle": "Insights y Wrapped",
-    "insightAlertsBody": "Notificaciones de insights",
-    "insightCadenceLabel": "Frecuencia de insights",
+    "insightsTitle": "Análisis y resumen",
+    "insightAlertsBody": "Notificaciones de análisis",
+    "insightCadenceLabel": "Frecuencia de análisis",
     "insightCadence": {
       "weekly": "Resumen semanal",
-      "fewer": "Menos insights"
+      "fewer": "Menos análisis"
     },
     "insightDigestDayLabel": "Día del resumen",
     "insightDigestDays": {
@@ -4539,7 +4810,7 @@
       "7": "Domingo"
     },
     "insightDigestTimeLabel": "Hora del resumen",
-    "wrappedAlertsBody": "Notificaciones cuando Wrapped esté listo",
+    "wrappedAlertsBody": "Notificaciones cuando el resumen esté listo",
     "newPill": "Nuevo",
     "todaysSuggestionTitle": "Sugerencia de hoy",
     "todaysSuggestionBody": "Tres recordatorios para mantener tu rutina al día.",
@@ -4573,7 +4844,7 @@
   "notificationsPage": {
     "eyebrow": "Bandeja de entrada",
     "title": "Notificaciones",
-    "subtitle": "Sugerencias, recordatorios, reacciones, ideas y su Skin Wrapped, todo en un solo lugar.",
+    "subtitle": "Sugerencias, recordatorios, reacciones, análisis y tu resumen de piel, todo en un solo lugar.",
     "markAllRead": "Marcar todo como leído",
     "markingAllRead": "Marcando todo como leído",
     "unreadHeading": "No leído",
@@ -4582,7 +4853,7 @@
     "play": "Jugar",
     "empty": "Todos atrapados.",
     "emptyTitle": "Todo tranquilo por ahora",
-    "emptyBody": "Cuando algo necesite su atención, como una posible reacción, una nueva idea o su Skin Wrapped mensual, aparecerá aquí.",
+    "emptyBody": "Cuando algo necesite tu atención, como una posible reacción, un nuevo análisis o tu resumen mensual de piel, aparecerá aquí.",
     "managePreferences": "Administrar preferencias de notificación",
     "preferencesAction": "Preferencias",
     "loadingMore": "Cargando más",
@@ -4618,12 +4889,12 @@
         "body": "Señales de reacción persistentes. Considere una visita al dermatólogo."
       },
       "insight_ready": {
-        "title": "Nueva visión",
+        "title": "Nuevo análisis",
         "body": "Toca para ver qué funciona."
       },
       "wrapped_ready": {
-        "title": "Tu envuelto está listo",
-        "body": "Su resumen privado está listo con subtítulos de IA sobre los cambios visibles."
+        "title": "Tu resumen está listo",
+        "body": "Tu resumen privado está listo con subtítulos de IA sobre los cambios visibles."
       },
       "analysis_failed": {
         "title": "El análisis falló",
@@ -4700,7 +4971,7 @@
         "removeFailed": "Eso no se eliminó. Por favor inténtalo de nuevo."
       },
       "error": {
-        "title": "No pudimos cargar Smart Picks",
+        "title": "No pudimos cargar Selecciones inteligentes",
         "body": "Inténtalo de nuevo. Los datos de tu estantería y perfil no se modifican.",
         "retry": "Inténtalo de nuevo"
       },
@@ -4829,8 +5100,8 @@
       },
       "empty": {
         "profileRequired": {
-          "title": "Smart Picks necesita primero su perfil de piel",
-          "body": "Aún faltan algunos detalles del perfil. Llénelos primero para que Smart Picks pueda ser específico para su piel, su presupuesto y lo que está tratando de cambiar."
+          "title": "Selecciones inteligentes necesita primero tu perfil de piel",
+          "body": "Aún faltan algunos detalles del perfil. Complétalos primero para que Selecciones inteligentes pueda adaptarse a tu piel, presupuesto y objetivo."
         },
         "consentRequired": {
           "title": "Las selecciones inteligentes están desactivadas",
@@ -4838,7 +5109,7 @@
         },
         "allGapsDismissed": {
           "title": "Nada nuevo hoy",
-          "body": "Usted pasó por alto las selecciones actuales, por lo que las mantendremos fuera del camino por ahora. Smart Picks volverá a comprobarlo cuando su estante cambie o finalice la pausa."
+          "body": "Omitiste las selecciones actuales, así que las mantendremos fuera del camino por ahora. Selecciones inteligentes volverá a comprobarlo cuando cambie tu estante o termine la pausa."
         },
         "redundancyOnly": {
           "title": "No hay nuevos productos para comprar.",
@@ -4854,11 +5125,11 @@
         },
         "fullyCovered": {
           "title": "Nada útil que agregar.",
-          "body": "Su rutina principal está cubierta y no vemos una razón clara para comprar algo más en este momento. Continúe usando lo que tiene y Smart Picks volverá a verificar a medida que cambien su estante, registros y fotos."
+          "body": "Tu rutina principal está cubierta y no vemos una razón clara para comprar algo más en este momento. Sigue usando lo que tienes y Selecciones inteligentes volverá a verificar a medida que cambien tu estante, registros y fotos."
         },
         "fullyCoveredStarter": {
           "title": "Añade un producto para empezar",
-          "body": "Smart Picks necesita al menos un artículo en el estante antes de poder comparar lo que usted posee con lo que falta. Agregue su primer producto y mantendremos la rutina inicial pequeña."
+          "body": "Selecciones inteligentes necesita al menos un artículo en el estante antes de poder comparar lo que tienes con lo que falta. Agrega tu primer producto y mantendremos la rutina inicial pequeña."
         },
         "profileCta": "Iniciar perfil de piel",
         "consentCta": "Volver a activar las selecciones inteligentes",
@@ -4921,28 +5192,29 @@
   },
   "todaysSuggestion": {
     "page": {
-      "title": "La sugerencia de hoy",
-      "history": "Historia",
-      "takeBreak": "tómate un descanso",
+      "title": "Sugerencia de hoy",
+      "history": "Historial",
+      "takeBreak": "Tomar una pausa",
       "loading": "Cargando el plan de hoy",
       "errorTitle": "No pudimos cargar el plan de hoy.",
       "error": "Algo salió mal al cargar tus sugerencias. Puedes intentarlo de nuevo.",
       "retry": "Inténtalo de nuevo",
       "worthConsidering": "Vale la pena considerarlo",
       "nextSlotTomorrow": "mañana",
-      "normalRoutineRestored": "Se restablece la rutina normal para futuras sugerencias.",
-      "routineBreakStarted": "La rutina se detuvo. No se generarán nuevas sugerencias hasta que reanude.",
-      "routineBreakResumed": "Se reanudó la rutina. Las sugerencias aparecerán cuando se acerque cada momento de rutina.",
+      "normalRoutineRestored": "Rutina normal restaurada para futuras sugerencias.",
+      "routineBreakStarted": "Rutina pausada. No se generarán nuevas sugerencias hasta que la reanudes.",
+      "routineBreakResumed": "Rutina reanudada. Las sugerencias aparecerán cuando se acerque cada momento de rutina.",
       "routineBreakResumeUpdated": "Fecha de reanudación actualizada.",
-      "routineBreakActionFailed": "No pudimos actualizar su interrupción de rutina. Por favor inténtalo de nuevo.",
-      "quickSuggestion": "sugerencia rápida",
+      "routineBreakActionFailed": "No pudimos actualizar tu pausa de rutina. Inténtalo de nuevo.",
+      "quickSuggestion": "Sugerencia rápida",
       "quickSuggestionQueued": "Se está preparando una sugerencia rápida.",
-      "quickSuggestionFailed": "No pudimos iniciar esa sugerencia. Por favor inténtalo de nuevo.",
-      "quickSuggestionConsentRequired": "Permita sugerencias de IA antes de solicitar una sugerencia rápida.",
+      "quickSuggestionFailed": "No pudimos iniciar esa sugerencia. Inténtalo de nuevo.",
+      "quickSuggestionConsentRequired": "Permite las sugerencias de IA antes de pedir una sugerencia rápida.",
       "aiConsentGranted": "Sugerencias de IA habilitadas.",
-      "aiConsentFailed": "No pudimos salvar ese consentimiento. Por favor inténtalo de nuevo.",
+      "aiConsentFailed": "No pudimos guardar ese consentimiento. Inténtalo de nuevo.",
       "gapSaved": "Guardado en tu lista de deseos de Hoy.",
-      "gapDismissed": "Recomendación descartada por ahora."
+      "gapDismissed": "Recomendación descartada por ahora.",
+      "reportReaction": "Mi piel está reaccionando"
     },
     "prerequisites": {
       "profile": {
@@ -4954,90 +5226,90 @@
     },
     "aiConsentDialog": {
       "title": "Permitir sugerencias de IA",
-      "body": "Las sugerencias rápidas utilizan IA para leer su estante, agenda, perfil de piel, diarios e historial de aplicaciones anteriores. El perfil confidencial o el contexto de la revista solo se utilizan cuando el consentimiento de coincidencia también está activo.",
+      "body": "Las sugerencias rápidas usan IA para leer tu estante, agenda, perfil de piel, diarios e historial de aplicaciones anteriores. El perfil sensible o el contexto del diario solo se usan cuando el consentimiento correspondiente también está activo.",
       "controlTitle": "Mantienes el control",
-      "controlBody": "Puedes revocar esto en cualquier momento en Configuración → Privacidad. Ritora mantiene estas solicitudes encriptadas y no utiliza fotografías sin editar del diario para realizar sugerencias.",
+      "controlBody": "Puedes revocar esto en cualquier momento en Configuración → Privacidad. Ritora mantiene estas solicitudes cifradas y no usa fotos originales del diario para generar sugerencias.",
       "cancel": "Ahora no",
       "confirm": "Permitir sugerencias de IA"
     },
     "aiConsentCard": {
       "title": "Rutinas personalizadas, hechas para tu piel",
-      "body": "Active las sugerencias de IA y Ritora adaptará cada una a su perfil de piel, estante y entradas recientes de su diario. Sin esto, todavía llegan sugerencias, pero siguen siendo básicas.",
+      "body": "Activa las sugerencias de IA y Ritora adaptará cada una a tu perfil de piel, estante y entradas recientes del diario. Sin esto, las sugerencias seguirán llegando, pero serán básicas.",
       "benefits": {
-        "matchProfile": "Rutinas que coinciden con tus objetivos y tolerancias.",
-        "adaptToShelf": "Se adapta a los productos que realmente posee",
+        "matchProfile": "Rutinas que coinciden con tus objetivos y tolerancias",
+        "adaptToShelf": "Se adapta a los productos que realmente tienes",
         "revokeAnytime": "Tú mantienes el control. Apágalo en cualquier momento en Configuración."
       },
-      "privacy": "Sus datos permanecen cifrados y nunca se venden.",
+      "privacy": "Tus datos permanecen cifrados y nunca se venden.",
       "grant": "Permitir sugerencias de IA",
-      "dismiss": "tal vez más tarde"
+      "dismiss": "Tal vez más tarde"
     },
     "routineBreak": {
-      "statusLabel": "en un descanso",
+      "statusLabel": "En pausa",
       "title": "Estás en un descanso de rutina",
-      "body": "Ritora mantendrá su agenda intacta, pausará nuevas sugerencias y detendrá los recordatorios de rutina hasta que reanude.",
+      "body": "Ritora mantendrá tu agenda intacta, pausará nuevas sugerencias y detendrá los recordatorios de rutina hasta que la reanudes.",
       "resumeOn": "Reanudación prevista: {date}",
       "resumeIndefinite": "En pausa hasta reanudar",
       "resumeDateLabel": "Fecha de reanudación",
-      "saveResumeDate": "Guardar fecha de currículum",
+      "saveResumeDate": "Guardar fecha de reanudación",
       "resumeNow": "Reanudar rutina",
       "changeResumeDate": "Cambiar",
       "cancelEdit": "Cancelar",
       "validation": {
-        "resumeDateInvalid": "Elija una fecha de currículum válida.",
-        "resumeDatePast": "Elija una fecha de currículum futura."
+        "resumeDateInvalid": "Elige una fecha de reanudación válida.",
+        "resumeDatePast": "Elige una fecha de reanudación futura."
       }
     },
     "routineBreakStart": {
       "title": "Tómate un descanso de la rutina",
-      "body": "Su agenda permanece intacta, pero Ritora pausará nuevas sugerencias, recordatorios de rutina y reposiciones de rutinas perdidas.",
+      "body": "Tu agenda permanece intacta, pero Ritora pausará nuevas sugerencias, recordatorios de rutina y reposiciones de rutinas perdidas.",
       "resumeDateLabel": "Fecha de reanudación",
-      "resumeDateHint": "Opcional. Déjelo en blanco para hacer una pausa hasta que reanude manualmente.",
+      "resumeDateHint": "Opcional. Déjalo en blanco para pausar hasta que reanudes manualmente.",
       "cancel": "Cancelar",
       "start": "Iniciar descanso",
       "validation": {
-        "resumeDateInvalid": "Elija una fecha de currículum válida.",
-        "resumeDatePast": "Elija una fecha de currículum futura."
+        "resumeDateInvalid": "Elige una fecha de reanudación válida.",
+        "resumeDatePast": "Elige una fecha de reanudación futura."
       }
     },
     "onDemandDialog": {
-      "title": "sugerencia rápida",
-      "body": "Cuéntale a Ritora lo que está pasando ahora mismo. Utilizará su estantería y registros recientes.",
+      "title": "Sugerencia rápida",
+      "body": "Cuéntale a Ritora lo que está pasando ahora mismo. Usará tu estante y registros recientes.",
       "intentLabel": "¿Qué está pasando?",
-      "intensityLabel": "¿Cuanto quieres hacer?",
+      "intensityLabel": "¿Cuánto quieres hacer?",
       "noteLabel": "Nota breve (opcional)",
       "notePlaceholder": "Por ejemplo, acabo de regresar sudando y quiero un reinicio rápido.",
       "cancel": "Cancelar",
       "submit": "Generar sugerencia",
-      "noteTooLong": "Mantenga esto por debajo de 280 caracteres.",
+      "noteTooLong": "Mantén esto por debajo de 280 caracteres.",
       "intensity": {
-        "minimal": "mínimo",
+        "minimal": "Mínimo",
         "minimalDescription": "Solo lo esencial",
         "standard": "Estándar",
         "standardDescription": "Minirutina completa"
       }
     },
     "onDemand": {
-      "sectionTitle": "sugerencias rapidas",
+      "sectionTitle": "Sugerencias rápidas",
       "label": "Bajo demanda",
       "newRequest": "Nuevo",
       "retry": "Inténtalo de nuevo",
       "retrying": "Reintentando...",
-      "qualityTitle": "Los datos del producto son limitados.",
+      "qualityTitle": "Los datos del producto son limitados",
       "intent": {
         "post_workout": "Después del entrenamiento",
-        "post_sun": "despues del sol",
+        "post_sun": "Después del sol",
         "post_swim": "Después de nadar",
-        "travel_refresh": "Actualización de viaje",
-        "quick_refresh": "Actualización rápida",
+        "travel_refresh": "Refresco de viaje",
+        "quick_refresh": "Refresco rápido",
         "event_prep": "Preparación del evento",
         "post_makeup_or_shower": "Después del maquillaje o la ducha",
         "other": "Otro"
       }
     },
     "lockedDay": {
-      "title": "Como llegan las sugerencias",
-      "body": "Cada rutina se prepara poco antes de su llegada, utilizando su última foto, estantería y perfil de piel.",
+      "title": "Cómo llegan las sugerencias",
+      "body": "Cada rutina se prepara poco antes de llegar, usando tu última foto, estante y perfil de piel.",
       "leadFact": "Visible {leadTime} antes de que llegue cada sugerencia.",
       "notifyFact": "Te avisamos cuando esté lista y a la hora programada. Gestiona esto en <link>Notificaciones</link>.",
       "leadTimeHour": "{count} hora",
@@ -5046,9 +5318,9 @@
       "leadTimeMinutes": "{count} minutos"
     },
     "section": {
-      "morning": "mañana",
+      "morning": "Mañana",
       "noon": "Mediodía",
-      "evening": "tarde"
+      "evening": "Noche"
     },
     "summary": {
       "applied": "{count, plural, one {# aplicado} other {# aplicados}}",
@@ -5076,7 +5348,7 @@
           "dry": "seco",
           "balanced": "equilibrado",
           "humid": "húmedo",
-          "very_humid": "muy humedo"
+          "very_humid": "muy húmedo"
         },
         "air": {
           "good": "bueno",
@@ -5145,7 +5417,7 @@
           "dry": "seco",
           "balanced": "equilibrado",
           "humid": "húmedo",
-          "very_humid": "muy humedo"
+          "very_humid": "muy húmedo"
         },
         "air": {
           "good": "bueno",
@@ -5460,10 +5732,10 @@
       "onDemandLabel": "A demanda · {intent}",
       "onDemandIntent": {
         "post_workout": "Después del entrenamiento",
-        "post_sun": "despues del sol",
+        "post_sun": "Después del sol",
         "post_swim": "Después de nadar",
-        "travel_refresh": "Actualización de viaje",
-        "quick_refresh": "Actualización rápida",
+        "travel_refresh": "Refresco de viaje",
+        "quick_refresh": "Refresco rápido",
         "event_prep": "Preparación del evento",
         "post_makeup_or_shower": "Después del maquillaje o la ducha",
         "other": "Otro"

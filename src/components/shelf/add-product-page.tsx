@@ -13,6 +13,14 @@ import {
   normalizeLookupCountryValue,
 } from "./add-product/lookup-result-import";
 import {
+  buildAddProductDefaultValues,
+  firstSubmitErrorMessage,
+  hasLookupValue,
+  mergeLookupValues,
+  stripDraftImageUrls,
+  stripIdentityImageUrls,
+} from "./add-product-page.utils";
+import {
   ProductFormBody,
   type ProductFormReviewFields,
   type ProductFormValue,
@@ -36,99 +44,22 @@ import { firstFieldError } from "@/lib/form-errors";
 import {
   clearSubmitErrors,
   executeMutation,
-  type SubmissionValidationResult,
 } from "@/lib/form-submission";
 import {
   navigateAfterShelfSave,
   readShelfReturnTo,
 } from "@/lib/shelf-return-navigation";
 import {
-  createEmptyIdentity,
-  createEmptyManufacturer,
-  createEmptyUserFields,
   getShelfGuidanceValidationErrors,
   shelfProductFormSchema,
-  type ShelfFormFieldName,
   toShelfProductDraft,
 } from "@/lib/shelf-form";
 import { getShelfSubmitError } from "@/lib/shelf-submit-errors";
 import {
   LookupConfidence,
+  ProductIntroductionStatus,
   type ResolvedLookup,
-  type ShelfProductDraft,
 } from "@/types/shelf";
-
-function buildDefaultValues(): ProductFormValue {
-  const identity = createEmptyIdentity();
-
-  return {
-    identity,
-    manufacturer: createEmptyManufacturer(),
-    guidance: buildTemplateGuidance(identity.category, [], []),
-    userFields: createEmptyUserFields(),
-  };
-}
-
-function hasLookupValue(value: unknown): boolean {
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  if (typeof value === "string") {
-    return value.trim().length > 0;
-  }
-
-  return value !== null && value !== undefined;
-}
-
-function mergeLookupValues<T extends object>(
-  current: T,
-  resolved: Partial<T>,
-): T {
-  const next = { ...current };
-
-  for (const key of Object.keys(resolved) as Array<keyof T>) {
-    const value = resolved[key];
-
-    if (hasLookupValue(value)) {
-      next[key] = value as T[typeof key];
-    }
-  }
-
-  return next;
-}
-
-function stripIdentityImageUrls<T extends { imageUrls?: string[] }>(
-  identity: T,
-): Omit<T, "imageUrls"> {
-  const next = { ...identity };
-  delete next.imageUrls;
-
-  return next;
-}
-
-function stripDraftImageUrls(draft: ShelfProductDraft): ShelfProductDraft {
-  return {
-    ...draft,
-    identity: {
-      ...draft.identity,
-      imageUrls: [],
-    },
-  };
-}
-
-function firstSubmitErrorMessage(
-  error: SubmissionValidationResult<ShelfFormFieldName>,
-): string | undefined {
-  if (error.form) {
-    return error.form;
-  }
-
-  return Object.values(error.fields).find(
-    (message): message is string =>
-      typeof message === "string" && message.length > 0,
-  );
-}
 
 export function AddProductPage() {
   const t = useTranslations("shelf");
@@ -154,7 +85,7 @@ export function AddProductPage() {
   const [productPhotoFile, setProductPhotoFile] = useState<File | null>(null);
 
   const form = useForm({
-    defaultValues: buildDefaultValues(),
+    defaultValues: buildAddProductDefaultValues(),
     canSubmitWhenInvalid: true,
     listeners: {
       onChange: ({ formApi }) => {
@@ -264,6 +195,13 @@ export function AddProductPage() {
     form.setFieldValue("guidance", nextGuidance);
     form.setFieldValue("guidance.steps", nextGuidance.steps);
     form.setFieldValue("guidance.cautions", nextGuidance.cautions);
+  };
+
+  const setIntroductionStatusValue = (
+    nextStatus: ProductIntroductionStatus,
+  ) => {
+    clearSubmitErrors(form);
+    form.setFieldValue("introductionStatus", nextStatus);
   };
 
   const handleLookupResult = (resolved: ResolvedLookup) => {
@@ -407,9 +345,11 @@ export function AddProductPage() {
                   onManufacturerChange={setManufacturerValue}
                   onUserFieldsChange={setUserFieldsValue}
                   onGuidanceChange={setGuidanceValue}
+                  onIntroductionStatusChange={setIntroductionStatusValue}
                   fieldErrors={fieldErrors}
                   guidanceErrors={guidanceErrors}
                   reviewFields={reviewFields}
+                  showIntroductionStatus
                 />
               </div>
             </>

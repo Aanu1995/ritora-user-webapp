@@ -9,6 +9,7 @@ import type { AnalysisFeedback } from "./skin-journal-feedback";
 import type { AnalysisFailureCode } from "./skin-journal-analysis-failure";
 import type { JournalInsight } from "./skin-journal-insights";
 import type { PhotoFilterId, PhotoFilterKind } from "./skin-journal-photo-filters";
+import type { ReactionReport } from "./skin-journal-reaction-report";
 export type {
   AnalysisConcern,
   AnalysisComparisonReference,
@@ -57,6 +58,24 @@ export type {
 export type { CompareResponse } from "./skin-journal-compare";
 export { PhotoFilterKind, PhotoFilterStaticId } from "./skin-journal-photo-filters";
 export type { PhotoFilterId } from "./skin-journal-photo-filters";
+export type { SimplificationEvent } from "./skin-journal-simplification";
+export {
+  REACTION_REPORT_LOCATIONS,
+  REACTION_REPORT_ONSETS,
+  REACTION_REPORT_RED_FLAGS,
+  REACTION_REPORT_SEVERITIES,
+  REACTION_REPORT_SYMPTOMS,
+  REACTION_REPORT_TRIGGERS,
+} from "./skin-journal-reaction-report";
+export type {
+  ReactionReport,
+  ReactionReportLocation,
+  ReactionReportOnset,
+  ReactionReportRedFlag,
+  ReactionReportSeverity,
+  ReactionReportSymptom,
+  ReactionReportTrigger,
+} from "./skin-journal-reaction-report";
 export type Angle = "head_on" | "left_profile" | "right_profile";
 export const PHOTO_ANGLES: Angle[] = [
   "left_profile",
@@ -199,6 +218,7 @@ export interface JournalEntry {
   sweat_exercise_today: boolean | null;
   cycle_marker: CycleMarker | null;
   recent_change: RecentChange | null;
+  reaction_report: ReactionReport | null;
   complaint_note: string | null;
   analysis_status: AnalysisStatus;
   analysis_reference: AnalysisComparisonReference | null;
@@ -339,18 +359,6 @@ export interface Wrapped {
   error: string | null;
 }
 
-export interface SimplificationEvent {
-  id: string;
-  triggered_by_event_id: string | null;
-  started_at: string;
-  ended_at: string | null;
-  simplification_mode: "barrier_repair";
-  reason: string | null;
-  acknowledged_at: string | null;
-  restore_strategy: "full" | "phased";
-  original_schedule_snapshot: unknown | null;
-}
-
 export interface JournalStats {
   current_streak: number;
   total_entries: number;
@@ -371,6 +379,7 @@ export interface UpsertEntryPayload {
   sweat_exercise_today?: boolean;
   cycle_marker?: CycleMarker;
   recent_change?: RecentChange | null;
+  reaction_report?: ReactionReport | null;
   complaint_note?: string | null;
   skip_check_in?: boolean;
   photo_processing_consent?: boolean;

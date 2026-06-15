@@ -1,7 +1,9 @@
 import { useShelfUiStore } from '@/stores/shelf-ui-store';
 import {
+  ProductIntroductionStatus,
   ProductCategory,
   ShelfCategoryFilter,
+  ShelfIntroductionStatusFilter,
   ShelfSort,
   ShelfStatFilter,
   ShelfViewMode,
@@ -13,6 +15,7 @@ afterEach(() => {
     sort: ShelfSort.RecentlyAdded,
     view: ShelfViewMode.Grid,
     stat: ShelfStatFilter.All,
+    introductionStatus: ShelfIntroductionStatusFilter.All,
     activeCategory: ShelfCategoryFilter.All,
     search: '',
   });
@@ -43,6 +46,14 @@ describe('useShelfUiStore', () => {
       selectedIds: new Set(['product-1']),
     });
     useShelfUiStore.getState().setActiveCategory(ProductCategory.Serum);
+    expect(useShelfUiStore.getState().selectedIds.size).toBe(0);
+
+    useShelfUiStore.setState({
+      selectedIds: new Set(['product-1']),
+    });
+    useShelfUiStore.getState().setIntroductionStatus(
+      ProductIntroductionStatus.Paused,
+    );
     expect(useShelfUiStore.getState().selectedIds.size).toBe(0);
 
     useShelfUiStore.setState({

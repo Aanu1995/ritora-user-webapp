@@ -2,8 +2,10 @@
 
 import { create } from 'zustand';
 import {
+  ProductIntroductionStatus,
   type ProductCategory,
   ShelfCategoryFilter,
+  ShelfIntroductionStatusFilter,
   ShelfSort,
   ShelfStatFilter,
   ShelfViewMode,
@@ -25,6 +27,13 @@ type ShelfUiState = {
 
   activeCategory: ProductCategory | ShelfCategoryFilter.All;
   setActiveCategory: (category: ProductCategory | ShelfCategoryFilter.All) => void;
+
+  introductionStatus:
+    | ProductIntroductionStatus
+    | ShelfIntroductionStatusFilter.All;
+  setIntroductionStatus: (
+    status: ProductIntroductionStatus | ShelfIntroductionStatusFilter.All,
+  ) => void;
 
   search: string;
   setSearch: (search: string) => void;
@@ -55,6 +64,10 @@ export const useShelfUiStore = create<ShelfUiState>((set, get) => ({
   activeCategory: ShelfCategoryFilter.All,
   setActiveCategory: (activeCategory) =>
     set({ activeCategory, selectedIds: new Set<string>() }),
+
+  introductionStatus: ShelfIntroductionStatusFilter.All,
+  setIntroductionStatus: (introductionStatus) =>
+    set({ introductionStatus, selectedIds: new Set<string>() }),
 
   search: '',
   setSearch: (search) => set({ search, selectedIds: new Set<string>() }),

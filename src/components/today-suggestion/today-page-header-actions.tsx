@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { History, Hourglass, Sparkles } from "lucide-react";
+import { History, Hourglass, Sparkles, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import type { RoutineBreak } from "@/types/suggestions";
@@ -11,6 +11,7 @@ type Props = {
   quickSuggestionDisabled?: boolean;
   routineBreak: RoutineBreak | null | undefined;
   onQuickSuggestion: () => void;
+  onReportReaction: () => void;
   onStartBreak: () => void;
 };
 
@@ -19,11 +20,12 @@ export function TodayPageHeaderActions({
   quickSuggestionDisabled = false,
   routineBreak,
   onQuickSuggestion,
+  onReportReaction,
   onStartBreak,
 }: Props) {
   const t = useTranslations("todaysSuggestion.page");
   return (
-    <div className="flex shrink-0 gap-1.5">
+    <div className="flex shrink-0 gap-1.5" data-testid="today-header-actions">
       {hasData && !routineBreak ? (
         <Button
           type="button"
@@ -49,6 +51,17 @@ export function TodayPageHeaderActions({
           <span className="hidden sm:inline">{t("takeBreak")}</span>
         </Button>
       ) : null}
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        aria-label={t("reportReaction")}
+        onClick={onReportReaction}
+        className="w-7 border-danger/40 bg-surface px-0 text-danger hover:-translate-y-0.5 hover:border-danger/40 hover:bg-surface hover:text-danger hover:opacity-95 focus-visible:ring-danger/30 sm:w-auto sm:px-4"
+      >
+        <TriangleAlert className="h-3.5 w-3.5" />
+        <span className="hidden sm:inline">{t("reportReaction")}</span>
+      </Button>
       <Button
         asChild
         variant="outline"

@@ -29,13 +29,16 @@ import {
   restoreProduct,
   restoreProducts,
   updateProduct,
+  updateProductIntroduction,
   uploadProductImage,
   uploadProductImageForProduct,
 } from "@/services/shelf.service";
 import {
   DataProvenance,
+  ProductIntroductionStatus,
   ProductCategory,
   ShelfCategoryFilter,
+  ShelfIntroductionStatusFilter,
   ShelfSort,
   ShelfStatFilter,
   ShelfStatus,
@@ -55,6 +58,7 @@ describe("shelf.service", () => {
       {
         stat: ShelfStatFilter.All,
         category: ShelfCategoryFilter.All,
+        introductionStatus: ProductIntroductionStatus.Paused,
         search: "retinol",
         sort: ShelfSort.RecentlyAdded,
       },
@@ -66,6 +70,7 @@ describe("shelf.service", () => {
       params: {
         stat: "all",
         category: "all",
+        introductionStatus: "paused",
         search: "retinol",
         sort: "recently-added",
         cursor: "cursor-1",
@@ -73,6 +78,31 @@ describe("shelf.service", () => {
       signal: controller.signal,
     });
     expect(result.nextCursor).toBe("next-cursor");
+  });
+
+  it("omits the introduction status list param when the filter is All", async () => {
+    (getRequest as jest.Mock).mockResolvedValue({
+      items: [],
+      nextCursor: null,
+    });
+
+    await listProducts({
+      stat: ShelfStatFilter.All,
+      category: ShelfCategoryFilter.All,
+      introductionStatus: ShelfIntroductionStatusFilter.All,
+      search: "",
+      sort: ShelfSort.RecentlyAdded,
+    });
+
+    expect(getRequest).toHaveBeenCalledWith("/inventory/products", {
+      params: {
+        stat: "all",
+        category: "all",
+        search: "",
+        sort: "recently-added",
+      },
+      signal: undefined,
+    });
   });
 
   it("fetches inventory stats", async () => {
@@ -145,6 +175,27 @@ describe("shelf.service", () => {
       identity: { name: "Updated" },
     });
     expect(deleteRequest).toHaveBeenCalledWith("/inventory/products/product-1");
+  });
+
+  it("updates product introduction lifecycle through the dedicated endpoint", async () => {
+    (patchRequest as jest.Mock).mockResolvedValue({
+      id: "product-1",
+      introduction: {
+        status: ProductIntroductionStatus.Week1,
+        startedAt: "2026-06-14T08:00:00.000Z",
+        statusUpdatedAt: "2026-06-21T08:00:00.000Z",
+      },
+    });
+
+    const result = await updateProductIntroduction("product-1", {
+      status: ProductIntroductionStatus.Week1,
+    });
+
+    expect(patchRequest).toHaveBeenCalledWith(
+      "/inventory/products/product-1/introduction",
+      { status: ProductIntroductionStatus.Week1 },
+    );
+    expect(result.introduction?.status).toBe(ProductIntroductionStatus.Week1);
   });
 
   it("uploads a product image through the dedicated inventory endpoint", async () => {

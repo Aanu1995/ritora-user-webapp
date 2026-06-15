@@ -1,7 +1,7 @@
 import { PageHeaderSkeleton } from '@/components/app/page-header-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const TAB_WIDTHS = ['w-20', 'w-16', 'w-20', 'w-16'] as const;
+const TAB_WIDTHS = ['w-20', 'w-16', 'w-20', 'w-20', 'w-16'] as const;
 const STAT_WIDTHS = ['w-24', 'w-28', 'w-24'] as const;
 const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6] as const;
 const CALENDAR_CELLS = Array.from({ length: 42 }, (_, index) => index);

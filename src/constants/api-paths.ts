@@ -14,6 +14,7 @@ const APP_BASE = "/app";
 const SUGGESTIONS_BASE = "/suggestions";
 const SMART_PICKS_BASE = "/smart-picks";
 const APPLICATION_LOGS_BASE = "/application-logs";
+const ROUTINE_MEMORY_BASE = "/routine-memory";
 const SUGGESTIONS_HISTORY_BASE = "/suggestions/history";
 const COMMUNITY_BASE = "/community";
 
@@ -62,6 +63,8 @@ export const ApiPath = {
   InventoryProductsBulkMarkFinished: `${INVENTORY_PRODUCTS_BASE}/bulk/mark-finished`,
   InventoryProductsBulkDelete: `${INVENTORY_PRODUCTS_BASE}/bulk-delete`,
   InventoryProduct: buildInventoryProductPath,
+  InventoryProductIntroduction: (id: string) =>
+    `${buildInventoryProductPath(id)}/introduction`,
   InventoryProductUploadImage: (id: string) =>
     `${buildInventoryProductPath(id)}/upload-image`,
   InventoryProductArchive: (id: string) =>
@@ -160,6 +163,7 @@ export const ApiPath = {
   ApplicationLog: (id: string) => `${APPLICATION_LOGS_BASE}/${id}`,
   ApplicationLogVersions: (id: string) =>
     `${APPLICATION_LOGS_BASE}/${id}/versions`,
+  RoutineMemoryTimeline: `${ROUTINE_MEMORY_BASE}/timeline`,
 
   CommunityHome: `${COMMUNITY_BASE}/home`,
   CommunityEligibility: `${COMMUNITY_BASE}/eligibility`,

@@ -1,6 +1,14 @@
 'use client';
 
-import { Grid, List, Search, SlidersHorizontal } from 'lucide-react';
+import {
+  ArrowUpDown,
+  Grid,
+  Layers,
+  List,
+  Search,
+  SlidersHorizontal,
+  Waypoints,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   Select,
@@ -11,8 +19,10 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import {
+  ProductIntroductionStatus,
   ProductCategory,
   ShelfCategoryFilter,
+  ShelfIntroductionStatusFilter,
   ShelfSort,
   ShelfStatFilter,
   ShelfViewMode,
@@ -30,6 +40,13 @@ type Props = {
 
   category: ProductCategory | ShelfCategoryFilter.All;
   onCategoryChange: (next: ProductCategory | ShelfCategoryFilter.All) => void;
+
+  introductionStatus:
+    | ProductIntroductionStatus
+    | ShelfIntroductionStatusFilter.All;
+  onIntroductionStatusChange: (
+    next: ProductIntroductionStatus | ShelfIntroductionStatusFilter.All,
+  ) => void;
 
   sort: ShelfSort;
   onSortChange: (next: ShelfSort) => void;
@@ -69,6 +86,16 @@ const SORT_ORDER: ShelfSort[] = [
   ShelfSort.CategoryGrouped,
 ];
 
+const INTRODUCTION_STATUS_ORDER: ProductIntroductionStatus[] = [
+  ProductIntroductionStatus.New,
+  ProductIntroductionStatus.PatchTesting,
+  ProductIntroductionStatus.Week1,
+  ProductIntroductionStatus.BuildingTolerance,
+  ProductIntroductionStatus.Paused,
+  ProductIntroductionStatus.Tolerated,
+  ProductIntroductionStatus.Failed,
+];
+
 const STATUS_KEY: Record<ShelfStatFilter, string> = {
   [ShelfStatFilter.All]: 'all',
   [ShelfStatFilter.InUse]: 'inUse',
@@ -96,6 +123,8 @@ export function ShelfFilterBar({
   counts,
   category,
   onCategoryChange,
+  introductionStatus,
+  onIntroductionStatusChange,
   sort,
   onSortChange,
   view,
@@ -104,9 +133,18 @@ export function ShelfFilterBar({
   const t = useTranslations('shelf');
   const tStatus = useTranslations('shelf.stat');
   const tCategory = useTranslations('shelf.category');
+  const tIntroduction = useTranslations('shelf.introduction');
+  const tIntroductionStatus = useTranslations('shelf.introduction.status');
+  const tIntroductionStatusShort = useTranslations(
+    'shelf.introduction.statusShort',
+  );
   const tSort = useTranslations('shelf.sort');
 
   const statusCount = counts[status];
+  const introductionTriggerLabel =
+    introductionStatus === ShelfIntroductionStatusFilter.All
+      ? tIntroduction('filterAllShort')
+      : tIntroductionStatusShort(introductionStatus);
 
   return (
     <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
@@ -142,90 +180,123 @@ export function ShelfFilterBar({
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-
-      <Select
-        value={status}
-        onValueChange={(value) => onStatusChange(value as ShelfStatFilter)}
-      >
-        <SelectTrigger
-          aria-label={tStatus('all')}
-          className={PILL_TRIGGER}
+        <Select
+          value={status}
+          onValueChange={(value) => onStatusChange(value as ShelfStatFilter)}
         >
-          <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />
-          <SelectValue>
-            <span className="font-medium">
-              {tStatus(STATUS_KEY[status])}
-            </span>
-            {status !== ShelfStatFilter.All && statusCount !== undefined ? (
-              <span className="ml-1.5 rounded-full bg-accent-soft px-1.5 text-[11px] font-bold text-accent-strong">
-                {statusCount}
+          <SelectTrigger
+            aria-label={tStatus('all')}
+            className={PILL_TRIGGER}
+          >
+            <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />
+            <SelectValue>
+              <span className="font-medium">
+                {tStatus(STATUS_KEY[status])}
               </span>
-            ) : null}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          {STATUS_ORDER.map((option) => (
-            <SelectItem key={option} value={option}>
-              {tStatus(STATUS_KEY[option])}
-              {counts[option] !== undefined ? (
-                <span className="ml-2 text-xs text-muted">
-                  {counts[option]}
+              {status !== ShelfStatFilter.All && statusCount !== undefined ? (
+                <span className="ml-1.5 rounded-full bg-accent-soft px-1.5 text-[11px] font-bold text-accent-strong">
+                  {statusCount}
                 </span>
               ) : null}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {STATUS_ORDER.map((option) => (
+              <SelectItem key={option} value={option}>
+                {tStatus(STATUS_KEY[option])}
+                {counts[option] !== undefined ? (
+                  <span className="ml-2 text-xs text-muted">
+                    {counts[option]}
+                  </span>
+                ) : null}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        value={category}
-        onValueChange={(value) =>
-          onCategoryChange(value as ProductCategory | ShelfCategoryFilter.All)
-        }
-      >
-        <SelectTrigger
-          aria-label={tCategory('all')}
-          className={PILL_TRIGGER}
+        <Select
+          value={category}
+          onValueChange={(value) =>
+            onCategoryChange(value as ProductCategory | ShelfCategoryFilter.All)
+          }
         >
-          <SelectValue>
-            <span className="font-medium">
-              {tCategory(
-                category === ShelfCategoryFilter.All ? 'all' : category,
-              )}
-            </span>
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value={ShelfCategoryFilter.All}>{tCategory('all')}</SelectItem>
-          {CATEGORY_ORDER.map((option) => (
-            <SelectItem key={option} value={option}>
-              {tCategory(option)}
+          <SelectTrigger
+            aria-label={tCategory('all')}
+            className={PILL_TRIGGER}
+          >
+            <Layers className="mr-1.5 h-3.5 w-3.5 shrink-0" />
+            <SelectValue>
+              <span className="font-medium">
+                {tCategory(
+                  category === ShelfCategoryFilter.All ? 'all' : category,
+                )}
+              </span>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ShelfCategoryFilter.All}>
+              {tCategory('all')}
             </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+            {CATEGORY_ORDER.map((option) => (
+              <SelectItem key={option} value={option}>
+                {tCategory(option)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Select
-        value={sort}
-        onValueChange={(value) => onSortChange(value as ShelfSort)}
-      >
-        <SelectTrigger
-          aria-label={tSort('label')}
-          className={PILL_TRIGGER}
+        <Select
+          value={introductionStatus}
+          onValueChange={(value) =>
+            onIntroductionStatusChange(
+              value as ProductIntroductionStatus | ShelfIntroductionStatusFilter.All,
+            )
+          }
         >
-          <SelectValue>
-            <span className="font-medium">{tSort(SORT_KEY[sort])}</span>
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent>
-          {SORT_ORDER.map((option) => (
-            <SelectItem key={option} value={option}>
-              {tSort(SORT_KEY[option])}
+          <SelectTrigger
+            aria-label={tIntroduction('filterLabel')}
+            className={cn(PILL_TRIGGER, 'max-w-36')}
+          >
+            <Waypoints className="mr-1.5 h-3.5 w-3.5 shrink-0" />
+            <SelectValue>
+              <span className="inline-block max-w-24 truncate align-bottom font-medium">
+                {introductionTriggerLabel}
+              </span>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ShelfIntroductionStatusFilter.All}>
+              {tIntroduction('filterAll')}
             </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+            {INTRODUCTION_STATUS_ORDER.map((option) => (
+              <SelectItem key={option} value={option}>
+                {tIntroductionStatus(option)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
+        <Select
+          value={sort}
+          onValueChange={(value) => onSortChange(value as ShelfSort)}
+        >
+          <SelectTrigger
+            aria-label={tSort('label')}
+            className={PILL_TRIGGER}
+          >
+            <ArrowUpDown className="mr-1.5 h-3.5 w-3.5 shrink-0" />
+            <SelectValue>
+              <span className="font-medium">{tSort(SORT_KEY[sort])}</span>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {SORT_ORDER.map((option) => (
+              <SelectItem key={option} value={option}>
+                {tSort(SORT_KEY[option])}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

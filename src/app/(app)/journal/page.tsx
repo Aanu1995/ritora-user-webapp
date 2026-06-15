@@ -230,6 +230,12 @@ export default function JournalPage() {
             hasTodayEntry={hasTodayEntry}
             photoActionsDisabled={photoActionsDisabled}
             onOpenUpload={() => openTodayUpload()}
+            onReportReaction={() =>
+              openTodayUpload(
+                hasTodayEntry ? JournalUploadMode.Edit : undefined,
+                { reaction: true },
+              )
+            }
           />
         }
       />
@@ -250,6 +256,7 @@ export default function JournalPage() {
                   </span>
                 ) : null}
               </TabsTrigger>
+              <TabsTrigger value="memory">{t("tabs.memory")}</TabsTrigger>
               <TabsTrigger value="insights">
                 {t("tabs.insights")}
                 <span className="ml-1.5 rounded-full bg-accent-soft px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent-strong">

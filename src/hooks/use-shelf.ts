@@ -29,6 +29,7 @@ import {
   restoreProduct,
   restoreProducts,
   updateProduct,
+  updateProductIntroduction,
   uploadProductImage,
   uploadProductImageForProduct,
 } from "@/services/shelf.service";
@@ -37,6 +38,7 @@ import {
   type ShelfListFilters,
   type ShelfProduct,
   type ShelfProductDraft,
+  type UpdateProductIntroductionPayload,
 } from "@/types/shelf";
 import {
   UploadProgressToastKind,
@@ -184,6 +186,11 @@ type UpdateProductArgs = {
   patch: DeepPartial<ShelfProductDraft>;
 };
 
+type UpdateProductIntroductionArgs = {
+  id: string;
+  payload: UpdateProductIntroductionPayload;
+};
+
 type UploadProductImageForProductArgs = {
   id: string;
   file: File;
@@ -201,6 +208,18 @@ export function useUpdateProduct() {
     createShelfProductMutationOptions(
       queryClient,
       ({ id, patch }: UpdateProductArgs) => updateProduct(id, patch),
+    ),
+  );
+}
+
+export function useUpdateProductIntroduction() {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    createShelfProductMutationOptions(
+      queryClient,
+      ({ id, payload }: UpdateProductIntroductionArgs) =>
+        updateProductIntroduction(id, payload),
     ),
   );
 }

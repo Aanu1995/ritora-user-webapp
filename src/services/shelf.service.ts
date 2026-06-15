@@ -15,6 +15,8 @@ import {
   type ShelfListFilters,
   type ShelfProduct,
   type ShelfProductDraft,
+  type UpdateProductIntroductionPayload,
+  ShelfIntroductionStatusFilter,
 } from "@/types/shelf";
 import type { UploadProgressOptions } from "@/lib/upload-progress";
 
@@ -46,9 +48,14 @@ export async function listProducts(
   cursor?: string | null,
   signal?: AbortSignal,
 ): Promise<PaginatedResult<ShelfProduct>> {
+  const introductionStatus =
+    filters.introductionStatus ?? ShelfIntroductionStatusFilter.All;
   const params = {
     stat: filters.stat,
     category: filters.category,
+    ...(introductionStatus !== ShelfIntroductionStatusFilter.All
+      ? { introductionStatus }
+      : {}),
     search: filters.search,
     sort: filters.sort,
     ...(cursor ? { cursor } : {}),
@@ -105,6 +112,16 @@ export async function updateProduct(
   patch: DeepPartial<ShelfProductDraft>,
 ): Promise<ShelfProduct> {
   return patchRequest<ShelfProduct>(ApiPath.InventoryProduct(id), patch);
+}
+
+export async function updateProductIntroduction(
+  id: string,
+  payload: UpdateProductIntroductionPayload,
+): Promise<ShelfProduct> {
+  return patchRequest<ShelfProduct>(
+    ApiPath.InventoryProductIntroduction(id),
+    payload,
+  );
 }
 
 export async function uploadProductImage(
