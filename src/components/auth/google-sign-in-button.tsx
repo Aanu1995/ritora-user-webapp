@@ -39,7 +39,7 @@ export function GoogleSignInButton({
         'border-[var(--google-stroke)] bg-[var(--google-fill)] text-[var(--google-text)]',
         'transition outline-none focus-visible:ring-2 focus-visible:ring-accent/30',
         'hover:-translate-y-0.5 hover:shadow-soft',
-        'disabled:pointer-events-none disabled:translate-y-0 disabled:opacity-50 disabled:shadow-none',
+        'disabled:pointer-events-none disabled:translate-y-0 disabled:!border-border disabled:!bg-surface-muted disabled:!text-muted disabled:!shadow-none',
         className,
       )}
     >

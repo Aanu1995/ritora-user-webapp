@@ -87,7 +87,6 @@ export function BrowserPushSection({
   useEffect(() => {
     let isMounted = true;
     const supportState = getBrowserPushSupportState();
-    setSupport(supportState);
     void (async () => {
       const [subscription, nextSubscriptions, nextStatus] = await Promise.all([
         supportState === "supported"
@@ -98,6 +97,7 @@ export function BrowserPushSection({
       ]);
       const endpointHash = await hashPushEndpoint(subscription?.endpoint);
       if (isMounted) {
+        setSupport(supportState);
         setCurrentEndpointHash(endpointHash);
         setHasLocalSubscription(Boolean(subscription));
         setSubscriptions(nextSubscriptions);
