@@ -101,6 +101,12 @@ function expectTodaysScheduleInvalidated(queryClient: QueryClient) {
   ).toBe(true);
 }
 
+function expectTodaysSuggestionInvalidated(queryClient: QueryClient) {
+  expect(
+    queryClient.getQueryState([QueryKey.SuggestionsToday])?.isInvalidated,
+  ).toBe(true);
+}
+
 beforeEach(() => {
   jest.clearAllMocks();
   useAuthStore.setState({
@@ -292,6 +298,43 @@ describe("schedule slot mutations", () => {
       ).toEqual([updated]);
     });
     expectTodaysScheduleInvalidated(queryClient);
+  });
+
+  it("refreshes Today's Suggestion when a routine time changes", async () => {
+    const queryClient = createTestQueryClient();
+    const original = createSlot("slot-1", DayOfWeek.Mon);
+    const updated = {
+      ...original,
+      slotTime: "19:00",
+    };
+    queryClient.setQueryData([QueryKey.Schedule], {
+      timeZone: "Europe/Stockholm",
+      slots: [original],
+    });
+    queryClient.setQueryData([QueryKey.ScheduleToday], { slots: [original] });
+    queryClient.setQueryData([QueryKey.SuggestionsToday], {
+      slots: [{ slotId: original.id, slotTime: "20:00" }],
+    });
+    (updateSlot as jest.Mock).mockResolvedValue(updated);
+
+    const { result } = renderHook(() => useUpdateSlot(), {
+      wrapper: createWrapper(queryClient),
+    });
+
+    act(() => {
+      result.current.mutate({
+        id: original.id,
+        payload: { slotTime: "19:00" },
+      });
+    });
+
+    await waitFor(() => {
+      expect(
+        queryClient.getQueryData<Schedule>([QueryKey.Schedule])?.slots,
+      ).toEqual([updated]);
+    });
+    expectTodaysScheduleInvalidated(queryClient);
+    expectTodaysSuggestionInvalidated(queryClient);
   });
 
   it("removes deleted slots from the schedule cache", async () => {
