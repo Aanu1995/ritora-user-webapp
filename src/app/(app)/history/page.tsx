@@ -32,9 +32,7 @@ export default function HistoryPage() {
       !history.isLoading && !history.isError && hasItems && !hasLoadMoreError,
     hasNextPage: canLoadMore,
     isFetchingNextPage: history.isFetchingNextPage,
-    onLoadMore: () => {
-      void history.fetchNextPage();
-    },
+    onLoadMore: () => history.fetchNextPage(),
   });
   const showAutoLoadState =
     canLoadMore || history.isFetchingNextPage || hasLoadMoreError;
@@ -101,6 +99,16 @@ export default function HistoryPage() {
                   </>
                 ) : history.isFetchingNextPage ? (
                   <HistoryLoadMoreSkeleton />
+                ) : canLoadMore ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      void history.fetchNextPage();
+                    }}
+                  >
+                    {t("loadMore")}
+                  </Button>
                 ) : null}
                 <div
                   ref={loadMoreSentinelRef}

@@ -326,6 +326,7 @@ export function useSnoozeRecordingReminder() {
 export {
   getNextSuggestionHistoryPageParam,
   mergeSuggestionHistoryPages,
+  SUGGESTION_HISTORY_PAGE_SIZE,
   useSuggestionHistory,
   useSuggestionHistoryDay,
 } from "@/hooks/use-suggestion-history";

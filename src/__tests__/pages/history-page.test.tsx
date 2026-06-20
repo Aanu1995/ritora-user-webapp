@@ -98,16 +98,17 @@ describe("HistoryPage", () => {
     mockHistoryState = historyHookState();
   });
 
-  it("loads more history automatically when the scroll sentinel enters view", () => {
+  it("offers a manual fallback and still auto-loads when the scroll sentinel enters view", async () => {
+    const user = userEvent.setup();
     renderWithProviders(<HistoryPage />);
 
-    expect(
-      screen.queryByRole("button", { name: /^load more$/i }),
-    ).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /^load more$/i }));
+
+    expect(mockFetchNextPage).toHaveBeenCalledTimes(1);
 
     triggerIntersection("history-auto-load-sentinel");
 
-    expect(mockFetchNextPage).toHaveBeenCalled();
+    expect(mockFetchNextPage).toHaveBeenCalledTimes(2);
   });
 
   it("keeps a retry button only for failed next-page loads", async () => {

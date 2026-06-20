@@ -4,6 +4,7 @@ import {
   getTodaysSuggestionRefetchInterval,
   getNextSuggestionHistoryPageParam,
   mergeSuggestionHistoryPages,
+  SUGGESTION_HISTORY_PAGE_SIZE,
   useNormalRoutineToday,
   useCreateOnDemandSuggestion,
   useSuggestionAiConsent,
@@ -172,7 +173,7 @@ describe("suggestion hooks", () => {
     );
     await waitFor(() => expect(history.result.current.isSuccess).toBe(true));
     expect(mockGetHistory).toHaveBeenCalledWith(
-      { range: "7d" },
+      { range: "7d", limit: SUGGESTION_HISTORY_PAGE_SIZE },
       expect.objectContaining({ signal: expect.any(AbortSignal) }),
     );
 
@@ -440,6 +441,55 @@ describe("suggestion hooks", () => {
           expect.objectContaining({ date: "2026-05-03" }),
           expect.objectContaining({ date: "2026-05-02" }),
         ]),
+      }),
+    );
+  });
+
+  it("fetches 20 history items per page and sends the backend cursor for the next page", async () => {
+    mockGetHistory
+      .mockResolvedValueOnce({
+        ...historyResponse({
+          date: "2026-05-03",
+          totalApplied: 12,
+          totalSlots: SUGGESTION_HISTORY_PAGE_SIZE,
+        }),
+        nextCursor: "cursor-2",
+      })
+      .mockResolvedValueOnce(
+        historyResponse({
+          date: "2026-05-02",
+          totalApplied: 3,
+          totalSlots: 5,
+        }),
+      );
+
+    const history = renderHookWithProviders(() =>
+      useSuggestionHistory({ range: "7d" }),
+    );
+
+    await waitFor(() => expect(history.result.current.isSuccess).toBe(true));
+    expect(mockGetHistory).toHaveBeenNthCalledWith(
+      1,
+      { range: "7d", limit: SUGGESTION_HISTORY_PAGE_SIZE },
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+
+    await history.result.current.fetchNextPage();
+
+    await waitFor(() => expect(mockGetHistory).toHaveBeenCalledTimes(2));
+    expect(mockGetHistory).toHaveBeenNthCalledWith(
+      2,
+      {
+        range: "7d",
+        cursor: "cursor-2",
+        limit: SUGGESTION_HISTORY_PAGE_SIZE,
+      },
+      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+    );
+    expect(history.result.current.data).toEqual(
+      expect.objectContaining({
+        totalApplied: 15,
+        totalSlots: SUGGESTION_HISTORY_PAGE_SIZE + 5,
       }),
     );
   });
