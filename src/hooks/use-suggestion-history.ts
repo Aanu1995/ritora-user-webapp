@@ -26,6 +26,8 @@ const EMPTY_HISTORY_RESPONSE: SuggestionHistoryListResponse = {
   adherencePercent: null,
 };
 
+export const SUGGESTION_HISTORY_PAGE_SIZE = 20;
+
 export function useSuggestionHistory(
   query: SuggestionHistoryListQuery = {},
 ) {
@@ -34,7 +36,9 @@ export function useSuggestionHistory(
   const history = useInfiniteQuery({
     queryKey: [QueryKey.SuggestionsHistory, baseQuery],
     queryFn: ({ pageParam, signal }) =>
-      getSuggestionHistory(withHistoryCursor(baseQuery, pageParam), { signal }),
+      getSuggestionHistory(buildHistoryPageQuery(baseQuery, pageParam), {
+        signal,
+      }),
     enabled: isEnabled,
     initialPageParam: null as string | null,
     getNextPageParam: getNextSuggestionHistoryPageParam,
@@ -58,8 +62,16 @@ export function useSuggestionHistoryDay(date: string | null | undefined) {
 
 export function getNextSuggestionHistoryPageParam(
   lastPage: SuggestionHistoryListResponse,
+  _allPages?: SuggestionHistoryListResponse[],
+  lastPageParam?: string | null,
+  allPageParams?: Array<string | null>,
 ): string | undefined {
-  return lastPage.nextCursor ?? undefined;
+  const nextCursor = lastPage.nextCursor ?? null;
+  if (!nextCursor) return undefined;
+  if (nextCursor === lastPageParam || allPageParams?.includes(nextCursor)) {
+    return undefined;
+  }
+  return nextCursor;
 }
 
 export function mergeSuggestionHistoryPages(
@@ -133,9 +145,20 @@ function historyQueryWithoutCursor(
   return rest;
 }
 
-function withHistoryCursor(
+function buildHistoryPageQuery(
   query: SuggestionHistoryListQuery,
   cursor: string | null,
 ): SuggestionHistoryListQuery {
-  return cursor ? { ...query, cursor } : query;
+  const pageQuery: SuggestionHistoryListQuery = {
+    ...query,
+    limit: resolveHistoryPageLimit(query.limit),
+  };
+  return cursor ? { ...pageQuery, cursor } : pageQuery;
+}
+
+function resolveHistoryPageLimit(limit: number | undefined): number {
+  if (typeof limit === "number" && Number.isInteger(limit) && limit > 0) {
+    return limit;
+  }
+  return SUGGESTION_HISTORY_PAGE_SIZE;
 }
