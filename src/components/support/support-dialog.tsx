@@ -4,7 +4,7 @@ import { useForm } from "@tanstack/react-form";
 import { Loader2, Send, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

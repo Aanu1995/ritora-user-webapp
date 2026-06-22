@@ -7,7 +7,7 @@ import {
   ShelfFormValidationCode,
   type ShelfProductFormValue,
 } from "@/types/shelf";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import {
   isValidDateString,
   normalizeStringList,

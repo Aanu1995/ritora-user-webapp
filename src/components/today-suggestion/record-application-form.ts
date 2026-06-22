@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { formatLocalTimeInput } from "@/lib/suggestion-daypart";
 import {
   APPLICATION_ITEM_STATUSES,

@@ -4,7 +4,7 @@ import { useForm } from '@tanstack/react-form';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { Suspense, useMemo, useState } from 'react';
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 import { PasswordInputField } from '@/components/auth/password-input-field';
 import { TextInputField } from '@/components/auth/text-input-field';
 import { Button } from '@/components/ui/button';

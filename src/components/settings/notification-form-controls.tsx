@@ -3,7 +3,7 @@
 import { AlertTriangle, BellRing, Inbox, Mail } from "lucide-react";
 import type { ComponentType, ReactElement } from "react";
 import type { useTranslations } from "next-intl";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import type { FieldIssue } from "@/lib/form-errors";

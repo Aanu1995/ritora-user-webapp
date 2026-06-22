@@ -3,7 +3,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 import { TextInputField } from '@/components/auth/text-input-field';
 import { Button } from '@/components/ui/button';
 import { LoadingIndicator } from '@/components/ui/loading-indicator';
