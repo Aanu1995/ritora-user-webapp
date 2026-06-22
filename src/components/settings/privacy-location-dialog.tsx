@@ -2,7 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { useTranslations } from "next-intl";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 import {
   AlertDialog,
   AlertDialogContent,

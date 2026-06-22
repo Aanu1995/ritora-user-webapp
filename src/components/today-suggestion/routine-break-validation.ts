@@ -1,6 +1,6 @@
 "use client";
 
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 const RESUME_DATE_INVALID_KEY = "validation.resumeDateInvalid";
 const RESUME_DATE_PAST_KEY = "validation.resumeDatePast";

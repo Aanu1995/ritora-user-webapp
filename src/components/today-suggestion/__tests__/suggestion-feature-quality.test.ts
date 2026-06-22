@@ -135,11 +135,11 @@ describe("Today's Suggestion frontend quality guardrails", () => {
     );
 
     expect(recordSheet).toContain("@tanstack/react-form");
-    expect(recordSchema).toContain('from "zod"');
+    expect(recordSchema).toContain('from "@/lib/zod"');
     expect(onDemandDialog).toContain("@tanstack/react-form");
-    expect(onDemandSchema).toContain('from "zod"');
+    expect(onDemandSchema).toContain('from "@/lib/zod"');
     expect(notificationForm).toContain("@tanstack/react-form");
-    expect(notificationControls).toContain('from "zod"');
+    expect(notificationControls).toContain('from "@/lib/zod"');
   });
 
   it("uses skeletons, not spinners, for suggestion and history fetch states", () => {

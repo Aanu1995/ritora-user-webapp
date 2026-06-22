@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 import { AuthDivider } from '@/components/auth/auth-divider';
 import { AuthLegalDisclosure } from '@/components/auth/auth-legal-disclosure';
 import { GoogleSignInButton } from '@/components/auth/google-sign-in-button';
