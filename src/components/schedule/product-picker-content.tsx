@@ -3,6 +3,7 @@
 import { Search, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
+import { ShelfProductPickerPagination } from '@/components/shelf/shelf-product-picker-pagination';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SmoothImage } from '@/components/ui/smooth-image';
@@ -43,7 +44,7 @@ export function ProductPickerContent({
   );
   const productCategory = resolveProductPickerCategory(pickerStepLabel);
 
-  const { data: products = [], isLoading } = useShelfProducts(
+  const productsQuery = useShelfProducts(
     {
       stat: ShelfStatFilter.All,
       category: resolveProductPickerQueryCategory(pickerStepLabel),
@@ -52,9 +53,10 @@ export function ProductPickerContent({
     },
     shelfDateContext,
   );
+  const products = productsQuery.data;
 
   const filtered = useMemo(
-    () => filterSelectableProducts(products, productCategory),
+    () => filterSelectableProducts(products ?? [], productCategory),
     [productCategory, products],
   );
 
@@ -102,7 +104,7 @@ export function ProductPickerContent({
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 py-2">
-        {isLoading ? (
+        {productsQuery.isLoading ? (
           <ul className="space-y-1" aria-label={t('loadingProducts')}>
             {Array.from({ length: 5 }).map((_, i) => (
               <li
@@ -179,6 +181,17 @@ export function ProductPickerContent({
             })}
           </ul>
         )}
+        <ShelfProductPickerPagination
+          className="px-2 py-3"
+          hasNextPage={Boolean(productsQuery.hasNextPage)}
+          isFetchNextPageError={Boolean(productsQuery.isFetchNextPageError)}
+          isFetchingNextPage={productsQuery.isFetchingNextPage}
+          loadMoreErrorLabel={t('loadMoreError')}
+          loadMoreLabel={t('loadMore')}
+          loadingMoreLabel={t('loadingMore')}
+          retryLabel={t('retry')}
+          onLoadMore={productsQuery.fetchNextPage}
+        />
       </div>
     </div>
   );

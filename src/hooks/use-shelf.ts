@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   useInfiniteQuery,
   useMutation,
@@ -138,7 +139,18 @@ export function useShelfProducts(
       listProducts(filters, pageParam, signal),
     enabled: isEnabled,
     initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    getNextPageParam: (
+      lastPage,
+      _allPages,
+      lastPageParam,
+      allPageParams,
+    ) => {
+      const nextCursor = lastPage.nextCursor ?? undefined;
+      if (!nextCursor) return undefined;
+      if (nextCursor === lastPageParam) return undefined;
+      if (allPageParams.includes(nextCursor)) return undefined;
+      return nextCursor;
+    },
   });
   const products = query.data?.pages.flatMap((page) => page.items) ?? [];
 
@@ -146,6 +158,41 @@ export function useShelfProducts(
     ...query,
     data: products,
   };
+}
+
+export function useAllShelfProducts(
+  filters: ShelfListFilters,
+  dateContext: ShelfDateContext,
+) {
+  const query = useShelfProducts(filters, dateContext);
+  const {
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isFetchNextPageError,
+    isFetchingNextPage,
+  } = query;
+
+  useEffect(() => {
+    if (
+      !hasNextPage ||
+      isFetchingNextPage ||
+      isFetchNextPageError ||
+      isError
+    ) {
+      return;
+    }
+
+    void fetchNextPage();
+  }, [
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isFetchNextPageError,
+    isFetchingNextPage,
+  ]);
+
+  return query;
 }
 
 export function useShelfStats(dateContext: ShelfDateContext) {

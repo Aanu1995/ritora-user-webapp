@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sheet";
 import { AppRoute } from "@/constants/app-routes";
 import { useCompareProducts } from "@/hooks/use-ingredients";
-import { useShelfProducts } from "@/hooks/use-shelf";
+import { useAllShelfProducts } from "@/hooks/use-shelf";
 import { useShelfDateContext } from "@/hooks/use-shelf-time-zone";
 import { normalizeLocale } from "@/i18n/config";
 import { CompareInfoPopover } from "./compare-info-popover";
@@ -59,7 +59,7 @@ export function QuickCheckProductCompareSheet({
   const t = useTranslations("productCompare.quickCheck.sheet");
   const locale = normalizeLocale(useLocale());
   const shelfDateContext = useShelfDateContext();
-  const shelfProducts = useShelfProducts(DEFAULT_FILTERS, shelfDateContext);
+  const shelfProducts = useAllShelfProducts(DEFAULT_FILTERS, shelfDateContext);
   const compare = useCompareProducts();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const excluded = new Set(excludeProductIds);
@@ -217,12 +217,16 @@ export function QuickCheckProductCompareSheet({
                   </button>
                 ) : null}
               </div>
-              {candidates.length > 0 || shelfProducts.isLoading ? (
+              {candidates.length > 0 ||
+              shelfProducts.isLoading ||
+              shelfProducts.isFetchingNextPage ? (
                 <ProductCompareShelfPicker
                   variant="quickCheck"
                   products={candidates}
                   selectedIds={selectedIds}
-                  isLoading={shelfProducts.isLoading}
+                  isLoading={
+                    shelfProducts.isLoading || shelfProducts.isFetchingNextPage
+                  }
                   maxSelectable={MAX_CANDIDATES}
                   onToggle={toggleSelected}
                 />

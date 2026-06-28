@@ -285,6 +285,7 @@ export type ShelfListFilters = {
   introductionStatus?:
     | ProductIntroductionStatus
     | ShelfIntroductionStatusFilter.All;
+  limit?: number;
   search: string;
   sort: ShelfSort;
 };

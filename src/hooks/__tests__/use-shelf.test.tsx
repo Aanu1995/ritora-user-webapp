@@ -11,6 +11,7 @@ import {
   useMarkProductFinished,
   useRestoreProduct,
   useRestoreProducts,
+  useAllShelfProducts,
   useShelfProducts,
   useShelfStats,
   useUpdateProduct,
@@ -197,6 +198,40 @@ describe('useShelfProducts', () => {
       expect(products.current.data).toHaveLength(2);
     });
     expect(stats.current.data?.[ShelfStatFilter.All]).toBe(2);
+  });
+
+  it('auto-loads every shelf page for select-style product consumers', async () => {
+    useAuthStore.setState({ isAuthenticated: true });
+    (listProducts as jest.Mock)
+      .mockResolvedValueOnce({
+        items: [PRODUCT],
+        nextCursor: 'next-cursor',
+      })
+      .mockResolvedValueOnce({
+        items: [{ ...PRODUCT, id: 'product-2' }],
+        nextCursor: null,
+      });
+
+    const { result: products } = renderHookWithProviders(() =>
+      useAllShelfProducts({
+        stat: ShelfStatFilter.All,
+        category: ShelfCategoryFilter.All,
+        search: '',
+        sort: ShelfSort.RecentlyAdded,
+      }, SHELF_DATE_CONTEXT),
+    );
+
+    await waitFor(() => {
+      expect(listProducts).toHaveBeenCalledTimes(2);
+    });
+    await waitFor(() => {
+      expect(products.current.data).toHaveLength(2);
+    });
+
+    expect(products.current.data).toEqual([
+      PRODUCT,
+      { ...PRODUCT, id: 'product-2' },
+    ]);
   });
 
   it('does not refetch non-date-sensitive shelf lists when the effective shelf day changes', async () => {

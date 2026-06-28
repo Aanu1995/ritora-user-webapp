@@ -3238,6 +3238,10 @@
       "empty": "Ningún producto coincide con su búsqueda.",
       "emptyShelf": "Primero agregue productos a su estante.",
       "addToShelf": "Agregar al estante",
+      "loadMore": "Cargar más productos",
+      "loadingMore": "Cargando más productos",
+      "loadMoreError": "No se pudieron cargar más productos.",
+      "retry": "Intentar de nuevo",
       "preferredConflict": "Este producto suele usarse en la {preferred}."
     },
     "calendar": {
@@ -5533,7 +5537,11 @@
         "empty": "No hay productos de estantería que coincidan.",
         "statusActive": "Activo",
         "statusArchived": "Archivado",
-        "statusFinished": "Terminado"
+        "statusFinished": "Terminado",
+        "loadMore": "Cargar más productos",
+        "loadingMore": "Cargando más productos",
+        "loadMoreError": "No se pudieron cargar más productos.",
+        "retry": "Intentar de nuevo"
       },
       "substitution": {
         "chooseProduct": "¿Qué usaste en su lugar?",

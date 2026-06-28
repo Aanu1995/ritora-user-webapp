@@ -7,7 +7,7 @@ import { useForm, useStore } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { QueryKey } from "@/constants/query-keys";
-import { useShelfProducts } from "@/hooks/use-shelf";
+import { useAllShelfProducts } from "@/hooks/use-shelf";
 import { useShelfDateContext } from "@/hooks/use-shelf-time-zone";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { executeMutation } from "@/lib/form-submission";
@@ -65,7 +65,7 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
   const options = useCommunityTranslatedOptions();
   const queryClient = useQueryClient();
   const dateContext = useShelfDateContext();
-  const shelfProducts = useShelfProducts(
+  const shelfProducts = useAllShelfProducts(
     communityPlaybookShelfFilters,
     dateContext,
   );
@@ -256,7 +256,9 @@ export function PublishRoutineForm(props: PublishRoutineFormProps = {}) {
           {(field) => (
             <CommunityPlaybookStepsField
               errors={field.state.meta.errors}
-              isLoadingProducts={shelfProducts.isLoading}
+              isLoadingProducts={
+                shelfProducts.isLoading || shelfProducts.isFetchingNextPage
+              }
               onChange={field.handleChange}
               products={shelfProducts.data}
               value={field.state.value}

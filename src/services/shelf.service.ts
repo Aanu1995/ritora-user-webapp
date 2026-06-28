@@ -8,6 +8,7 @@ import {
   postRequest,
 } from "@/lib/api";
 import { ApiPath } from "@/constants/api-paths";
+import { SHELF_PRODUCTS_PAGE_SIZE } from "@/constants/shelf-pagination";
 import {
   type DeepPartial,
   type PaginatedResult,
@@ -58,6 +59,7 @@ export async function listProducts(
       : {}),
     search: filters.search,
     sort: filters.sort,
+    limit: filters.limit ?? SHELF_PRODUCTS_PAGE_SIZE,
     ...(cursor ? { cursor } : {}),
   };
 

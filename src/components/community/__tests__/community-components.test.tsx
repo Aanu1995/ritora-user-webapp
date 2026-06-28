@@ -181,6 +181,7 @@ jest.mock("@/services/community.service", () => ({
 }));
 
 jest.mock("@/hooks/use-shelf", () => ({
+  useAllShelfProducts: () => mockUseShelfProducts(),
   useShelfProducts: () => mockUseShelfProducts(),
 }));
 

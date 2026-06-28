@@ -3238,6 +3238,10 @@
       "empty": "Inga produkter matchar din sökning.",
       "emptyShelf": "Lägg till produkter i din Hylla först.",
       "addToShelf": "Lägg till i Hylla",
+      "loadMore": "Ladda fler produkter",
+      "loadingMore": "Laddar fler produkter",
+      "loadMoreError": "Kunde inte ladda fler produkter.",
+      "retry": "Försök igen",
       "preferredConflict": "Denna produkt används vanligtvis på {preferred}."
     },
     "calendar": {
@@ -5533,7 +5537,11 @@
         "empty": "Inga matchande hyllprodukter.",
         "statusActive": "Aktiv",
         "statusArchived": "Arkiverad",
-        "statusFinished": "Slut"
+        "statusFinished": "Slut",
+        "loadMore": "Ladda fler produkter",
+        "loadingMore": "Laddar fler produkter",
+        "loadMoreError": "Kunde inte ladda fler produkter.",
+        "retry": "Försök igen"
       },
       "substitution": {
         "chooseProduct": "Vad använde du i stället?",

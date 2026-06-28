@@ -3250,6 +3250,10 @@
       "empty": "No products match your search.",
       "emptyShelf": "Add products to your Shelf first.",
       "addToShelf": "Add to Shelf",
+      "loadMore": "Load more products",
+      "loadingMore": "Loading more products",
+      "loadMoreError": "Couldn't load more products.",
+      "retry": "Try again",
       "preferredConflict": "This product is usually used in the {preferred}."
     },
     "calendar": {
@@ -5545,7 +5549,11 @@
         "empty": "No matching shelf products.",
         "statusActive": "Active",
         "statusArchived": "Archived",
-        "statusFinished": "Finished"
+        "statusFinished": "Finished",
+        "loadMore": "Load more products",
+        "loadingMore": "Loading more products",
+        "loadMoreError": "Couldn't load more products.",
+        "retry": "Try again"
       },
       "substitution": {
         "chooseProduct": "What did you use instead?",

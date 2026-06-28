@@ -33,6 +33,7 @@ import {
   uploadProductImage,
   uploadProductImageForProduct,
 } from "@/services/shelf.service";
+import { SHELF_PRODUCTS_PAGE_SIZE } from "@/constants/shelf-pagination";
 import {
   DataProvenance,
   ProductIntroductionStatus,
@@ -73,6 +74,7 @@ describe("shelf.service", () => {
         introductionStatus: "paused",
         search: "retinol",
         sort: "recently-added",
+        limit: SHELF_PRODUCTS_PAGE_SIZE,
         cursor: "cursor-1",
       },
       signal: controller.signal,
@@ -100,6 +102,7 @@ describe("shelf.service", () => {
         category: "all",
         search: "",
         sort: "recently-added",
+        limit: SHELF_PRODUCTS_PAGE_SIZE,
       },
       signal: undefined,
     });

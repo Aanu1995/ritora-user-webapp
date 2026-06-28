@@ -1,4 +1,5 @@
 import { QueryKey } from '@/constants/query-keys';
+import { SHELF_PRODUCTS_PAGE_SIZE } from '@/constants/shelf-pagination';
 import {
   buildShelfProductsQueryKey,
   isShelfStatDateSensitive,
@@ -33,6 +34,7 @@ describe('shelf-query', () => {
       ProductIntroductionStatus.Paused,
       '',
       ShelfSort.RecentlyAdded,
+      SHELF_PRODUCTS_PAGE_SIZE,
     ]);
   });
 

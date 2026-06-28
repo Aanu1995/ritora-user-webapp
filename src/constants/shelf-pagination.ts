@@ -1,0 +1,1 @@
+export const SHELF_PRODUCTS_PAGE_SIZE = 20;

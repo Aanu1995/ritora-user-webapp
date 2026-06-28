@@ -94,6 +94,10 @@ jest.mock("@/hooks/use-shelf", () => ({
     mutate: mockExtractMutate,
     isPending: false,
   }),
+  useAllShelfProducts: () => ({
+    data: shelfProducts,
+    isLoading: false,
+  }),
   useShelfProducts: () => ({
     data: shelfProducts,
     isLoading: false,

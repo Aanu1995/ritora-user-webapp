@@ -3,6 +3,7 @@
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { ShelfProductPickerPagination } from "@/components/shelf/shelf-product-picker-pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SmoothImage } from "@/components/ui/smooth-image";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
@@ -35,7 +36,7 @@ export function ApplicationProductPicker({ disabled, onSelect }: Props) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search, 250);
   const shelfDateContext = useShelfDateContext();
-  const { data: products = [], isLoading } = useShelfProducts(
+  const productsQuery = useShelfProducts(
     {
       stat: ShelfStatFilter.All,
       category: ShelfCategoryFilter.All,
@@ -44,6 +45,7 @@ export function ApplicationProductPicker({ disabled, onSelect }: Props) {
     },
     shelfDateContext,
   );
+  const products = productsQuery.data ?? [];
 
   return (
     <div className="rounded-2xl border border-border bg-surface p-3">
@@ -58,7 +60,7 @@ export function ApplicationProductPicker({ disabled, onSelect }: Props) {
         />
       </label>
       <div className="mt-2 max-h-52 overflow-y-auto">
-        {isLoading ? (
+        {productsQuery.isLoading ? (
           <ul className="space-y-2" aria-label={t("loading")}>
             {Array.from({ length: 3 }).map((_, index) => (
               <li key={index} className="flex items-center gap-2">
@@ -74,7 +76,7 @@ export function ApplicationProductPicker({ disabled, onSelect }: Props) {
           <p className="px-1 py-3 text-sm text-muted">{t("empty")}</p>
         ) : (
           <ul className="space-y-1">
-            {products.slice(0, 8).map((product) => (
+            {products.map((product) => (
               <li key={product.id}>
                 <button
                   type="button"
@@ -101,6 +103,18 @@ export function ApplicationProductPicker({ disabled, onSelect }: Props) {
             ))}
           </ul>
         )}
+        <ShelfProductPickerPagination
+          className="px-2 py-2"
+          disabled={disabled}
+          hasNextPage={Boolean(productsQuery.hasNextPage)}
+          isFetchNextPageError={Boolean(productsQuery.isFetchNextPageError)}
+          isFetchingNextPage={productsQuery.isFetchingNextPage}
+          loadMoreErrorLabel={t("loadMoreError")}
+          loadMoreLabel={t("loadMore")}
+          loadingMoreLabel={t("loadingMore")}
+          retryLabel={t("retry")}
+          onLoadMore={productsQuery.fetchNextPage}
+        />
       </div>
     </div>
   );
