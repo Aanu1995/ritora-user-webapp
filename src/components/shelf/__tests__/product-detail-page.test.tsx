@@ -25,6 +25,11 @@ jest.mock('next/navigation', () => ({
 
 jest.mock('@/hooks/use-shelf', () => ({
   useShelfProduct: (...args: unknown[]) => mockUseShelfProduct(...args),
+  useAllShelfProducts: () => ({
+    data: [],
+    isFetchingNextPage: false,
+    isLoading: false,
+  }),
   useShelfProducts: () => ({ data: [], isLoading: false }),
   useArchiveProduct: () => ({ mutate: jest.fn(), isPending: false }),
   useRestoreProduct: () => ({ mutate: jest.fn(), isPending: false }),

@@ -27,6 +27,11 @@ jest.mock('next/navigation', () => ({
 }));
 
 jest.mock('@/hooks/use-shelf', () => ({
+  useAllShelfProducts: () => ({
+    data: [],
+    isFetchingNextPage: false,
+    isLoading: false,
+  }),
   useShelfProducts: () => ({
     data: [],
     isLoading: false,
