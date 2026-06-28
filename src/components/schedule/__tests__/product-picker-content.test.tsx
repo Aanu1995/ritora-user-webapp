@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/utils';
 import { useScheduleUiStore } from '@/stores/schedule-ui-store';
 import {
@@ -70,38 +71,44 @@ function createProduct(
 }
 
 describe('ProductPickerContent', () => {
+  const defaultShelfProductsQuery = {
+    data: [
+      createProduct({
+        id: 'cleanser-1',
+        identity: {
+          brand: 'Clean Brand',
+          name: 'Daily Cleanser',
+          category: ProductCategory.Cleanser,
+        },
+      }),
+      createProduct({
+        id: 'serum-1',
+        identity: {
+          brand: 'Serum Brand',
+          name: 'Night Serum',
+          category: ProductCategory.Serum,
+        },
+      }),
+      createProduct({
+        id: 'archived-cleanser',
+        status: ShelfStatus.Archived,
+        identity: {
+          brand: 'Old Brand',
+          name: 'Archived Cleanser',
+          category: ProductCategory.Cleanser,
+        },
+      }),
+    ],
+    fetchNextPage: jest.fn(),
+    hasNextPage: false,
+    isFetchNextPageError: false,
+    isFetchingNextPage: false,
+    isLoading: false,
+  };
+
   beforeEach(() => {
     mockUseShelfProducts.mockReset();
-    mockUseShelfProducts.mockReturnValue({
-      data: [
-        createProduct({
-          id: 'cleanser-1',
-          identity: {
-            brand: 'Clean Brand',
-            name: 'Daily Cleanser',
-            category: ProductCategory.Cleanser,
-          },
-        }),
-        createProduct({
-          id: 'serum-1',
-          identity: {
-            brand: 'Serum Brand',
-            name: 'Night Serum',
-            category: ProductCategory.Serum,
-          },
-        }),
-        createProduct({
-          id: 'archived-cleanser',
-          status: ShelfStatus.Archived,
-          identity: {
-            brand: 'Old Brand',
-            name: 'Archived Cleanser',
-            category: ProductCategory.Cleanser,
-          },
-        }),
-      ],
-      isLoading: false,
-    });
+    mockUseShelfProducts.mockReturnValue(defaultShelfProductsQuery);
     useScheduleUiStore.setState({
       productPickerStepLabel: null,
       productPickerOpenForStepIndex: null,
@@ -151,4 +158,26 @@ describe('ProductPickerContent', () => {
       expect(screen.queryByText('Old Brand')).not.toBeInTheDocument();
     },
   );
+
+  it('loads the next shelf page when more products are available', async () => {
+    const fetchNextPage = jest.fn();
+    mockUseShelfProducts.mockReturnValue({
+      ...defaultShelfProductsQuery,
+      fetchNextPage,
+      hasNextPage: true,
+    });
+    useScheduleUiStore.setState({
+      productPickerStepLabel: StepLabel.Other,
+    });
+
+    renderWithProviders(
+      <ProductPickerContent onSelect={jest.fn()} onClose={jest.fn()} />,
+    );
+
+    await userEvent.click(
+      screen.getByRole('button', { name: /load more products/i }),
+    );
+
+    expect(fetchNextPage).toHaveBeenCalledTimes(1);
+  });
 });

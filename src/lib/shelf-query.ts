@@ -1,6 +1,7 @@
 'use client';
 
 import { QueryKey } from '@/constants/query-keys';
+import { SHELF_PRODUCTS_PAGE_SIZE } from '@/constants/shelf-pagination';
 import {
   ShelfIntroductionStatusFilter,
   type ShelfListFilters,
@@ -22,7 +23,7 @@ export function isShelfStatDateSensitive(stat: ShelfStatFilter): boolean {
 export function buildShelfProductsQueryKey(
   filters: ShelfListFilters,
   dateContext: ShelfQueryDateContext,
-): string[] {
+): Array<string | number | undefined> {
   const introductionStatus =
     filters.introductionStatus ?? ShelfIntroductionStatusFilter.All;
   const queryKey = [
@@ -32,6 +33,7 @@ export function buildShelfProductsQueryKey(
     introductionStatus,
     filters.search,
     filters.sort,
+    filters.limit ?? SHELF_PRODUCTS_PAGE_SIZE,
   ];
 
   if (isShelfStatDateSensitive(filters.stat)) {

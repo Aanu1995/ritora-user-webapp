@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { PackageCheck, Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useShelfProducts } from "@/hooks/use-shelf";
+import { useAllShelfProducts } from "@/hooks/use-shelf";
 import { useShelfDateContext } from "@/hooks/use-shelf-time-zone";
 import type { ShelfProduct } from "@/types/shelf";
 import type { CommunityOutcomeSignalFormValues } from "./community-form-schemas";
@@ -48,14 +48,16 @@ export function CommunityOutcomeProductsFieldFromShelf({
   "errors" | "onChange" | "value"
 >) {
   const dateContext = useShelfDateContext();
-  const shelfProducts = useShelfProducts(
+  const shelfProducts = useAllShelfProducts(
     communityReviewShelfFilters,
     dateContext,
   );
   return (
     <CommunityOutcomeProductsField
       errors={errors}
-      isLoadingProducts={shelfProducts.isLoading}
+      isLoadingProducts={
+        shelfProducts.isLoading || shelfProducts.isFetchingNextPage
+      }
       onChange={onChange}
       products={shelfProducts.data ?? []}
       value={value}

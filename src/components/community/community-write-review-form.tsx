@@ -6,7 +6,7 @@ import { useForm, useStore } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { QueryKey } from "@/constants/query-keys";
-import { useShelfProducts } from "@/hooks/use-shelf";
+import { useAllShelfProducts } from "@/hooks/use-shelf";
 import { useShelfDateContext } from "@/hooks/use-shelf-time-zone";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { executeMutation } from "@/lib/form-submission";
@@ -70,7 +70,7 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
   const options = useCommunityTranslatedOptions();
   const queryClient = useQueryClient();
   const dateContext = useShelfDateContext();
-  const shelfProducts = useShelfProducts(
+  const shelfProducts = useAllShelfProducts(
     communityReviewShelfFilters,
     dateContext,
   );
@@ -171,7 +171,9 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
   const productFieldGroup = ({ ...config }: ProductFieldGroupConfig) => (
     <CommunityReviewProductFieldGroup
       fieldRenderer={form.Field as CommunityReviewFormFieldRenderer}
-      isLoadingProducts={shelfProducts.isLoading}
+      isLoadingProducts={
+        shelfProducts.isLoading || shelfProducts.isFetchingNextPage
+      }
       products={shelfProducts.data}
       {...config}
     />
@@ -322,7 +324,9 @@ export function WriteReviewForm(props: WriteReviewFormProps = {}) {
                       routineContextUsageField.state.meta.errors
                     }
                     contextUsageValue={routineContextUsageField.state.value}
-                    isLoadingProducts={shelfProducts.isLoading}
+                    isLoadingProducts={
+                      shelfProducts.isLoading || shelfProducts.isFetchingNextPage
+                    }
                     onContextChange={routineContextField.handleChange}
                     onContextUsageChange={routineContextUsageField.handleChange}
                     products={shelfProducts.data}
